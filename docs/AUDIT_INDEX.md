@@ -12,3 +12,4 @@ Lazy-loading index for pass audit documents.
 | DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed |
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | docs/audit/PELLE_PV20_SAMPLE_EXPANSION_PASS.md | completed |
 | PROJECT_ZIP_SKELETON_PASS | docs/audit/PROJECT_ZIP_SKELETON_PASS.md | completed |
+| FLUTTER_UI_SCOPE_LOCK_PASS | docs/audit/FLUTTER_UI_SCOPE_LOCK_PASS.md | completed |

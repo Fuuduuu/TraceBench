@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_ZIP_SKELETON_PASS`
+`FLUTTER_UI_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -25,19 +25,20 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Realign documentation indexes and lock files after docs drift reached zero and required cleanup pass completed. |
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | SAMPLE_PASS | completed | Expand Pelle PV20 minimal sample with K2/K3 not_populated and Q2 pin_defined events. |
 | PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | completed | Add minimal Project ZIP export/import/validation tooling and sample project ZIP files. |
+| FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Document Flutter UI read-only viewer scope and platform/contracts for future implementation. |
 
 ## Planned after Sprint 0
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | future |
+| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | planned |
 | PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | future |
 
 ## Next recommended pass after cleanup
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | planned |
+| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 
@@ -50,5 +51,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2
 

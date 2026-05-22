@@ -2,59 +2,46 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PHOTO_EVENT_SCHEMA_HARDENING_PASS`
 
 ## Goal
 
-Finalize docs-only index/lock alignment after docs drift reached zero, before the next docs-driven schema-hardening planning pass.
+Harden V1 photo-flow events and add schema, validator, materializer and sample/test coverage for photo evidence events.
 
 ## Allowed surfaces
 
-- docs/PASS_QUEUE.md
+- schemas/events.schema.json
+- schemas/known_facts.schema.json
+- schemas/samples/valid_photo_added.json
+- schemas/samples/valid_damage_region_marked.json
+- tools/validate_events_jsonl.py
+- tools/materialize_known_facts.py
+- samples/pelle_pv20_minimal/events.jsonl
+- samples/pelle_pv20_minimal/known_facts.json
+- assets/samples/pelle_pv20_minimal/events.jsonl
+- assets/samples/pelle_pv20_minimal/known_facts.json
+- tests/test_validate_events_jsonl.py
+- tests/test_materialize_known_facts.py
+- tests/test_schema_samples.py
 - docs/ACTIVE_SCOPE_LOCK.md
+- docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md
-- docs/SOURCES_INDEX_CURRENT.md
-- docs/MEMORY_REGISTRY.yml
-- docs/PROJECT_STATE.yml
+- docs/audit/PHOTO_EVENT_SCHEMA_HARDENING_PASS.md
 
 ## Forbidden surfaces
 
-- schemas/**
-- tools/**
-- tests/**
-- samples/**
-- lib/**
-- assets/**
-- pubspec.yaml
-- flutter/ mobile/native platform dirs
-- backend/**
-- cloud/**
-- services/**
-- camera/OCR/CV
-- AI/fault probability
+- Flutter/Dart implementation
+- camera/OCR/CV integration
+- AI/fault probability logic
 - source search
-- cloud/BLE
+- photo file import or image processing pipelines
+- cloud sync / BLE workflows
+- connected-net invalidation implementation
 - event-writing implementation
-- photo file handling implementation
-- visual trace overlay implementation
-- photo capture implementation
-- existing sample file edits
-- schema changes
-- tooling changes
-- test changes
-- Flutter implementation
-- runtime changes
-- product direction changes
-- feature expansion outside docs housekeeping
 
 ## Verify
 
 Required:
-- py -3 tools\validate_all.py
 
-Optional:
-- make doctor
-- make validate
-- make sample
-- make test
+- py -3 tools\validate_all.py
+- flutter test --timeout=30s --reporter expanded

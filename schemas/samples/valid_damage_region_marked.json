@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "event_id": "evt_000003",
+  "project_id": "prj_pelle_pv20_001",
+  "sequence": 3,
+  "created_at": "2026-05-22T00:13:00Z",
+  "actor": {
+    "type": "user",
+    "id": "local_user"
+  },
+  "event_type": "damage_region_marked",
+  "status": "accepted",
+  "payload": {
+    "region_id": "DMG001",
+    "photo_id": "photo_top_backlight_001",
+    "bbox": {
+      "x": 120,
+      "y": 85,
+      "width": 45,
+      "height": 30
+    },
+    "damage_type": "burn",
+    "severity": "moderate",
+    "notes": "Põletuslaik Q2 piirkonnas"
+  }
+}

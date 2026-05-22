@@ -56,6 +56,22 @@
       "then": { "properties": { "payload": { "$ref": "#/$defs/repair_action_recorded" } } }
     },
     {
+      "if": { "properties": { "event_type": { "const": "photo_added" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/photo_added" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "damage_region_marked" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/damage_region_marked" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "suspect_region_marked" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/suspect_region_marked" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "visual_trace_added" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/visual_trace_added" } } }
+    },
+    {
       "if": { "properties": { "event_type": { "const": "conflict_detected" } }, "required": ["event_type"] },
       "then": { "properties": { "payload": { "$ref": "#/$defs/conflict_detected" } } }
     },
@@ -213,6 +229,114 @@
         "label": { "type": ["string", "null"] },
         "status": { "enum": ["unknown", "user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"] },
         "physical_number": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "photo_added": {
+      "type": "object",
+      "required": ["photo_id", "mode", "path"],
+      "properties": {
+        "photo_id": { "type": "string", "pattern": "^photo_[a-z0-9_]+$" },
+        "mode": { "enum": ["normal", "backlight", "macro", "side_light"] },
+        "path": { "type": "string", "pattern": "^photos/.*\\.(jpg|jpeg|png|webp)$" },
+        "notes": { "type": "string" },
+        "sha256": { "type": ["string", "null"] },
+        "source_device": { "type": "string" },
+        "exif_stripped": { "type": ["boolean", "null"] },
+        "layer": { "enum": ["top", "bottom", "side", "detail", null] }
+      },
+      "additionalProperties": true
+    },
+    "damage_region_marked": {
+      "type": "object",
+      "required": ["region_id", "photo_id", "bbox", "damage_type"],
+      "properties": {
+        "region_id": { "type": "string", "pattern": "^DMG[0-9]+$" },
+        "photo_id": { "type": "string", "minLength": 1 },
+        "bbox": {
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "width": { "type": "number", "exclusiveMinimum": 0 },
+            "height": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "additionalProperties": true
+        },
+        "damage_type": {
+          "enum": [
+            "burn",
+            "corrosion",
+            "physical_break",
+            "solder_bridge",
+            "missing_component",
+            "lifted_pad",
+            "unknown"
+          ]
+        },
+        "notes": { "type": "string" },
+        "severity": { "enum": ["minor", "moderate", "severe"] },
+        "affects_components": { "type": ["array", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "suspect_region_marked": {
+      "type": "object",
+      "required": ["region_id", "photo_id", "bbox", "reason"],
+      "properties": {
+        "region_id": { "type": "string", "pattern": "^SUSP[0-9]+$" },
+        "photo_id": { "type": "string", "minLength": 1 },
+        "bbox": {
+          "type": "object",
+          "required": ["x", "y", "width", "height"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "width": { "type": "number", "exclusiveMinimum": 0 },
+            "height": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "additionalProperties": true
+        },
+        "reason": { "type": "string" },
+        "notes": { "type": "string" },
+        "affects_components": { "type": ["array", "null"] },
+        "priority": { "enum": ["low", "medium", "high"] }
+      },
+      "additionalProperties": true
+    },
+    "visual_trace_added": {
+      "type": "object",
+      "required": ["trace_id", "photo_id", "from_point", "to_point", "evidence_type"],
+      "properties": {
+        "trace_id": { "type": "string", "pattern": "^VT[0-9]+$" },
+        "photo_id": { "type": "string", "minLength": 1 },
+        "from_point": {
+          "type": "object",
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "to_point": {
+          "type": "object",
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "from_component": { "type": ["string", "null"] },
+        "to_component": { "type": ["string", "null"] },
+        "from_pin": { "type": ["string", "null"] },
+        "to_pin": { "type": ["string", "null"] },
+        "evidence_type": { "const": "visual_trace" },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "layer": { "enum": ["top", "bottom", "inner_unknown"] },
+        "notes": { "type": "string" }
       },
       "additionalProperties": true
     },

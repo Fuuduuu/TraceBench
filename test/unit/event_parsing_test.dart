@@ -6,14 +6,17 @@ import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 void main() {
-  test('events line count is 13', () {
+  test('events line count is 15', () {
     final eventsRaw = File(
       'assets/samples/pelle_pv20_minimal/events.jsonl',
     ).readAsStringSync();
     final events = ProjectLoader.parseEvents(eventsRaw);
 
-    expect(events.length, 13);
+    expect(events.length, 15);
     expect(events.first.eventType, 'project_created');
+    expect(events[13].eventType, 'photo_added');
+    expect(events[14].eventType, 'damage_region_marked');
+    expect(events.where((e) => e.actor['type'] == 'ai'), isEmpty);
   });
 
   test('first event actor is user', () {

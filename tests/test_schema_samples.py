@@ -2,6 +2,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 import unittest
 
@@ -18,12 +19,39 @@ class SchemaSamplesTests(unittest.TestCase):
     def test_schema_samples_validate_with_validator(self):
         sample_dir = Path("schemas/samples")
         for sample in sorted(sample_dir.glob("*.json")):
+            if sample.name == "valid_damage_region_marked.json":
+                continue
             result = _run_sample_validator(sample)
             message = f"{sample}: {result.stdout + result.stderr}"
             if sample.name.startswith("invalid_"):
                 self.assertNotEqual(result.returncode, 0, message)
             else:
                 self.assertEqual(result.returncode, 0, message)
+
+    def test_valid_photo_added_sample_validates(self):
+        sample = Path("schemas/samples/valid_photo_added.json")
+        result = _run_sample_validator(sample)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        payload = json.loads(sample.read_text(encoding="utf-8")).get("payload", {})
+        self.assertIn("photo_id", payload)
+        self.assertIn("mode", payload)
+        self.assertIn("path", payload)
+
+    def test_valid_damage_region_sample_validates_with_photo_context(self):
+        photo_sample = json.loads(
+            Path("schemas/samples/valid_photo_added.json").read_text(encoding="utf-8")
+        )
+        damage_sample = json.loads(
+            Path("schemas/samples/valid_damage_region_marked.json").read_text(encoding="utf-8")
+        )
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False, encoding="utf-8") as handle:
+            handle.write(json.dumps(photo_sample) + "\n")
+            handle.write(json.dumps(damage_sample) + "\n")
+            temp_path = handle.name
+
+        result = _run_sample_validator(Path(temp_path))
+        Path(temp_path).unlink(missing_ok=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_valid_measurement_sample_is_hardened_raw_payload(self):
         path = Path("schemas/samples/valid_measurement_recorded.json")
@@ -58,7 +86,10 @@ class SchemaSamplesTests(unittest.TestCase):
         targets = payload.get("targets", [])
         self.assertEqual(len(targets), 1)
         self.assertIsInstance(targets[0], dict)
-        self.assertIn(targets[0].get("target_type"), {"component", "area", "pin", "pad", "footprint", "net", "trace", "via", "connector"})
+        self.assertIn(
+            targets[0].get("target_type"),
+            {"component", "area", "pin", "pad", "footprint", "net", "trace", "via", "connector"},
+        )
         self.assertIn("target_id", targets[0])
 
         invalidation = payload.get("invalidation_policy")

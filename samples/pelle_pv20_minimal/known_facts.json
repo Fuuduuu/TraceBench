@@ -78,6 +78,33 @@
       "verification_level": "measured"
     }
   ],
+  "photos": [
+    {
+      "photo_id": "photo_top_backlight_001",
+      "mode": "backlight",
+      "path": "photos/top_backlight_001.jpg",
+      "notes": "Backlight foto enne remonti",
+      "exif_stripped": null,
+      "layer": "top"
+    }
+  ],
+  "damage_regions": [
+    {
+      "region_id": "DMG001",
+      "photo_id": "photo_top_backlight_001",
+      "bbox": {
+        "x": 120,
+        "y": 85,
+        "width": 45,
+        "height": 30
+      },
+      "damage_type": "burn",
+      "notes": "Põletuslaik Q2 piirkonnas",
+      "severity": "moderate"
+    }
+  ],
+  "suspect_regions": [],
+  "visual_traces": [],
   "excluded_from_fault_candidates": [
     {
       "footprint_id": "K1",

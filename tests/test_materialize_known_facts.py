@@ -173,6 +173,77 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         data = run_materialize_events(events)
         self.assertFalse(any(item.get("net_id") == "N1" for item in data.get("nets", [])))
 
+    def test_photos_list_in_known_facts(self):
+        data = run_materialize()
+        photos = data.get("photos", [])
+        self.assertTrue(photos)
+        self.assertTrue(any(photo.get("photo_id") == "photo_top_backlight_001" for photo in photos))
+
+    def test_damage_regions_in_known_facts(self):
+        data = run_materialize()
+        damage_regions = data.get("damage_regions", [])
+        self.assertTrue(damage_regions)
+        self.assertTrue(any(region.get("region_id") == "DMG001" for region in damage_regions))
+
+    def test_visual_trace_evidence_type_is_visual_trace(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_top_backlight_001",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "visual_trace",
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        traces = data.get("visual_traces", [])
+        self.assertEqual(len(traces), 1)
+        self.assertEqual(traces[0].get("evidence_type"), "visual_trace")
+
+    def test_visual_trace_not_in_nets_list(self):
+        data = run_materialize()
+        traces = {trace.get("trace_id") for trace in data.get("visual_traces", [])}
+        net_trace_ids = {
+            net.get("trace_id")
+            for net in data.get("nets", [])
+            if isinstance(net, dict)
+        }
+        self.assertFalse(traces.intersection(net_trace_ids))
+
+    def test_pelle_photo_placeholder_materialized(self):
+        data = run_materialize()
+        self.assertEqual(data.get("suspect_regions", []), [])
+        self.assertEqual(data.get("visual_traces", []), [])
+        self.assertTrue(any(
+            photo.get("photo_id") == "photo_top_backlight_001" and photo.get("mode") == "backlight"
+            for photo in data.get("photos", [])
+        ))
+
 
 if __name__ == "__main__":
     unittest.main()

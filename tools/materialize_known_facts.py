@@ -67,6 +67,10 @@ def main() -> int:
     measurements: list[dict] = []
     nets: list[dict] = []
     pins: list[dict] = []
+    photos: list[dict] = []
+    damage_regions: list[dict] = []
+    suspect_regions: list[dict] = []
+    visual_traces: list[dict] = []
     excluded_from_fault_candidates: list[dict] = []
     project_id = "unknown"
     event_sequence_by_id: dict[str, int] = {}
@@ -80,9 +84,6 @@ def main() -> int:
         sequence = event.get("sequence")
         if isinstance(event_id, str) and isinstance(sequence, int):
             event_sequence_by_id[event_id] = sequence
-            if event_type == "measurement_recorded":
-                # Defer stale-state checks until after all events are inspected.
-                pass
 
         if event_type == "component_created":
             components.append(copy.deepcopy(payload))
@@ -127,6 +128,70 @@ def main() -> int:
             nets.append(materialized)
             continue
 
+        if event_type == "photo_added":
+            materialized = copy.deepcopy(payload)
+            entry = {
+                "photo_id": materialized.get("photo_id"),
+                "mode": materialized.get("mode"),
+                "path": materialized.get("path"),
+            }
+            for key in ("notes", "sha256", "source_device", "exif_stripped", "layer"):
+                if key in materialized:
+                    entry[key] = materialized[key]
+            photos.append(entry)
+            continue
+
+        if event_type == "damage_region_marked":
+            materialized = copy.deepcopy(payload)
+            entry = {
+                "region_id": materialized.get("region_id"),
+                "photo_id": materialized.get("photo_id"),
+                "bbox": materialized.get("bbox"),
+                "damage_type": materialized.get("damage_type"),
+            }
+            for key in ("notes", "severity", "affects_components"):
+                if key in materialized:
+                    entry[key] = materialized[key]
+            damage_regions.append(entry)
+            continue
+
+        if event_type == "suspect_region_marked":
+            materialized = copy.deepcopy(payload)
+            entry = {
+                "region_id": materialized.get("region_id"),
+                "photo_id": materialized.get("photo_id"),
+                "bbox": materialized.get("bbox"),
+                "reason": materialized.get("reason"),
+            }
+            for key in ("notes", "affects_components", "priority"):
+                if key in materialized:
+                    entry[key] = materialized[key]
+            suspect_regions.append(entry)
+            continue
+
+        if event_type == "visual_trace_added":
+            materialized = copy.deepcopy(payload)
+            entry = {
+                "trace_id": materialized.get("trace_id"),
+                "photo_id": materialized.get("photo_id"),
+                "from_point": materialized.get("from_point"),
+                "to_point": materialized.get("to_point"),
+                "evidence_type": materialized.get("evidence_type"),
+            }
+            for key in (
+                "from_component",
+                "to_component",
+                "from_pin",
+                "to_pin",
+                "confidence",
+                "layer",
+                "notes",
+            ):
+                if key in materialized:
+                    entry[key] = materialized[key]
+            visual_traces.append(entry)
+            continue
+
         if event_type == "footprint_marked_not_populated":
             entry = {
                 "footprint_id": payload.get("footprint_id"),
@@ -168,6 +233,10 @@ def main() -> int:
         "pins": pins,
         "measurements": measurements,
         "nets": nets,
+        "photos": photos,
+        "damage_regions": damage_regions,
+        "suspect_regions": suspect_regions,
+        "visual_traces": visual_traces,
         "excluded_from_fault_candidates": excluded_from_fault_candidates,
     }
     out_path.write_text(json.dumps(known, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

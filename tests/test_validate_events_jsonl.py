@@ -61,6 +61,76 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("actor.type='ai' is forbidden", result.stdout + result.stderr)
 
+    def test_photo_added_valid_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                    "layer": "top",
+                    "notes": "Backlight",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_photo_added_ai_actor_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "ai", "id": "ai_1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("photo_added actor.type='ai' is forbidden", result.stdout + result.stderr)
+
+    def test_photo_added_invalid_path_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_front",
+                    "mode": "backlight",
+                    "path": "notphotos/image.txt",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("path must start with photos/ and use allowed image extension", result.stdout + result.stderr)
+
     def test_net_confirmed_without_measurement_rejected(self):
         events = [
             {
@@ -152,6 +222,190 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         path = _events_to_temp_jsonl(events)
         result = _run_validator(path)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_damage_region_requires_photo_id_cross_reference(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "damage_region_marked",
+                "status": "accepted",
+                "payload": {
+                    "region_id": "DMG001",
+                    "photo_id": "photo_top_backlight_001",
+                    "bbox": {"x": 1, "y": 2, "width": 3, "height": 4},
+                    "damage_type": "burn",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_damage_region_unknown_photo_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "damage_region_marked",
+                "status": "accepted",
+                "payload": {
+                    "region_id": "DMG001",
+                    "photo_id": "photo_missing",
+                    "bbox": {"x": 1, "y": 2, "width": 3, "height": 4},
+                    "damage_type": "burn",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing photo_added photo_id", result.stdout + result.stderr)
+
+    def test_visual_trace_requires_photo_id(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_missing",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "visual_trace",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing photo_added photo_id", result.stdout + result.stderr)
+
+    def test_visual_trace_with_measured_evidence_type_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_top_backlight_001",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "measured",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("evidence_type must be 'visual_trace'", result.stdout + result.stderr)
+
+    def test_visual_trace_not_usable_as_net_confirmation(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_top_backlight_001",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "visual_trace",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "A1",
+                    "to": "A2",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000002"],
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must point to measurement_recorded", result.stdout + result.stderr)
 
     def test_not_populated_const_false_enforced(self):
         events = [
@@ -302,9 +556,11 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         line_count = sum(1 for _ in Path(sample_path).read_text(encoding="utf-8").splitlines())
-        self.assertEqual(line_count, 13)
+        self.assertEqual(line_count, 15)
         with Path(sample_path).open("r", encoding="utf-8") as handle:
             payload_types = [json.loads(line)["event_type"] for line in handle]
+        self.assertIn("photo_added", payload_types)
+        self.assertIn("damage_region_marked", payload_types)
         self.assertIn("footprint_marked_not_populated", payload_types)
         self.assertIn("pin_defined", payload_types)
 

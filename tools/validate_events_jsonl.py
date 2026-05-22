@@ -41,6 +41,21 @@ ALLOWED_ACTOR_TYPES = {"user", "system", "ai", "import"}
 ALLOWED_PIN_STATUS = {"unknown", "user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"}
 ALLOWED_COMPONENT_STATUS = {"needs_identification", "identified", "confirmed", "suspect", "verified_good"}
 ALLOWED_NET_EVIDENCE_TYPES = {"user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"}
+ALLOWED_PHOTO_MODES = {"normal", "backlight", "macro", "side_light"}
+ALLOWED_DAMAGE_TYPES = {
+    "burn",
+    "corrosion",
+    "physical_break",
+    "solder_bridge",
+    "missing_component",
+    "lifted_pad",
+    "unknown",
+}
+ALLOWED_DAMAGE_SEVERITY = {"minor", "moderate", "severe"}
+ALLOWED_SUSPECT_PRIORITY = {"low", "medium", "high"}
+ALLOWED_VISUAL_TRACE_CONFIDENCE = {"low", "medium", "high"}
+ALLOWED_VISUAL_TRACE_LAYER = {"top", "bottom", "inner_unknown"}
+ALLOWED_PHOTO_LAYERS = {"top", "bottom", "side", "detail"}
 
 REPAIR_TARGET_TYPES = {
     "component",
@@ -80,6 +95,17 @@ def _is_iso_datetime(value: str) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _is_valid_image_path(path: str) -> bool:
+    if not path.startswith("photos/"):
+        return False
+    lower = path.lower()
+    return lower.endswith((".jpg", ".jpeg", ".png", ".webp"))
+
+
+def _is_hex64(value: str) -> bool:
+    return bool(re.fullmatch(r"[0-9a-fA-F]{64}", value))
 
 
 def _load_schema_constraints(
@@ -307,6 +333,188 @@ def _validate_component(payload: dict, line: int, errors: list[str], seen_compon
         _error(errors, context, f"component_created status must be one of {sorted(ALLOWED_COMPONENT_STATUS)!r}")
 
 
+def _validate_bbox(context: str, bbox: dict, errors: list[str]) -> None:
+    if not isinstance(bbox, dict):
+        _error(errors, context, "bbox must be object")
+        return
+    for key in ("x", "y", "width", "height"):
+        if not isinstance(bbox.get(key), (int, float)):
+            _error(errors, context, f"bbox.{key} must be number")
+    if not isinstance(bbox.get("width"), (int, float)) or bbox.get("width") <= 0:
+        _error(errors, context, "bbox.width must be positive number")
+    if not isinstance(bbox.get("height"), (int, float)) or bbox.get("height") <= 0:
+        _error(errors, context, "bbox.height must be positive number")
+
+
+def _validate_photo_added(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    seen_photo_ids: Counter[str],
+    actor_type: str | None,
+) -> None:
+    context = f"line {line}"
+    if actor_type == "ai":
+        _error(errors, context, "photo_added actor.type='ai' is forbidden")
+
+    photo_id = payload.get("photo_id")
+    if not isinstance(photo_id, str) or not re.match(r"^photo_[a-z0-9_]+$", photo_id):
+        _error(errors, context, "photo_id must match ^photo_[a-z0-9_]+$")
+    elif seen_photo_ids[photo_id]:
+        _error(errors, context, f"duplicate photo_id {photo_id!r}")
+    seen_photo_ids[photo_id] += 1
+
+    if payload.get("mode") not in ALLOWED_PHOTO_MODES:
+        _error(errors, context, f"photo_added mode must be one of {sorted(ALLOWED_PHOTO_MODES)!r}")
+
+    path = payload.get("path")
+    if not isinstance(path, str) or not path:
+        _error(errors, context, "photo_added requires path")
+    elif not _is_valid_image_path(path):
+        _error(
+            errors,
+            context,
+            "photo_added path must start with photos/ and use allowed image extension",
+        )
+
+    sha256 = payload.get("sha256")
+    if sha256 is not None:
+        if not isinstance(sha256, str) or not _is_hex64(sha256):
+            _error(errors, context, "sha256 must be a 64-character hexadecimal string when present")
+
+    layer = payload.get("layer")
+    if layer is not None and layer not in ALLOWED_PHOTO_LAYERS:
+        _error(errors, context, f"photo_added layer must be one of {sorted(ALLOWED_PHOTO_LAYERS)!r}")
+
+
+def _validate_damage_region_marked(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    photo_ids: set[str],
+    seen_region_ids: Counter[str],
+    actor_type: str | None,
+) -> None:
+    context = f"line {line}"
+    if actor_type == "ai":
+        _error(errors, context, "damage_region_marked actor.type='ai' is forbidden")
+
+    region_id = payload.get("region_id")
+    if not isinstance(region_id, str) or not re.match(r"^DMG[0-9]+$", region_id):
+        _error(errors, context, "region_id must match ^DMG[0-9]+$")
+    elif seen_region_ids[region_id]:
+        _error(errors, context, f"duplicate region_id {region_id!r}")
+    seen_region_ids[region_id] += 1
+
+    photo_id = payload.get("photo_id")
+    if not isinstance(photo_id, str) or not photo_id:
+        _error(errors, context, "photo_id required")
+    elif photo_id not in photo_ids:
+        _error(errors, context, f"damage_region_marked photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+
+    _validate_bbox(context, payload.get("bbox"), errors)
+
+    if payload.get("damage_type") not in ALLOWED_DAMAGE_TYPES:
+        _error(errors, context, f"damage_type must be one of {sorted(ALLOWED_DAMAGE_TYPES)!r}")
+
+    severity = payload.get("severity")
+    if severity is not None and severity not in ALLOWED_DAMAGE_SEVERITY:
+        _error(errors, context, f"severity must be one of {sorted(ALLOWED_DAMAGE_SEVERITY)!r}")
+
+
+def _validate_suspect_region_marked(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    photo_ids: set[str],
+    seen_region_ids: Counter[str],
+    actor_type: str | None,
+) -> None:
+    context = f"line {line}"
+    if actor_type == "ai":
+        _error(errors, context, "suspect_region_marked actor.type='ai' is forbidden")
+
+    region_id = payload.get("region_id")
+    if not isinstance(region_id, str) or not re.match(r"^SUSP[0-9]+$", region_id):
+        _error(errors, context, "region_id must match ^SUSP[0-9]+$")
+    elif seen_region_ids[region_id]:
+        _error(errors, context, f"duplicate region_id {region_id!r}")
+    seen_region_ids[region_id] += 1
+
+    photo_id = payload.get("photo_id")
+    if not isinstance(photo_id, str) or not photo_id:
+        _error(errors, context, "photo_id required")
+    elif photo_id not in photo_ids:
+        _error(errors, context, f"suspect_region_marked photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+
+    _validate_bbox(context, payload.get("bbox"), errors)
+
+    reason = payload.get("reason")
+    if not isinstance(reason, str) or not reason:
+        _error(errors, context, "reason required")
+
+    priority = payload.get("priority")
+    if priority is not None and priority not in ALLOWED_SUSPECT_PRIORITY:
+        _error(errors, context, f"priority must be one of {sorted(ALLOWED_SUSPECT_PRIORITY)!r}")
+
+
+def _validate_visual_trace_added(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    photo_ids: set[str],
+    seen_trace_ids: Counter[str],
+    actor_type: str | None,
+) -> None:
+    context = f"line {line}"
+    if actor_type == "ai":
+        _error(errors, context, "visual_trace_added actor.type='ai' is forbidden")
+
+    trace_id = payload.get("trace_id")
+    if not isinstance(trace_id, str) or not re.match(r"^VT[0-9]+$", trace_id):
+        _error(errors, context, "trace_id must match ^VT[0-9]+$")
+    elif seen_trace_ids[trace_id]:
+        _error(errors, context, f"duplicate trace_id {trace_id!r}")
+    seen_trace_ids[trace_id] += 1
+
+    photo_id = payload.get("photo_id")
+    if not isinstance(photo_id, str) or not photo_id:
+        _error(errors, context, "photo_id required")
+    elif photo_id not in photo_ids:
+        _error(errors, context, f"visual_trace_added photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+
+    for field in ("confirmation_basis", "confirmed_by_event_ids", "net_id"):
+        if field in payload:
+            _error(errors, context, f"visual_trace_added must not include {field}")
+
+    from_point = payload.get("from_point")
+    to_point = payload.get("to_point")
+    if not isinstance(from_point, dict):
+        _error(errors, context, "from_point must be object")
+    else:
+        for key in ("x", "y"):
+            if not isinstance(from_point.get(key), (int, float)):
+                _error(errors, context, f"from_point.{key} must be number")
+
+    if not isinstance(to_point, dict):
+        _error(errors, context, "to_point must be object")
+    else:
+        for key in ("x", "y"):
+            if not isinstance(to_point.get(key), (int, float)):
+                _error(errors, context, f"to_point.{key} must be number")
+
+    if payload.get("evidence_type") != "visual_trace":
+        _error(errors, context, "evidence_type must be 'visual_trace'")
+
+    confidence = payload.get("confidence")
+    if confidence is not None and confidence not in ALLOWED_VISUAL_TRACE_CONFIDENCE:
+        _error(errors, context, f"confidence must be one of {sorted(ALLOWED_VISUAL_TRACE_CONFIDENCE)!r}")
+
+    layer = payload.get("layer")
+    if layer is not None and layer not in ALLOWED_VISUAL_TRACE_LAYER:
+        _error(errors, context, f"layer must be one of {sorted(ALLOWED_VISUAL_TRACE_LAYER)!r}")
+
+
 def _validate_pin(
     payload: dict,
     line: int,
@@ -483,6 +691,10 @@ def main() -> None:
     measurement_event_ids: set[str] = set()
     component_ids: set[str] = set()
     pin_ids: set[str] = set()
+    photo_ids: set[str] = set()
+    seen_photo_ids: Counter[str] = Counter()
+    region_ids: Counter[str] = Counter()
+    trace_ids: Counter[str] = Counter()
     component_id_counts: Counter[str] = Counter()
     pin_id_counts: Counter[str] = Counter()
     conflict_id_counts: Counter[str] = Counter()
@@ -502,6 +714,10 @@ def main() -> None:
             pin_id = event.get("payload", {}).get("pin_id")
             if isinstance(pin_id, str):
                 pin_ids.add(pin_id)
+        if event_type == "photo_added":
+            photo_id = event.get("payload", {}).get("photo_id")
+            if isinstance(photo_id, str):
+                photo_ids.add(photo_id)
         if event_type == "measurement_recorded" and isinstance(event_id, str):
             measurement_event_ids.add(event_id)
 
@@ -555,6 +771,43 @@ def main() -> None:
             _validate_component(payload, line_no, errors, component_id_counts)
             continue
 
+        if event_type == "photo_added":
+            _validate_photo_added(payload, line_no, errors, seen_photo_ids, event.get("actor", {}).get("type"))
+            continue
+
+        if event_type == "damage_region_marked":
+            _validate_damage_region_marked(
+                payload,
+                line_no,
+                errors,
+                photo_ids,
+                region_ids,
+                event.get("actor", {}).get("type"),
+            )
+            continue
+
+        if event_type == "suspect_region_marked":
+            _validate_suspect_region_marked(
+                payload,
+                line_no,
+                errors,
+                photo_ids,
+                region_ids,
+                event.get("actor", {}).get("type"),
+            )
+            continue
+
+        if event_type == "visual_trace_added":
+            _validate_visual_trace_added(
+                payload,
+                line_no,
+                errors,
+                photo_ids,
+                trace_ids,
+                event.get("actor", {}).get("type"),
+            )
+            continue
+
         if event_type == "pin_defined":
             _validate_pin(payload, line_no, errors, component_ids, pin_id_counts)
             continue
@@ -583,14 +836,10 @@ def main() -> None:
             "project_created",
             "project_metadata_updated",
             "initial_intake_updated",
-            "photo_added",
             "photo_reference_points_set",
             "photo_layer_aligned",
-            "damage_region_marked",
-            "suspect_region_marked",
             "component_updated",
             "component_marked_unknown",
-            "visual_trace_added",
             "export_created",
         }:
             continue

@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`FLUTTER_VIEWER_SHELL_PASS`
 
 ## Completed pass history
 
@@ -28,19 +28,21 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Document Flutter UI read-only viewer scope and platform/contracts for future implementation. |
 | PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS | TOOLS_PASS | completed | Harden event/schema/tooling validations for pre-Flutter viewer contract and Project ZIP safety/consistency. |
 | REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS | DOCS_SYNC | completed | Normalize repair action sample target to component/Q2 for replace_component didactic clarity. |
+| FLUTTER_VIEWER_SHELL_PASS | FLUTTER_PASS | completed | Add first read-only Flutter Project ZIP viewer shell with bundled sample and import flow. |
 
-## Planned after Sprint 0
+## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | planned |
+| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | planned |
 | PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | future |
 
-## Next recommended pass after cleanup
+## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | recommended |
+| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | recommended |
+| NEEDS_USER_DECISION | DOCS_SYNC | note: event-writing/export capabilities and deeper audits remain pending |
 
 ## Deferred / not active
 
@@ -53,5 +55,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 3
 

@@ -10,3 +10,13 @@ samples/**/photos/*
 
 # Added for Sprint 0 bootstrap hygiene
 .codex/
+
+# Flutter generated files
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/build/
+**/android/.gradle/
+**/ios/Pods/
+**/ios/Flutter/Flutter.framework/
+pubspec.lock

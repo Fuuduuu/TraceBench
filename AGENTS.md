@@ -12,7 +12,27 @@ AI must never invent measurements, hidden-layer connections, component identitie
 
 ## Current phase
 
-Sprint 0 only: project skeleton, memory/governance system, schemas, validators, sample data.
+Sprint 1 — FLUTTER_VIEWER_SHELL_PASS
+
+## Sprint 1 scope
+
+Allowed:
+- Flutter read-only viewer shell
+- pubspec.yaml
+- lib/**
+- test/**
+- assets/samples/**
+- Project ZIP read-only import
+- bundled sample viewer
+
+Forbidden:
+- event writing
+- sequence management
+- camera/OCR/CV
+- AI/fault probability
+- source search
+- cloud/BLE
+- real ZIP export
 
 ## V1.0 scope
 
@@ -25,8 +45,7 @@ Allowed:
 - Pelle PV20 sample
 - Makefile commands
 
-Forbidden in Sprint 0:
-- Flutter UI
+Forbidden in Sprint 1:
 - OCR/CV
 - AI API integration
 - fault probability
@@ -101,7 +120,7 @@ git diff --name-only
 git status --short --branch
 ```
 
-`make` is optional and not required for Sprint 0 validation.
+`make` is optional and not required for Sprint 1 validation.
 
 ## Stop conditions
 
@@ -111,4 +130,5 @@ Stop and report if:
 - a protected surface needs semantic change
 - validation fails outside allowed fix scope
 - secrets/API keys are requested
-- runtime/UI/AI implementation is requested during Sprint 0
+- runtime/UI/AI implementation is requested outside the approved pass scope
+- Flutter implementation is requested without PASS_ID update

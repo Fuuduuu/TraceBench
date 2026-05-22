@@ -1,0 +1,122 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/app.dart';
+import '../../../shared/services/project_loader.dart';
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+
+  Future<void> _loadBundledProject(WidgetRef ref) async {
+    final loaded = await ProjectLoader.loadFromAssets();
+    ref.read(projectStateProvider.notifier).state = loaded;
+  }
+
+  Future<void> _importZip(BuildContext context, WidgetRef ref) async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: const ['zip'],
+      withData: true,
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final picked = result.files.single;
+    try {
+      if (picked.bytes != null) {
+        final loaded = await ProjectLoader.loadFromZipBytes(picked.bytes!);
+        ref.read(projectStateProvider.notifier).state = loaded;
+        if (context.mounted) {
+          context.go('/project');
+        }
+        return;
+      }
+
+      if (picked.path == null || picked.path!.isEmpty) {
+        throw const ProjectLoadException('No file path for selected ZIP');
+      }
+
+      final bytes = await File(picked.path!).readAsBytes();
+      final loaded = await ProjectLoader.loadFromZipBytes(bytes);
+      ref.read(projectStateProvider.notifier).state = loaded;
+      if (context.mounted) {
+        context.go('/project');
+      }
+    } on ProjectLoadException catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString())),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ZIP import failed: $error')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final projectState = ref.watch(projectStateProvider);
+    final hasProject = projectState != null;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('TraceBench Viewer')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Read-only Project ZIP Viewer',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Ava näidisprojekti või impordi Project ZIP (write-only view).',
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _loadBundledProject(ref),
+              child: const Text('Ava näidisprojekt'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => _importZip(context, ref),
+              child: const Text('Import Project ZIP'),
+            ),
+            const SizedBox(height: 24),
+            if (hasProject) ...[
+              const Text('Seisund: näidisprojekti andmed laetud'),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () => context.go('/project'),
+                child: const Text('Ava projekt'),
+              ),
+            ],
+            if (!hasProject)
+              const Text('No current project loaded.')
+            else
+              Card(
+                margin: const EdgeInsets.only(top: 12),
+                child: ListTile(
+                  title: Text(projectState!.manifest.model),
+                  subtitle: Text(projectState.manifest.deviceType),
+                  trailing:
+                      projectState.manifest.projectId == 'prj_pelle_pv20_001'
+                          ? const Chip(label: Text('Bundled sample'))
+                          : null,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

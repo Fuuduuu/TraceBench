@@ -172,8 +172,12 @@ def _validate_repair_action(payload: dict, line: int, errors: list[str], compone
         return
     if invalidation.get("direct_component_measurements") not in {"stale_after_repair", "no_change"}:
         _error(errors, context, "direct_component_measurements must be stale_after_repair|no_change")
-    if invalidation.get("connected_net_measurements") not in {"stale_after_repair", "no_change"}:
-        _error(errors, context, "connected_net_measurements must be stale_after_repair|no_change")
+    if invalidation.get("connected_net_measurements") != "no_change":
+        _error(
+            errors,
+            context,
+            "connected_net_measurements must be 'no_change' in V1 until connected-net invalidation is implemented",
+        )
 
 
 def _validate_footprint(payload: dict, line: int, errors: list[str]) -> None:

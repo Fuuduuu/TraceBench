@@ -134,7 +134,7 @@
           "required": ["direct_component_measurements", "connected_net_measurements"],
           "properties": {
             "direct_component_measurements": { "enum": ["stale_after_repair", "no_change"] },
-            "connected_net_measurements": { "enum": ["stale_after_repair", "no_change"] }
+            "connected_net_measurements": { "const": "no_change" }
           },
           "additionalProperties": true
         },

@@ -17,6 +17,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS | DOCS_SYNC | completed | Align Sprint 0 validation docs and Makefile with Windows-first stdlib baseline. |
 | SPRINT_0_PROJECT_SKELETON_PASS | DOCS_SYNC / SCHEMA_PASS / TOOLS_PASS | completed | Create repo skeleton, docs, schemas, validators, sample. |
 | EVENTS_SCHEMA_HARDENING_PASS | SCHEMA_PASS | completed | Add payload-specific schema defs, validator hardening, sample hardening, and materialization output evolution. |
+| EVENTS_SCHEMA_HARDENING_FIXUP_PASS | SCHEMA_PASS | completed | Fix schema/sample drift and enforce V1 connected-net invalidation policy. |
 
 ## Planned after Sprint 0
 
@@ -25,6 +26,12 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | SAMPLE_PASS | planned |
 | PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | planned |
 | FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | future |
+
+## Suggested next pass before feature/schema changes
+
+| PASS_ID | Lane | Status |
+|---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | planned |
 
 ## Deferred / not active
 
@@ -37,5 +44,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0
 

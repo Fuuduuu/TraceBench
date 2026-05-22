@@ -187,6 +187,161 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_repair_string_target_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "replace_component",
+                    "targets": ["Q2"],
+                    "reason": "replace",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("repair target 1 must be object", result.stdout + result.stderr)
+
+    def test_repair_unknown_component_target_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "replace_component",
+                    "targets": [{"target_type": "component", "target_id": "UNKNOWN"}],
+                    "reason": "replace",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("references unknown component", result.stdout + result.stderr)
+
+    def test_connected_net_stale_policy_rejected_until_implemented(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "C1"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "replace_component",
+                    "targets": [{"target_type": "component", "target_id": "C1"}],
+                    "reason": "replace",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "stale_after_repair",
+                    },
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("connected_net_measurements must be 'no_change' in V1", result.stdout + result.stderr)
+
+    def test_duplicate_event_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "first"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "duplicate"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("duplicate event_id", result.stdout + result.stderr)
+
+    def test_non_monotonic_sequence_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "first"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "non-monotonic"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("sequence must strictly increase", result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

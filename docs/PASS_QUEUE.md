@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_VIEWER_SHELL_FIXUP_PASS`
+`PHOTO_FLOW_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -30,19 +30,21 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS | DOCS_SYNC | completed | Normalize repair action sample target to component/Q2 for replace_component didactic clarity. |
 | FLUTTER_VIEWER_SHELL_PASS | FLUTTER_PASS | completed | Add first read-only Flutter Project ZIP viewer shell with bundled sample and import flow. |
 | FLUTTER_VIEWER_SHELL_FIXUP_PASS | FLUTTER_PASS | completed | Fix GoRouter rebuild, beginner events access guard, and title/sample sync validation gaps. |
+| PHOTO_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock photo-flow event scope, boundaries, and schema-hardening sequence in docs. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
 | FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | planned |
-| PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | future |
+| PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | superseded |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
+| PHOTO_EVENT_SCHEMA_HARDENING_PASS | SCHEMA_PASS | recommended |
+| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | recommended |
 | NEEDS_USER_DECISION | DOCS_SYNC | note: event-writing/export capabilities and deeper audits remain pending |
 
 ## Deferred / not active
@@ -56,4 +58,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

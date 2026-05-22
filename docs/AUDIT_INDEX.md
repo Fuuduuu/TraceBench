@@ -17,3 +17,4 @@ Lazy-loading index for pass audit documents.
 | REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS | docs/audit/REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS.md | completed |
 | FLUTTER_VIEWER_SHELL_PASS | docs/audit/FLUTTER_VIEWER_SHELL_PASS.md | completed |
 | FLUTTER_VIEWER_SHELL_FIXUP_PASS | docs/audit/FLUTTER_VIEWER_SHELL_FIXUP_PASS.md | completed |
+| PHOTO_FLOW_SCOPE_LOCK_PASS | docs/audit/PHOTO_FLOW_SCOPE_LOCK_PASS.md | completed |

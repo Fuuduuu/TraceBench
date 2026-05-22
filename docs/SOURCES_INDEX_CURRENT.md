@@ -41,3 +41,9 @@ Routing and conflict-resolution index for TraceBench project memory.
 ## Archive policy
 
 Archive files are never read by default.
+
+
+## Governance routing source
+
+- docs/MODEL_ROUTING.md
+

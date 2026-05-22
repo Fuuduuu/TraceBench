@@ -6,3 +6,4 @@ Lazy-loading index for pass audit documents.
 |---|---|---|
 | SPRINT_0_PROJECT_SKELETON_PASS | docs/audit/SPRINT_0_PROJECT_SKELETON_PASS.md | completed |
 | SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS | docs/audit/SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS.md | completed |
+| MODEL_ROUTING_PROTOCOL_PASS | docs/audit/MODEL_ROUTING_PROTOCOL_PASS.md | completed |

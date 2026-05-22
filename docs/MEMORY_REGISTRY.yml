@@ -32,6 +32,7 @@ layers:
       - docs/PASS_QUEUE.md
       - docs/PROMPTING_PROTOCOL.md
       - docs/MEMORY_MAINTENANCE.md
+      - docs/MODEL_ROUTING.md
 
   source_index:
     read_by_default: true

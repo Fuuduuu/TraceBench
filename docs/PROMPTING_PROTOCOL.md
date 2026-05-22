@@ -47,6 +47,16 @@ py -3 tools\\validate_all.py
 
 Stop if wrong repo.
 
+## MODEL_ROUTING_CHECK
+
+Before every Guarded Prompt or implementation pass, run:
+
+- Is this deterministic implementation of accepted scope?
+  - yes -> Codex
+- Is this architecture/scope/risk/evidence policy?
+  - yes -> Deep review first
+- Is this unclear?
+  - yes -> User decision first
 ## Diff sanity
 
 Before output:
@@ -57,3 +67,4 @@ git status --short --branch
 ```
 
 Stop if out-of-scope files changed.
+

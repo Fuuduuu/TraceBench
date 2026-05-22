@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PHOTO_FLOW_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Completed pass history
 
@@ -44,7 +44,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PASS_ID | Lane | Status |
 |---|---|---|
 | PHOTO_EVENT_SCHEMA_HARDENING_PASS | SCHEMA_PASS | recommended |
-| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | recommended |
+| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | planned |
 | NEEDS_USER_DECISION | DOCS_SYNC | note: event-writing/export capabilities and deeper audits remain pending |
 
 ## Deferred / not active
@@ -58,4 +58,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

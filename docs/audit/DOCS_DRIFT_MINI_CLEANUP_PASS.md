@@ -62,3 +62,35 @@ Checks/results:
 
 Validation:
 - `py -3 tools\\validate_all.py`
+
+---
+
+## DOCS_DRIFT_MINI_CLEANUP_PASS (2026-05-22)
+
+Status: completed
+
+Scope:
+- docs-only cleanup after `PHOTO_FLOW_SCOPE_LOCK_PASS`
+- drift bookkeeping sync with `PHOTO_EVENT_SCHEMA_HARDENING_PASS` handoff
+
+Files changed:
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/MEMORY_REGISTRY.yml`
+- `docs/PROJECT_STATE.yml`
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+
+Checks/results:
+- completed pass set in `docs/AUDIT_INDEX.md` remains consistent.
+- `DOCS_DRIFT_MINI_CLEANUP_PASS` marked as completed/current cleanup pass.
+- docs drift countdown reset `0 -> 5`.
+- next recommended pass set to `PHOTO_EVENT_SCHEMA_HARDENING_PASS`.
+- `FLUTTER_VIEWER_SHELL_AUDIT_PASS` retained/kept planned.
+- `docs/SOURCES_INDEX_CURRENT.md` includes `docs/PHOTO_FLOW_SPEC.md` in active governance docs.
+- `docs/MEMORY_REGISTRY.yml` active lock workflow includes `docs/PHOTO_FLOW_SPEC.md`.
+- no product/validation/tooling/code semantics changed in this pass.
+
+Validation:
+- `py -3 tools\validate_all.py`

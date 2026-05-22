@@ -23,6 +23,7 @@ Routing and conflict-resolution index for TraceBench project memory.
 - `docs/PROTECTED_SURFACES.md`
 - `docs/PROJECT_ZIP_SPEC.md`
 - `docs/FLUTTER_UI_SPEC.md`
+- `docs/PHOTO_FLOW_SPEC.md`
 
 ## Conflict order
 

@@ -2,19 +2,21 @@
 
 ## Current pass
 
-`PHOTO_FLOW_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Document photo-flow event scope, payload rules, evidence boundaries, Project ZIP implications, and next-pass schema hardening plan before any implementation.
+Finalize docs-only index/lock alignment after docs drift reached zero, before the next docs-driven schema-hardening planning pass.
 
 ## Allowed surfaces
 
-- docs/PHOTO_FLOW_SPEC.md
-- docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
+- docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PHOTO_FLOW_SCOPE_LOCK_PASS.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md
+- docs/SOURCES_INDEX_CURRENT.md
+- docs/MEMORY_REGISTRY.yml
+- docs/PROJECT_STATE.yml
 
 ## Forbidden surfaces
 
@@ -38,6 +40,13 @@ Document photo-flow event scope, payload rules, evidence boundaries, Project ZIP
 - visual trace overlay implementation
 - photo capture implementation
 - existing sample file edits
+- schema changes
+- tooling changes
+- test changes
+- Flutter implementation
+- runtime changes
+- product direction changes
+- feature expansion outside docs housekeeping
 
 ## Verify
 

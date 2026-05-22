@@ -46,5 +46,208 @@
     "status": { "enum": ["draft", "pending_review", "accepted", "rejected", "superseded", "reverted"] },
     "payload": { "type": "object" }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "event_type": { "const": "measurement_recorded" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/measurement_recorded" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "repair_action_recorded" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/repair_action_recorded" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "conflict_detected" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/conflict_detected" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "conflict_resolved" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/conflict_resolved" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "footprint_marked_not_populated" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/footprint_marked_not_populated" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "component_created" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/component_created" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "pin_defined" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/pin_defined" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "net_connection_confirmed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/net_connection_confirmed" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "claim_invalidated" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/claim_invalidated" } } }
+    }
+  ],
+  "$defs": {
+    "measurement_recorded": {
+      "type": "object",
+      "required": ["measurement_id", "mode", "from", "to", "reading", "power_state"],
+      "properties": {
+        "measurement_id": { "type": "string", "pattern": "^M[0-9]+$" },
+        "mode": { "enum": ["continuity", "resistance", "voltage_dc", "voltage_ac", "diode", "capacitance", "frequency"] },
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "reading": {
+          "type": "object",
+          "required": ["kind", "value", "unit"],
+          "properties": {
+            "kind": { "enum": ["numeric", "boolean", "categorical", "over_range"] },
+            "value": { "type": ["number", "boolean", "string", "null"] },
+            "unit": { "type": ["string", "null"] }
+          },
+          "additionalProperties": true
+        },
+        "power_state": { "enum": ["off", "on", "unknown"] }
+      },
+      "additionalProperties": true
+    },
+    "repair_action_recorded": {
+      "type": "object",
+      "required": ["repair_action_id", "action_type", "targets", "reason", "invalidation_policy"],
+      "properties": {
+        "repair_action_id": { "type": "string", "minLength": 1 },
+        "action_type": { "enum": ["replace_component", "rework_solder", "clean_board", "bypass_trace", "cut_trace", "other"] },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["target_type", "target_id"],
+            "properties": {
+              "target_type": {
+                "enum": ["component", "pin", "pad", "footprint", "net", "trace", "via", "connector", "area"]
+              },
+              "target_id": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "reason": { "type": "string" },
+        "invalidation_policy": {
+          "type": "object",
+          "required": ["direct_component_measurements", "connected_net_measurements"],
+          "properties": {
+            "direct_component_measurements": { "enum": ["stale_after_repair", "no_change"] },
+            "connected_net_measurements": { "enum": ["stale_after_repair", "no_change"] }
+          },
+          "additionalProperties": true
+        },
+        "after": { "type": "object", "additionalProperties": true },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "conflict_detected": {
+      "type": "object",
+      "required": ["conflict_id", "conflict_type", "between", "detected_at_sequence"],
+      "properties": {
+        "conflict_id": { "type": "string", "pattern": "^CONF[0-9]+$" },
+        "conflict_type": { "enum": ["measurement_contradiction", "net_topology_conflict", "evidence_quality_conflict", "component_identity_conflict", "population_status_conflict"] },
+        "between": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "detected_at_sequence": { "type": "integer", "minimum": 0 },
+        "notes": { "type": "string" },
+        "auto_detected": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "conflict_resolved": {
+      "type": "object",
+      "required": ["conflict_id", "resolution_type", "resolved_by"],
+      "properties": {
+        "conflict_id": { "type": "string", "minLength": 1 },
+        "resolution_type": {
+          "enum": ["accepted_events", "invalidated_events", "superseded_by_repair", "not_a_conflict"]
+        },
+        "resolved_by": { "type": "object", "required": ["type", "id"], "additionalProperties": true },
+        "accepted_event_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "invalidated_event_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "claim_invalidated_event_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "footprint_marked_not_populated": {
+      "type": "object",
+      "required": ["footprint_id", "population_status", "allowed_in_fault_hypotheses"],
+      "properties": {
+        "footprint_id": { "type": "string", "minLength": 1 },
+        "designator": { "type": ["string", "null"] },
+        "population_status": { "const": "not_populated" },
+        "allowed_in_fault_hypotheses": { "const": false },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "component_created": {
+      "type": "object",
+      "required": ["component_id"],
+      "properties": {
+        "component_id": { "type": "string", "minLength": 1 },
+        "designator": { "type": ["string", "null"] },
+        "type": { "type": ["string", "null"] },
+        "package": { "type": ["string", "null"] },
+        "pin_count": { "type": ["integer", "null"], "minimum": 0 },
+        "marking": { "type": ["string", "null"] },
+        "status": { "enum": ["needs_identification", "identified", "confirmed", "suspect", "verified_good"] },
+        "mpn": { "type": ["string", "null"] },
+        "datasheet_url": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "pin_defined": {
+      "type": "object",
+      "required": ["component_id", "pin_id"],
+      "properties": {
+        "component_id": { "type": "string", "minLength": 1 },
+        "pin_id": { "type": "string", "minLength": 1 },
+        "label": { "type": ["string", "null"] },
+        "status": { "enum": ["unknown", "user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"] },
+        "physical_number": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "net_connection_confirmed": {
+      "type": "object",
+      "required": ["net_id", "from", "to", "confirmation_basis", "confirmed_by_event_ids"],
+      "properties": {
+        "net_id": { "type": "string", "minLength": 1 },
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "confirmation_basis": { "const": "measured" },
+        "confirmed_by_event_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "label": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "claim_invalidated": {
+      "type": "object",
+      "required": ["invalidates_event_id", "reason", "invalidation_type"],
+      "properties": {
+        "invalidates_event_id": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string" },
+        "invalidation_type": {
+          "enum": ["superseded", "retracted", "stale_after_repair", "conflict_resolution", "user_correction"]
+        },
+        "superseded_by_event_id": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    }
+  },
   "additionalProperties": false
 }

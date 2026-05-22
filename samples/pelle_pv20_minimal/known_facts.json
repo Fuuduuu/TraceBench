@@ -17,13 +17,51 @@
       "mode": "continuity",
       "from": "Q2.1",
       "to": "R17.1",
-      "value": 0.3,
-      "unit": "ohm",
+      "reading": {
+        "kind": "numeric",
+        "value": 0.3,
+        "unit": "ohm"
+      },
       "power_state": "off",
+      "origin_event_id": "evt_000006",
       "valid_from_event_id": "evt_000006",
+      "valid_until_event_id": "evt_000007",
+      "validity_status": "stale_after_repair"
+    },
+    {
+      "measurement_id": "M002",
+      "mode": "continuity",
+      "from": "Q2.1",
+      "to": "R17.1",
+      "reading": {
+        "kind": "numeric",
+        "value": 0.2,
+        "unit": "ohm"
+      },
+      "power_state": "off",
+      "origin_event_id": "evt_000008",
+      "valid_from_event_id": "evt_000008",
       "valid_until_event_id": null,
       "validity_status": "active"
     }
   ],
-  "nets": []
+  "nets": [
+    {
+      "net_id": "N1",
+      "from": "Q2.1",
+      "to": "R17.1",
+      "confirmation_basis": "measured",
+      "confirmed_by_event_ids": [
+        "evt_000008"
+      ],
+      "label": "post-repair continuity",
+      "verification_level": "measured"
+    }
+  ],
+  "excluded_from_fault_candidates": [
+    {
+      "footprint_id": "K1",
+      "designator": "K1"
+    }
+  ]
 }

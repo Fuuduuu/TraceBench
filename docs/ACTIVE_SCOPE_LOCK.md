@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`SPRINT_0_PROJECT_SKELETON_PASS`
+`SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS`
 
 ## Goal
 
-Create the project skeleton, memory/governance docs, schemas, validators, and Pelle PV20 sample.
+Align Sprint 0 validation docs and Makefile with Windows-first stdlib baseline.
 
 ## Allowed surfaces
 
@@ -45,7 +45,11 @@ Create the project skeleton, memory/governance docs, schemas, validators, and Pe
 
 ## Verify
 
+Required:
+- py -3 tools\\validate_all.py
+
+Optional:
 - make doctor
 - make validate
-- make test
 - make sample
+- make test

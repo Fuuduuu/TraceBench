@@ -4,4 +4,5 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| SPRINT_0_PROJECT_SKELETON_PASS | docs/audit/SPRINT_0_PROJECT_SKELETON_PASS.md | planned |
+| SPRINT_0_PROJECT_SKELETON_PASS | docs/audit/SPRINT_0_PROJECT_SKELETON_PASS.md | completed |
+| SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS | docs/audit/SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS.md | completed |

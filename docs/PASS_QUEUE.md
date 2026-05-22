@@ -34,6 +34,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PHOTO_EVENT_SCHEMA_HARDENING_PASS | SCHEMA_PASS | completed | Add photo flow schema defs, validator rules, materialization output, sample events, and photo-focused tests. |
 | BOARD_GRAPH_PROJECTION_SPEC_PASS | DOCS_SYNC | completed | Document BoardGraphProjection projection architecture, filters, focus-mode query, and renderer scope boundaries. |
 | BOARD_GRAPH_MATERIALIZER_PASS | TOOLS_PASS | completed | Add component update/patched materialization, optional component_pin_index output, and graph invariant warnings. |
+| BOARD_GRAPH_MATERIALIZER_DOCS_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ACTIVE_SCOPE_LOCK and audit file lists after BOARD_GRAPH_MATERIALIZER_PASS. |
 
 ## Planned / Recommended
 

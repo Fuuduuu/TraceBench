@@ -17,11 +17,13 @@ Extend known_facts materialization so board-graph projection inputs are determin
 - `tools/materialize_known_facts.py`
 - `schemas/known_facts.schema.json`
 - `samples/pelle_pv20_minimal/known_facts.json`
+- `assets/samples/pelle_pv20_minimal/known_facts.json`
 - `tests/test_graph_projection.py`
 - `tests/test_materialize_known_facts.py`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_GRAPH_MATERIALIZER_PASS.md`
 
 ## Changes made
 

@@ -13,3 +13,4 @@ Lazy-loading index for pass audit documents.
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | docs/audit/PELLE_PV20_SAMPLE_EXPANSION_PASS.md | completed |
 | PROJECT_ZIP_SKELETON_PASS | docs/audit/PROJECT_ZIP_SKELETON_PASS.md | completed |
 | FLUTTER_UI_SCOPE_LOCK_PASS | docs/audit/FLUTTER_UI_SCOPE_LOCK_PASS.md | completed |
+| PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS | docs/audit/PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS.md | completed |

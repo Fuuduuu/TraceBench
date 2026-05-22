@@ -2,49 +2,58 @@
 
 ## Current pass
 
-`FLUTTER_UI_SCOPE_LOCK_PASS`
+`PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS`
 
 ## Goal
 
-Document Flutter UI architecture and read-only Project ZIP viewer scope.
+Fix pre-Flutter data contract and validation gaps before the read-only Flutter viewer implementation.
 
 ## Allowed surfaces
 
 - docs/ACTIVE_SCOPE_LOCK.md
-- docs/FLUTTER_UI_SPEC.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/FLUTTER_UI_SCOPE_LOCK_PASS.md
+- docs/PROJECT_STATE.yml
+- docs/PROJECT_ZIP_SPEC.md
+- schemas/known_facts.schema.json
+- tools/validate_events_jsonl.py
+- tools/materialize_known_facts.py
+- tools/validate_project_zip.py
+- tools/import_project_zip.py
+- tools/export_project_zip.py
+- samples/pelle_pv20_minimal/known_facts.json
+- tests/test_validate_events_jsonl.py
+- tests/test_materialize_known_facts.py
+- tests/test_project_zip.py
+- tests/test_schema_samples.py
+- docs/audit/PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS.md
 
 ## Forbidden surfaces
 
 - apps/**
 - mobile/**
+- lib/**
+- pubspec.yaml
+- Flutter/Dart implementation
 - backend/**
+- cloud/**
 - services/ai/**
 - services/cv/**
-- cloud/**
-
-## Out of scope
-
-- Flutter UI
 - OCR/CV
-- AI integration
+- AI API calls
 - fault probability
 - source search
+- BLE multimeter
+- event writing from UI
+- measurement wizard
+- new project wizard
+- photo-flow
 - KiCad export
-- cloud sync
-
-## Additional constraints
-
-- no Flutter implementation in this pass
-- no event write-path introduction in this pass
-- no local-folder workflow as primary UI path in this pass
 
 ## Verify
 
 Required:
-- py -3 tools\\validate_all.py
+- py -3 tools\validate_all.py
 
 Optional:
 - make doctor

@@ -6,7 +6,11 @@ import json
 import re
 import sys
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SCHEMA_PATH = ROOT / "schemas" / "events.schema.json"
 
 REQUIRED_KEYS = {
     "schema_version",
@@ -34,6 +38,9 @@ ALLOWED_POWER_STATES = {"off", "on", "unknown"}
 ALLOWED_MEASUREMENT_KINDS = {"numeric", "boolean", "categorical", "over_range"}
 ALLOWED_READING_VALUE_TYPES = (float, int, bool, str, type(None))
 ALLOWED_ACTOR_TYPES = {"user", "system", "ai", "import"}
+ALLOWED_PIN_STATUS = {"unknown", "user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"}
+ALLOWED_COMPONENT_STATUS = {"needs_identification", "identified", "confirmed", "suspect", "verified_good"}
+ALLOWED_NET_EVIDENCE_TYPES = {"user_confirmed_visual", "source_imported_unverified", "datasheet_confirmed"}
 
 REPAIR_TARGET_TYPES = {
     "component",
@@ -62,7 +69,80 @@ def _is_event_id(value: str) -> bool:
     return isinstance(value, str) and re.match(r"^evt_[0-9]{6}$", value) is not None
 
 
-def _validate_envelope(event: dict, line: int, errors: list[str], seen_event_ids: set[str]) -> None:
+def _is_iso_datetime(value: str) -> bool:
+    if not isinstance(value, str) or not value:
+        return False
+    candidate = value
+    if value.endswith("Z"):
+        candidate = value[:-1] + "+00:00"
+    try:
+        datetime.fromisoformat(candidate)
+    except ValueError:
+        return False
+    return True
+
+
+def _load_schema_constraints(
+    schema_path: Path | None,
+) -> tuple[set[str], set[str], set[str]]:
+    schema = None
+    if schema_path is None:
+        schema_path = DEFAULT_SCHEMA_PATH
+    if schema_path.exists():
+        try:
+            schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            schema = None
+    if not isinstance(schema, dict):
+        return set(["project_created", "project_metadata_updated", "initial_intake_updated", "photo_added", "photo_reference_points_set", "photo_layer_aligned", "damage_region_marked", "suspect_region_marked", "component_created", "component_updated", "component_marked_unknown", "footprint_marked_not_populated", "pin_defined", "visual_trace_added", "measurement_recorded", "net_connection_confirmed", "repair_action_recorded", "claim_invalidated", "conflict_detected", "conflict_resolved", "export_created"]), set(ALLOWED_STATUS), set(REQUIRED_KEYS)
+
+    allowed_event_types = set(
+        schema.get("properties", {}).get("event_type", {}).get("enum", []) or []
+    )
+    allowed_statuses = set(
+        schema.get("properties", {}).get("status", {}).get("enum", []) or []
+    )
+    envelope_keys = set(schema.get("properties", {}).keys())
+    if not allowed_event_types:
+        allowed_event_types = set([
+            "project_created",
+            "project_metadata_updated",
+            "initial_intake_updated",
+            "photo_added",
+            "photo_reference_points_set",
+            "photo_layer_aligned",
+            "damage_region_marked",
+            "suspect_region_marked",
+            "component_created",
+            "component_updated",
+            "component_marked_unknown",
+            "footprint_marked_not_populated",
+            "pin_defined",
+            "visual_trace_added",
+            "measurement_recorded",
+            "net_connection_confirmed",
+            "repair_action_recorded",
+            "claim_invalidated",
+            "conflict_detected",
+            "conflict_resolved",
+            "export_created",
+        ])
+    if not allowed_statuses:
+        allowed_statuses = set(ALLOWED_STATUS)
+    if not envelope_keys:
+        envelope_keys = set(REQUIRED_KEYS)
+    return allowed_event_types, allowed_statuses, envelope_keys
+
+
+def _validate_envelope(
+    event: dict,
+    line: int,
+    errors: list[str],
+    seen_event_ids: set[str],
+    allowed_event_types: set[str],
+    allowed_statuses: set[str],
+    allowed_envelope_keys: set[str],
+) -> None:
     context = f"line {line}"
     event_id = event.get("event_id")
     if not isinstance(event_id, str):
@@ -74,6 +154,10 @@ def _validate_envelope(event: dict, line: int, errors: list[str], seen_event_ids
         _error(errors, context, f"duplicate event_id {event_id!r}")
     seen_event_ids.add(event_id)
 
+    extra_keys = sorted(set(event) - set(allowed_envelope_keys))
+    if extra_keys:
+        _error(errors, context, f"unexpected top-level field(s): {extra_keys}")
+
     missing = REQUIRED_KEYS - set(event)
     if missing:
         _error(errors, context, f"missing keys: {sorted(missing)}")
@@ -84,9 +168,17 @@ def _validate_envelope(event: dict, line: int, errors: list[str], seen_event_ids
     if not isinstance(event.get("project_id"), str) or not event["project_id"]:
         _error(errors, context, "project_id must be non-empty string")
 
-    sequence = event.get("sequence")
-    if not isinstance(sequence, int):
-        _error(errors, context, "sequence must be integer")
+    if not isinstance(event.get("created_at"), str) or not event["created_at"]:
+        _error(errors, context, "created_at must be non-empty string")
+    elif not _is_iso_datetime(event["created_at"]):
+        _error(errors, context, f"created_at must be ISO-like datetime, got {event['created_at']!r}")
+
+    event_type = event.get("event_type")
+    if event_type not in allowed_event_types:
+        _error(errors, context, f"unknown event_type: {event_type!r}")
+
+    if event.get("status") not in allowed_statuses:
+        _error(errors, context, f"status must be one of {sorted(allowed_statuses)!r}")
 
     actor = event.get("actor")
     if not isinstance(actor, dict):
@@ -101,6 +193,10 @@ def _validate_envelope(event: dict, line: int, errors: list[str], seen_event_ids
     payload = event.get("payload")
     if not isinstance(payload, dict):
         _error(errors, context, "payload must be object")
+
+    sequence = event.get("sequence")
+    if not isinstance(sequence, int):
+        _error(errors, context, "sequence must be integer")
 
 
 def _validate_measurement(event: dict, line: int, errors: list[str]) -> None:
@@ -138,12 +234,18 @@ def _validate_measurement(event: dict, line: int, errors: list[str]) -> None:
         elif not isinstance(reading.get("unit"), (str, type(None))):
             _error(errors, context, "reading.unit must be string|null")
 
-    for forbidden in ("valid_from_event_id", "valid_until_event_id", "validity_status"):
+    for forbidden in ("value", "unit", "valid_from_event_id", "valid_until_event_id", "validity_status"):
         if forbidden in payload:
             _error(errors, context, f"raw lifecycle field not allowed in raw payload: {forbidden}")
 
 
-def _validate_repair_action(payload: dict, line: int, errors: list[str], component_ids: set[str], pin_ids: set[str]) -> None:
+def _validate_repair_action(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    component_ids: set[str],
+    pin_ids: set[str],
+) -> None:
     context = f"line {line}"
     targets = payload.get("targets")
     if not isinstance(targets, list) or not targets:
@@ -161,7 +263,7 @@ def _validate_repair_action(payload: dict, line: int, errors: list[str], compone
         if not isinstance(target_id, str) or not target_id:
             _error(errors, context, f"repair target {index} target_id required")
             continue
-        if target_type == "component" and target_id not in component_ids:
+        if target_type == "component" and component_ids and target_id not in component_ids:
             _error(errors, context, f"repair target {index} references unknown component {target_id!r}")
         if target_type == "pin" and target_id not in pin_ids:
             _error(errors, context, f"repair target {index} references unknown pin {target_id!r}")
@@ -200,8 +302,18 @@ def _validate_component(payload: dict, line: int, errors: list[str], seen_compon
         _error(errors, context, f"duplicate component_id {component_id!r}")
     seen_component_ids[component_id] += 1
 
+    status = payload.get("status")
+    if status is not None and status not in ALLOWED_COMPONENT_STATUS:
+        _error(errors, context, f"component_created status must be one of {sorted(ALLOWED_COMPONENT_STATUS)!r}")
 
-def _validate_pin(payload: dict, line: int, errors: list[str], component_ids: set[str], seen_pin_ids: Counter[str]) -> None:
+
+def _validate_pin(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    component_ids: set[str],
+    seen_pin_ids: Counter[str],
+) -> None:
     context = f"line {line}"
     component_id = payload.get("component_id")
     pin_id = payload.get("pin_id")
@@ -214,6 +326,11 @@ def _validate_pin(payload: dict, line: int, errors: list[str], component_ids: se
         _error(errors, context, f"duplicate pin_id {pin_id!r}")
     seen_pin_ids[pin_id] += 1
 
+    status = payload.get("status")
+    if status is not None:
+        if status not in ALLOWED_PIN_STATUS:
+            _error(errors, context, f"pin_defined status must be one of {sorted(ALLOWED_PIN_STATUS)!r}")
+
 
 def _validate_net_connection(
     payload: dict,
@@ -223,12 +340,28 @@ def _validate_net_connection(
     measurement_event_ids: set[str],
 ) -> None:
     context = f"line {line}"
+    if not isinstance(payload.get("net_id"), str) or not payload.get("net_id"):
+        _error(errors, context, "net_connection_confirmed requires non-empty net_id")
     if payload.get("confirmation_basis") != "measured":
         _error(errors, context, "confirmation_basis must be measured")
+    if payload.get("status") == "measured":
+        _error(errors, context, "status 'measured' is not allowed in net_connection_confirmed payload")
+    if payload.get("evidence_type") in ALLOWED_NET_EVIDENCE_TYPES:
+        _error(
+            errors,
+            context,
+            "evidence_type must not be user/source/datasheet evidence for measured net confirmations",
+        )
+    if "evidence" in payload:
+        _error(errors, context, "evidence field is not allowed for measurement-backed net_confirmation")
+    if "evidence_ids" in payload:
+        _error(errors, context, "evidence_ids field is not allowed for measurement-backed net_confirmation")
+
     confirmed_by_event_ids = payload.get("confirmed_by_event_ids")
     if not isinstance(confirmed_by_event_ids, list) or not confirmed_by_event_ids:
         _error(errors, context, "confirmed_by_event_ids must be non-empty array")
         return
+
     for ref in confirmed_by_event_ids:
         if not isinstance(ref, str):
             _error(errors, context, f"confirmed_by_event_id {ref!r} must be string")
@@ -237,6 +370,7 @@ def _validate_net_connection(
             _error(errors, context, f"confirmed_by_event_id {ref!r} does not exist")
         elif ref not in measurement_event_ids:
             _error(errors, context, f"confirmed_by_event_id {ref!r} must point to measurement_recorded")
+
     if not isinstance(payload.get("from"), str) or not payload["from"]:
         _error(errors, context, "from must be non-empty string")
     if not isinstance(payload.get("to"), str) or not payload["to"]:
@@ -326,6 +460,9 @@ def main() -> None:
         print(f"[ERROR] missing file: {path}")
         raise SystemExit(2)
 
+    schema_path = Path(sys.argv[2]) if len(sys.argv) >= 3 else None
+    allowed_event_types, allowed_statuses, allowed_envelope_keys = _load_schema_constraints(schema_path)
+
     events: list[tuple[int, dict]] = []
     errors: list[str] = []
     for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
@@ -365,6 +502,8 @@ def main() -> None:
             pin_id = event.get("payload", {}).get("pin_id")
             if isinstance(pin_id, str):
                 pin_ids.add(pin_id)
+        if event_type == "measurement_recorded" and isinstance(event_id, str):
+            measurement_event_ids.add(event_id)
 
     last_sequence = 0
     conflict_payloads: list[tuple[dict, int]] = []
@@ -373,7 +512,15 @@ def main() -> None:
     claim_payloads: list[tuple[dict, int]] = []
 
     for line_no, event in events:
-        _validate_envelope(event, line_no, errors, seen_event_ids)
+        _validate_envelope(
+            event,
+            line_no,
+            errors,
+            seen_event_ids,
+            allowed_event_types,
+            allowed_statuses,
+            allowed_envelope_keys,
+        )
         sequence = event.get("sequence")
         if not isinstance(sequence, int):
             _error(errors, f"line {line_no}", "sequence must be integer for ordering")
@@ -384,16 +531,16 @@ def main() -> None:
             last_sequence = sequence
 
         event_type = event.get("event_type")
-        if event_type == "measurement_recorded":
-            event_id = event.get("event_id")
-            if isinstance(event_id, str):
-                measurement_event_ids.add(event_id)
-            _validate_measurement(event, line_no, errors)
+        if event_type not in allowed_event_types:
             continue
 
         payload = event.get("payload")
         if not isinstance(payload, dict):
             _error(errors, f"line {line_no}", "payload must be object")
+            continue
+
+        if event_type == MEASUREMENT_EVENT:
+            _validate_measurement(event, line_no, errors)
             continue
 
         if event_type == "repair_action_recorded":
@@ -447,8 +594,6 @@ def main() -> None:
             "export_created",
         }:
             continue
-
-        # Unknown event_type values are blocked by schema and should have failed earlier.
 
     for payload, line_no in net_payloads:
         _validate_net_connection(payload, line_no, errors, all_event_ids, measurement_event_ids)

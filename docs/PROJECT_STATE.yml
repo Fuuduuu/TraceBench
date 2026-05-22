@@ -6,7 +6,7 @@ project:
   type: local-first PCB repair documentation workbench
 
 scope:
-  current_pass: DOCS_DRIFT_MINI_CLEANUP_PASS
+  current_pass: PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS
   v1_scope: known_facts_builder
   ai_integration: paused
   ocr_cv: paused

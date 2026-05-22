@@ -2,12 +2,28 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "TraceBench Known Facts",
   "type": "object",
-  "required": ["project_id", "components", "measurements", "nets"],
+  "required": ["project_id", "components", "pins", "measurements", "nets", "excluded_from_fault_candidates"],
   "properties": {
     "project_id": { "type": "string" },
     "components": { "type": "array" },
+    "pins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component_id", "pin_id"],
+        "properties": {
+          "component_id": { "type": "string", "minLength": 1 },
+          "pin_id": { "type": "string", "minLength": 1 },
+          "label": { "type": ["string", "null"] },
+          "status": { "type": ["string", "null"] },
+          "physical_number": { "type": ["integer", "null"] }
+        },
+        "additionalProperties": true
+      }
+    },
     "measurements": { "type": "array" },
-    "nets": { "type": "array" }
+    "nets": { "type": "array" },
+    "excluded_from_fault_candidates": { "type": "array" }
   },
   "additionalProperties": true
 }

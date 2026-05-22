@@ -1,10 +1,12 @@
+import json
+import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
-from zipfile import ZipFile
+from zipfile import ZIP_DEFLATED, ZipFile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +28,20 @@ def _validate_project_zip(path: Path) -> subprocess.CompletedProcess[str]:
 
 def _import_project_zip(project_zip: Path, output_dir: Path) -> subprocess.CompletedProcess[str]:
     return _run_tool(["tools/import_project_zip.py", str(project_zip), str(output_dir)])
+
+
+def _rewrite_zip(source_zip: Path, target_zip: Path, mutate) -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        with ZipFile(source_zip, "r") as zf:
+            zf.extractall(tmpdir_path)
+        mutate(tmpdir_path)
+        with ZipFile(target_zip, "w", ZIP_DEFLATED) as zf_out:
+            for path in sorted(tmpdir_path.rglob("*")):
+                if path.is_dir():
+                    continue
+                arcname = str(path.relative_to(tmpdir_path)).replace("\\", "/")
+                zf_out.write(path, arcname)
 
 
 class ProjectZipTests(unittest.TestCase):
@@ -56,6 +72,56 @@ class ProjectZipTests(unittest.TestCase):
             validate_result = _validate_project_zip(output_zip)
             self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
 
+    def test_project_zip_validation_rejects_zip_slip(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_zip = Path(tmpdir) / "malicious.zip"
+            with ZipFile(project_zip, "w", ZIP_DEFLATED) as zf:
+                zf.writestr("safe.txt", "ok")
+                zf.writestr("../evil.txt", "bad")
+
+            validate_result = _validate_project_zip(project_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("rejected unsafe zip member", validate_result.stdout.lower() + validate_result.stderr.lower())
+
+    def test_project_zip_validation_rejects_mismatched_known_facts(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = Path(tmpdir) / "good.zip"
+            bad_zip = Path(tmpdir) / "bad.zip"
+
+            export_result = _export_project_zip(SAMPLE_DIR, good_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            def mutate_known(path):
+                known_path = path / "known_facts.json"
+                known = json.loads(known_path.read_text(encoding="utf-8"))
+                if known.get("measurements"):
+                    known["measurements"].append({"measurement_id": "BAD001"})
+                known_path.write_text(json.dumps(known, indent=2), encoding="utf-8")
+
+            _rewrite_zip(good_zip, bad_zip, mutate_known)
+            validate_result = _validate_project_zip(bad_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("known_facts.json does not match materialization output", validate_result.stdout + validate_result.stderr)
+
+    def test_project_zip_validation_rejects_project_id_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = Path(tmpdir) / "good.zip"
+            bad_zip = Path(tmpdir) / "bad.zip"
+
+            export_result = _export_project_zip(SAMPLE_DIR, good_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            def mutate_project_id(path):
+                manifest_path = path / "manifest.json"
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                manifest["project_id"] = "prj_other"
+                manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+            _rewrite_zip(good_zip, bad_zip, mutate_project_id)
+            validate_result = _validate_project_zip(bad_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("project_id mismatch", validate_result.stdout.lower() + validate_result.stderr.lower())
+
     def test_import_project_zip_round_trip(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -72,19 +138,33 @@ class ProjectZipTests(unittest.TestCase):
             self.assertTrue((output_dir / "events.jsonl").exists())
             self.assertTrue((output_dir / "known_facts.json").exists())
 
+    def test_import_does_not_leave_invalid_output_on_failed_validation(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            project_zip = tmpdir / "invalid.zip"
+            output_dir = tmpdir / "imported"
+
+            with ZipFile(project_zip, "w", ZIP_DEFLATED) as zf:
+                zf.writestr("manifest.json", "{}")
+
+            result = _import_project_zip(project_zip, output_dir)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            if output_dir.exists():
+                self.assertEqual(list(output_dir.iterdir()), [])
+
     def test_import_rejects_zip_slip(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
             project_zip = tmpdir / "malicious.zip"
             output_dir = tmpdir / "output"
 
-            with ZipFile(project_zip, "w") as zf:
+            with ZipFile(project_zip, "w", ZIP_DEFLATED) as zf:
                 zf.writestr("safe.txt", "ok")
                 zf.writestr("../evil.txt", "bad")
 
             result = _import_project_zip(project_zip, output_dir)
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertIn("unsafe", result.stdout.lower() + result.stderr.lower())
+            self.assertIn("rejected unsafe zip member", result.stdout.lower() + result.stderr.lower())
 
     def test_export_excludes_codex_and_env_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -108,6 +188,16 @@ class ProjectZipTests(unittest.TestCase):
             self.assertNotIn(".env", names)
             self.assertTrue(all("__pycache__" not in name for name in names))
             self.assertTrue(all(not name.endswith(".pyc") for name in names))
+
+    def test_export_zip_entry_order_is_deterministic(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(SAMPLE_DIR, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = zf.namelist()
+            self.assertEqual(names, sorted(names))
 
     def test_project_zip_contains_customer_report(self):
         with tempfile.TemporaryDirectory() as tmpdir:

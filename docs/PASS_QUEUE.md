@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_UI_SCOPE_LOCK_PASS`
+`PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -26,6 +26,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | SAMPLE_PASS | completed | Expand Pelle PV20 minimal sample with K2/K3 not_populated and Q2 pin_defined events. |
 | PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | completed | Add minimal Project ZIP export/import/validation tooling and sample project ZIP files. |
 | FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Document Flutter UI read-only viewer scope and platform/contracts for future implementation. |
+| PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS | TOOLS_PASS | completed | Harden event/schema/tooling validations for pre-Flutter viewer contract and Project ZIP safety/consistency. |
 
 ## Planned after Sprint 0
 
@@ -51,5 +52,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 0
 

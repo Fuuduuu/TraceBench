@@ -11,6 +11,26 @@
       "status": "needs_identification"
     }
   ],
+  "pins": [
+    {
+      "component_id": "Q2",
+      "pin_id": "Q2.1",
+      "label": "unknown",
+      "status": "user_confirmed_visual"
+    },
+    {
+      "component_id": "Q2",
+      "pin_id": "Q2.2",
+      "label": null,
+      "status": "unknown"
+    },
+    {
+      "component_id": "Q2",
+      "pin_id": "Q2.3",
+      "label": null,
+      "status": "unknown"
+    }
+  ],
   "measurements": [
     {
       "measurement_id": "M001",

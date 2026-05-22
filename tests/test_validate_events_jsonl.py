@@ -258,6 +258,17 @@ class ValidateEventsJsonlTests(unittest.TestCase):
                 "sequence": 1,
                 "created_at": "2026-01-01T00:00:00Z",
                 "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "KNOWN"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
                 "event_type": "repair_action_recorded",
                 "status": "accepted",
                 "payload": {
@@ -270,7 +281,7 @@ class ValidateEventsJsonlTests(unittest.TestCase):
                         "connected_net_measurements": "no_change",
                     },
                 },
-            }
+            },
         ]
         path = _events_to_temp_jsonl(events)
         result = _run_validator(path)
@@ -395,6 +406,235 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("sequence must strictly increase", result.stdout + result.stderr)
+
+    def test_unknown_event_type_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "impossible_event",
+                "status": "accepted",
+                "payload": {},
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("unknown event_type", result.stdout + result.stderr)
+
+    def test_invalid_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "bogus",
+                "payload": {"name": "x"},
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("status must be one of", result.stdout + result.stderr)
+
+    def test_envelope_extra_field_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "x"},
+                "unexpected": "boom",
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("unexpected top-level field(s)", result.stdout + result.stderr)
+
+    def test_pin_status_measured_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q1", "status": "needs_identification"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q1",
+                    "pin_id": "Q1.1",
+                    "status": "measured",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("pin_defined status must be one of", result.stdout + result.stderr)
+
+    def test_net_confirmed_with_visual_evidence_type_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "x"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M001",
+                    "mode": "continuity",
+                    "from": "A1",
+                    "to": "A2",
+                    "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-01-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "A1",
+                    "to": "A2",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000002"],
+                    "evidence_type": "user_confirmed_visual",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("evidence_type must not be user/source/datasheet evidence", result.stdout + result.stderr)
+
+    def test_net_confirmed_missing_net_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "x"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M001",
+                    "mode": "continuity",
+                    "from": "A1",
+                    "to": "A2",
+                    "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-01-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "",
+                    "from": "A1",
+                    "to": "A2",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000002"],
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("requires non-empty net_id", result.stdout + result.stderr)
+
+    def test_measurement_legacy_value_unit_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M001",
+                    "mode": "continuity",
+                    "from": "A1",
+                    "to": "A2",
+                    "value": 12.3,
+                    "unit": "ohm",
+                    "reading": {"kind": "numeric", "value": 12.3, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("raw lifecycle field not allowed in raw payload: value", result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

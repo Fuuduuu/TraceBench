@@ -39,6 +39,17 @@ class SchemaSamplesTests(unittest.TestCase):
         self.assertIsInstance(payload["reading"], dict)
         self.assertEqual(payload["reading"].get("kind"), "numeric")
 
+    def test_known_facts_schema_has_pins(self):
+        path = Path("schemas/known_facts.schema.json")
+        schema = json.loads(path.read_text(encoding="utf-8"))
+        required = set(schema.get("required", []))
+        self.assertIn("pins", required)
+        pins = schema.get("properties", {}).get("pins")
+        self.assertIsNotNone(pins)
+        item = pins.get("items", {})
+        self.assertIn("component_id", set(item.get("required", [])))
+        self.assertIn("pin_id", set(item.get("required", [])))
+
     def test_valid_repair_action_sample_has_typed_targets_and_invalidation_policy(self):
         path = Path("schemas/samples/valid_repair_action_recorded.json")
         event = json.loads(path.read_text(encoding="utf-8"))

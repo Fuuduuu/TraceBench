@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceBench Known Facts",
+  "type": "object",
+  "required": ["project_id", "components", "measurements", "nets"],
+  "properties": {
+    "project_id": { "type": "string" },
+    "components": { "type": "array" },
+    "measurements": { "type": "array" },
+    "nets": { "type": "array" }
+  },
+  "additionalProperties": true
+}

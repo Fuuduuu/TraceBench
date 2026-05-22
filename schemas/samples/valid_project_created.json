@@ -1,0 +1,1 @@
+{"schema_version":"1.0","event_id":"evt_000001","project_id":"prj_pelle_pv20_001","sequence":1,"created_at":"2026-05-22T00:00:00Z","actor":{"type":"user","id":"local_user"},"event_type":"project_created","status":"accepted","payload":{"name":"Pelle PV20 repair","device_type":"unknown","model":"unknown","symptom":"not_provided"}}

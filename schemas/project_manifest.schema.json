@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceBench Project Manifest",
+  "type": "object",
+  "required": ["project_id", "schema_version", "created_at"],
+  "properties": {
+    "project_id": { "type": "string" },
+    "schema_version": { "const": "1.0" },
+    "created_at": { "type": "string" },
+    "device_type": { "type": "string", "default": "unknown" },
+    "model": { "type": "string", "default": "unknown" },
+    "symptom": { "type": "string", "default": "not_provided" }
+  },
+  "additionalProperties": true
+}

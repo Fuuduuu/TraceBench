@@ -1,0 +1,9 @@
+[project]
+name = "tracebench-ai-sprint0"
+version = "0.1.0"
+description = "TraceBench AI Sprint 0 governance, schemas, validators and samples"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

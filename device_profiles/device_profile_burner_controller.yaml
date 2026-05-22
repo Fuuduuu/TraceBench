@@ -1,0 +1,17 @@
+device_type: burner_controller
+label: Burner controller
+typical_subsystems:
+  - id: ignition_output
+    label: Ignition output
+    typical_components: [opto_output, gate_driver, low_side_switch, triac_driver, relay_driver, snubber]
+    failure_modes: [no_output, stuck_output, no_gate_drive, shorted_switch]
+  - id: sensor_inputs
+    label: Sensor inputs
+    typical_components: [pullup_resistor, pulldown_resistor, rc_filter, opto_input]
+    failure_modes: [stuck_high, stuck_low, noisy_signal]
+  - id: power_supply
+    label: Power supply
+    typical_components: [linear_regulator, switching_regulator, protection_diode, bypass_cap]
+    failure_modes: [missing_rail, shorted_rail, unstable_rail]
+fault_priors:
+  ignition_not_working: []

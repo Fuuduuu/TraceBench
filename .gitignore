@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.build/
+dist/
+*.zip
+samples/**/photos/*
+!samples/**/photos/.gitkeep
+
+# Added for Sprint 0 bootstrap hygiene
+.codex/

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceBench Event",
+  "type": "object",
+  "required": ["schema_version", "event_id", "project_id", "sequence", "created_at", "actor", "event_type", "status", "payload"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "event_id": { "type": "string", "pattern": "^evt_[0-9]{6}$" },
+    "project_id": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "actor": {
+      "type": "object",
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "enum": ["user", "system", "ai", "import"] },
+        "id": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "event_type": {
+      "enum": [
+        "project_created",
+        "project_metadata_updated",
+        "initial_intake_updated",
+        "photo_added",
+        "photo_reference_points_set",
+        "photo_layer_aligned",
+        "damage_region_marked",
+        "suspect_region_marked",
+        "component_created",
+        "component_updated",
+        "component_marked_unknown",
+        "footprint_marked_not_populated",
+        "pin_defined",
+        "visual_trace_added",
+        "measurement_recorded",
+        "net_connection_confirmed",
+        "repair_action_recorded",
+        "claim_invalidated",
+        "conflict_detected",
+        "conflict_resolved",
+        "export_created"
+      ]
+    },
+    "status": { "enum": ["draft", "pending_review", "accepted", "rejected", "superseded", "reverted"] },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}

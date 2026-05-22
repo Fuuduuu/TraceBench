@@ -1,0 +1,8 @@
+{
+  "project_id": "prj_pelle_pv20_001",
+  "schema_version": "1.0",
+  "created_at": "2026-05-22T00:00:00Z",
+  "device_type": "burner_controller",
+  "model": "Pelle PV20",
+  "symptom": "not_provided"
+}

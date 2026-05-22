@@ -1,0 +1,29 @@
+{
+  "project_id": "prj_pelle_pv20_001",
+  "components": [
+    {
+      "component_id": "Q2",
+      "designator": "Q2",
+      "type": "unknown_semiconductor",
+      "package": "SOT-23",
+      "pin_count": 3,
+      "marking": "K72",
+      "status": "needs_identification"
+    }
+  ],
+  "measurements": [
+    {
+      "measurement_id": "M001",
+      "mode": "continuity",
+      "from": "Q2.1",
+      "to": "R17.1",
+      "value": 0.3,
+      "unit": "ohm",
+      "power_state": "off",
+      "valid_from_event_id": "evt_000006",
+      "valid_until_event_id": null,
+      "validity_status": "active"
+    }
+  ],
+  "nets": []
+}

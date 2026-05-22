@@ -1,0 +1,18 @@
+device_type: generic_pcb
+label: Generic PCB
+strategy:
+  diagnostic_mode: evidence_first
+  use_fault_priors: false
+  allow_subsystem_guessing: false
+  require_measurement_for_nets: true
+typical_subsystems:
+  - id: unknown_power
+    label: Unknown power area
+  - id: unknown_logic
+    label: Unknown logic area
+  - id: unknown_input
+    label: Unknown input area
+  - id: unknown_output
+    label: Unknown output area
+fault_priors:
+  default: []

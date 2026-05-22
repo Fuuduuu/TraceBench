@@ -1,0 +1,1 @@
+{"schema_version":"1.0","event_id":"evt_000002","project_id":"prj_pelle_pv20_001","sequence":2,"created_at":"2026-05-22T00:01:00Z","actor":{"type":"user","id":"local_user"},"event_type":"photo_added","status":"accepted","payload":{"photo_id":"photo_top_backlight_001","mode":"top_backlight","path":"photos/top_backlight_001.jpg"}}

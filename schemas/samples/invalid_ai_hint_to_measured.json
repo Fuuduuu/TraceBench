@@ -1,0 +1,1 @@
+{"schema_version":"1.0","event_id":"evt_000006","project_id":"prj_pelle_pv20_001","sequence":6,"created_at":"2026-05-22T00:05:00Z","actor":{"type":"ai","id":"llm"},"event_type":"net_connection_confirmed","status":"accepted","payload":{"from":"Q2.1","to":"R17.1","status":"measured","evidence":["ai_hint_only"]}}

@@ -1,0 +1,63 @@
+version: 1
+purpose: "TraceBench project memory routing registry"
+
+rules:
+  one_fact_one_home: true
+  project_state_is_canonical_truth: false
+  archive_is_canonical_truth: false
+  audit_docs_are_canonical_truth: false
+  memory_registry_is_canonical_truth: false
+  conflict_order:
+    - AGENTS.md
+    - docs/PROJECT_MEMORY.md
+    - docs/ACTIVE_SCOPE_LOCK.md
+    - schemas/*.json
+    - docs/DATA_MODEL.md
+    - docs/PASS_QUEUE.md
+    - docs/PROJECT_STATE.yml
+
+layers:
+  canonical_truth:
+    read_by_default: true
+    files:
+      - docs/PROJECT_MEMORY.md
+      - docs/ACTIVE_SCOPE_LOCK.md
+      - docs/PROTECTED_SURFACES.md
+      - schemas/events.schema.json
+      - schemas/project_manifest.schema.json
+
+  active_lock_workflow:
+    read_by_default: true
+    files:
+      - docs/PASS_QUEUE.md
+      - docs/PROMPTING_PROTOCOL.md
+      - docs/MEMORY_MAINTENANCE.md
+
+  source_index:
+    read_by_default: true
+    files:
+      - docs/SOURCES_INDEX_CURRENT.md
+      - docs/MEMORY_REGISTRY.yml
+
+  maps:
+    read_by_default: false
+    files:
+      - docs/PROJECT_MINI_MAP.md
+
+  snapshot_debug:
+    read_by_default: false
+    files:
+      - docs/PROJECT_STATE.yml
+      - tools/validate_project_state.py
+
+  audit_history:
+    read_by_default: false
+    index: docs/AUDIT_INDEX.md
+    paths:
+      - docs/audit/**
+
+  archive:
+    read_by_default: false
+    truth_level: historical_only
+    paths:
+      - docs/archive/**

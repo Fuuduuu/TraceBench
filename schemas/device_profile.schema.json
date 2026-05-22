@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceBench Device Profile",
+  "type": "object",
+  "required": ["device_type", "label"],
+  "properties": {
+    "device_type": { "type": "string" },
+    "label": { "type": "string" },
+    "strategy": { "type": "object" },
+    "typical_subsystems": { "type": "array" },
+    "fault_priors": { "type": "object" }
+  },
+  "additionalProperties": true
+}

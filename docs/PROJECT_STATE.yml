@@ -1,0 +1,36 @@
+# Snapshot only — not canonical truth.
+project:
+  name: TraceBench AI
+  repo: unknown
+  branch: main
+  type: local-first PCB repair documentation workbench
+
+scope:
+  current_pass: SPRINT_0_PROJECT_SKELETON_PASS
+  v1_scope: known_facts_builder
+  ai_integration: paused
+  ocr_cv: paused
+  cloud_sync: paused
+  flutter_ui: paused
+
+architecture:
+  local_first: true
+  event_sourced: true
+  visual_graph_separate_from_electrical_graph: true
+  project_zip_export: true
+
+invariants:
+  - ai_never_invents_measurements
+  - visual_trace_never_auto_promotes_to_electrical_net
+  - project_can_start_with_unknown_metadata
+  - not_populated_excluded_from_fault_candidates
+  - stale_after_repair_preserves_history
+  - project_state_is_snapshot_only
+
+validation:
+  run: py -3 tools/validate_all.py
+
+debug:
+  state: clean
+  last_failing_test: null
+  last_failing_commit: null

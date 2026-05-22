@@ -62,6 +62,14 @@
     {
       "footprint_id": "K1",
       "designator": "K1"
+    },
+    {
+      "footprint_id": "K2",
+      "designator": "K2"
+    },
+    {
+      "footprint_id": "K3",
+      "designator": "K3"
     }
   ]
 }

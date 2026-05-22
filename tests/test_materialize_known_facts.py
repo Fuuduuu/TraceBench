@@ -48,6 +48,27 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         excluded = data.get("excluded_from_fault_candidates", [])
         self.assertTrue(any(item.get("footprint_id") == "K1" for item in excluded))
 
+    def test_three_footprints_excluded_from_fault_candidates(self):
+        data = run_materialize()
+        excluded = data.get("excluded_from_fault_candidates", [])
+        excluded_ids = {item.get("footprint_id") for item in excluded}
+        self.assertTrue({"K1", "K2", "K3"}.issubset(excluded_ids))
+
+    def test_q2_pins_defined_in_events(self):
+        events_path = Path("samples/pelle_pv20_minimal/events.jsonl")
+        content = events_path.read_text(encoding="utf-8").splitlines()
+        pin_events = []
+        for line in content:
+            event = json.loads(line)
+            if event.get("event_type") == "pin_defined":
+                payload = event.get("payload", {})
+                if payload.get("component_id") == "Q2":
+                    pin_events.append(payload.get("pin_id"))
+                    self.assertIn("label", payload)
+                    self.assertIn("status", payload)
+        self.assertIn("Q2.2", pin_events)
+        self.assertIn("Q2.3", pin_events)
+
     def test_net_confirmation_uses_post_repair_measurement(self):
         data = run_materialize()
         net = next((n for n in data["nets"] if n.get("net_id") == "N1"), None)

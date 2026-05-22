@@ -2,27 +2,22 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PELLE_PV20_SAMPLE_EXPANSION_PASS`
 
 ## Goal
 
-Perform mandatory docs-only mini-cleanup after docs drift reached zero.
+Expand Pelle PV20 minimal sample with K2/K3 not_populated and Q2.2/Q2.3 pin_defined events.
 
 ## Allowed surfaces
 
-- docs/**
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/SOURCES_INDEX_CURRENT.md
-- docs/MEMORY_REGISTRY.yml
-- docs/PROJECT_STATE.yml
-- docs/MODEL_ROUTING.md
-- docs/MEMORY_MAINTENANCE.md
-- docs/PROMPTING_PROTOCOL.md
-- docs/PROTECTED_SURFACES.md
-- docs/PROJECT_MEMORY.md
-- docs/audit/
+- samples/pelle_pv20_minimal/events.jsonl
+- samples/pelle_pv20_minimal/known_facts.json
+- tests/test_materialize_known_facts.py
+- tests/test_validate_events_jsonl.py
+- docs/audit/PELLE_PV20_SAMPLE_EXPANSION_PASS.md
 
 ## Forbidden surfaces
 

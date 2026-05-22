@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 
 
 def _run_validator(events_jsonl: str) -> subprocess.CompletedProcess[str]:
@@ -95,6 +96,39 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("must point to measurement_recorded", result.stdout + result.stderr)
+
+    def test_pin_defined_without_label_allowed(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "status": "needs_identification"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "pin_id": "Q2.1",
+                    "status": "unknown",
+                },
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_repair_without_invalidation_policy_rejected(self):
         events = [
@@ -242,6 +276,26 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("references unknown component", result.stdout + result.stderr)
+
+    def test_pelle_sample_with_expansion_validates(self):
+        sample_path = "samples/pelle_pv20_minimal/events.jsonl"
+        result = subprocess.run(
+            [
+                sys.executable,
+                "tools/validate_events_jsonl.py",
+                sample_path,
+                "schemas/events.schema.json",
+            ],
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        line_count = sum(1 for _ in Path(sample_path).read_text(encoding="utf-8").splitlines())
+        self.assertEqual(line_count, 13)
+        with Path(sample_path).open("r", encoding="utf-8") as handle:
+            payload_types = [json.loads(line)["event_type"] for line in handle]
+        self.assertIn("footprint_marked_not_populated", payload_types)
+        self.assertIn("pin_defined", payload_types)
 
     def test_connected_net_stale_policy_rejected_until_implemented(self):
         events = [

@@ -21,6 +21,14 @@
         "additionalProperties": true
       }
     },
+    "component_pin_index": {
+      "type": "object",
+      "description": "Maps component_id to list of pin_ids. Derived from pin_defined events.",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
     "photos": {
       "type": "array",
       "items": {

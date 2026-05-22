@@ -92,6 +92,78 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertTrue(pins)
         self.assertTrue(any(item.get("pin_id") == "Q2.1" for item in pins))
 
+    def test_component_updated_materializes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-22T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "marking": "K72", "status": "confirmed"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-22T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_updated",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "marking": "K73"},
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("marking"), "K73")
+
+    def test_component_marked_unknown_status(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-22T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "status": "confirmed",
+                    "mpn": "MPSA42",
+                    "marking": "K72",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-22T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_marked_unknown",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("status"), "needs_identification")
+        self.assertNotIn("mpn", component)
+        self.assertNotIn("marking", component)
+
+    def test_component_pin_index_in_output(self):
+        data = run_materialize()
+        component_pin_index = data.get("component_pin_index")
+        self.assertIsInstance(component_pin_index, dict)
+        self.assertIn("Q2", component_pin_index)
+        self.assertIn("Q2.1", component_pin_index["Q2"])
+
     def test_q2_pins_are_materialized(self):
         data = run_materialize()
         q2_pins = [item for item in data["pins"] if item.get("component_id") == "Q2"]

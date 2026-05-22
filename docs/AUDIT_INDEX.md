@@ -20,3 +20,4 @@ Lazy-loading index for pass audit documents.
 | PHOTO_FLOW_SCOPE_LOCK_PASS | docs/audit/PHOTO_FLOW_SCOPE_LOCK_PASS.md | completed |
 | PHOTO_EVENT_SCHEMA_HARDENING_PASS | docs/audit/PHOTO_EVENT_SCHEMA_HARDENING_PASS.md | completed |
 | BOARD_GRAPH_PROJECTION_SPEC_PASS | docs/audit/BOARD_GRAPH_PROJECTION_SPEC_PASS.md | completed |
+| BOARD_GRAPH_MATERIALIZER_PASS | docs/audit/BOARD_GRAPH_MATERIALIZER_PASS.md | completed |

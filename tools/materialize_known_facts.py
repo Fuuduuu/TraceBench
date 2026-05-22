@@ -89,6 +89,32 @@ def main() -> int:
             components.append(copy.deepcopy(payload))
             continue
 
+        if event_type == "component_updated":
+            if not isinstance(payload, dict):
+                continue
+            component_id = payload.get("component_id")
+            if isinstance(component_id, str):
+                for comp in components:
+                    if comp.get("component_id") == component_id:
+                        for key, value in payload.items():
+                            if key != "component_id":
+                                comp[key] = value
+                        break
+            continue
+
+        if event_type == "component_marked_unknown":
+            if not isinstance(payload, dict):
+                continue
+            component_id = payload.get("component_id")
+            if isinstance(component_id, str):
+                for comp in components:
+                    if comp.get("component_id") == component_id:
+                        comp["status"] = "needs_identification"
+                        comp.pop("mpn", None)
+                        comp.pop("marking", None)
+                        break
+            continue
+
         if event_type == "measurement_recorded":
             materialized = copy.deepcopy(payload)
             materialized["origin_event_id"] = event_id
@@ -110,19 +136,26 @@ def main() -> int:
 
             confirmed_by = materialized.get("confirmed_by_event_ids", [])
             references_stale = False
-            for ref in confirmed_by:
-                if not isinstance(ref, str):
-                    continue
-                measurement = measurement_by_event.get(ref)
-                if measurement is None:
-                    continue
-                if _is_stale_at_sequence(measurement, event_sequence, event_sequence_by_id):
-                    references_stale = True
-                    break
+            valid_references = []
+            if isinstance(confirmed_by, list):
+                for ref in confirmed_by:
+                    if not isinstance(ref, str):
+                        continue
+                    measurement = measurement_by_event.get(ref)
+                    if measurement is None:
+                        continue
+                    valid_references.append(ref)
+                    if _is_stale_at_sequence(
+                        measurement,
+                        event_sequence,
+                        event_sequence_by_id,
+                    ):
+                        references_stale = True
+                        break
 
-            if references_stale:
+            if references_stale or not valid_references:
                 # Conservative safety behavior for V1:
-                # stale measurements cannot be the basis of a current measured net.
+                # Nets in this projection require active measured basis.
                 continue
 
             nets.append(materialized)
@@ -239,6 +272,63 @@ def main() -> int:
         "visual_traces": visual_traces,
         "excluded_from_fault_candidates": excluded_from_fault_candidates,
     }
+    component_pin_index = {}
+    for pin in pins:
+        component_id = pin.get("component_id")
+        pin_id = pin.get("pin_id")
+        if not isinstance(component_id, str) or not isinstance(pin_id, str):
+            continue
+        component_pin_index.setdefault(component_id, [])
+        if pin_id not in component_pin_index[component_id]:
+            component_pin_index[component_id].append(pin_id)
+
+    known["component_pin_index"] = component_pin_index
+
+    visual_trace_ids = {
+        vt.get("trace_id")
+        for vt in visual_traces
+        if isinstance(vt, dict) and vt.get("trace_id")
+    }
+    for net in nets:
+        endpoints = {str(net.get("from", "")), str(net.get("to", ""))}
+        net_trace_id = str(net.get("trace_id", ""))
+        for visual_trace_id in visual_trace_ids:
+            if visual_trace_id in endpoints or visual_trace_id == net_trace_id:
+                print(
+                    f"[WARN] invariant_violation: visual_trace {visual_trace_id!r} "
+                    f"found in measured net {net.get('net_id')!r}",
+                    file=sys.stderr,
+                )
+
+    excluded_ids = {
+        excluded.get("footprint_id")
+        for excluded in excluded_from_fault_candidates
+        if isinstance(excluded, dict) and excluded.get("footprint_id")
+    }
+    for net in nets:
+        from_endpoint = str(net.get("from", ""))
+        to_endpoint = str(net.get("to", ""))
+        for excluded_id in excluded_ids:
+            if (
+                from_endpoint == excluded_id
+                or to_endpoint == excluded_id
+                or from_endpoint.startswith(f"{excluded_id}.")
+                or to_endpoint.startswith(f"{excluded_id}.")
+            ):
+                print(
+                    f"[WARN] invariant_violation: not_populated {excluded_id!r} "
+                    f"in measured net {net.get('net_id')!r}",
+                    file=sys.stderr,
+                )
+
+    for visual_trace in visual_traces:
+        if isinstance(visual_trace, dict) and visual_trace.get("evidence_type") == "measured":
+            print(
+                "[WARN] invariant_violation: visual_trace "
+                f"{visual_trace.get('trace_id')!r} has evidence_type='measured'",
+                file=sys.stderr,
+            )
+
     out_path.write_text(json.dumps(known, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"[OK] wrote {out_path}")
     return 0

@@ -214,3 +214,50 @@ Next pass after this:
 FLUTTER_VIEWER_SHELL_PASS
 
 But only after user confirms Flutter implementation should begin.
+
+## Board graph view V1 scope lock
+
+### Future implementation pass
+
+`FLUTTER_GRAPH_VIEW_PASS`
+
+### Scope
+
+- Read-only board graph view derived from `known_facts.json`.
+- Data input: existing imported Project ZIP → `known_facts.json`.
+- Projection: `BoardGraphProjection` is built in Dart memory from `known_facts.json`.
+- Renderer: Flutter renderer reads `BoardGraphProjection` only.
+- Layout: V1 uses deterministic auto-layout (`graph_layout`) state in memory.
+- Persistence: no `board_graph.json`, no `view_state.json`, no persisted layout coordinates.
+
+### Behavioral rules
+
+- Beginner mode should show components, pins, measured nets, and not-populated labels in simplified form.
+- Advanced mode may show measurements, stale facts/history markers, visual traces, damage/suspect regions, and raw IDs where already allowed in this spec.
+- Visual trace rule: visual traces may render as visual hints only when enabled; they must not become measured electrical nets.
+- Not-populated rule: not-populated footprints may render as excluded/label nodes but must never become `measuredConnection` endpoints.
+- Stale measurement rule: stale measurements remain visible in audit/history mode and are not deleted.
+- Future implementation should reuse existing app architecture and avoid package churn unless already present in the project.
+
+### Explicitly forbidden in graph view V1
+
+- event writing
+- component editing UI
+- measurement wizard
+- camera
+- OCR/CV
+- AI diagnostics/fault probability
+- source search
+- KiCad/boardview import/export
+- BLE multimeter
+- cloud sync
+- Project ZIP contract changes
+- `board_graph.json`
+- `view_state.json`
+- photo overlay / PCB coordinate overlay
+- canonical schematic image generation
+- `visual_trace` → measured net promotion
+
+### V1 contract constraints
+
+- no package/version changes in this scope-lock pass

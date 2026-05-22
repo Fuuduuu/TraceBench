@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_GRAPH_MATERIALIZER_PASS`
+`FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -35,12 +35,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | BOARD_GRAPH_PROJECTION_SPEC_PASS | DOCS_SYNC | completed | Document BoardGraphProjection projection architecture, filters, focus-mode query, and renderer scope boundaries. |
 | BOARD_GRAPH_MATERIALIZER_PASS | TOOLS_PASS | completed | Add component update/patched materialization, optional component_pin_index output, and graph invariant warnings. |
 | BOARD_GRAPH_MATERIALIZER_DOCS_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ACTIVE_SCOPE_LOCK and audit file lists after BOARD_GRAPH_MATERIALIZER_PASS. |
+| FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future read-only Flutter board graph view scope before implementation. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | DOCS_SYNC | planned |
+| FLUTTER_GRAPH_VIEW_PASS | FLUTTER_PASS | recommended |
 | COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | planned |
 | PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | planned |
 | FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | planned |
@@ -49,8 +50,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
-| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | planned |
+| FLUTTER_GRAPH_VIEW_PASS | FLUTTER_PASS | recommended |
 
 ## Deferred / not active
 
@@ -63,4 +63,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

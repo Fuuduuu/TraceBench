@@ -2,47 +2,49 @@
 
 ## Current pass
 
-`BOARD_GRAPH_MATERIALIZER_PASS`
+`FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Extend known_facts materialization for deterministic graph projection inputs and invariants.
+Lock the future read-only Flutter board graph view scope before implementation.
 
 ## Allowed surfaces
 
-- tools/materialize_known_facts.py
-- schemas/known_facts.schema.json
-- samples/pelle_pv20_minimal/known_facts.json
-- assets/samples/pelle_pv20_minimal/known_facts.json
-- tests/test_graph_projection.py
-- tests/test_materialize_known_facts.py
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/BOARD_GRAPH_MATERIALIZER_PASS.md
+- docs/FLUTTER_UI_SPEC.md
+- docs/audit/FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS.md
 
 Do not broaden beyond these files in this pass.
 
 ## Forbidden surfaces
 
-- `schemas/events.schema.json`
-- `samples/pelle_pv20_minimal/events.jsonl`
-- `tools/validate_events_jsonl.py`
-- `tools/validate_project_zip.py`
-- `tools/export_project_zip.py`
-- `tools/import_project_zip.py`
-- `lib/**` and Flutter implementation
-- `test/**` and Dart tests
-- `pubspec.yaml` and `pubspec.lock`
-- `board_graph.json` or `view_state.json` generation
-- Project ZIP tooling or contract changes
+- `lib/**`
+- `test/**`
+- `pubspec.yaml`
+- `pubspec.lock`
+- `tools/**`
+- `schemas/**`
+- `samples/**`
+- `assets/**`
+- `events.jsonl`
+- `known_facts.json`
+- `board_graph.json`
+- `view_state.json`
+- Project ZIP tooling/Project ZIP files
 - event-writing implementation
-- visual_trace → electrical net promotion
-- layout coordinates as canonical truth
+- component editing UI
+- camera/OCR/CV
 - AI diagnostics/fault probability
 - source search
-- camera/OCR/CV
-- BLE/cloud/KiCad/boardview workflows
+- KiCad/boardview
+- BLE multimeter
+- cloud sync
+- visual_trace → electrical net promotion
+- layout coordinates as canonical truth
+- event semantics or evidence-floor policy changes
+- Project ZIP contract changes
 
 ## Verify
 

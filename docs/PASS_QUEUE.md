@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PELLE_PV20_SAMPLE_EXPANSION_PASS`
+`PROJECT_ZIP_SKELETON_PASS`
 
 ## Completed pass history
 
@@ -24,19 +24,20 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS | DOCS_SYNC | completed | Align Sprint 0 validation docs and Makefile with Windows-first stdlib baseline. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Realign documentation indexes and lock files after docs drift reached zero and required cleanup pass completed. |
 | PELLE_PV20_SAMPLE_EXPANSION_PASS | SAMPLE_PASS | completed | Expand Pelle PV20 minimal sample with K2/K3 not_populated and Q2 pin_defined events. |
+| PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | completed | Add minimal Project ZIP export/import/validation tooling and sample project ZIP files. |
 
 ## Planned after Sprint 0
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | planned |
 | FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | future |
+| PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | future |
 
 ## Next recommended pass after cleanup
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_ZIP_SKELETON_PASS | TOOLS_PASS | planned |
+| FLUTTER_UI_SCOPE_LOCK_PASS | DOCS_SYNC | planned |
 
 ## Deferred / not active
 
@@ -49,5 +50,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 4
+Current countdown: 3
 

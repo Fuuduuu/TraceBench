@@ -2,22 +2,27 @@
 
 ## Current pass
 
-`PELLE_PV20_SAMPLE_EXPANSION_PASS`
+`PROJECT_ZIP_SKELETON_PASS`
 
 ## Goal
 
-Expand Pelle PV20 minimal sample with K2/K3 not_populated and Q2.2/Q2.3 pin_defined events.
+Implement minimal Project ZIP export/import/validation tools.
 
 ## Allowed surfaces
 
 - docs/ACTIVE_SCOPE_LOCK.md
+- docs/PROJECT_ZIP_SPEC.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- samples/pelle_pv20_minimal/events.jsonl
-- samples/pelle_pv20_minimal/known_facts.json
-- tests/test_materialize_known_facts.py
-- tests/test_validate_events_jsonl.py
-- docs/audit/PELLE_PV20_SAMPLE_EXPANSION_PASS.md
+- docs/audit/PROJECT_ZIP_SKELETON_PASS.md
+- tools/export_project_zip.py
+- tools/import_project_zip.py
+- tools/validate_project_zip.py
+- tools/validate_all.py
+- tests/test_project_zip.py
+- samples/pelle_pv20_minimal/manifest.json
+- samples/pelle_pv20_minimal/exports/customer_report.md
+- samples/pelle_pv20_minimal/metadata/schema_versions.json
 
 ## Forbidden surfaces
 

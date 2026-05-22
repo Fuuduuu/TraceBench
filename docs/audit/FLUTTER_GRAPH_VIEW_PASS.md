@@ -39,7 +39,11 @@ Read-only Flutter board graph view implementation.
 - `flutter test test/unit/board_graph_projection_test.dart`
 - `flutter test test/widget/board_graph_screen_test.dart --name "board graph screen renders title and key labels"`
 - `flutter test test/widget/board_graph_screen_test.dart --name "board graph advanced mode exposes history controls"`
-- `flutter test --timeout=30s --reporter expanded` (fails in this environment due `board graph advanced mode exposes history controls` timing out at ~10m)
+- `flutter test --timeout=30s --reporter expanded` (initially blocked on widget/integration timing; fixed in `FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS`)
+
+## Post-pass status
+
+- Follow-up fixup pass completed validation and the same full Flutter test command now passes.
 
 ## Confirmations
 

@@ -18,8 +18,7 @@ class ProjectOverviewScreen extends ConsumerWidget {
     }
     final humanReadableTitle =
         '${projectState.manifest.deviceType} · ${projectState.manifest.model}';
-    final hasSymptom =
-        projectState.manifest.symptom.isNotEmpty &&
+    final hasSymptom = projectState.manifest.symptom.isNotEmpty &&
         projectState.manifest.symptom != 'not_provided';
     final advancedDetails =
         'project_id: ${projectState.manifest.projectId} | schema_version: ${projectState.manifest.schemaVersion} | created_at: ${projectState.manifest.createdAt}';
@@ -44,14 +43,18 @@ class ProjectOverviewScreen extends ConsumerWidget {
               title: Text(humanReadableTitle),
               subtitle: Text(
                 isBeginnerMode
-                    ? (hasSymptom ? 'Symptom: ${projectState.manifest.symptom}' : '')
+                    ? (hasSymptom
+                        ? 'Symptom: ${projectState.manifest.symptom}'
+                        : '')
                     : advancedDetails,
               ),
             ),
           ),
           const SizedBox(height: 12),
-          _OverviewChip(label: 'Kõik komponendid', value: projectState.componentCount),
-          _OverviewChip(label: 'Mõõtmised', value: projectState.measurementCount),
+          _OverviewChip(
+              label: 'Kõik komponendid', value: projectState.componentCount),
+          _OverviewChip(
+              label: 'Mõõtmised', value: projectState.measurementCount),
           _OverviewChip(
             label: 'Aktiivne',
             value: projectState.activeMeasurementCount,

@@ -293,7 +293,9 @@ class BoardGraphProjection {
         continue;
       }
       filteredNodes.add(
-        filter.includeRawIds ? node : _sanitizeNode(node, includeRawData: false),
+        filter.includeRawIds
+            ? node
+            : _sanitizeNode(node, includeRawData: false),
       );
     }
 
@@ -307,7 +309,9 @@ class BoardGraphProjection {
         continue;
       }
       filteredEdges.add(
-        filter.includeRawIds ? edge : _sanitizeEdge(edge, includeRawData: false),
+        filter.includeRawIds
+            ? edge
+            : _sanitizeEdge(edge, includeRawData: false),
       );
     }
 
@@ -332,8 +336,8 @@ class BoardGraphProjection {
     for (var level = 0; level < depth; level++) {
       final next = <String>{};
       for (final component in frontier) {
-        for (final neighbor in connectedComponentsByComponent[component] ??
-            const <String>[]) {
+        for (final neighbor
+            in connectedComponentsByComponent[component] ?? const <String>[]) {
           if (includeComponents.add(neighbor)) {
             next.add(neighbor);
           }
@@ -353,8 +357,8 @@ class BoardGraphProjection {
       for (final pin in pinsByComponent[component] ?? const <String>[]) {
         includeNodeIds.add(pin);
       }
-      for (final measurement in
-          measurementsByComponent[component] ?? const <String>[]) {
+      for (final measurement
+          in measurementsByComponent[component] ?? const <String>[]) {
         includeNodeIds.add(measurement);
       }
     }
@@ -448,20 +452,14 @@ class BoardGraphProjection {
       if (edge.type == BoardGraphEdgeType.hasPin &&
           from.type == BoardGraphNodeType.component &&
           to.type == BoardGraphNodeType.pin) {
-        addUnique(pinsByComponent.putIfAbsent(from.id, () => <String>[]), to.id);
+        addUnique(
+            pinsByComponent.putIfAbsent(from.id, () => <String>[]), to.id);
       }
 
       if (edge.type == BoardGraphEdgeType.measuredConnection &&
           from.type == BoardGraphNodeType.pin &&
           to.type == BoardGraphNodeType.net) {
         final componentId = _componentIdFromReference(from.id);
-        if (componentId != null) {
-          addUnique(
-            measurementsByComponent.putIfAbsent(componentId, () => <String>[]),
-            to.id,
-          );
-        }
-
         final fromComp = _componentIdFromReference(from.id);
         final netData = to.data;
         final fromNet = netData['from']?.toString();
@@ -476,7 +474,8 @@ class BoardGraphProjection {
             continue;
           }
           addUnique(
-            connectedComponentsByComponent.putIfAbsent(componentId, () => <String>[]),
+            connectedComponentsByComponent.putIfAbsent(
+                componentId, () => <String>[]),
             otherComponent,
           );
           addUnique(
@@ -527,9 +526,10 @@ class BoardGraphProjection {
       if (node.type != BoardGraphNodeType.measurement) {
         continue;
       }
-      final sourceComponents = (node.data['source_components'] as List<dynamic>?)
-              ?.whereType<String>() ??
-          const [];
+      final sourceComponents =
+          (node.data['source_components'] as List<dynamic>?)
+                  ?.whereType<String>() ??
+              const [];
       for (final componentId in sourceComponents) {
         addUnique(
           measurementsByComponent.putIfAbsent(componentId, () => <String>[]),
@@ -548,8 +548,10 @@ class BoardGraphProjection {
           normalizeStringListMap(connectedComponentsByComponent),
       visualTracesByPin: normalizeStringListMap(visualTracesByPin),
       visualTracesByComponent: normalizeStringListMap(visualTracesByComponent),
-      damageRegionsByComponent: normalizeStringListMap(damageRegionsByComponent),
-      suspectRegionsByComponent: normalizeStringListMap(suspectRegionsByComponent),
+      damageRegionsByComponent:
+          normalizeStringListMap(damageRegionsByComponent),
+      suspectRegionsByComponent:
+          normalizeStringListMap(suspectRegionsByComponent),
     );
   }
 
@@ -563,10 +565,12 @@ class BoardGraphProjection {
     if (!_isAllowedValidity(node.validity, filter.includeValidity)) {
       return false;
     }
-    if (!filter.showNotPopulated && node.layers.contains(LayerTag.notPopulated)) {
+    if (!filter.showNotPopulated &&
+        node.layers.contains(LayerTag.notPopulated)) {
       return false;
     }
-    if (!filter.includeVisualTraces && node.type == BoardGraphNodeType.visualTrace) {
+    if (!filter.includeVisualTraces &&
+        node.type == BoardGraphNodeType.visualTrace) {
       return false;
     }
     if (!filter.includeDamageAndSuspect &&
@@ -682,7 +686,8 @@ bool _isAtLeastEvidence(EvidenceLevel actual, EvidenceLevel minimum) {
   return _evidenceRank(actual) >= _evidenceRank(minimum);
 }
 
-bool _isAllowedValidity(ValidityStatus status, IncludeValidity includeValidity) {
+bool _isAllowedValidity(
+    ValidityStatus status, IncludeValidity includeValidity) {
   if (includeValidity == IncludeValidity.activeOnly) {
     return status != ValidityStatus.staleAfterRepair;
   }

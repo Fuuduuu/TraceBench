@@ -11,7 +11,8 @@ class BoardGraphProjector {
       ..sort((a, b) => a.pinId.compareTo(b.pinId));
     final measurements = [...knownFacts.measurements]
       ..sort((a, b) => a.measurementId.compareTo(b.measurementId));
-    final nets = [...knownFacts.nets]..sort((a, b) => a.netId.compareTo(b.netId));
+    final nets = [...knownFacts.nets]
+      ..sort((a, b) => a.netId.compareTo(b.netId));
     final excluded = [...knownFacts.excludedFromFaultCandidates]
       ..sort((a, b) => a.footprintId.compareTo(b.footprintId));
     final damageRegions = [...knownFacts.damageRegions]
@@ -21,9 +22,8 @@ class BoardGraphProjector {
     final visualTraces = [...knownFacts.visualTraces]
       ..sort((a, b) => a.traceId.compareTo(b.traceId));
 
-    final excludedFootprintIds = excluded
-        .map((e) => e.footprintId.toLowerCase())
-        .toSet();
+    final excludedFootprintIds =
+        excluded.map((e) => e.footprintId.toLowerCase()).toSet();
     final pinsByComponent = _buildPinIndex(knownFacts, pins);
 
     final nodeById = <String, BoardGraphNode>{};
@@ -263,8 +263,7 @@ class BoardGraphProjector {
       nodes.add(node);
       nodeById[node.id] = node;
 
-      final endpointPins = <String>{}
-        ..addAll([
+      final endpointPins = <String>{}..addAll([
           if (trace.fromPin != null) trace.fromPin!,
           if (trace.toPin != null) trace.toPin!,
         ]);
@@ -273,7 +272,8 @@ class BoardGraphProjector {
             nodeById[pin]!.type != BoardGraphNodeType.pin) {
           continue;
         }
-        addUnique(visualTracesByPin.putIfAbsent(pin, () => <String>[]), node.id);
+        addUnique(
+            visualTracesByPin.putIfAbsent(pin, () => <String>[]), node.id);
         edges.add(
           BoardGraphEdge(
             id: 'trace:$pin:${node.id}',
@@ -288,9 +288,11 @@ class BoardGraphProjector {
         );
       }
 
-      if (trace.fromComponent != null && nodeById.containsKey(trace.fromComponent)) {
+      if (trace.fromComponent != null &&
+          nodeById.containsKey(trace.fromComponent)) {
         addUnique(
-          visualTracesByComponent.putIfAbsent(trace.fromComponent!, () => <String>[]),
+          visualTracesByComponent.putIfAbsent(
+              trace.fromComponent!, () => <String>[]),
           node.id,
         );
         edges.add(
@@ -306,9 +308,11 @@ class BoardGraphProjector {
           ),
         );
       }
-      if (trace.toComponent != null && nodeById.containsKey(trace.toComponent)) {
+      if (trace.toComponent != null &&
+          nodeById.containsKey(trace.toComponent)) {
         addUnique(
-          visualTracesByComponent.putIfAbsent(trace.toComponent!, () => <String>[]),
+          visualTracesByComponent.putIfAbsent(
+              trace.toComponent!, () => <String>[]),
           node.id,
         );
         edges.add(
@@ -425,11 +429,14 @@ class BoardGraphProjector {
       nodeById: {for (final node in sortedNodes) node.id: node},
       pinsByComponent: normalizeStringListMap(pinsByComponent),
       measurementsByComponent: normalizeStringListMap(measurementsByComponent),
-      connectedComponentsByComponent: normalizeStringListMap(connectedByComponent),
+      connectedComponentsByComponent:
+          normalizeStringListMap(connectedByComponent),
       visualTracesByPin: normalizeStringListMap(visualTracesByPin),
       visualTracesByComponent: normalizeStringListMap(visualTracesByComponent),
-      damageRegionsByComponent: normalizeStringListMap(damageRegionsByComponent),
-      suspectRegionsByComponent: normalizeStringListMap(suspectRegionsByComponent),
+      damageRegionsByComponent:
+          normalizeStringListMap(damageRegionsByComponent),
+      suspectRegionsByComponent:
+          normalizeStringListMap(suspectRegionsByComponent),
     );
   }
 
@@ -446,7 +453,8 @@ class BoardGraphProjector {
 
     final fallback = <String, List<String>>{};
     for (final pin in orderedPins) {
-      addUnique(fallback.putIfAbsent(pin.componentId, () => <String>[]), pin.pinId);
+      addUnique(
+          fallback.putIfAbsent(pin.componentId, () => <String>[]), pin.pinId);
     }
     return fallback;
   }
@@ -457,7 +465,8 @@ class BoardGraphProjector {
   ) {
     final normalized = endpoint.toLowerCase();
     for (final excluded in excludedIds) {
-      if (normalized == excluded || normalized.startsWith('$excluded.') ||
+      if (normalized == excluded ||
+          normalized.startsWith('$excluded.') ||
           normalized.startsWith('$excluded-')) {
         return true;
       }

@@ -63,7 +63,8 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
               spacing: 12,
               runSpacing: 8,
               children: [
-                _SummaryChip(label: 'components', value: knownFacts.components.length),
+                _SummaryChip(
+                    label: 'components', value: knownFacts.components.length),
                 _SummaryChip(label: 'pins', value: knownFacts.pins.length),
                 _SummaryChip(
                   label: 'measured nets',
@@ -192,8 +193,9 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
     return LayerFilter(
       activeLayers: activeLayers.toSet(),
       minimumEvidence: EvidenceLevel.unknown,
-      includeValidity:
-          _showHistory ? IncludeValidity.includeStale : IncludeValidity.activeOnly,
+      includeValidity: _showHistory
+          ? IncludeValidity.includeStale
+          : IncludeValidity.activeOnly,
       showNotPopulated: true,
       showRepairHistory: _showHistory,
       beginnerMode: false,

@@ -54,7 +54,8 @@ void main() {
           .where(
             (edge) =>
                 edge.type == BoardGraphEdgeType.measuredConnection &&
-                (edge.fromId == traceNodes.first.id || edge.toId == traceNodes.first.id),
+                (edge.fromId == traceNodes.first.id ||
+                    edge.toId == traceNodes.first.id),
           )
           .toList(),
       isEmpty,
@@ -121,6 +122,58 @@ void main() {
       isEmpty,
     );
   });
+
+  test(
+    'measurements_by_component_contains_measurements_not_net_ids',
+    () {
+      final knownFacts = _inlineKnownFacts({
+        'project_id': 'p',
+        'components': [
+          {'component_id': 'Q2'},
+          {'component_id': 'R17'},
+        ],
+        'pins': [
+          {'component_id': 'Q2', 'pin_id': 'Q2.1'},
+          {'component_id': 'R17', 'pin_id': 'R17.1'},
+        ],
+        'measurements': [
+          {
+            'measurement_id': 'M001',
+            'mode': 'continuity',
+            'from': 'Q2.1',
+            'to': 'R17.1',
+            'reading': {'kind': 'numeric', 'value': 1, 'unit': 'ohm'},
+            'power_state': 'off',
+            'origin_event_id': 'evt_000001',
+            'validity_status': 'active',
+          },
+        ],
+        'nets': [
+          {
+            'net_id': 'N1',
+            'from': 'Q2.1',
+            'to': 'R17.1',
+            'confirmation_basis': 'measured',
+            'confirmed_by_event_ids': ['evt_000001'],
+          },
+        ],
+        'component_pin_index': {
+          'Q2': ['Q2.1'],
+          'R17': ['R17.1'],
+        },
+      });
+
+      final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
+
+      final q2Measurements = projection.measurementsByComponent['Q2'] ?? [];
+      final r17Measurements = projection.measurementsByComponent['R17'] ?? [];
+
+      expect(q2Measurements, contains('M001'));
+      expect(q2Measurements, isNot(contains('N1')));
+      expect(r17Measurements, contains('M001'));
+      expect(r17Measurements, isNot(contains('N1')));
+    },
+  );
 
   test('focus_q2_includes_pins_and_measurements', () {
     final knownFacts = _inlineKnownFacts({
@@ -236,7 +289,9 @@ void main() {
           'validity_status': 'stale_after_repair',
         },
       ],
-      'component_pin_index': {'Q2': ['Q2.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1']
+      },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
     final filtered = projection.filter(LayerFilter.fullAudit());
@@ -265,7 +320,9 @@ void main() {
           'validity_status': 'stale_after_repair',
         },
       ],
-      'component_pin_index': {'Q2': ['Q2.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1']
+      },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
     final filtered = projection.filter(LayerFilter.beginner());
@@ -306,7 +363,9 @@ void main() {
           'validity_status': 'active',
         },
       ],
-      'component_pin_index': {'Q2': ['Q2.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1']
+      },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
 
@@ -322,7 +381,8 @@ void main() {
   });
 
   test('advanced_filter_shows_raw_event_ids', () {
-    final projection = BoardGraphProjector.fromKnownFacts(_sampleKnownFacts()).filter(
+    final projection =
+        BoardGraphProjector.fromKnownFacts(_sampleKnownFacts()).filter(
       LayerFilter.fullAudit(),
     );
 
@@ -375,7 +435,10 @@ void main() {
       'excluded_from_fault_candidates': [
         {'footprint_id': 'K1'},
       ],
-      'component_pin_index': {'Q2': ['Q2.1'], 'U9': ['U9.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1'],
+        'U9': ['U9.1']
+      },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
     final first = GraphLayoutEngine.layout(projection).nodePositions;
@@ -439,7 +502,9 @@ void main() {
           'validity_status': 'active',
         },
       ],
-      'component_pin_index': {'Q2': ['Q2.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1']
+      },
     });
 
     final projectionWithoutNets = BoardGraphProjector.fromKnownFacts(noNets);
@@ -479,7 +544,10 @@ void main() {
           'confirmed_by_event_ids': ['evt_000001'],
         },
       ],
-      'component_pin_index': {'Q2': ['Q2.1'], 'R17': ['R17.1']},
+      'component_pin_index': {
+        'Q2': ['Q2.1'],
+        'R17': ['R17.1']
+      },
     });
     final projectionWithNets = BoardGraphProjector.fromKnownFacts(withNets);
     expect(

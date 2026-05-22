@@ -57,7 +57,9 @@ class _BoardGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final nodePaint = Paint()..style = PaintingStyle.fill;
-    final edgePaint = Paint()..style = PaintingStyle.stroke..strokeWidth = 2;
+    final edgePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
     for (final edge in projection.edges) {
       final from = nodePositions[edge.fromId];
@@ -215,8 +217,9 @@ class _BoardGraphPainter extends CustomPainter {
     final unitX = dx / distance;
     final unitY = dy / distance;
     for (var i = 0; i < steps; i++) {
-      final start = from + Offset(unitX * (dashLength + gapLength) * i,
-          unitY * (dashLength + gapLength) * i);
+      final start = from +
+          Offset(unitX * (dashLength + gapLength) * i,
+              unitY * (dashLength + gapLength) * i);
       final end = Offset(
         start.dx + unitX * dashLength,
         start.dy + unitY * dashLength,

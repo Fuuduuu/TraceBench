@@ -75,7 +75,8 @@ class GraphLayoutEngine {
     for (var i = 0; i < nodes.length; i++) {
       final node = nodes[i];
       if (placed.contains(node.id)) continue;
-      positions[node.id] = Offset((columnOffset + i) * spacingX, row * spacingY);
+      positions[node.id] =
+          Offset((columnOffset + i) * spacingX, row * spacingY);
       placed.add(node.id);
     }
   }

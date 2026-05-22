@@ -195,9 +195,8 @@ class PhotoFact {
       notes: json['notes']?.toString(),
       sha256: json['sha256']?.toString(),
       sourceDevice: json['source_device']?.toString(),
-      exifStripped: json['exif_stripped'] is bool
-          ? json['exif_stripped'] as bool
-          : null,
+      exifStripped:
+          json['exif_stripped'] is bool ? json['exif_stripped'] as bool : null,
       layer: json['layer']?.toString(),
     );
   }
@@ -430,10 +429,11 @@ class KnownFacts {
         .map((e) => NetFact.fromJson(e))
         .toList(growable: false);
 
-    final excluded = ((json['excluded_from_fault_candidates'] as List?) ?? const [])
-        .whereType<Map<String, dynamic>>()
-        .map((e) => ExcludedFootprintFact.fromJson(e))
-        .toList(growable: false);
+    final excluded =
+        ((json['excluded_from_fault_candidates'] as List?) ?? const [])
+            .whereType<Map<String, dynamic>>()
+            .map((e) => ExcludedFootprintFact.fromJson(e))
+            .toList(growable: false);
 
     final photos = ((json['photos'] as List?) ?? const [])
         .whereType<Map<String, dynamic>>()
@@ -455,8 +455,9 @@ class KnownFacts {
         .map((e) => VisualTraceFact.fromJson(e))
         .toList(growable: false);
 
-    final rawPinIndex =
-        json['component_pin_index'] is Map ? json['component_pin_index'] as Map : null;
+    final rawPinIndex = json['component_pin_index'] is Map
+        ? json['component_pin_index'] as Map
+        : null;
     final componentPinIndex = <String, List<String>>{};
     if (rawPinIndex != null) {
       for (final entry in rawPinIndex.entries) {
@@ -538,17 +539,18 @@ class KnownFacts {
                 'verification_level': n.verificationLevel,
               })
           .toList(),
-      'excluded_from_fault_candidates':
-          excludedFromFaultCandidates
-              .map((f) => {
-                    'footprint_id': f.footprintId,
-                    'designator': f.designator,
-                  })
-              .toList(),
-      if (componentPinIndex.isNotEmpty) 'component_pin_index': componentPinIndex,
+      'excluded_from_fault_candidates': excludedFromFaultCandidates
+          .map((f) => {
+                'footprint_id': f.footprintId,
+                'designator': f.designator,
+              })
+          .toList(),
+      if (componentPinIndex.isNotEmpty)
+        'component_pin_index': componentPinIndex,
       'photos': photos.map((photo) => photo.toJson()).toList(),
       'damage_regions': damageRegions.map((region) => region.toJson()).toList(),
-      'suspect_regions': suspectRegions.map((region) => region.toJson()).toList(),
+      'suspect_regions':
+          suspectRegions.map((region) => region.toJson()).toList(),
       'visual_traces': visualTraces.map((trace) => trace.toJson()).toList(),
     };
   }

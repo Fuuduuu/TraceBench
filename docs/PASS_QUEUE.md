@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_GRAPH_VIEW_PASS`
+`FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -37,6 +37,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | BOARD_GRAPH_MATERIALIZER_DOCS_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ACTIVE_SCOPE_LOCK and audit file lists after BOARD_GRAPH_MATERIALIZER_PASS. |
 | FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future read-only Flutter board graph view scope before implementation. |
 | FLUTTER_GRAPH_VIEW_PASS | FLUTTER_PASS | completed | Add read-only Flutter board graph route, projector/layout, and projection tests. |
+| FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS | FLUTTER_PASS | completed | Fix formatting, test hangs, and projection index correctness for board graph validation. |
 
 ## Planned / Recommended
 

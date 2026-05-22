@@ -9,7 +9,8 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
     expect(knownFacts.components.map((c) => c.componentId), contains('Q2'));
     expect(knownFacts.measurements.length, 2);
@@ -20,10 +21,13 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
-    final m001 = knownFacts.measurements.firstWhere((m) => m.measurementId == 'M001');
-    final m002 = knownFacts.measurements.firstWhere((m) => m.measurementId == 'M002');
+    final m001 =
+        knownFacts.measurements.firstWhere((m) => m.measurementId == 'M001');
+    final m002 =
+        knownFacts.measurements.firstWhere((m) => m.measurementId == 'M002');
     expect(m001.validityStatus, 'stale_after_repair');
     expect(m002.validityStatus, 'active');
     expect(m001.humanValidityLabel, 'Aegunud pärast remonti');
@@ -34,10 +38,12 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
-    final footprintIds =
-        knownFacts.excludedFromFaultCandidates.map((f) => f.footprintId).toList();
+    final footprintIds = knownFacts.excludedFromFaultCandidates
+        .map((f) => f.footprintId)
+        .toList();
     expect(footprintIds, containsAll(['K1', 'K2', 'K3']));
   });
 
@@ -45,7 +51,8 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
     final pinIds = knownFacts.pins.map((pin) => pin.pinId).toList();
     expect(pinIds, containsAll(['Q2.1', 'Q2.2', 'Q2.3']));
@@ -55,7 +62,8 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
     expect(knownFacts.componentPinIndex['Q2'], contains('Q2.1'));
     expect(knownFacts.componentPinIndex['Q2'], contains('Q2.2'));
@@ -66,7 +74,8 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
     final damageRegionIds =
         knownFacts.damageRegions.map((region) => region.regionId).toList();
@@ -77,7 +86,8 @@ void main() {
     final raw = File(
       'assets/samples/pelle_pv20_minimal/known_facts.json',
     ).readAsStringSync();
-    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    final knownFacts =
+        KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
 
     expect(knownFacts.visualTraces, isEmpty);
   });

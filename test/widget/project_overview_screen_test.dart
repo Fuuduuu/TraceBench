@@ -6,7 +6,7 @@ import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
-  void main() {
+void main() {
   testWidgets('renders project overview fields', (tester) async {
     final projectState = await ProjectLoader.loadFromAssets();
 

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_GRAPH_VIEW_PASS`
+`FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS`
 
 ## Goal
 
-Implement the read-only Flutter board graph view derived from in-memory `known_facts.json` projection.
+Fix validation formatting and index correctness for the read-only board graph view.
 
 ## Allowed surfaces
 
@@ -14,6 +14,7 @@ Implement the read-only Flutter board graph view derived from in-memory `known_f
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
 - docs/audit/FLUTTER_GRAPH_VIEW_PASS.md
+- docs/audit/FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS.md
 - lib/app/router.dart
 - lib/features/project/screens/project_overview_screen.dart
 - lib/shared/models/known_facts.dart
@@ -23,7 +24,6 @@ Implement the read-only Flutter board graph view derived from in-memory `known_f
 - test/widget/project_overview_screen_test.dart
 - test/widget/board_graph_screen_test.dart
 - test/integration/board_graph_end_to_end_test.dart
-- test/integration/pelle_sample_end_to_end_test.dart
 
 ## Forbidden surfaces
 
@@ -54,3 +54,4 @@ Implement the read-only Flutter board graph view derived from in-memory `known_f
 ## Verify
 
 - py -3 tools\validate_all.py
+- flutter test --reporter expanded

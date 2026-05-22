@@ -7,25 +7,30 @@ import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 
 void main() {
-  testWidgets('loads board graph from bundled sample end-to-end', (tester) async {
+  testWidgets('loads board graph from bundled sample end-to-end',
+      (tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: TraceBenchApp()),
     );
-
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('TraceBench Viewer'), findsOneWidget);
 
     await tester.tap(find.text('Ava näidisprojekt'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.text('Ava projekt'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Project overview'), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-board-graph-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-board-graph-button')),
+        findsOneWidget);
 
     final overviewContext = tester.element(find.byType(ProjectOverviewScreen));
     GoRouter.of(overviewContext).go('/project/graph');
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Board graph'), findsAtLeast(1));
     expect(find.textContaining('Q2'), findsAtLeast(1));

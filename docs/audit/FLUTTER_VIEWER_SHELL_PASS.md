@@ -80,3 +80,18 @@ FLUTTER_PASS
 
 - Pelle PV20 sample is copied into `assets/samples/pelle_pv20_minimal/**`.
 - Refresh sample bundle manually after future SAMPLE_PASS changes.
+
+## Resume validation result
+
+- Flutter SDK available: Flutter 3.44.0 / Dart 3.12.0
+- `flutter pub get` passed
+- `flutter test` passed (`15` tests)
+- `py -3 tools\validate_all.py` passed
+- `flutter test` blocker history remains: first run unavailable in environment, later re-run with SDK installed
+- Commit `616ef45` pushed after resumed validation
+
+## Fixup follow-up note
+
+- Route-level `go_router` beginner redirect for `/project/events` was removed in recovery pass to avoid navigation loops / unstable widget tests.
+- Beginner protection is now enforced at `EventsViewerScreen` render level (shows "Advanced režiim vajalik").
+- This keeps behavior read-only and deterministic without route-level instability.

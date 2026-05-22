@@ -10,11 +10,19 @@ class ProjectOverviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectState = ref.watch(projectStateProvider);
+    final isBeginnerMode = ref.watch(beginnerModeProvider);
     if (projectState == null) {
       return const Scaffold(
         body: Center(child: Text('No project loaded')),
       );
     }
+    final humanReadableTitle =
+        '${projectState.manifest.deviceType} · ${projectState.manifest.model}';
+    final hasSymptom =
+        projectState.manifest.symptom.isNotEmpty &&
+        projectState.manifest.symptom != 'not_provided';
+    final advancedDetails =
+        'project_id: ${projectState.manifest.projectId} | schema_version: ${projectState.manifest.schemaVersion} | created_at: ${projectState.manifest.createdAt}';
 
     return Scaffold(
       appBar: AppBar(
@@ -33,9 +41,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
         children: [
           Card(
             child: ListTile(
-              title: Text(projectState.manifest.projectId),
+              title: Text(humanReadableTitle),
               subtitle: Text(
-                '${projectState.manifest.deviceType} / ${projectState.manifest.model}',
+                isBeginnerMode
+                    ? (hasSymptom ? 'Symptom: ${projectState.manifest.symptom}' : '')
+                    : advancedDetails,
               ),
             ),
           ),

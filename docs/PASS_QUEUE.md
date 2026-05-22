@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_VIEWER_SHELL_PASS`
+`FLUTTER_VIEWER_SHELL_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -29,6 +29,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS | TOOLS_PASS | completed | Harden event/schema/tooling validations for pre-Flutter viewer contract and Project ZIP safety/consistency. |
 | REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS | DOCS_SYNC | completed | Normalize repair action sample target to component/Q2 for replace_component didactic clarity. |
 | FLUTTER_VIEWER_SHELL_PASS | FLUTTER_PASS | completed | Add first read-only Flutter Project ZIP viewer shell with bundled sample and import flow. |
+| FLUTTER_VIEWER_SHELL_FIXUP_PASS | FLUTTER_PASS | completed | Fix GoRouter rebuild, beginner events access guard, and title/sample sync validation gaps. |
 
 ## Planned / Recommended
 
@@ -41,7 +42,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_VIEWER_SHELL_AUDIT_PASS | DOCS_SYNC | recommended |
+| PELLE_PV20_PHOTO_FLOW_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
 | NEEDS_USER_DECISION | DOCS_SYNC | note: event-writing/export capabilities and deeper audits remain pending |
 
 ## Deferred / not active
@@ -55,5 +56,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 3
-
+Current countdown: 1

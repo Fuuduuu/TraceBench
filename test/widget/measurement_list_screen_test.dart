@@ -19,7 +19,8 @@ void main() {
         child: const MaterialApp(home: MeasurementListScreen()),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.textContaining('Aegunud pärast remonti'), findsOneWidget);
     expect(find.textContaining('Aktiivne'), findsOneWidget);

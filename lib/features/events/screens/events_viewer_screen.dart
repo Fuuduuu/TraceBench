@@ -11,8 +11,17 @@ class EventsViewerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectState = ref.watch(projectStateProvider);
+    final isBeginnerMode = ref.watch(beginnerModeProvider);
     if (projectState == null) {
       return const Scaffold(body: Center(child: Text('No project loaded')));
+    }
+    if (isBeginnerMode) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Sündmused')),
+        body: const Center(
+          child: Text('Advanced režiim vajalik'),
+        ),
+      );
     }
 
     return Scaffold(

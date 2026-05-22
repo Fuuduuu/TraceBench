@@ -14,14 +14,24 @@ void main() {
       ProviderScope(
         overrides: [
           projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
         ],
         child: const MaterialApp(home: ProjectOverviewScreen()),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.textContaining(projectState.manifest.deviceType), findsOneWidget);
-    expect(find.text(projectState.manifest.projectId), findsOneWidget);
+    expect(
+      find.textContaining(
+        '${projectState.manifest.deviceType} · ${projectState.manifest.model}',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining(projectState.manifest.projectId),
+      findsOneWidget,
+    );
     expect(
       find.text(projectState.measurementCount.toString()),
       findsAtLeast(1),

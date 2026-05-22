@@ -8,13 +8,16 @@ import 'router.dart';
 
 final StateProvider<ProjectState?> projectStateProvider = StateProvider<ProjectState?>((_) => null);
 final StateProvider<bool> beginnerModeProvider = StateProvider<bool>((_) => true);
+final Provider<GoRouter> routerProvider = Provider<GoRouter>((ref) {
+  return buildTraceBenchRouter();
+});
 
 class TraceBenchApp extends ConsumerWidget {
   const TraceBenchApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = buildTraceBenchRouter();
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
       title: 'TraceBench Viewer',

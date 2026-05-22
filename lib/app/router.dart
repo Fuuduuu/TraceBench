@@ -11,8 +11,11 @@ import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
 
-GoRouter buildTraceBenchRouter() {
+GoRouter buildTraceBenchRouter({
+  String initialLocation = '/',
+}) {
   return GoRouter(
+    initialLocation: initialLocation,
     routes: [
       GoRoute(
         path: '/',

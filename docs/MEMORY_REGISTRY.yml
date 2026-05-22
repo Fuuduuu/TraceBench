@@ -38,6 +38,8 @@ layers:
       - docs/AUDIT_INDEX.md
       - docs/PROJECT_STATE.yml
       - docs/PROTECTED_SURFACES.md
+      - docs/PROJECT_ZIP_SPEC.md
+      - docs/FLUTTER_UI_SPEC.md
 
   source_index:
     read_by_default: true

@@ -2,31 +2,23 @@
 
 ## Current pass
 
-`PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Fix pre-Flutter data contract and validation gaps before the read-only Flutter viewer implementation.
+Mandatory docs-only cleanup after docs drift countdown reached zero.
 
 ## Allowed surfaces
 
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
+- docs/SOURCES_INDEX_CURRENT.md
+- docs/MEMORY_REGISTRY.yml
 - docs/PROJECT_STATE.yml
 - docs/PROJECT_ZIP_SPEC.md
-- schemas/known_facts.schema.json
-- tools/validate_events_jsonl.py
-- tools/materialize_known_facts.py
-- tools/validate_project_zip.py
-- tools/import_project_zip.py
-- tools/export_project_zip.py
-- samples/pelle_pv20_minimal/known_facts.json
-- tests/test_validate_events_jsonl.py
-- tests/test_materialize_known_facts.py
-- tests/test_project_zip.py
-- tests/test_schema_samples.py
-- docs/audit/PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS.md
+- docs/FLUTTER_UI_SPEC.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md
 
 ## Forbidden surfaces
 
@@ -47,8 +39,11 @@ Fix pre-Flutter data contract and validation gaps before the read-only Flutter v
 - event writing from UI
 - measurement wizard
 - new project wizard
-- photo-flow
-- KiCad export
+- local-folder workflow as first-class
+- schemas/**
+- tools/**
+- samples/**
+- tests/**
 
 ## Verify
 

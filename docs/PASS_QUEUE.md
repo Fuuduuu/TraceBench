@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Completed pass history
 
@@ -40,8 +40,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | recommended |
-| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | planned |
+| FLUTTER_VIEWER_SHELL_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 
@@ -54,5 +53,5 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5
 

@@ -30,3 +30,35 @@ Result:
 - No schema/tool/sample/test/app changes.
 - No contradictions requiring semantic review.
 - Contradictions, if any, are doc-index hygiene-only and resolved in this pass.
+
+---
+
+## DOCS_DRIFT_MINI_CLEANUP_PASS (2026-05-22)
+
+Status: completed
+
+Scope:
+- docs-only cleanup after countdown reached zero.
+- reconcile docs drift bookkeeping after:
+  - PRE_FLUTTER_VIEWER_DATA_CONTRACT_FIXUP_PASS
+  - REPAIR_ACTION_SAMPLE_TARGET_FIXUP_PASS
+
+Files updated:
+- `docs/PASS_QUEUE.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/MEMORY_REGISTRY.yml`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PROJECT_STATE.yml`
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+
+Checks/results:
+- confirmed completed-pass coverage in `docs/AUDIT_INDEX.md` remains complete.
+- docs drift countdown set: `0 -> 5`.
+- next recommended pass aligned to `FLUTTER_VIEWER_SHELL_PASS`.
+- source index and memory registry now include:
+  - `docs/PROJECT_ZIP_SPEC.md`
+  - `docs/FLUTTER_UI_SPEC.md`
+- active lock updated to this docs-only cleanup.
+
+Validation:
+- `py -3 tools\\validate_all.py`

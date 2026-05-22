@@ -19,3 +19,4 @@ Lazy-loading index for pass audit documents.
 | FLUTTER_VIEWER_SHELL_FIXUP_PASS | docs/audit/FLUTTER_VIEWER_SHELL_FIXUP_PASS.md | completed |
 | PHOTO_FLOW_SCOPE_LOCK_PASS | docs/audit/PHOTO_FLOW_SCOPE_LOCK_PASS.md | completed |
 | PHOTO_EVENT_SCHEMA_HARDENING_PASS | docs/audit/PHOTO_EVENT_SCHEMA_HARDENING_PASS.md | completed |
+| BOARD_GRAPH_PROJECTION_SPEC_PASS | docs/audit/BOARD_GRAPH_PROJECTION_SPEC_PASS.md | completed |

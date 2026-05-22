@@ -2,46 +2,37 @@
 
 ## Current pass
 
-`PHOTO_EVENT_SCHEMA_HARDENING_PASS`
+`BOARD_GRAPH_PROJECTION_SPEC_PASS`
 
 ## Goal
 
-Harden V1 photo-flow events and add schema, validator, materializer and sample/test coverage for photo evidence events.
+Document BoardGraphProjection architecture, layer taxonomy, filters, focus mode, renderer guidance, ZIP/cache boundaries, and future pass sequence for the board graph view.
 
 ## Allowed surfaces
 
-- schemas/events.schema.json
-- schemas/known_facts.schema.json
-- schemas/samples/valid_photo_added.json
-- schemas/samples/valid_damage_region_marked.json
-- tools/validate_events_jsonl.py
-- tools/materialize_known_facts.py
-- samples/pelle_pv20_minimal/events.jsonl
-- samples/pelle_pv20_minimal/known_facts.json
-- assets/samples/pelle_pv20_minimal/events.jsonl
-- assets/samples/pelle_pv20_minimal/known_facts.json
-- tests/test_validate_events_jsonl.py
-- tests/test_materialize_known_facts.py
-- tests/test_schema_samples.py
+- docs/BOARD_GRAPH_SPEC.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PHOTO_EVENT_SCHEMA_HARDENING_PASS.md
+- docs/audit/BOARD_GRAPH_PROJECTION_SPEC_PASS.md
 
 ## Forbidden surfaces
 
-- Flutter/Dart implementation
-- camera/OCR/CV integration
+- schemas
+- tools
+- tests
+- samples
+- Flutter implementation
+- Python validator/materializer implementation
+- photo file workflows
 - AI/fault probability logic
 - source search
-- photo file import or image processing pipelines
 - cloud sync / BLE workflows
-- connected-net invalidation implementation
 - event-writing implementation
 
 ## Verify
 
-Required:
+Verify:
 
 - py -3 tools\validate_all.py
-- flutter test --timeout=30s --reporter expanded
+- flutter test --timeout=30s --reporter expanded (only for existing Flutter pass validation, no graph-view code in this pass)

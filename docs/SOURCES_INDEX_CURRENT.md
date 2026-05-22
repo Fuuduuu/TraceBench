@@ -14,6 +14,14 @@ Routing and conflict-resolution index for TraceBench project memory.
 6. `docs/PROMPTING_PROTOCOL.md`
 7. `docs/PROTECTED_SURFACES.md`
 
+## Active governance docs
+
+- `docs/MODEL_ROUTING.md`
+- `docs/MEMORY_REGISTRY.yml`
+- `docs/MEMORY_MAINTENANCE.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/PROTECTED_SURFACES.md`
+
 ## Conflict order
 
 1. `AGENTS.md`
@@ -45,5 +53,9 @@ Archive files are never read by default.
 
 ## Governance routing source
 
-- docs/MODEL_ROUTING.md
+- `docs/MODEL_ROUTING.md`
+- `docs/MEMORY_MAINTENANCE.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/PROTECTED_SURFACES.md`
+- `docs/MEMORY_REGISTRY.yml`
 

@@ -2,27 +2,27 @@
 
 ## Current pass
 
-`SPRINT_0_WINDOWS_VALIDATION_DOCS_SYNC_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Align Sprint 0 validation docs and Makefile with Windows-first stdlib baseline.
+Perform mandatory docs-only mini-cleanup after docs drift reached zero.
 
 ## Allowed surfaces
 
-- AGENTS.md
-- README.md
-- Makefile
-- pyproject.toml
-- .gitignore
-- .editorconfig
-- .env.example
 - docs/**
-- schemas/**
-- device_profiles/**
-- samples/**
-- tools/**
-- tests/**
+- docs/ACTIVE_SCOPE_LOCK.md
+- docs/PASS_QUEUE.md
+- docs/AUDIT_INDEX.md
+- docs/SOURCES_INDEX_CURRENT.md
+- docs/MEMORY_REGISTRY.yml
+- docs/PROJECT_STATE.yml
+- docs/MODEL_ROUTING.md
+- docs/MEMORY_MAINTENANCE.md
+- docs/PROMPTING_PROTOCOL.md
+- docs/PROTECTED_SURFACES.md
+- docs/PROJECT_MEMORY.md
+- docs/audit/
 
 ## Forbidden surfaces
 

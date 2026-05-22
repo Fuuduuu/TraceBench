@@ -33,6 +33,11 @@ layers:
       - docs/PROMPTING_PROTOCOL.md
       - docs/MEMORY_MAINTENANCE.md
       - docs/MODEL_ROUTING.md
+      - docs/ACTIVE_SCOPE_LOCK.md
+      - docs/SOURCES_INDEX_CURRENT.md
+      - docs/AUDIT_INDEX.md
+      - docs/PROJECT_STATE.yml
+      - docs/PROTECTED_SURFACES.md
 
   source_index:
     read_by_default: true

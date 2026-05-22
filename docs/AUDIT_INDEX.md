@@ -9,3 +9,4 @@ Lazy-loading index for pass audit documents.
 | MODEL_ROUTING_PROTOCOL_PASS | docs/audit/MODEL_ROUTING_PROTOCOL_PASS.md | completed |
 | EVENTS_SCHEMA_HARDENING_PASS | docs/audit/EVENTS_SCHEMA_HARDENING_PASS.md | completed |
 | EVENTS_SCHEMA_HARDENING_FIXUP_PASS | docs/audit/EVENTS_SCHEMA_HARDENING_FIXUP_PASS.md | completed |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed |

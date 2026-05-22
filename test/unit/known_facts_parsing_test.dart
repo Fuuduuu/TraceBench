@@ -50,4 +50,35 @@ void main() {
     final pinIds = knownFacts.pins.map((pin) => pin.pinId).toList();
     expect(pinIds, containsAll(['Q2.1', 'Q2.2', 'Q2.3']));
   });
+
+  test('component_pin_index parsed from sample', () {
+    final raw = File(
+      'assets/samples/pelle_pv20_minimal/known_facts.json',
+    ).readAsStringSync();
+    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+
+    expect(knownFacts.componentPinIndex['Q2'], contains('Q2.1'));
+    expect(knownFacts.componentPinIndex['Q2'], contains('Q2.2'));
+    expect(knownFacts.componentPinIndex['Q2'], contains('Q2.3'));
+  });
+
+  test('damage regions parsed from sample when present', () {
+    final raw = File(
+      'assets/samples/pelle_pv20_minimal/known_facts.json',
+    ).readAsStringSync();
+    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+
+    final damageRegionIds =
+        knownFacts.damageRegions.map((region) => region.regionId).toList();
+    expect(damageRegionIds, contains('DMG001'));
+  });
+
+  test('visual traces parse empty list safely', () {
+    final raw = File(
+      'assets/samples/pelle_pv20_minimal/known_facts.json',
+    ).readAsStringSync();
+    final knownFacts = KnownFacts.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+
+    expect(knownFacts.visualTraces, isEmpty);
+  });
 }

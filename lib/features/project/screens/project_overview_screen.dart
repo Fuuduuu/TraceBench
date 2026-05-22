@@ -97,6 +97,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 child: const Text('Sündmused'),
               ),
               ElevatedButton(
+                key: const ValueKey('overview-board-graph-button'),
+                onPressed: () => context.go('/project/graph'),
+                child: const Text('Board graph'),
+              ),
+              ElevatedButton(
                 onPressed: () => context.go('/project/report'),
                 child: const Text('Raport'),
               ),

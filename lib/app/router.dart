@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/events/screens/events_viewer_screen.dart';
+import '../features/board_graph/screens/board_graph_screen.dart';
 import '../features/known_facts/screens/component_list_screen.dart';
 import '../features/known_facts/screens/known_facts_viewer_screen.dart';
 import '../features/known_facts/screens/measurement_list_screen.dart';
@@ -51,6 +52,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'events',
                 name: 'events',
                 builder: (_, __) => const EventsViewerScreen(),
+              ),
+              GoRoute(
+                path: 'graph',
+                name: 'board-graph',
+                builder: (_, __) => const BoardGraphScreen(),
               ),
               GoRoute(
                 path: 'known-facts',

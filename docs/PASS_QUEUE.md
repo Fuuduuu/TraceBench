@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_05_PASS`
 
 ## Completed pass history
 
@@ -22,6 +22,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS | DOCS_SYNC | completed | Record review audit and align current pass/state/lock for work-intake intake routing. |
 | PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS | DOCS_SYNC | completed | Audit pass accepted; combined ZIP + report hardening scope chosen. |
 | PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Scope lock for combined ZIP + customer report hardening. |
+| DOCS_DRIFT_MINI_CLEANUP_05_PASS | DOCS_SYNC | completed | Governance-only docs drift cleanup after scope-lock and queue countdown reset. |
 | SCOPE_DRIFT_CHECK_PROTOCOL_PASS | DOCS_SYNC | completed | Add canonical scope drift check protocol and wire it into prompt/model/routing gates. |
 | PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | completed | Queue review and pass-routing confirmation after queue queue review. |
@@ -71,13 +72,12 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PASS_ID | Lane | Status |
 |---|---|---|
 | PROJECT_ZIP_REPORT_HARDENING_PASS | TOOLS_PASS | planned |
-| DOCS_DRIFT_MINI_CLEANUP_05_PASS | DOCS_SYNC | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_05_PASS | DOCS_SYNC | recommended |
+| PROJECT_ZIP_REPORT_HARDENING_PASS | TOOLS_PASS | recommended |
 
 - Select the next planned work item from queue routing.
 - Implementation remains blocked while protected-surface work is unresolved.
@@ -94,4 +94,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

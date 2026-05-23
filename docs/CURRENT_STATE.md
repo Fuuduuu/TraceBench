@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_05_PASS` (`DOCS_SYNC / DOCS_ONLY`)
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_05_PASS`
+- Next recommended pass: `PROJECT_ZIP_REPORT_HARDENING_PASS` (`TOOLS_PASS`)
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
@@ -24,6 +24,7 @@ Branch: main
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
+- Project ZIP/report hardening scope is locked; implementation is next after this cleanup.
 
 ## Validation baseline
 

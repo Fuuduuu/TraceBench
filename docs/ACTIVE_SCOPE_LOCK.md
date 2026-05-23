@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_05_PASS`
 
 ## Goal
 
-Lock combined Project ZIP + customer report hardening scope before implementation.
+Run docs drift mini cleanup and queue/state alignment after countdown reached zero.
 
 ## Allowed surfaces
 
@@ -14,9 +14,9 @@ Lock combined Project ZIP + customer report hardening scope before implementatio
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/PROJECT_ZIP_SPEC.md
 - docs/audit/PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS.md
 - docs/audit/PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_05_PASS.md
 
 ## Forbidden surfaces
 

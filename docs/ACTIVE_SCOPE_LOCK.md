@@ -2,23 +2,21 @@
 
 ## Current pass
 
-`MEMORY_SYSTEM_PROTOCOL_PASS`
+`PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS`
 
 ## Goal
 
-Tighten memory ownership and anti-drift rules so future prompts can load stable context compactly.
+Close remaining prompt/memory governance ledger drift after `PROMPT_MEMORY_GOVERNANCE_RECONCILIATION_PASS`.
 
 ## Allowed surfaces
 
 - AGENTS.md
 - docs/CURRENT_STATE.md
-- docs/MEMORY_PROTOCOL.md
-- docs/PROJECT_MEMORY.md
-- docs/TRUTH_INDEX.md
-- docs/ACTIVE_SCOPE_LOCK.md
+- docs/PROMPTING_PROTOCOL.md
 - docs/PASS_QUEUE.md
+- docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/MEMORY_SYSTEM_PROTOCOL_PASS.md
+- docs/audit/PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS.md
 
 ## Forbidden surfaces
 
@@ -49,6 +47,7 @@ Tighten memory ownership and anti-drift rules so future prompts can load stable 
 - cloud sync
 - visual_trace → measured electrical net
 - photo-derived component identity/measurement/net facts
+- schema/tool/materializer/validator semantic changes
 
 ## Verify
 

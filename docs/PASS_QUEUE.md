@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`MEMORY_SYSTEM_PROTOCOL_PASS`
+`PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -45,6 +45,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | completed | Close out photo-event schema hardening audit and consistency check as docs-ledger-only. |
 | PROMPTING_PROTOCOL_COMPRESSION_PASS | DOCS_SYNC | completed | Compress prompting protocol and standardize sniper prompt format. |
 | MEMORY_SYSTEM_PROTOCOL_PASS | DOCS_SYNC | completed | Add compact memory ownership protocol and anti-drift rules. |
+| PROMPT_MEMORY_GOVERNANCE_RECONCILIATION_PASS | DOCS_SYNC | completed | Reconcile prompt/memory governance drift and index required audit evidence. |
+| PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS | DOCS_SYNC | completed | Finalize prompt/memory governance ledger reconciliation and compactness consistency. |
 
 ## Planned / Recommended
 
@@ -69,4 +71,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

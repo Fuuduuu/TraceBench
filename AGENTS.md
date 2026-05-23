@@ -23,7 +23,9 @@ Keep pass goals narrow, verifiable, and auditable.
 
 ## Current phase
 
-DOCS_SYNC governance pass (prompting protocol compression).
+Current pass and next recommended pass live in:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`.
 
 ## Sprint 1 scope
 

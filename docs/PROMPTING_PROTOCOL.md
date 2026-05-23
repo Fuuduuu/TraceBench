@@ -14,6 +14,7 @@ Required fields:
 - Never
 - Validate
 - Output
+- Stop if
 
 ### GUARDED
 

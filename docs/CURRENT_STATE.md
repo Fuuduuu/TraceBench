@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEMORY_SYSTEM_PROTOCOL_PASS`
+- Current pass: `PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS`
 - Next recommended pass: `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `3`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -19,6 +19,7 @@ Branch: main
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
 - Photo list/tab is future-scoped; no camera/OCR/CV or event-writing introduced.
 - `repair_action_recorded` removal does not delete components; components keep identity fields and preserve history.
+- `PROMPT_MEMORY_GOVERNANCE_RECONCILIATION_PASS` was completed and indexed, then reconciled by this governance cleanup pass.
 
 ## Validation baseline
 

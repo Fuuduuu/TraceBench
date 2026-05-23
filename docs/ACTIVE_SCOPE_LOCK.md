@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_04_PASS`
 
 ## Goal
 
-Close out NEXT_PASS_SELECTION_AUDIT_PASS and fix docs-ledger routing drift.
+Run docs drift mini cleanup and reconcile queue/current-state/memory routing drift.
 
 ## Allowed surfaces
 
@@ -17,6 +17,13 @@ Close out NEXT_PASS_SELECTION_AUDIT_PASS and fix docs-ledger routing drift.
 - docs/MEMORY_PROTOCOL.md
 - docs/audit/NEXT_PASS_SELECTION_AUDIT_PASS.md
 - docs/audit/NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_04_PASS.md
+- docs/WORK_INTAKE_INDEX.md
+- docs/DEFERRED_FEATURES.md
+- docs/PROJECT_MEMORY.md
+- docs/TRUTH_INDEX.md
+- docs/PROMPTING_PROTOCOL.md
+- docs/PROTECTED_SURFACES.md
 
 ## Forbidden surfaces
 

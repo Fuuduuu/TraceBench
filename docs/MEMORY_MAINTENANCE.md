@@ -38,7 +38,7 @@ Do not implement unplanned ideas directly.
 
 - Start at 5.
 - Decrement after accepted pass.
-- At 0, run `DOCS_DRIFT_MINI_CLEANUP_PASS` before another feature pass.
+- At 0, run the latest active mini cleanup pass (currently `DOCS_DRIFT_MINI_CLEANUP_04_PASS`) before another feature pass.
 - Reset to 5 after cleanup.
 
 ## Deep cleanup

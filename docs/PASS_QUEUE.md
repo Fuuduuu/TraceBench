@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_04_PASS`
 
 ## Completed pass history
 
@@ -20,6 +20,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | completed | Queue review and pass-routing confirmation after queue queue review. |
 | NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS | DOCS_SYNC | completed | Close queue/current-state/memory-protocol drift and align countdown/next recommendation. |
+| DOCS_DRIFT_MINI_CLEANUP_04_PASS | DOCS_SYNC | completed | Run governance mini cleanup after countdown reached zero and align routing/next-pass target. |
 | FLUTTER_PHOTO_LIST_PASS | FLUTTER_PASS | completed | Add read-only photo evidence route and list UI with tests. |
 | FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock read-only photo list/view implementation scope. |
 | FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ledger drift after FLUTTER_PHOTO_LIST_PASS acceptance. |
@@ -63,14 +64,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_04_PASS | DOCS_SYNC | planned |
+| WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | planned |
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_04_PASS | DOCS_SYNC | recommended |
+| WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | recommended |
 
-- Select the next planned work item after queue-routing fixup.
+- Select the next planned work item after queue-routing fixup; if none is safe, use WORK_INTAKE_SELECTION_PASS.
 
 ## Deferred / not active
 
@@ -83,4 +84,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

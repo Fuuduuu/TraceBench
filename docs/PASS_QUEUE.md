@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`SCOPE_DRIFT_CHECK_PROTOCOL_PASS`
+`WORK_INTAKE_SELECTION_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
 | SCOPE_DRIFT_CHECK_PROTOCOL_PASS | DOCS_SYNC | completed | Add canonical scope drift check protocol and wire it into prompt/model/routing gates. |
 | PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | completed | Queue review and pass-routing confirmation after queue queue review. |
@@ -65,12 +66,12 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | planned |
+| WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | planned |
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | recommended |
+| WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | recommended |
 
 - Select the next planned work item after queue-routing fixup; if none is safe, use WORK_INTAKE_SELECTION_PASS.
 
@@ -85,4 +86,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 4
+Current countdown: 3

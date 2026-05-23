@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`SCOPE_DRIFT_CHECK_PROTOCOL_PASS`
+`WORK_INTAKE_SELECTION_PASS`
 
 ## Goal
 
-Add and formalize canonical scope drift check protocol for governance and implementation gating.
+Review work-intake and deferred/planned queues and select next safe TraceBench pass.
 
 ## Allowed surfaces
 
@@ -18,6 +18,10 @@ Add and formalize canonical scope drift check protocol for governance and implem
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
 - docs/audit/SCOPE_DRIFT_CHECK_PROTOCOL_PASS.md
+- docs/CURRENT_STATE.md
+- docs/WORK_INTAKE_INDEX.md
+- docs/DEFERRED_FEATURES.md
+- docs/audit/WORK_INTAKE_SELECTION_PASS.md
 
 ## Forbidden surfaces
 

@@ -2,25 +2,19 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_03_PASS`
+`FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Run docs drift mini cleanup after countdown reached 0 and align governance current-pass pointers.
+Lock read-only Flutter photo list/view implementation scope.
 
 ## Allowed surfaces
 
-- AGENTS.md
-- docs/CURRENT_STATE.md
-- docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
+- docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/PROJECT_MEMORY.md
-- docs/MEMORY_PROTOCOL.md
-- docs/TRUTH_INDEX.md
-- docs/PROMPTING_PROTOCOL.md
-- docs/PROTECTED_SURFACES.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_03_PASS.md
+- docs/FLUTTER_UI_SPEC.md
+- docs/audit/FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS.md
 
 ## Forbidden surfaces
 
@@ -39,15 +33,16 @@ Run docs drift mini cleanup after countdown reached 0 and align governance curre
 - board_graph.json
 - view_state.json
 - product behavior changes
-- Flutter/Dart code changes
-- schema/tool/materializer/validator semantic changes
+- Flutter/Dart implementation
+- schema/tool/materializer behavior changes
 - event-writing implementation
-- component editing UI
 - camera/OCR/CV
 - AI diagnostics/fault probability
 - source search
 - KiCad/boardview
 - BLE/cloud
+- photo-derived identity/measurement/net/fault facts
+- visual_trace -> measured/electrical net promotion
 - cloud sync
 
 ## Verify

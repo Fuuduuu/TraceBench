@@ -260,3 +260,80 @@ But only after user confirms Flutter implementation should begin.
 ### V1 contract constraints
 
 - no package/version changes in this scope-lock pass
+
+## Read-only photo list/view V1 scope
+
+Future implementation pass:
+
+- FLUTTER_PHOTO_LIST_PASS
+
+Scope:
+
+- Add route: `/project/photos`
+- Add a Project Overview entry/card/link to the Photos screen.
+- Source data is `known_facts.json` only through existing project load/model flow.
+- Do not parse `events.jsonl` directly in Flutter UI.
+- No persisted UI state.
+- Do not create `board_graph.json` or `view_state.json`.
+
+Beginner mode:
+
+- show photo mode / role label
+- show path or missing-file warning when available
+- show damage region count
+- show suspect region count
+- show visual trace count
+- hide raw photo IDs
+- hide raw bbox/point coordinates
+- hide raw IDs unless needed for safe understanding
+- no diagnosis/inference display
+
+Advanced mode:
+
+- show `photo_id`
+- show `path`, `mode`, and `layer` if present
+- show bbox/point data read-only
+- show related damage/suspect/visual-trace IDs
+- show `visual_trace` evidence as visual-only (never electrical/measured)
+- no editing and no event writing
+
+Strictly forbidden in V1:
+
+- camera capture
+- file picker/photo import
+- annotation editing
+- event writing
+- OCR/CV
+- AI diagnostics/fault probability
+- source search
+- schema/tool/materializer changes
+- sample/asset mutation
+- Project ZIP contract changes
+- visual_trace -> measured/electrical net promotion
+- photo-derived identity/measurement/net/fault facts
+
+Implementation write allowlist:
+
+- `lib/app/router.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/photos/**`
+- `lib/shared/models/known_facts.dart` (only if minimal parsing/serialization gap exists)
+- `test/unit/known_facts_parsing_test.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/photo_list_screen_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/FLUTTER_PHOTO_LIST_PASS.md`
+
+Required future tests:
+
+- known_facts parsing test for photos/damage_regions/suspect_regions/visual_traces if gaps exist
+- photo list empty-state widget test
+- beginner mode hides raw IDs/coordinates
+- advanced mode shows raw IDs/evidence details
+- damage/suspect/visual-trace count tests
+- no edit/camera controls test
+- navigation integration test from Project Overview to `/project/photos`
+- visual-trace evidence wording test: shown as visual hint only, never electrical/measured/evidence-confirming

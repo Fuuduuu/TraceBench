@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_03_PASS`
+`FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock read-only photo list/view implementation scope. |
 | SPRINT_0_PROJECT_SKELETON_PASS | DOCS_SYNC / SCHEMA_PASS / TOOLS_PASS | completed | Create repo skeleton, docs, schemas, validators, sample. |
 | EVENTS_SCHEMA_HARDENING_PASS | SCHEMA_PASS | completed | Add payload-specific schema defs, validator hardening, sample hardening, and materialization output evolution. |
 | EVENTS_SCHEMA_HARDENING_FIXUP_PASS | SCHEMA_PASS | completed | Fix schema/sample drift and enforce V1 connected-net invalidation policy. |
@@ -63,7 +64,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
+| FLUTTER_PHOTO_LIST_PASS | FLUTTER_PASS | recommended |
 
 ## Deferred / not active
 
@@ -76,4 +77,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

@@ -2,22 +2,20 @@
 
 ## Current pass
 
-`MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS`
+`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS`
 
 ## Goal
 
-Ensure the new information intake lifecycle, active memory map, obsolete handling, and implicit memory rules are present before future Claude audit.
+Close out full prompt/memory governance system audit and fix stale ledger pointers.
 
 ## Allowed surfaces
 
-- AGENTS.md
 - docs/CURRENT_STATE.md
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
-- docs/MEMORY_PROTOCOL.md
-- docs/TRUTH_INDEX.md
 - docs/AUDIT_INDEX.md
-- docs/audit/MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS.md
+- docs/audit/PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS.md
+- docs/audit/PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

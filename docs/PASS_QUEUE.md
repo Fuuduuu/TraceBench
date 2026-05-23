@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS`
+`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -49,6 +49,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS | DOCS_SYNC | completed | Finalize prompt/memory governance ledger reconciliation and compactness consistency. |
 | MEMORY_CONTENT_DEDUP_CLEANUP_PASS | DOCS_SYNC | completed | Remove stale duplicated/misplaced memory/governance text and deduplicate audit/index entries. |
 | MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS | DOCS_SYNC | completed | Ensure new information intake lifecycle, active memory map, obsolete handling, and implicit memory rules are present. |
+| PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS | DOCS_SYNC | completed | Full prompt/memory governance audit (audit-only) reported NEEDS_SMALL_FIXUP: stable architecture found; stale current-pass pointers detected. |
+| PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS | DOCS_SYNC | completed | Close out full prompt/memory audit and fix stale current-pass pointers in scope lock, queue, and state. |
 
 ## Planned / Recommended
 
@@ -60,7 +62,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_03_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 

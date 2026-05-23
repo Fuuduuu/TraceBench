@@ -2,21 +2,22 @@
 
 ## Current pass
 
-`PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS`
+`MEMORY_CONTENT_DEDUP_CLEANUP_PASS`
 
 ## Goal
 
-Close remaining prompt/memory governance ledger drift after `PROMPT_MEMORY_GOVERNANCE_RECONCILIATION_PASS`.
+Deduplicate and compactify memory governance docs after protocol cleanup, without changing product behavior.
 
 ## Allowed surfaces
 
 - AGENTS.md
+- docs/PROJECT_MEMORY.md
 - docs/CURRENT_STATE.md
-- docs/PROMPTING_PROTOCOL.md
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS.md
+- docs/PROMPTING_PROTOCOL.md
+- docs/audit/MEMORY_CONTENT_DEDUP_CLEANUP_PASS.md
 
 ## Forbidden surfaces
 
@@ -35,19 +36,17 @@ Close remaining prompt/memory governance ledger drift after `PROMPT_MEMORY_GOVER
 - any known_facts.json
 - board_graph.json
 - view_state.json
-- schema/validator/materializer behavior changes
+- product behavior changes
 - Flutter/Dart code changes
+- schema/tool/materializer/validator semantic changes
 - event-writing implementation
 - component editing UI
 - camera/OCR/CV
 - AI diagnostics/fault probability
 - source search
 - KiCad/boardview
-- BLE multimeter
+- BLE/cloud
 - cloud sync
-- visual_trace → measured electrical net
-- photo-derived component identity/measurement/net facts
-- schema/tool/materializer/validator semantic changes
 
 ## Verify
 

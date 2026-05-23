@@ -21,68 +21,29 @@ Preferred sniper prompt format:
 Do not paste long project history when canonical docs already contain it.
 Keep pass goals narrow, verifiable, and auditable.
 
-## Current phase
-
-Current pass and next recommended pass live in:
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`.
-
-## Sprint 1 scope
-
-Allowed:
-- Flutter read-only viewer shell
-- pubspec.yaml
-- lib/**
-- test/**
-- assets/samples/**
-- Project ZIP read-only import
-- bundled sample viewer
-
-Forbidden:
-- event writing
-- sequence management
-- camera/OCR/CV
-- AI/fault probability
-- source search
-- cloud/BLE
-- real ZIP export
-
-## V1.0 scope
-
-Allowed:
-- docs/memory system
-- event-log schemas
-- validators
-- Project ZIP skeleton
-- device_profile_generic.yaml
-- Pelle PV20 sample
-- Makefile commands
-
-Forbidden in Sprint 1:
-- OCR/CV
-- AI API integration
-- fault probability
-- next-best-measurement
-- source search
-- KiCad export
-- boardview import
-- cloud sync
-- BLE multimeter
-
-## Required read order before changes
+## Read order
 
 1. `docs/CURRENT_STATE.md`
 2. `docs/PASS_QUEUE.md`
 3. `docs/ACTIVE_SCOPE_LOCK.md`
 4. `docs/PROJECT_MEMORY.md`
-5. Relevant spec/audit docs for the active pass.
+5. `docs/MEMORY_PROTOCOL.md`
+6. `docs/PROMPTING_PROTOCOL.md`
 
-Do not load full audit history by default.
+## Canonical ownership
 
-Follow `docs/MEMORY_PROTOCOL.md` for memory ownership updates.
-
-Do not read archive by default.
-Do not treat `PROJECT_STATE.yml` as canonical truth.
+- Current pass and next recommended pass live in:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`.
+- Allowed/forbidden surfaces live in:
+  - `docs/ACTIVE_SCOPE_LOCK.md`.
+- Stable product truth lives in:
+  - `docs/PROJECT_MEMORY.md`.
+- Memory ownership rules live in:
+  - `docs/MEMORY_PROTOCOL.md`
+  - `docs/TRUTH_INDEX.md`.
+- Prompt format rules live in:
+  - `docs/PROMPTING_PROTOCOL.md`.
 
 ## Pass discipline
 
@@ -129,13 +90,13 @@ After every pass:
 Run as applicable:
 
 ```bash
-py -3 tools/validate_all.py
-python tools/validate_all.py
+py -3 tools\validate_all.py
+python tools\validate_all.py
 git diff --name-only
 git status --short --branch
 ```
 
-`make` is optional and not required for Sprint 1 validation.
+`make` is optional and not required for this pass unless specifically requested.
 
 ## Stop conditions
 

@@ -9,7 +9,7 @@ Measurement-backed PCB repair documentation and AI-assisted schematic reconstruc
 ## Core rule
 
 Human is the sensor. AI is the graph engine.
-AI never invents measurable values.
+AI must never invent component identities, hidden-layer connections, measurements, or confirmed facts.
 
 ## V1.0 scope
 
@@ -22,7 +22,7 @@ V1.0 is a Known Facts Builder, not an AI repair agent.
 - `events.jsonl` is the only canonical truth.
 - `known_facts.json` is a materialized projection used by read-only viewers.
 - `board_graph.json` and `view_state.json` are forbidden in V1.
-- Visual evidence is visual-only; `visual_trace` must never be interpreted as measured electrical net evidence.
+- Visual evidence is visual-only; `visual_trace` is never measured electrical evidence.
 - `component_removed` event type is not in V1.
 - `repair_action_recorded(action_type="remove_component")` is the V1 removal model.
 

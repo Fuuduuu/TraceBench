@@ -78,7 +78,7 @@ Do not paste long canonical history unless the pass directly targets it.
 
 Use:
 
-`Apply canonical constraints from AGENTS.md, PROJECT_MEMORY.md, ACTIVE_SCOPE_LOCK.md, PROTECTED_SURFACES.md.`
+`Apply canonical constraints from docs/CURRENT_STATE.md, docs/MEMORY_PROTOCOL.md, docs/TRUTH_INDEX.md`.
 
 Only include repeated constraints when:
 - the pass directly targets that constraint,

@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS`
+`MEMORY_CONTENT_DEDUP_CLEANUP_PASS`
 
 ## Completed pass history
 
@@ -47,6 +47,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | MEMORY_SYSTEM_PROTOCOL_PASS | DOCS_SYNC | completed | Add compact memory ownership protocol and anti-drift rules. |
 | PROMPT_MEMORY_GOVERNANCE_RECONCILIATION_PASS | DOCS_SYNC | completed | Reconcile prompt/memory governance drift and index required audit evidence. |
 | PROMPT_MEMORY_GOVERNANCE_REVIEW_FIXUP_PASS | DOCS_SYNC | completed | Finalize prompt/memory governance ledger reconciliation and compactness consistency. |
+| MEMORY_CONTENT_DEDUP_CLEANUP_PASS | DOCS_SYNC | completed | Remove stale duplicated/misplaced memory/governance text and deduplicate audit/index entries. |
 
 ## Planned / Recommended
 
@@ -71,4 +72,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

@@ -4,6 +4,18 @@
 
 Define when a task can be handled by Codex directly, when it needs deep reasoning review, and when explicit user approval is required before any implementation.
 
+## Prompt compression routing
+
+- Prompt protocol changes are `DOCS_SYNC` governance work.
+- Compact prompts are allowed only when canonical docs are current.
+- Sensitive/protected/risk work still requires deep review or user decision.
+- Compact prompt form must not skip:
+  - exact write allowlist
+  - forbidden surfaces
+  - validation
+  - MODEL_ROUTING_CHECK
+  - stop conditions
+
 ## Model roles
 
 - **Codex appropriate when**:

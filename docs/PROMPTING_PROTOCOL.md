@@ -1,70 +1,142 @@
-# PROMPTING_PROTOCOL.md
+# PROMPTING_PROTOCOL
 
-## Mini prompt
+## A. Prompt length policy
+
+### MINI
 
 Use for tiny local changes.
 
-Required:
+Required fields:
 - PASS_ID
-- one narrow goal
-- exact `Write only:` list
-- verify commands
-- output format
+- Lane
+- Goal
+- Write only
+- Never
+- Validate
+- Output
 
-## Guarded prompt
+### GUARDED
 
-Use for code/schema/tool passes.
+Use for deterministic accepted-scope implementation.
 
-Required:
-- read order
-- out-of-scope list
-- stop conditions
-- no unrelated cleanup
+Required fields:
+- PASS_ID
+- Lane
+- Goal
+- Read
+- Write only
+- Never
+- Do
+- Validate
+- Output
+- Stop conditions
 
-## Audit prompt
+### AUDIT
 
-Use when no changes are allowed.
+Use for no-edit review.
 
-Required:
-- do not modify files
-- evidence commands
-- verdict format: ACCEPT_AS_IS / NEEDS_SMALL_PATCH / NEEDS_REVIEW
+Required fields:
+- PASS_ID
+- Audit target
+- Canonical docs to inspect
+- Questions to answer
+- Verdict enum
+- Blockers
+- Decisions needed
+- Codex prompt only if accepted
 
-## Allowed files rule
+### DEEP_REVIEW
 
-Every implementation prompt must include exact write allowlist.
+Use for architecture/risk/policy decisions.
 
-## Repo guard
+Can be longer, but must end with:
+- verdict
+- concrete decisions
+- exact next pass recommendation
 
-Before edits:
+## B. Sniper prompt format
 
-```bash
-pwd
-git remote -v
-git status --branch --short
-py -3 tools\\validate_all.py
-```
+Standard future prompt skeleton:
 
-Stop if wrong repo.
+- PASS_ID:
+- Lane:
+- Mode:
+- Goal:
+- Gate:
+- Read:
+- Write only:
+- Never:
+- Do:
+- Validate:
+- Output:
+- Stop if:
 
-## MODEL_ROUTING_CHECK
+## C. No-repeat rule
 
-Before every Guarded Prompt or implementation pass, run:
+Do not paste long canonical history unless the pass directly targets it.
 
-- Is this deterministic implementation of accepted scope?
-  - yes -> Codex
-- Is this architecture/scope/risk/evidence policy?
-  - yes -> Deep review first
-- Is this unclear?
-  - yes -> User decision first
-## Diff sanity
+Use:
 
-Before output:
+`Apply canonical constraints from AGENTS.md, PROJECT_MEMORY.md, ACTIVE_SCOPE_LOCK.md, PROTECTED_SURFACES.md.`
 
-```bash
-git diff --name-only
-git status --short --branch
-```
+Only include repeated constraints when:
+- the pass directly targets that constraint,
+- the pass previously drifted on that exact rule,
+- the pass touches protected surfaces,
+- the pass is audit/deep review.
 
-Stop if out-of-scope files changed.
+## D. Delta-first accepted state
 
+Keep accepted-state summaries compact:
+
+`Base commit: <hash>. Current PASS_QUEUE next recommended: <pass>. Apply canonical docs.`
+
+Avoid including full project history in every pass prompt.
+
+## E. Prompt fragments
+
+### CORE_RULE
+Human is the sensor. AI is the graph engine.
+
+### V1_FORBIDDEN_AUTOMATION
+camera/OCR/CV, AI diagnostics, fault probability, source search, KiCad/boardview, BLE/cloud unless separately scoped.
+
+### GRAPH_BOUNDARY
+visual_trace is visual-only; no visual_trace → measured net; no board_graph.json/view_state.json in V1.
+
+### ZIP_BOUNDARY
+no Project ZIP contract changes unless pass explicitly targets ZIP.
+
+### EVENT_BOUNDARY
+no event-writing implementation unless pass explicitly targets writing flow.
+
+### VALIDATION_BASELINE
+- py -3 tools\validate_all.py
+- plus Flutter test only for Flutter/Dart changes or when recent Flutter work could be affected.
+
+## F. Output contract
+
+Every Codex output must include:
+- MODEL_ROUTING_CHECK result
+- changed files
+- validation commands and pass/fail
+- commit hash if committed
+- push result if pushed
+- final git status
+- explicit forbidden-surface confirmation
+
+## G. Anti-bloat rules
+
+- do not include full forbidden list in MINI prompts unless current pass changes that surface.
+- do not ask to read 20+ files unless necessary.
+- read affected canonical docs first.
+- prefer one follow-up fixup over speculative checks.
+- do not combine audit, implementation, and docs cleanup in one pass.
+- for docs-only passes, avoid Flutter test unless explicitly useful.
+
+## H. Escalation rule
+
+- architecture/scope/risk/evidence policy work -> DEEP_REVIEW.
+- product direction -> user decision.
+- deterministic implementation of accepted scope -> Codex.
+- unclear ownership -> stop and ask.

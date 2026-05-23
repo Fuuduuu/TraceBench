@@ -2,18 +2,23 @@
 
 ## Current pass
 
-`PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS`
+`MEMORY_SYSTEM_PROTOCOL_PASS`
 
 ## Goal
 
-Close out photo-event schema hardening audit as docs-only validation and governance ledger sync.
+Tighten memory ownership and anti-drift rules so future prompts can load stable context compactly.
 
 ## Allowed surfaces
 
+- AGENTS.md
+- docs/CURRENT_STATE.md
+- docs/MEMORY_PROTOCOL.md
+- docs/PROJECT_MEMORY.md
+- docs/TRUTH_INDEX.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS.md
+- docs/audit/MEMORY_SYSTEM_PROTOCOL_PASS.md
 
 ## Forbidden surfaces
 
@@ -26,12 +31,7 @@ Close out photo-event schema hardening audit as docs-only validation and governa
 - test/**
 - pubspec.yaml
 - pubspec.lock
-- docs/PROJECT_MEMORY.md
 - docs/PROTECTED_SURFACES.md
-- docs/PHOTO_FLOW_SPEC.md
-- docs/BOARD_GRAPH_SPEC.md
-- docs/PROJECT_ZIP_SPEC.md
-- docs/FLUTTER_UI_SPEC.md
 - Project ZIP tooling/files
 - any events.jsonl
 - any known_facts.json

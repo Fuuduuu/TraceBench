@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS`
+`MEMORY_SYSTEM_PROTOCOL_PASS`
 
 ## Completed pass history
 
@@ -41,8 +41,10 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | completed | Add remove_component repair action semantics and invariants for component removal path. |
 | COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile component edit event model docs ledger drift and cooldown governance. |
 | ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Fix ACTIVE_SCOPE_LOCK docs-ledger-only drift. |
-| DOCS_DRIFT_MINI_CLEANUP_02_PASS | DOCS_SYNC | completed | Run docs drift mini cleanup after countdown reached 0. |
+| DOCS_DRIFT_MINI_CLEANUP_02_PASS | DOCS_SYNC | completed | Run docs mini cleanup after countdown reached 0. |
 | PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | completed | Close out photo-event schema hardening audit and consistency check as docs-ledger-only. |
+| PROMPTING_PROTOCOL_COMPRESSION_PASS | DOCS_SYNC | completed | Compress prompting protocol and standardize sniper prompt format. |
+| MEMORY_SYSTEM_PROTOCOL_PASS | DOCS_SYNC | completed | Add compact memory ownership protocol and anti-drift rules. |
 
 ## Planned / Recommended
 
@@ -67,4 +69,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 4
+Current countdown: 3

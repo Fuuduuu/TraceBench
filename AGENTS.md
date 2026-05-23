@@ -10,9 +10,20 @@ Human is the sensor. AI is the graph engine.
 
 AI must never invent measurements, hidden-layer connections, component identities, or confirmed facts.
 
+## Prompting discipline
+
+Future prompts must follow `docs/PROMPTING_PROTOCOL.md`.
+
+Preferred sniper prompt format:
+
+`PASS_ID / Lane / Gate / Read / Write only / Never / Do / Validate / Output / Stop if`
+
+Do not paste long project history when canonical docs already contain it.
+Keep pass goals narrow, verifiable, and auditable.
+
 ## Current phase
 
-Sprint 1 — FLUTTER_VIEWER_SHELL_PASS
+DOCS_SYNC governance pass (prompting protocol compression).
 
 ## Sprint 1 scope
 
@@ -58,13 +69,15 @@ Forbidden in Sprint 1:
 
 ## Required read order before changes
 
-1. `docs/PROJECT_MEMORY.md`
-2. `docs/ACTIVE_SCOPE_LOCK.md`
-3. `docs/SOURCES_INDEX_CURRENT.md`
-4. `docs/MEMORY_REGISTRY.yml`
-5. `docs/PASS_QUEUE.md`
-6. `docs/PROMPTING_PROTOCOL.md`
-7. `docs/PROTECTED_SURFACES.md`
+1. `docs/CURRENT_STATE.md`
+2. `docs/PASS_QUEUE.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/PROJECT_MEMORY.md`
+5. Relevant spec/audit docs for the active pass.
+
+Do not load full audit history by default.
+
+Follow `docs/MEMORY_PROTOCOL.md` for memory ownership updates.
 
 Do not read archive by default.
 Do not treat `PROJECT_STATE.yml` as canonical truth.

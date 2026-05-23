@@ -132,11 +132,15 @@ If a fact matters for future work, place it in its canonical owner file.
 - Then read the minimal needed canonical owner for facts and relevant spec/audit docs.
 - Update only one layer per change when possible.
 
-### 7) Anti-bloat rules for future prompts
+### 7) Subconscious routing anti-bloat (docs-only)
+
+Preserve the current next recommended pass from `docs/PASS_QUEUE.md` unless the active pass explicitly changes queue routing.
+
+### 8) Anti-bloat rules for future prompts
 
 - Use pointers, not duplicated long history.
 - Keep `CURRENT_STATE.md` compact and bounded.
 - Keep `PASS_QUEUE.md` as pass routing owner, not architecture documentation.
 - Keep `ACTIVE_SCOPE_LOCK.md` limited to active scope.
-- Preserve `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` as planned recommendation in PASS_QUEUE unless queue changes are explicitly required.
+- Keep queue-driven routing as the source of truth for planned/next steps.
 

@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PASS_QUEUE_REVIEW_PASS`
-- Next recommended pass: `NEXT_PASS_SELECTION_AUDIT_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `1`
+- Current pass: `NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_04_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -29,7 +29,11 @@ Branch: main
 - `PASS_QUEUE_REVIEW_PASS` completed:
   - PASS_QUEUE current pass and next recommendation were reviewed for staleness.
   - No implementation pass was re-recommended.
-- Next selected pass is `NEXT_PASS_SELECTION_AUDIT_PASS` after queue audit.
+- `NEXT_PASS_SELECTION_AUDIT_PASS` completed:
+  - Queue selection indicated no implementation pass was ready to run.
+- `NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS` completed:
+  - NEXT-pass audit closure was recorded.
+  - Routing drift was fixed and next recommended set to `DOCS_DRIFT_MINI_CLEANUP_04_PASS`.
 
 ## Validation baseline
 

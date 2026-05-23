@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PASS_QUEUE_REVIEW_PASS`
+`NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS`
 
 ## Goal
 
-Review PASS_QUEUE for queue/ledger consistency and select the next valid pass.
+Close out NEXT_PASS_SELECTION_AUDIT_PASS and fix docs-ledger routing drift.
 
 ## Allowed surfaces
 
@@ -14,7 +14,9 @@ Review PASS_QUEUE for queue/ledger consistency and select the next valid pass.
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PASS_QUEUE_REVIEW_PASS.md
+- docs/MEMORY_PROTOCOL.md
+- docs/audit/NEXT_PASS_SELECTION_AUDIT_PASS.md
+- docs/audit/NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

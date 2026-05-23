@@ -1,0 +1,24 @@
+# NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS
+
+- Status: completed
+- Lane: DOCS_SYNC
+- Scope: docs-ledger fixup only
+- Files changed:
+  - docs/CURRENT_STATE.md
+  - docs/PASS_QUEUE.md
+  - docs/ACTIVE_SCOPE_LOCK.md
+  - docs/MEMORY_PROTOCOL.md
+  - docs/AUDIT_INDEX.md
+  - docs/audit/NEXT_PASS_SELECTION_AUDIT_PASS.md
+  - docs/audit/NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS.md
+- Validation:
+  - `py -3 tools\validate_all.py` (passed)
+- Summary:
+  - Closed out NEXT_PASS_SELECTION_AUDIT_PASS and corrected required queue-state routing drift.
+  - Marked NEXT_PASS_SELECTION_AUDIT_PASS and NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS as completed in PASS_QUEUE.
+  - Updated current pass and next recommended pass to `DOCS_DRIFT_MINI_CLEANUP_04_PASS`.
+  - Decremented docs drift countdown to `0`.
+  - Replaced stale hardcoded memory recommendation in MEMORY_PROTOCOL with queue-driven rule.
+- Confirmation:
+  - No product/schema/tool/test/sample/asset/Flutter/ZIP/event/known_facts changes.
+  - Docs-only governance scope respected.

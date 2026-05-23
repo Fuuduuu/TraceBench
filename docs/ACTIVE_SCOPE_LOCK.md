@@ -2,12 +2,11 @@
 
 ## Current pass
 
-`COMPONENT_EDIT_EVENT_MODEL_PASS`
+`COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS`
 
 ## Goal
 
-Add component removal semantics through repair_action_recorded(action_type="remove_component") in
-schema/validator/materializer/tests/docs without changing UI or project ZIP tooling.
+Fix docs ledger drift after COMPONENT_EDIT_EVENT_MODEL_PASS while keeping implementation scope unchanged.
 
 ## Allowed surfaces
 
@@ -21,6 +20,7 @@ schema/validator/materializer/tests/docs without changing UI or project ZIP tool
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
 - docs/audit/COMPONENT_EDIT_EVENT_MODEL_PASS.md
+- docs/audit/COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS.md
 
 ## Forbidden surfaces
 
@@ -46,6 +46,15 @@ schema/validator/materializer/tests/docs without changing UI or project ZIP tool
 - cloud sync
 - schema connected-net invalidation behavior changes
 - event envelope semantic changes
+- event-writing implementation
+- component editing UI
+- Flutter/Dart code changes
+- camera/OCR/CV
+- AI diagnostics/fault probability
+- source search
+- KiCad/boardview
+- BLE multimeter
+- cloud sync
 
 ## Verify
 

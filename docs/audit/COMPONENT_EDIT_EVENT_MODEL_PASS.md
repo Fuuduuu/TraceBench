@@ -24,6 +24,7 @@ No Flutter/UI changes.
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
+- docs/audit/COMPONENT_EDIT_EVENT_MODEL_PASS.md
 
 ## Validation
 

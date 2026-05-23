@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`COMPONENT_EDIT_EVENT_MODEL_PASS`
+`COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -39,6 +39,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_GRAPH_VIEW_PASS | FLUTTER_PASS | completed | Add read-only Flutter board graph route, projector/layout, and projection tests. |
 | FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS | FLUTTER_PASS | completed | Fix formatting, test hangs, and projection index correctness for board graph validation. |
 | COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | completed | Add remove_component repair action semantics and invariants for component removal path. |
+| COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile component edit event model docs ledger drift and cooldown governance. |
 
 ## Planned / Recommended
 
@@ -46,12 +47,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 |---|---|---|
 | PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | planned |
 | FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | planned |
+| DOCS_DRIFT_MINI_CLEANUP_02_PASS | DOCS_SYNC | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_02_PASS | DOCS_SYNC | recommended |
+| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | planned |
 
 ## Deferred / not active
 
@@ -64,5 +67,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 1
 Current countdown: 0

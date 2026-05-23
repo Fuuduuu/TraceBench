@@ -21,6 +21,7 @@ REQUIRED_FILES = [
     "metadata/schema_versions.json",
     "exports/customer_report.md",
 ]
+FORBIDDEN_V1_FILES = {"board_graph.json", "view_state.json"}
 FORBIDDEN_PATH_PARTS = {".git", ".codex", "__pycache__", ".env", "logs"}
 
 
@@ -98,6 +99,42 @@ def _validate_known_facts(base: Path, errors: list[str]) -> dict | None:
     return _run_json_load(base / "known_facts.json", "known_facts.json", errors)
 
 
+def _validate_forbidden_v1_entries(names: set[str], errors: list[str]) -> bool:
+    forbidden = {
+        name
+        for name in names
+        if Path(name.replace("\\", "/")).name in FORBIDDEN_V1_FILES
+    }
+    if forbidden:
+        errors.extend(f"forbidden V1 ZIP artifact present: {name}" for name in sorted(forbidden))
+        return False
+    return True
+
+
+def _warn_missing_optional_photo_files(base: Path, warnings: list[str], errors: list[str]) -> None:
+    known_facts = _run_json_load(base / "known_facts.json", "known_facts.json", errors)
+    if known_facts is None:
+        return
+
+    photos = known_facts.get("photos")
+    if not isinstance(photos, list):
+        return
+
+    for photo in photos:
+        path_value = photo.get("path") if isinstance(photo, dict) else None
+        if not isinstance(path_value, str) or not path_value.strip():
+            continue
+
+        photo_path = Path(path_value)
+        if photo_path.is_absolute():
+            target = photo_path
+        else:
+            target = base / photo_path
+
+        if not target.exists():
+            warnings.append(f"missing optional photo file: {path_value}")
+
+
 def _validate_metadata(base: Path, errors: list[str]) -> bool:
     return _run_json_load(base / "metadata" / "schema_versions.json", "metadata/schema_versions.json", errors) is not None
 
@@ -121,12 +158,18 @@ def _validate_project_directory(base_path: Path, errors: list[str]) -> bool:
     }
     if not _validate_paths(names, errors):
         return False
+    if not _validate_forbidden_v1_entries(names, errors):
+        return False
 
     manifest = _run_json_load(base_path / "manifest.json", "manifest.json", errors)
     manifest_project_id = _validate_manifest(manifest, errors)
     if not _run_events_validation(base_path / "events.jsonl", errors):
         pass
     _validate_known_facts(base_path, errors)
+    warnings: list[str] = []
+    _warn_missing_optional_photo_files(base_path, warnings, errors)
+    for message in warnings:
+        print(f"[WARN] {message}")
     if not _validate_metadata(base_path, errors):
         pass
     if manifest_project_id is not None:

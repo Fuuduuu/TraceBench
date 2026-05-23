@@ -44,6 +44,14 @@ def _rewrite_zip(source_zip: Path, target_zip: Path, mutate) -> None:
                 zf_out.write(path, arcname)
 
 
+def _ensure_project_profiles_dir(project_dir: Path) -> None:
+    profiles_dir = project_dir / "device_profiles"
+    profiles_dir.mkdir(exist_ok=True)
+    profile_path = profiles_dir / "generic.json"
+    if not profile_path.exists():
+        profile_path.write_text("{}", encoding="utf-8")
+
+
 class ProjectZipTests(unittest.TestCase):
     def test_export_project_zip_creates_required_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -208,6 +216,124 @@ class ProjectZipTests(unittest.TestCase):
             with ZipFile(output_zip, "r") as zf:
                 report_text = zf.read("exports/customer_report.md").decode("utf-8")
             self.assertIn("Pelle PV20", report_text)
+
+    def test_zip_rejects_board_graph_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = Path(tmpdir) / "good.zip"
+            bad_zip = Path(tmpdir) / "bad.zip"
+
+            export_result = _export_project_zip(SAMPLE_DIR, good_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            def mutate(path):
+                (path / "board_graph.json").write_text("{\"nodes\": []}\n", encoding="utf-8")
+
+            _rewrite_zip(good_zip, bad_zip, mutate)
+            validate_result = _validate_project_zip(bad_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("forbidden V1 ZIP artifact", validate_result.stdout + validate_result.stderr)
+
+    def test_zip_rejects_view_state_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = Path(tmpdir) / "good.zip"
+            bad_zip = Path(tmpdir) / "bad.zip"
+
+            export_result = _export_project_zip(SAMPLE_DIR, good_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            def mutate(path):
+                (path / "view_state.json").write_text("{\"state\": []}\n", encoding="utf-8")
+
+            _rewrite_zip(good_zip, bad_zip, mutate)
+            validate_result = _validate_project_zip(bad_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("forbidden V1 ZIP artifact", validate_result.stdout + validate_result.stderr)
+
+    def test_export_does_not_include_forbidden_v1_artifacts(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal_with_forbidden"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+
+            (project_dir / "board_graph.json").write_text("{\"nodes\": []}\n", encoding="utf-8")
+            (project_dir / "view_state.json").write_text("{\"zoom\": 1}\n", encoding="utf-8")
+
+            output_zip = Path(tmpdir) / "project.zip"
+            result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = {name.replace("\\", "/") for name in zf.namelist()}
+            self.assertNotIn("board_graph.json", names)
+            self.assertNotIn("view_state.json", names)
+
+    def test_project_dir_rejects_board_graph_json_if_directory_validation_supported(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            (project_dir / "board_graph.json").write_text("{\"nodes\": []}\n", encoding="utf-8")
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("forbidden V1 ZIP artifact", validate_result.stdout + validate_result.stderr)
+
+    def test_project_dir_rejects_view_state_json_if_directory_validation_supported(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            (project_dir / "view_state.json").write_text("{\"zoom\": 1}\n", encoding="utf-8")
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("forbidden V1 ZIP artifact", validate_result.stdout + validate_result.stderr)
+
+    def test_customer_report_boundary_forbids_inference_claims(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(SAMPLE_DIR, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                report_text = zf.read("exports/customer_report.md").decode("utf-8")
+            report_lower = report_text.lower()
+            forbidden_terms = [
+                "diagnosis",
+                "fault probability is",
+                "fault probability estimate",
+                "inferred nets",
+                "inferred measurements",
+                "inferred component identity",
+            ]
+            for term in forbidden_terms:
+                self.assertNotIn(term, report_lower)
+            # Explicitly allow informational scope notes such as:
+            # "fault probability are out of scope" while still enforcing claim-free wording.
+            self.assertNotIn("ai diagnosed", report_lower)
+
+    def test_customer_report_keeps_visual_trace_non_electrical(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(SAMPLE_DIR, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                report_text = zf.read("exports/customer_report.md").decode("utf-8")
+            report_lower = report_text.lower()
+            self.assertNotIn("visual trace measured", report_lower)
+            self.assertNotIn("visual trace confirms", report_lower)
+
+    def test_missing_optional_photo_file_is_warning_not_error(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            output = (validate_result.stdout + validate_result.stderr).lower()
+            self.assertIn("[warn]", output)
+            self.assertIn("missing optional photo file", output)
 
 
 if __name__ == "__main__":

@@ -23,6 +23,7 @@ REQUIRED_INPUT_FILES = (
     "manifest.json",
     "events.jsonl",
 )
+FORBIDDEN_EXPORT_FILES = {"board_graph.json", "view_state.json"}
 
 EXCLUDED_DIR_PARTS = {".git", ".codex", "__pycache__", "logs"}
 
@@ -104,6 +105,8 @@ def _collect_files(base_dir: Path, arc_prefix: str = "") -> Iterable[tuple[Path,
         if not path.is_file():
             continue
         if _is_excluded_path(path, base_dir):
+            continue
+        if path.name in FORBIDDEN_EXPORT_FILES:
             continue
         rel = path.relative_to(base_dir)
         arc_name = str((Path(arc_prefix) / rel).as_posix()) if arc_prefix else str(rel.as_posix())
@@ -191,3 +194,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

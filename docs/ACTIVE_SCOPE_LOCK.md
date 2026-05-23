@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_05_PASS`
+`PROJECT_ZIP_REPORT_HARDENING_PASS`
 
 ## Goal
 
-Run docs drift mini cleanup and queue/state alignment after countdown reached zero.
+Implement combined Project ZIP + customer report hardening scope.
 
 ## Allowed surfaces
 
@@ -14,14 +14,18 @@ Run docs drift mini cleanup and queue/state alignment after countdown reached ze
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
+- tools/export_project_zip.py
+- tools/import_project_zip.py
+- tools/validate_project_zip.py
+- tests/test_project_zip.py
 - docs/audit/PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS.md
 - docs/audit/PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_05_PASS.md
+- docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
 
 ## Forbidden surfaces
 
 - schemas/**
-- tools/**
+- tools/** (except listed allowed files)
 - tests/**
 - samples/**
 - assets/**
@@ -31,10 +35,11 @@ Run docs drift mini cleanup and queue/state alignment after countdown reached ze
 - pubspec.lock
 - events.jsonl
 - known_facts.json
-- Project ZIP tooling/files
 - board_graph.json
 - view_state.json
-- product behavior changes
+- Project ZIP tooling/files
+- project ZIP contract expansion
+- project behavior changes
 - Flutter/Dart implementation
 - event-writing implementation
 - component editing UI
@@ -46,8 +51,7 @@ Run docs drift mini cleanup and queue/state alignment after countdown reached ze
 - photo import/file picker
 - photo-derived identity/measurement/net/fault facts
 - visual_trace → measured/electrical net
-- schema/tool/materializer changes
-- Project ZIP contract changes
+- schema/tool/materializer semantic changes
 
 ## Verify
 

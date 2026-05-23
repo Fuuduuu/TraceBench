@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_02_PASS`
+`PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS`
 
 ## Completed pass history
 
@@ -42,19 +42,19 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile component edit event model docs ledger drift and cooldown governance. |
 | ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Fix ACTIVE_SCOPE_LOCK docs-ledger-only drift. |
 | DOCS_DRIFT_MINI_CLEANUP_02_PASS | DOCS_SYNC | completed | Run docs drift mini cleanup after countdown reached 0. |
+| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | completed | Close out photo-event schema hardening audit and consistency check as docs-ledger-only. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | recommended |
 | FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | planned |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | recommended |
+| FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 
@@ -67,4 +67,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

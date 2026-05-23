@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `WORK_INTAKE_SELECTION_PASS`
-- Next recommended pass: `WORK_INTAKE_REVIEW_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `3`
+- Current pass: `WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
+- Next recommended pass: `WORK_INTAKE_DEEP_REVIEW_PASS` (`DOCS_SYNC / AUDIT_ONLY`)
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -20,7 +20,7 @@ Branch: main
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
-- Routing is set for `WORK_INTAKE_REVIEW_PASS` after intake review.
+- Routing is set for `WORK_INTAKE_DEEP_REVIEW_PASS` after review alignment.
 - Full prompt/memory governance path is stable.
 
 ## Validation baseline

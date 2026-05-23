@@ -48,3 +48,5 @@ Lazy-loading index for pass audit documents.
 | DOCS_DRIFT_MINI_CLEANUP_04_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_04_PASS.md | completed |
 | SCOPE_DRIFT_CHECK_PROTOCOL_PASS | docs/audit/SCOPE_DRIFT_CHECK_PROTOCOL_PASS.md | completed |
 | WORK_INTAKE_SELECTION_PASS | docs/audit/WORK_INTAKE_SELECTION_PASS.md | completed |
+| WORK_INTAKE_REVIEW_PASS | docs/audit/WORK_INTAKE_REVIEW_PASS.md | completed |
+| WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS | docs/audit/WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS.md | completed |

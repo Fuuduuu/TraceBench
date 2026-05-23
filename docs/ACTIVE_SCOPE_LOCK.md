@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`WORK_INTAKE_SELECTION_PASS`
+`WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
 
 ## Goal
 
-Review work-intake and deferred/planned queues and select next safe TraceBench pass.
+Record WORK_INTAKE_REVIEW_PASS result and align current pass/state/scope-lock for work-intake routing.
 
 ## Allowed surfaces
 
@@ -21,7 +21,8 @@ Review work-intake and deferred/planned queues and select next safe TraceBench p
 - docs/CURRENT_STATE.md
 - docs/WORK_INTAKE_INDEX.md
 - docs/DEFERRED_FEATURES.md
-- docs/audit/WORK_INTAKE_SELECTION_PASS.md
+- docs/audit/WORK_INTAKE_REVIEW_PASS.md
+- docs/audit/WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

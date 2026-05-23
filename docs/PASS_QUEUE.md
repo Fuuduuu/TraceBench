@@ -11,13 +11,15 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`WORK_INTAKE_SELECTION_PASS`
+`WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
 | WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
+| WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | completed (NEEDS_SMALL_FIXUP) | Work-intake review found no safe implementation-ready candidate; deferred work is blocked and implementation remains pending. |
+| WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS | DOCS_SYNC | completed | Record review audit and align current pass/state/lock for work-intake intake routing. |
 | SCOPE_DRIFT_CHECK_PROTOCOL_PASS | DOCS_SYNC | completed | Add canonical scope drift check protocol and wire it into prompt/model/routing gates. |
 | PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | completed | Queue review and pass-routing confirmation after queue queue review. |
@@ -66,14 +68,15 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | planned |
+| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC / AUDIT_ONLY | planned |
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | recommended |
+| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC / AUDIT_ONLY | recommended |
 
-- Select the next planned work item after queue-routing fixup; if none is safe, use WORK_INTAKE_SELECTION_PASS.
+- Select the next planned work item after queue-routing fixup. No safe implementation-ready candidate exists currently; deeper intake review is required before implementation.
+- Note: Queue has no safe implementation-ready candidate; deeper intake review needed.
 
 ## Deferred / not active
 
@@ -86,4 +89,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

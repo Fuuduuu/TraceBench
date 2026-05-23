@@ -4,6 +4,10 @@
 
 Completed
 
+## Commit
+
+`2eb6fb2`
+
 ## Lane
 
 TOOLS_PASS
@@ -32,6 +36,9 @@ Lock and implement combined Project ZIP + customer report hardening from scope l
 
 ## Results
 
+Validation passed:
+
+- `19` project ZIP tests passed.
 - `board_graph.json` and `view_state.json` are now treated as hard V1 ZIP errors in validation.
 - Validation now emits warning-level messages for missing optional photo files referenced in `known_facts.json`.
 - Export path skips forbidden artifacts instead of including them.

@@ -2,30 +2,25 @@
 
 ## Current pass
 
-`PROJECT_ZIP_REPORT_HARDENING_PASS`
+`PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS`
 
 ## Goal
 
-Implement combined Project ZIP + customer report hardening scope.
+Fix docs-ledger drift after `PROJECT_ZIP_REPORT_HARDENING_PASS` acceptance.
 
 ## Allowed surfaces
 
-- docs/CURRENT_STATE.md
-- docs/PASS_QUEUE.md
-- docs/ACTIVE_SCOPE_LOCK.md
-- docs/AUDIT_INDEX.md
-- tools/export_project_zip.py
-- tools/import_project_zip.py
-- tools/validate_project_zip.py
-- tests/test_project_zip.py
-- docs/audit/PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS.md
-- docs/audit/PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS.md
-- docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
+docs/CURRENT_STATE.md
+docs/PASS_QUEUE.md
+docs/ACTIVE_SCOPE_LOCK.md
+docs/AUDIT_INDEX.md
+docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
+docs/audit/PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS.md
 
 ## Forbidden surfaces
 
 - schemas/**
-- tools/** (except listed allowed files)
+- tools/**
 - tests/**
 - samples/**
 - assets/**

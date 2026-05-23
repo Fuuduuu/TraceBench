@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_05_PASS`
-- Next recommended pass: `PROJECT_ZIP_REPORT_HARDENING_PASS` (`TOOLS_PASS`)
-- Docs drift countdown: `5`
+- Current pass: `PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS`
+- Next recommended pass: `PASS_QUEUE_REVIEW_02_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -17,10 +17,11 @@ Branch: main
   - Project Overview includes a Photos entry for read-only navigation.
   - Photo list is read-only and sourced from `known_facts.json`.
   - no camera, photo import, OCR/CV, or event-writing was introduced.
-- `PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS` is formalized and accepted:
-  - combined Project ZIP + report hardening scope
-  - `board_graph.json` and `view_state.json` are V1 ZIP hard errors
-  - customer report boundary is explicit and evidence-only.
+- `PROJECT_ZIP_REPORT_HARDENING_PASS` is accepted:
+  - `board_graph.json` and `view_state.json` are rejected as V1 ZIP hard errors
+  - export/import paths skip or reject these forbidden artifacts
+  - optional missing photo references remain warning-only
+  - customer report boundary tests were added and enforce evidence-only wording.
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.

@@ -41,3 +41,4 @@ Lazy-loading index for pass audit documents.
 | DOCS_DRIFT_MINI_CLEANUP_03_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_03_PASS.md | completed |
 | FLUTTER_PHOTO_LIST_PASS | docs/audit/FLUTTER_PHOTO_LIST_PASS.md | completed |
 | FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS | docs/audit/FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS.md | completed |
+| FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS | docs/audit/FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS.md | completed |

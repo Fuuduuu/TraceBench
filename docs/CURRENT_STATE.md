@@ -3,21 +3,25 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_03_PASS`
-- Next recommended pass: `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `5`
+- Current pass: `FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS`
+- Next recommended pass: `PASS_QUEUE_REVIEW_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
 - Board graph materializer behavior is accepted (`BOARD_GRAPH_MATERIALIZER_PASS`).
 - Read-only Flutter board graph view is accepted (`FLUTTER_GRAPH_VIEW_PASS`).
 - Component removal is represented only by `repair_action_recorded(action_type="remove_component")` (`COMPONENT_EDIT_EVENT_MODEL_PASS`).
+- `FLUTTER_PHOTO_LIST_PASS` is accepted:
+  - `/project/photos` route is available.
+  - Project Overview includes a Photos entry for read-only navigation.
+  - Photo list is read-only, rendering evidence from `known_facts.json` through existing project state/model flow.
+  - no camera, photo import, OCR/CV, or event-writing was introduced.
 - `BOARD_GRAPH_MATERIALIZER_PASS` includes component update patching, `component_marked_unknown`, and `component_pin_index`.
 - Board graph view uses in-memory `BoardGraphProjection` with deterministic `graph_layout` and no persisted layout cache.
 - Photo event schema hardening and consistency audit is accepted (`PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS`).
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
-- Photo list/tab is future-scoped; no camera/OCR/CV or event-writing introduced.
 - `repair_action_recorded` removal preserves component history and identity fields.
 - Full prompt/memory governance audit (`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS`) found system structure sound; only stale current-pass pointers required docs-ledger fixup.
 - `PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS` corrected stale scope-lock, queue, and current-state pointers.

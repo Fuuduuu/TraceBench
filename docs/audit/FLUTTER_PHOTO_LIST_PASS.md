@@ -6,6 +6,7 @@
 
 ## Files changed
 
+- Commit: `a8f2236`
 - lib/app/router.dart
 - lib/features/project/screens/project_overview_screen.dart
 - lib/features/photos/screens/photo_list_screen.dart
@@ -22,6 +23,15 @@
 - `py -3 tools\validate_all.py`
 - Flutter app test run:
   - `C:\\Users\\Kasutaja\\Desktop\\flutter\\flutter\\bin\\flutter.bat test --reporter expanded`
+- Full Flutter test run status: passed
+
+## Evidence and scope checks
+
+- Added `/project/photos` route.
+- Added Project Overview entry for Photos navigation.
+- Added read-only photo evidence view (no edit/capture/import flow).
+- Source remains `known_facts.json` through existing project loading/model flow.
+- `visual_trace` is presented as visual evidence only.
 
 ## Outcome
 

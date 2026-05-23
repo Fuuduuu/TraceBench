@@ -2,54 +2,50 @@
 
 ## Current pass
 
-`FLUTTER_PHOTO_LIST_PASS`
+`FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS`
 
 ## Goal
 
-Implement read-only Flutter photo evidence list/view for V1.
+Fix docs-ledger drift after accepted photo list implementation.
 
 ## Allowed surfaces
 
-- docs/ACTIVE_SCOPE_LOCK.md
+- docs/CURRENT_STATE.md
 - docs/PASS_QUEUE.md
+- docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- lib/app/router.dart
-- lib/features/project/screens/project_overview_screen.dart
-- lib/features/photos/**
-- lib/shared/models/known_facts.dart (only if a minimal parse gap appears)
-- test/unit/known_facts_parsing_test.dart
-- test/widget/project_overview_screen_test.dart
-- test/widget/photo_list_screen_test.dart
-- test/integration/photo_list_end_to_end_test.dart
 - docs/audit/FLUTTER_PHOTO_LIST_PASS.md
+- docs/audit/FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS.md
 
 ## Forbidden surfaces
 
 - schemas/**
 - tools/**
+- tests/**
 - samples/**
 - assets/**
-- lib/shared/models/known_facts.dart (no behavior/schema changes)
+- lib/**
+- test/**
 - pubspec.yaml
 - pubspec.lock
-- Project ZIP tooling/files
-- any events.jsonl
-- any known_facts.json
+- events.jsonl
+- known_facts.json
 - board_graph.json
 - view_state.json
+- Project ZIP tooling/files
 - product behavior changes
+- Flutter/Dart implementation
 - event-writing implementation
 - component editing UI
-- photo import / file picker
-- annotation editing
 - camera/OCR/CV
 - AI diagnostics/fault probability
 - source search
 - KiCad/boardview
 - BLE/cloud
+- photo import/file picker
 - photo-derived identity/measurement/net/fault facts
-- visual_trace -> measured/electrical net promotion
-- schema/tool/materializer behavior changes
+- visual_trace → measured/electrical net promotion
+- schema/tool/materializer changes
 - Project ZIP contract changes
 
 ## Verify

@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
+- Current pass: `WORK_INTAKE_REVIEW_PASS`
 - Next recommended pass: `WORK_INTAKE_DEEP_REVIEW_PASS` (`DOCS_SYNC / AUDIT_ONLY`)
-- Docs drift countdown: `2`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 

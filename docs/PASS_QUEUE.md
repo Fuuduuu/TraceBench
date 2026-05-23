@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
+`WORK_INTAKE_REVIEW_PASS`
 
 ## Completed pass history
 
@@ -89,4 +89,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

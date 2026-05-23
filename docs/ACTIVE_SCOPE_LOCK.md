@@ -2,27 +2,21 @@
 
 ## Current pass
 
-`WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS`
+`WORK_INTAKE_REVIEW_PASS`
 
 ## Goal
 
-Record WORK_INTAKE_REVIEW_PASS result and align current pass/state/scope-lock for work-intake routing.
+Review planned, deferred, and protected-surface candidates; confirm no safe implementation path is currently available; select next safe pass.
 
 ## Allowed surfaces
 
-- AGENTS.md
-- docs/SCOPE_DRIFT_CHECK.md
-- docs/PROMPTING_PROTOCOL.md
-- docs/MODEL_ROUTING.md
+- docs/CURRENT_STATE.md
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/SCOPE_DRIFT_CHECK_PROTOCOL_PASS.md
-- docs/CURRENT_STATE.md
 - docs/WORK_INTAKE_INDEX.md
 - docs/DEFERRED_FEATURES.md
 - docs/audit/WORK_INTAKE_REVIEW_PASS.md
-- docs/audit/WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

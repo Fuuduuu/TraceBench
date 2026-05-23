@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `WORK_INTAKE_REVIEW_PASS`
-- Next recommended pass: `WORK_INTAKE_DEEP_REVIEW_PASS` (`DOCS_SYNC / AUDIT_ONLY`)
-- Docs drift countdown: `1`
+- Current pass: `PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_05_PASS` (`DOCS_SYNC / DOCS_ONLY`)
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -17,11 +17,13 @@ Branch: main
   - Project Overview includes a Photos entry for read-only navigation.
   - Photo list is read-only and sourced from `known_facts.json`.
   - no camera, photo import, OCR/CV, or event-writing was introduced.
+- `PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS` is formalized and accepted:
+  - combined Project ZIP + report hardening scope
+  - `board_graph.json` and `view_state.json` are V1 ZIP hard errors
+  - customer report boundary is explicit and evidence-only.
 - `visual_trace` remains visual-only evidence; no automatic electrical promotion.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
-- Routing is set for `WORK_INTAKE_DEEP_REVIEW_PASS` after review alignment.
-- Full prompt/memory governance path is stable.
 
 ## Validation baseline
 

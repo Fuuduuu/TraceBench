@@ -157,6 +157,497 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertNotIn("mpn", component)
         self.assertNotIn("marking", component)
 
+    def test_remove_component_preserves_component_history(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "status": "identified",
+                    "marking": "K72",
+                    "mpn": "MPSA42",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-01-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000004",
+                "project_id": "prj_test",
+                "sequence": 4,
+                "created_at": "2026-01-01T00:03:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertIsNotNone(component)
+        self.assertEqual(component.get("status"), "identified")
+        self.assertEqual(component.get("installation_status"), "removed")
+        self.assertEqual(component.get("removed_by_event_id"), "evt_000004")
+        self.assertIn("marking", component)
+        self.assertEqual(component.get("marking"), "K72")
+        self.assertIn("mpn", component)
+        self.assertEqual(component.get("mpn"), "MPSA42")
+        self.assertEqual(len(data.get("pins", [])), 1)
+        self.assertIn("Q2.1", {pin.get("pin_id") for pin in data.get("pins", [])})
+
+    def test_remove_component_marks_component_installation_status_removed(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA2",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("installation_status"), "removed")
+
+    def test_remove_component_sets_removed_by_event_id(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA3",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("removed_by_event_id"), "evt_000002")
+
+    def test_remove_component_does_not_change_component_status(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "status": "confirmed"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA4",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("status"), "confirmed")
+
+    def test_remove_component_does_not_clear_identity_fields(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "type": "QFN",
+                    "package": "SOT-23",
+                    "marking": "K72",
+                    "mpn": "MPSA42",
+                    "status": "confirmed",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA5",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("type"), "QFN")
+        self.assertEqual(component.get("package"), "SOT-23")
+        self.assertEqual(component.get("marking"), "K72")
+        self.assertEqual(component.get("mpn"), "MPSA42")
+
+    def test_remove_component_marks_direct_measurements_stale(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-01-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000004",
+                "project_id": "prj_test",
+                "sequence": 4,
+                "created_at": "2026-01-01T00:03:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA6",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        measurement = next(item for item in data["measurements"] if item.get("measurement_id") == "M1")
+        self.assertEqual(measurement.get("validity_status"), "stale_after_repair")
+        self.assertEqual(measurement.get("valid_until_event_id"), "evt_000004")
+
+    def test_remove_component_does_not_delete_pins_or_measurements(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-01-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000004",
+                "project_id": "prj_test",
+                "sequence": 4,
+                "created_at": "2026-01-01T00:03:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA7",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        self.assertTrue(data["pins"])
+        self.assertTrue(data["measurements"])
+        self.assertTrue(any(pin.get("pin_id") == "Q2.1" for pin in data["pins"]))
+        self.assertTrue(any(measurement.get("measurement_id") == "M1" for measurement in data["measurements"]))
+
+    def test_remove_component_does_not_create_nets_or_measurements(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-01-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA8",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        self.assertFalse(data.get("nets"))
+
+    def test_remove_component_does_not_write_board_graph_or_view_state(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_path = Path(tmpdir) / "events.jsonl"
+            output_path = Path(tmpdir) / "known_facts.json"
+            with temp_path.open("w", encoding="utf-8") as handle:
+                handle.write(
+                    "\n".join(
+                        [
+                            json.dumps(
+                                {
+                                    "schema_version": "1.0",
+                                    "event_id": "evt_000001",
+                                    "project_id": "prj_test",
+                                    "sequence": 1,
+                                    "created_at": "2026-01-01T00:00:00Z",
+                                    "actor": {"type": "user", "id": "u1"},
+                                    "event_type": "component_created",
+                                    "status": "accepted",
+                                    "payload": {"component_id": "Q2"},
+                                }
+                            ),
+                            "\n",
+                            json.dumps(
+                                {
+                                    "schema_version": "1.0",
+                                    "event_id": "evt_000002",
+                                    "project_id": "prj_test",
+                                    "sequence": 2,
+                                    "created_at": "2026-01-01T00:01:00Z",
+                                    "actor": {"type": "user", "id": "u1"},
+                                    "event_type": "repair_action_recorded",
+                                    "status": "accepted",
+                                    "payload": {
+                                        "repair_action_id": "RA9",
+                                        "action_type": "remove_component",
+                                        "targets": [{"target_type": "component", "target_id": "Q2"}],
+                                        "reason": "remove component",
+                                        "invalidation_policy": {
+                                            "direct_component_measurements": "stale_after_repair",
+                                            "connected_net_measurements": "no_change",
+                                        },
+                                    },
+                                }
+                            ),
+                        ]
+                    )
+                )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "tools/materialize_known_facts.py",
+                    str(temp_path),
+                    str(output_path),
+                ],
+                text=True,
+                capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertFalse((Path(tmpdir) / "board_graph.json").exists())
+            self.assertFalse((Path(tmpdir) / "view_state.json").exists())
+
+    def test_remove_component_does_not_mutate_samples_or_assets(self):
+        sample_path = Path("samples/pelle_pv20_minimal/events.jsonl")
+        known_facts_path = Path("samples/pelle_pv20_minimal/known_facts.json")
+        asset_known_facts_path = Path("assets/samples/pelle_pv20_minimal/known_facts.json")
+
+        sample_before = sample_path.read_text(encoding="utf-8")
+        known_facts_before = known_facts_path.read_text(encoding="utf-8")
+        asset_before = asset_known_facts_path.read_text(encoding="utf-8")
+        run_materialize(sample_path)
+        self.assertEqual(sample_path.read_text(encoding="utf-8"), sample_before)
+        self.assertEqual(known_facts_path.read_text(encoding="utf-8"), known_facts_before)
+        self.assertEqual(asset_known_facts_path.read_text(encoding="utf-8"), asset_before)
+
     def test_component_pin_index_in_output(self):
         data = run_materialize()
         component_pin_index = data.get("component_pin_index")

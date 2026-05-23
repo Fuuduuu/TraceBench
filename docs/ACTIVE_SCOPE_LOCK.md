@@ -2,54 +2,50 @@
 
 ## Current pass
 
-`FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS`
+`COMPONENT_EDIT_EVENT_MODEL_PASS`
 
 ## Goal
 
-Fix validation formatting and index correctness for the read-only board graph view.
+Add component removal semantics through repair_action_recorded(action_type="remove_component") in
+schema/validator/materializer/tests/docs without changing UI or project ZIP tooling.
 
 ## Allowed surfaces
 
+- schemas/events.schema.json
+- tools/validate_events_jsonl.py
+- tools/materialize_known_facts.py
+- tests/test_validate_events_jsonl.py
+- tests/test_materialize_known_facts.py
+- tests/test_graph_projection.py
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/FLUTTER_GRAPH_VIEW_PASS.md
-- docs/audit/FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS.md
-- lib/app/router.dart
-- lib/features/project/screens/project_overview_screen.dart
-- lib/shared/models/known_facts.dart
-- lib/features/board_graph/**
-- test/unit/known_facts_parsing_test.dart
-- test/unit/board_graph_projection_test.dart
-- test/widget/project_overview_screen_test.dart
-- test/widget/board_graph_screen_test.dart
-- test/integration/board_graph_end_to_end_test.dart
+- docs/audit/COMPONENT_EDIT_EVENT_MODEL_PASS.md
 
 ## Forbidden surfaces
 
-- `tools/**`
-- `schemas/**`
-- `samples/**`
-- `assets/**`
+- `lib/**`
+- `test/**` Flutter tests
 - `pubspec.yaml`
 - `pubspec.lock`
-- any Project ZIP tooling/files
-- any `events.jsonl`
-- any `known_facts.json`
+- Project ZIP tooling/files
+- `schemas/known_facts.schema.json` (unless explicit schema rejection requires minimal additive change)
+- `samples/**`
+- `assets/**`
 - `board_graph.json`
 - `view_state.json`
-- event-writing implementation
+- `event-writing` implementation
 - component editing UI
-- visual_trace → electrical net promotion
-- layout coordinates as canonical truth
-- event semantics or evidence-floor policy changes
-- Project ZIP contract changes
+- event-writing implementation
+- flutter code changes
 - camera/OCR/CV
 - AI diagnostics/fault probability
 - source search
 - KiCad/boardview workflows
 - BLE multimeter
 - cloud sync
+- schema connected-net invalidation behavior changes
+- event envelope semantic changes
 
 ## Verify
 

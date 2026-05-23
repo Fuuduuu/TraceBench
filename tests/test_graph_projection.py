@@ -305,3 +305,149 @@ class GraphProjectionMaterializationTests(unittest.TestCase):
         self.assertIn("Q2.1", pin_index["Q2"])
         self.assertIn("Q2.2", pin_index["Q2"])
         self.assertIn("Q2.3", pin_index["Q2"])
+
+    def test_remove_component_does_not_promote_visual_trace_to_measured_net(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_graph",
+                "sequence": 1,
+                "created_at": "2026-05-23T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "status": "identified"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_graph",
+                "sequence": 2,
+                "created_at": "2026-05-23T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_004",
+                    "mode": "normal",
+                    "path": "photos/top_004.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_graph",
+                "sequence": 3,
+                "created_at": "2026-05-23T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT300",
+                    "photo_id": "photo_top_004",
+                    "from_point": {"x": 1, "y": 1},
+                    "to_point": {"x": 3, "y": 3},
+                    "evidence_type": "visual_trace",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000004",
+                "project_id": "prj_graph",
+                "sequence": 4,
+                "created_at": "2026-05-23T00:03:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "VT300",
+                    "to": "Q2.1",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000001"],
+                    "trace_id": "VT300",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000005",
+                "project_id": "prj_graph",
+                "sequence": 5,
+                "created_at": "2026-05-23T00:04:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA-REMOVE-1",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        nets = data.get("nets", [])
+        visual_trace_ids = {
+            trace.get("trace_id")
+            for trace in data.get("visual_traces", [])
+            if isinstance(trace, dict)
+        }
+        for net in nets:
+            self.assertNotIn(net.get("trace_id"), visual_trace_ids)
+            self.assertNotIn(str(net.get("from", "")), visual_trace_ids)
+            self.assertNotIn(str(net.get("to", "")), visual_trace_ids)
+
+    def test_remove_component_does_not_require_board_graph_or_view_state(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_graph",
+                "sequence": 1,
+                "created_at": "2026-05-23T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_graph",
+                "sequence": 2,
+                "created_at": "2026-05-23T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA-REMOVE-2",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove component",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_path = Path(tmpdir) / "events.jsonl"
+            output_path = Path(tmpdir) / "known_facts.json"
+            with temp_path.open("w", encoding="utf-8") as handle:
+                for event in events:
+                    handle.write(json.dumps(event) + "\n")
+
+            result = subprocess.run(
+                [sys.executable, "tools/materialize_known_facts.py", str(temp_path), str(output_path)],
+                text=True,
+                capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertFalse((Path(tmpdir) / "board_graph.json").exists())
+            self.assertFalse((Path(tmpdir) / "view_state.json").exists())

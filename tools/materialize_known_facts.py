@@ -239,6 +239,20 @@ def main() -> int:
             targets = payload.get("targets", [])
             policy = payload.get("invalidation_policy", {})
             direct_policy = policy.get("direct_component_measurements")
+            action_type = payload.get("action_type")
+
+            if action_type == "remove_component":
+                for target in targets:
+                    if not isinstance(target, dict):
+                        continue
+                    if target.get("target_type") != "component":
+                        continue
+                    target_id = target.get("target_id")
+                    for component in components:
+                        if component.get("component_id") == target_id:
+                            component["installation_status"] = "removed"
+                            component["removed_by_event_id"] = event_id
+                            break
 
             if direct_policy != "stale_after_repair":
                 continue

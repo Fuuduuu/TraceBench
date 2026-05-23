@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS`
+`COMPONENT_EDIT_EVENT_MODEL_PASS`
 
 ## Completed pass history
 
@@ -38,12 +38,12 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future read-only Flutter board graph view scope before implementation. |
 | FLUTTER_GRAPH_VIEW_PASS | FLUTTER_PASS | completed | Add read-only Flutter board graph route, projector/layout, and projection tests. |
 | FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS | FLUTTER_PASS | completed | Fix formatting, test hangs, and projection index correctness for board graph validation. |
+| COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | completed | Add remove_component repair action semantics and invariants for component removal path. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | recommended |
 | PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | planned |
 | FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | planned |
 
@@ -51,7 +51,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | recommended |
+| PHOTO_EVENT_SCHEMA_HARDENING_AUDIT_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 
@@ -65,3 +65,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 ## Docs drift countdown
 
 Current countdown: 1
+Current countdown: 0

@@ -25,3 +25,4 @@ Lazy-loading index for pass audit documents.
 | FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS | docs/audit/FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS.md | completed |
 | FLUTTER_GRAPH_VIEW_PASS | docs/audit/FLUTTER_GRAPH_VIEW_PASS.md | completed |
 | FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS | docs/audit/FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS.md | completed |
+| COMPONENT_EDIT_EVENT_MODEL_PASS | docs/audit/COMPONENT_EDIT_EVENT_MODEL_PASS.md | completed |

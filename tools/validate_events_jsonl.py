@@ -68,6 +68,25 @@ REPAIR_TARGET_TYPES = {
     "connector",
     "area",
 }
+ALLOWED_REPAIR_ACTION_TYPES = {
+    "replace_component",
+    "remove_component",
+    "rework_solder",
+    "clean_board",
+    "bypass_trace",
+    "cut_trace",
+    "other",
+}
+REMOVE_COMPONENT_ONLY_TARGET_TYPES = {"component"}
+REMOVE_COMPONENT_FORBIDDEN_KEYS = {
+    "after",
+    "replacement_component_id",
+    "replacement_component",
+    "replacement",
+    "donor_origin",
+    "new_marking",
+    "mpn",
+}
 
 MEASUREMENT_EVENT = "measurement_recorded"
 RESOLVABLE_CONFLICT_TYPES = {
@@ -270,9 +289,18 @@ def _validate_repair_action(
     line: int,
     errors: list[str],
     component_ids: set[str],
+    component_sequences: dict[str, int],
     pin_ids: set[str],
+    sequence: int,
 ) -> None:
     context = f"line {line}"
+    action_type = payload.get("action_type")
+    if action_type not in ALLOWED_REPAIR_ACTION_TYPES:
+        _error(errors, context, f"repair_action_recorded action_type {action_type!r} not supported")
+
+    if action_type == "remove_component" and "after" in payload:
+        _error(errors, context, "repair_action_recorded(action_type=remove_component) must not contain after")
+
     targets = payload.get("targets")
     if not isinstance(targets, list) or not targets:
         _error(errors, context, "repair_action_recorded requires non-empty typed targets array")
@@ -286,21 +314,66 @@ def _validate_repair_action(
         target_id = target.get("target_id")
         if target_type not in REPAIR_TARGET_TYPES:
             _error(errors, context, f"repair target {index} invalid target_type")
+            continue
+        if action_type == "remove_component":
+            if target_type not in REMOVE_COMPONENT_ONLY_TARGET_TYPES:
+                _error(
+                    errors,
+                    context,
+                    "remove_component target_type must be component",
+                )
+                continue
+            if "target_id" not in target:
+                _error(errors, context, "repair target 1 target_id required")
         if not isinstance(target_id, str) or not target_id:
             _error(errors, context, f"repair target {index} target_id required")
             continue
         if target_type == "component" and component_ids and target_id not in component_ids:
             _error(errors, context, f"repair target {index} references unknown component {target_id!r}")
+        if (
+            action_type == "remove_component"
+            and target_type == "component"
+            and target_id in component_sequences
+            and component_sequences[target_id] >= sequence
+        ):
+            _error(
+                errors,
+                context,
+                f"repair target {index} references component {target_id!r} created later than this action",
+            )
         if target_type == "pin" and target_id not in pin_ids:
             _error(errors, context, f"repair target {index} references unknown pin {target_id!r}")
+        if action_type == "remove_component":
+            for key in REMOVE_COMPONENT_FORBIDDEN_KEYS:
+                if key in payload:
+                    _error(
+                        errors,
+                        context,
+                        f"repair_action_recorded(action_type=remove_component) must not contain {key}",
+                    )
 
     invalidation = payload.get("invalidation_policy")
     if not isinstance(invalidation, dict):
         _error(errors, context, "repair_action_recorded requires invalidation_policy object")
         return
-    if invalidation.get("direct_component_measurements") not in {"stale_after_repair", "no_change"}:
+    direct_component_measurements = invalidation.get("direct_component_measurements")
+    if action_type == "remove_component":
+        if direct_component_measurements != "stale_after_repair":
+            _error(
+                errors,
+                context,
+                "direct_component_measurements must be 'stale_after_repair' for remove_component",
+            )
+    elif direct_component_measurements not in {"stale_after_repair", "no_change"}:
         _error(errors, context, "direct_component_measurements must be stale_after_repair|no_change")
-    if invalidation.get("connected_net_measurements") != "no_change":
+
+    if action_type == "remove_component" and invalidation.get("connected_net_measurements") != "no_change":
+        _error(
+            errors,
+            context,
+            "connected_net_measurements must be 'no_change' for remove_component",
+        )
+    elif invalidation.get("connected_net_measurements") != "no_change":
         _error(
             errors,
             context,
@@ -700,6 +773,7 @@ def main() -> None:
     conflict_id_counts: Counter[str] = Counter()
     conflict_type_by_id: dict[str, str] = {}
     claim_target_count: Counter[str] = Counter()
+    component_sequence_by_id: dict[str, int] = {}
 
     for _, event in events:
         event_id = event.get("event_id")
@@ -708,8 +782,11 @@ def main() -> None:
             all_event_ids.add(event_id)
         if event_type == "component_created":
             component_id = event.get("payload", {}).get("component_id")
+            sequence = event.get("sequence")
             if isinstance(component_id, str):
                 component_ids.add(component_id)
+                if isinstance(sequence, int) and event_id:
+                    component_sequence_by_id[component_id] = sequence
         if event_type == "pin_defined":
             pin_id = event.get("payload", {}).get("pin_id")
             if isinstance(pin_id, str):
@@ -760,7 +837,15 @@ def main() -> None:
             continue
 
         if event_type == "repair_action_recorded":
-            _validate_repair_action(payload, line_no, errors, component_ids, pin_ids)
+            _validate_repair_action(
+                payload,
+                line_no,
+                errors,
+                component_ids,
+                component_sequence_by_id,
+                pin_ids,
+                sequence,
+            )
             continue
 
         if event_type == "footprint_marked_not_populated":

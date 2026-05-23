@@ -32,6 +32,7 @@ live merge.
 - Import validates content before accepting output.
 - Export regenerates `known_facts.json` from `events.jsonl` before packaging,
   unless explicitly told not to.
+- `board_graph.json` and `view_state.json` are not included in V1 ZIP.
 - ZIP entry order is deterministic in V1 packaging; byte-for-byte
   determinism is not guaranteed across tools/environments.
 - V1 import/export is file-copy and file-copy based; no cloud sync.

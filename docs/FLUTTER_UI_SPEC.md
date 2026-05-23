@@ -217,9 +217,7 @@ But only after user confirms Flutter implementation should begin.
 
 ## Board graph view V1 scope lock
 
-### Future implementation pass
-
-`FLUTTER_GRAPH_VIEW_PASS`
+`FLUTTER_GRAPH_VIEW_PASS` is implemented (read-only).
 
 ### Scope
 
@@ -229,6 +227,7 @@ But only after user confirms Flutter implementation should begin.
 - Renderer: Flutter renderer reads `BoardGraphProjection` only.
 - Layout: V1 uses deterministic auto-layout (`graph_layout`) state in memory.
 - Persistence: no `board_graph.json`, no `view_state.json`, no persisted layout coordinates.
+- Route: `/project/graph` is available in the shell and opens as a read-only view.
 
 ### Behavioral rules
 

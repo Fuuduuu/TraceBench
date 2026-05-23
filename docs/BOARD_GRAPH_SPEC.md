@@ -271,9 +271,9 @@ Current available events:
 Decision:
 
 - No `component_removed` event in V1.
-- Future component removal path uses `repair_action_recorded(action_type=remove_component)`.
-- `action_type=remove_component` remains future schema work.
+- Component removal uses `repair_action_recorded(action_type=remove_component)`.
 - Removed components stay in history and are not deleted.
+- `component_pin_index` is an optional known-facts projection input for graph projection.
 
 ## 14. Tests required for future passes
 

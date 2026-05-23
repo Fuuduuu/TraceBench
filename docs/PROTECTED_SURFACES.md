@@ -15,3 +15,12 @@ Changing these requires a dedicated protected-surface pass:
 - generic device profile fallback
 - Project ZIP self-contained contract
 - AI no-invented-measurement rule
+
+- events.jsonl is the only canonical truth.
+- known_facts.json is a materialized domain projection.
+- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- renderer/view code is read-only.
+- visual evidence (including visual traces) is visual-only and must not promote to measured electrical nets.
+- no `component_removed` event in V1.
+- component removal is modeled as `repair_action_recorded(action_type="remove_component")`.
+- removed components stay in history and do not trigger connected-net invalidation.

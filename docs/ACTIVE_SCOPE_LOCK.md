@@ -2,18 +2,24 @@
 
 ## Current pass
 
-`ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_02_PASS`
 
 ## Goal
 
-Fix ACTIVE_SCOPE_LOCK docs-ledger drift after COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS.
+Run docs drift mini cleanup after countdown reached zero.
 
 ## Allowed surfaces
 
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/PASS_QUEUE.md
 - docs/AUDIT_INDEX.md
-- docs/audit/ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS.md
+- docs/PROJECT_MEMORY.md
+- docs/PROTECTED_SURFACES.md
+- docs/MODEL_ROUTING.md
+- docs/BOARD_GRAPH_SPEC.md
+- docs/PROJECT_ZIP_SPEC.md
+- docs/FLUTTER_UI_SPEC.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_02_PASS.md
 
 ## Forbidden surfaces
 
@@ -40,6 +46,8 @@ Fix ACTIVE_SCOPE_LOCK docs-ledger drift after COMPONENT_EDIT_EVENT_MODEL_LEDGER_
 - KiCad/boardview
 - BLE multimeter
 - cloud sync
+- visual_trace → measured electrical net
+- layout coordinates as canonical truth
 - schema connected-net invalidation behavior changes
 - event envelope semantic changes
 

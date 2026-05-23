@@ -59,3 +59,9 @@ If Codex classifies a task as **Claude/GPT Pro** or **User decision**, Codex mus
 | external API/provider commitment |  |  | ✅ | External contract and costs/risks need explicit approval. |
 | feature that may introduce forbidden domains |  |  | ✅ | Flutter/OCR/AI integration/fault probability/source search/boardview/Cloud sync and similar. |
 | ambiguous assignment or unclear ownership |  |  | ✅ | Ask for routing choice before edits. |
+
+## Docs-only drift cleanup rule
+
+- `DOCS_SYNC` passes that touch only governance and spec files without semantic changes can proceed with Codex.
+- `SCHEMA_PASS` changes that affect event semantics still require the existing deep-review gate and prechecks before implementation.
+- Flutter implementation passes are considered successful only when repository Flutter validation (`flutter test`) is included in the pass verification flow.

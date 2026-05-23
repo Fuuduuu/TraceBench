@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | FLUTTER_PHOTO_LIST_PASS | FLUTTER_PASS | completed | Add read-only photo evidence route and list UI with tests. |
 | FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock read-only photo list/view implementation scope. |
 | FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ledger drift after FLUTTER_PHOTO_LIST_PASS acceptance. |
@@ -60,14 +61,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | planned |
+| NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | planned |
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | recommended |
+| NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | recommended |
 
-- Select the next planned work item after photo list completion.
+- Select the next planned work item after pass-queue review.
 
 ## Deferred / not active
 
@@ -80,4 +81,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

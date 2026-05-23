@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS`
-- Next recommended pass: `PASS_QUEUE_REVIEW_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `2`
+- Current pass: `PASS_QUEUE_REVIEW_PASS`
+- Next recommended pass: `NEXT_PASS_SELECTION_AUDIT_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
@@ -26,6 +26,10 @@ Branch: main
 - Full prompt/memory governance audit (`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS`) found system structure sound; only stale current-pass pointers required docs-ledger fixup.
 - `PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS` corrected stale scope-lock, queue, and current-state pointers.
 - Current docs drift mini cleanup pass completed.
+- `PASS_QUEUE_REVIEW_PASS` completed:
+  - PASS_QUEUE current pass and next recommendation were reviewed for staleness.
+  - No implementation pass was re-recommended.
+- Next selected pass is `NEXT_PASS_SELECTION_AUDIT_PASS` after queue audit.
 
 ## Validation baseline
 

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_PASS`
 
 ## Goal
 
-Fix docs-ledger drift after accepted photo list implementation.
+Review PASS_QUEUE for queue/ledger consistency and select the next valid pass.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Fix docs-ledger drift after accepted photo list implementation.
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/FLUTTER_PHOTO_LIST_PASS.md
-- docs/audit/FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS.md
+- docs/audit/PASS_QUEUE_REVIEW_PASS.md
 
 ## Forbidden surfaces
 

@@ -42,3 +42,4 @@ Lazy-loading index for pass audit documents.
 | FLUTTER_PHOTO_LIST_PASS | docs/audit/FLUTTER_PHOTO_LIST_PASS.md | completed |
 | FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS | docs/audit/FLUTTER_PHOTO_LIST_SCOPE_LOCK_PASS.md | completed |
 | FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS | docs/audit/FLUTTER_PHOTO_LIST_LEDGER_FIXUP_PASS.md | completed |
+| PASS_QUEUE_REVIEW_PASS | docs/audit/PASS_QUEUE_REVIEW_PASS.md | completed |

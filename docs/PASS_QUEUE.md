@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_02_PASS`
 
 ## Completed pass history
 
@@ -68,18 +68,19 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | DOCS_DRIFT_MINI_CLEANUP_03_PASS | DOCS_SYNC | completed | Narrow governance mini cleanup to reset drift countdown and reconcile active pass pointers. |
 | PROJECT_ZIP_REPORT_HARDENING_PASS | TOOLS_PASS | completed | Reject forbidden V1 ZIP artifacts, add report boundary and optional-photo warning hardening coverage. |
 | PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Ledger alignment after hardening pass acceptance; next recommendation updated. |
+| PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | completed | Queue review confirms no safe implementation candidate; next pass moved to work-intake deep review. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | recommended |
+| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | recommended |
+| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC | recommended |
 
 - Select the next planned work item from queue routing.
 
@@ -96,4 +97,4 @@ Note: Project ZIP/report hardening is completed; current recommendation is for q
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

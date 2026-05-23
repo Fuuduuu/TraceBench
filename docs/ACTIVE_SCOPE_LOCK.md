@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_02_PASS`
 
 ## Goal
 
-Fix docs-ledger drift after `PROJECT_ZIP_REPORT_HARDENING_PASS` acceptance.
+Review PASS_QUEUE after Project ZIP/report hardening and select the next valid planned/intake/deferred pass.
 
 ## Allowed surfaces
 
@@ -16,6 +16,7 @@ docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
 docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
 docs/audit/PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS.md
+docs/audit/PASS_QUEUE_REVIEW_02_PASS.md
 
 ## Forbidden surfaces
 

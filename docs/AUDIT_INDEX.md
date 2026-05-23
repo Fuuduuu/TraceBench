@@ -55,3 +55,4 @@ Lazy-loading index for pass audit documents.
 | PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS | docs/audit/PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS.md | completed |
 | PROJECT_ZIP_REPORT_HARDENING_PASS | docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md | completed |
 | PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS | docs/audit/PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS.md | completed |
+| PASS_QUEUE_REVIEW_02_PASS | docs/audit/PASS_QUEUE_REVIEW_02_PASS.md | completed |

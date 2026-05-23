@@ -16,6 +16,13 @@ Define when a task can be handled by Codex directly, when it needs deep reasonin
   - MODEL_ROUTING_CHECK
   - stop conditions
 
+## Scope drift check routing
+
+- If scope drift check returns `NEEDS_SMALL_FIXUP`, run a docs fixup before implementation.
+- If scope drift check returns `NEEDS_DECISION`, ask the user before proceeding.
+- If scope drift check returns `NEEDS_DEEP_REWORK` or `REJECT_REWORK`, do not send to Codex.
+- If scope drift check returns `REJECT_SCOPE_ESCAPE` after implementation, revert or narrow to scope and rerun the check.
+
 ## Model roles
 
 - **Codex appropriate when**:

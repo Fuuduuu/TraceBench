@@ -86,6 +86,9 @@ Only include repeated constraints when:
 - the pass touches protected surfaces,
 - the pass is audit/deep review.
 
+Before implementation prompts and before accepting Codex output, run `docs/SCOPE_DRIFT_CHECK.md`.
+MINI prompts may reference `SCOPE_DRIFT_CHECK` instead of repeating full forbidden lists, but must still include `Stop if`.
+
 ## D. Delta-first accepted state
 
 Keep accepted-state summaries compact:

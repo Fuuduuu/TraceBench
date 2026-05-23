@@ -2,28 +2,22 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_04_PASS`
+`SCOPE_DRIFT_CHECK_PROTOCOL_PASS`
 
 ## Goal
 
-Run docs drift mini cleanup and reconcile queue/current-state/memory routing drift.
+Add and formalize canonical scope drift check protocol for governance and implementation gating.
 
 ## Allowed surfaces
 
-- docs/CURRENT_STATE.md
+- AGENTS.md
+- docs/SCOPE_DRIFT_CHECK.md
+- docs/PROMPTING_PROTOCOL.md
+- docs/MODEL_ROUTING.md
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/MEMORY_PROTOCOL.md
-- docs/audit/NEXT_PASS_SELECTION_AUDIT_PASS.md
-- docs/audit/NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_04_PASS.md
-- docs/WORK_INTAKE_INDEX.md
-- docs/DEFERRED_FEATURES.md
-- docs/PROJECT_MEMORY.md
-- docs/TRUTH_INDEX.md
-- docs/PROMPTING_PROTOCOL.md
-- docs/PROTECTED_SURFACES.md
+- docs/audit/SCOPE_DRIFT_CHECK_PROTOCOL_PASS.md
 
 ## Forbidden surfaces
 

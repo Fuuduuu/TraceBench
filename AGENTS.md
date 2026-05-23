@@ -21,6 +21,8 @@ Preferred sniper prompt format:
 Do not paste long project history when canonical docs already contain it.
 Keep pass goals narrow, verifiable, and auditable.
 
+Run `docs/SCOPE_DRIFT_CHECK.md` before implementation prompts and before accepting Codex results.
+
 ## Read order
 
 1. `docs/CURRENT_STATE.md`

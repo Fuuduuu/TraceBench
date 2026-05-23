@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_04_PASS`
+`SCOPE_DRIFT_CHECK_PROTOCOL_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| SCOPE_DRIFT_CHECK_PROTOCOL_PASS | DOCS_SYNC | completed | Add canonical scope drift check protocol and wire it into prompt/model/routing gates. |
 | PASS_QUEUE_REVIEW_PASS | DOCS_SYNC | completed | Review queue/state consistency and select next valid planned pass. |
 | NEXT_PASS_SELECTION_AUDIT_PASS | DOCS_SYNC | completed | Queue review and pass-routing confirmation after queue queue review. |
 | NEXT_PASS_SELECTION_AUDIT_FIXUP_PASS | DOCS_SYNC | completed | Close queue/current-state/memory-protocol drift and align countdown/next recommendation. |
@@ -84,4 +85,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

@@ -2,22 +2,22 @@
 
 ## Current pass
 
-`MEMORY_CONTENT_DEDUP_CLEANUP_PASS`
+`MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS`
 
 ## Goal
 
-Deduplicate and compactify memory governance docs after protocol cleanup, without changing product behavior.
+Ensure the new information intake lifecycle, active memory map, obsolete handling, and implicit memory rules are present before future Claude audit.
 
 ## Allowed surfaces
 
 - AGENTS.md
-- docs/PROJECT_MEMORY.md
 - docs/CURRENT_STATE.md
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
+- docs/MEMORY_PROTOCOL.md
+- docs/TRUTH_INDEX.md
 - docs/AUDIT_INDEX.md
-- docs/PROMPTING_PROTOCOL.md
-- docs/audit/MEMORY_CONTENT_DEDUP_CLEANUP_PASS.md
+- docs/audit/MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS.md
 
 ## Forbidden surfaces
 
@@ -31,6 +31,7 @@ Deduplicate and compactify memory governance docs after protocol cleanup, withou
 - pubspec.yaml
 - pubspec.lock
 - docs/PROTECTED_SURFACES.md
+- docs/PROJECT_MEMORY.md
 - Project ZIP tooling/files
 - any events.jsonl
 - any known_facts.json

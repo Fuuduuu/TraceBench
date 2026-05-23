@@ -26,9 +26,34 @@ Keep pass goals narrow, verifiable, and auditable.
 1. `docs/CURRENT_STATE.md`
 2. `docs/PASS_QUEUE.md`
 3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `docs/PROJECT_MEMORY.md`
+4. `docs/TRUTH_INDEX.md`
 5. `docs/MEMORY_PROTOCOL.md`
-6. `docs/PROMPTING_PROTOCOL.md`
+6. relevant spec/audit files only
+
+## Subconscious / implicit memory rule
+
+TraceBench has no hidden project memory.
+The effective project memory is the first-read path:
+
+1. `docs/CURRENT_STATE.md`
+2. `docs/PASS_QUEUE.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/TRUTH_INDEX.md`
+5. `docs/MEMORY_PROTOCOL.md`
+6. relevant spec/audit files only
+
+Do not rely on old chat history as implicit memory.
+Do not assume facts not present in these canonical files.
+If a fact matters for future work, place it in its canonical owner file.
+
+## New fact intake check
+
+Do not add a new project fact without answering:
+
+- Where does this fact belong?
+- What old fact does this replace?
+- Is the old fact still useful as audit evidence?
+- Should the old fact be deleted, compressed, or archived?
 
 ## Canonical ownership
 

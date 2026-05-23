@@ -56,16 +56,87 @@
 - Risk/protected surface -> `PROTECTED_SURFACES.md`.
 - Evidence -> `docs/audit/*.md`.
 
-### 4) Docs update order
+### 4) New information intake lifecycle
+
+Every new project fact must follow this flow:
+
+1. Capture
+   - Identify the new fact.
+   - Identify source: user instruction, accepted Codex result, audit result, repo doc, schema/tool code, or external research.
+   - Do not store speculation as stable truth.
+2. Classify
+   - Assign the fact type:
+     - stable product truth
+     - current handoff
+     - next pass / queue item
+     - active scope lock
+     - protected surface
+     - architecture/spec fact
+     - audit evidence
+     - validation result
+     - deprecated/obsolete fact
+3. Locate canonical owner
+   - Use `docs/TRUTH_INDEX.md`.
+   - The fact must have exactly one canonical home.
+4. Obsolete check
+   - Before adding the new fact, check whether it changes, replaces, contradicts, or invalidates an older fact.
+5. Resolve old fact
+   - If an old fact is superseded:
+     - replace it in the canonical owner file
+     - remove duplicate stale mentions
+     - convert secondary mentions into pointers
+     - archive historical detail in `docs/audit/**/*.md` only if evidence value remains
+     - delete stale text if it has no historical value
+6. Update secondary pointers
+   - Update only allowed pointer locations.
+   - Do not duplicate full content.
+7. Validate
+   - Run required validation.
+   - For docs-only memory updates:
+     - `py -3 tools\validate_all.py`
+8. Report
+   - Output must state:
+     - new facts added
+     - old facts replaced
+     - files cleaned
+     - obsolete content removed or archived
+     - canonical owner used
+
+If a new fact is not already clearly mapped, ask:
+- Where does this fact belong?
+- What old fact does this replace?
+- Is the old fact still useful as audit evidence?
+- Should the old fact be deleted, compressed, or archived?
+
+If unresolved, pause before updating canonical owner files.
+
+### 5) Subconscious / implicit context rule
+
+TraceBench has no hidden project memory.
+The effective project memory is the first-read path:
+
+1. `docs/CURRENT_STATE.md`
+2. `docs/PASS_QUEUE.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/TRUTH_INDEX.md`
+5. `docs/MEMORY_PROTOCOL.md`
+6. relevant spec/audit files only
+
+Do not rely on old chat history as implicit memory.
+Do not assume facts not present in canonical files.
+If a fact matters for future work, place it in its canonical owner file.
+
+### 6) Docs update order
 
 - Read compact context first: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`.
 - Then read the minimal needed canonical owner for facts and relevant spec/audit docs.
 - Update only one layer per change when possible.
 
-### 5) Anti-bloat rules for future prompts
+### 7) Anti-bloat rules for future prompts
 
 - Use pointers, not duplicated long history.
 - Keep `CURRENT_STATE.md` compact and bounded.
 - Keep `PASS_QUEUE.md` as pass routing owner, not architecture documentation.
 - Keep `ACTIVE_SCOPE_LOCK.md` limited to active scope.
 - Preserve `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` as planned recommendation in PASS_QUEUE unless queue changes are explicitly required.
+

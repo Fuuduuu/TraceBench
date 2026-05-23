@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEMORY_CONTENT_DEDUP_CLEANUP_PASS`
+- Current pass: `MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS`
 - Next recommended pass: `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `1`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 

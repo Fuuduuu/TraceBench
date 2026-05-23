@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS`
+`ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -40,6 +40,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_GRAPH_VIEW_VALIDATION_FIXUP_PASS | FLUTTER_PASS | completed | Fix formatting, test hangs, and projection index correctness for board graph validation. |
 | COMPONENT_EDIT_EVENT_MODEL_PASS | SCHEMA_PASS | completed | Add remove_component repair action semantics and invariants for component removal path. |
 | COMPONENT_EDIT_EVENT_MODEL_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile component edit event model docs ledger drift and cooldown governance. |
+| ACTIVE_SCOPE_LOCK_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Fix ACTIVE_SCOPE_LOCK docs-ledger-only drift. |
 
 ## Planned / Recommended
 

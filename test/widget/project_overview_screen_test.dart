@@ -41,5 +41,8 @@ void main() {
       findsAtLeast(1),
     );
     expect(find.text('Board graph'), findsOneWidget);
+    expect(find.text('Foto tõendid'), findsOneWidget);
+    expect(
+        find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
   });
 }

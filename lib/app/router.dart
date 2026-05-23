@@ -10,6 +10,7 @@ import '../features/known_facts/screens/not_populated_screen.dart';
 import '../features/known_facts/screens/pin_list_screen.dart';
 import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
+import '../features/photos/screens/photo_list_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
 
 GoRouter buildTraceBenchRouter({
@@ -62,6 +63,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'known-facts',
                 name: 'known-facts',
                 builder: (_, __) => const KnownFactsViewerScreen(),
+              ),
+              GoRoute(
+                path: 'photos',
+                name: 'photos',
+                builder: (_, __) => const PhotoListScreen(),
               ),
               GoRoute(
                 path: 'report',

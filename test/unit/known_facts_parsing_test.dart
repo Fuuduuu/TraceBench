@@ -91,4 +91,49 @@ void main() {
 
     expect(knownFacts.visualTraces, isEmpty);
   });
+
+  test(
+      'photos, damage regions, suspect regions, visual traces parse with optional fields',
+      () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'inline_photo_case',
+      'photos': [
+        {'photo_id': 'photo_inline_001', 'mode': 'macro', 'path': ''},
+      ],
+      'damage_regions': [
+        {
+          'region_id': 'DMG001',
+          'photo_id': 'photo_inline_001',
+          'bbox': {'x': 1, 'y': 2, 'width': 3, 'height': 4},
+          'damage_type': 'burn',
+          'severity': 'low',
+        },
+      ],
+      'suspect_regions': [
+        {
+          'region_id': 'SMG001',
+          'photo_id': 'photo_inline_001',
+          'bbox': {'x': 5, 'y': 6, 'width': 7, 'height': 8},
+          'reason': 'discoloration',
+          'priority': 'low',
+        },
+      ],
+      'visual_traces': [
+        {'trace_id': 'VT001', 'photo_id': 'photo_inline_001'},
+      ],
+    });
+
+    expect(knownFacts.photos.first.mode, 'macro');
+    expect(knownFacts.photos.first.path, isEmpty);
+    expect(knownFacts.damageRegions.single.regionId, 'DMG001');
+    expect(knownFacts.suspectRegions.single.reason, 'discoloration');
+    expect(knownFacts.visualTraces.single.evidenceType, 'visual_trace');
+
+    final raw = knownFacts.toJson();
+    final visualTraces = raw['visual_traces'];
+    expect(visualTraces, isA<List>());
+    expect((visualTraces as List).single, isA<Map<String, dynamic>>());
+    expect((visualTraces.single as Map<String, dynamic>)['evidence_type'],
+        'visual_trace');
+  });
 }

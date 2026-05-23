@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_03_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_03_PASS`
+- Next recommended pass: `FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
@@ -20,6 +20,8 @@ Branch: main
 - Photo list/tab is future-scoped; no camera/OCR/CV or event-writing introduced.
 - `repair_action_recorded` removal preserves component history and identity fields.
 - Full prompt/memory governance audit (`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS`) found system structure sound; only stale current-pass pointers required docs-ledger fixup.
+- `PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS` corrected stale scope-lock, queue, and current-state pointers.
+- Current docs drift mini cleanup pass completed.
 
 ## Validation baseline
 

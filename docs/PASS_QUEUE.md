@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_03_PASS`
 
 ## Completed pass history
 
@@ -51,6 +51,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | MEMORY_INTAKE_LIFECYCLE_CLOSEOUT_PASS | DOCS_SYNC | completed | Ensure new information intake lifecycle, active memory map, obsolete handling, and implicit memory rules are present. |
 | PROMPT_MEMORY_SYSTEM_FULL_AUDIT_PASS | DOCS_SYNC | completed | Full prompt/memory governance audit (audit-only) reported NEEDS_SMALL_FIXUP: stable architecture found; stale current-pass pointers detected. |
 | PROMPT_MEMORY_SYSTEM_FULL_AUDIT_FIXUP_PASS | DOCS_SYNC | completed | Close out full prompt/memory audit and fix stale current-pass pointers in scope lock, queue, and state. |
+| DOCS_DRIFT_MINI_CLEANUP_03_PASS | DOCS_SYNC | completed | Narrow governance mini cleanup to reset drift countdown and reconcile active pass pointers. |
 
 ## Planned / Recommended
 
@@ -62,7 +63,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_03_PASS | DOCS_SYNC | recommended |
+| FLUTTER_PHOTO_LIST_SCOPE_AUDIT_PASS | DOCS_SYNC | recommended |
 
 ## Deferred / not active
 
@@ -75,4 +76,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

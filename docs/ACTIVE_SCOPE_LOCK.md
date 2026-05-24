@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`PROJECTION_STALE_UI_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS`
 
 ## Goal
 
@@ -16,6 +16,8 @@ Display-only stale projection warning behavior for derived views.
 - docs/AUDIT_INDEX.md
 - docs/audit/PROJECTION_STALE_UI_PASS.md
 - docs/audit/PROJECTION_STALE_UI_LEDGER_FIXUP_PASS.md
+- docs/WORK_INTAKE_INDEX.md
+- docs/audit/PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS.md
 
 ## Forbidden surfaces
 

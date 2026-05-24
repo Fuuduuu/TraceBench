@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECTION_STALE_UI_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS`
 
 ## Completed pass history
 
@@ -84,6 +84,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECTION_STALE_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock stale projection UI behavior to display-only global warning scope. |
 | PROJECTION_STALE_UI_PASS | FLUTTER_PASS | completed | Implement display-only stale projection banner on derived screens. |
 | PROJECTION_STALE_UI_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile docs-ledger drift after stale UI acceptance. |
+| PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS | DOCS_SYNC | completed | Route stale UI completion directly toward export-refresh/ZIP export scope lock. |
 
 ## Planned / Recommended
 
@@ -95,11 +96,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_04_PASS | DOCS_SYNC | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | recommended |
 
 Select the next planned work item from queue routing:
-No further safe implementation pass is currently available; `PASS_QUEUE_REVIEW_04_PASS` is selected as a queue/governance fallback with note:
-“Review remaining planned/deferred work after stale projection UI completion.”
+Queue-review loop is avoided after stale UI completion; next clear direction is export-refresh / Flutter ZIP export.
+`DOCS_DRIFT_MINI_CLEANUP_08_PASS` is selected as the immediate governance cleanup step before scope-lock implementation.
 
 ## Deferred / not active
 
@@ -112,4 +113,4 @@ No further safe implementation pass is currently available; `PASS_QUEUE_REVIEW_0
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

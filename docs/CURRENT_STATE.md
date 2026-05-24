@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECTION_STALE_UI_LEDGER_FIXUP_PASS`
-- Next recommended pass: `PASS_QUEUE_REVIEW_04_PASS`
-- Docs drift countdown: `1`
+- Current pass: `PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_08_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -31,6 +31,8 @@ Branch: main
 - `ProjectionStaleBanner` is shown on derived views when `ProjectState.isProjectionStale` is true and hidden otherwise.
 - No refresh/export/materializer actions are introduced by the banner.
 - No `known_facts.json` mutation, no event-writing changes, and no Project ZIP tooling changes were introduced.
+- Stale projection UI is accepted. Next product direction is export-refresh / Flutter ZIP export scope-lock.
+- If countdown reaches 0, docs drift cleanup occurs before scope-lock implementation work.
 
 ## Validation baseline
 

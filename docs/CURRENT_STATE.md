@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_ZIP_EXPORT_PASS`
-- Next recommended pass: `FLUTTER_ZIP_EXPORT_PASS`
-- Docs drift countdown: `1`
+- Current pass: `FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`
+- Next recommended pass: `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -49,6 +49,10 @@ Branch: main
   - Success path writes sibling `.../<project_id_or_folder>_export.zip`.
   - Mobile export remains placeholder via explicit user message.
   - Export success does not clear stale state.
+- Routing was corrected by `FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`:
+  - `FLUTTER_ZIP_EXPORT_PASS` is preserved as completed.
+  - Next recommended pass is now `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS`.
+  - Countdown is now `0`; docs cleanup may be needed after the next accepted pass.
 
 ## Validation baseline
 

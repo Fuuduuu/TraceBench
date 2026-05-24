@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_PASS`
+`FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -91,6 +91,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECT_ZIP_SECURITY_HARDENING_PASS | TOOLS_PASS | completed | Harden ZIP export and validation for symlink/photo-path security without contract changes. |
 | FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe V1 Flutter ZIP export scope and implementation boundaries before implementation. |
 | FLUTTER_ZIP_EXPORT_PASS | FLUTTER_PASS | completed | Implement desktop Project ZIP export handoff through ProjectExporter and CustomerReportScreen trigger. |
+| FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS | DOCS_SYNC | completed | Reconcile PASS_QUEUE/CURRENT_STATE routing after FLUTTER_ZIP_EXPORT_PASS completion and route next to FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS. |
 
 ## Planned / Recommended
 
@@ -102,12 +103,10 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_ZIP_EXPORT_PASS | FLUTTER_PASS | recommended |
+| FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-Select the next planned work item from queue routing:
-Queue-review loop is avoided after stale UI completion; next clear direction is the locked Flutter ZIP export scope and implementation pass.
-`FLUTTER_ZIP_EXPORT_PASS` is now complete; export implementation is in place.
-Next follow-up pass should be selected from the next routing decision before desktop/mobile export split expansion.
+`FLUTTER_ZIP_EXPORT_PASS` is now complete; routing moves next to a read-only audit pass before any desktop/mobile export behavior expansion.
+`FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` is required to verify handoff, Python discovery, stale boundaries, and artifact constraints before wider export scope decisions.
 
 ## Deferred / not active
 
@@ -120,4 +119,4 @@ Next follow-up pass should be selected from the next routing decision before des
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

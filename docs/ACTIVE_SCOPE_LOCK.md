@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_PASS`
+`FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`
 
 ## Goal
 
@@ -24,6 +24,7 @@ Lock safe V1 Flutter ZIP export scope before implementation.
 - docs/audit/PROJECT_ZIP_SECURITY_HARDENING_PASS.md
 - docs/audit/FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS.md
 - docs/audit/FLUTTER_ZIP_EXPORT_PASS.md
+- docs/audit/FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

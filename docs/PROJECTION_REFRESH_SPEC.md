@@ -41,44 +41,77 @@ POLICY_D: export-time refresh.
 
 ## Stale projection UI V1 scope
 
-Future implementation pass:
-- `PROJECTION_STALE_UI_PASS`
+Component:
+- `ProjectionStaleBanner`
+
+Pattern:
+- one reusable top-of-content banner reused by derived screens
+- first child of each derived screen body, below AppBar/header
+- above filters/cards/empty states
+- scrolls with content
+- not sticky
+- one instance per screen, not repeated
 
 Goal:
 - Show a consistent stale projection warning after local event writes when `ProjectState.isProjectionStale` is true.
 
+Future implementation pass:
+- `PROJECTION_STALE_UI_PASS`
+
 Required behavior:
-- Show a global stale banner on derived views:
-  - Project overview
+- Component contract: display-only, stateless, no callbacks.
+- Primary copy (exact): `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
+- Secondary copy: `Graafik, raport ja kokkuvõtted võivad põhineda vanemal known_facts projektsioonil.`
+- Passive tag: `Vajab eksporti`
+- Visible when `ProjectState.isProjectionStale == true`.
+- Hidden when `ProjectState.isProjectionStale == false`.
+- Appears on:
+  - Project Overview
   - measurements / known facts view
   - board graph view
   - photo evidence view
   - customer report view
-- Banner text:
-  `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
-- Banner remains visible while stale.
-- Banner disappears when:
-  - a successful export + re-import occurs, or
-  - full project reload from a fresh ZIP occurs.
-- Banner is hidden when project state is not stale.
-- Banner must not:
-  - block navigation,
-  - claim data has been refreshed,
-  - offer in-app refresh in V1,
-  - trigger materializer/materialization/export,
-  - mutate `known_facts.json`.
-- Banner must be non-destructive and compact.
+- Does not block navigation.
+- Does not hide derived data.
+- Does not claim data is refreshed.
+- Does not trigger materializer/materialization/export.
+- Runtime UI only; does not appear in exported PDF/customer report artifacts.
+- Does not mutate `known_facts.json`.
+- Dismisses only when app reloads from fresh ZIP flow that clears stale state.
+- Input props in V1:
+  - `isStale` (`bool`)
+  - `compact` (`bool`, optional)
+  - `showSecondary` (`bool`, optional)
+  - `contextLabel` (`String`, optional, reserved)
+- `isStale == false` renders as zero-height/empty.
+
+Component semantics:
+- No navigation or data-affecting side effects.
+- No callbacks in V1 such as: `onRefresh`, `onExport`, `onMaterialize`, `onDismiss`, `onTap`.
+- No buttons/links for refresh actions in V1.
+
+Accessibility:
+- primary text contrast target >= 7:1
+- secondary text contrast target >= 4.5:1
+- icon is decorative
+- status tag is text only (not button role)
+- no flashing animation
+- supports text scale 200%
+- color is not the sole signal
+
+Visual intent:
+- info-tier, muted amber/warning style
+- not critical red/error tone.
 
 Out of scope:
-- Export implementation
-- Materializer invocation
-- Mobile export
-- Report regeneration
-- Freshness metadata
-- Background refresh
-- `known_facts.json` mutation
-- Dart-native materializer
-- Event-writing changes
+- export implementation
+- materializer invocation
+- mobile export
+- known_facts mutation
+- Dart-native known_facts materializer
+- event-writing changes
+- ZIP contract expansion
+- runtime refresh/elevated action
 
 ## Export sequencing
 
@@ -122,7 +155,7 @@ Desktop/dev V1 export policy:
 
 Next recommended policy implementation pass:
 
-- `PROJECTION_STALE_UI_SCOPE_LOCK_PASS`
+- `PROJECTION_STALE_UI_PASS`
 
 Later:
 

@@ -80,6 +80,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECTION_REFRESH_AFTER_EVENT_WRITE_AUDIT_PASS | DOCS_SYNC | completed | Audit that accepted POLICY_D refresh flow after local event writes. |
 | PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 projection refresh policy: export-time refresh + global stale indicator. |
 | DOCS_DRIFT_MINI_CLEANUP_07_PASS | DOCS_SYNC | completed | Docs-only mini cleanup for drift reset and routing/state pointer alignment. |
+| PROJECTION_STALE_UI_DESIGN_REVIEW | DOCS_SYNC | completed | Lock stale projection banner UX pattern before implementation. |
 | PROJECTION_STALE_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock stale projection UI behavior to display-only global warning scope. |
 
 ## Planned / Recommended

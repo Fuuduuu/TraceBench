@@ -365,3 +365,5 @@ Other event types remain deferred.
 - It must not mutate `known_facts.json`.
 - Future implementation pass:
   - `PROJECTION_STALE_UI_PASS`
+- Banner is reusable (`ProjectionStaleBanner`) and rendered top-of-content where required.
+- Banner uses primary copy `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.` and passive tag `Vajab eksporti`.

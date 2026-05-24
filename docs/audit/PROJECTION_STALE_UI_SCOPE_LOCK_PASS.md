@@ -12,6 +12,7 @@
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
+- `docs/audit/PROJECTION_STALE_UI_DESIGN_REVIEW.md`
 - `docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md`
 
 ## Validation
@@ -28,7 +29,12 @@
 - Banner is visible on Project Overview, measurements/known facts, board graph, photos, and customer report when `isProjectionStale` is true.
 - Banner is hidden when `isProjectionStale` is false.
 - No in-app refresh button, no materializer invocation, and no export trigger.
+- Reusable component: `ProjectionStaleBanner`.
+- Primary copy is exact: `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
+- Passive tag is exact: `Vajab eksporti`.
 - No `known_facts.json` mutation from stale UI.
+- Top-of-content placement rule and no sticky behavior specified.
+- No known-facts/report export mutation from banner in V1.
 
 ## Required future tests
 
@@ -39,9 +45,17 @@
 - banner appears on board graph view
 - banner appears on photo evidence view
 - banner appears on customer report view
-- banner text is exact and no refresh button exists
+- banner text and passive tag are exact
+- no refresh/materializer/export buttons or actions
+- no dismiss action that clears global stale state
 - navigation remains available with stale state
 - no refresh/materializer/export side effect is triggered by banner
+- banner can be compact while still showing primary+tag
+
+## Design review
+
+- Completed design review artifact: `docs/audit/PROJECTION_STALE_UI_DESIGN_REVIEW.md`
+- Verdict: `ACCEPT_READY_FOR_SCOPE_LOCK`
 
 ## Forbidden-surface confirmation
 

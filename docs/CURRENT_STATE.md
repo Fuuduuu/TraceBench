@@ -28,7 +28,7 @@ Branch: main
 - `known_facts.json` remains projection-owned by Python materializer; Flutter does not regenerate or mutate it directly in V1.
 - Mobile export remains a placeholder flow in V1.
 - Projection refresh policy is locked; stale UI scope-lock is next.
-- Stale projection UI scope is locked to display-only global banner behavior; no in-app refresh/materializer actions.
+- Stale projection UI scope is locked to a reusable top-of-content display-only stale banner (primary copy + passive “Vajab eksporti” tag), no in-app refresh/export/materializer action.
 
 ## Validation baseline
 

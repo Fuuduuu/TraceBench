@@ -16,6 +16,7 @@ docs/CURRENT_STATE.md
 docs/PASS_QUEUE.md
 docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
+docs/audit/PROJECTION_STALE_UI_DESIGN_REVIEW.md
 docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md
 
 ## Forbidden surfaces

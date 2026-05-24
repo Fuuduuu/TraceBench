@@ -39,6 +39,47 @@ POLICY_D: export-time refresh.
 - No in-app Refresh button in V1.
 - Stale state does not block navigation or data display.
 
+## Stale projection UI V1 scope
+
+Future implementation pass:
+- `PROJECTION_STALE_UI_PASS`
+
+Goal:
+- Show a consistent stale projection warning after local event writes when `ProjectState.isProjectionStale` is true.
+
+Required behavior:
+- Show a global stale banner on derived views:
+  - Project overview
+  - measurements / known facts view
+  - board graph view
+  - photo evidence view
+  - customer report view
+- Banner text:
+  `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
+- Banner remains visible while stale.
+- Banner disappears when:
+  - a successful export + re-import occurs, or
+  - full project reload from a fresh ZIP occurs.
+- Banner is hidden when project state is not stale.
+- Banner must not:
+  - block navigation,
+  - claim data has been refreshed,
+  - offer in-app refresh in V1,
+  - trigger materializer/materialization/export,
+  - mutate `known_facts.json`.
+- Banner must be non-destructive and compact.
+
+Out of scope:
+- Export implementation
+- Materializer invocation
+- Mobile export
+- Report regeneration
+- Freshness metadata
+- Background refresh
+- `known_facts.json` mutation
+- Dart-native materializer
+- Event-writing changes
+
 ## Export sequencing
 
 Desktop/dev V1 export policy:

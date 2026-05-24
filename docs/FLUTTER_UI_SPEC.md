@@ -356,3 +356,12 @@ First event-write implementation scope is `measurement_recorded` only.
 Full details live in `docs/FLUTTER_EVENT_WRITE_SPEC.md`.
 
 Other event types remain deferred.
+
+## Stale projection banner rules
+
+- Stale projection UX is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
+- V1 stale UI is display-only and only reflects `ProjectState.isProjectionStale`.
+- It must not trigger refresh, export, or materializer work.
+- It must not mutate `known_facts.json`.
+- Future implementation pass:
+  - `PROJECTION_STALE_UI_PASS`

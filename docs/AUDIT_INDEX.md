@@ -66,4 +66,5 @@ Lazy-loading index for pass audit documents.
 | PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS | docs/audit/PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS.md | completed |
 | DOCS_DRIFT_MINI_CLEANUP_07_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_07_PASS.md | completed |
 | PASS_QUEUE_REVIEW_03_PASS | docs/audit/PASS_QUEUE_REVIEW_03_PASS.md | completed |
+| PROJECTION_STALE_UI_SCOPE_LOCK_PASS | docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md | completed |
 

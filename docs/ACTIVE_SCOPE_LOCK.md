@@ -2,24 +2,21 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_07_PASS`
+`PROJECTION_STALE_UI_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Run docs drift mini cleanup after countdown reset; keep pointer/state alignment.
+Lock stale projection UI display behavior scope before implementation.
 
 ## Allowed surfaces
 
 docs/PROJECTION_REFRESH_SPEC.md
-docs/FLUTTER_EVENT_WRITE_SPEC.md
 docs/FLUTTER_UI_SPEC.md
-docs/PROJECT_ZIP_SPEC.md
 docs/CURRENT_STATE.md
 docs/PASS_QUEUE.md
 docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
-docs/audit/PROJECTION_REFRESH_AFTER_EVENT_WRITE_AUDIT_PASS.md
-docs/audit/PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS.md
+docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md
 
 ## Forbidden surfaces
 

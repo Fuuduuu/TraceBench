@@ -3,10 +3,10 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_07_PASS`
-- Next recommended pass: `PROJECTION_STALE_UI_SCOPE_LOCK_PASS` (`DOCS_SYNC`)
-- No safe implementation candidate remains until queue/lock routes next.
-- Docs drift countdown: `5`
+- Current pass: `PROJECTION_STALE_UI_SCOPE_LOCK_PASS`
+- Next recommended pass: `PROJECTION_STALE_UI_PASS` (`FLUTTER_PASS`)
+- Stale projection UI scope lock is now the next implementation gate.
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
@@ -28,6 +28,7 @@ Branch: main
 - `known_facts.json` remains projection-owned by Python materializer; Flutter does not regenerate or mutate it directly in V1.
 - Mobile export remains a placeholder flow in V1.
 - Projection refresh policy is locked; stale UI scope-lock is next.
+- Stale projection UI scope is locked to display-only global banner behavior; no in-app refresh/materializer actions.
 
 ## Validation baseline
 

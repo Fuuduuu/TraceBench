@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_06_PASS`
 
 ## Completed pass history
 
@@ -71,22 +71,21 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Ledger alignment after hardening pass acceptance; next recommendation updated. |
 | PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | completed | Queue review confirms no safe implementation candidate; next pass moved to work-intake deep review. |
 | FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Flutter event-writing architecture, first writable subset, and implementation preconditions. |
+| DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | completed | Run docs drift mini cleanup after countdown reached zero and align event-write scope-lock routing. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | recommended |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | recommended |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 - Select the next planned work item from queue routing.
-
-- Note: Project ZIP/report hardening is completed; queue-driven cleanup/review pass has priority while docs drift is at 0 before event-write measurement scope-lock.
 
 ## Deferred / not active
 
@@ -99,4 +98,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

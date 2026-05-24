@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_06_PASS`
 
 ## Goal
 
-Lock Flutter event-writing architecture before implementation.
+Run docs drift mini cleanup and align current pass/state/spec pointers after docs drift countdown reset.
 
 ## Allowed surfaces
 

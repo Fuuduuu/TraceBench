@@ -58,3 +58,4 @@ Lazy-loading index for pass audit documents.
 | PASS_QUEUE_REVIEW_02_PASS | docs/audit/PASS_QUEUE_REVIEW_02_PASS.md | completed |
 | WORK_INTAKE_DEEP_REVIEW_PASS | docs/audit/WORK_INTAKE_DEEP_REVIEW_PASS.md | completed |
 | FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS | docs/audit/FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS.md | completed |
+| DOCS_DRIFT_MINI_CLEANUP_06_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_06_PASS.md | completed |

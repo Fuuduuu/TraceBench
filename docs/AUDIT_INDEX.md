@@ -69,4 +69,5 @@ Lazy-loading index for pass audit documents.
 | PROJECTION_STALE_UI_DESIGN_REVIEW | docs/audit/PROJECTION_STALE_UI_DESIGN_REVIEW.md | completed |
 | PROJECTION_STALE_UI_SCOPE_LOCK_PASS | docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md | completed |
 | PROJECTION_STALE_UI_PASS | docs/audit/PROJECTION_STALE_UI_PASS.md | completed |
+| PROJECTION_STALE_UI_LEDGER_FIXUP_PASS | docs/audit/PROJECTION_STALE_UI_LEDGER_FIXUP_PASS.md | completed |
 

@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECTION_STALE_UI_PASS`
+`PROJECTION_STALE_UI_LEDGER_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -83,6 +83,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECTION_STALE_UI_DESIGN_REVIEW | DOCS_SYNC | completed | Lock stale projection banner UX pattern before implementation. |
 | PROJECTION_STALE_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock stale projection UI behavior to display-only global warning scope. |
 | PROJECTION_STALE_UI_PASS | FLUTTER_PASS | completed | Implement display-only stale projection banner on derived screens. |
+| PROJECTION_STALE_UI_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile docs-ledger drift after stale UI acceptance. |
 
 ## Planned / Recommended
 
@@ -94,10 +95,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| None currently | DOCS_SYNC | recommended |
+| PASS_QUEUE_REVIEW_04_PASS | DOCS_SYNC | recommended |
 
 Select the next planned work item from queue routing:
-No further planned pass is currently selected.
+No further safe implementation pass is currently available; `PASS_QUEUE_REVIEW_04_PASS` is selected as a queue/governance fallback with note:
+“Review remaining planned/deferred work after stale projection UI completion.”
 
 ## Deferred / not active
 
@@ -110,4 +112,4 @@ No further planned pass is currently selected.
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

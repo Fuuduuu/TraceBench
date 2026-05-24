@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECTION_STALE_UI_PASS`
-- Next recommended pass: `None currently`
-- Docs drift countdown: `2`
+- Current pass: `PROJECTION_STALE_UI_LEDGER_FIXUP_PASS`
+- Next recommended pass: `PASS_QUEUE_REVIEW_04_PASS`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
@@ -27,8 +27,10 @@ Branch: main
 - `known_facts.json` remains projection-owned by Python materializer; Flutter does not regenerate or mutate it directly in V1.
 - Mobile export remains a placeholder flow in V1.
 - Projection refresh policy is locked; stale UI scope-lock is next.
-- Stale projection UI scope is locked to a reusable top-of-content display-only stale banner (primary copy + passive “Vajab eksporti” tag), no in-app refresh/export/materializer action.
-- Stale projection banner is implemented on derived views and remains display-only.
+- `PROJECTION_STALE_UI_PASS` is accepted and implemented as display-only stale warning UI.
+- `ProjectionStaleBanner` is shown on derived views when `ProjectState.isProjectionStale` is true and hidden otherwise.
+- No refresh/export/materializer actions are introduced by the banner.
+- No `known_facts.json` mutation, no event-writing changes, and no Project ZIP tooling changes were introduced.
 
 ## Validation baseline
 

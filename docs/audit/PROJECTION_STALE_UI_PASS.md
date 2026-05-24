@@ -3,6 +3,7 @@
 - Status: completed
 - Lane: FLUTTER_PASS
 - Scope: display-only stale projection banner UI implementation on derived views
+- Commit: `2e6449b`
 
 ## Files changed
 
@@ -27,9 +28,9 @@
 
 ## Validation
 
-- `py -3 tools\\validate_all.py`
-- `dart format` on changed Dart/test files
-- `flutter test --reporter expanded`
+- `py -3 tools\validate_all.py` (passed)
+- `dart format` on changed Dart/test files (passed)
+- `flutter test --reporter expanded` (passed)
 
 ## Implementation summary
 

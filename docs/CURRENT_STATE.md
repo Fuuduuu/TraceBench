@@ -3,30 +3,25 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS`
-- Next recommended pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` (`FLUTTER_PASS`)
-- Docs drift countdown: `3`
+- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS`
+- Next recommended pass: `PASS_QUEUE_REVIEW_03_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
+- `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` is accepted and limited to `measurement_recorded` only.
+- `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` appends one event to local unpacked `events.jsonl`, preserves prior event lines, and flags projection as stale/refresh required in UI state.
+- `known_facts.json` is not mutated by measurement event writing and Project ZIP files are not directly written.
+- `net_connection_confirmed`, component_created, pin_defined, photo, and annotation write paths were not introduced.
+- No AI-authored measurement workflow was introduced; target, unit, and value are explicit user inputs.
 - Board graph materializer behavior is accepted (`BOARD_GRAPH_MATERIALIZER_PASS`).
 - Read-only Flutter board graph view is accepted (`FLUTTER_GRAPH_VIEW_PASS`).
 - Component removal is represented only by `repair_action_recorded(action_type="remove_component")` (`COMPONENT_EDIT_EVENT_MODEL_PASS`).
-- `FLUTTER_PHOTO_LIST_PASS` is accepted:
-  - `/project/photos` route is available.
-  - Project Overview includes a Photos entry for read-only navigation.
-  - Photo list is read-only and sourced from `known_facts.json`.
-  - no camera, photo import, OCR/CV, or event-writing was introduced.
-- `PROJECT_ZIP_REPORT_HARDENING_PASS` is accepted:
-  - `board_graph.json` and `view_state.json` are rejected as V1 ZIP hard errors
-  - export/import paths skip or reject these forbidden artifacts
-  - optional missing photo references remain warning-only
-  - customer report boundary tests were added and enforce evidence-only wording.
-- `visual_trace` remains visual-only evidence; no automatic electrical promotion.
+- `FLUTTER_PHOTO_LIST_PASS` is accepted.
+- `PROJECT_ZIP_REPORT_HARDENING_PASS` is accepted with ZIP artifact guards and evidence constraints.
+- Visual evidence remains non-electrical (`visual_trace` is visual-only evidence).
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
-- Project ZIP/report hardening scope is locked and complete; event-writing implementation routing is now `FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`.
-- Measurement write scope is locked to `measurement_recorded` only. Implementation passes are routed to `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` unless countdown-based cleanup is required.
 
 ## Validation baseline
 

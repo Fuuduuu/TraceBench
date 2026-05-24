@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_EVENT_WRITE_MEASUREMENT_PASS`
+`FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -74,20 +74,22 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | completed | Run docs drift mini cleanup after countdown reached zero and align event-write scope-lock routing. |
 | FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock first implementation measurement event write scope: `measurement_recorded` only. |
 | FLUTTER_EVENT_WRITE_MEASUREMENT_PASS | FLUTTER_PASS | completed | Implement measurement_recorded-only event append flow and stale projection boundary behavior. |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ledger state after accepted measurement write pass and refresh next recommendation. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| None currently | DOCS_SYNC | pending |
+| PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | pending |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| None currently | DOCS_SYNC | pending |
+| PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | recommended |
 
-- Select the next planned work item from queue routing.
+Select the next planned work item from queue routing:
+"Review remaining planned/deferred work after measurement event writing completion."
 
 ## Deferred / not active
 
@@ -100,4 +102,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

@@ -1,7 +1,8 @@
 # FLUTTER_EVENT_WRITE_MEASUREMENT_PASS
 
 Status: completed  
-Lane: FLUTTER_PASS
+Lane: FLUTTER_PASS  
+Commit: e52cab0
 
 ## Files changed
 
@@ -20,22 +21,16 @@ Lane: FLUTTER_PASS
 
 ## Validation
 
-- `py -3 tools\validate_all.py`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\dart.bat format lib/shared/event_write/measurement_event_writer.dart lib/features/measurements/screens/measurement_record_screen.dart lib/shared/models/project_state.dart test/unit/measurement_event_writer_test.dart test/widget/measurement_write_screen_test.dart test/integration/measurement_write_end_to_end_test.dart`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
+- `py -3 tools\validate_all.py` (passed)
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\dart.bat format lib/shared/event_write/measurement_event_writer.dart lib/features/measurements/screens/measurement_record_screen.dart lib/shared/models/project_state.dart test/unit/measurement_event_writer_test.dart test/widget/measurement_write_screen_test.dart test/integration/measurement_write_end_to_end_test.dart` (passed)
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded` (passed)
 
 ## Implementation summary
 
-- Added a narrow measurement event writer service that:
-  - reads existing local `events.jsonl`,
-  - validates existing sequence/event id policy,
-  - computes `sequence = max(existing) + 1` (or `1` if empty),
-  - generates collision-resistant `evt_flutter_<timestamp_utc>_<short_random>` event ids,
-  - builds a single `measurement_recorded` event envelope with explicit `from`, `to`, and `unit`,
-  - appends by rewriting file content through a temp-file strategy that preserves existing lines on success and restores backup on failure.
-- Added manual measurement UI (`/project/measurements/new`) with manual value/unit/target input, submit guardrails, success and error messaging, and stale projection notice.
-- Marked local project state as projection stale (`isProjectionStale = true`) after successful append.
-- No known facts mutation or ZIP writes.
+- Added a narrow measurement event writer service that reads local `events.jsonl`, validates existing sequence/event-id policy, computes sequence as `max(existing)+1` (or `1`), and generates `evt_flutter_<timestamp_utc>_<short_random>` event IDs with collision checks.
+- Added manual measurement UI at `/project/measurements/new` with explicit value/unit/target input, submit guardrails, and projection-stale success messaging.
+- Appended exactly one `measurement_recorded` event per write while preserving prior event lines.
+- Did not mutate `known_facts.json` and did not write directly into Project ZIP files.
 
 ## Tests added / updated
 
@@ -45,10 +40,10 @@ Lane: FLUTTER_PASS
 
 ## Forbidden-surface confirmation
 
-- Measurement-only event writing implemented (`measurement_recorded`).
-- `known_facts.json` is not mutated.
+- `measurement_recorded` only.
+- No known_facts.json mutation.
 - No direct ZIP mutation.
-- No `net_connection_confirmed`/`component_created`/`pin_defined` side-effect events.
-- No AI-authored measurement values.
-- No component, pin, photo, annotation writes.
-- No visual trace promotion logic.
+- No `net_connection_confirmed` creation.
+- No component_created / pin_defined writing.
+- No component, pin, photo, or annotation write paths.
+- No AI-authored measurement input path.

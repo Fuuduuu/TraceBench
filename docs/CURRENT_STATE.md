@@ -3,9 +3,10 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS`
-- Next recommended pass: `PASS_QUEUE_REVIEW_03_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `2`
+- Current pass: `PASS_QUEUE_REVIEW_03_PASS`
+- Next recommended pass: `USER_DECISION_PASS` (`DOCS_SYNC` / `DECISION_ONLY`)
+- No safe non-loop implementation candidate remains; user direction is required before next product work.
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 

@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_03_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | completed | Queue-review and routing validation after measurement-write ledger fixup. |
 | WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
 | WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | completed (NEEDS_SMALL_FIXUP) | Work-intake review found no safe implementation-ready candidate; deferred work is blocked and implementation remains pending. |
 | WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS | DOCS_SYNC | completed | Record review audit and align current pass/state/lock for work-intake intake routing. |
@@ -80,16 +81,16 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | pending |
+| USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | pending |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | recommended |
+| USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | recommended |
 
 Select the next planned work item from queue routing:
-"Review remaining planned/deferred work after measurement event writing completion."
+Route to `USER_DECISION_PASS` for explicit product-direction decision before any further implementation attempt.
 
 ## Deferred / not active
 
@@ -102,4 +103,4 @@ Select the next planned work item from queue routing:
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

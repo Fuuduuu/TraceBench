@@ -2,12 +2,12 @@
 
 ## Current pass
 
-`FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS`
+`PASS_QUEUE_REVIEW_03_PASS`
 
 ## Goal
 
-Fix docs-ledger drift after accepted `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` and align
-current-state/queue/ledger artifacts.
+Review queue/intake state after measurement write ledger drift resolution and align
+current-state / queue / docs-ledger pointers.
 
 ## Allowed surfaces
 
@@ -17,6 +17,9 @@ docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
 docs/audit/FLUTTER_EVENT_WRITE_MEASUREMENT_PASS.md
 docs/audit/FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS.md
+docs/WORK_INTAKE_INDEX.md
+docs/DEFERRED_FEATURES.md
+docs/audit/PASS_QUEUE_REVIEW_03_PASS.md
 
 ## Forbidden surfaces
 

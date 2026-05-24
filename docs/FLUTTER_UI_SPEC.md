@@ -112,16 +112,19 @@ Advanced is still read-only in first UI.
 
 ## 7. Event-writing decision
 
-First UI does not write events.
+Current architecture:
+- Event writing decisions and constraints are governed by `docs/FLUTTER_EVENT_WRITE_SPEC.md`.
+- First UI remains read-only until the event-writing scope-lock and implementation passes are accepted.
+- First implementation direction is a measurement_recorded-only subset after sequence and append-only safety is in place.
 
-Reason:
-- sequence management not designed yet
-- Dart-side event validator does not exist yet
-- event creation requires separate architecture decision
-- append-only guarantees must not be weakened
+Reason this pass is deferred:
+- sequence management is not designed yet
+- Dart-side event validation is not yet implemented
+- append-only guarantees are not yet enforced
 
 Deferred pass:
-FLUTTER_EVENT_WRITE_PASS
+- FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS (completed)
+- FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS (planned first implementation scope)
 
 ## 8. Project ZIP integration
 

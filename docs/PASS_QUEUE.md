@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PASS_QUEUE_REVIEW_02_PASS`
+`FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -20,6 +20,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
 | WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | completed (NEEDS_SMALL_FIXUP) | Work-intake review found no safe implementation-ready candidate; deferred work is blocked and implementation remains pending. |
 | WORK_INTAKE_REVIEW_ALIGNMENT_FIXUP_PASS | DOCS_SYNC | completed | Record review audit and align current pass/state/lock for work-intake intake routing. |
+| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC | completed | Deep work-intake review determined event-writing requires separate scope-lock before implementation. |
 | PROJECT_ZIP_REPORT_HARDENING_AUDIT_PASS | DOCS_SYNC | completed | Audit pass accepted; combined ZIP + report hardening scope chosen. |
 | PROJECT_ZIP_REPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Scope lock for combined ZIP + customer report hardening. |
 | DOCS_DRIFT_MINI_CLEANUP_05_PASS | DOCS_SYNC | completed | Governance-only docs drift cleanup after scope-lock and queue countdown reset. |
@@ -69,22 +70,23 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECT_ZIP_REPORT_HARDENING_PASS | TOOLS_PASS | completed | Reject forbidden V1 ZIP artifacts, add report boundary and optional-photo warning hardening coverage. |
 | PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Ledger alignment after hardening pass acceptance; next recommendation updated. |
 | PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | completed | Queue review confirms no safe implementation candidate; next pass moved to work-intake deep review. |
+| FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Flutter event-writing architecture, first writable subset, and implementation preconditions. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| WORK_INTAKE_DEEP_REVIEW_PASS | DOCS_SYNC | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | recommended |
 
 - Select the next planned work item from queue routing.
 
-Note: Project ZIP/report hardening is completed; current recommendation is for queue/deferred review.
+- Note: Project ZIP/report hardening is completed; queue-driven cleanup/review pass has priority while docs drift is at 0 before event-write measurement scope-lock.
 
 ## Deferred / not active
 
@@ -97,4 +99,4 @@ Note: Project ZIP/report hardening is completed; current recommendation is for q
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

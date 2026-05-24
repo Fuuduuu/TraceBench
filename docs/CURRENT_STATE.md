@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PASS_QUEUE_REVIEW_02_PASS`
-- Next recommended pass: `WORK_INTAKE_DEEP_REVIEW_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `1`
+- Current pass: `FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_06_PASS` (`DOCS_SYNC`)
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -26,6 +26,7 @@ Branch: main
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
 - Project ZIP/report hardening scope is locked; next action is queue/work-intake deep review.
+- Event-writing architecture is now locked in docs; first write scope is measurement_recorded-only once sequence/append-only groundwork is implemented.
 
 ## Validation baseline
 

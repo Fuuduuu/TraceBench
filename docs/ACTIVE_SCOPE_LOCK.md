@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PASS_QUEUE_REVIEW_02_PASS`
+`FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Review PASS_QUEUE after Project ZIP/report hardening and select the next valid planned/intake/deferred pass.
+Lock Flutter event-writing architecture before implementation.
 
 ## Allowed surfaces
 
@@ -14,6 +14,10 @@ docs/CURRENT_STATE.md
 docs/PASS_QUEUE.md
 docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
+docs/FLUTTER_EVENT_WRITE_SPEC.md
+docs/FLUTTER_UI_SPEC.md
+docs/audit/WORK_INTAKE_DEEP_REVIEW_PASS.md
+docs/audit/FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS.md
 docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
 docs/audit/PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS.md
 docs/audit/PASS_QUEUE_REVIEW_02_PASS.md

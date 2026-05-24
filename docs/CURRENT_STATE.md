@@ -3,10 +3,10 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_07_PASS`
 - Next recommended pass: `PROJECTION_STALE_UI_SCOPE_LOCK_PASS` (`DOCS_SYNC`)
 - No safe implementation candidate remains until queue/lock routes next.
-- Docs drift countdown: `0`
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
@@ -27,6 +27,7 @@ Branch: main
 - Flutter marks projection as stale after any local measurement event append.
 - `known_facts.json` remains projection-owned by Python materializer; Flutter does not regenerate or mutate it directly in V1.
 - Mobile export remains a placeholder flow in V1.
+- Projection refresh policy is locked; stale UI scope-lock is next.
 
 ## Validation baseline
 

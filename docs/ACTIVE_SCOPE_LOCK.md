@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_07_PASS`
 
 ## Goal
 
-Lock V1 projection-refresh policy after local event writes.
+Run docs drift mini cleanup after countdown reset; keep pointer/state alignment.
 
 ## Allowed surfaces
 

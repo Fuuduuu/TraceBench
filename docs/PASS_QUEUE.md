@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_07_PASS`
 
 ## Completed pass history
 
@@ -79,6 +79,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ledger state after accepted measurement write pass and refresh next recommendation. |
 | PROJECTION_REFRESH_AFTER_EVENT_WRITE_AUDIT_PASS | DOCS_SYNC | completed | Audit that accepted POLICY_D refresh flow after local event writes. |
 | PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 projection refresh policy: export-time refresh + global stale indicator. |
+| DOCS_DRIFT_MINI_CLEANUP_07_PASS | DOCS_SYNC | completed | Docs-only mini cleanup for drift reset and routing/state pointer alignment. |
 
 ## Planned / Recommended
 
@@ -106,4 +107,4 @@ Route to `PROJECTION_STALE_UI_SCOPE_LOCK_PASS` for stale-state UX scope lock.
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

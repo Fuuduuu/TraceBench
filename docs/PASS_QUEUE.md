@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_08_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PROJECTION_STALE_UI_CODE_AUDIT_PASS | AUDIT_ONLY | completed | Code review accepted with nits; layout/content-flow issue deferred to small fixup. |
 | USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | completed | Projection refresh policy decision selected (POLICY_D export-time refresh). |
 | PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | completed | Queue-review and routing validation after measurement-write ledger fixup. |
 | WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
@@ -85,6 +86,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECTION_STALE_UI_PASS | FLUTTER_PASS | completed | Implement display-only stale projection banner on derived screens. |
 | PROJECTION_STALE_UI_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile docs-ledger drift after stale UI acceptance. |
 | PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS | DOCS_SYNC | completed | Route stale UI completion directly toward export-refresh/ZIP export scope lock. |
+| DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | completed | Docs mini cleanup to record code-audit guidance and route to stale UI small fixup. |
 
 ## Planned / Recommended
 
@@ -96,7 +98,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | recommended |
+| PROJECTION_STALE_UI_SMALL_FIXUP_PASS | FLUTTER_PASS | recommended |
 
 Select the next planned work item from queue routing:
 Queue-review loop is avoided after stale UI completion; next clear direction is export-refresh / Flutter ZIP export.
@@ -113,4 +115,4 @@ Queue-review loop is avoided after stale UI completion; next clear direction is 
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

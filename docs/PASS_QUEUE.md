@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_ZIP_SECURITY_HARDENING_PASS`
+`FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -89,6 +89,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | completed | Docs mini cleanup to record code-audit guidance and route to stale UI small fixup. |
 | PROJECTION_STALE_UI_SMALL_FIXUP_PASS | FLUTTER_PASS | completed | Fixed AUI-01 content-flow placement for stale banner on board graph and customer report. |
 | PROJECT_ZIP_SECURITY_HARDENING_PASS | TOOLS_PASS | completed | Harden ZIP export and validation for symlink/photo-path security without contract changes. |
+| FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe V1 Flutter ZIP export scope and implementation boundaries before implementation. |
 
 ## Planned / Recommended
 
@@ -100,11 +101,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| FLUTTER_ZIP_EXPORT_PASS | FLUTTER_PASS | recommended |
 
 Select the next planned work item from queue routing:
-Queue-review loop is avoided after stale UI completion; next clear direction is export-refresh / Flutter ZIP export.
-`PROJECT_ZIP_SECURITY_HARDENING_PASS` is complete; next direction is export-refresh / Flutter ZIP export scope lock.
+Queue-review loop is avoided after stale UI completion; next clear direction is the locked Flutter ZIP export scope and implementation pass.
+`FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS` is complete; next direction is `FLUTTER_ZIP_EXPORT_PASS`.
 
 ## Deferred / not active
 
@@ -117,4 +118,4 @@ Queue-review loop is avoided after stale UI completion; next clear direction is 
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

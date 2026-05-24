@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECT_ZIP_SECURITY_HARDENING_PASS`
-- Next recommended pass: `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
-- Docs drift countdown: `3`
+- Current pass: `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
+- Next recommended pass: `FLUTTER_ZIP_EXPORT_PASS`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -36,6 +36,12 @@ Branch: main
 - Project ZIP security hardening fixes are accepted:
   - `tools/export_project_zip.py` rejects symlinked files during ZIP export.
   - `tools/validate_project_zip.py` rejects non-portable absolute or traversal photo paths in `known_facts.json`.
+- `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS` is accepted and locks V1 export scope:
+  - Desktop/dev export direction is permitted to be implemented later.
+  - Mobile export remains placeholder in V1.
+  - Flutter must not mutate `known_facts.json` directly.
+  - Python materializer remains the only canonical known-facts projection owner.
+  - No ZIP contract expansion.
 
 ## Validation baseline
 

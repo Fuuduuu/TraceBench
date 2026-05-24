@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_ZIP_SECURITY_HARDENING_PASS`
+`FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-ZIP export/import validation hardening for security boundary before Flutter ZIP export scope-lock.
+Lock safe V1 Flutter ZIP export scope before implementation.
 
 ## Allowed surfaces
 
@@ -14,12 +14,11 @@ ZIP export/import validation hardening for security boundary before Flutter ZIP 
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
+- docs/PROJECT_ZIP_SPEC.md
+- docs/FLUTTER_UI_SPEC.md
+- docs/PROJECTION_REFRESH_SPEC.md
 - docs/audit/PROJECT_ZIP_SECURITY_HARDENING_PASS.md
-- docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
-- tools/export_project_zip.py
-- tools/validate_project_zip.py
-- tools/import_project_zip.py
-- tests/test_project_zip.py
+- docs/audit/FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS.md
 
 ## Forbidden surfaces
 
@@ -34,7 +33,11 @@ ZIP export/import validation hardening for security boundary before Flutter ZIP 
 - board_graph.json
 - view_state.json
 - Project ZIP tooling/files
-- project behavior unrelated to stale projection banner display
+- Dart-native known_facts materializer
+- mobile export implementation
+- ZIP contract expansion
+- bundled Python/materializer implementation changes
+- Flutter ZIP export implementation
 - event-writing implementation
 - component editing UI
 - camera/OCR/CV
@@ -42,17 +45,21 @@ ZIP export/import validation hardening for security boundary before Flutter ZIP 
 - source search
 - KiCad/boardview
 - BLE/cloud
-- visual_trace → measured/electrical net
+- visual_trace → electrical/net promotion
 - photo-derived identity/measurement/net/fault facts
-- component_created/pin_defined/photo_added/damage_region_marked/suspect_region_marked/visual_trace_added/net_connection_confirmed/repair_action_recorded writing
-- Dart-native known_facts materializer
-- mobile export implementation
-- ZIP contract expansion
-- bundled Python/materializer implementation changes
-- Flutter ZIP export implementation
+- additional artifact writes beyond project ZIP contract
+
+## Scope decisions to lock
+
+1. Primary V1 recommendation is Desktop/dev export direction; mobile export remains placeholder.
+2. Flutter must not regenerate or mutate `known_facts.json` directly in V1.
+3. Flutter must not add Dart-native materializer.
+4. Flutter must not write `events.jsonl` beyond accepted `measurement_recorded` flow.
+5. `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+6. Security baseline from `PROJECT_ZIP_SECURITY_HARDENING_PASS` remains required:
+   - symlinked files are rejected at export time,
+   - absolute and traversal photo paths are rejected by validation.
 
 ## Validate
 
 - py -3 tools\validate_all.py
-- flutter test --reporter expanded
-- dart format <changed Dart/test files>

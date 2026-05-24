@@ -12,6 +12,7 @@ import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
 import '../features/photos/screens/photo_list_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
+import '../features/measurements/screens/measurement_record_screen.dart';
 
 GoRouter buildTraceBenchRouter({
   String initialLocation = '/',
@@ -38,6 +39,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'measurements',
                 name: 'measurement-list',
                 builder: (_, __) => const MeasurementListScreen(),
+              ),
+              GoRoute(
+                path: 'measurements/new',
+                name: 'measurement-new',
+                builder: (_, __) => const MeasurementRecordScreen(),
               ),
               GoRoute(
                 path: 'not-populated',

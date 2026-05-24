@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`
+- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS`
 - Next recommended pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` (`FLUTTER_PASS`)
-- Docs drift countdown: `4`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 

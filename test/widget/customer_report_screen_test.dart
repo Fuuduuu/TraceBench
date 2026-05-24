@@ -3,13 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
-import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
+import 'package:trace_bench_viewer/features/report/screens/customer_report_screen.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 
-ProjectState _inlineProjectState({bool isProjectionStale = false}) {
+ProjectState _inlineProjectState({
+  bool isProjectionStale = false,
+}) {
   return ProjectState(
     manifest: ProjectManifest.fromJson({
       'project_id': 'inline_project',
@@ -54,11 +56,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: const MaterialApp(home: ProjectOverviewScreen()),
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: const MaterialApp(home: CustomerReportScreen()),
       ),
     );
     await tester.pump();
@@ -66,48 +65,24 @@ void main() {
 
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(find.text('Export ZIP'), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
-    expect(find.text('Kokkuvõte'), findsNothing);
+    expect(find.text('Export now'), findsNothing);
+    expect(find.text('Ekspordi kohe'), findsNothing);
   });
 
-  testWidgets('renders project overview fields', (tester) async {
+  testWidgets('hides stale projection banner when fresh', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: const MaterialApp(home: ProjectOverviewScreen()),
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: const MaterialApp(home: CustomerReportScreen()),
       ),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(
-      find.textContaining(
-        '${projectState.manifest.deviceType} · ${projectState.manifest.model}',
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.textContaining(projectState.manifest.projectId),
-      findsOneWidget,
-    );
-    expect(
-      find.text(projectState.measurementCount.toString()),
-      findsAtLeast(1),
-    );
-    expect(
-      find.text(projectState.componentCount.toString()),
-      findsAtLeast(1),
-    );
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
-    expect(find.text('Kõik komponendid'), findsOneWidget);
-    expect(find.text('Board graph'), findsOneWidget);
-    expect(find.text('Foto tõendid'), findsOneWidget);
-    expect(
-        find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
   });
 }

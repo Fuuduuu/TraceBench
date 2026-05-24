@@ -3,10 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECTION_STALE_UI_SCOPE_LOCK_PASS`
-- Next recommended pass: `PROJECTION_STALE_UI_PASS` (`FLUTTER_PASS`)
-- Stale projection UI scope lock is now the next implementation gate.
-- Docs drift countdown: `4`
+- Current pass: `PROJECTION_STALE_UI_PASS`
+- Next recommended pass: `None currently`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -29,6 +28,7 @@ Branch: main
 - Mobile export remains a placeholder flow in V1.
 - Projection refresh policy is locked; stale UI scope-lock is next.
 - Stale projection UI scope is locked to a reusable top-of-content display-only stale banner (primary copy + passive “Vajab eksporti” tag), no in-app refresh/export/materializer action.
+- Stale projection banner is implemented on derived views and remains display-only.
 
 ## Validation baseline
 

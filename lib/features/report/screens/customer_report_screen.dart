@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class CustomerReportScreen extends ConsumerWidget {
   const CustomerReportScreen({super.key});
@@ -18,6 +19,7 @@ class CustomerReportScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Kliendiraport')),
       body: Column(
         children: [
+          ProjectionStaleBanner(isStale: projectState.isProjectionStale),
           Expanded(
             child: Markdown(data: projectState.customerReport),
           ),

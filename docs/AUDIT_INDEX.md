@@ -68,4 +68,5 @@ Lazy-loading index for pass audit documents.
 | PASS_QUEUE_REVIEW_03_PASS | docs/audit/PASS_QUEUE_REVIEW_03_PASS.md | completed |
 | PROJECTION_STALE_UI_DESIGN_REVIEW | docs/audit/PROJECTION_STALE_UI_DESIGN_REVIEW.md | completed |
 | PROJECTION_STALE_UI_SCOPE_LOCK_PASS | docs/audit/PROJECTION_STALE_UI_SCOPE_LOCK_PASS.md | completed |
+| PROJECTION_STALE_UI_PASS | docs/audit/PROJECTION_STALE_UI_PASS.md | completed |
 

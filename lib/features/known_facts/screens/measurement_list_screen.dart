@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class MeasurementListScreen extends ConsumerWidget {
   const MeasurementListScreen({super.key});
@@ -17,18 +18,26 @@ class MeasurementListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Mõõtmised')),
       body: ListView.builder(
-        itemCount: projectState.knownFacts.measurements.length,
+        itemCount: projectState.knownFacts.measurements.length + 1,
         itemBuilder: (_, index) {
-          final measurement = projectState.knownFacts.measurements[index];
+          if (index == 0) {
+            return ProjectionStaleBanner(
+              isStale: projectState.isProjectionStale,
+            );
+          }
+
+          final measurement = projectState.knownFacts.measurements[index - 1];
           return ListTile(
-            title: Text('${measurement.measurementId}: ${measurement.from} → ${measurement.to}'),
+            title: Text(
+                '${measurement.measurementId}: ${measurement.from} → ${measurement.to}'),
             subtitle: Text(
               'Seis: ${measurement.humanValidityLabel} · ${measurement.powerState}',
             ),
             trailing: beginnerMode
                 ? null
                 : Text(
-                    '${measurement.value ?? 'null'} ${measurement.unit ?? ''}'.trim(),
+                    '${measurement.value ?? 'null'} ${measurement.unit ?? ''}'
+                        .trim(),
                   ),
           );
         },

@@ -6,6 +6,7 @@ import 'package:trace_bench_viewer/features/board_graph/models/board_graph_model
 import 'package:trace_bench_viewer/features/board_graph/services/board_graph_projector.dart';
 import 'package:trace_bench_viewer/features/board_graph/services/graph_layout.dart';
 import 'package:trace_bench_viewer/features/board_graph/widgets/board_graph_canvas.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 class BoardGraphScreen extends ConsumerStatefulWidget {
   const BoardGraphScreen({super.key});
@@ -57,6 +58,10 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          ProjectionStaleBanner(
+            isStale: projectState.isProjectionStale,
+            contextLabel: 'Board graph',
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
             child: Wrap(

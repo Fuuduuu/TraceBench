@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class ProjectOverviewScreen extends ConsumerWidget {
   const ProjectOverviewScreen({super.key});
@@ -38,6 +39,7 @@ class ProjectOverviewScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          ProjectionStaleBanner(isStale: projectState.isProjectionStale),
           Card(
             child: ListTile(
               title: Text(humanReadableTitle),

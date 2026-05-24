@@ -7,6 +7,7 @@ import 'package:trace_bench_viewer/features/photos/screens/photo_list_screen.dar
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 ProjectState _inlineProjectState({
   required List<Map<String, dynamic>> photos,
@@ -41,6 +42,38 @@ ProjectState _inlineProjectState({
 }
 
 void main() {
+  testWidgets('shows stale projection banner when stale', (tester) async {
+    final projectState = _inlineProjectState(
+      photos: const [
+        {
+          'photo_id': 'photo_inline_001',
+          'mode': 'macro',
+          'path': 'photos/macro_1.jpg',
+          'layer': 'top',
+        },
+      ],
+      damageRegions: const [],
+      suspectRegions: const [],
+      visualTraces: const [],
+    ).copyWith(isProjectionStale: true);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: const MaterialApp(home: PhotoListScreen()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(find.text('Režiim: macro'), findsOneWidget);
+  });
+
   testWidgets('empty state when no photos exist', (tester) async {
     final projectState = _inlineProjectState(
       photos: const [],
@@ -62,6 +95,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Fotosid ei leitud'), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
     expect(find.byType(Card), findsNothing);
   });
 

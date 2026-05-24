@@ -7,6 +7,7 @@ import 'package:trace_bench_viewer/features/board_graph/screens/board_graph_scre
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 ProjectState _inlineProjectState() {
   return ProjectState(
@@ -50,7 +51,8 @@ ProjectState _inlineProjectState() {
 void main() {
   testWidgets('board graph screen renders title and key labels',
       (tester) async {
-    final projectState = _inlineProjectState();
+    final projectState =
+        _inlineProjectState().copyWith(isProjectionStale: true);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -68,6 +70,8 @@ void main() {
     expect(find.textContaining('Q2'), findsAtLeast(1));
     expect(find.textContaining('components:'), findsOneWidget);
     expect(find.text('Show visual traces'), findsNothing);
+    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
   });
 
   testWidgets('board graph advanced mode exposes history controls',
@@ -90,5 +94,6 @@ void main() {
     expect(find.text('Audit/history'), findsOneWidget);
     expect(find.byType(DropdownButton<String>), findsOneWidget);
     expect(find.text('Advanced mode: true'), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/models/known_facts.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class PhotoListScreen extends ConsumerWidget {
   const PhotoListScreen({super.key});
@@ -20,7 +21,15 @@ class PhotoListScreen extends ConsumerWidget {
     if (projectState.knownFacts.photos.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text('Foto tõendid')),
-        body: const Center(child: Text('Fotosid ei leitud')),
+        body: Column(
+          children: [
+            ProjectionStaleBanner(
+              isStale: projectState.isProjectionStale,
+              contextLabel: 'Photo evidence',
+            ),
+            Expanded(child: const Center(child: Text('Fotosid ei leitud'))),
+          ],
+        ),
       );
     }
 
@@ -28,10 +37,17 @@ class PhotoListScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Foto tõendid')),
       body: ListView.separated(
         padding: const EdgeInsets.all(12),
-        itemCount: projectState.knownFacts.photos.length,
+        itemCount: projectState.knownFacts.photos.length + 1,
         separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (_, index) {
-          final photo = projectState.knownFacts.photos[index];
+          if (index == 0) {
+            return ProjectionStaleBanner(
+              isStale: projectState.isProjectionStale,
+              contextLabel: 'Photo evidence',
+            );
+          }
+
+          final photo = projectState.knownFacts.photos[index - 1];
           return _PhotoCard(
             photo: photo,
             knownFacts: projectState.knownFacts,

@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_06_PASS`
+`FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -72,18 +72,19 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PASS_QUEUE_REVIEW_02_PASS | DOCS_SYNC | completed | Queue review confirms no safe implementation candidate; next pass moved to work-intake deep review. |
 | FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Flutter event-writing architecture, first writable subset, and implementation preconditions. |
 | DOCS_DRIFT_MINI_CLEANUP_06_PASS | DOCS_SYNC | completed | Run docs drift mini cleanup after countdown reached zero and align event-write scope-lock routing. |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock first implementation measurement event write scope: `measurement_recorded` only. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_PASS | FLUTTER_PASS | recommended |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| FLUTTER_EVENT_WRITE_MEASUREMENT_PASS | FLUTTER_PASS | recommended |
 
 - Select the next planned work item from queue routing.
 
@@ -98,4 +99,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

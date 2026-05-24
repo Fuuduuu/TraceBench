@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_06_PASS`
-- Next recommended pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS` (`DOCS_SYNC`)
-- Docs drift countdown: `5`
+- Current pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`
+- Next recommended pass: `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` (`FLUTTER_PASS`)
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
@@ -26,7 +26,7 @@ Branch: main
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
 - Project ZIP/report hardening scope is locked and complete; event-writing implementation routing is now `FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`.
-- Event-writing architecture is locked in docs; measurement_recorded-only scope lock is next.
+- Measurement write scope is locked to `measurement_recorded` only. Implementation passes are routed to `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` unless countdown-based cleanup is required.
 
 ## Validation baseline
 
@@ -39,3 +39,4 @@ Branch: main
 - Next-step logic: [docs/PASS_QUEUE.md](PASS_QUEUE.md)
 - Current scope lock: [docs/ACTIVE_SCOPE_LOCK.md](ACTIVE_SCOPE_LOCK.md)
 - Audit evidence: [docs/AUDIT_INDEX.md](AUDIT_INDEX.md)
+

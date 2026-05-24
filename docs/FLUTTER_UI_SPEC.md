@@ -340,3 +340,10 @@ Required future tests:
 - no edit/camera controls test
 - navigation integration test from Project Overview to `/project/photos`
 - visual-trace evidence wording test: shown as visual hint only, never electrical/measured/evidence-confirming
+### Event writing scope
+
+First event-write implementation scope is `measurement_recorded` only.
+
+Full details live in `docs/FLUTTER_EVENT_WRITE_SPEC.md`.
+
+Other event types remain deferred.

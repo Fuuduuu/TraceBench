@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_06_PASS`
+`FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Run docs drift mini cleanup and align current pass/state/spec pointers after docs drift countdown reset.
+Lock Flutter event-writing implementation scope for the first write pass to `measurement_recorded` only.
 
 ## Allowed surfaces
 
@@ -16,11 +16,8 @@ docs/ACTIVE_SCOPE_LOCK.md
 docs/AUDIT_INDEX.md
 docs/FLUTTER_EVENT_WRITE_SPEC.md
 docs/FLUTTER_UI_SPEC.md
-docs/audit/WORK_INTAKE_DEEP_REVIEW_PASS.md
 docs/audit/FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS.md
-docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
-docs/audit/PROJECT_ZIP_REPORT_LEDGER_FIXUP_PASS.md
-docs/audit/PASS_QUEUE_REVIEW_02_PASS.md
+docs/audit/FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS.md
 
 ## Forbidden surfaces
 
@@ -38,8 +35,8 @@ docs/audit/PASS_QUEUE_REVIEW_02_PASS.md
 - board_graph.json
 - view_state.json
 - Project ZIP tooling/files
-- project ZIP contract expansion
-- project behavior changes
+- product behavior changes
+- schema/tool/materializer semantic changes
 - Flutter/Dart implementation
 - event-writing implementation
 - component editing UI
@@ -48,10 +45,8 @@ docs/audit/PASS_QUEUE_REVIEW_02_PASS.md
 - source search
 - KiCad/boardview
 - BLE/cloud
-- photo import/file picker
-- photo-derived identity/measurement/net/fault facts
 - visual_trace → measured/electrical net
-- schema/tool/materializer semantic changes
+- photo-derived identity/measurement/net/fault facts
 
 ## Verify
 

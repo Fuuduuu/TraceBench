@@ -137,3 +137,91 @@ Recommended sequence:
 2. `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS`
 3. later component/pin write scope pass
 4. later annotation/photo write scope pass
+
+## Measurement event write V1 scope
+
+Future implementation pass:
+- FLUTTER_EVENT_WRITE_MEASUREMENT_PASS
+
+Writable event type:
+- `measurement_recorded` only
+
+Explicitly forbidden in this implementation:
+- `component_created`
+- `pin_defined`
+- `photo_added`
+- `damage_region_marked`
+- `suspect_region_marked`
+- `visual_trace_added`
+- `net_connection_confirmed`
+- `repair_action_recorded`
+- `conflict` events
+- component editing/removal UI
+- camera/photo import
+- OCR/CV
+- BLE capture
+- AI-authored measurements
+
+Required UI behavior:
+- user manually enters measurement value
+- user selects or types the measurement target explicitly
+- user selects unit explicitly
+- UI must not infer units, targets, pins, nets, or component identity
+- UI must not create net confirmations
+- UI must mark projection stale after append unless accepted regeneration exists
+- UI must show event append result / validation result clearly
+
+Required event-write behavior:
+- append only one `measurement_recorded` JSONL event
+- generate next sequence from current events
+- generate unique `event_id`
+- `actor.type` must not be `ai`
+- payload must satisfy minimal Dart pre-write checks
+- do not mutate existing event lines
+- do not mutate `known_facts.json`
+- do not mutate ZIP directly
+
+Required storage behavior:
+- write only to unpacked local project folder
+- never directly write into ZIP
+- export remains separate accepted path
+
+Future implementation write allowlist:
+- `lib/app/router.dart` only if route/nav needed
+- `lib/features/measurements/**`
+- `lib/features/project/**` only if adding entry point
+- `lib/shared/event_write/**` or equivalent event-writing service folder
+- `lib/shared/models/**` only if needed for event envelope/value models
+- `test/unit/**` event-writing tests
+- `test/widget/**` measurement write UI tests
+- `test/integration/**` measurement append flow tests
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/FLUTTER_EVENT_WRITE_MEASUREMENT_PASS.md`
+
+Forbidden future implementation surfaces:
+- schemas/**
+- tools/**
+- samples/**
+- assets/**
+- pubspec.yaml / pubspec.lock unless unavoidable and separately approved
+- Project ZIP tooling changes
+- event schema changes
+- known_facts mutation
+- `board_graph.json` / `view_state.json`
+- camera/OCR/CV/source-search/cloud/BLE
+
+Required tests for future implementation:
+- sequence = max(existing)+1
+- duplicate/bad sequence blocks writing
+- `event_id` collision regenerates or blocks safely
+- `actor.type=ai` rejected
+- one JSONL line appended
+- existing lines preserved
+- known_facts not mutated
+- projection stale indicator shown
+- no `net_connection_confirmed` created
+- no `component_created`/`pin_defined` created
+- widget test: manual value/unit/target required
+- integration test: append `measurement_recorded` to local project folder

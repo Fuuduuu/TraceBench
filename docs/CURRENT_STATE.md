@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_08_PASS`
-- Next recommended pass: `PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
-- Docs drift countdown: `5`
+- Current pass: `PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
+- Next recommended pass: `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
@@ -31,7 +31,7 @@ Branch: main
 - `ProjectionStaleBanner` is shown on derived views when `ProjectState.isProjectionStale` is true and hidden otherwise.
 - No refresh/export/materializer actions are introduced by the banner.
 - No `known_facts.json` mutation, no event-writing changes, and no Project ZIP tooling changes were introduced.
-- Stale UI code audit is accepted with nits. AUI-01 layout/content-flow fix is next (`PROJECTION_STALE_UI_SMALL_FIXUP_PASS`).
+- AUI-01 layout/content-flow issue for BoardGraph and CustomerReport stale banner is fixed.
 - AUI-02 (exported report artifact absence test) is deferred to export/report validation.
 
 ## Validation baseline

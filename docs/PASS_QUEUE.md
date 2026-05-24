@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_08_PASS`
+`PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
 
 ## Completed pass history
 
@@ -87,6 +87,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PROJECTION_STALE_UI_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile docs-ledger drift after stale UI acceptance. |
 | PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS | DOCS_SYNC | completed | Route stale UI completion directly toward export-refresh/ZIP export scope lock. |
 | DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | completed | Docs mini cleanup to record code-audit guidance and route to stale UI small fixup. |
+| PROJECTION_STALE_UI_SMALL_FIXUP_PASS | FLUTTER_PASS | completed | Fixed AUI-01 content-flow placement for stale banner on board graph and customer report. |
 
 ## Planned / Recommended
 
@@ -98,11 +99,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECTION_STALE_UI_SMALL_FIXUP_PASS | FLUTTER_PASS | recommended |
+| FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 Select the next planned work item from queue routing:
 Queue-review loop is avoided after stale UI completion; next clear direction is export-refresh / Flutter ZIP export.
-`DOCS_DRIFT_MINI_CLEANUP_08_PASS` is selected as the immediate governance cleanup step before scope-lock implementation.
+`PROJECTION_STALE_UI_SMALL_FIXUP_PASS` is complete; next direction is export-refresh / Flutter ZIP export scope lock.
 
 ## Deferred / not active
 
@@ -115,4 +116,4 @@ Queue-review loop is avoided after stale UI completion; next clear direction is 
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

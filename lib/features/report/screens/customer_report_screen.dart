@@ -19,9 +19,24 @@ class CustomerReportScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Kliendiraport')),
       body: Column(
         children: [
-          ProjectionStaleBanner(isStale: projectState.isProjectionStale),
           Expanded(
-            child: Markdown(data: projectState.customerReport),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ProjectionStaleBanner(
+                      isStale: projectState.isProjectionStale),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Markdown(
+                      data: projectState.customerReport,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),

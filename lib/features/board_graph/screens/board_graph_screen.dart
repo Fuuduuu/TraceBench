@@ -55,118 +55,123 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ProjectionStaleBanner(
-            isStale: projectState.isProjectionStale,
-            contextLabel: 'Board graph',
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                _SummaryChip(
-                    label: 'components', value: knownFacts.components.length),
-                _SummaryChip(label: 'pins', value: knownFacts.pins.length),
-                _SummaryChip(
-                  label: 'measured nets',
-                  value: knownFacts.nets.length,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ProjectionStaleBanner(
+                isStale: projectState.isProjectionStale,
+                contextLabel: 'Board graph',
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: [
+                    _SummaryChip(
+                        label: 'components',
+                        value: knownFacts.components.length),
+                    _SummaryChip(label: 'pins', value: knownFacts.pins.length),
+                    _SummaryChip(
+                      label: 'measured nets',
+                      value: knownFacts.nets.length,
+                    ),
+                    _SummaryChip(
+                      label: 'measurements',
+                      value: knownFacts.measurements.length,
+                    ),
+                    _SummaryChip(
+                      label: 'not populated',
+                      value: knownFacts.excludedFromFaultCandidates.length,
+                    ),
+                  ],
                 ),
-                _SummaryChip(
-                  label: 'measurements',
-                  value: knownFacts.measurements.length,
-                ),
-                _SummaryChip(
-                  label: 'not populated',
-                  value: knownFacts.excludedFromFaultCandidates.length,
+              ),
+              if (!isBeginnerMode) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    children: [
+                      FilterChip(
+                        label: const Text('Show visual traces'),
+                        selected: _showVisualTraces,
+                        onSelected: (value) => setState(() {
+                          _showVisualTraces = value;
+                        }),
+                      ),
+                      const SizedBox(width: 8),
+                      FilterChip(
+                        label: const Text('Audit/history'),
+                        selected: _showHistory,
+                        onSelected: (value) => setState(() {
+                          _showHistory = value;
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-          if (!isBeginnerMode) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
+              if (knownFacts.components.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    hint: const Text('No focus'),
+                    value: _focusComponent,
+                    items: [
+                      const DropdownMenuItem<String>(
+                        value: null,
+                        child: Text('No focus'),
+                      ),
+                      ...knownFacts.components
+                          .map(
+                            (component) => DropdownMenuItem<String>(
+                              value: component.componentId,
+                              child: Text(component.componentId),
+                            ),
+                          )
+                          .toList(),
+                    ],
+                    onChanged: (value) => setState(() {
+                      _focusComponent = value;
+                    }),
+                  ),
+                ),
+              const Divider(height: 1),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                child: Text(
+                  'Advanced mode: ${!isBeginnerMode}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: BoardGraphCanvas(
+                  projection: activeProjection,
+                  nodePositions: layout.nodePositions,
+                  showAdvancedDetails: !isBeginnerMode,
+                ),
+              ),
+              const Divider(height: 1),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(8),
                 children: [
-                  FilterChip(
-                    label: const Text('Show visual traces'),
-                    selected: _showVisualTraces,
-                    onSelected: (value) => setState(() {
-                      _showVisualTraces = value;
-                    }),
-                  ),
-                  const SizedBox(width: 8),
-                  FilterChip(
-                    label: const Text('Audit/history'),
-                    selected: _showHistory,
-                    onSelected: (value) => setState(() {
-                      _showHistory = value;
-                    }),
-                  ),
+                  for (final node in activeProjection.nodes.take(30))
+                    Text(
+                      '${node.type.name}: ${node.id}',
+                      key: ValueKey('board-graph-list-${node.id}'),
+                    ),
                 ],
               ),
-            ),
-          ],
-          if (knownFacts.components.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                hint: const Text('No focus'),
-                value: _focusComponent,
-                items: [
-                  const DropdownMenuItem<String>(
-                    value: null,
-                    child: Text('No focus'),
-                  ),
-                  ...knownFacts.components
-                      .map(
-                        (component) => DropdownMenuItem<String>(
-                          value: component.componentId,
-                          child: Text(component.componentId),
-                        ),
-                      )
-                      .toList(),
-                ],
-                onChanged: (value) => setState(() {
-                  _focusComponent = value;
-                }),
-              ),
-            ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              'Advanced mode: ${!isBeginnerMode}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            ],
           ),
-          Expanded(
-            child: BoardGraphCanvas(
-              projection: activeProjection,
-              nodePositions: layout.nodePositions,
-              showAdvancedDetails: !isBeginnerMode,
-            ),
-          ),
-          const Divider(height: 1),
-          Expanded(
-            flex: 1,
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              children: [
-                for (final node in activeProjection.nodes.take(30))
-                  Text(
-                    '${node.type.name}: ${node.id}',
-                    key: ValueKey('board-graph-list-${node.id}'),
-                  ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

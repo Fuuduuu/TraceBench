@@ -3,10 +3,10 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PASS_QUEUE_REVIEW_03_PASS`
-- Next recommended pass: `USER_DECISION_PASS` (`DOCS_SYNC` / `DECISION_ONLY`)
-- No safe non-loop implementation candidate remains; user direction is required before next product work.
-- Docs drift countdown: `1`
+- Current pass: `PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS`
+- Next recommended pass: `PROJECTION_STALE_UI_SCOPE_LOCK_PASS` (`DOCS_SYNC`)
+- No safe implementation candidate remains until queue/lock routes next.
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -23,6 +23,10 @@ Branch: main
 - Visual evidence remains non-electrical (`visual_trace` is visual-only evidence).
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `DOCS_DRIFT_MINI_CLEANUP_04_PASS` and `SCOPE_DRIFT_CHECK_PROTOCOL_PASS` are completed.
+- Projection refresh policy is locked to POLICY_D (`PROJECT_ZIP` export-time refresh with global stale indicator).
+- Flutter marks projection as stale after any local measurement event append.
+- `known_facts.json` remains projection-owned by Python materializer; Flutter does not regenerate or mutate it directly in V1.
+- Mobile export remains a placeholder flow in V1.
 
 ## Validation baseline
 

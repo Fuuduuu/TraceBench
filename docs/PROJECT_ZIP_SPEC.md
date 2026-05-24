@@ -34,6 +34,9 @@ live merge.
 - Import validates content before accepting output.
 - Export regenerates `known_facts.json` from `events.jsonl` before packaging,
   unless explicitly told not to.
+- After local event writes, refresh still follows the policy in
+  `docs/PROJECTION_REFRESH_SPEC.md` before packaging.
+- Mobile export remains a V1 placeholder and is deferred in this scope.
 - `board_graph.json` and `view_state.json` are never included in V1 ZIP output.
 - ZIP entry order is deterministic in V1 packaging; byte-for-byte
   determinism is not guaranteed across tools/environments.

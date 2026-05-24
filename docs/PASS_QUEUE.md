@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PASS_QUEUE_REVIEW_03_PASS`
+`PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | completed | Projection refresh policy decision selected (POLICY_D export-time refresh). |
 | PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | completed | Queue-review and routing validation after measurement-write ledger fixup. |
 | WORK_INTAKE_SELECTION_PASS | DOCS_SYNC | completed | Review remaining planned/deferred work and route the next safe pass. |
 | WORK_INTAKE_REVIEW_PASS | DOCS_SYNC | completed (NEEDS_SMALL_FIXUP) | Work-intake review found no safe implementation-ready candidate; deferred work is blocked and implementation remains pending. |
@@ -76,21 +77,23 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock first implementation measurement event write scope: `measurement_recorded` only. |
 | FLUTTER_EVENT_WRITE_MEASUREMENT_PASS | FLUTTER_PASS | completed | Implement measurement_recorded-only event append flow and stale projection boundary behavior. |
 | FLUTTER_EVENT_WRITE_MEASUREMENT_LEDGER_FIXUP_PASS | DOCS_SYNC | completed | Reconcile ledger state after accepted measurement write pass and refresh next recommendation. |
+| PROJECTION_REFRESH_AFTER_EVENT_WRITE_AUDIT_PASS | DOCS_SYNC | completed | Audit that accepted POLICY_D refresh flow after local event writes. |
+| PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 projection refresh policy: export-time refresh + global stale indicator. |
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | pending |
+| PROJECTION_STALE_UI_SCOPE_LOCK_PASS | DOCS_SYNC | pending |
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | recommended |
+| PROJECTION_STALE_UI_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 Select the next planned work item from queue routing:
-Route to `USER_DECISION_PASS` for explicit product-direction decision before any further implementation attempt.
+Route to `PROJECTION_STALE_UI_SCOPE_LOCK_PASS` for stale-state UX scope lock.
 
 ## Deferred / not active
 
@@ -103,4 +106,4 @@ Route to `USER_DECISION_PASS` for explicit product-direction decision before any
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

@@ -126,6 +126,15 @@ Deferred pass:
 - FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS (completed)
 - FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS (planned first implementation scope)
 
+## Stale projection banner rules
+
+- Stale projection UX is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
+- Global stale banner should appear on derived views when `isProjectionStale` is true.
+- Banner text:
+  `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
+- No in-app Refresh button in V1.
+- Stale state does not block navigation.
+
 ## 8. Project ZIP integration
 
 Mobile:

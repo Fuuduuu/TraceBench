@@ -88,6 +88,8 @@ Decision:
 - Event-write must not claim known-facts parity unless regeneration actually occurs.
 - If regeneration cannot be guaranteed, UI must show “events changed; projection refresh required.”
 - Avoid inventing or synthesizing facts in `known_facts`.
+- Projection refresh policy after event writes is defined in `docs/PROJECTION_REFRESH_SPEC.md` (POLICY_D).
+- Flutter V1 marks `isProjectionStale = true` and must not mutate `known_facts.json`.
 
 ## First writable event subset
 

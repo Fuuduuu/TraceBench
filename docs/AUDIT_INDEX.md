@@ -76,4 +76,5 @@ Lazy-loading index for pass audit documents.
 | DOCS_DRIFT_MINI_CLEANUP_08_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_08_PASS.md | completed |
 | PROJECT_ZIP_SECURITY_HARDENING_PASS | docs/audit/PROJECT_ZIP_SECURITY_HARDENING_PASS.md | completed |
 | FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | docs/audit/FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS.md | completed |
+| FLUTTER_ZIP_EXPORT_PASS | docs/audit/FLUTTER_ZIP_EXPORT_PASS.md | completed |
 

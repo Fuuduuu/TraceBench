@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/report/screens/customer_report_screen.dart';
-import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/services/project_exporter.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
+
+class _StaticProjectExporter extends ProjectExporter {
+  _StaticProjectExporter(this.result);
+
+  final ExportResult result;
+
+  @override
+  Future<ExportResult> exportProjectZip(ProjectState projectState) async {
+    return result;
+  }
+}
 
 ProjectState _inlineProjectState({
   bool isProjectionStale = false,
+  String customerReport = 'Inline sample report',
 }) {
   return ProjectState(
     manifest: ProjectManifest.fromJson({
@@ -46,7 +60,8 @@ ProjectState _inlineProjectState({
       },
     }),
     events: const [],
-    customerReport: 'Inline sample report',
+    customerReport: customerReport,
+    projectDirectory: 'C:/tmp/inline_project',
   ).copyWith(isProjectionStale: isProjectionStale);
 }
 
@@ -61,14 +76,17 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
-    expect(find.text('Export ZIP'), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
+    expect(find.text('Export ZIP'), findsOneWidget);
+    expect(find.text('Refresh'), findsNothing);
+    expect(find.text('Värskenda'), findsNothing);
     expect(find.text('Export now'), findsNothing);
     expect(find.text('Ekspordi kohe'), findsNothing);
+    expect(find.text('Run materializer'), findsNothing);
+    expect(find.text('Käivita materializer'), findsNothing);
   });
 
   testWidgets('hides stale projection banner when fresh', (tester) async {
@@ -81,8 +99,137 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+  });
+
+  testWidgets('export button renders on customer report screen',
+      (tester) async {
+    final projectState = _inlineProjectState();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter:
+                _StaticProjectExporter(ExportSuccess('C:/tmp/export.zip')),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.widgetWithText(ElevatedButton, 'Export ZIP'), findsOneWidget);
+  });
+
+  testWidgets('mobile export shows placeholder message', (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter:
+                _StaticProjectExporter(const ExportMobilePlaceholder()),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(find.text('Mobiilne eksport jääb V1-s placeholderiks.'),
+        findsOneWidget);
+  });
+
+  testWidgets('desktop export success keeps stale banner visible',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              const ExportSuccess('C:/tmp/inline_export.zip'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(
+      find.text(
+          'ZIP eksporditud: C:/tmp/inline_export.zip. Uuendatud projektsiooni nägemiseks impordi projekt uuesti.'),
+      findsOneWidget,
+    );
+    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+  });
+
+  testWidgets(
+    'stale banner primary text is not injected into customer report content',
+    (tester) async {
+      final expectedReport = 'Inline sample report (assert content)';
+      final projectState = _inlineProjectState(
+        isProjectionStale: true,
+        customerReport: expectedReport,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [projectStateProvider.overrideWith((_) => projectState)],
+          child: MaterialApp(
+            home: CustomerReportScreen(
+              projectExporter: _StaticProjectExporter(
+                ExportSuccess('C:/tmp/inline_export.zip'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final markdown = tester.widget<Markdown>(find.byType(Markdown));
+      expect(markdown.data, equals(expectedReport));
+    },
+  );
+
+  testWidgets('projection stale banner still has no export action',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              const ExportSuccess('C:/tmp/inline_export.zip'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Refresh'), findsNothing);
+    expect(find.text('Värskenda'), findsNothing);
+    expect(find.text('Uuenda nüüd'), findsNothing);
+    expect(find.text('Export now'), findsNothing);
+    expect(find.text('Ekspordi kohe'), findsNothing);
+    expect(find.text('Run materializer'), findsNothing);
+    expect(find.text('Käivita materializer'), findsNothing);
   });
 }

@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
+- Current pass: `FLUTTER_ZIP_EXPORT_PASS`
 - Next recommended pass: `FLUTTER_ZIP_EXPORT_PASS`
-- Docs drift countdown: `2`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
@@ -42,6 +42,13 @@ Branch: main
   - Flutter must not mutate `known_facts.json` directly.
   - Python materializer remains the only canonical known-facts projection owner.
   - No ZIP contract expansion.
+- `FLUTTER_ZIP_EXPORT_PASS` is implemented:
+  - `ProjectExporter` added as a narrow desktop export handoff service.
+  - Desktop path uses Python discovery (`py -3` then `python3`, then `python`).
+  - Export flow always runs `tools/materialize_known_facts.py` before `tools/export_project_zip.py`.
+  - Success path writes sibling `.../<project_id_or_folder>_export.zip`.
+  - Mobile export remains placeholder via explicit user message.
+  - Export success does not clear stale state.
 
 ## Validation baseline
 

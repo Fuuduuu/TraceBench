@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
+`PROJECT_ZIP_SECURITY_HARDENING_PASS`
 
 ## Goal
 
-Display-only stale projection warning behavior for derived views.
+ZIP export/import validation hardening for security boundary before Flutter ZIP export scope-lock.
 
 ## Allowed surfaces
 
@@ -14,13 +14,12 @@ Display-only stale projection warning behavior for derived views.
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/PROJECTION_STALE_UI_PASS.md
-- docs/audit/PROJECTION_STALE_UI_LEDGER_FIXUP_PASS.md
-- docs/WORK_INTAKE_INDEX.md
-- docs/audit/PROJECTION_STALE_UI_CODE_AUDIT_PASS.md
-- docs/audit/PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_08_PASS.md
-- docs/audit/PROJECTION_STALE_UI_SMALL_FIXUP_PASS.md
+- docs/audit/PROJECT_ZIP_SECURITY_HARDENING_PASS.md
+- docs/audit/PROJECT_ZIP_REPORT_HARDENING_PASS.md
+- tools/export_project_zip.py
+- tools/validate_project_zip.py
+- tools/import_project_zip.py
+- tests/test_project_zip.py
 
 ## Forbidden surfaces
 
@@ -50,6 +49,7 @@ Display-only stale projection warning behavior for derived views.
 - mobile export implementation
 - ZIP contract expansion
 - bundled Python/materializer implementation changes
+- Flutter ZIP export implementation
 
 ## Validate
 

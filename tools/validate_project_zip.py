@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 ROOT = Path(__file__).resolve().parents[1]
 MATERIALIZE_SCRIPT = ROOT / "tools" / "materialize_known_facts.py"
@@ -125,11 +125,23 @@ def _warn_missing_optional_photo_files(base: Path, warnings: list[str], errors: 
         if not isinstance(path_value, str) or not path_value.strip():
             continue
 
+        if PureWindowsPath(path_value).is_absolute():
+            errors.append(f"absolute photo path is not portable: {path_value}")
+            continue
+        if PurePosixPath(path_value).is_absolute():
+            errors.append(f"absolute photo path is not portable: {path_value}")
+            continue
+        if os.path.isabs(path_value):
+            errors.append(f"absolute photo path is not portable: {path_value}")
+            continue
+
+        normalized = path_value.replace("\\", "/")
+        if any(part == ".." for part in normalized.split("/")):
+            errors.append(f"photo path traversal is not allowed: {path_value}")
+            continue
+
         photo_path = Path(path_value)
-        if photo_path.is_absolute():
-            target = photo_path
-        else:
-            target = base / photo_path
+        target = base / photo_path
 
         if not target.exists():
             warnings.append(f"missing optional photo file: {path_value}")

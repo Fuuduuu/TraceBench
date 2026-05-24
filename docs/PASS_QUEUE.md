@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
+`PROJECT_ZIP_SECURITY_HARDENING_PASS`
 
 ## Completed pass history
 
@@ -88,6 +88,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | PASS_QUEUE_REVIEW_04_DIRECTED_SELECTION_PASS | DOCS_SYNC | completed | Route stale UI completion directly toward export-refresh/ZIP export scope lock. |
 | DOCS_DRIFT_MINI_CLEANUP_08_PASS | DOCS_SYNC | completed | Docs mini cleanup to record code-audit guidance and route to stale UI small fixup. |
 | PROJECTION_STALE_UI_SMALL_FIXUP_PASS | FLUTTER_PASS | completed | Fixed AUI-01 content-flow placement for stale banner on board graph and customer report. |
+| PROJECT_ZIP_SECURITY_HARDENING_PASS | TOOLS_PASS | completed | Harden ZIP export and validation for symlink/photo-path security without contract changes. |
 
 ## Planned / Recommended
 
@@ -103,7 +104,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 Select the next planned work item from queue routing:
 Queue-review loop is avoided after stale UI completion; next clear direction is export-refresh / Flutter ZIP export.
-`PROJECTION_STALE_UI_SMALL_FIXUP_PASS` is complete; next direction is export-refresh / Flutter ZIP export scope lock.
+`PROJECT_ZIP_SECURITY_HARDENING_PASS` is complete; next direction is export-refresh / Flutter ZIP export scope lock.
 
 ## Deferred / not active
 
@@ -116,4 +117,4 @@ Queue-review loop is avoided after stale UI completion; next clear direction is 
 
 ## Docs drift countdown
 
-Current countdown: 4
+Current countdown: 3

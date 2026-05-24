@@ -102,6 +102,8 @@ def _collect_files(base_dir: Path, arc_prefix: str = "") -> Iterable[tuple[Path,
     base_dir = base_dir.resolve()
     collected: list[tuple[Path, str]] = []
     for path in sorted(base_dir.rglob("*")):
+        if path.is_symlink():
+            raise ValueError(f"refusing to export symlinked path: {path}")
         if not path.is_file():
             continue
         if _is_excluded_path(path, base_dir):
@@ -142,13 +144,21 @@ def export_project_zip(project_dir: Path, output_zip: Path) -> int:
     _ensure_customer_report(project_dir)
 
     files: list[tuple[Path, str]] = []
-    files.extend(_collect_files(project_dir))
+    try:
+        files.extend(_collect_files(project_dir))
+    except ValueError as exc:
+        print(f"[ERROR] {exc}")
+        return 1
 
     profiles_source = project_dir / "device_profiles"
     if not profiles_source.exists():
         profiles_source = REPO_DEVICE_PROFILES
     if profiles_source.exists():
-        files.extend((path, arc_name) for path, arc_name in _collect_files(profiles_source, "device_profiles"))
+        try:
+            files.extend((path, arc_name) for path, arc_name in _collect_files(profiles_source, "device_profiles"))
+        except ValueError as exc:
+            print(f"[ERROR] {exc}")
+            return 1
 
     required = {
         "manifest.json",

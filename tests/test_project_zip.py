@@ -52,6 +52,35 @@ def _ensure_project_profiles_dir(project_dir: Path) -> None:
         profile_path.write_text("{}", encoding="utf-8")
 
 
+def _set_first_photo_path(project_dir: Path, path_value: str) -> str:
+    known_facts_path = project_dir / "known_facts.json"
+    known_facts = json.loads(known_facts_path.read_text(encoding="utf-8"))
+    photos = known_facts.get("photos")
+    if isinstance(photos, list) and photos and isinstance(photos[0], dict):
+        photos[0]["path"] = path_value
+    else:
+        known_facts.setdefault("photos", []).append({"photo_id": "photo_custom", "path": path_value})
+    known_facts_path.write_text(json.dumps(known_facts, indent=2), encoding="utf-8")
+
+    events_path = project_dir / "events.jsonl"
+    lines = []
+    updated = False
+    for line in events_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        event = json.loads(line)
+        if (
+            not updated
+            and event.get("event_type") == "photo_added"
+            and isinstance(event.get("payload"), dict)
+        ):
+            event["payload"]["path"] = path_value
+            updated = True
+        lines.append(json.dumps(event, separators=(",", ":"), ensure_ascii=False))
+    events_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return known_facts_path.read_text(encoding="utf-8")
+
+
 class ProjectZipTests(unittest.TestCase):
     def test_export_project_zip_creates_required_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -173,6 +202,67 @@ class ProjectZipTests(unittest.TestCase):
             result = _import_project_zip(project_zip, output_dir)
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("rejected unsafe zip member", result.stdout.lower() + result.stderr.lower())
+
+    def test_export_rejects_symlinked_file(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            external_photo = Path(tmpdir) / "outside_secret.txt"
+            external_photo.write_text("outside secret", encoding="utf-8")
+            linked_photo = project_dir / "linked_secret.txt"
+            try:
+                linked_photo.symlink_to(external_photo)
+            except OSError as exc:
+                self.skipTest(f"symlink creation not supported: {exc}")
+
+            output_zip = Path(tmpdir) / "project.zip"
+            result = _export_project_zip(project_dir, output_zip)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            output = result.stdout.lower() + result.stderr.lower()
+            self.assertIn("refusing to export symlinked path", output)
+            if output_zip.exists():
+                with ZipFile(output_zip, "r") as zf:
+                    names = {name.replace("\\", "/") for name in zf.namelist()}
+                self.assertNotIn("linked_secret.txt", names)
+                self.assertNotIn("outside_secret.txt", names)
+
+    def test_validate_rejects_posix_absolute_photo_path(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            _set_first_photo_path(project_dir, "/tmp/outside_secret.jpg")
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            output = validate_result.stdout.lower() + validate_result.stderr.lower()
+            self.assertIn("absolute photo path is not portable", output)
+
+    def test_validate_rejects_windows_absolute_photo_path(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            _set_first_photo_path(project_dir, "C:\\secret\\photo.jpg")
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            output = validate_result.stdout.lower() + validate_result.stderr.lower()
+            self.assertIn("absolute photo path is not portable", output)
+
+    def test_validate_rejects_photo_path_traversal(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            _set_first_photo_path(project_dir, "../outside_secret.jpg")
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            output = validate_result.stdout.lower() + validate_result.stderr.lower()
+            self.assertIn("photo path traversal is not allowed", output)
 
     def test_export_excludes_codex_and_env_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:

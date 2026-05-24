@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECTION_STALE_UI_SMALL_FIXUP_PASS`
+- Current pass: `PROJECT_ZIP_SECURITY_HARDENING_PASS`
 - Next recommended pass: `FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS`
-- Docs drift countdown: `4`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
@@ -33,6 +33,9 @@ Branch: main
 - No `known_facts.json` mutation, no event-writing changes, and no Project ZIP tooling changes were introduced.
 - AUI-01 layout/content-flow issue for BoardGraph and CustomerReport stale banner is fixed.
 - AUI-02 (exported report artifact absence test) is deferred to export/report validation.
+- Project ZIP security hardening fixes are accepted:
+  - `tools/export_project_zip.py` rejects symlinked files during ZIP export.
+  - `tools/validate_project_zip.py` rejects non-portable absolute or traversal photo paths in `known_facts.json`.
 
 ## Validation baseline
 

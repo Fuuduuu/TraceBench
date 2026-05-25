@@ -61,6 +61,18 @@ class HomeScreen extends ConsumerWidget {
     }
   }
 
+  void _openNewProjectWizard(BuildContext context) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Uue projekti loomine tuleb järgmises versioonis.'),
+        ),
+      );
+      return;
+    }
+    context.go('/new-project');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectState = ref.watch(projectStateProvider);
@@ -90,6 +102,11 @@ class HomeScreen extends ConsumerWidget {
             ElevatedButton(
               onPressed: () => _importZip(context, ref),
               child: const Text('Import Project ZIP'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => _openNewProjectWizard(context),
+              child: const Text('Uus projekt'),
             ),
             const SizedBox(height: 24),
             if (hasProject) ...[

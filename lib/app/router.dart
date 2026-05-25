@@ -9,6 +9,7 @@ import '../features/known_facts/screens/measurement_list_screen.dart';
 import '../features/known_facts/screens/not_populated_screen.dart';
 import '../features/known_facts/screens/pin_list_screen.dart';
 import '../features/project/screens/home_screen.dart';
+import '../features/project/screens/new_project_wizard_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
 import '../features/photos/screens/photo_list_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
@@ -25,6 +26,11 @@ GoRouter buildTraceBenchRouter({
         name: 'home',
         builder: (context, state) => const HomeScreen(),
         routes: [
+          GoRoute(
+            path: 'new-project',
+            name: 'new-project',
+            builder: (_, __) => const NewProjectWizardScreen(),
+          ),
           GoRoute(
             path: 'project',
             name: 'project-overview',

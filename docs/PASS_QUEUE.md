@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_10_PASS`
+`FLUTTER_NEW_PROJECT_WIZARD_PASS`
 
 ## Completed pass history
 
@@ -100,6 +100,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | TOOLS_EMPTY_PROJECT_SUPPORT_PASS | TOOLS_PASS | completed | Support empty/new projects in materialization and export/validate/import tests; unblock new-project wizard scope lock. |
 | FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 New Project Wizard scope for blank-project creation and local-only project bootstrap. |
 | DOCS_DRIFT_MINI_CLEANUP_10_PASS | DOCS_SYNC | completed | Docs drift cleanup after wizard scope-lock and routing cleanup before implementation. |
+| FLUTTER_NEW_PROJECT_WIZARD_PASS | FLUTTER_PASS | completed | Implement V1 New Project Wizard with Python-materialized known facts and no evidence event creation. |
 
 ## Planned / Recommended
 
@@ -111,12 +112,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_NEW_PROJECT_WIZARD_PASS | FLUTTER_PASS | recommended |
+| PROJECT_IMPORT_EXPORT_SMOKE_TEST_PASS | AUDIT_ONLY | recommended |
 
-`FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS` is complete; export polish is closed for now.
-`FZ-02` is fixed. `FZ-01` is formally closed as V1 accepted risk.
-Empty-project tooling support pass is complete and the New Project Wizard scope-lock is now complete.
-Next implementation candidate after cleanup is `FLUTTER_NEW_PROJECT_WIZARD_PASS` (Flutter implementation).
+`FLUTTER_NEW_PROJECT_WIZARD_PASS` is complete and validated.
+Next recommended pass is `PROJECT_IMPORT_EXPORT_SMOKE_TEST_PASS` to run end-to-end local flow checks:
+new project -> add measurement -> stale banner -> export -> re-import.
 
 ## Deferred / not active
 
@@ -129,4 +129,4 @@ Next implementation candidate after cleanup is `FLUTTER_NEW_PROJECT_WIZARD_PASS`
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 4

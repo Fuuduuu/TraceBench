@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_10_PASS`
-- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_PASS`
-- Docs drift countdown: `5`
+- Current pass: `FLUTTER_NEW_PROJECT_WIZARD_PASS`
+- Next recommended pass: `PROJECT_IMPORT_EXPORT_SMOKE_TEST_PASS`
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
@@ -63,6 +63,13 @@ Branch: main
   - no `project_created` event and no Dart-side known-facts mutation.
   - new project loading starts in `isProjectionStale == false`.
 - Docs cleanup after wizard scope lock is complete; implementation candidate is `FLUTTER_NEW_PROJECT_WIZARD_PASS`.
+- `FLUTTER_NEW_PROJECT_WIZARD_PASS` is implemented:
+  - `ProjectCreator` creates blank local project skeleton with `manifest.json`, empty `events.jsonl`, `metadata/schema_versions.json`, `exports/customer_report.md`, and `device_profiles/default.json`.
+  - `known_facts.json` is generated through Python materializer invocation only; no Dart-side known-facts assembly.
+  - no evidence events are written (`project_created`, `component_created`, `pin_defined`, `measurement_recorded`, net/photo/repair events are not emitted by wizard creation).
+  - wizard success sets in-memory `ProjectState` with empty events, empty known facts, `projectDirectory` set, and `isProjectionStale == false`.
+  - mobile behavior remains placeholder (`Uue projekti loomine tuleb järgmises versioonis.`).
+  - `ProjectExporter` Python handoff uses shared `PythonRunner`.
 
 ## Validation baseline
 

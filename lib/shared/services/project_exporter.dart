@@ -1,11 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import '../models/project_state.dart';
-
-const Duration _defaultCommandTimeout = Duration(seconds: 30);
-const Duration _pythonProbeTimeout = Duration(seconds: 5);
+import 'python_runner.dart';
+export 'python_runner.dart' show PlatformInfo, ProcessRunner;
 
 sealed class ExportResult {
   const ExportResult();
@@ -49,87 +46,23 @@ class ExportExportFailed extends ExportResult {
   final String rawDetail;
 }
 
-class _PythonCandidate {
-  const _PythonCandidate(this.executable, [this.initialArgs = const []]);
-
-  final String executable;
-  final List<String> initialArgs;
-
-  @override
-  String toString() {
-    if (initialArgs.isEmpty) {
-      return executable;
-    }
-    return '$executable ${initialArgs.join(' ')}';
-  }
-}
-
-abstract class ProcessRunner {
-  const ProcessRunner();
-
-  Future<ProcessResult> run({
-    required List<String> command,
-    required String workingDirectory,
-    required Duration timeout,
-  });
-}
-
-class DefaultProcessRunner extends ProcessRunner {
-  const DefaultProcessRunner();
-
-  @override
-  Future<ProcessResult> run({
-    required List<String> command,
-    required String workingDirectory,
-    required Duration timeout,
-  }) async {
-    return Process.run(
-      command.first,
-      command.sublist(1),
-      workingDirectory: workingDirectory,
-      runInShell: false,
-      stdoutEncoding: utf8,
-      stderrEncoding: utf8,
-    ).timeout(timeout);
-  }
-}
-
-abstract class PlatformInfo {
-  const PlatformInfo();
-
-  bool get isMobile;
-}
-
-class DefaultPlatformInfo extends PlatformInfo {
-  const DefaultPlatformInfo();
-
-  @override
-  bool get isMobile => Platform.isAndroid || Platform.isIOS;
-}
-
 class ProjectExporter {
   ProjectExporter({
+    PythonRunner? pythonRunner,
     ProcessRunner? processRunner,
     PlatformInfo? platformInfo,
     String? repoRootPath,
-  })  : _processRunner = processRunner ?? const DefaultProcessRunner(),
-        _platformInfo = platformInfo ?? const DefaultPlatformInfo(),
-        _repoRootPath = repoRootPath;
+  }) : _pythonRunner = pythonRunner ??
+            PythonRunner(
+              processRunner: processRunner,
+              platformInfo: platformInfo,
+              repoRootPath: repoRootPath,
+            );
 
-  static const List<_PythonCandidate> _pythonCandidates = [
-    _PythonCandidate('py', ['-3']),
-    _PythonCandidate('python3'),
-    _PythonCandidate('python'),
-  ];
-
-  final ProcessRunner _processRunner;
-  final PlatformInfo _platformInfo;
-  final String? _repoRootPath;
-
-  String get _repoRoot => _repoRootPath ?? Directory.current.path;
+  final PythonRunner _pythonRunner;
 
   Future<ExportResult> exportProjectZip(ProjectState projectState) async {
-    if (_platformInfo.isMobile) {
+    if (_pythonRunner.platformInfo.isMobile) {
       return const ExportMobilePlaceholder();
     }
 
@@ -138,13 +71,13 @@ class ProjectExporter {
       return const ExportNoDirectory();
     }
 
-    final python = await _discoverPythonCandidate();
+    final python = await _discoverPython();
     if (python == null) {
       return const ExportPythonNotFound();
     }
 
     final materializerCommand = [
-      ...pythonCommand(python),
+      ...python,
       'tools/materialize_known_facts.py',
       _joinPath(projectDirectory, 'events.jsonl'),
       _joinPath(projectDirectory, 'known_facts.json'),
@@ -155,17 +88,14 @@ class ProjectExporter {
       return ExportMaterializerFailed(
         sanitizedMessage:
             'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
-        rawDetail: _summarizeFailure(
-          materializerResult,
-          'Materializer failed',
-        ),
+        rawDetail: _summarizeFailure(materializerResult, 'Materializer failed'),
       );
     }
 
     final zipPath =
         _buildExportZipPath(projectDirectory, projectState.manifest.projectId);
     final exportCommand = [
-      ...pythonCommand(python),
+      ...python,
       'tools/export_project_zip.py',
       projectDirectory,
       zipPath,
@@ -182,59 +112,21 @@ class ProjectExporter {
     return ExportSuccess(zipPath);
   }
 
-  Future<_PythonCandidate?> _discoverPythonCandidate() async {
-    for (final candidate in _pythonCandidates) {
-      final versionCommand = [
-        candidate.executable,
-        ...candidate.initialArgs,
-        '--version',
-      ];
-      final versionResult = await _runCommand(
-        versionCommand,
-        timeout: _pythonProbeTimeout,
-      );
-      if (versionResult.exitCode == 0) {
-        return candidate;
-      }
+  Future<List<String>?> _discoverPython() async {
+    try {
+      return await _pythonRunner.discoverPythonCommand();
+    } on PythonDiscoveryException {
+      return null;
     }
-    return null;
-  }
-
-  List<String> pythonCommand(_PythonCandidate candidate) {
-    return [candidate.executable, ...candidate.initialArgs];
   }
 
   Future<ProcessResult> _runCommand(
-    List<String> command, {
-    Duration timeout = _defaultCommandTimeout,
-  }) async {
+    List<String> command,
+  ) async {
     try {
-      return await _processRunner.run(
-        command: command,
-        workingDirectory: _repoRoot,
-        timeout: timeout,
-      );
-    } on TimeoutException {
-      return ProcessResult(
-        0,
-        124,
-        '',
-        'Command timed out: ${command.join(' ')}',
-      );
-    } on ProcessException catch (error) {
-      return ProcessResult(
-        0,
-        127,
-        '',
-        'Command failed to start: ${error.message}',
-      );
-    } on Exception catch (error) {
-      return ProcessResult(
-        0,
-        1,
-        '',
-        'Command failed: $error',
-      );
+      return await _pythonRunner.run(command: command);
+    } on PythonDiscoveryException catch (error) {
+      return ProcessResult(0, 1, '', error.toString());
     }
   }
 
@@ -263,10 +155,9 @@ class ProjectExporter {
   String _sanitizeName(String value) {
     final sanitized = value
         .replaceAll(RegExp(r'[\\/]'), '_')
-        .replaceAll(RegExp(r'[\*\?:"<>\|]'), '_')
+        .replaceAll(RegExp(r'[\*\?:"<>\\|]'), '_')
         .replaceAll(RegExp(r'\s+'), '_')
         .trim();
-
     return sanitized.isEmpty ? 'project' : sanitized;
   }
 

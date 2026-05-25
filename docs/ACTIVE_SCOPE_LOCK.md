@@ -2,27 +2,33 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_10_PASS`
+`FLUTTER_NEW_PROJECT_WIZARD_PASS`
 
 ## Goal
 
-Lock V1 scope for implementing Flutter New Project Wizard (blank project bootstrap) before any wizard implementation begins.
+Implement V1 Flutter New Project Wizard for blank local project bootstrap with Python-owned known-facts materialization.
 
 ## Allowed surfaces
 
-- docs/CURRENT_STATE.md
-- docs/PASS_QUEUE.md
+- lib/shared/services/python_runner.dart
+- lib/shared/services/project_creator.dart
+- lib/shared/services/project_exporter.dart
+- lib/features/project/screens/new_project_wizard_screen.dart
+- lib/features/project/screens/home_screen.dart
+- lib/app/router.dart
+- test/unit/python_runner_test.dart
+- test/unit/project_creator_test.dart
+- test/widget/new_project_wizard_screen_test.dart
 - docs/ACTIVE_SCOPE_LOCK.md
+- docs/PASS_QUEUE.md
+- docs/CURRENT_STATE.md
 - docs/AUDIT_INDEX.md
-- docs/FLUTTER_NEW_PROJECT_WIZARD_SPEC.md
-- docs/audit/TOOLS_EMPTY_PROJECT_SUPPORT_PASS.md
-- docs/audit/FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS.md
-- docs/audit/USER_DECISION_NEXT_FEATURE_PASS.md
-- docs/audit/DOCS_DRIFT_MINI_CLEANUP_10_PASS.md
+- docs/audit/FLUTTER_NEW_PROJECT_WIZARD_PASS.md
 
 ## Forbidden surfaces
 
 - schemas/**
+- tools/**
 - samples/**
 - assets/**
 - pubspec.yaml
@@ -36,7 +42,8 @@ Lock V1 scope for implementing Flutter New Project Wizard (blank project bootstr
 - mobile export implementation
 - ZIP contract expansion
 - bundling Python runtime/packaging changes
-- new project wizard UI implementation
+- project_created event introduction
+- component_created / pin_defined / measurement_recorded / net / photo / repair_action creation from wizard bootstrap
 - event-writing implementation
 - component editing UI
 - camera/OCR/CV
@@ -51,19 +58,13 @@ Lock V1 scope for implementing Flutter New Project Wizard (blank project bootstr
 
 ## Scope decisions to lock
 
-1. V1 purpose is blank project bootstrap only:
-   - create `manifest.json`, empty `events.jsonl`, placeholder `exports/customer_report.md`,
-     and required metadata/version files.
-2. `project_id` is generated in Dart and immutable by user in V1:
-   - `^prj_[a-f0-9]{8}$`
-3. Dart must not write evidence facts during wizard creation.
-4. Flutter must not assemble or mutate `known_facts.json` directly in V1.
-5. New project creation must invoke existing materializer path (`tools/materialize_known_facts.py`) to produce initial
-   `known_facts.json` for empty events.
-6. `events.jsonl` bootstrap remains empty in V1.
-7. `ProjectExporter`, Project ZIP contract, and mobile export boundaries remain as previously locked; no new tool or contract expansion.
-8. `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-9. Empty-project tooling support from `TOOLS_EMPTY_PROJECT_SUPPORT_PASS` is accepted and reused.
+1. Wizard creates only project-level bootstrap files/folders and no evidence events.
+2. `project_id` is generated in Dart as `^prj_[a-f0-9]{8}$` and is not user-editable.
+3. `events.jsonl` stays empty after creation; no `project_created` event is written.
+4. `known_facts.json` is generated only via Python materializer call.
+5. successful wizard state must keep `isProjectionStale == false`.
+6. mobile behavior stays placeholder in V1.
+7. Project ZIP contract remains unchanged; no `board_graph.json` / `view_state.json`.
 
 ## Validate
 

@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `USER_DECISION_NEXT_FEATURE_PASS`
-- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
-- Docs drift countdown: `1`
+- Current pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_10_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
@@ -51,14 +51,17 @@ Branch: main
   - Export success does not clear stale state.
 - Export audit/polish series is completed:
   - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed with `PASS_WITH_NITS`.
-  - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` with sanitized failure messages.
-  - `FZ-01` is formally closed as V1 accepted risk and deferred to `FLUTTER_PROCESS_LIFECYCLE_HARDENING_PASS` only if timeout issues appear in practice.
+- `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` with sanitized failure messages.
+- `FZ-01` is formally closed as V1 accepted risk and deferred to `FLUTTER_PROCESS_LIFECYCLE_HARDENING_PASS` only if timeout issues appear in practice.
 - `TOOLS_EMPTY_PROJECT_SUPPORT_PASS` is implemented:
   - `tools/materialize_known_facts.py` now materializes minimal valid `known_facts.json` when `events.jsonl` is empty/whitespace only.
   - New project IDs are taken from `manifest.json` when available; otherwise `unknown`.
   - Empty project export/validate/import round-trip is supported.
-
-- Next milestone decision: implement `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS` to enable blank-project creation flow after tools support.
+- `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS` is now implemented as a docs scope-lock.
+- New project wizard V1 scope is locked:
+  - create blank local project with `manifest.json`, empty `events.jsonl`, required metadata/report files, optional folders, and no AI-invented facts.
+  - no `project_created` event and no Dart-side known-facts mutation.
+  - new project loading starts in `isProjectionStale == false`.
 
 ## Validation baseline
 

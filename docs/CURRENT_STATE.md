@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS`
-- Next recommended pass: `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
-- Docs drift countdown: `4`
+- Current pass: `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
+- Next recommended pass: `USER_DECISION_NEXT_FEATURE_PASS`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
@@ -49,13 +49,10 @@ Branch: main
   - Success path writes sibling `.../<project_id_or_folder>_export.zip`.
   - Mobile export remains placeholder via explicit user message.
   - Export success does not clear stale state.
-- Routing was corrected by `FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`:
-  - `FLUTTER_ZIP_EXPORT_PASS` is preserved as completed.
-  - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed as PASS_WITH_NITS; `FZ-01` (process timeout risk) and `FZ-02` (error message verbosity) are deferred as low-priority polish.
-  - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` (error message verbosity) with sanitized user-facing failures.
-- Current accepted technical state is recorded as:
-  - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` accepted with LOW nits and no required fixup.
-  - `FZ-01` accepted as V1 risk: process timeout cleanup is deferred to a later hardening pass.
+- Export audit/polish series is completed:
+  - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed with `PASS_WITH_NITS`.
+  - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` with sanitized failure messages.
+  - `FZ-01` is formally closed as V1 accepted risk and deferred to `FLUTTER_PROCESS_LIFECYCLE_HARDENING_PASS` only if timeout issues appear in practice.
 
 ## Validation baseline
 

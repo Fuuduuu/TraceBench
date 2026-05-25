@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS`
+`FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
 
 ## Goal
 
-Fix FZ-02 user-facing export failure messaging for FLUTTER_ZIP_EXPORT scope, and route to polish review.
+Formally close export polish review by documenting `FZ-01` as accepted V1 risk and routing to next governance decision.
 
 ## Allowed surfaces
 
@@ -17,6 +17,7 @@ Fix FZ-02 user-facing export failure messaging for FLUTTER_ZIP_EXPORT scope, and
 - docs/audit/FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS.md
 - docs/audit/DOCS_DRIFT_MINI_CLEANUP_09_PASS.md
 - docs/audit/FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS.md
+- docs/audit/FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS.md
 
 ## Forbidden surfaces
 

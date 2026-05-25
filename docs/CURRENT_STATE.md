@@ -4,8 +4,8 @@ Project: TraceBench AI / BoardFact
 Branch: main
 
 - Current pass: `USER_DECISION_NEXT_FEATURE_PASS`
-- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS`
-- Docs drift countdown: `2`
+- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
@@ -53,8 +53,12 @@ Branch: main
   - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed with `PASS_WITH_NITS`.
   - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` with sanitized failure messages.
   - `FZ-01` is formally closed as V1 accepted risk and deferred to `FLUTTER_PROCESS_LIFECYCLE_HARDENING_PASS` only if timeout issues appear in practice.
+- `TOOLS_EMPTY_PROJECT_SUPPORT_PASS` is implemented:
+  - `tools/materialize_known_facts.py` now materializes minimal valid `known_facts.json` when `events.jsonl` is empty/whitespace only.
+  - New project IDs are taken from `manifest.json` when available; otherwise `unknown`.
+  - Empty project export/validate/import round-trip is supported.
 
-- Next milestone decision: start with a blank project via `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` before component/pin/repair writes.
+- Next milestone decision: implement `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS` to enable blank-project creation flow after tools support.
 
 ## Validation baseline
 

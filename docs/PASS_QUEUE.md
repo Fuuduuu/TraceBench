@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`USER_DECISION_NEXT_FEATURE_PASS`
+`TOOLS_EMPTY_PROJECT_SUPPORT_PASS`
 
 ## Completed pass history
 
@@ -97,6 +97,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS | FLUTTER_PASS | completed | Sanitize export failure messages while keeping raw diagnostic detail internal to ProjectExporter. |
 | FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS | DOCS_SYNC | completed | Formally close polish review by marking FZ-01 as V1 accepted risk and routing to user decision. |
 | USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | completed | Select next milestone as `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` after export handoff stabilization. |
+| TOOLS_EMPTY_PROJECT_SUPPORT_PASS | TOOLS_PASS | completed | Support empty/new projects in materialization and export/validate/import tests; unblock new-project wizard scope lock. |
 
 ## Planned / Recommended
 
@@ -108,11 +109,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS | DOCS_SYNC / AUDIT_ONLY | recommended | Select the new project wizard as the next milestone; prerequisite for component/pin/repair flows. |
+| FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Scope-lock the New Project Wizard now that empty-project tooling support is implemented. |
 
 `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS` is complete; export polish is closed for now.
 `FZ-02` is fixed. `FZ-01` is formally closed as V1 accepted risk.
-Next planning moves to `USER_DECISION_NEXT_FEATURE_PASS` and `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS`.
+Empty-project tooling support pass is complete. `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS` is now the next scoped milestone.
 
 ## Deferred / not active
 
@@ -125,4 +126,4 @@ Next planning moves to `USER_DECISION_NEXT_FEATURE_PASS` and `FLUTTER_NEW_PROJEC
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

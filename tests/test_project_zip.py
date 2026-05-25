@@ -81,6 +81,23 @@ def _set_first_photo_path(project_dir: Path, path_value: str) -> str:
     return known_facts_path.read_text(encoding="utf-8")
 
 
+def _build_empty_project_dir(base_dir: Path, project_id: str = "prj_empty_001") -> Path:
+    project_dir = base_dir / "project"
+    project_dir.mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "project_id": project_id,
+        "schema_version": "1.0",
+        "created_at": "2026-05-25T00:00:00Z",
+        "device_type": "unknown",
+        "model": "Empty Project",
+        "symptom": "not_provided",
+    }
+    (project_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (project_dir / "events.jsonl").write_text("", encoding="utf-8")
+    _ensure_project_profiles_dir(project_dir)
+    return project_dir
+
+
 class ProjectZipTests(unittest.TestCase):
     def test_export_project_zip_creates_required_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -424,6 +441,53 @@ class ProjectZipTests(unittest.TestCase):
             output = (validate_result.stdout + validate_result.stderr).lower()
             self.assertIn("[warn]", output)
             self.assertIn("missing optional photo file", output)
+
+    def test_export_empty_project_succeeds(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = _build_empty_project_dir(Path(tmpdir))
+            output_zip = Path(tmpdir) / "project.zip"
+            result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = {name.replace("\\", "/") for name in zf.namelist()}
+            required = {
+                "manifest.json",
+                "events.jsonl",
+                "known_facts.json",
+                "metadata/schema_versions.json",
+                "exports/customer_report.md",
+            }
+            self.assertTrue(required.issubset(names))
+
+    def test_validate_empty_project_zip_passes(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = _build_empty_project_dir(Path(tmpdir))
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            validate_result = _validate_project_zip(output_zip)
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+
+    def test_import_empty_project_zip_round_trip(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            project_dir = _build_empty_project_dir(tmpdir)
+            output_zip = tmpdir / "project.zip"
+            output_dir = tmpdir / "imported"
+
+            export_result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            import_result = _import_project_zip(output_zip, output_dir)
+            self.assertEqual(import_result.returncode, 0, import_result.stdout + import_result.stderr)
+
+            validate_result = _validate_project_zip(output_dir)
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertTrue((output_dir / "manifest.json").exists())
+            self.assertTrue((output_dir / "events.jsonl").exists())
+            self.assertTrue((output_dir / "known_facts.json").exists())
 
 
 if __name__ == "__main__":

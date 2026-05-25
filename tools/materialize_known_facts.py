@@ -7,6 +7,24 @@ import json
 import sys
 from pathlib import Path
 
+def _manifest_project_id(events_path: Path) -> str:
+    manifest_path = events_path.parent / "manifest.json"
+    if not manifest_path.exists():
+        return "unknown"
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return "unknown"
+
+    if not isinstance(manifest, dict):
+        return "unknown"
+    project_id = manifest.get("project_id")
+    if not isinstance(project_id, str) or not project_id.strip():
+        return "unknown"
+    return project_id.strip()
+
+
 def _measurement_matches_target(measurement: dict, target: dict) -> bool:
     if target.get("target_type") == "pin":
         return (
@@ -59,9 +77,25 @@ def main() -> int:
         return 2
 
     raw_events = _load_events(events_path)
+    project_id = _manifest_project_id(events_path)
+
     if not raw_events:
-        print(f"[ERROR] no events found: {events_path}")
-        return 2
+        known = {
+            "project_id": project_id,
+            "components": [],
+            "pins": [],
+            "measurements": [],
+            "nets": [],
+            "photos": [],
+            "damage_regions": [],
+            "suspect_regions": [],
+            "visual_traces": [],
+            "excluded_from_fault_candidates": [],
+            "component_pin_index": {},
+        }
+        out_path.write_text(json.dumps(known, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"[OK] wrote {out_path}")
+        return 0
 
     components: list[dict] = []
     measurements: list[dict] = []
@@ -72,7 +106,7 @@ def main() -> int:
     suspect_regions: list[dict] = []
     visual_traces: list[dict] = []
     excluded_from_fault_candidates: list[dict] = []
-    project_id = "unknown"
+    project_id = _manifest_project_id(events_path)
     event_sequence_by_id: dict[str, int] = {}
     measurement_by_event: dict[str, dict] = {}
 

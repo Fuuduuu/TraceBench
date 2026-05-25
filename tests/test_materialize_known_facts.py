@@ -29,6 +29,134 @@ def run_materialize_events(events):
 
 
 class MaterializeKnownFactsTests(unittest.TestCase):
+    def test_empty_events_produces_valid_known_facts(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            project_dir.mkdir()
+            manifest_path = project_dir / "manifest.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "project_id": "prj_empty_001",
+                        "schema_version": "1.0",
+                        "created_at": "2026-05-25T00:00:00Z",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            events_path = project_dir / "events.jsonl"
+            events_path.write_text("", encoding="utf-8")
+
+            data = run_materialize(events_path)
+            self.assertEqual(data["project_id"], "prj_empty_001")
+            self.assertEqual(data["components"], [])
+            self.assertEqual(data["measurements"], [])
+            self.assertEqual(data["pins"], [])
+            self.assertEqual(data["nets"], [])
+            self.assertEqual(data["photos"], [])
+            self.assertEqual(data["damage_regions"], [])
+            self.assertEqual(data["suspect_regions"], [])
+            self.assertEqual(data["visual_traces"], [])
+            self.assertEqual(data["excluded_from_fault_candidates"], [])
+            self.assertEqual(data["component_pin_index"], {})
+
+    def test_empty_events_known_facts_has_project_id_from_manifest(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            project_dir.mkdir()
+            (project_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "project_id": "prj_empty_manifest",
+                        "schema_version": "1.0",
+                        "created_at": "2026-05-25T00:00:00Z",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            (project_dir / "events.jsonl").write_text("", encoding="utf-8")
+            data = run_materialize(project_dir / "events.jsonl")
+            self.assertEqual(data["project_id"], "prj_empty_manifest")
+
+    def test_empty_events_all_collections_are_empty(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            project_dir.mkdir()
+            (project_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "project_id": "prj_empty_collections",
+                        "schema_version": "1.0",
+                        "created_at": "2026-05-25T00:00:00Z",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            (project_dir / "events.jsonl").write_text("", encoding="utf-8")
+            data = run_materialize(project_dir / "events.jsonl")
+            for key in (
+                "components",
+                "pins",
+                "measurements",
+                "nets",
+                "photos",
+                "damage_regions",
+                "suspect_regions",
+                "visual_traces",
+                "excluded_from_fault_candidates",
+            ):
+                self.assertEqual(data[key], [])
+
+    def test_empty_events_component_pin_index_is_empty_dict(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            project_dir.mkdir()
+            (project_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "project_id": "prj_empty_pin_index",
+                        "schema_version": "1.0",
+                        "created_at": "2026-05-25T00:00:00Z",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            (project_dir / "events.jsonl").write_text("", encoding="utf-8")
+            data = run_materialize(project_dir / "events.jsonl")
+            self.assertEqual(data["component_pin_index"], {})
+
+    def test_empty_events_without_manifest_uses_unknown_project_id(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            events_path.write_text("", encoding="utf-8")
+            data = run_materialize(events_path)
+            self.assertEqual(data["project_id"], "unknown")
+
+    def test_whitespace_only_events_is_treated_as_empty(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            project_dir.mkdir()
+            (project_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "project_id": "prj_empty_ws",
+                        "schema_version": "1.0",
+                        "created_at": "2026-05-25T00:00:00Z",
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            events_path = project_dir / "events.jsonl"
+            events_path.write_text("  \n\n\t\n", encoding="utf-8")
+            data = run_materialize(events_path)
+            self.assertEqual(data["project_id"], "prj_empty_ws")
+            self.assertEqual(data["components"], [])
+
     def test_materialize_known_facts(self):
         data = run_materialize()
         self.assertEqual(data["project_id"], "prj_pelle_pv20_001")

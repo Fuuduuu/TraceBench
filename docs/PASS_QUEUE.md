@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_10_PASS`
 
 ## Completed pass history
 
@@ -99,6 +99,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | completed | Select next milestone as `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` after export handoff stabilization. |
 | TOOLS_EMPTY_PROJECT_SUPPORT_PASS | TOOLS_PASS | completed | Support empty/new projects in materialization and export/validate/import tests; unblock new-project wizard scope lock. |
 | FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 New Project Wizard scope for blank-project creation and local-only project bootstrap. |
+| DOCS_DRIFT_MINI_CLEANUP_10_PASS | DOCS_SYNC | completed | Docs drift cleanup after wizard scope-lock and routing cleanup before implementation. |
 
 ## Planned / Recommended
 
@@ -110,7 +111,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_10_PASS | DOCS_SYNC | recommended | Docs-only docs-drift cleanup after scope lock before implementation starts. |
+| FLUTTER_NEW_PROJECT_WIZARD_PASS | FLUTTER_PASS | recommended |
 
 `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS` is complete; export polish is closed for now.
 `FZ-02` is fixed. `FZ-01` is formally closed as V1 accepted risk.
@@ -128,4 +129,4 @@ Next implementation candidate after cleanup is `FLUTTER_NEW_PROJECT_WIZARD_PASS`
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_10_PASS`
 
 ## Goal
 
@@ -14,14 +14,11 @@ Lock V1 scope for implementing Flutter New Project Wizard (blank project bootstr
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- docs/audit/FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS.md
 - docs/FLUTTER_NEW_PROJECT_WIZARD_SPEC.md
 - docs/audit/TOOLS_EMPTY_PROJECT_SUPPORT_PASS.md
 - docs/audit/FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS.md
 - docs/audit/USER_DECISION_NEXT_FEATURE_PASS.md
-- docs/PASS_QUEUE.md
-- docs/CURRENT_STATE.md
-- docs/AUDIT_INDEX.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_10_PASS.md
 
 ## Forbidden surfaces
 

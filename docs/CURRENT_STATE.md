@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_10_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_10_PASS`
+- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_PASS`
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
@@ -62,6 +62,7 @@ Branch: main
   - create blank local project with `manifest.json`, empty `events.jsonl`, required metadata/report files, optional folders, and no AI-invented facts.
   - no `project_created` event and no Dart-side known-facts mutation.
   - new project loading starts in `isProjectionStale == false`.
+- Docs cleanup after wizard scope lock is complete; implementation candidate is `FLUTTER_NEW_PROJECT_WIZARD_PASS`.
 
 ## Validation baseline
 

@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_09_PASS`
 
 ## Completed pass history
 
@@ -92,6 +92,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe V1 Flutter ZIP export scope and implementation boundaries before implementation. |
 | FLUTTER_ZIP_EXPORT_PASS | FLUTTER_PASS | completed | Implement desktop Project ZIP export handoff through ProjectExporter and CustomerReportScreen trigger. |
 | FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS | DOCS_SYNC | completed | Reconcile PASS_QUEUE/CURRENT_STATE routing after FLUTTER_ZIP_EXPORT_PASS completion and route next to FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS. |
+| FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | completed | Audit export handoff and boundaries; PASS_WITH_NITS, no required fixup. |
+| DOCS_DRIFT_MINI_CLEANUP_09_PASS | DOCS_SYNC | completed | Record FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS PASS_WITH_NITS result and route next pass conservatively. |
 
 ## Planned / Recommended
 
@@ -103,10 +105,10 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS | DOCS_SYNC | recommended |
 
-`FLUTTER_ZIP_EXPORT_PASS` is now complete; routing moves next to a read-only audit pass before any desktop/mobile export behavior expansion.
-`FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` is required to verify handoff, Python discovery, stale boundaries, and artifact constraints before wider export scope decisions.
+`FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` is complete with `PASS_WITH_NITS`; no blocking implementation fixes are required.
+`FZ-01` and `FZ-02` are logged as low-priority polish and next implementation planning has moved to `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`.
 
 ## Deferred / not active
 
@@ -119,4 +121,4 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

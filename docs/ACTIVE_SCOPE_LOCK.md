@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_09_PASS`
 
 ## Goal
 
-Lock safe V1 Flutter ZIP export scope before implementation.
+Run docs-only drift cleanup after export-code audit and route next governance decision.
 
 ## Allowed surfaces
 
@@ -14,17 +14,8 @@ Lock safe V1 Flutter ZIP export scope before implementation.
 - docs/PASS_QUEUE.md
 - docs/ACTIVE_SCOPE_LOCK.md
 - docs/AUDIT_INDEX.md
-- lib/shared/services/project_exporter.dart
-- lib/features/report/screens/customer_report_screen.dart
-- docs/PROJECT_ZIP_SPEC.md
-- docs/FLUTTER_UI_SPEC.md
-- docs/PROJECTION_REFRESH_SPEC.md
-- test/unit/project_exporter_test.dart
-- test/widget/customer_report_screen_test.dart
-- docs/audit/PROJECT_ZIP_SECURITY_HARDENING_PASS.md
-- docs/audit/FLUTTER_ZIP_EXPORT_SCOPE_LOCK_PASS.md
-- docs/audit/FLUTTER_ZIP_EXPORT_PASS.md
-- docs/audit/FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS.md
+- docs/audit/FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS.md
+- docs/audit/DOCS_DRIFT_MINI_CLEANUP_09_PASS.md
 
 ## Forbidden surfaces
 

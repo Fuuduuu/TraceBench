@@ -30,15 +30,23 @@ class ExportPythonNotFound extends ExportResult {
 }
 
 class ExportMaterializerFailed extends ExportResult {
-  const ExportMaterializerFailed(this.message);
+  const ExportMaterializerFailed({
+    required this.sanitizedMessage,
+    required this.rawDetail,
+  });
 
-  final String message;
+  final String sanitizedMessage;
+  final String rawDetail;
 }
 
 class ExportExportFailed extends ExportResult {
-  const ExportExportFailed(this.message);
+  const ExportExportFailed({
+    required this.sanitizedMessage,
+    required this.rawDetail,
+  });
 
-  final String message;
+  final String sanitizedMessage;
+  final String rawDetail;
 }
 
 class _PythonCandidate {
@@ -145,7 +153,9 @@ class ProjectExporter {
     final materializerResult = await _runCommand(materializerCommand);
     if (materializerResult.exitCode != 0) {
       return ExportMaterializerFailed(
-        _summarizeFailure(
+        sanitizedMessage:
+            'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
+        rawDetail: _summarizeFailure(
           materializerResult,
           'Materializer failed',
         ),
@@ -164,7 +174,8 @@ class ProjectExporter {
     final exportResult = await _runCommand(exportCommand);
     if (exportResult.exitCode != 0) {
       return ExportExportFailed(
-        _summarizeFailure(exportResult, 'Export failed'),
+        sanitizedMessage: 'ZIP pakkimine ebaõnnestus.',
+        rawDetail: _summarizeFailure(exportResult, 'Export failed'),
       );
     }
 

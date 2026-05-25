@@ -141,10 +141,84 @@ void main() {
 
     await tester.tap(find.text('Export ZIP'));
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 120));
 
     expect(find.text('Mobiilne eksport jääb V1-s placeholderiks.'),
         findsOneWidget);
+  });
+
+  testWidgets('materializer failure shows sanitized message only',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              ExportMaterializerFailed(
+                sanitizedMessage:
+                    'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
+                rawDetail:
+                    '/Users/test/tracebench/Tools\\materialize_known_facts.py failed with Traceback...',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(
+      find.text(
+          'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('C:/Users/test/tracebench/projects/materialize_known_facts.py'),
+      findsNothing,
+    );
+    expect(find.text('Traceback'), findsNothing);
+    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+  });
+
+  testWidgets('export failure shows sanitized message only', (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              ExportExportFailed(
+                sanitizedMessage: 'ZIP pakkimine ebaõnnestus.',
+                rawDetail:
+                    'C:\\\\Users\\\\test\\\\tracebench\\\\export_project_zip.py',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+
+    expect(find.text('ZIP pakkimine ebaõnnestus.'), findsOneWidget);
+    expect(
+        find.text('C:\\\\Users\\\\test\\\\tracebench\\\\export_project_zip.py'),
+        findsNothing);
+    expect(find.text('Traceback'), findsNothing);
+    expect(find.text('Export failed'), findsNothing);
+    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
   });
 
   testWidgets('desktop export success keeps stale banner visible',

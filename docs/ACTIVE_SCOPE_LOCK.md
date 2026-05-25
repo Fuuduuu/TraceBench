@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_09_PASS`
+`FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS`
 
 ## Goal
 
-Run docs-only drift cleanup after export-code audit and route next governance decision.
+Fix FZ-02 user-facing export failure messaging for FLUTTER_ZIP_EXPORT scope, and route to polish review.
 
 ## Allowed surfaces
 
@@ -16,6 +16,7 @@ Run docs-only drift cleanup after export-code audit and route next governance de
 - docs/AUDIT_INDEX.md
 - docs/audit/FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS.md
 - docs/audit/DOCS_DRIFT_MINI_CLEANUP_09_PASS.md
+- docs/audit/FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS.md
 
 ## Forbidden surfaces
 

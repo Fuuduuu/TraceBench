@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_09_PASS`
+- Current pass: `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS`
 - Next recommended pass: `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
-- Docs drift countdown: `5`
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
@@ -52,8 +52,10 @@ Branch: main
 - Routing was corrected by `FLUTTER_ZIP_EXPORT_LEDGER_ROUTING_FIXUP_PASS`:
   - `FLUTTER_ZIP_EXPORT_PASS` is preserved as completed.
   - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed as PASS_WITH_NITS; `FZ-01` (process timeout risk) and `FZ-02` (error message verbosity) are deferred as low-priority polish.
+  - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` (error message verbosity) with sanitized user-facing failures.
 - Current accepted technical state is recorded as:
   - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` accepted with LOW nits and no required fixup.
+  - `FZ-01` accepted as V1 risk: process timeout cleanup is deferred to a later hardening pass.
 
 ## Validation baseline
 

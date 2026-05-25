@@ -80,18 +80,8 @@ String _messageForExportResult(ExportResult result) {
     ExportNoDirectory() => 'Projekt ei ole laaditud kohalikust kaustast.',
     ExportPythonNotFound() =>
       'Pythonit ei leitud. Desktop/dev eksport vajab Python toolingut.',
-    ExportMaterializerFailed(:final message) =>
-      'Materjaliseerimine ebaõnnestus: ${_truncateFailureMessage(message)}',
-    ExportExportFailed(:final message) =>
-      'Eksport ebaõnnestus: ${_truncateFailureMessage(message)}',
+    ExportMaterializerFailed(:final sanitizedMessage) => sanitizedMessage,
+    ExportExportFailed(:final sanitizedMessage) => sanitizedMessage,
     _ => 'Eksport ebaõnnestus.',
   };
-}
-
-String _truncateFailureMessage(String message) {
-  const maxLength = 220;
-  if (message.length <= maxLength) {
-    return message;
-  }
-  return '${message.substring(0, maxLength)}…';
 }

@@ -324,6 +324,32 @@ void main() {
       ).exportProjectZip(_inlineProjectState(projectDirectory: dir.path));
 
       expect(result, isA<ExportMaterializerFailed>());
+      final failure = result as ExportMaterializerFailed;
+      expect(
+        failure.sanitizedMessage,
+        'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
+      );
+      expect(failure.rawDetail, contains('materializer failed'));
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('/Users/')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('C:\\\\Users\\\\')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('\\tools\\')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('Traceback')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('materialize_known_facts.py')),
+      );
       expect(
         runner.calls
             .any((call) => _containsScript(call, 'export_project_zip.py')),
@@ -357,6 +383,29 @@ void main() {
       ).exportProjectZip(_inlineProjectState(projectDirectory: dir.path));
 
       expect(result, isA<ExportExportFailed>());
+      final failure = result as ExportExportFailed;
+      expect(failure.sanitizedMessage, 'ZIP pakkimine ebaõnnestus.');
+      expect(failure.rawDetail, contains('export failed hard'));
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('Traceback')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('/Users/')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('C:\\\\Users\\\\')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('materialize_known_facts.py')),
+      );
+      expect(
+        failure.sanitizedMessage,
+        isNot(contains('export_project_zip.py')),
+      );
     });
 
     test('success returns zip path', () async {

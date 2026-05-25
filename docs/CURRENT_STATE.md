@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
-- Next recommended pass: `USER_DECISION_NEXT_FEATURE_PASS`
-- Docs drift countdown: `3`
+- Current pass: `USER_DECISION_NEXT_FEATURE_PASS`
+- Next recommended pass: `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -53,6 +53,8 @@ Branch: main
   - `FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS` completed with `PASS_WITH_NITS`.
   - `FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS` fixed `FZ-02` with sanitized failure messages.
   - `FZ-01` is formally closed as V1 accepted risk and deferred to `FLUTTER_PROCESS_LIFECYCLE_HARDENING_PASS` only if timeout issues appear in practice.
+
+- Next milestone decision: start with a blank project via `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` before component/pin/repair writes.
 
 ## Validation baseline
 

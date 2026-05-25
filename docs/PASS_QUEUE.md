@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
+`USER_DECISION_NEXT_FEATURE_PASS`
 
 ## Completed pass history
 
@@ -96,6 +96,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | DOCS_DRIFT_MINI_CLEANUP_09_PASS | DOCS_SYNC | completed | Record FLUTTER_ZIP_EXPORT_CODE_AUDIT_PASS PASS_WITH_NITS result and route next pass conservatively. |
 | FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS | FLUTTER_PASS | completed | Sanitize export failure messages while keeping raw diagnostic detail internal to ProjectExporter. |
 | FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS | DOCS_SYNC | completed | Formally close polish review by marking FZ-01 as V1 accepted risk and routing to user decision. |
+| USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | completed | Select next milestone as `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` after export handoff stabilization. |
 
 ## Planned / Recommended
 
@@ -107,11 +108,11 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | recommended | Select next milestone after export handoff stabilization. |
+| FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS | DOCS_SYNC / AUDIT_ONLY | recommended | Select the new project wizard as the next milestone; prerequisite for component/pin/repair flows. |
 
 `FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS` is complete; export polish is closed for now.
 `FZ-02` is fixed. `FZ-01` is formally closed as V1 accepted risk.
-Next planning moves to `USER_DECISION_NEXT_FEATURE_PASS`.
+Next planning moves to `USER_DECISION_NEXT_FEATURE_PASS` and `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS`.
 
 ## Deferred / not active
 
@@ -124,4 +125,4 @@ Next planning moves to `USER_DECISION_NEXT_FEATURE_PASS`.
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

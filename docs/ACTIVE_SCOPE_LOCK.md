@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS`
+`USER_DECISION_NEXT_FEATURE_PASS`
 
 ## Goal
 
-Formally close export polish review by documenting `FZ-01` as accepted V1 risk and routing to next governance decision.
+Record user decision on the next TraceBench milestone after export handoff stabilization.
 
 ## Allowed surfaces
 
@@ -18,6 +18,7 @@ Formally close export polish review by documenting `FZ-01` as accepted V1 risk a
 - docs/audit/DOCS_DRIFT_MINI_CLEANUP_09_PASS.md
 - docs/audit/FLUTTER_ZIP_EXPORT_FZ02_FIXUP_PASS.md
 - docs/audit/FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS.md
+- docs/audit/USER_DECISION_NEXT_FEATURE_PASS.md
 
 ## Forbidden surfaces
 

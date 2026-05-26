@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS`
+`BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock schema/validator/materializer direction for `component_visual_placement_confirmed`, including coordinate constraints, AI/system actor rejection expectations, and visual-only projection boundary. |
 | BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future placement canonical-event direction (`component_visual_placement_confirmed`), coordinate-space boundaries, and validation expectations without schema/tool/runtime changes. |
 | BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS | DOCS_SYNC | completed | Applied Pro-audit small doc fixups: helper-only photo boundary, coordinate-space clarification, package-only template naming cleanup, and explicit future confirmation-state split pointer. |
 | BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS | DOCS_SYNC / DESIGN_ONLY | completed | Formalized vector boardview + footprint library design with strict `unconfirmed_ai_proposal` boundary and evidence-safe export defaults. |
@@ -114,17 +115,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_EVENT_SCHEMA_PASS | SCHEMA_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_EVENT_SCHEMA_PASS | SCHEMA_PASS | recommended |
 
-`BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS` is complete as docs-only scope lock and preserves protected evidence boundaries.
-Next recommended pass is `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS` to audit strict schema/validator implications for placement-confirm events before any schema/tool implementation pass.
+`BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` is complete as docs-only scope lock and preserves protected evidence boundaries.
+Next recommended pass is `BOARD_PLACEMENT_EVENT_SCHEMA_PASS` to implement schema/validator/materializer changes within the locked boundary.
 
 ## Deferred / not active
 
@@ -137,4 +138,4 @@ Next recommended pass is `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS` to audit stri
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

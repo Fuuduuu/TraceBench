@@ -3,12 +3,21 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS`
-- Docs drift countdown: `1`
+- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS` verdict is accepted: `SCHEMA_DIRECTION_APPROVED_WITH_CHANGES`.
+- `BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` locks future schema/tool/materializer expectations:
+  - future canonical placement event direction is `component_visual_placement_confirmed`.
+  - placement confirmation is visual/documentation only and must not imply identity, pin mapping, visual-trace confirmation, electrical/net confirmation, measurement, fault candidate, or repair conclusion.
+  - payload direction is locked around required geometry + coordinate fields with constrained sizing mode.
+  - canonical coordinate spaces are `board_normalized` and `photo_local` (with valid prior `source_photo_id`); `graph_layout` remains non-canonical.
+  - future validator must reject `actor.type=ai` and `actor.type=system` unless future migration scope explicitly allows system migrations.
+  - future materializer should project confirmed placement as visual-only facts, with no net/measurement/fault/electrical side effects.
+  - preferred known-facts projection shape is top-level `component_visual_placements`.
 - `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` verdict is accepted: `PLACEMENT_SHOULD_BE_CANONICAL_EVENT`.
 - `BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS` locks direction for future placement facts:
   - future canonical path should use dedicated placement event direction (`component_visual_placement_confirmed`) instead of overloading existing event types.

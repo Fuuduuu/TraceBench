@@ -1219,6 +1219,780 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("raw lifecycle field not allowed in raw payload: value", result.stdout + result.stderr)
 
+    def test_component_visual_placement_board_normalized_with_scale_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "template_id": "sot23_3",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_board_normalized_with_width_height_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "bottom",
+                    "center_x": 0.25,
+                    "center_y": 0.75,
+                    "rotation_deg": -45,
+                    "width": 0.2,
+                    "height": 0.1,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_photo_local_with_source_photo_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_001",
+                    "mode": "normal",
+                    "path": "photos/top_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "unknown",
+                    "center_x": 120.0,
+                    "center_y": 80.0,
+                    "rotation_deg": 12.5,
+                    "width": 18.0,
+                    "height": 10.0,
+                    "source_photo_id": "photo_top_001",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_missing_required_field_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.3,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_both_sizing_modes_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.4,
+                    "center_y": 0.6,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "width": 0.2,
+                    "height": 0.2,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("exactly one sizing mode required", result.stdout + result.stderr)
+
+    def test_component_visual_placement_neither_sizing_mode_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.4,
+                    "center_y": 0.6,
+                    "rotation_deg": 0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("exactly one sizing mode required", result.stdout + result.stderr)
+
+    def test_component_visual_placement_ai_actor_rejected(self):
+        self._assert_component_visual_placement_actor_rejected("ai")
+
+    def test_component_visual_placement_system_actor_rejected(self):
+        self._assert_component_visual_placement_actor_rejected("system")
+
+    def test_component_visual_placement_import_actor_rejected(self):
+        self._assert_component_visual_placement_actor_rejected("import")
+
+    def _assert_component_visual_placement_actor_rejected(self, actor_type):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": actor_type, "id": f"{actor_type}_1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("actor.type must be 'user' in V1", result.stdout + result.stderr)
+
+    def test_component_visual_placement_graph_layout_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "graph_layout",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("graph_layout is not allowed", result.stdout + result.stderr)
+
+    def test_component_visual_placement_board_normalized_out_of_range_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 1.2,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "width": 1.2,
+                    "height": 0.1,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("board_normalized center_x must be within 0..1", result.stdout + result.stderr)
+
+    def test_component_visual_placement_board_normalized_with_source_photo_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "source_photo_id": "photo_top_001",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("board_normalized must not include source_photo_id", result.stdout + result.stderr)
+
+    def test_component_visual_placement_photo_local_without_source_photo_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 20,
+                    "center_y": 30,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("photo_local requires non-empty source_photo_id", result.stdout + result.stderr)
+
+    def test_component_visual_placement_photo_local_unknown_source_photo_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 20,
+                    "center_y": 30,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "source_photo_id": "photo_missing",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior photo_added", result.stdout + result.stderr)
+
+    def test_component_visual_placement_source_photo_forward_reference_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 20,
+                    "center_y": 30,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "source_photo_id": "photo_top_001",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_001",
+                    "mode": "normal",
+                    "path": "photos/top_001.jpg",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_component_visual_placement_unknown_component_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior component_created", result.stdout + result.stderr)
+
+    def test_component_visual_placement_component_forward_reference_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_component_visual_placement_side_effect_field_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "measurement_id": "M1",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("forbidden placement field present", result.stdout + result.stderr)
+
+    def test_component_visual_placement_template_id_opaque_string_accepted(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.2,
+                    "center_y": 0.3,
+                    "rotation_deg": 5,
+                    "scale": 1.1,
+                    "template_id": "soic_8",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_template_assignment_event_id_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.2,
+                    "center_y": 0.3,
+                    "rotation_deg": 5,
+                    "scale": 1.1,
+                    "template_assignment_event_id": "evt_123456",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_component_visual_placement_after_component_removed_allowed(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.2,
+                    "center_y": 0.3,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS`
+`BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS | SCHEMA_PASS | completed | Add `component_visual_placement_confirmed` schema + validator support with strict user-only actor rule, coordinate/sizing constraints, reference checks, and side-effect-field rejection; no projection/materializer changes. |
 | BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS | DOCS_SYNC | completed | Record Pro verdict READY_WITH_IMPLEMENTATION_SPLIT and split broad placement schema work into validator-first pass then projection/materializer follow-up pass. |
 | BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock schema/validator/materializer direction for `component_visual_placement_confirmed`, including coordinate constraints, AI/system actor rejection expectations, and visual-only projection boundary. |
 | BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future placement canonical-event direction (`component_visual_placement_confirmed`), coordinate-space boundaries, and validation expectations without schema/tool/runtime changes. |
@@ -116,18 +117,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS | SCHEMA_PASS | recommended |
-| BOARD_PLACEMENT_EVENT_PROJECTION_PASS | SCHEMA_PASS | planned_followup |
+| BOARD_PLACEMENT_EVENT_PROJECTION_PASS | SCHEMA_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS | SCHEMA_PASS | recommended |
+| BOARD_PLACEMENT_EVENT_PROJECTION_PASS | SCHEMA_PASS | recommended |
 
-`BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS` is complete as docs-only routing/scope refinement and preserves protected evidence boundaries.
-Next recommended pass is `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`; `BOARD_PLACEMENT_EVENT_PROJECTION_PASS` remains the immediate follow-up after validator/schema acceptance.
+`BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS` is complete and preserves scope boundaries by limiting changes to events schema + validator + validator/schema tests.
+Next recommended pass is `BOARD_PLACEMENT_EVENT_PROJECTION_PASS` for known-facts schema/materializer/projection behavior.
 
 ## Deferred / not active
 

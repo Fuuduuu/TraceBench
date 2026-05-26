@@ -3,12 +3,22 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
+- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
 - Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS` is implemented:
+  - `schemas/events.schema.json` now supports `component_visual_placement_confirmed` with strict payload shape and `additionalProperties: false`.
+  - payload direction enforces required visual-placement geometry fields and exactly one sizing mode (`scale` xor `width`+`height`).
+  - coordinate constraints are encoded for `board_normalized` and `photo_local`; `graph_layout` is not allowed.
+  - `template_assignment_event_id` is not supported in this first split; optional `template_id` is treated as opaque string.
+  - validator enforces `actor.type == user` for this event and rejects non-user actors in V1.
+  - validator enforces prior `component_created` and prior `photo_added` references where applicable and rejects forward references.
+  - validator rejects forbidden side-effect/proposal fields (identity/net/measurement/fault/proposal semantics).
+  - placement after component removal remains allowed as visual/documentation history.
+  - no known-facts projection/materializer changes were introduced in this pass.
 - `BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS` records Pro verdict `READY_WITH_IMPLEMENTATION_SPLIT` and locks implementation split routing:
   - next implementation pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`.
   - follow-up implementation pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`.

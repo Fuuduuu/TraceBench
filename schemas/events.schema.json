@@ -34,6 +34,7 @@
         "footprint_marked_not_populated",
         "pin_defined",
         "visual_trace_added",
+        "component_visual_placement_confirmed",
         "measurement_recorded",
         "net_connection_confirmed",
         "repair_action_recorded",
@@ -70,6 +71,10 @@
     {
       "if": { "properties": { "event_type": { "const": "visual_trace_added" } }, "required": ["event_type"] },
       "then": { "properties": { "payload": { "$ref": "#/$defs/visual_trace_added" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "component_visual_placement_confirmed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/component_visual_placement_confirmed" } } }
     },
     {
       "if": { "properties": { "event_type": { "const": "conflict_detected" } }, "required": ["event_type"] },
@@ -349,6 +354,75 @@
         "notes": { "type": "string" }
       },
       "additionalProperties": true
+    },
+    "component_visual_placement_confirmed": {
+      "type": "object",
+      "required": [
+        "component_id",
+        "coordinate_space",
+        "board_side",
+        "center_x",
+        "center_y",
+        "rotation_deg"
+      ],
+      "properties": {
+        "component_id": { "type": "string", "minLength": 1 },
+        "coordinate_space": { "enum": ["board_normalized", "photo_local"] },
+        "board_side": { "enum": ["top", "bottom", "unknown"] },
+        "center_x": { "type": "number" },
+        "center_y": { "type": "number" },
+        "rotation_deg": { "type": "number", "minimum": -180, "exclusiveMaximum": 180 },
+        "scale": { "type": "number", "exclusiveMinimum": 0 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "template_id": { "type": "string", "minLength": 1 },
+        "source_photo_id": { "type": "string", "minLength": 1 },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": ["scale"],
+              "not": {
+                "anyOf": [
+                  { "required": ["width"] },
+                  { "required": ["height"] }
+                ]
+              }
+            },
+            {
+              "required": ["width", "height"],
+              "not": { "required": ["scale"] }
+            }
+          ]
+        },
+        {
+          "if": {
+            "properties": { "coordinate_space": { "const": "photo_local" } },
+            "required": ["coordinate_space"]
+          },
+          "then": {
+            "required": ["source_photo_id"],
+            "properties": {
+              "center_x": { "type": "number", "minimum": 0 },
+              "center_y": { "type": "number", "minimum": 0 },
+              "width": { "type": "number", "exclusiveMinimum": 0 },
+              "height": { "type": "number", "exclusiveMinimum": 0 }
+            }
+          },
+          "else": {
+            "not": { "required": ["source_photo_id"] },
+            "properties": {
+              "center_x": { "type": "number", "minimum": 0, "maximum": 1 },
+              "center_y": { "type": "number", "minimum": 0, "maximum": 1 },
+              "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
     },
     "net_connection_confirmed": {
       "type": "object",

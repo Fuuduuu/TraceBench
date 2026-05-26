@@ -56,6 +56,26 @@ ALLOWED_SUSPECT_PRIORITY = {"low", "medium", "high"}
 ALLOWED_VISUAL_TRACE_CONFIDENCE = {"low", "medium", "high"}
 ALLOWED_VISUAL_TRACE_LAYER = {"top", "bottom", "inner_unknown"}
 ALLOWED_PHOTO_LAYERS = {"top", "bottom", "side", "detail"}
+ALLOWED_PLACEMENT_COORDINATE_SPACES = {"board_normalized", "photo_local"}
+ALLOWED_PLACEMENT_BOARD_SIDES = {"top", "bottom", "unknown"}
+PLACEMENT_FORBIDDEN_FIELDS = {
+    "status",
+    "proposal_status",
+    "ai_proposal_id",
+    "confidence",
+    "confidence_score",
+    "component_identity",
+    "component_type",
+    "mpn",
+    "pin_mapping",
+    "trace_id",
+    "net_id",
+    "measurement_id",
+    "fault_candidate",
+    "repair_conclusion",
+    "electrical_class",
+    "template_assignment_event_id",
+}
 
 REPAIR_TARGET_TYPES = {
     "component",
@@ -139,7 +159,7 @@ def _load_schema_constraints(
         except (OSError, json.JSONDecodeError):
             schema = None
     if not isinstance(schema, dict):
-        return set(["project_created", "project_metadata_updated", "initial_intake_updated", "photo_added", "photo_reference_points_set", "photo_layer_aligned", "damage_region_marked", "suspect_region_marked", "component_created", "component_updated", "component_marked_unknown", "footprint_marked_not_populated", "pin_defined", "visual_trace_added", "measurement_recorded", "net_connection_confirmed", "repair_action_recorded", "claim_invalidated", "conflict_detected", "conflict_resolved", "export_created"]), set(ALLOWED_STATUS), set(REQUIRED_KEYS)
+        return set(["project_created", "project_metadata_updated", "initial_intake_updated", "photo_added", "photo_reference_points_set", "photo_layer_aligned", "damage_region_marked", "suspect_region_marked", "component_created", "component_updated", "component_marked_unknown", "footprint_marked_not_populated", "pin_defined", "visual_trace_added", "component_visual_placement_confirmed", "measurement_recorded", "net_connection_confirmed", "repair_action_recorded", "claim_invalidated", "conflict_detected", "conflict_resolved", "export_created"]), set(ALLOWED_STATUS), set(REQUIRED_KEYS)
 
     allowed_event_types = set(
         schema.get("properties", {}).get("event_type", {}).get("enum", []) or []
@@ -164,6 +184,7 @@ def _load_schema_constraints(
             "footprint_marked_not_populated",
             "pin_defined",
             "visual_trace_added",
+            "component_visual_placement_confirmed",
             "measurement_recorded",
             "net_connection_confirmed",
             "repair_action_recorded",
@@ -588,6 +609,121 @@ def _validate_visual_trace_added(
         _error(errors, context, f"layer must be one of {sorted(ALLOWED_VISUAL_TRACE_LAYER)!r}")
 
 
+def _validate_component_visual_placement_confirmed(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    actor_type: str | None,
+    sequence: int,
+    component_sequences: dict[str, int],
+    photo_sequences: dict[str, int],
+) -> None:
+    context = f"line {line}"
+    if actor_type != "user":
+        _error(
+            errors,
+            context,
+            "component_visual_placement_confirmed actor.type must be 'user' in V1",
+        )
+
+    component_id = payload.get("component_id")
+    if not isinstance(component_id, str) or not component_id:
+        _error(errors, context, "component_id required")
+    elif component_id not in component_sequences:
+        _error(errors, context, f"component_id {component_id!r} must reference prior component_created")
+    elif component_sequences[component_id] >= sequence:
+        _error(errors, context, f"component_id {component_id!r} must not be forward reference")
+
+    coordinate_space = payload.get("coordinate_space")
+    if coordinate_space not in ALLOWED_PLACEMENT_COORDINATE_SPACES:
+        if coordinate_space == "graph_layout":
+            _error(errors, context, "graph_layout is not allowed as canonical coordinate_space")
+        else:
+            _error(
+                errors,
+                context,
+                f"coordinate_space must be one of {sorted(ALLOWED_PLACEMENT_COORDINATE_SPACES)!r}",
+            )
+
+    board_side = payload.get("board_side")
+    if board_side not in ALLOWED_PLACEMENT_BOARD_SIDES:
+        _error(errors, context, f"board_side must be one of {sorted(ALLOWED_PLACEMENT_BOARD_SIDES)!r}")
+
+    center_x = payload.get("center_x")
+    center_y = payload.get("center_y")
+    if not isinstance(center_x, (int, float)):
+        _error(errors, context, "center_x must be numeric")
+    if not isinstance(center_y, (int, float)):
+        _error(errors, context, "center_y must be numeric")
+
+    rotation_deg = payload.get("rotation_deg")
+    if not isinstance(rotation_deg, (int, float)):
+        _error(errors, context, "rotation_deg must be numeric")
+    else:
+        if rotation_deg < -180 or rotation_deg >= 180:
+            _error(errors, context, "rotation_deg must satisfy -180 <= rotation_deg < 180")
+
+    has_scale = "scale" in payload
+    has_width = "width" in payload
+    has_height = "height" in payload
+    if has_scale and (has_width or has_height):
+        _error(errors, context, "exactly one sizing mode required: scale xor (width+height)")
+    if not has_scale and not (has_width and has_height):
+        _error(errors, context, "exactly one sizing mode required: scale xor (width+height)")
+    if has_width != has_height:
+        _error(errors, context, "width and height must be provided together")
+
+    if has_scale:
+        scale = payload.get("scale")
+        if not isinstance(scale, (int, float)) or scale <= 0:
+            _error(errors, context, "scale must be numeric > 0")
+
+    if has_width and has_height:
+        width = payload.get("width")
+        height = payload.get("height")
+        if not isinstance(width, (int, float)) or width <= 0:
+            _error(errors, context, "width must be numeric > 0")
+        if not isinstance(height, (int, float)) or height <= 0:
+            _error(errors, context, "height must be numeric > 0")
+
+    source_photo_id = payload.get("source_photo_id")
+    if coordinate_space == "photo_local":
+        if not isinstance(source_photo_id, str) or not source_photo_id:
+            _error(errors, context, "photo_local requires non-empty source_photo_id")
+        else:
+            if source_photo_id not in photo_sequences:
+                _error(errors, context, f"source_photo_id {source_photo_id!r} must reference prior photo_added")
+            elif photo_sequences[source_photo_id] >= sequence:
+                _error(errors, context, f"source_photo_id {source_photo_id!r} must not be forward reference")
+
+        if isinstance(center_x, (int, float)) and center_x < 0:
+            _error(errors, context, "photo_local center_x must be >= 0")
+        if isinstance(center_y, (int, float)) and center_y < 0:
+            _error(errors, context, "photo_local center_y must be >= 0")
+    elif coordinate_space == "board_normalized":
+        if source_photo_id is not None:
+            _error(errors, context, "board_normalized must not include source_photo_id in V1")
+        if isinstance(center_x, (int, float)) and (center_x < 0 or center_x > 1):
+            _error(errors, context, "board_normalized center_x must be within 0..1")
+        if isinstance(center_y, (int, float)) and (center_y < 0 or center_y > 1):
+            _error(errors, context, "board_normalized center_y must be within 0..1")
+        if has_width and has_height:
+            width = payload.get("width")
+            height = payload.get("height")
+            if isinstance(width, (int, float)) and width > 1:
+                _error(errors, context, "board_normalized width must be <= 1")
+            if isinstance(height, (int, float)) and height > 1:
+                _error(errors, context, "board_normalized height must be <= 1")
+
+    for field in PLACEMENT_FORBIDDEN_FIELDS:
+        if field in payload:
+            _error(errors, context, f"forbidden placement field present: {field}")
+
+    template_id = payload.get("template_id")
+    if template_id is not None and (not isinstance(template_id, str) or not template_id):
+        _error(errors, context, "template_id must be non-empty string when present")
+
+
 def _validate_pin(
     payload: dict,
     line: int,
@@ -765,6 +901,7 @@ def main() -> None:
     component_ids: set[str] = set()
     pin_ids: set[str] = set()
     photo_ids: set[str] = set()
+    photo_sequence_by_id: dict[str, int] = {}
     seen_photo_ids: Counter[str] = Counter()
     region_ids: Counter[str] = Counter()
     trace_ids: Counter[str] = Counter()
@@ -793,8 +930,11 @@ def main() -> None:
                 pin_ids.add(pin_id)
         if event_type == "photo_added":
             photo_id = event.get("payload", {}).get("photo_id")
+            sequence = event.get("sequence")
             if isinstance(photo_id, str):
                 photo_ids.add(photo_id)
+                if isinstance(sequence, int):
+                    photo_sequence_by_id[photo_id] = sequence
         if event_type == "measurement_recorded" and isinstance(event_id, str):
             measurement_event_ids.add(event_id)
 
@@ -890,6 +1030,18 @@ def main() -> None:
                 photo_ids,
                 trace_ids,
                 event.get("actor", {}).get("type"),
+            )
+            continue
+
+        if event_type == "component_visual_placement_confirmed":
+            _validate_component_visual_placement_confirmed(
+                payload,
+                line_no,
+                errors,
+                event.get("actor", {}).get("type"),
+                sequence,
+                component_sequence_by_id,
+                photo_sequence_by_id,
             )
             continue
 

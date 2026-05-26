@@ -2,27 +2,28 @@
 
 ## Current pass
 
-`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`
+`BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Apply Pro-audit small docs fixups for the board vector canvas design spec while preserving TraceBench evidence boundaries and protected surfaces.
+Lock the future canonical event-model direction for human-confirmed visual component placement while preserving evidence-floor boundaries and keeping AI proposals non-canonical until explicit human confirmation.
 
 ## Allowed surfaces
 
-- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/audit/BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS.md`
+- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` (optional, only if strictly needed)
 
 ## Forbidden surfaces
 
 - `lib/**`
 - `test/**`
-- `tools/**`
+- `tests/**`
 - `schemas/**`
+- `tools/**`
 - `samples/**`
 - `assets/**`
 - `pubspec.yaml`
@@ -34,8 +35,12 @@ Apply Pro-audit small docs fixups for the board vector canvas design spec while 
 - Project ZIP tooling/files
 - Flutter implementation
 - event-writing implementation
-- component editing UI implementation
+- component editing UI
+- renderer implementation
+- schema implementation
+- materializer implementation
 - camera/OCR/CV
+- AI proposal persistence
 - AI diagnostics/fault probability
 - source search
 - KiCad/boardview import/export
@@ -43,26 +48,39 @@ Apply Pro-audit small docs fixups for the board vector canvas design spec while 
 
 ## Scope decisions to lock
 
-1. This pass is design/spec-only and does not introduce runtime behavior.
-2. Every AI-placed/suggested object starts as `status = "unconfirmed_ai_proposal"`.
-3. Unconfirmed AI proposals are render-layer drafts only:
-   - not canonical facts
-   - not written to `events.jsonl`
-   - not materialized as confirmed facts in `known_facts.json`
-4. Human confirmation must happen one object at a time.
-5. No `confirm all AI suggestions` workflow in initial design.
-6. `visual_trace` remains visual-only; electrical/net confirmation still requires accepted measurement/source-backed evidence.
-7. Trace colors/categories are visual metadata only unless backed by accepted measurement/net evidence.
-8. Vector footprint template and electrical identity remain separate concepts.
-9. Renderer/projection remain read-only derived surfaces and write nothing to Project ZIP artifacts.
-10. Boardview design baseline supports both dark and light visual themes.
-11. Default boardview is vector-only; optional reference photo layer may be toggled ON/OFF with adjustable opacity.
-12. Vector component rendering supports adjustable opacity/transparency for practical overlay work.
-13. AI proposals use visually distinct reddish unconfirmed styling (ghosted/transparent + dashed + unconfirmed badge) and never claim electrical certainty.
-14. Customer-facing report/export default remains confirmed facts only; unconfirmed AI proposals are excluded unless a future explicitly scoped pass adds clearly labeled proposal export.
-15. Background/reference photo layer is helper-only; pixel data, opacity, alignment, and overlay fitting cannot create identity/placement/trace/measurement/net/fault facts.
-16. Electrical/identity facts are coordinate-space agnostic; future human-confirmed placement facts must carry explicit coordinate-space declaration if introduced.
-17. Future placement event-model work must separate confirmation states for placement/template/identity/pin-mapping/visual-trace/measured-electrical evidence.
+1. Audit verdict is accepted: `PLACEMENT_SHOULD_BE_CANONICAL_EVENT`.
+2. Future direction uses new canonical event type (recommendation): `component_visual_placement_confirmed`; existing event types must not be overloaded.
+3. Confirmation concepts remain separate:
+   - `component_template_assigned_confirmed`
+   - `component_identity_confirmed`
+   - `component_pin_mapping_confirmed`
+   - `visual_trace_confirmed`
+   - measured electrical remains `measurement_recorded` -> `net_connection_confirmed`.
+4. Placement confirmation is visual/documentation fact only and does not confirm identity, electrical behavior, measured net, or hidden-layer trace.
+5. AI proposals remain `unconfirmed_ai_proposal` and non-canonical until explicit human confirmation through accepted event flow.
+6. Canonical placement must include `coordinate_space`.
+7. Future canonical placement coordinate spaces:
+   - `board_normalized`
+   - `photo_local` only with valid `source_photo_id`.
+8. `graph_layout` is non-canonical render state and must never be accepted as canonical placement coordinate space.
+9. Minimum future placement payload direction:
+   - `component_id`
+   - `template_id` or reference to separately confirmed template assignment
+   - `board_side`
+   - `coordinate_space`
+   - `center_x`
+   - `center_y`
+   - `rotation_deg`
+   - `width`/`height` or `scale`
+   - `source_photo_id` optional/required for `photo_local`.
+10. Future validation direction (schema/tool pass):
+   - reject `actor.type == "ai"` for placement confirmation
+   - whitelist coordinate spaces
+   - require valid `source_photo_id` for `photo_local`
+   - reject `graph_layout`
+   - require existing `component_id`
+   - prevent identity/net side effects from placement confirmation.
+11. Future projection direction may materialize confirmed placement into `known_facts.json` as component placement facts only; proposal layer remains non-canonical and non-materialized.
 
 ## Validate
 

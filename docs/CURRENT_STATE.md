@@ -3,12 +3,20 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS`
-- Docs drift countdown: `2`
+- Current pass: `BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` verdict is accepted: `PLACEMENT_SHOULD_BE_CANONICAL_EVENT`.
+- `BOARD_PLACEMENT_EVENT_MODEL_SCOPE_LOCK_PASS` locks direction for future placement facts:
+  - future canonical path should use dedicated placement event direction (`component_visual_placement_confirmed`) instead of overloading existing event types.
+  - placement is separate from template assignment, identity confirmation, pin mapping confirmation, visual-trace confirmation, and measured electrical confirmation.
+  - placement confirmation is visual/documentation fact only; it does not confirm identity or electrical/net truth.
+  - AI proposals remain `unconfirmed_ai_proposal` and non-canonical until explicit human confirmation.
+  - canonical placement coordinate spaces are limited to `board_normalized` and `photo_local` with valid `source_photo_id`; `graph_layout` remains non-canonical render state.
+  - future schema/tool validation must reject `actor.type=ai` for placement confirmation and prevent placement-confirm from creating identity/net side effects.
 - `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS` is accepted as design-only scope:
   - boardview target is vector-first with optional background photo helper layer (toggle + opacity).
   - dark/light view modes are required in the design baseline.

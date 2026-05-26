@@ -3,14 +3,24 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS`
-- Next recommended pass: `PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS`
+- Current pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS`
+- Next recommended pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` is accepted and limited to `measurement_recorded` only.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` appends one event to local unpacked `events.jsonl`, preserves prior event lines, and flags projection as stale/refresh required in UI state.
+- `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_AUDIT_PASS` found duplicate-save risk in Measurement Record UI:
+  - `_isSubmitting` exists, but fast repeated taps can still trigger `_saveMeasurement()` more than once before disabled rebuild is applied.
+  - after successful save, unchanged form state can be submitted again and append duplicate `measurement_recorded` events.
+  - `MeasurementEventWriter` append semantics are intentional and must remain unchanged.
+- `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS` is locked as UI-only prevention scope:
+  - add immediate re-entry guard in `MeasurementRecordScreen._saveMeasurement()`.
+  - keep submit blocked while write is in progress.
+  - store last successful normalized form key and block repeated submit for unchanged form state.
+  - re-enable submit only when form state changes.
+  - no changes to schema/tools/materializer/export/reload/stale-banner/event-writer semantics.
 - `FLUTTER_ZIP_EXPORT_PASS` is implemented with Python materialization before export and explicit export success/failure messages; stale state remains unchanged after export.
 - `PROJECT_OVERVIEW_COUNTER_RELOAD_AUDIT_PASS` found stale in-memory counters after successful export because export refreshes only `known_facts.json` on disk.
 - `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS` is implemented:

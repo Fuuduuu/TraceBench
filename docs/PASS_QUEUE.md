@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS`
+`MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
@@ -99,6 +99,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | completed | Select next milestone as `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` after export handoff stabilization. |
 | PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock implementation direction: refresh in-memory `ProjectState` only after successful desktop/dev export, nothing else. |
 | PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS | FLUTTER_PASS | completed | Reload in-memory `ProjectState` from local project directory on `ExportSuccess` only, without changing export tooling ownership boundaries. |
+| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed | Audit confirmed duplicate `measurement_recorded` risk is UI-submit timing/state issue, not event-writer/schema/materializer issue. |
+| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow UI-only guard scope for preventing duplicate save from rapid repeated taps. |
 | TOOLS_EMPTY_PROJECT_SUPPORT_PASS | TOOLS_PASS | completed | Support empty/new projects in materialization and export/validate/import tests; unblock new-project wizard scope lock. |
 | FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 New Project Wizard scope for blank-project creation and local-only project bootstrap. |
 | DOCS_DRIFT_MINI_CLEANUP_10_PASS | DOCS_SYNC | completed | Docs drift cleanup after wizard scope-lock and routing cleanup before implementation. |
@@ -108,17 +110,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS | FLUTTER_PASS | recommended |
 
-`PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS` is complete and validated.
-Next recommended pass is `PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS` for narrow verification of post-export reload behavior and boundaries.
+`MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS` is complete and validated.
+Next recommended pass is `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS` for narrow UI-only duplicate submit guard implementation.
 
 ## Deferred / not active
 

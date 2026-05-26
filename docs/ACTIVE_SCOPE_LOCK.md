@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS`
+`MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Lock a narrow docs-only scope for later implementation: after a successful desktop/dev Project ZIP export, refresh in-memory `ProjectState` from disk via existing `ProjectLoader` path.
+Lock narrow docs-only scope for preventing duplicate `measurement_recorded` events caused by repeated fast taps on `Salvesta sündmus`.
 
 ## Allowed surfaces
 
@@ -14,9 +14,7 @@ Lock a narrow docs-only scope for later implementation: after a successful deskt
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS.md`
-- `docs/audit/PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS.md` (as implementation pass target index entry)
-- `docs/PROJECTION_REFRESH_POLICY_SCOPE_LOCK_PASS.md` (read-only reference)
+- `docs/audit/MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -30,24 +28,25 @@ Lock a narrow docs-only scope for later implementation: after a successful deskt
 - `pubspec.lock`
 - `events.jsonl`
 - `known_facts.json`
-- `project_zip_contract` expansion
 - Project ZIP tooling changes
-- `mobile` export implementation
-- `event-writing` changes
-- `measurement` auto-refresh after every write
-- `Dart-native known_facts materializer` or direct `known_facts.json` mutation in Flutter
-- direct stale-banner action changes
+- materializer/export/reload flow changes
+- `MeasurementEventWriter` semantic changes
+- historical event deduplication
+- schema changes
+- AI duplicate inference
+- canonical event rule changes
 
 ## Scope decisions to lock
 
-1. The follow-up implementation pass is explicitly `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS`.
-2. Refresh in-memory state **only** after successful desktop/dev `Export ZIP` (success result from `ProjectExporter`).
-3. The refresh path must reload from `projectState.projectDirectory` using existing `ProjectLoader` path.
-4. Failed export must not reload, must not replace state, and must not clear `isProjectionStale`.
-5. `measurement_recorded` save/write flow must not auto-materialize or auto-reload in this pass.
-6. `known_facts.json` remains Python-materializer-owned and remains unchanged by Flutter.
-7. Projection stale banner remains passive display-only (no action/button wiring).
-8. Mobile export remains placeholder as locked by V1 export scope.
+1. The follow-up implementation pass is explicitly `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS` (`FLUTTER_PASS`).
+2. Duplicate prevention lives in `MeasurementRecordScreen` UI state only.
+3. Future implementation must add immediate `_saveMeasurement()` re-entry guard.
+4. Future implementation must keep submit blocked while save is in progress.
+5. Future implementation must store last successful normalized form key and block repeated submit for unchanged form state.
+6. Future implementation must re-enable submit only when form state changes.
+7. `MeasurementEventWriter` append semantics remain unchanged.
+8. No historical event dedupe.
+9. No changes to materializer, `known_facts`, export flow, stale banner behavior, or ProjectState reload logic.
 
 ## Validate
 

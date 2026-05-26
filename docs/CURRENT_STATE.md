@@ -3,14 +3,17 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `FLUTTER_NEW_PROJECT_WIZARD_PASS`
-- Next recommended pass: `PROJECT_IMPORT_EXPORT_SMOKE_TEST_PASS`
+- Current pass: `PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS`
+- Next recommended pass: `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` is accepted and limited to `measurement_recorded` only.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` appends one event to local unpacked `events.jsonl`, preserves prior event lines, and flags projection as stale/refresh required in UI state.
+- `FLUTTER_ZIP_EXPORT_PASS` is implemented with Python materialization before export and explicit export success/failure messages; stale state remains unchanged after export.
+- `PROJECT_OVERVIEW_COUNTER_RELOAD_AUDIT_PASS` found stale in-memory counters after successful export because export refreshes only `known_facts.json` on disk.
+- This direction is now locked: in-memory `ProjectState` should be refreshed only through an explicit post-export local reload via existing `ProjectLoader` path in a follow-up implementation pass.
 - `known_facts.json` is not mutated by measurement event writing and Project ZIP files are not directly written.
 - `net_connection_confirmed`, component_created, pin_defined, photo, and annotation write paths were not introduced.
 - No AI-authored measurement workflow was introduced; target, unit, and value are explicit user inputs.

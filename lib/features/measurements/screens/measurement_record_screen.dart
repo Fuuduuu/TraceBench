@@ -19,10 +19,13 @@ class _MeasurementRecordScreenState
   final _toController = TextEditingController();
   final _customUnitController = TextEditingController();
   String? _selectedUnit;
+  String? _lastSuccessfulFormKey;
   bool _isSubmitting = false;
   String? _successMessage;
   String? _errorMessage;
 
+  static const String _defaultMode = 'continuity';
+  static const String _defaultPowerState = 'unknown';
   static const String _otherUnitValue = '__custom_unit__';
   static const List<String> _unitOptions = <String>[
     'V',
@@ -49,17 +52,51 @@ class _MeasurementRecordScreenState
     return _selectedUnit!;
   }
 
+  String? get _currentFormKey {
+    final parsedValue = _parsedValue;
+    final fromTarget = _fromController.text.trim();
+    final toTarget = _toController.text.trim();
+    final unit = _unit.trim();
+    if (parsedValue == null ||
+        !parsedValue.isFinite ||
+        fromTarget.isEmpty ||
+        toTarget.isEmpty ||
+        unit.isEmpty) {
+      return null;
+    }
+    return [
+      'mode=$_defaultMode',
+      'from=$fromTarget',
+      'to=$toTarget',
+      'value=${parsedValue.toString()}',
+      'unit=$unit',
+      'power_state=$_defaultPowerState',
+    ].join('|');
+  }
+
+  bool _isDuplicateFormKey(String? formKey) {
+    if (formKey == null) {
+      return false;
+    }
+    return formKey == _lastSuccessfulFormKey;
+  }
+
   bool get _canSubmit {
+    final formKey = _currentFormKey;
     return !_isSubmitting &&
-        _parsedValue != null &&
-        _valueController.text.trim().isNotEmpty &&
-        _parsedValue!.isFinite &&
-        _fromController.text.trim().isNotEmpty &&
-        _toController.text.trim().isNotEmpty &&
-        _unit.isNotEmpty;
+        formKey != null &&
+        !_isDuplicateFormKey(formKey);
   }
 
   Future<void> _saveMeasurement() async {
+    if (_isSubmitting) {
+      return;
+    }
+    final formKey = _currentFormKey;
+    if (formKey == null || _isDuplicateFormKey(formKey)) {
+      return;
+    }
+
     final projectState = ref.read(projectStateProvider);
     if (projectState == null) {
       setState(() {
@@ -82,6 +119,8 @@ class _MeasurementRecordScreenState
         unit: _unit,
         fromTarget: _fromController.text.trim(),
         toTarget: _toController.text.trim(),
+        mode: _defaultMode,
+        powerState: _defaultPowerState,
       );
       final result = await writer.writeMeasurement(
         projectState: projectState,
@@ -90,6 +129,7 @@ class _MeasurementRecordScreenState
       ref.read(projectStateProvider.notifier).state =
           result.updatedProjectState;
       setState(() {
+        _lastSuccessfulFormKey = formKey;
         _successMessage =
             'Measurement event saved. Known facts projection must be refreshed before derived views update.';
       });

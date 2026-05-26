@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_LOCK_PASS`
-- Next recommended pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS`
+- Current pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS`
+- Next recommended pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
@@ -21,6 +21,12 @@ Branch: main
   - store last successful normalized form key and block repeated submit for unchanged form state.
   - re-enable submit only when form state changes.
   - no changes to schema/tools/materializer/export/reload/stale-banner/event-writer semantics.
+- `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS` is implemented:
+  - `MeasurementRecordScreen` now has an immediate `_saveMeasurement()` re-entry guard (`if (_isSubmitting) return;`).
+  - submit is blocked when current normalized form key matches last successfully saved form key.
+  - normalized form key uses `mode/from/to/value/unit/power_state` with trimmed user text and deterministic composition.
+  - editing form state after success re-enables submit and allows one new event append.
+  - `MeasurementEventWriter` semantics are unchanged (no payload dedupe, no schema/tooling/materializer/export/reload/stale-banner changes).
 - `FLUTTER_ZIP_EXPORT_PASS` is implemented with Python materialization before export and explicit export success/failure messages; stale state remains unchanged after export.
 - `PROJECT_OVERVIEW_COUNTER_RELOAD_AUDIT_PASS` found stale in-memory counters after successful export because export refreshes only `known_facts.json` on disk.
 - `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS` is implemented:

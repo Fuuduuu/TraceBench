@@ -3,12 +3,17 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
-- Next recommended pass: `PASS_QUEUE_REVIEW_05_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_11_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS`
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `DOCS_DRIFT_MINI_CLEANUP_11_PASS` is completed:
+  - canonical docs were aligned after accepted placement schema/validator/projection work.
+  - stale `ACTIVE_SCOPE_LOCK.md` pointer was replaced with the current cleanup lock.
+  - queue/state/lock/audit memory pointers were refreshed without runtime/schema/tool changes.
+  - next conservative routing is `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` before renderer/UI expansion.
 - `BOARD_PLACEMENT_EVENT_PROJECTION_PASS` is implemented:
   - `schemas/known_facts.schema.json` now allows optional top-level `component_visual_placements` with strict placement item shape and exactly one sizing mode (`scale` xor `width`+`height`).
   - `tools/materialize_known_facts.py` now projects accepted human-confirmed `component_visual_placement_confirmed` events into `component_visual_placements`.
@@ -58,6 +63,7 @@ Branch: main
   - footprint/package templates remain separate from confirmed electrical identity and prefer package naming (`sot23_3`, `soic_8`, `chip_0805`).
   - trace color/category is visual metadata only unless backed by accepted measurement/source evidence.
   - customer report/export default stays evidence-safe: confirmed facts only, unconfirmed AI proposals excluded unless future explicit scope allows labeled proposal export.
+- External AI Component Reading Simulation Lab is out-of-repo scope and is not part of TraceBench canonical docs/code paths.
 - `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS` applies Pro-audit doc clarifications:
   - background photo helper layer is visual-only context; overlay/alignment/opacity/pixels cannot create identity/placement/trace/measurement/net/fault facts.
   - coordinate model explicitly separates coordinate-space-agnostic electrical/identity facts from future coordinate-tagged human placement facts.

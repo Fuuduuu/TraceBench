@@ -2,7 +2,7 @@
 
 PASS_ID: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`  
 Lane: `DOCS_SYNC / DESIGN_ONLY`  
-Status: Accepted design baseline (no runtime/schema/event changes)
+Status: Accepted design baseline; later schema/validator/projection passes implemented visual placement event + projection boundaries.
 
 ## 1. Goal
 
@@ -110,7 +110,7 @@ Placement states:
 
 1. temporary draft placement (manual, unsaved render intent)
 2. AI proposal placement (`unconfirmed_ai_proposal`)
-3. human-confirmed visual placement fact (future event-model pass required)
+3. human-confirmed visual placement fact (`component_visual_placement_confirmed` canonical event path; visual/documentation-only)
 
 Confirmation workflow constraints:
 
@@ -159,7 +159,7 @@ V1 (design baseline only):
 
 V2 candidates (future scoped passes):
 
-- formal event model for human-confirmed visual placement
+- renderer/editor consumption of already accepted visual placement canonical/projection data
 - internal footprint library management UI
 - optional report-export mode that can include clearly labeled proposal overlays
 
@@ -179,9 +179,9 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` (AUDIT_ONLY):
+`BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` (AUDIT_ONLY):
 
-- define the smallest safe future event path for human-confirmed visual placement facts
+- verify implemented placement event schema + validator + projection + ZIP behavior as one evidence chain
 - keep AI proposals non-canonical until explicit human confirmation
 - prevent any accidental promotion of visual proposals into electrical certainty
 - require explicit confirmation-state distinction for future flows:

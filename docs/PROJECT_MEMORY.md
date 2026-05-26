@@ -21,10 +21,15 @@ V1.0 is a Known Facts Builder, not an AI repair agent.
 
 - `events.jsonl` is the only canonical truth.
 - `known_facts.json` is a materialized projection used by read-only viewers.
+- `component_visual_placement_confirmed` is a canonical visual/documentation placement event and does not confirm identity, pin mapping, visual trace, electrical net, measurement, fault candidate, repair conclusion, or hidden-layer truth.
+- `known_facts.json` may include top-level `component_visual_placements` as visual/documentation projection only.
+- AI proposal objects (`unconfirmed_ai_proposal`) are non-canonical until explicit human confirmation through accepted event paths.
+- `graph_layout` is non-canonical render state.
 - `board_graph.json` and `view_state.json` are forbidden in V1.
 - Visual evidence is visual-only; `visual_trace` is never measured electrical evidence.
 - `component_removed` event type is not in V1.
 - `repair_action_recorded(action_type="remove_component")` is the V1 removal model.
+- External AI Component Reading Simulation Lab is outside this repository and not part of TraceBench canonical truth surfaces.
 
 ## Non-negotiables
 

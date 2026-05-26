@@ -8,6 +8,9 @@
 | Next recommended pass | PASS_QUEUE.md | pass acceptance or queue audit | replace old next recommendation | CURRENT_STATE.md only |
 | Drift countdown | PASS_QUEUE.md | docs drift updates | replace current countdown value only | no duplicate |
 | Stable architecture invariant | PROJECT_MEMORY.md (and relevant spec docs) | accepted architecture/spec pass | update spec and compact pointer; remove stale duplicates | PROJECT_MEMORY compact pointer |
+| Visual placement event boundary (`component_visual_placement_confirmed`) | schemas/events.schema.json + tools/validate_events_jsonl.py + PROJECT_MEMORY.md | accepted schema/validator pass | update schema/validator and stable-boundary pointer; remove stale contradictory wording from docs | CURRENT_STATE short summary |
+| Visual placement projection (`component_visual_placements`) | schemas/known_facts.schema.json + tools/materialize_known_facts.py + PROJECT_MEMORY.md | accepted projection/materializer pass | update projection owner files and stable-boundary pointer; keep history in audit docs | CURRENT_STATE short summary |
+| AI proposal non-canonical boundary (`unconfirmed_ai_proposal`) | PROJECT_MEMORY.md + docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md | accepted design/scope pass | replace stale wording that implies canonicalization | CURRENT_STATE short summary |
 | Active allowed/forbidden surfaces | ACTIVE_SCOPE_LOCK.md | every active pass | replace old lock completely | audit closeout summary |
 | Completed pass evidence | docs/audit/*.md | every pass closeout | never move into PROJECT_MEMORY; keep historical evidence here | AUDIT_INDEX row |
 | Protected surfaces | docs/PROTECTED_SURFACES.md | protected-surface decision | preserve historical rationale; do not duplicate | ACTIVE_SCOPE_LOCK forbidden list |

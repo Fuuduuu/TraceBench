@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_11_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_11_PASS | DOCS_SYNC | completed | Align CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX/PROJECT_MEMORY/TRUTH_INDEX and board/placement docs after accepted placement schema+validator+projection work; preserve evidence boundaries and set conservative next routing. |
 | BOARD_PLACEMENT_EVENT_PROJECTION_PASS | TOOLS_PASS / SCHEMA_PASS | completed | Add `component_visual_placements` known-facts schema + materializer projection for accepted human-confirmed placement events; keep projection visual-only with no electrical/net/measurement/fault side effects; add projection + ZIP mismatch tests. |
 | BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS | SCHEMA_PASS | completed | Add `component_visual_placement_confirmed` schema + validator support with strict user-only actor rule, coordinate/sizing constraints, reference checks, and side-effect-field rejection; no projection/materializer changes. |
 | BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS | DOCS_SYNC | completed | Record Pro verdict READY_WITH_IMPLEMENTATION_SPLIT and split broad placement schema work into validator-first pass then projection/materializer follow-up pass. |
@@ -118,17 +119,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_05_PASS | DOCS_SYNC | recommended |
+| BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PASS_QUEUE_REVIEW_05_PASS | DOCS_SYNC | recommended |
+| BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`BOARD_PLACEMENT_EVENT_PROJECTION_PASS` is complete and preserves scope boundaries by limiting implementation to known-facts schema + materializer + projection/ZIP tests.
-Next recommended pass is `PASS_QUEUE_REVIEW_05_PASS` for queue/state/lock alignment and next implementation routing.
+`DOCS_DRIFT_MINI_CLEANUP_11_PASS` aligns canonical docs after placement schema/validator/projection acceptance and refreshes stale scope-lock pointers.
+Next recommended pass is `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` to verify schema/validator/materializer/ZIP and boundary behavior as one accepted evidence chain before renderer/UI expansion.
 
 ## Deferred / not active
 
@@ -141,4 +142,4 @@ Next recommended pass is `PASS_QUEUE_REVIEW_05_PASS` for queue/state/lock alignm
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 5

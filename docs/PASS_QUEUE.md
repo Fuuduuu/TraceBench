@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_11_PASS`
+`BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow validator-only follow-up so placement references must resolve only to prior accepted `component_created` / `photo_added`; defer broader status semantics to separate audit. |
 | DOCS_DRIFT_MINI_CLEANUP_11_PASS | DOCS_SYNC | completed | Align CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX/PROJECT_MEMORY/TRUTH_INDEX and board/placement docs after accepted placement schema+validator+projection work; preserve evidence boundaries and set conservative next routing. |
 | BOARD_PLACEMENT_EVENT_PROJECTION_PASS | TOOLS_PASS / SCHEMA_PASS | completed | Add `component_visual_placements` known-facts schema + materializer projection for accepted human-confirmed placement events; keep projection visual-only with no electrical/net/measurement/fault side effects; add projection + ZIP mismatch tests. |
 | BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS | SCHEMA_PASS | completed | Add `component_visual_placement_confirmed` schema + validator support with strict user-only actor rule, coordinate/sizing constraints, reference checks, and side-effect-field rejection; no projection/materializer changes. |
@@ -119,17 +120,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS | TOOLS_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS | TOOLS_PASS | recommended |
 
-`DOCS_DRIFT_MINI_CLEANUP_11_PASS` aligns canonical docs after placement schema/validator/projection acceptance and refreshes stale scope-lock pointers.
-Next recommended pass is `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` to verify schema/validator/materializer/ZIP and boundary behavior as one accepted evidence chain before renderer/UI expansion.
+`BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS` locks a narrow fix so placement reference checks use only prior accepted create-events for `component_id` / `source_photo_id`.
+Next recommended pass is `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS` to implement validator+tests only, while deferring global status-semantics normalization to a separate audit pass.
 
 ## Deferred / not active
 

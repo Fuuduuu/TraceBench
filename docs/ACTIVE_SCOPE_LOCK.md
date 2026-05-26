@@ -2,23 +2,19 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_11_PASS`
+`BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Run a narrow docs-only drift cleanup after placement/schema/projection acceptance and align canonical docs to current repository truth.
+Lock narrow scope for a placement-reference status fix where `component_visual_placement_confirmed` references must resolve only to prior accepted create-events.
 
 ## Allowed surfaces
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/TRUTH_INDEX.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_GRAPH_SPEC.md` (only if stale wording needs alignment)
-- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` (only if stale wording needs alignment)
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_11_PASS.md`
+- `docs/audit/BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,27 +32,25 @@ Run a narrow docs-only drift cleanup after placement/schema/projection acceptanc
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter implementation
-- schema implementation
-- validator implementation
 - materializer implementation
-- renderer implementation
-- event-writing UI
-- component editing UI
+- known_facts schema/projection
+- Flutter/runtime code
+- renderer/UI
 - AI proposal persistence
-- camera/OCR/CV
-- source search
-- KiCad/boardview import/export
-- BLE/cloud
+- global status semantics refactor
 
 ## Scope decisions
 
-1. `component_visual_placement_confirmed` is accepted in schema/validator and must remain visual/documentation-only.
-2. `known_facts.json` top-level `component_visual_placements` projection is accepted and must remain non-electrical evidence.
-3. AI proposal boundary remains strict: `unconfirmed_ai_proposal` is non-canonical until explicit human confirmation.
-4. `graph_layout` remains non-canonical.
-5. `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-6. External AI Component Reading Simulation Lab is out-of-repo scope and must not be mixed into TraceBench repo truth.
+1. Future narrow implementation pass is `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS` (validator + tests only).
+2. Placement reference checks must use prior accepted create-events only:
+   - `component_id` -> prior accepted `component_created`
+   - `photo_local.source_photo_id` -> prior accepted `photo_added`
+3. Non-accepted `component_created` / `photo_added` events must not satisfy placement reference existence.
+4. `component_updated` / `component_marked_unknown` must not create component existence for placement reference checks.
+5. Forward component/photo references remain rejected.
+6. Placement after component removal remains allowed as visual/documentation history.
+7. Do not change materializer behavior, schemas, known-facts projection shape, or global event-status semantics in this narrow fix.
+8. Broader status lifecycle consistency is explicitly deferred to `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS`.
 
 ## Validate
 

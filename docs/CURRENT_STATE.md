@@ -3,12 +3,24 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_11_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS`
+- Current pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`
 - Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS` is completed:
+  - records `BOARD_PLACEMENT_STATUS_SEMANTICS_AUDIT_PASS` verdict: `FIX_NEEDED_PLACEMENT_REFERENCE_STATUS`.
+  - locks a narrow validator-only follow-up: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`.
+  - locks reference semantics for `component_visual_placement_confirmed`:
+    - referenced `component_id` must come from prior accepted `component_created`.
+    - `photo_local.source_photo_id` must come from prior accepted `photo_added`.
+    - non-accepted (`draft`/`rejected`) create-events must not satisfy placement references.
+    - `component_updated` / `component_marked_unknown` must not create component existence.
+    - forward references remain rejected.
+    - placement after component removal remains allowed.
+  - explicitly defers broader status-lifecycle consistency work to `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS`.
+  - preserves visual/documentation-only placement boundary and no identity/net/measurement/fault side effects.
 - `DOCS_DRIFT_MINI_CLEANUP_11_PASS` is completed:
   - canonical docs were aligned after accepted placement schema/validator/projection work.
   - stale `ACTIVE_SCOPE_LOCK.md` pointer was replaced with the current cleanup lock.

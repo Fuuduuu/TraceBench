@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
@@ -76,6 +77,52 @@ class ProjectLoader {
     );
   }
 
+  static Future<ProjectState> loadFromDirectory(String projectDirectory) async {
+    final trimmedDirectory = projectDirectory.trim();
+    if (trimmedDirectory.isEmpty) {
+      throw const ProjectLoadException('Project directory path is empty');
+    }
+
+    final directory = Directory(trimmedDirectory);
+    if (!await directory.exists()) {
+      throw ProjectLoadException(
+        'Project directory does not exist: $trimmedDirectory',
+      );
+    }
+
+    final manifestRaw = await _readRequiredLocalFile(
+      trimmedDirectory,
+      _manifestPath,
+    );
+    final eventsRaw = await _readRequiredLocalFile(
+      trimmedDirectory,
+      _eventsPath,
+    );
+    final knownFactsRaw = await _readRequiredLocalFile(
+      trimmedDirectory,
+      _knownFactsPath,
+    );
+    final customerReportRaw = await _readRequiredLocalFile(
+      trimmedDirectory,
+      _customerReportPath,
+    );
+    final schemaVersionsRaw = await _readOptionalLocalFile(
+      trimmedDirectory,
+      _schemaVersionsPath,
+    );
+
+    return _buildProjectState(
+      manifestRaw: manifestRaw,
+      eventsRaw: eventsRaw,
+      knownFactsRaw: knownFactsRaw,
+      reportRaw: customerReportRaw,
+      schemaVersionsRaw: schemaVersionsRaw,
+    ).copyWith(
+      projectDirectory: trimmedDirectory,
+      isProjectionStale: false,
+    );
+  }
+
   static ArchiveFile _findRequiredFile(Archive archive, String relativePath) {
     final target = relativePath.replaceAll('\\', '/');
     for (final file in archive.files) {
@@ -93,6 +140,55 @@ class ProjectLoader {
       return utf8.decode(content);
     }
     return '';
+  }
+
+  static Future<String> _readRequiredLocalFile(
+    String projectDirectory,
+    String relativePath,
+  ) async {
+    final file = File(_joinPath(projectDirectory, relativePath));
+    if (!await file.exists()) {
+      throw ProjectLoadException(
+        'Required file missing in project directory: $relativePath',
+      );
+    }
+
+    try {
+      return await file.readAsString();
+    } on FileSystemException catch (error) {
+      throw ProjectLoadException(
+        'Failed reading $relativePath: ${error.message}',
+      );
+    }
+  }
+
+  static Future<String?> _readOptionalLocalFile(
+    String projectDirectory,
+    String relativePath,
+  ) async {
+    final file = File(_joinPath(projectDirectory, relativePath));
+    if (!await file.exists()) {
+      return null;
+    }
+
+    try {
+      return await file.readAsString();
+    } on FileSystemException catch (error) {
+      throw ProjectLoadException(
+        'Failed reading $relativePath: ${error.message}',
+      );
+    }
+  }
+
+  static String _joinPath(String base, String relativePath) {
+    final normalizedRelative = relativePath.replaceAll(
+      '/',
+      Platform.pathSeparator,
+    );
+    if (base.endsWith('/') || base.endsWith('\\')) {
+      return '$base$normalizedRelative';
+    }
+    return '$base${Platform.pathSeparator}$normalizedRelative';
   }
 
   static List<TraceBenchEvent> parseEvents(String eventsRaw) {

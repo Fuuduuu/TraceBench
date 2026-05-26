@@ -11,7 +11,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS`
+`PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS`
 
 ## Completed pass history
 
@@ -98,6 +98,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 | FLUTTER_ZIP_EXPORT_POLISH_SCOPE_REVIEW_PASS | DOCS_SYNC | completed | Formally close polish review by marking FZ-01 as V1 accepted risk and routing to user decision. |
 | USER_DECISION_NEXT_FEATURE_PASS | DOCS_SYNC | completed | Select next milestone as `FLUTTER_NEW_PROJECT_WIZARD_SCOPE_AUDIT_PASS` after export handoff stabilization. |
 | PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock implementation direction: refresh in-memory `ProjectState` only after successful desktop/dev export, nothing else. |
+| PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS | FLUTTER_PASS | completed | Reload in-memory `ProjectState` from local project directory on `ExportSuccess` only, without changing export tooling ownership boundaries. |
 | TOOLS_EMPTY_PROJECT_SUPPORT_PASS | TOOLS_PASS | completed | Support empty/new projects in materialization and export/validate/import tests; unblock new-project wizard scope lock. |
 | FLUTTER_NEW_PROJECT_WIZARD_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 New Project Wizard scope for blank-project creation and local-only project bootstrap. |
 | DOCS_DRIFT_MINI_CLEANUP_10_PASS | DOCS_SYNC | completed | Docs drift cleanup after wizard scope-lock and routing cleanup before implementation. |
@@ -107,17 +108,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS | FLUTTER_PASS | recommended |
+| PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS | FLUTTER_PASS | recommended |
+| PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`PROJECT_STATE_RELOAD_AFTER_EXPORT_SCOPE_LOCK_PASS` is complete and validated.
-Next recommended pass is `PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS` to apply explicit in-memory reload after successful desktop/dev Export ZIP.
+`PROJECT_STATE_RELOAD_AFTER_EXPORT_PASS` is complete and validated.
+Next recommended pass is `PROJECT_STATE_RELOAD_AFTER_EXPORT_CODE_AUDIT_PASS` for narrow verification of post-export reload behavior and boundaries.
 
 ## Deferred / not active
 

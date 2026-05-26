@@ -22,6 +22,20 @@ class _StaticProjectExporter extends ProjectExporter {
   }
 }
 
+class _TrackingProjectStateLoader {
+  _TrackingProjectStateLoader(this._behavior);
+
+  final Future<ProjectState> Function(String directory) _behavior;
+  int callCount = 0;
+  String? lastDirectory;
+
+  Future<ProjectState> call(String directory) async {
+    callCount += 1;
+    lastDirectory = directory;
+    return _behavior(directory);
+  }
+}
+
 ProjectState _inlineProjectState({
   bool isProjectionStale = false,
   String customerReport = 'Inline sample report',
@@ -125,6 +139,7 @@ void main() {
 
   testWidgets('mobile export shows placeholder message', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
+    final loader = _TrackingProjectStateLoader((_) async => projectState);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -133,6 +148,7 @@ void main() {
           home: CustomerReportScreen(
             projectExporter:
                 _StaticProjectExporter(const ExportMobilePlaceholder()),
+            projectStateLoader: loader.call,
           ),
         ),
       ),
@@ -145,11 +161,13 @@ void main() {
 
     expect(find.text('Mobiilne eksport jääb V1-s placeholderiks.'),
         findsOneWidget);
+    expect(loader.callCount, 0);
   });
 
   testWidgets('materializer failure shows sanitized message only',
       (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
+    final loader = _TrackingProjectStateLoader((_) async => projectState);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -164,6 +182,7 @@ void main() {
                     '/Users/test/tracebench/Tools\\materialize_known_facts.py failed with Traceback...',
               ),
             ),
+            projectStateLoader: loader.call,
           ),
         ),
       ),
@@ -185,10 +204,12 @@ void main() {
     );
     expect(find.text('Traceback'), findsNothing);
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(loader.callCount, 0);
   });
 
   testWidgets('export failure shows sanitized message only', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
+    final loader = _TrackingProjectStateLoader((_) async => projectState);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -202,6 +223,7 @@ void main() {
                     'C:\\\\Users\\\\test\\\\tracebench\\\\export_project_zip.py',
               ),
             ),
+            projectStateLoader: loader.call,
           ),
         ),
       ),
@@ -219,11 +241,17 @@ void main() {
     expect(find.text('Traceback'), findsNothing);
     expect(find.text('Export failed'), findsNothing);
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(loader.callCount, 0);
   });
 
-  testWidgets('desktop export success keeps stale banner visible',
+  testWidgets('desktop export success reloads provider state',
       (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
+    final reloadedState = projectState.copyWith(
+      isProjectionStale: false,
+      customerReport: 'Reloaded customer report',
+    );
+    final loader = _TrackingProjectStateLoader((_) async => reloadedState);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -233,6 +261,7 @@ void main() {
             projectExporter: _StaticProjectExporter(
               const ExportSuccess('C:/tmp/inline_export.zip'),
             ),
+            projectStateLoader: loader.call,
           ),
         ),
       ),
@@ -245,11 +274,51 @@ void main() {
 
     expect(
       find.text(
-          'ZIP eksporditud: C:/tmp/inline_export.zip. Uuendatud projektsiooni nägemiseks impordi projekt uuesti.'),
+          'ZIP eksporditud: C:/tmp/inline_export.zip.'),
+      findsOneWidget,
+    );
+    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(loader.callCount, 1);
+    expect(loader.lastDirectory, projectState.projectDirectory);
+    final markdown = tester.widget<Markdown>(find.byType(Markdown));
+    expect(markdown.data, 'Reloaded customer report');
+  });
+
+  testWidgets('reload failure after success keeps existing provider state',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+    final loader = _TrackingProjectStateLoader(
+      (_) async => throw StateError('reload failed'),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              const ExportSuccess('C:/tmp/inline_export.zip'),
+            ),
+            projectStateLoader: loader.call,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(
+      find.text(
+        'ZIP eksporditud: C:/tmp/inline_export.zip. Projekti uuesti laadimine ebaõnnestus; ava või impordi projekt uuesti, et näha uuendatud projektsiooni.',
+      ),
       findsOneWidget,
     );
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(loader.callCount, 1);
+    expect(loader.lastDirectory, projectState.projectDirectory);
   });
 
   testWidgets(

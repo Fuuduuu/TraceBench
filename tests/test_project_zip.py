@@ -157,6 +157,110 @@ class ProjectZipTests(unittest.TestCase):
             self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
             self.assertIn("known_facts.json does not match materialization output", validate_result.stdout + validate_result.stderr)
 
+    def test_validate_project_zip_passes_with_component_visual_placement_projection(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            placement_event = {
+                "schema_version": "1.0",
+                "event_id": "evt_000120",
+                "project_id": "prj_pelle_pv20_001",
+                "sequence": 120,
+                "created_at": "2026-05-27T10:00:00Z",
+                "actor": {"type": "user", "id": "tech_01"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.52,
+                    "center_y": 0.41,
+                    "rotation_deg": 7.5,
+                    "scale": 0.18,
+                    "template_id": "sot23_3",
+                },
+            }
+            with (project_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(placement_event, separators=(",", ":"), ensure_ascii=False) + "\n")
+
+            materialize_result = _run_tool(
+                [
+                    "tools/materialize_known_facts.py",
+                    str(project_dir / "events.jsonl"),
+                    str(project_dir / "known_facts.json"),
+                ]
+            )
+            self.assertEqual(
+                materialize_result.returncode,
+                0,
+                materialize_result.stdout + materialize_result.stderr,
+            )
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+
+            known_facts = json.loads((project_dir / "known_facts.json").read_text(encoding="utf-8"))
+            placements = known_facts.get("component_visual_placements", [])
+            self.assertEqual(len(placements), 1)
+            self.assertEqual(placements[0].get("status"), "user_confirmed_visual")
+            self.assertEqual(placements[0].get("source_event_id"), "evt_000120")
+
+    def test_project_zip_validation_rejects_stale_missing_component_visual_placements_projection(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            placement_event = {
+                "schema_version": "1.0",
+                "event_id": "evt_000120",
+                "project_id": "prj_pelle_pv20_001",
+                "sequence": 120,
+                "created_at": "2026-05-27T10:00:00Z",
+                "actor": {"type": "user", "id": "tech_01"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.52,
+                    "center_y": 0.41,
+                    "rotation_deg": 7.5,
+                    "scale": 0.18,
+                },
+            }
+            with (project_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(placement_event, separators=(",", ":"), ensure_ascii=False) + "\n")
+
+            materialize_result = _run_tool(
+                [
+                    "tools/materialize_known_facts.py",
+                    str(project_dir / "events.jsonl"),
+                    str(project_dir / "known_facts.json"),
+                ]
+            )
+            self.assertEqual(
+                materialize_result.returncode,
+                0,
+                materialize_result.stdout + materialize_result.stderr,
+            )
+
+            known_facts_path = project_dir / "known_facts.json"
+            known_facts = json.loads(known_facts_path.read_text(encoding="utf-8"))
+            known_facts.pop("component_visual_placements", None)
+            known_facts_path.write_text(json.dumps(known_facts, indent=2), encoding="utf-8")
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn(
+                "known_facts.json does not match materialization output",
+                validate_result.stdout + validate_result.stderr,
+            )
+
     def test_project_zip_validation_rejects_project_id_mismatch(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             good_zip = Path(tmpdir) / "good.zip"

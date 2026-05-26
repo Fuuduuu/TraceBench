@@ -926,6 +926,380 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         }
         self.assertFalse(traces.intersection(net_trace_ids))
 
+    def test_component_visual_placements_projection_is_top_level(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.4,
+                    "center_y": 0.3,
+                    "rotation_deg": 0,
+                    "scale": 0.2,
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        placements = data.get("component_visual_placements", [])
+        self.assertEqual(len(placements), 1)
+        self.assertEqual(placements[0].get("component_id"), "Q2")
+        self.assertEqual(placements[0].get("source_event_id"), "evt_000002")
+        self.assertEqual(placements[0].get("status"), "user_confirmed_visual")
+
+    def test_component_visual_placements_uses_latest_accepted_per_component(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.2,
+                    "center_y": 0.2,
+                    "rotation_deg": 0,
+                    "scale": 0.1,
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-27T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.7,
+                    "center_y": 0.6,
+                    "rotation_deg": 15,
+                    "width": 0.12,
+                    "height": 0.08,
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000004",
+                "project_id": "prj_test",
+                "sequence": 4,
+                "created_at": "2026-05-27T00:03:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "draft",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.1,
+                    "center_y": 0.1,
+                    "rotation_deg": 0,
+                    "scale": 0.05,
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        placements = data.get("component_visual_placements", [])
+        self.assertEqual(len(placements), 1)
+        placement = placements[0]
+        self.assertEqual(placement.get("source_event_id"), "evt_000003")
+        self.assertNotIn("scale", placement)
+        self.assertEqual(placement.get("width"), 0.12)
+        self.assertEqual(placement.get("height"), 0.08)
+
+    def test_component_visual_placements_photo_local_keeps_source_photo_id(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {
+                    "photo_id": "photo_top_backlight_001",
+                    "mode": "backlight",
+                    "path": "photos/top_backlight_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-27T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 120.0,
+                    "center_y": 85.0,
+                    "rotation_deg": -10,
+                    "scale": 1.1,
+                    "source_photo_id": "photo_top_backlight_001",
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement.get("coordinate_space"), "photo_local")
+        self.assertEqual(placement.get("source_photo_id"), "photo_top_backlight_001")
+
+    def test_component_visual_placements_board_normalized_has_no_source_photo_id(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "bottom",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 0.15,
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement.get("coordinate_space"), "board_normalized")
+        self.assertNotIn("source_photo_id", placement)
+
+    def test_component_visual_placements_template_id_is_projected_as_visual_metadata(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.3,
+                    "center_y": 0.6,
+                    "rotation_deg": 0,
+                    "scale": 0.2,
+                    "template_id": "sot23_3",
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement.get("template_id"), "sot23_3")
+
+    def test_component_visual_placements_do_not_create_electrical_or_fault_side_effects(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "footprint_marked_not_populated",
+                "status": "accepted",
+                "payload": {
+                    "footprint_id": "K1",
+                    "population_status": "not_populated",
+                    "allowed_in_fault_hypotheses": False,
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-27T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "unknown",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "width": 0.2,
+                    "height": 0.1,
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        self.assertEqual(data.get("nets"), [])
+        self.assertEqual(data.get("measurements"), [])
+        self.assertEqual(data.get("excluded_from_fault_candidates"), [{"footprint_id": "K1"}])
+
+    def test_component_visual_placement_is_kept_for_removed_component(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-27T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-27T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 0.2,
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-27T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        data = run_materialize_events(events)
+        self.assertEqual(len(data.get("component_visual_placements", [])), 1)
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("installation_status"), "removed")
+
+    def test_known_facts_schema_includes_component_visual_placements(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        placements = schema.get("properties", {}).get("component_visual_placements")
+        self.assertIsInstance(placements, dict)
+        item = placements.get("items", {})
+        required = set(item.get("required", []))
+        self.assertIn("component_id", required)
+        self.assertIn("coordinate_space", required)
+        self.assertIn("source_event_id", required)
+        self.assertIn("status", required)
+
     def test_pelle_photo_placeholder_materialized(self):
         data = run_materialize()
         self.assertEqual(data.get("suspect_regions", []), [])

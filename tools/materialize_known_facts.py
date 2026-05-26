@@ -105,6 +105,7 @@ def main() -> int:
     damage_regions: list[dict] = []
     suspect_regions: list[dict] = []
     visual_traces: list[dict] = []
+    component_visual_placements_by_component: dict[str, tuple[int, dict]] = {}
     excluded_from_fault_candidates: list[dict] = []
     project_id = _manifest_project_id(events_path)
     event_sequence_by_id: dict[str, int] = {}
@@ -259,6 +260,48 @@ def main() -> int:
             visual_traces.append(entry)
             continue
 
+        if event_type == "component_visual_placement_confirmed":
+            if event.get("status") != "accepted":
+                continue
+            actor = event.get("actor")
+            if not isinstance(actor, dict) or actor.get("type") != "user":
+                continue
+            if not isinstance(payload, dict):
+                continue
+            if not isinstance(event_id, str):
+                continue
+            component_id = payload.get("component_id")
+            if not isinstance(component_id, str) or not component_id:
+                continue
+
+            placement = {
+                "component_id": component_id,
+                "coordinate_space": payload.get("coordinate_space"),
+                "board_side": payload.get("board_side"),
+                "center_x": payload.get("center_x"),
+                "center_y": payload.get("center_y"),
+                "rotation_deg": payload.get("rotation_deg"),
+                "source_event_id": event_id,
+                "status": "user_confirmed_visual",
+            }
+            if "scale" in payload:
+                placement["scale"] = payload.get("scale")
+            else:
+                if "width" in payload:
+                    placement["width"] = payload.get("width")
+                if "height" in payload:
+                    placement["height"] = payload.get("height")
+            if "source_photo_id" in payload:
+                placement["source_photo_id"] = payload.get("source_photo_id")
+            if "template_id" in payload:
+                placement["template_id"] = payload.get("template_id")
+
+            placement_sequence = sequence if isinstance(sequence, int) else -1
+            previous = component_visual_placements_by_component.get(component_id)
+            if previous is None or placement_sequence >= previous[0]:
+                component_visual_placements_by_component[component_id] = (placement_sequence, placement)
+            continue
+
         if event_type == "footprint_marked_not_populated":
             entry = {
                 "footprint_id": payload.get("footprint_id"),
@@ -308,6 +351,14 @@ def main() -> int:
             continue
         # Other event types intentionally not materialized yet.
 
+    component_visual_placements = [
+        value[1]
+        for value in sorted(
+            component_visual_placements_by_component.values(),
+            key=lambda item: str(item[1].get("component_id", "")),
+        )
+    ]
+
     known = {
         "project_id": project_id,
         "components": components,
@@ -320,6 +371,8 @@ def main() -> int:
         "visual_traces": visual_traces,
         "excluded_from_fault_candidates": excluded_from_fault_candidates,
     }
+    if component_visual_placements:
+        known["component_visual_placements"] = component_visual_placements
     component_pin_index = {}
     for pin in pins:
         component_id = pin.get("component_id")

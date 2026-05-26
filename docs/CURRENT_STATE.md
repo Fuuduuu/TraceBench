@@ -3,12 +3,20 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
+- Current pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
+- Next recommended pass: `PASS_QUEUE_REVIEW_05_PASS`
 - Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_EVENT_PROJECTION_PASS` is implemented:
+  - `schemas/known_facts.schema.json` now allows optional top-level `component_visual_placements` with strict placement item shape and exactly one sizing mode (`scale` xor `width`+`height`).
+  - `tools/materialize_known_facts.py` now projects accepted human-confirmed `component_visual_placement_confirmed` events into `component_visual_placements`.
+  - projection includes `source_event_id` and `status: user_confirmed_visual`, preserves `scale` or `width/height`, and carries optional `source_photo_id` / `template_id` only when present.
+  - materializer selects latest accepted placement per `component_id` and keeps placement history in `events.jsonl` only.
+  - projection remains visual/documentation only and does not alter measurements, nets, fault candidates, electrical graph, component identity, pin mapping, or visual trace semantics.
+  - placement projection remains available even if component installation status is later marked `removed`.
+  - no changes were made to `schemas/events.schema.json` or `tools/validate_events_jsonl.py` in this pass.
 - `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS` is implemented:
   - `schemas/events.schema.json` now supports `component_visual_placement_confirmed` with strict payload shape and `additionalProperties: false`.
   - payload direction enforces required visual-placement geometry fields and exactly one sizing mode (`scale` xor `width`+`height`).

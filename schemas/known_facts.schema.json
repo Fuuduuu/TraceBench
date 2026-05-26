@@ -149,6 +149,81 @@
         "additionalProperties": true
       }
     },
+    "component_visual_placements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "component_id",
+          "coordinate_space",
+          "board_side",
+          "center_x",
+          "center_y",
+          "rotation_deg",
+          "source_event_id",
+          "status"
+        ],
+        "properties": {
+          "component_id": { "type": "string", "minLength": 1 },
+          "coordinate_space": { "enum": ["board_normalized", "photo_local"] },
+          "board_side": { "enum": ["top", "bottom", "unknown"] },
+          "center_x": { "type": "number" },
+          "center_y": { "type": "number" },
+          "rotation_deg": { "type": "number", "minimum": -180, "exclusiveMaximum": 180 },
+          "scale": { "type": "number", "exclusiveMinimum": 0 },
+          "width": { "type": "number", "exclusiveMinimum": 0 },
+          "height": { "type": "number", "exclusiveMinimum": 0 },
+          "source_photo_id": { "type": "string", "minLength": 1 },
+          "template_id": { "type": "string", "minLength": 1 },
+          "source_event_id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["user_confirmed_visual"] }
+        },
+        "allOf": [
+          {
+            "oneOf": [
+              {
+                "required": ["scale"],
+                "not": {
+                  "anyOf": [
+                    { "required": ["width"] },
+                    { "required": ["height"] }
+                  ]
+                }
+              },
+              {
+                "required": ["width", "height"],
+                "not": { "required": ["scale"] }
+              }
+            ]
+          },
+          {
+            "if": {
+              "properties": { "coordinate_space": { "const": "photo_local" } },
+              "required": ["coordinate_space"]
+            },
+            "then": {
+              "required": ["source_photo_id"],
+              "properties": {
+                "center_x": { "type": "number", "minimum": 0 },
+                "center_y": { "type": "number", "minimum": 0 },
+                "width": { "type": "number", "exclusiveMinimum": 0 },
+                "height": { "type": "number", "exclusiveMinimum": 0 }
+              }
+            },
+            "else": {
+              "not": { "required": ["source_photo_id"] },
+              "properties": {
+                "center_x": { "type": "number", "minimum": 0, "maximum": 1 },
+                "center_y": { "type": "number", "minimum": 0, "maximum": 1 },
+                "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+                "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
     "measurements": { "type": "array" },
     "nets": { "type": "array" },
     "excluded_from_fault_candidates": { "type": "array" }

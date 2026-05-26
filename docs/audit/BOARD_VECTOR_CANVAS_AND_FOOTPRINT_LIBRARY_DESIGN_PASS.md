@@ -49,3 +49,22 @@ Checks:
 - `py -3 tools\validate_all.py`
 - `git diff --name-only`
 - `git status --short --branch`
+
+## Pro audit small doc fixups (follow-up)
+
+Applied through `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`:
+
+1. Background photo helper boundary is explicit: photo pixels/opacity/alignment/overlay fitting are helper-only and cannot create project facts.
+2. Coordinate-space rules are explicit: electrical/identity facts remain coordinate-space agnostic; future human placement facts must explicitly declare coordinate space.
+3. Template naming cleaned to physical/package terms:
+   - `two_pin_axial`
+   - `two_pin_smd`
+   - `three_pin_smd_generic`
+   - `three_pin_through_hole_generic`
+4. Future confirmation-state pointer added:
+   - `placement_confirmed`
+   - `template_confirmed`
+   - `identity_confirmed`
+   - `pin_mapping_confirmed`
+   - `visual_trace_confirmed`
+   - `measured_electrical_confirmed`

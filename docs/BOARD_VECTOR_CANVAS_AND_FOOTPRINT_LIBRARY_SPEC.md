@@ -72,6 +72,8 @@ Rules:
   - toggle ON/OFF
   - adjustable opacity
 - Vector components also support adjustable opacity/transparency for overlay work.
+- Background photo/reference layer is helper-only visual context.
+- Photo pixels, opacity, alignment, and overlay fitting must not create component identity, placement, trace, measurement, net, or fault facts.
 
 ## 8. Footprint/template library model
 
@@ -96,7 +98,10 @@ Suggested V1 template families:
 - SOT packages (`sot23_3`, `sot23_5`, `sot223`)
 - SOIC/TSSOP (`soic_8`, `soic_14`, `soic_16`, parametric variants)
 - QFN/QFP/TQFP parametric families
-- diode/transistor generic packages
+- `two_pin_axial`
+- `two_pin_smd`
+- `three_pin_smd_generic`
+- `three_pin_through_hole_generic`
 - connectors/headers with configurable pin counts
 
 ## 9. Placement model (design semantics)
@@ -131,7 +136,8 @@ Confirmation workflow constraints:
 
 Mapping rule:
 
-- canonical facts are coordinate-space agnostic truth;
+- electrical and confirmed identity facts are coordinate-space agnostic truth.
+- human-confirmed placement facts, if later accepted by a dedicated event-model pass, must explicitly declare `coordinate_space`.
 - render systems may map between spaces but must not rewrite canonical evidence.
 
 ## 12. Customer report/export boundary
@@ -178,3 +184,10 @@ Deferred:
 - define the smallest safe future event path for human-confirmed visual placement facts
 - keep AI proposals non-canonical until explicit human confirmation
 - prevent any accidental promotion of visual proposals into electrical certainty
+- require explicit confirmation-state distinction for future flows:
+  - `placement_confirmed`
+  - `template_confirmed`
+  - `identity_confirmed`
+  - `pin_mapping_confirmed`
+  - `visual_trace_confirmed`
+  - `measured_electrical_confirmed`

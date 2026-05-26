@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`
+`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS | DOCS_SYNC | completed | Applied Pro-audit small doc fixups: helper-only photo boundary, coordinate-space clarification, package-only template naming cleanup, and explicit future confirmation-state split pointer. |
 | BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS | DOCS_SYNC / DESIGN_ONLY | completed | Formalized vector boardview + footprint library design with strict `unconfirmed_ai_proposal` boundary and evidence-safe export defaults. |
 | PROJECTION_STALE_UI_CODE_AUDIT_PASS | AUDIT_ONLY | completed | Code review accepted with nits; layout/content-flow issue deferred to small fixup. |
 | USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | completed | Projection refresh policy decision selected (POLICY_D export-time refresh). |
@@ -121,7 +122,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 |---|---|---|
 | BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS` is complete as docs/design-only and preserves protected evidence boundaries.
+`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS` is complete as docs-only clarification and preserves protected evidence boundaries.
 Next recommended pass is `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` to audit minimal event-model path for human-confirmed visual placement without promoting AI proposals to canonical facts.
 
 ## Deferred / not active
@@ -135,4 +136,4 @@ Next recommended pass is `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` to audit minim
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

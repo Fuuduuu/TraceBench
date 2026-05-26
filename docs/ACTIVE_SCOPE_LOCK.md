@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`
+`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`
 
 ## Goal
 
-Define a formal design/spec for a future boardview-like vector canvas and internal vector footprint library while preserving TraceBench evidence boundaries and protected surfaces.
+Apply Pro-audit small docs fixups for the board vector canvas design spec while preserving TraceBench evidence boundaries and protected surfaces.
 
 ## Allowed surfaces
 
@@ -60,6 +60,9 @@ Define a formal design/spec for a future boardview-like vector canvas and intern
 12. Vector component rendering supports adjustable opacity/transparency for practical overlay work.
 13. AI proposals use visually distinct reddish unconfirmed styling (ghosted/transparent + dashed + unconfirmed badge) and never claim electrical certainty.
 14. Customer-facing report/export default remains confirmed facts only; unconfirmed AI proposals are excluded unless a future explicitly scoped pass adds clearly labeled proposal export.
+15. Background/reference photo layer is helper-only; pixel data, opacity, alignment, and overlay fitting cannot create identity/placement/trace/measurement/net/fault facts.
+16. Electrical/identity facts are coordinate-space agnostic; future human-confirmed placement facts must carry explicit coordinate-space declaration if introduced.
+17. Future placement event-model work must separate confirmation states for placement/template/identity/pin-mapping/visual-trace/measured-electrical evidence.
 
 ## Validate
 

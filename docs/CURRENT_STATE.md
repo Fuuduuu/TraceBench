@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`
+- Current pass: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS`
 - Next recommended pass: `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS`
-- Docs drift countdown: `3`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
@@ -17,6 +17,11 @@ Branch: main
   - footprint/package templates remain separate from confirmed electrical identity and prefer package naming (`sot23_3`, `soic_8`, `chip_0805`).
   - trace color/category is visual metadata only unless backed by accepted measurement/source evidence.
   - customer report/export default stays evidence-safe: confirmed facts only, unconfirmed AI proposals excluded unless future explicit scope allows labeled proposal export.
+- `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_DOC_FIXUP_PASS` applies Pro-audit doc clarifications:
+  - background photo helper layer is visual-only context; overlay/alignment/opacity/pixels cannot create identity/placement/trace/measurement/net/fault facts.
+  - coordinate model explicitly separates coordinate-space-agnostic electrical/identity facts from future coordinate-tagged human placement facts.
+  - template naming is package/physical-form based (`two_pin_axial`, `two_pin_smd`, `three_pin_smd_generic`, `three_pin_through_hole_generic`) without electrical identity claims.
+  - future placement event-model audit must explicitly distinguish placement/template/identity/pin-mapping/visual-trace/measured-electrical confirmation states.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` is accepted and limited to `measurement_recorded` only.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` appends one event to local unpacked `events.jsonl`, preserves prior event lines, and flags projection as stale/refresh required in UI state.
 - `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_AUDIT_PASS` found duplicate-save risk in Measurement Record UI:

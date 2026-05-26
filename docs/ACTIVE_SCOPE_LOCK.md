@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+`BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS`
 
 ## Goal
 
-Lock the future schema/validator/materializer direction for human-confirmed visual placement events before any implementation.
+Refine roadmap routing by splitting the previously broad placement schema implementation into smaller safe implementation passes, without changing runtime/schema/tool behavior in this pass.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Lock the future schema/validator/materializer direction for human-confirmed visu
 - `docs/AUDIT_INDEX.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
-- `docs/audit/BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS.md`
-- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` (optional, only if strictly needed)
+- `docs/audit/BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS.md`
 
 ## Forbidden surfaces
 
@@ -37,77 +36,51 @@ Lock the future schema/validator/materializer direction for human-confirmed visu
 - schema implementation
 - validator implementation
 - materializer implementation
-- event-writing implementation
-- component editing UI
 - renderer implementation
-- camera/OCR/CV
+- event-writing UI
+- component editing UI
 - AI proposal persistence
-- AI diagnostics/fault probability
-- source search
-- KiCad/boardview import/export
-- BLE/cloud
+- camera/OCR/CV
 
 ## Scope decisions to lock
 
-1. Audit verdict is accepted: `SCHEMA_DIRECTION_APPROVED_WITH_CHANGES`.
-2. Future schema direction uses dedicated event type: `component_visual_placement_confirmed`; existing event types must not be overloaded.
-3. Future concept separation remains explicit:
-   - `component_template_assigned_confirmed`
-   - `component_identity_confirmed`
-   - `component_pin_mapping_confirmed`
-   - `visual_trace_confirmed`
-   - measured electrical remains `measurement_recorded` -> `net_connection_confirmed`.
-4. Required future placement payload direction:
-   - `component_id`
-   - `coordinate_space`
-   - `board_side`
-   - `center_x`
-   - `center_y`
-   - `rotation_deg`
-   - one sizing mode: `scale` or (`width` + `height`)
-   - optional: `template_id`, `template_assignment_event_id`, `source_photo_id` (when `photo_local`), `notes`.
-5. Placement confirmation is visual/documentation fact only and must not confirm identity/electrical/net/measurement/fault/repair conclusions.
-6. AI proposals remain `unconfirmed_ai_proposal` and non-canonical until explicit human confirmation.
-7. Canonical placement must include `coordinate_space`; allowed future canonical coordinate spaces:
-   - `board_normalized`
-   - `photo_local` only with valid `source_photo_id`.
-8. `graph_layout` is non-canonical render state and must be rejected as canonical placement coordinate space.
-9. Future schema direction for `schemas/events.schema.json`:
-   - add `component_visual_placement_confirmed` to `event_type` enum
-   - add strict payload `$defs`
-   - `additionalProperties: false`
-   - enforce `coordinate_space` enum and `board_side` enum
-   - enforce numeric coordinate/size/rotation constraints where practical
-   - encode dependency: `photo_local` requires valid `source_photo_id`.
-10. Future validator direction for `tools/validate_events_jsonl.py`:
-   - reject `actor.type == "ai"` for placement confirmation
-   - reject `actor.type == "system"` unless a future dedicated migration scope explicitly allows it
-   - whitelist coordinate spaces
+1. Pro verdict recorded: `READY_WITH_IMPLEMENTATION_SPLIT`.
+2. Broad next-pass routing to `BOARD_PLACEMENT_EVENT_SCHEMA_PASS` is replaced by:
+   - next: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
+   - follow-up: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`
+3. `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS` scope intent:
+   - `schemas/events.schema.json`
+   - `tools/validate_events_jsonl.py`
+   - `tests/test_validate_events_jsonl.py`
+   - `tests/test_schema_samples.py` only if required
+4. `BOARD_PLACEMENT_EVENT_PROJECTION_PASS` scope intent:
+   - `schemas/known_facts.schema.json`
+   - `tools/materialize_known_facts.py`
+   - `tests/test_materialize_known_facts.py`
+   - `tests/test_project_zip.py`
+5. First implementation split keeps event name: `component_visual_placement_confirmed`.
+6. First implementation split lock expectations:
+   - require `actor.type == user`
+   - reject `actor.type` in `{ai, system, import}`
+   - require prior `component_created` for `component_id`
+   - reject forward component references
    - reject `graph_layout`
-   - enforce `board_normalized` ranges
-   - require valid prior `photo_added` reference for `photo_local`
-   - require existing `component_id`
-   - enforce no forward references unless explicitly accepted
-   - prevent identity/net/measurement side effects from placement confirmation.
-11. Future materializer direction for `tools/materialize_known_facts.py`:
-   - materialize placement as visual/documentation fact only
-   - no effects on nets/measurements/fault candidates/electrical graph
-   - default to latest accepted placement per component
-   - retain history in `events.jsonl`
-   - keep historical placement visible even if component is removed (non-electrical).
-12. Future projection recommendation in `known_facts.json` is top-level `component_visual_placements` to keep visual placement separate from identity/electrical facts.
-13. Future test requirements are locked:
-   - schema accept/reject cases for placement payload
-   - validator reject AI actor and `graph_layout`
-   - validator coordinate and `source_photo_id` checks
-   - validator unknown `component_id` checks
-   - materializer no identity/net side effects
-   - ZIP validation remains passing with placement projection
-   - placement has no measured-net/fault-candidate effects
-   - removal/history behavior is explicit and tested.
-14. Next pass recommendation after accepting this lock:
-   - `BOARD_PLACEMENT_EVENT_SCHEMA_PASS`
-   - optional Pro pre-implementation audit only if governance requires extra schema/tool precheck.
+   - `board_normalized` uses 0..1 bounds
+   - `photo_local` requires prior valid `photo_added` `source_photo_id`
+   - reject `source_photo_id` when `coordinate_space == board_normalized`
+   - enforce exactly one sizing mode: `scale` xor (`width` + `height`)
+   - defer `template_assignment_event_id` from first implementation split
+   - allow optional `template_id` as opaque string only
+7. Deferred to projection split:
+   - known-facts shape updates
+   - materializer projection behavior
+   - placement ZIP regression coverage tied to projection outputs
+8. Safety boundaries remain unchanged:
+   - no identity confirmation
+   - no electrical/net confirmation
+   - no AI proposal canonicalization
+   - no `graph_layout` canonical coordinate
+   - no `visual_trace` promotion.
 
 ## Validate
 

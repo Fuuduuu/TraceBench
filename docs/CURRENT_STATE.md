@@ -3,12 +3,18 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_PASS`
+- Current pass: `BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`
 - Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_EVENT_SCHEMA_SPLIT_ROUTING_PASS` records Pro verdict `READY_WITH_IMPLEMENTATION_SPLIT` and locks implementation split routing:
+  - next implementation pass: `BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`.
+  - follow-up implementation pass: `BOARD_PLACEMENT_EVENT_PROJECTION_PASS`.
+  - known-facts projection/materializer work is deferred to projection pass.
+  - schema/validator split keeps `component_visual_placement_confirmed` direction and enforces user-only confirmation in V1.
+  - schema/validator split excludes projection behavior, known-facts schema changes, and ZIP tooling changes.
 - `BOARD_PLACEMENT_EVENT_SCHEMA_AUDIT_PASS` verdict is accepted: `SCHEMA_DIRECTION_APPROVED_WITH_CHANGES`.
 - `BOARD_PLACEMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` locks future schema/tool/materializer expectations:
   - future canonical placement event direction is `component_visual_placement_confirmed`.

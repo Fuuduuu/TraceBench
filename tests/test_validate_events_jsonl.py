@@ -1783,6 +1783,266 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("must reference prior component_created", result.stdout + result.stderr)
 
+    def test_component_visual_placement_rejected_component_created_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior component_created", result.stdout + result.stderr)
+
+    def test_component_visual_placement_rejected_component_created_status_draft(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "draft",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior component_created", result.stdout + result.stderr)
+
+    def test_component_visual_placement_photo_local_rejected_photo_added_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "rejected",
+                "payload": {
+                    "photo_id": "photo_top_001",
+                    "mode": "normal",
+                    "path": "photos/top_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 20,
+                    "center_y": 30,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "source_photo_id": "photo_top_001",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior photo_added", result.stdout + result.stderr)
+
+    def test_component_visual_placement_photo_local_rejected_photo_added_status_draft(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "draft",
+                "payload": {
+                    "photo_id": "photo_top_001",
+                    "mode": "normal",
+                    "path": "photos/top_001.jpg",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-05-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "photo_local",
+                    "board_side": "top",
+                    "center_x": 20,
+                    "center_y": 30,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                    "source_photo_id": "photo_top_001",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior photo_added", result.stdout + result.stderr)
+
+    def test_component_visual_placement_component_updated_alone_does_not_satisfy_component_existence(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_updated",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior component_created", result.stdout + result.stderr)
+
+    def test_component_visual_placement_component_marked_unknown_alone_does_not_satisfy_component_existence(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-05-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_marked_unknown",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-05-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_visual_placement_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "component_id": "Q2",
+                    "coordinate_space": "board_normalized",
+                    "board_side": "top",
+                    "center_x": 0.5,
+                    "center_y": 0.5,
+                    "rotation_deg": 0,
+                    "scale": 1.0,
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior component_created", result.stdout + result.stderr)
+
     def test_component_visual_placement_component_forward_reference_rejected(self):
         events = [
             {

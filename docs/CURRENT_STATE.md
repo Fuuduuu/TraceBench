@@ -3,12 +3,22 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`
+- Current pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`
+- Next recommended pass: `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS` is completed:
+  - `tools/validate_events_jsonl.py` placement reference indexes now register only prior accepted create-events for placement provenance checks:
+    - `component_visual_placement_confirmed.component_id` resolves only against prior accepted `component_created`.
+    - `photo_local.source_photo_id` resolves only against prior accepted `photo_added`.
+  - non-accepted create-events (`draft` / `rejected`) no longer satisfy placement reference existence.
+  - `component_updated` and `component_marked_unknown` do not establish placement component existence.
+  - forward reference rejection behavior is preserved.
+  - placement after `remove_component` remains accepted.
+  - placement remains visual/documentation-only; no identity/net/measurement/fault side effects were introduced.
+  - no schema, materializer, known-facts projection, ZIP contract, or Flutter/runtime behavior changes were made.
 - `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS` is completed:
   - records `BOARD_PLACEMENT_STATUS_SEMANTICS_AUDIT_PASS` verdict: `FIX_NEEDED_PLACEMENT_REFERENCE_STATUS`.
   - locks a narrow validator-only follow-up: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`.

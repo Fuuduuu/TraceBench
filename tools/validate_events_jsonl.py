@@ -915,6 +915,7 @@ def main() -> None:
     for _, event in events:
         event_id = event.get("event_id")
         event_type = event.get("event_type")
+        event_status = event.get("status")
         if isinstance(event_id, str) and _is_event_id(event_id):
             all_event_ids.add(event_id)
         if event_type == "component_created":
@@ -922,7 +923,7 @@ def main() -> None:
             sequence = event.get("sequence")
             if isinstance(component_id, str):
                 component_ids.add(component_id)
-                if isinstance(sequence, int) and event_id:
+                if event_status == "accepted" and isinstance(sequence, int) and event_id:
                     component_sequence_by_id[component_id] = sequence
         if event_type == "pin_defined":
             pin_id = event.get("payload", {}).get("pin_id")
@@ -933,7 +934,7 @@ def main() -> None:
             sequence = event.get("sequence")
             if isinstance(photo_id, str):
                 photo_ids.add(photo_id)
-                if isinstance(sequence, int):
+                if event_status == "accepted" and isinstance(sequence, int):
                     photo_sequence_by_id[photo_id] = sequence
         if event_type == "measurement_recorded" and isinstance(event_id, str):
             measurement_event_ids.add(event_id)

@@ -3,12 +3,20 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS`
-- Next recommended pass: `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS`
-- Docs drift countdown: `4`
+- Current pass: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`
+- Next recommended pass: `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS` is accepted as design-only scope:
+  - boardview target is vector-first with optional background photo helper layer (toggle + opacity).
+  - dark/light view modes are required in the design baseline.
+  - every AI-placed/suggested object starts as `status = "unconfirmed_ai_proposal"`, styled as visibly unconfirmed, and remains non-canonical until human confirmation.
+  - human confirmation is one object at a time; no "confirm all AI suggestions" flow in initial design.
+  - footprint/package templates remain separate from confirmed electrical identity and prefer package naming (`sot23_3`, `soic_8`, `chip_0805`).
+  - trace color/category is visual metadata only unless backed by accepted measurement/source evidence.
+  - customer report/export default stays evidence-safe: confirmed facts only, unconfirmed AI proposals excluded unless future explicit scope allows labeled proposal export.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` is accepted and limited to `measurement_recorded` only.
 - `FLUTTER_EVENT_WRITE_MEASUREMENT_PASS` appends one event to local unpacked `events.jsonl`, preserves prior event lines, and flags projection as stale/refresh required in UI state.
 - `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_SCOPE_AUDIT_PASS` found duplicate-save risk in Measurement Record UI:

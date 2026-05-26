@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS`
+`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS | DOCS_SYNC / DESIGN_ONLY | completed | Formalized vector boardview + footprint library design with strict `unconfirmed_ai_proposal` boundary and evidence-safe export defaults. |
 | PROJECTION_STALE_UI_CODE_AUDIT_PASS | AUDIT_ONLY | completed | Code review accepted with nits; layout/content-flow issue deferred to small fixup. |
 | USER_DECISION_PASS | DOCS_SYNC / DECISION_ONLY | completed | Projection refresh policy decision selected (POLICY_D export-time refresh). |
 | PASS_QUEUE_REVIEW_03_PASS | DOCS_SYNC | completed | Queue-review and routing validation after measurement-write ledger fixup. |
@@ -111,17 +112,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_PASS` is complete and validated.
-Next recommended pass is `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS` for narrow verification of duplicate-submit guard behavior and boundaries.
+`BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS` is complete as docs/design-only and preserves protected evidence boundaries.
+Next recommended pass is `BOARD_PLACEMENT_EVENT_MODEL_AUDIT_PASS` to audit minimal event-model path for human-confirmed visual placement without promoting AI proposals to canonical facts.
 
 ## Deferred / not active
 
@@ -134,4 +135,4 @@ Next recommended pass is `MEASUREMENT_SAVE_DOUBLE_SUBMIT_GUARD_CODE_AUDIT_PASS` 
 
 ## Docs drift countdown
 
-Current countdown: 4
+Current countdown: 3

@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_12_PASS`
+`MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow compatibility fix scope for measurement writer event_id mismatch (`evt_flutter_*` vs `^evt_[0-9]{6}$`), with schema/validator format as source of truth and no migration/schema/validator changes allowed in the fix pass. |
 | DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | completed | Required docs drift cleanup after registry audit closeout: align queue/state/lock/index and stale spec routing; preserve evidence boundaries; route next to renderer scope-lock only. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` from Pro+Claude second-review result with final verdict `PASS_WITH_NITS`; confirm registry skeleton remains metadata/model/const-only and route next by docs-drift policy. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Closed by second-review evidence and recorded through `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`; no additional code/test/schema/tool changes required. |
@@ -136,17 +137,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS | FLUTTER_PASS | recommended |
 
-`DOCS_DRIFT_MINI_CLEANUP_12_PASS` is completed.
-Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` to lock renderer read-only boundaries before any canvas/UI implementation.
+`MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS` is completed.
+Next recommended pass is `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS` to make Dart measurement writes schema/validator-compatible without changing schema/validator format or rewriting historical events.
 
 ## Deferred / not active
 

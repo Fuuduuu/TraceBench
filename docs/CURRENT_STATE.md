@@ -3,12 +3,19 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_12_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- Current pass: `MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS`
+- Next recommended pass: `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`
 - Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS` is completed:
+  - records high-severity finding `F01` from `CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS`: Dart measurement writer currently emits event IDs like `evt_flutter_*` while schema/validator require `^evt_[0-9]{6}$`.
+  - locks next fix pass to `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`.
+  - locks source of truth for this fix to existing schema/validator event-id format (`schemas/events.schema.json` + `tools/validate_events_jsonl.py`).
+  - explicitly forbids schema/validator format changes in the fix pass.
+  - explicitly forbids historical event rewrite or migration in the fix pass.
+  - requires regression tests proving Dart-written measurement events are validator-compatible.
 - `DOCS_DRIFT_MINI_CLEANUP_12_PASS` is completed:
   - confirms `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` and `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` are accepted and coherently routed.
   - confirms registry remains app/library metadata only (not canonical project facts) and `template_id` remains non-identity/non-electrical proof.

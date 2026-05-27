@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`
+`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` from Pro+Claude second-review result with final verdict `PASS_WITH_NITS`; confirm registry skeleton remains metadata/model/const-only and route next by docs-drift policy. |
+| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Closed by second-review evidence and recorded through `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`; no additional code/test/schema/tool changes required. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS | FLUTTER_PASS | completed | Implement minimal internal Dart const footprint library skeleton (`lib/shared/footprints/**`) with immutable metadata models, locked V1 template registry, and unit tests; no renderer/UI/schema/tool/ZIP/event-writing changes. |
 | VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock first implementation boundary after `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS`: choose minimal internal registry-first implementation (`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`), align unknown fallback V1 list, preserve evidence boundaries, and keep renderer/UI/AI proposal persistence deferred. |
 | VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Re-audit after fixups confirms spec is implementation-ready; remaining nit was high-level unknown fallback list alignment. |
@@ -133,17 +135,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS | AUDIT_ONLY | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS | AUDIT_ONLY | recommended |
+| DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | recommended |
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` is completed.
-Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` to verify implementation boundaries and model correctness before any renderer/UI scope expansion.
+`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` is completed.
+Next recommended pass is `DOCS_DRIFT_MINI_CLEANUP_12_PASS` because docs drift countdown is `0`.
 
 ## Deferred / not active
 

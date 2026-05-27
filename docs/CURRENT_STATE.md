@@ -3,12 +3,21 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_12_PASS`
 - Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` is completed:
+  - closes out `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` using Pro + Claude second-review result with final verdict `PASS_WITH_NITS`.
+  - accepts footprint registry skeleton as metadata/model/const-registry-only scope with no renderer/UI, schema/tool/test/ZIP/event/projection changes and no AI proposal persistence.
+  - confirms V1 template set remains present with acceptable identity leakage guardrails and acceptable `unknown_rect` zero-pin fallback.
+  - records resolved nits:
+    - invalid pin-count guard tests exist,
+    - `sot23_3` display name/description remain package/geometry-only.
+  - records one non-blocking note: future renderer/polish pass may strengthen `hit_test_shape` bounds-consistency tests if needed.
+  - routes next pass to `DOCS_DRIFT_MINI_CLEANUP_12_PASS` because docs drift countdown is `0`.
 - `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` is completed:
   - adds `lib/shared/footprints/footprint_models.dart` with immutable const-friendly footprint metadata model classes only.
   - adds `lib/shared/footprints/vector_footprint_library.dart` with const V1 template registry:

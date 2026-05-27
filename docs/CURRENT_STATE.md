@@ -3,12 +3,38 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`
-- Docs drift countdown: `1`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` is completed:
+  - adds `lib/shared/footprints/footprint_models.dart` with immutable const-friendly footprint metadata model classes only.
+  - adds `lib/shared/footprints/vector_footprint_library.dart` with const V1 template registry:
+    - `unknown_rect`
+    - `unknown_2pin`
+    - `unknown_3pin`
+    - `unknown_multi_pin`
+    - `chip_0402`
+    - `chip_0603`
+    - `chip_0805`
+    - `chip_1206`
+    - `two_pin_smd`
+    - `two_pin_axial`
+    - `three_pin_smd_generic`
+    - `three_pin_through_hole_generic`
+    - `sot23_3`
+    - `sot23_5`
+    - `sot223`
+    - `soic_8`
+    - `soic_14`
+    - `soic_16`
+    - `header_1xn`
+    - `header_2xn`
+  - preserves boundary: metadata-only templates; no renderer/UI/editor, no schema/tool/ZIP changes, no event/projection mutation.
+  - adds `test/unit/vector_footprint_library_test.dart` coverage for V1 IDs, uniqueness, required fields, identity-leakage guardrails, unknown fallback semantics, coordinate consistency, pin-anchor geometric-only boundary, metadata-only renderer fields, and renderer-class absence.
+  - routes next pass to `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS`.
 - `VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS` is completed:
   - records `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` verdict as `PASS_WITH_NITS` and confirms no blocker for implementation scope lock.
   - locks first implementation step to a minimal internal footprint-registry skeleton pass (not renderer/UI work).

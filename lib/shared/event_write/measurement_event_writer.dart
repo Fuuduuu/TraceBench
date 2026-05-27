@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
@@ -51,26 +50,19 @@ class MeasurementEventWriter {
     String Function()? eventIdGenerator,
     String Function()? measurementIdGenerator,
     DateTime Function()? now,
-  })  : _eventIdGenerator = eventIdGenerator ?? _defaultEventIdGenerator,
+  })  : _eventIdGenerator = eventIdGenerator,
         _measurementIdGenerator =
             measurementIdGenerator ?? _defaultMeasurementIdGenerator,
         _now = now ?? DateTime.now;
 
   static const String _eventsFileName = 'events.jsonl';
-  static const String _validEventIdPrefix = 'evt_flutter_';
   static const String _createdAtPattern =
       r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$';
+  static final RegExp _validEventIdPattern = RegExp(r'^evt_[0-9]{6}$');
 
-  final String Function() _eventIdGenerator;
+  final String Function()? _eventIdGenerator;
   final String Function() _measurementIdGenerator;
   final DateTime Function() _now;
-
-  static String _defaultEventIdGenerator() {
-    final random = Random();
-    final timestamp = DateTime.now().toUtc().toIso8601String();
-    final shortRandom = random.nextInt(100000).toString().padLeft(5, '0');
-    return '${_validEventIdPrefix}${timestamp}_$shortRandom';
-  }
 
   static String _defaultMeasurementIdGenerator() {
     return 'M${DateTime.now().toUtc().millisecondsSinceEpoch}';
@@ -90,8 +82,11 @@ class MeasurementEventWriter {
 
     final eventsFile = File('$projectDirectory/$_eventsFileName');
     final existing = await _loadExistingEvents(eventsFile);
-    final eventId = _generateUniqueEventId(existing.eventIds);
     final sequence = _nextSequence(existing.sequences);
+    final eventId = _generateUniqueEventId(
+      existing.eventIds,
+      sequence: sequence,
+    );
     final measurementId = _generateMeasurementId(existing.measurementIds);
 
     final envelope = _buildMeasurementEvent(
@@ -270,20 +265,33 @@ class MeasurementEventWriter {
     return max + 1;
   }
 
-  String _generateUniqueEventId(Set<String> existingEventIds) {
-    for (var attempt = 0; attempt < 25; attempt++) {
-      final eventId = _eventIdGenerator();
-      if (!eventId.startsWith(_validEventIdPrefix)) {
-        throw const MeasurementWriteException(
-          'event_id generator produced an invalid prefix.',
-        );
+  String _generateUniqueEventId(
+    Set<String> existingEventIds, {
+    required int sequence,
+  }) {
+    final injectedGenerator = _eventIdGenerator;
+    if (injectedGenerator != null) {
+      for (var attempt = 0; attempt < 25; attempt++) {
+        final eventId = injectedGenerator().trim();
+        if (!_validEventIdPattern.hasMatch(eventId)) {
+          continue;
+        }
+        if (!existingEventIds.contains(eventId)) {
+          return eventId;
+        }
       }
+    }
+
+    var candidate = sequence;
+    while (candidate <= 999999) {
+      final eventId = 'evt_${candidate.toString().padLeft(6, '0')}';
       if (!existingEventIds.contains(eventId)) {
         return eventId;
       }
+      candidate += 1;
     }
     throw const MeasurementWriteException(
-      'Could not generate a unique event_id after repeated attempts.',
+      'Could not generate a unique schema-compatible event_id.',
     );
   }
 
@@ -361,7 +369,7 @@ class MeasurementEventWriter {
     }
 
     final eventId = event['event_id'];
-    if (eventId is! String || !eventId.startsWith(_validEventIdPrefix)) {
+    if (eventId is! String || !_validEventIdPattern.hasMatch(eventId)) {
       throw const MeasurementWriteException('Event id format is invalid.');
     }
     if (eventIdSet.contains(eventId)) {

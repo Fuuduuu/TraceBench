@@ -3,12 +3,19 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS`
-- Next recommended pass: `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`
+- Current pass: `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 - Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS` is completed:
+  - updates Dart `MeasurementEventWriter` default event-id generation to schema/validator-compatible IDs matching `^evt_[0-9]{6}$`.
+  - default generation is now sequence-based (`evt_000001`, `evt_000002`, ...), preserving local append uniqueness.
+  - preserves measurement event semantics: no changes to `event_type`, `status`, `actor`, `payload`, `created_at`, `sequence`, or known-facts/projection behavior.
+  - does not change schema or validator format.
+  - does not rewrite historical `evt_flutter_*` events and does not introduce migration.
+  - adds unit coverage for schema-compatible default IDs, sequence mapping, distinct IDs across multiple appends, seam-preservation for injected generator, and explicit default-path non-emission of `evt_flutter_*`.
 - `MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS` is completed:
   - records high-severity finding `F01` from `CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS`: Dart measurement writer currently emits event IDs like `evt_flutter_*` while schema/validator require `^evt_[0-9]{6}$`.
   - locks next fix pass to `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`.

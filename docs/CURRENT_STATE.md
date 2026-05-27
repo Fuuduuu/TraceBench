@@ -3,12 +3,32 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
-- Docs drift countdown: `8`
+- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
+- Next recommended pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
+- Docs drift countdown: `7`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` is completed:
+  - adds first V1 read-only board canvas shell route/screen only.
+  - adds `/project/board-canvas` route with `BoardCanvasScreen`.
+  - implements shell-only empty states:
+    - no project: `Open a project to view its board.`
+    - no components: `No components recorded for this project.`
+    - components without placements: `No confirmed visual placements yet.` + read-only support text.
+  - includes required status chrome text: `renderer writes: none`.
+  - keeps screen strictly read-only:
+    - no event-writing path usage,
+    - no canonical fact mutation,
+    - no Project ZIP mutation,
+    - no board/view artifact creation.
+  - keeps all rendering-heavy surfaces deferred:
+    - no `CustomPainter`,
+    - no placement/trace/measurement/footprint rendering,
+    - no inspector,
+    - no coordinate-math/photo-local mapping rendering,
+    - no AI/edit/save/export affordances.
+  - adds widget/source guard coverage in `test/widget/board_canvas_screen_test.dart` for route load, empty states, CTA absence, action-label absence, no writer usage, no forbidden artifact-path usage, and no drawing/raw-JSON parsing APIs.
 - `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS` is completed:
   - records Claude independent renderer-readiness audit verdict: `PASS_WITH_NITS`.
   - locks first renderer implementation pass to `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` only.

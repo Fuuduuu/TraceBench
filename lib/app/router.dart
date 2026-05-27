@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/events/screens/events_viewer_screen.dart';
 import '../features/board_graph/screens/board_graph_screen.dart';
+import '../features/board_canvas/screens/board_canvas_screen.dart';
 import '../features/known_facts/screens/component_list_screen.dart';
 import '../features/known_facts/screens/known_facts_viewer_screen.dart';
 import '../features/known_facts/screens/measurement_list_screen.dart';
@@ -70,6 +71,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'graph',
                 name: 'board-graph',
                 builder: (_, __) => const BoardGraphScreen(),
+              ),
+              GoRoute(
+                path: 'board-canvas',
+                name: 'board-canvas',
+                builder: (_, __) => const BoardCanvasScreen(),
               ),
               GoRoute(
                 path: 'known-facts',

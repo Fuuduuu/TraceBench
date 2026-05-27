@@ -3,12 +3,26 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS`
-- Docs drift countdown: `0`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS` is completed:
+  - applies audit-requested wording hardening for identity leakage in human-facing template text fields (`template_id`, `display_name`, `description`, `package_family`, accessibility labels, style labels).
+  - adds explicit unknown fallback policy with `unknown_rect`, `unknown_2pin`, `unknown_3pin`, and `unknown_multi_pin`.
+  - locks template-local coordinate convention:
+    - normalized template-local units,
+    - default origin at geometric center,
+    - `x` rightward,
+    - `y` downward,
+    - shared coordinate frame across bbox/anchors/orientation/hit-test fields.
+  - tightens semantics for `origin`, `bounding_box`, `pin_count_rules`, `allowed_variants`, `default_style_tokens`, `lod_hints`, and `hit_test_shape`.
+  - clarifies template pin anchors are geometric-only and never create `pin_defined` facts.
+  - clarifies variant relationship constraints (bbox/extents/label-anchor/determinism/template-identity separation).
+  - expands implementation test expectations for naming/identity neutrality/unknown fallback presence/coordinate consistency/non-evidence metadata constraints.
+  - routes next pass to `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` before implementation scope lock.
 - `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` is completed:
   - formal footprint library specification is added in `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`.
   - template model is locked as package/geometry-only and explicitly separated from identity/electrical/pin-mapping/fault truth.

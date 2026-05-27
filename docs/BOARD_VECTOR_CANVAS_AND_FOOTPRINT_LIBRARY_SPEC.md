@@ -33,6 +33,8 @@ Locked before any renderer/UI implementation:
 - Formal footprint/template contract is defined in `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`.
 - Required template fields, pin-anchor model, and variant parameter model are specified there.
 - V1 template set, deferred families, and forbidden identity-leaking names are locked there.
+- Human-facing identity-leakage guardrails and unknown fallback template policy are locked there.
+- Template-local coordinate frame/origin/axis/unit convention is locked there.
 - This board-vector document remains the higher-level boardview/AI-boundary design surface.
 
 ## 3. Hard evidence boundaries
@@ -218,7 +220,7 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS` (AUDIT_ONLY):
+`VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` (AUDIT_ONLY):
 
 - audit `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md` for consistency with scope lock and evidence-floor boundaries.
 - verify package-vs-identity separation remains explicit across boardview documents.

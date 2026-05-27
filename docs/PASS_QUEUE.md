@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
+`MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | completed | Materializer now enforces accepted-only domain projection policy and accepted-only project_id fallback semantics without schema/validator/ZIP/runtime changes. |
 | VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Normalize validator reference provenance to accepted-source semantics for component/photo/measurement/pin domain references while preserving audit-metadata reference behavior and placement visual boundary. |
 | GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock global event.status policy and split sequencing after audit: accepted-only domain facts/reference direction, validator normalization first, materializer policy second, regression/fixture follow-up only if impact requires. |
 | BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Restrict placement provenance reference indexes to prior accepted `component_created` / `photo_added` for `component_visual_placement_confirmed`; add validator tests for rejected/draft create-events and non-creator component events. |
@@ -123,17 +124,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | recommended |
+| STATUS_SEMANTICS_REGRESSION_PASS | TOOLS_PASS / QA_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | recommended |
+| STATUS_SEMANTICS_REGRESSION_PASS | TOOLS_PASS / QA_PASS | recommended |
 
-`VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` is completed and aligns validator domain reference provenance with accepted-source policy while preserving audit-metadata reference behavior.
-Next recommended pass is `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS` to align materializer projection side effects with the same accepted-only policy direction.
+`MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS` is completed and aligns materializer projection behavior with accepted-only domain policy.
+Next recommended pass is `STATUS_SEMANTICS_REGRESSION_PASS` to audit/validate post-policy regression impact and determine whether fixture/ZIP follow-up scope is required.
 
 ## Deferred / not active
 

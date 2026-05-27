@@ -77,7 +77,8 @@ def main() -> int:
         return 2
 
     raw_events = _load_events(events_path)
-    project_id = _manifest_project_id(events_path)
+    manifest_project_id = _manifest_project_id(events_path)
+    project_id = manifest_project_id
 
     if not raw_events:
         known = {
@@ -107,16 +108,25 @@ def main() -> int:
     visual_traces: list[dict] = []
     component_visual_placements_by_component: dict[str, tuple[int, dict]] = {}
     excluded_from_fault_candidates: list[dict] = []
-    project_id = _manifest_project_id(events_path)
+    project_id = manifest_project_id
+    accepted_project_id_locked = project_id != "unknown"
     event_sequence_by_id: dict[str, int] = {}
     measurement_by_event: dict[str, dict] = {}
 
     for event in raw_events:
-        project_id = event.get("project_id", project_id)
-        payload = event.get("payload", {})
-        event_type = event.get("event_type")
         event_id = event.get("event_id")
         sequence = event.get("sequence")
+        if event.get("status") != "accepted":
+            continue
+
+        if not accepted_project_id_locked:
+            event_project_id = event.get("project_id")
+            if isinstance(event_project_id, str) and event_project_id.strip():
+                project_id = event_project_id.strip()
+                accepted_project_id_locked = True
+
+        payload = event.get("payload", {})
+        event_type = event.get("event_type")
         if isinstance(event_id, str) and isinstance(sequence, int):
             event_sequence_by_id[event_id] = sequence
 
@@ -261,8 +271,6 @@ def main() -> int:
             continue
 
         if event_type == "component_visual_placement_confirmed":
-            if event.get("status") != "accepted":
-                continue
             actor = event.get("actor")
             if not isinstance(actor, dict) or actor.get("type") != "user":
                 continue

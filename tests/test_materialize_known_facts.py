@@ -28,6 +28,45 @@ def run_materialize_events(events):
         return run_materialize(temp_path)
 
 
+def run_materialize_project(events, manifest=None):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        project_dir = Path(tmpdir) / "project"
+        project_dir.mkdir()
+        if manifest is not None:
+            (project_dir / "manifest.json").write_text(
+                json.dumps(manifest, indent=2),
+                encoding="utf-8",
+            )
+        events_path = project_dir / "events.jsonl"
+        with events_path.open("w", encoding="utf-8") as handle:
+            for event in events:
+                handle.write(json.dumps(event) + "\n")
+        return run_materialize(events_path)
+
+
+def make_event(
+    event_id,
+    sequence,
+    event_type,
+    payload,
+    *,
+    status="accepted",
+    project_id="prj_test",
+    actor_type="user",
+):
+    return {
+        "schema_version": "1.0",
+        "event_id": event_id,
+        "project_id": project_id,
+        "sequence": sequence,
+        "created_at": "2026-05-27T10:00:00Z",
+        "actor": {"type": actor_type, "id": "u1"},
+        "event_type": event_type,
+        "status": status,
+        "payload": payload,
+    }
+
+
 class MaterializeKnownFactsTests(unittest.TestCase):
     def test_empty_events_produces_valid_known_facts(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1308,6 +1347,398 @@ class MaterializeKnownFactsTests(unittest.TestCase):
             photo.get("photo_id") == "photo_top_backlight_001" and photo.get("mode") == "backlight"
             for photo in data.get("photos", [])
         ))
+
+    def test_non_accepted_component_created_does_not_materialize_component(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {"component_id": "Q2", "status": "identified"},
+                    status="rejected",
+                )
+            ]
+        )
+        self.assertEqual(data["components"], [])
+
+    def test_non_accepted_component_updated_does_not_mutate_component(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {"component_id": "Q2", "status": "identified", "marking": "K72"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "component_updated",
+                    {"component_id": "Q2", "marking": "K73"},
+                    status="rejected",
+                ),
+            ]
+        )
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("marking"), "K72")
+
+    def test_non_accepted_component_marked_unknown_does_not_clear_identity(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {
+                        "component_id": "Q2",
+                        "status": "identified",
+                        "mpn": "MPSA42",
+                        "marking": "K72",
+                    },
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "component_marked_unknown",
+                    {"component_id": "Q2"},
+                    status="rejected",
+                ),
+            ]
+        )
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertEqual(component.get("status"), "identified")
+        self.assertEqual(component.get("mpn"), "MPSA42")
+        self.assertEqual(component.get("marking"), "K72")
+
+    def test_non_accepted_pin_defined_does_not_materialize_pin(self):
+        data = run_materialize_events(
+            [
+                make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"}),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "pin_defined",
+                    {"component_id": "Q2", "pin_id": "Q2.1"},
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertEqual(data["pins"], [])
+
+    def test_non_accepted_measurement_recorded_does_not_materialize_measurement(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "measurement_recorded",
+                    {
+                        "measurement_id": "M1",
+                        "mode": "continuity",
+                        "from": "Q2.1",
+                        "to": "R1.1",
+                        "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                        "power_state": "off",
+                    },
+                    status="rejected",
+                )
+            ]
+        )
+        self.assertEqual(data["measurements"], [])
+
+    def test_non_accepted_net_connection_confirmed_does_not_materialize_net(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "measurement_recorded",
+                    {
+                        "measurement_id": "M1",
+                        "mode": "continuity",
+                        "from": "Q2.1",
+                        "to": "R1.1",
+                        "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                        "power_state": "off",
+                    },
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "net_connection_confirmed",
+                    {
+                        "net_id": "N1",
+                        "from": "Q2.1",
+                        "to": "R1.1",
+                        "confirmed_by_event_ids": ["evt_100001"],
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertEqual(data["nets"], [])
+
+    def test_non_accepted_photo_added_does_not_materialize_photo(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                    status="rejected",
+                )
+            ]
+        )
+        self.assertEqual(data["photos"], [])
+
+    def test_non_accepted_damage_region_does_not_materialize_damage_region(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "damage_region_marked",
+                    {
+                        "region_id": "DMG1",
+                        "photo_id": "photo_top_001",
+                        "bbox": {"x": 10, "y": 20, "width": 30, "height": 40},
+                        "damage_type": "burn",
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertEqual(data["damage_regions"], [])
+
+    def test_non_accepted_suspect_region_does_not_materialize_suspect_region(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "suspect_region_marked",
+                    {
+                        "region_id": "SUSP1",
+                        "photo_id": "photo_top_001",
+                        "bbox": {"x": 15, "y": 25, "width": 35, "height": 45},
+                        "reason": "possible short",
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertEqual(data["suspect_regions"], [])
+
+    def test_non_accepted_visual_trace_does_not_materialize_visual_trace(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "visual_trace_added",
+                    {
+                        "trace_id": "VT1",
+                        "photo_id": "photo_top_001",
+                        "from_point": {"x": 1, "y": 2},
+                        "to_point": {"x": 3, "y": 4},
+                        "evidence_type": "visual_trace",
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertEqual(data["visual_traces"], [])
+
+    def test_non_accepted_footprint_marked_not_populated_does_not_create_exclusion(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "footprint_marked_not_populated",
+                    {"footprint_id": "K1"},
+                    status="rejected",
+                )
+            ]
+        )
+        self.assertEqual(data["excluded_from_fault_candidates"], [])
+
+    def test_non_accepted_repair_action_remove_component_does_not_remove_component(self):
+        data = run_materialize_events(
+            [
+                make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"}),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "repair_action_recorded",
+                    {
+                        "repair_action_id": "RA1",
+                        "action_type": "remove_component",
+                        "targets": [{"target_type": "component", "target_id": "Q2"}],
+                        "invalidation_policy": {
+                            "direct_component_measurements": "stale_after_repair",
+                            "connected_net_measurements": "no_change",
+                        },
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        component = next(item for item in data["components"] if item.get("component_id") == "Q2")
+        self.assertNotEqual(component.get("installation_status"), "removed")
+
+    def test_non_accepted_repair_action_does_not_stale_measurements(self):
+        data = run_materialize_events(
+            [
+                make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"}),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "measurement_recorded",
+                    {
+                        "measurement_id": "M1",
+                        "mode": "continuity",
+                        "from": "Q2.1",
+                        "to": "R1.1",
+                        "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                        "power_state": "off",
+                    },
+                ),
+                make_event(
+                    "evt_100003",
+                    100003,
+                    "repair_action_recorded",
+                    {
+                        "repair_action_id": "RA2",
+                        "action_type": "remove_component",
+                        "targets": [{"target_type": "component", "target_id": "Q2"}],
+                        "invalidation_policy": {
+                            "direct_component_measurements": "stale_after_repair",
+                            "connected_net_measurements": "no_change",
+                        },
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        measurement = next(item for item in data["measurements"] if item.get("measurement_id") == "M1")
+        self.assertEqual(measurement.get("validity_status"), "active")
+        self.assertIsNone(measurement.get("valid_until_event_id"))
+
+    def test_non_accepted_component_visual_placement_does_not_materialize(self):
+        data = run_materialize_events(
+            [
+                make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"}),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "component_visual_placement_confirmed",
+                    {
+                        "component_id": "Q2",
+                        "coordinate_space": "board_normalized",
+                        "board_side": "top",
+                        "center_x": 0.5,
+                        "center_y": 0.4,
+                        "rotation_deg": 0.0,
+                        "scale": 0.2,
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertNotIn("component_visual_placements", data)
+
+    def test_project_id_prefers_manifest_over_events(self):
+        manifest = {
+            "project_id": "prj_manifest",
+            "schema_version": "1.0",
+            "created_at": "2026-05-27T00:00:00Z",
+        }
+        data = run_materialize_project(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {"component_id": "Q2"},
+                    status="rejected",
+                    project_id="prj_rejected",
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "component_created",
+                    {"component_id": "Q3"},
+                    project_id="prj_accepted",
+                ),
+            ],
+            manifest=manifest,
+        )
+        self.assertEqual(data["project_id"], "prj_manifest")
+
+    def test_project_id_falls_back_to_first_accepted_event_when_manifest_unknown(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {"component_id": "Q2"},
+                    status="rejected",
+                    project_id="prj_rejected",
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "component_created",
+                    {"component_id": "Q3"},
+                    project_id="prj_accepted_first",
+                ),
+                make_event(
+                    "evt_100003",
+                    100003,
+                    "component_created",
+                    {"component_id": "Q4"},
+                    project_id="prj_accepted_later",
+                ),
+            ]
+        )
+        self.assertEqual(data["project_id"], "prj_accepted_first")
+
+    def test_project_id_stays_unknown_when_only_non_accepted_events_exist(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_created",
+                    {"component_id": "Q2"},
+                    status="draft",
+                    project_id="prj_draft_only",
+                )
+            ]
+        )
+        self.assertEqual(data["project_id"], "unknown")
 
 
 if __name__ == "__main__":

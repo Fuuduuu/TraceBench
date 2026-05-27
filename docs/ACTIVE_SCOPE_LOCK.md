@@ -2,73 +2,61 @@
 
 ## Current pass
 
-`GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS`
+`MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
 
 ## Goal
 
-Lock global event.status policy/scope before any implementation changes to validator reference indexes or materializer accepted-only projection behavior.
+Implement narrow accepted-only materializer projection behavior in `tools/materialize_known_facts.py` without schema, validator, ZIP contract, sample/asset, or runtime/UI changes.
 
 ## Allowed surfaces
 
+- `tools/materialize_known_facts.py`
+- `tests/test_materialize_known_facts.py`
+- `tests/test_project_zip.py` (only if narrowly needed)
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/TRUTH_INDEX.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS.md`
-- `docs/BOARD_GRAPH_SPEC.md` (only if needed for policy wording alignment)
-- `docs/PROTECTED_SURFACES.md` (only if needed for policy wording alignment)
+- `docs/audit/MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS.md`
 
 ## Forbidden surfaces
 
-- `lib/**`
-- `test/**`
-- `tests/**`
 - `schemas/**`
-- `tools/**`
+- `tools/validate_events_jsonl.py`
+- `tools/export_project_zip.py`
+- `tools/validate_project_zip.py`
 - `samples/**`
 - `assets/**`
-- `pubspec.yaml`
-- `pubspec.lock`
+- `lib/**`
+- `test/**`
+- `pubspec*`
 - `events.jsonl`
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- Project ZIP tooling/files
-- schema implementation
-- validator implementation
-- materializer implementation
-- known_facts schema/projection implementation
-- Flutter/runtime code
-- renderer/UI
+- Flutter/runtime implementation
 - AI proposal persistence
-- sample refresh
+- visual->electrical promotion
+- hidden-layer inference
+- Project ZIP contract changes
 
 ## Scope decisions
 
-1. `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS` verdict is `SPLIT_FIX_NEEDED`.
-2. Accepted events are canonical source for domain facts.
-3. Non-accepted events may remain in `events.jsonl` as audit/history/review data.
-4. Non-accepted events must not silently create current domain facts in `known_facts.json`.
-5. Domain references must resolve to prior accepted source events unless a specific audit/metadata event family explicitly allows all-status references.
-6. Reference semantics and projection semantics must be aligned.
-7. `component_visual_placement_confirmed` remains stricter in current implementation:
-   - validator accepted-only provenance references
-   - materializer accepted + user-only
-8. Split implementation sequence is locked:
-   - `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
-   - `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
-   - `STATUS_SEMANTICS_REGRESSION_PASS` only if impact requires fixture/ZIP alignment updates
-9. No global materializer status behavior changes are allowed before `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`.
-10. No sample/fixture refresh is allowed before regression impact is measured and explicitly scoped.
-11. Preserve:
-   - placement visual/documentation-only boundary
-   - no `visual_trace` -> measured-net promotion
-   - no AI proposal -> confirmed fact promotion
+1. `known_facts.json` is current-domain projection, not audit-history projection.
+2. Only `status == "accepted"` events may create/mutate current projected domain facts.
+3. Non-accepted events remain in `events.jsonl` as audit/review/history data.
+4. Accepted behavior for existing domain handlers must remain unchanged.
+5. `project_id` resolution policy:
+   - prefer `manifest.json` project_id,
+   - if manifest is unknown, fallback to first accepted event project_id,
+   - if none exists, keep `project_id = "unknown"`.
+6. Placement remains visual/documentation-only and user-confirmed accepted-only.
+7. No schema/validator/materializer-shape/ZIP-contract/runtime changes outside this narrow pass.
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
+- `py -3 -m unittest tests.test_materialize_known_facts`
+- `py -3 -m unittest tests.test_project_zip`
 - `git diff --name-only`
 - `git status --short --branch`

@@ -3,12 +3,18 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
-- Next recommended pass: `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
-- Docs drift countdown: `5`
+- Current pass: `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
+- Next recommended pass: `STATUS_SEMANTICS_REGRESSION_PASS`
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
+- `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS` is completed:
+  - `tools/materialize_known_facts.py` now applies an accepted-only gate for domain projection handlers.
+  - non-accepted events no longer create/mutate projected domain facts (components, pins, measurements, nets, photos, damage/suspect regions, visual traces, exclusions, placement projection, remove/stale side effects).
+  - `project_id` resolution now prefers `manifest.json`; if manifest is unknown, fallback uses first accepted event project_id only; if no accepted project_id exists, remains `unknown`.
+  - accepted behavior is preserved for current domain projection semantics (including visual/electrical boundary, remove-component behavior, and user-only accepted placement projection).
+  - no changes were made to schemas, validator, ZIP tooling contract, samples/assets, or Flutter/runtime surfaces.
 - `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` is completed:
   - validator reference semantics for domain/visual families are normalized toward accepted-source provenance.
   - placement provenance behavior remains preserved:

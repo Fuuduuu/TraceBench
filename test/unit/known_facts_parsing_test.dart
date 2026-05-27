@@ -136,4 +136,135 @@ void main() {
     expect((visualTraces.single as Map<String, dynamic>)['evidence_type'],
         'visual_trace');
   });
+
+  test('component_visual_placements parse from known facts projection', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'placement_case',
+      'component_visual_placements': [
+        {
+          'component_id': 'Q2',
+          'coordinate_space': 'board_normalized',
+          'board_side': 'top',
+          'center_x': 0.5,
+          'center_y': 0.4,
+          'rotation_deg': 0,
+          'scale': 1.0,
+          'source_event_id': 'evt_000123',
+          'status': 'user_confirmed_visual',
+        },
+      ],
+    });
+
+    expect(knownFacts.componentVisualPlacements, hasLength(1));
+    final placement = knownFacts.componentVisualPlacements.single;
+    expect(placement.componentId, 'Q2');
+    expect(placement.coordinateSpace, 'board_normalized');
+    expect(placement.boardSide, 'top');
+    expect(placement.scale, 1.0);
+    expect(placement.width, isNull);
+    expect(placement.height, isNull);
+    expect(placement.sourceEventId, 'evt_000123');
+    expect(placement.status, 'user_confirmed_visual');
+  });
+
+  test('missing component_visual_placements defaults to empty list', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'placement_missing_case',
+      'components': [],
+      'pins': [],
+      'measurements': [],
+      'nets': [],
+      'excluded_from_fault_candidates': [],
+    });
+
+    expect(knownFacts.componentVisualPlacements, isEmpty);
+  });
+
+  test('scale-mode placement round-trips through KnownFacts.toJson', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'placement_scale_roundtrip',
+      'component_visual_placements': [
+        {
+          'component_id': 'R5',
+          'coordinate_space': 'board_normalized',
+          'board_side': 'top',
+          'center_x': 0.25,
+          'center_y': 0.75,
+          'rotation_deg': -45,
+          'scale': 0.8,
+          'source_event_id': 'evt_000201',
+          'status': 'user_confirmed_visual',
+        },
+      ],
+    });
+
+    final encoded = knownFacts.toJson();
+    final placements =
+        encoded['component_visual_placements'] as List<dynamic>? ?? const [];
+    expect(placements, hasLength(1));
+    final placement = placements.single as Map<String, dynamic>;
+    expect(placement['scale'], 0.8);
+    expect(placement.containsKey('width'), isFalse);
+    expect(placement.containsKey('height'), isFalse);
+  });
+
+  test('width+height-mode placement round-trips through KnownFacts.toJson', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'placement_size_roundtrip',
+      'component_visual_placements': [
+        {
+          'component_id': 'U7',
+          'coordinate_space': 'photo_local',
+          'board_side': 'bottom',
+          'center_x': 104.0,
+          'center_y': 208.0,
+          'rotation_deg': 90,
+          'width': 20.0,
+          'height': 10.0,
+          'source_photo_id': 'photo_top_001',
+          'template_id': 'soic_8',
+          'source_event_id': 'evt_000202',
+          'status': 'user_confirmed_visual',
+        },
+      ],
+    });
+
+    final encoded = knownFacts.toJson();
+    final placements =
+        encoded['component_visual_placements'] as List<dynamic>? ?? const [];
+    expect(placements, hasLength(1));
+    final placement = placements.single as Map<String, dynamic>;
+    expect(placement.containsKey('scale'), isFalse);
+    expect(placement['width'], 20.0);
+    expect(placement['height'], 10.0);
+    expect(placement['template_id'], 'soic_8');
+    expect(placement['source_photo_id'], 'photo_top_001');
+    expect(placement['source_event_id'], 'evt_000202');
+    expect(placement['status'], 'user_confirmed_visual');
+  });
+
+  test('component removal fields parse when present and default when missing',
+      () {
+    final withRemoval = KnownFacts.fromJson({
+      'project_id': 'removal_fields_case',
+      'components': [
+        {
+          'component_id': 'Q2',
+          'installation_status': 'removed',
+          'removed_by_event_id': 'evt_000333',
+        }
+      ],
+    });
+    expect(withRemoval.components.single.installationStatus, 'removed');
+    expect(withRemoval.components.single.removedByEventId, 'evt_000333');
+
+    final withoutRemoval = KnownFacts.fromJson({
+      'project_id': 'removal_fields_missing_case',
+      'components': [
+        {'component_id': 'Q3'}
+      ],
+    });
+    expect(withoutRemoval.components.single.installationStatus, isNull);
+    expect(withoutRemoval.components.single.removedByEventId, isNull);
+  });
 }

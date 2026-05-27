@@ -7,6 +7,8 @@ class ComponentFact {
     this.pinCount,
     this.marking,
     this.status,
+    this.installationStatus,
+    this.removedByEventId,
   });
 
   final String componentId;
@@ -16,6 +18,8 @@ class ComponentFact {
   final int? pinCount;
   final String? marking;
   final String? status;
+  final String? installationStatus;
+  final String? removedByEventId;
 
   factory ComponentFact.fromJson(Map<String, dynamic> json) {
     return ComponentFact(
@@ -26,6 +30,8 @@ class ComponentFact {
       pinCount: json['pin_count'] is int ? json['pin_count'] as int : null,
       marking: json['marking'] as String?,
       status: json['status']?.toString(),
+      installationStatus: json['installation_status']?.toString(),
+      removedByEventId: json['removed_by_event_id']?.toString(),
     );
   }
 }
@@ -381,6 +387,72 @@ class VisualTraceFact {
       };
 }
 
+class ComponentVisualPlacementFact {
+  const ComponentVisualPlacementFact({
+    required this.componentId,
+    required this.coordinateSpace,
+    required this.boardSide,
+    required this.centerX,
+    required this.centerY,
+    required this.rotationDeg,
+    required this.sourceEventId,
+    required this.status,
+    this.scale,
+    this.width,
+    this.height,
+    this.sourcePhotoId,
+    this.templateId,
+  });
+
+  final String componentId;
+  final String coordinateSpace;
+  final String boardSide;
+  final num centerX;
+  final num centerY;
+  final num rotationDeg;
+  final num? scale;
+  final num? width;
+  final num? height;
+  final String? sourcePhotoId;
+  final String? templateId;
+  final String sourceEventId;
+  final String status;
+
+  factory ComponentVisualPlacementFact.fromJson(Map<String, dynamic> json) {
+    return ComponentVisualPlacementFact(
+      componentId: json['component_id']?.toString() ?? 'unknown',
+      coordinateSpace: json['coordinate_space']?.toString() ?? 'unknown',
+      boardSide: json['board_side']?.toString() ?? 'unknown',
+      centerX: (json['center_x'] as num?) ?? 0,
+      centerY: (json['center_y'] as num?) ?? 0,
+      rotationDeg: (json['rotation_deg'] as num?) ?? 0,
+      scale: json['scale'] as num?,
+      width: json['width'] as num?,
+      height: json['height'] as num?,
+      sourcePhotoId: json['source_photo_id']?.toString(),
+      templateId: json['template_id']?.toString(),
+      sourceEventId: json['source_event_id']?.toString() ?? 'unknown',
+      status: json['status']?.toString() ?? 'unknown',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'component_id': componentId,
+        'coordinate_space': coordinateSpace,
+        'board_side': boardSide,
+        'center_x': centerX,
+        'center_y': centerY,
+        'rotation_deg': rotationDeg,
+        if (scale != null) 'scale': scale,
+        if (width != null) 'width': width,
+        if (height != null) 'height': height,
+        if (sourcePhotoId != null) 'source_photo_id': sourcePhotoId,
+        if (templateId != null) 'template_id': templateId,
+        'source_event_id': sourceEventId,
+        'status': status,
+      };
+}
+
 class KnownFacts {
   const KnownFacts({
     required this.projectId,
@@ -394,6 +466,7 @@ class KnownFacts {
     required this.damageRegions,
     required this.suspectRegions,
     required this.visualTraces,
+    this.componentVisualPlacements = const [],
   });
 
   final String projectId;
@@ -407,6 +480,7 @@ class KnownFacts {
   final List<DamageRegionFact> damageRegions;
   final List<SuspectRegionFact> suspectRegions;
   final List<VisualTraceFact> visualTraces;
+  final List<ComponentVisualPlacementFact> componentVisualPlacements;
 
   factory KnownFacts.fromJson(Map<String, dynamic> json) {
     final components = ((json['components'] as List?) ?? const [])
@@ -455,6 +529,12 @@ class KnownFacts {
         .map((e) => VisualTraceFact.fromJson(e))
         .toList(growable: false);
 
+    final componentVisualPlacements =
+        ((json['component_visual_placements'] as List?) ?? const [])
+            .whereType<Map<String, dynamic>>()
+            .map((e) => ComponentVisualPlacementFact.fromJson(e))
+            .toList(growable: false);
+
     final rawPinIndex = json['component_pin_index'] is Map
         ? json['component_pin_index'] as Map
         : null;
@@ -485,6 +565,7 @@ class KnownFacts {
       damageRegions: damageRegions,
       suspectRegions: suspectRegions,
       visualTraces: visualTraces,
+      componentVisualPlacements: componentVisualPlacements,
     );
   }
 
@@ -500,6 +581,10 @@ class KnownFacts {
                 'pin_count': c.pinCount,
                 'marking': c.marking,
                 'status': c.status,
+                if (c.installationStatus != null)
+                  'installation_status': c.installationStatus,
+                if (c.removedByEventId != null)
+                  'removed_by_event_id': c.removedByEventId,
               })
           .toList(),
       'pins': pins
@@ -552,6 +637,9 @@ class KnownFacts {
       'suspect_regions':
           suspectRegions.map((region) => region.toJson()).toList(),
       'visual_traces': visualTraces.map((trace) => trace.toJson()).toList(),
+      if (componentVisualPlacements.isNotEmpty)
+        'component_visual_placements':
+            componentVisualPlacements.map((placement) => placement.toJson()).toList(),
     };
   }
 }

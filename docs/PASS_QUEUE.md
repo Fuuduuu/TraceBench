@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS`
+`KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS | FLUTTER_PASS | completed | Add Dart KnownFacts parity for `component_visual_placements` via `ComponentVisualPlacementFact` + `KnownFacts.componentVisualPlacements`, missing-field empty default, toJson parity, and unit tests; add optional component removal parity fields (`installation_status`, `removed_by_event_id`) already emitted by projection; no renderer/schema/tool/materializer changes. |
 | KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Record Pro verdict `NEEDS_DART_MODEL_PARITY_FIRST`; lock KnownFacts Dart `component_visual_placements` parity as renderer precondition; forbid renderer/raw JSON parsing work; route next to `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`. |
 | MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS | FLUTTER_PASS / VALIDATOR_COMPAT | completed | Update Dart measurement writer default event-id generation to schema/validator-compatible `^evt_[0-9]{6}$` values using sequence-based IDs; preserve event semantics, keep schema/validator unchanged, and add unit regressions for default/non-`evt_flutter_*` behavior and unique multi-append IDs. |
 | MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow compatibility fix scope for measurement writer event_id mismatch (`evt_flutter_*` vs `^evt_[0-9]{6}$`), with schema/validator format as source of truth and no migration/schema/validator changes allowed in the fix pass. |
@@ -139,17 +140,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
-`KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS` is completed.
-Next recommended pass is `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` so renderer work can consume `ProjectState.knownFacts` placement facts without raw JSON parsing or duplicated projection parsing logic.
+`KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` is completed.
+Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` so renderer boundaries are locked before any board-canvas implementation starts.
 
 ## Deferred / not active
 

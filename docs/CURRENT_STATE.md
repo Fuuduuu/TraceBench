@@ -3,12 +3,20 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS`
-- Next recommended pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`
+- Current pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 - Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` is completed:
+  - adds Dart KnownFacts model parity for top-level `component_visual_placements`.
+  - adds `ComponentVisualPlacementFact` and `KnownFacts.componentVisualPlacements`.
+  - parses `component_visual_placements` from known-facts JSON and defaults to empty list when missing.
+  - serializes placement facts back through `KnownFacts.toJson` while preserving sizing mode (`scale` OR `width`+`height`) and optional fields (`template_id`, `source_photo_id`).
+  - adds optional component removal parity fields in `ComponentFact` (`installationStatus`, `removedByEventId`) because current Python projection emits `installation_status` / `removed_by_event_id`.
+  - keeps KnownFacts as read-only projection model only; no schema/tool/materializer/ZIP/projection semantics changes.
+  - keeps renderer/UI/canvas implementation deferred.
 - `KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS` is completed:
   - records Pro implementation-readiness verdict: `NEEDS_DART_MODEL_PARITY_FIRST`.
   - locks Dart KnownFacts parity for `component_visual_placements` as a precondition before any board-canvas renderer scope/implementation.

@@ -3,12 +3,43 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS`
 - Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
-- Docs drift countdown: `9`
+- Docs drift countdown: `8`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS` is completed:
+  - records Claude independent renderer-readiness audit verdict: `PASS_WITH_NITS`.
+  - locks first renderer implementation pass to `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` only.
+  - locks shell-only scope:
+    - route/screen shell,
+    - empty states (`no project`, `no components`, `components/no placements`),
+    - status chrome text `renderer writes: none`,
+    - optional layer toggles only if volatile in-memory.
+  - explicitly forbids in shell pass:
+    - `CustomPainter`,
+    - component drawing,
+    - coordinate math,
+    - inspector,
+    - editing/event-writing/export actions.
+  - explicitly defers to later passes:
+    - placement rendering,
+    - visual_trace rendering,
+    - damage/suspect rendering,
+    - photo_local board-canvas rendering,
+    - background photo helper layer,
+    - AI proposal UI/persistence,
+    - persisted view state (`view_state.json` remains forbidden).
+  - locks renderer data path:
+    - renderer consumes `ProjectState.knownFacts` only; no raw `known_facts.json` parsing inside renderer code.
+  - preserves evidence boundaries:
+    - visual_trace remains visual-only,
+    - template_id does not imply identity,
+    - trace color is visual metadata,
+    - no event writing,
+    - no known-facts mutation,
+    - no Project ZIP contract change.
 - `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` is completed:
   - records Claude Design “Board Canvas Read-Only Renderer — V1 UX Spec v2” as accepted UX input for read-only renderer scoping.
   - records Pro precondition as satisfied by `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` (`ProjectState.knownFacts` now exposes `componentVisualPlacements`).

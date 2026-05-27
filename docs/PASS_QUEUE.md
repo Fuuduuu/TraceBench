@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS | DOCS_SYNC | completed | Apply Claude `PASS_WITH_NITS` renderer-readiness fixups: lock shell-first implementation, defer CustomPainter/placement/evidence overlays, forbid photo_local board rendering before coordinate mapping audit, and add dedicated read-only renderer spec. |
 | BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock V1 board canvas renderer as strict read-only projection consumer after KnownFacts Dart placement parity: no writes, no event/editor/AI flows, no raw known_facts parsing, no background photo helper layer in first renderer, and split implementation routing to shell -> placement rendering -> inspector -> evidence-scope audit -> QA. |
 | KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS | FLUTTER_PASS | completed | Add Dart KnownFacts parity for `component_visual_placements` via `ComponentVisualPlacementFact` + `KnownFacts.componentVisualPlacements`, missing-field empty default, toJson parity, and unit tests; add optional component removal parity fields (`installation_status`, `removed_by_event_id`) already emitted by projection; no renderer/schema/tool/materializer changes. |
 | KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Record Pro verdict `NEEDS_DART_MODEL_PARITY_FIRST`; lock KnownFacts Dart `component_visual_placements` parity as renderer precondition; forbid renderer/raw JSON parsing work; route next to `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`. |
@@ -150,7 +151,7 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 |---|---|---|
 | BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS | FLUTTER_PASS | recommended |
 
-`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` is completed.
+`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS` is completed.
 Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` to implement the read-only route/screen shell and empty-state chrome before placement drawing.
 
 ## Deferred / not active
@@ -164,4 +165,4 @@ Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` to implemen
 
 ## Docs drift countdown
 
-Current countdown: 9
+Current countdown: 8

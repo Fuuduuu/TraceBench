@@ -3,12 +3,26 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS`
-- Next recommended pass: `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
-- Docs drift countdown: `3`
+- Current pass: `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
+- Docs drift countdown: `2`
 
 ## Current accepted state snapshot
 
+- `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS` is completed:
+  - confirms status-semantics series is closed (validator accepted-reference normalization + materializer accepted-only projection + Pro closeout verdict recorded).
+  - confirms no stale routing remains to already completed status-semantics work.
+  - selects next safest pass: `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`.
+  - rationale: footprint/template scope lock should precede board-canvas renderer/UI work so visual placement/template boundaries stay explicit before any rendering implementation.
+  - keeps renderer/UI implementation deferred in this step.
+  - keeps AI proposal persistence deferred and external AI simulation lab out-of-repo.
+  - preserves hard boundaries:
+    - accepted events as current domain truth,
+    - non-accepted events as audit/history/review data,
+    - `known_facts.json` as current projection (not audit history),
+    - no `visual_trace` -> measured-net promotion,
+    - no AI proposal -> confirmed fact promotion,
+    - `board_graph.json` / `view_state.json` forbidden in V1.
 - `STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS` is completed:
   - records Pro `STATUS_SEMANTICS_END_TO_END_AUDIT_PASS` verdict: `PASS_WITH_NITS`.
   - treats Pro audit as satisfying queued `STATUS_SEMANTICS_REGRESSION_PASS` intent (no additional full audit rerun required).

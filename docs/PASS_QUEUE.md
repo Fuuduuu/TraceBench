@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS`
+`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS | DOCS_SYNC / AUDIT_ONLY | completed | Queue/state/lock review after status-semantics closeout; stale routing removed; next safe routing set to `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` before renderer/UI implementation. |
 | STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS | DOCS_SYNC | completed | Record Pro `PASS_WITH_NITS` status-semantics end-to-end audit result and close queued regression work without additional full audit rerun; no code fix required. |
 | STATUS_SEMANTICS_REGRESSION_PASS | TOOLS_PASS / QA_PASS | completed | Satisfied by Pro `STATUS_SEMANTICS_END_TO_END_AUDIT_PASS` verdict (`PASS_WITH_NITS`) and closeout reconciliation. |
 | MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | completed | Materializer now enforces accepted-only domain projection policy and accepted-only project_id fallback semantics without schema/validator/ZIP/runtime changes. |
@@ -126,17 +127,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS | DOCS_SYNC | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS | DOCS_SYNC | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
-`STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS` is completed and records Pro `PASS_WITH_NITS` audit as satisfying status-semantics regression intent without further code fix.
-Next recommended pass is `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS` for conservative queue routing after status-semantics closeout.
+`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS` is completed and confirms status-semantics routing is closed.
+Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` to lock footprint/template scope boundaries before any board-canvas renderer/UI implementation pass.
 
 ## Deferred / not active
 
@@ -149,4 +150,4 @@ Next recommended pass is `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS` for conserva
 
 ## Docs drift countdown
 
-Current countdown: 3
+Current countdown: 2

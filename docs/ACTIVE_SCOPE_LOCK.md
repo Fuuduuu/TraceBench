@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS`
+`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
 
 ## Goal
 
-Record Pro status-semantics post-implementation audit outcome and close queued regression work in docs/queue state without additional code or audit implementation changes.
+Review queue/state/lock alignment after status-semantics closeout and route the next safest pass without touching code/tooling/runtime surfaces.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Record Pro status-semantics post-implementation audit outcome and close queued r
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS.md`
+- `docs/audit/QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS.md`
 - `docs/PROJECT_MEMORY.md` (only if narrowly needed)
 - `docs/TRUTH_INDEX.md` (only if narrowly needed)
 
@@ -37,21 +37,23 @@ Record Pro status-semantics post-implementation audit outcome and close queued r
 - runtime/Flutter code
 - renderer/UI implementation
 - AI proposal persistence
-- sample refresh
+- external AI simulation lab files
 
 ## Scope decisions
 
-1. Pro `STATUS_SEMANTICS_END_TO_END_AUDIT_PASS` verdict is `PASS_WITH_NITS`.
-2. Pro audit satisfies the intent of queued `STATUS_SEMANTICS_REGRESSION_PASS`.
-3. No additional status-semantics code fix is required in current accepted state.
-4. Keep hard boundaries unchanged:
+1. Status-semantics series is closed (`PASS_WITH_NITS` Pro closeout accepted, no further code fix required).
+2. Current routing to already-completed status-semantics work is removed.
+3. Next safest pass is `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`.
+4. Rationale: footprint/template model boundaries should be scope-locked before any board-canvas renderer/UI implementation to prevent boundary drift between placement/template/identity semantics.
+5. Keep renderer/UI implementation deferred in this pass.
+6. Keep AI proposal persistence deferred and external simulation lab out-of-repo.
+7. Preserve hard boundaries:
    - accepted events are current domain truth,
    - non-accepted events remain audit/history/review data,
-   - known_facts is current projection (not audit history),
-   - no `visual_trace` -> measured-net promotion,
+   - known_facts is current projection,
+   - no `visual_trace` -> measured net promotion,
    - no AI proposal -> confirmed fact promotion,
-   - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-5. Next routing is queue review (`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`), not direct renderer/UI implementation.
+   - `board_graph.json` / `view_state.json` forbidden in V1.
 
 ## Validate
 

@@ -3,12 +3,25 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
-- Next recommended pass: `STATUS_SEMANTICS_REGRESSION_PASS`
-- Docs drift countdown: `4`
+- Current pass: `STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS`
+- Next recommended pass: `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS` is completed:
+  - records Pro `STATUS_SEMANTICS_END_TO_END_AUDIT_PASS` verdict: `PASS_WITH_NITS`.
+  - treats Pro audit as satisfying queued `STATUS_SEMANTICS_REGRESSION_PASS` intent (no additional full audit rerun required).
+  - confirms coherent status semantics state:
+    - accepted-only validator domain references are implemented,
+    - accepted-only materializer projection is implemented,
+    - non-accepted events remain audit/history/review data and do not materialize current domain facts,
+    - known-facts shape remains unchanged and ZIP validation compatibility is preserved.
+  - confirms no product/evidence bug from status semantics and no additional code fix required.
+  - preserves boundaries:
+    - no `visual_trace` -> measured-net promotion,
+    - no AI proposal -> confirmed fact promotion,
+    - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS` is completed:
   - `tools/materialize_known_facts.py` now applies an accepted-only gate for domain projection handlers.
   - non-accepted events no longer create/mutate projected domain facts (components, pins, measurements, nets, photos, damage/suspect regions, visual traces, exclusions, placement projection, remove/stale side effects).

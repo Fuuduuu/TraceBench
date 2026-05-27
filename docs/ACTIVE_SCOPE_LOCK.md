@@ -2,61 +2,59 @@
 
 ## Current pass
 
-`MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
+`STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement narrow accepted-only materializer projection behavior in `tools/materialize_known_facts.py` without schema, validator, ZIP contract, sample/asset, or runtime/UI changes.
+Record Pro status-semantics post-implementation audit outcome and close queued regression work in docs/queue state without additional code or audit implementation changes.
 
 ## Allowed surfaces
 
-- `tools/materialize_known_facts.py`
-- `tests/test_materialize_known_facts.py`
-- `tests/test_project_zip.py` (only if narrowly needed)
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS.md`
+- `docs/audit/STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md` (only if narrowly needed)
+- `docs/TRUTH_INDEX.md` (only if narrowly needed)
 
 ## Forbidden surfaces
 
 - `schemas/**`
-- `tools/validate_events_jsonl.py`
-- `tools/export_project_zip.py`
-- `tools/validate_project_zip.py`
-- `samples/**`
-- `assets/**`
+- `tools/**`
+- `tests/**`
 - `lib/**`
 - `test/**`
+- `samples/**`
+- `assets/**`
 - `pubspec*`
 - `events.jsonl`
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- Flutter/runtime implementation
+- Project ZIP tooling/files
+- schema/validator/materializer implementation
+- runtime/Flutter code
+- renderer/UI implementation
 - AI proposal persistence
-- visual->electrical promotion
-- hidden-layer inference
-- Project ZIP contract changes
+- sample refresh
 
 ## Scope decisions
 
-1. `known_facts.json` is current-domain projection, not audit-history projection.
-2. Only `status == "accepted"` events may create/mutate current projected domain facts.
-3. Non-accepted events remain in `events.jsonl` as audit/review/history data.
-4. Accepted behavior for existing domain handlers must remain unchanged.
-5. `project_id` resolution policy:
-   - prefer `manifest.json` project_id,
-   - if manifest is unknown, fallback to first accepted event project_id,
-   - if none exists, keep `project_id = "unknown"`.
-6. Placement remains visual/documentation-only and user-confirmed accepted-only.
-7. No schema/validator/materializer-shape/ZIP-contract/runtime changes outside this narrow pass.
+1. Pro `STATUS_SEMANTICS_END_TO_END_AUDIT_PASS` verdict is `PASS_WITH_NITS`.
+2. Pro audit satisfies the intent of queued `STATUS_SEMANTICS_REGRESSION_PASS`.
+3. No additional status-semantics code fix is required in current accepted state.
+4. Keep hard boundaries unchanged:
+   - accepted events are current domain truth,
+   - non-accepted events remain audit/history/review data,
+   - known_facts is current projection (not audit history),
+   - no `visual_trace` -> measured-net promotion,
+   - no AI proposal -> confirmed fact promotion,
+   - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+5. Next routing is queue review (`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`), not direct renderer/UI implementation.
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
-- `py -3 -m unittest tests.test_materialize_known_facts`
-- `py -3 -m unittest tests.test_project_zip`
 - `git diff --name-only`
 - `git status --short --branch`

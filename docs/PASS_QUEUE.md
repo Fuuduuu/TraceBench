@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`
+`GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock global event.status policy and split sequencing after audit: accepted-only domain facts/reference direction, validator normalization first, materializer policy second, regression/fixture follow-up only if impact requires. |
 | BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Restrict placement provenance reference indexes to prior accepted `component_created` / `photo_added` for `component_visual_placement_confirmed`; add validator tests for rejected/draft create-events and non-creator component events. |
 | BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow validator-only follow-up so placement references must resolve only to prior accepted `component_created` / `photo_added`; defer broader status semantics to separate audit. |
 | DOCS_DRIFT_MINI_CLEANUP_11_PASS | DOCS_SYNC | completed | Align CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX/PROJECT_MEMORY/TRUTH_INDEX and board/placement docs after accepted placement schema+validator+projection work; preserve evidence boundaries and set conservative next routing. |
@@ -121,17 +122,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS | AUDIT_ONLY | recommended |
+| VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS | AUDIT_ONLY | recommended |
+| VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | recommended |
 
-`BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS` is completed and narrows placement reference provenance checks to prior accepted create-events only.
-Next recommended pass is `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS` to audit cross-family status-lifecycle consistency without expanding placement-specific implementation scope.
+`GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS` is completed and locks accepted-only policy direction for domain facts with explicit split implementation sequencing.
+Next recommended pass is `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` to align validator reference indexes/helpers before any global materializer status filtering changes.
 
 ## Deferred / not active
 

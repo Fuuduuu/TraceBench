@@ -20,6 +20,8 @@ V1.0 is a Known Facts Builder, not an AI repair agent.
 ## Stable architecture invariants
 
 - `events.jsonl` is the only canonical truth.
+- Accepted events are canonical source for current domain facts.
+- Non-accepted events are audit/history/review evidence and must not silently become current domain facts.
 - `known_facts.json` is a materialized projection used by read-only viewers.
 - `component_visual_placement_confirmed` is a canonical visual/documentation placement event and does not confirm identity, pin mapping, visual trace, electrical net, measurement, fault candidate, repair conclusion, or hidden-layer truth.
 - `known_facts.json` may include top-level `component_visual_placements` as visual/documentation projection only.

@@ -3,12 +3,27 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS`
-- Next recommended pass: `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS`
+- Current pass: `GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS`
+- Next recommended pass: `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
 - Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS` is completed:
+  - records `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS` verdict: `SPLIT_FIX_NEEDED`.
+  - locks global policy direction:
+    - accepted events are canonical source for domain facts.
+    - non-accepted events may remain in `events.jsonl` as audit/history/review evidence.
+    - non-accepted events must not silently create current domain facts in `known_facts.json`.
+    - domain reference checks must not be satisfied by non-accepted source events unless an audit-metadata event explicitly allows all-status references.
+  - locks implementation split order:
+    1. `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
+    2. `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
+    3. `STATUS_SEMANTICS_REGRESSION_PASS` (or fixture/ZIP follow-up only if required by impact)
+  - locks that no global materializer status behavior changes are allowed before `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`.
+  - locks that no sample/fixture refresh is allowed before regression impact is measured.
+  - preserves placement visual/documentation-only boundary and no visual/electrical promotion.
+  - preserves AI proposal non-canonical boundary (`unconfirmed_ai_proposal`).
 - `BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS` is completed:
   - `tools/validate_events_jsonl.py` placement reference indexes now register only prior accepted create-events for placement provenance checks:
     - `component_visual_placement_confirmed.component_id` resolves only against prior accepted `component_created`.

@@ -2,7 +2,7 @@
 
 PASS_ID: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`  
 Lane: `DOCS_SYNC / DESIGN_ONLY`  
-Status: Accepted design baseline; later placement schema/validator/projection passes are implemented; `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` now locks parametric footprint/template scope boundaries before renderer/UI implementation.
+Status: Accepted design baseline; later placement schema/validator/projection passes are implemented; `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` locked footprint scope and `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` now formalizes the footprint template contract in `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`.
 
 ## 1. Goal
 
@@ -27,6 +27,13 @@ Locked before any renderer/UI implementation:
 - Renderer-facing requirements are locked (deterministic, bbox/pin/label/LOD friendly), but renderer implementation choices are explicitly deferred.
 - AI Top-3/ranking UX remains external-lab input only and is not a footprint-library implementation requirement.
 - Static SVG is optional as reference/icon asset only; core dynamic model remains parametric templates.
+
+## 2.2 Footprint spec addendum (`VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`)
+
+- Formal footprint/template contract is defined in `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`.
+- Required template fields, pin-anchor model, and variant parameter model are specified there.
+- V1 template set, deferred families, and forbidden identity-leaking names are locked there.
+- This board-vector document remains the higher-level boardview/AI-boundary design surface.
 
 ## 3. Hard evidence boundaries
 
@@ -211,9 +218,8 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` (DOCS_SYNC / DESIGN_ONLY):
+`VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS` (AUDIT_ONLY):
 
-- formalize the internal parametric footprint/template specification fields and constraints.
-- preserve package-vs-identity and visual-vs-electrical boundaries.
-- keep AI proposal canonicalization out-of-scope.
-- do not route directly to renderer/UI implementation from this step.
+- audit `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md` for consistency with scope lock and evidence-floor boundaries.
+- verify package-vs-identity separation remains explicit across boardview documents.
+- confirm renderer/UI implementation remains deferred after spec acceptance.

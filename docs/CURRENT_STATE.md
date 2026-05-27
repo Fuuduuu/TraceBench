@@ -3,12 +3,23 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`
-- Docs drift countdown: `1`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS`
+- Docs drift countdown: `0`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` is completed:
+  - formal footprint library specification is added in `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`.
+  - template model is locked as package/geometry-only and explicitly separated from identity/electrical/pin-mapping/fault truth.
+  - required template field contract is documented (template metadata, body/origin/bounds, label/orientation, pin anchors/groups, variant rules, style/LOD/hit-test/accessibility).
+  - pin-anchor model and variant-parameter model are formally specified.
+  - V1 template set is formally locked; deferred template families are explicitly listed.
+  - forbidden identity-leaking template names are explicitly listed and justified.
+  - renderer consumption contract is documented as non-implementation guidance only.
+  - AI template-candidate workflow boundary is documented as future non-canonical proposal workflow only (Top-3 display deferred outside core library requirement).
+  - implementation-test expectations are documented for a future implementation pass.
+  - next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS`.
 - `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` is completed:
   - locks footprint/template library scope before any renderer/UI implementation.
   - locks parametric package/geometry-first template direction and explicit template-vs-identity boundary.

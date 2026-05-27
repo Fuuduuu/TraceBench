@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
+`VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS | DOCS_SYNC | completed | Add formal parametric vector footprint/template specification (`docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`) with required fields, pin-anchor and variant models, locked V1 template set, deferred families, naming guardrails, renderer-consumption boundaries, AI-proposal boundaries, and future test expectations. |
 | VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock internal parametric vector footprint/template library scope boundary before renderer/UI implementation; preserve package-vs-identity, AI-proposal, visual/electrical, and ownership boundaries; route next to `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`. |
 | QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS | DOCS_SYNC / AUDIT_ONLY | completed | Queue/state/lock review after status-semantics closeout; stale routing removed; next safe routing set to `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` before renderer/UI implementation. |
 | STATUS_SEMANTICS_REGRESSION_CLOSEOUT_PASS | DOCS_SYNC | completed | Record Pro `PASS_WITH_NITS` status-semantics end-to-end audit result and close queued regression work without additional full audit rerun; no code fix required. |
@@ -128,17 +129,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS | DOCS_SYNC / DESIGN_ONLY | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS | DOCS_SYNC / DESIGN_ONLY | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` is completed.
-Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` to formalize the parametric footprint/template specification before any board-canvas renderer/UI implementation pass.
+`VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` is completed.
+Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_PASS` to verify spec consistency and evidence-boundary compliance before any implementation scope lock.
 
 ## Deferred / not active
 
@@ -151,4 +152,4 @@ Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` to formalize the p
 
 ## Docs drift countdown
 
-Current countdown: 1
+Current countdown: 0

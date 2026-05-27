@@ -3,12 +3,26 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS`
-- Docs drift countdown: `2`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS` is completed:
+  - records `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` verdict as `PASS_WITH_NITS` and confirms no blocker for implementation scope lock.
+  - locks first implementation step to a minimal internal footprint-registry skeleton pass (not renderer/UI work).
+  - aligns V1 unknown fallback list at high-level board-vector doc level with spec-locked set: `unknown_rect`, `unknown_2pin`, `unknown_3pin`, `unknown_multi_pin`.
+  - locks first implementation approach to Option A: Dart const registry first, to avoid asset/schema/ZIP churn in first implementation pass.
+  - locks first implementation boundary:
+    - footprint registry/templates are app/library metadata only,
+    - not canonical project facts,
+    - no `events.jsonl` / `known_facts.json` mutation,
+    - no renderer/scene/hit-test/editor/AI-persistence implementation.
+  - routes next pass to `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`.
+- `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` is accepted with `PASS_WITH_NITS`:
+  - prior fixups are resolved and implementation-readiness is confirmed.
+  - remaining nit was high-level unknown fallback list alignment, now addressed in docs.
 - `VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS` is completed:
   - applies audit-requested wording hardening for identity leakage in human-facing template text fields (`template_id`, `display_name`, `description`, `package_family`, accessibility labels, style labels).
   - adds explicit unknown fallback policy with `unknown_rect`, `unknown_2pin`, `unknown_3pin`, and `unknown_multi_pin`.

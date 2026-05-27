@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS`
+`VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock first implementation boundary after `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS`: choose minimal internal registry-first implementation (`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`), align unknown fallback V1 list, preserve evidence boundaries, and keep renderer/UI/AI proposal persistence deferred. |
+| VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Re-audit after fixups confirms spec is implementation-ready; remaining nit was high-level unknown fallback list alignment. |
 | VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS | DOCS_SYNC | completed | Apply doc hardening from spec audit: identity-leakage guardrails for human-facing fields, explicit unknown fallback templates, locked template-local coordinate convention, tighter field semantics, pin-anchor non-fact boundary, variant relationship constraints, and expanded implementation-readiness tests. |
 | VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS | DOCS_SYNC | completed | Add formal parametric vector footprint/template specification (`docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md`) with required fields, pin-anchor and variant models, locked V1 template set, deferred families, naming guardrails, renderer-consumption boundaries, AI-proposal boundaries, and future test expectations. |
 | VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock internal parametric vector footprint/template library scope boundary before renderer/UI implementation; preserve package-vs-identity, AI-proposal, visual/electrical, and ownership boundaries; route next to `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`. |
@@ -130,17 +132,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS | AUDIT_ONLY | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS | AUDIT_ONLY | recommended |
+| VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS | FLUTTER_PASS | recommended |
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_FIXUP_PASS` is completed.
-Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` to verify fixup completeness before any implementation scope lock.
+`VECTOR_FOOTPRINT_LIBRARY_IMPLEMENTATION_SCOPE_LOCK_PASS` is completed.
+Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` to implement a minimal internal Dart const footprint-template registry before any renderer/UI work.
 
 ## Deferred / not active
 
@@ -153,4 +155,4 @@ Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` to verify
 
 ## Docs drift countdown
 
-Current countdown: 2
+Current countdown: 1

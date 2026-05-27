@@ -117,6 +117,9 @@ Template design:
 Locked V1 template core set:
 
 - `unknown_rect`
+- `unknown_2pin`
+- `unknown_3pin`
+- `unknown_multi_pin`
 - `chip_0402`
 - `chip_0603`
 - `chip_0805`
@@ -220,8 +223,8 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS` (AUDIT_ONLY):
+`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` (`FLUTTER_PASS`):
 
-- audit `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md` for consistency with scope lock and evidence-floor boundaries.
-- verify package-vs-identity separation remains explicit across boardview documents.
-- confirm renderer/UI implementation remains deferred after spec acceptance.
+- implement minimal internal static footprint template registry using the locked V1 template set.
+- keep renderer/UI/editor/AI proposal persistence deferred.
+- preserve evidence boundaries and keep templates as package/geometry metadata only.

@@ -3,12 +3,39 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
-- Docs drift countdown: `10`
+- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
+- Docs drift countdown: `9`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` is completed:
+  - records Claude Design “Board Canvas Read-Only Renderer — V1 UX Spec v2” as accepted UX input for read-only renderer scoping.
+  - records Pro precondition as satisfied by `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` (`ProjectState.knownFacts` now exposes `componentVisualPlacements`).
+  - locks V1 board-canvas renderer intent as strictly read-only projection rendering:
+    - renderer consumes `ProjectState.knownFacts` and vector footprint registry metadata.
+    - renderer must not parse raw `known_facts.json` directly.
+    - renderer must not consume `events.jsonl`, Project ZIP artifacts, `board_graph.json`, or `view_state.json`.
+    - renderer writes none: no event writing, no known-facts mutation, no Project ZIP mutation.
+  - locks V1 UX boundaries:
+    - no background photo helper layer in first renderer implementation.
+    - no edit handles, drag/rotate/resize, confirm/save/apply/export/print/share actions.
+    - no AI proposal UI and no Top-3 candidate UI.
+    - empty states are read-only and contain no action CTAs.
+    - renderer chrome must include explicit `renderer writes: none`.
+  - preserves evidence boundaries:
+    - `component_visual_placements` remain visual/documentation-only.
+    - `template_id` never proves electrical identity.
+    - `visual_trace` remains visual-only and may not be promoted to electrical net.
+    - measured values are display-only when already present; renderer may not infer or recalculate evidence.
+    - damage/suspect overlays remain contextual and non-fault-conclusive.
+  - locks future implementation split:
+    1. `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
+    2. `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
+    3. `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
+    4. `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
+    5. `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+  - routes next pass to `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`.
 - `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS` is completed:
   - adds Dart KnownFacts model parity for top-level `component_visual_placements`.
   - adds `ComponentVisualPlacementFact` and `KnownFacts.componentVisualPlacements`.

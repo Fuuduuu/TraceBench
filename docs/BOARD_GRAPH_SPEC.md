@@ -319,18 +319,19 @@ Codex must stop on:
 
 ## 16. Next passes
 
-Completed milestone sequence:
+Completed upstream prerequisite sequence now includes:
 
-1. `BOARD_GRAPH_MATERIALIZER_PASS` (completed)
-2. `FLUTTER_GRAPH_VIEW_SCOPE_LOCK_PASS` (completed)
-3. `FLUTTER_GRAPH_VIEW_PASS` (completed)
-4. `COMPONENT_EDIT_EVENT_MODEL_PASS` (completed)
+1. placement event schema + validator support (`BOARD_PLACEMENT_EVENT_SCHEMA_VALIDATOR_PASS`)
+2. placement known-facts projection support (`BOARD_PLACEMENT_EVENT_PROJECTION_PASS`)
+3. accepted-source validator normalization (`VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`)
+4. accepted-only materializer policy (`MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`)
+5. vector footprint registry skeleton + audit closeout (`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS`, `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`)
 
 Current conservative next pass:
 
-1. `BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` — `AUDIT_ONLY`  
-   Purpose: verify placement event schema, validator, known-facts projection, and ZIP boundary behavior as one evidence chain before any board renderer/editor expansion.
+1. `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` — `DOCS_SYNC`  
+   Purpose: lock read-only board-canvas renderer boundaries, inputs, and forbidden surfaces before any renderer implementation work.
 
-- Board graph is a derived consumer surface over `known_facts`.
-- Any rendering-only state is discarded on reload.
-- Known facts remain the only materialized shared state for graph projection.
+- Board graph remains a derived consumer surface over `known_facts`.
+- Any rendering-only state remains volatile and is discarded on reload.
+- `known_facts.json` remains the only materialized shared state for graph projection.

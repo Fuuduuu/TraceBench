@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_12_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | completed | Required docs drift cleanup after registry audit closeout: align queue/state/lock/index and stale spec routing; preserve evidence boundaries; route next to renderer scope-lock only. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` from Pro+Claude second-review result with final verdict `PASS_WITH_NITS`; confirm registry skeleton remains metadata/model/const-only and route next by docs-drift policy. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Closed by second-review evidence and recorded through `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`; no additional code/test/schema/tool changes required. |
 | VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS | FLUTTER_PASS | completed | Implement minimal internal Dart const footprint library skeleton (`lib/shared/footprints/**`) with immutable metadata models, locked V1 template registry, and unit tests; no renderer/UI/schema/tool/ZIP/event-writing changes. |
@@ -135,17 +136,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_12_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` is completed.
-Next recommended pass is `DOCS_DRIFT_MINI_CLEANUP_12_PASS` because docs drift countdown is `0`.
+`DOCS_DRIFT_MINI_CLEANUP_12_PASS` is completed.
+Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` to lock renderer read-only boundaries before any canvas/UI implementation.
 
 ## Deferred / not active
 
@@ -158,4 +159,4 @@ Next recommended pass is `DOCS_DRIFT_MINI_CLEANUP_12_PASS` because docs drift co
 
 ## Docs drift countdown
 
-Current countdown: 0
+Current countdown: 10

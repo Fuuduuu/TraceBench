@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_12_PASS`
 
 ## Goal
 
-Close out the `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` second-review result as docs-only with final verdict `PASS_WITH_NITS`, and route next pass by docs-drift policy.
+Run required docs-drift cleanup after vector footprint registry audit closeout, align queue/state/lock/spec routing, and prepare next safe scope-lock pass.
 
 ## Allowed surfaces
 
@@ -14,26 +14,30 @@ Close out the `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` second-review resul
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md` (only if stale)
+- `docs/TRUTH_INDEX.md` (only if stale)
+- `docs/BOARD_GRAPH_SPEC.md` (only if stale)
+- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` (only if stale)
+- `docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md` (only if stale)
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_12_PASS.md`
 
 ## Forbidden surfaces
 
-- `schemas/**`
-- `tools/**`
-- `tests/**`
-- `samples/**`
-- `assets/**`
 - `lib/**`
 - `test/**`
-- `pubspec.yaml`
-- `pubspec.lock`
+- `tests/**`
+- `schemas/**`
+- `tools/**`
+- `samples/**`
+- `assets/**`
+- `pubspec*`
 - `events.jsonl`
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter renderer/UI implementation
-- `CustomPainter`
+- Flutter renderer implementation
+- `CustomPainter` implementation
 - canvas rendering implementation
 - scene graph implementation
 - spatial index implementation
@@ -48,10 +52,11 @@ Close out the `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` second-review resul
 
 ## Locked decisions
 
-1. Final closeout verdict is `PASS_WITH_NITS`.
-2. Registry skeleton remains accepted as metadata/model/const registry only.
-3. No renderer/UI, schema/tool/ZIP/event/projection, or AI proposal persistence scope is opened.
-4. Next recommended pass is `DOCS_DRIFT_MINI_CLEANUP_12_PASS` because docs drift countdown is `0`.
+1. Registry skeleton remains accepted as metadata/model/const registry only.
+2. Footprint templates remain non-canonical metadata and `template_id` is not identity/electrical proof.
+3. Renderer/UI and AI proposal persistence remain deferred.
+4. `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+5. Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`.
 
 ## Validate
 

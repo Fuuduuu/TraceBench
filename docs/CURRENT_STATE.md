@@ -3,12 +3,20 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_12_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_12_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `DOCS_DRIFT_MINI_CLEANUP_12_PASS` is completed:
+  - confirms `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` and `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` are accepted and coherently routed.
+  - confirms registry remains app/library metadata only (not canonical project facts) and `template_id` remains non-identity/non-electrical proof.
+  - confirms renderer/UI implementation is still deferred, AI proposal persistence is deferred, and Project ZIP contract is unchanged.
+  - confirms status-semantics series remains closed and coherent:
+    - validator domain references use accepted-source provenance,
+    - materializer uses accepted-only current-domain projection.
+  - resets docs drift countdown and routes next pass to `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`.
 - `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_CLOSEOUT_PASS` is completed:
   - closes out `VECTOR_FOOTPRINT_LIBRARY_REGISTRY_AUDIT_PASS` using Pro + Claude second-review result with final verdict `PASS_WITH_NITS`.
   - accepts footprint registry skeleton as metadata/model/const-registry-only scope with no renderer/UI, schema/tool/test/ZIP/event/projection changes and no AI proposal persistence.

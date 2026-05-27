@@ -223,8 +223,11 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`VECTOR_FOOTPRINT_LIBRARY_REGISTRY_SKELETON_PASS` (`FLUTTER_PASS`):
+`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` (`DOCS_SYNC`):
 
-- implement minimal internal static footprint template registry using the locked V1 template set.
-- keep renderer/UI/editor/AI proposal persistence deferred.
-- preserve evidence boundaries and keep templates as package/geometry metadata only.
+- lock read-only renderer scope only (no implementation yet).
+- keep renderer/editor/AI proposal persistence implementation deferred until scope lock is accepted.
+- preserve evidence boundaries:
+  - templates remain package/geometry metadata only,
+  - `visual_trace` remains visual-only,
+  - no `board_graph.json` / `view_state.json`.

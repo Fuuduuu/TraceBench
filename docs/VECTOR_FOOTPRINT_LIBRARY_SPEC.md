@@ -299,8 +299,10 @@ A future implementation pass should include tests for:
 
 ## 14. Recommended next pass
 
-`VECTOR_FOOTPRINT_LIBRARY_SPEC_AUDIT_02_PASS`
+`BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 
 Reason:
 
-- re-audit these fixups for implementation-readiness and boundary precision before implementation scope lock.
+- footprint registry/spec/audit chain is accepted.
+- next safe step is renderer scope lock only, before any renderer implementation.
+- renderer must consume known-facts projection + footprint registry as read-only inputs.

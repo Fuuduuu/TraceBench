@@ -23,11 +23,14 @@ V1.0 is a Known Facts Builder, not an AI repair agent.
 - Accepted events are canonical source for current domain facts.
 - Non-accepted events are audit/history/review evidence and must not silently become current domain facts.
 - `known_facts.json` is a materialized projection used by read-only viewers.
+- Footprint template registry is app/library metadata only and is not canonical project fact storage.
+- `template_id` is package/geometry metadata only and is not component identity, electrical function, pin-mapping confirmation, measured-net proof, or fault evidence.
 - `component_visual_placement_confirmed` is a canonical visual/documentation placement event and does not confirm identity, pin mapping, visual trace, electrical net, measurement, fault candidate, repair conclusion, or hidden-layer truth.
 - `known_facts.json` may include top-level `component_visual_placements` as visual/documentation projection only.
 - AI proposal objects (`unconfirmed_ai_proposal`) are non-canonical until explicit human confirmation through accepted event paths.
 - `graph_layout` is non-canonical render state.
 - `board_graph.json` and `view_state.json` are forbidden in V1.
+- Board-canvas renderer implementation remains deferred until explicit renderer scope-lock/implementation passes.
 - Visual evidence is visual-only; `visual_trace` is never measured electrical evidence.
 - `component_removed` event type is not in V1.
 - `repair_action_recorded(action_type="remove_component")` is the V1 removal model.

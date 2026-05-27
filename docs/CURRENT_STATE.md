@@ -3,12 +3,23 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- Current pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS`
+- Next recommended pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`
 - Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS` is completed:
+  - records Pro implementation-readiness verdict: `NEEDS_DART_MODEL_PARITY_FIRST`.
+  - locks Dart KnownFacts parity for `component_visual_placements` as a precondition before any board-canvas renderer scope/implementation.
+  - locks next pass to `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`.
+  - locks parity implementation direction:
+    - add Dart model for component visual placement facts,
+    - add `KnownFacts.componentVisualPlacements`,
+    - parse/serialize `component_visual_placements`,
+    - preserve missing-field empty/default behavior,
+    - add unit tests.
+  - explicitly forbids renderer work and renderer-side raw known-facts JSON parsing in this pass and parity pass.
 - `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS` is completed:
   - updates Dart `MeasurementEventWriter` default event-id generation to schema/validator-compatible IDs matching `^evt_[0-9]{6}$`.
   - default generation is now sequence-based (`evt_000001`, `evt_000002`, ...), preserving local append uniqueness.

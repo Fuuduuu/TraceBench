@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS`
+`KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Lock the narrow future scope for fixing Dart measurement writer `event_id` generation so app-written `measurement_recorded` events are compatible with existing schema/validator format.
+Lock narrow pre-renderer scope: add Dart KnownFacts parity for `component_visual_placements` before any board-canvas renderer implementation.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Lock the narrow future scope for fixing Dart measurement writer `event_id` gener
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/MEASUREMENT_EVENT_ID_COMPAT_SCOPE_LOCK_PASS.md`
+- `docs/audit/KNOWN_FACTS_DART_PLACEMENT_PARITY_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -29,20 +29,24 @@ Lock the narrow future scope for fixing Dart measurement writer `event_id` gener
 - `events.jsonl`
 - `known_facts.json`
 - Project ZIP tooling/files
+- renderer/UI code
 - `board_graph.json`
 - `view_state.json`
-- renderer/UI implementation
+- CustomPainter/canvas/scene-graph/spatial-index/hit-test implementation
 - AI proposal persistence
-- materializer/projection changes
+- materializer/projection semantics changes
 
 ## Locked decisions
 
-1. Record `CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS` finding `F01`: Dart measurement writer currently emits `evt_flutter_*` IDs while schema/validator require `^evt_[0-9]{6}$`.
-2. Lock next pass to `MEASUREMENT_EVENT_ID_COMPAT_FIX_PASS`.
-3. Schema/validator `event_id` format remains source of truth for this fix.
-4. The future fix pass must not modify `schemas/events.schema.json` or `tools/validate_events_jsonl.py`.
-5. The future fix pass must not rewrite historical events or introduce migration.
-6. The future fix pass must include tests proving writer output is validator-compatible.
+1. Record Pro verdict: `NEEDS_DART_MODEL_PARITY_FIRST`.
+2. Lock KnownFacts Dart placement parity as mandatory precondition before renderer scope/implementation.
+3. Lock next pass: `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`.
+4. Lock future parity implementation allowlist:
+   - `lib/shared/models/known_facts.dart`
+   - relevant unit tests
+   - docs ledger files
+5. Explicitly forbid renderer implementation and renderer-side raw known-facts JSON parsing in this pass and in `KNOWN_FACTS_DART_PLACEMENT_PARITY_PASS`.
+6. Do not change schemas, tools/materializer, Project ZIP tooling, events/known_facts artifacts, or projection semantics.
 
 ## Validate
 

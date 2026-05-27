@@ -3,12 +3,23 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
-- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
-- Docs drift countdown: `2`
+- Current pass: `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
+- Next recommended pass: `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS`
+- Docs drift countdown: `1`
 
 ## Current accepted state snapshot
 
+- `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` is completed:
+  - locks footprint/template library scope before any renderer/UI implementation.
+  - locks parametric package/geometry-first template direction and explicit template-vs-identity boundary.
+  - locks naming direction to package/geometry IDs (e.g., `chip_0805`, `sot23_3`, `soic_8`) and forbids identity-claim template IDs as proof (`mosfet`, `regulator`, `diode`, etc.).
+  - locks small V1 template core set and explicitly defers QFN/QFP, relay blocks, complex connectors, transformers, and large modules.
+  - locks future template-spec field families (template metadata, geometry, label anchor, pin anchors/groups, variants, style/LOD/hit-test metadata) without locking renderer implementation choices.
+  - preserves UI/UX requirement set as design input only (dark/light, vector-only default, helper photo layer toggles/opacity, component opacity, side inspector, one-object confirmation, no confirm-all AI flow).
+  - preserves helper-photo and trace-color evidence boundaries (visual metadata only; no identity/net/measurement/fault fact creation).
+  - preserves AI boundary: all AI suggestions remain `unconfirmed_ai_proposal`; Top-3 ranking remains future external-lab input only.
+  - preserves ownership boundaries: template definitions are not canonical facts; assignment is event-driven if later accepted; no `board_graph.json`/`view_state.json`; no Project ZIP contract change.
+  - routes next pass to `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` (not renderer/UI implementation).
 - `QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS` is completed:
   - confirms status-semantics series is closed (validator accepted-reference normalization + materializer accepted-only projection + Pro closeout verdict recorded).
   - confirms no stale routing remains to already completed status-semantics work.

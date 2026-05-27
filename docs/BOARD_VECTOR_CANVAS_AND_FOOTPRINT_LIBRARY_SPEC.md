@@ -2,7 +2,7 @@
 
 PASS_ID: `BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_DESIGN_PASS`  
 Lane: `DOCS_SYNC / DESIGN_ONLY`  
-Status: Accepted design baseline; later schema/validator/projection passes implemented visual placement event + projection boundaries.
+Status: Accepted design baseline; later placement schema/validator/projection passes are implemented; `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS` now locks parametric footprint/template scope boundaries before renderer/UI implementation.
 
 ## 1. Goal
 
@@ -15,6 +15,18 @@ Define a future boardview-like vector canvas and internal vector footprint/templ
 - No `board_graph.json` or `view_state.json`.
 - No AI-generated confirmed facts.
 - No camera/OCR/CV, source search, KiCad import/export, cloud/BLE.
+
+## 2.1 Scope-lock addendum (`VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`)
+
+Locked before any renderer/UI implementation:
+
+- Footprint library direction is parametric package/geometry templates.
+- `template_id` is never electrical identity proof, pin-mapping confirmation, measured-net proof, or fault evidence.
+- Template naming is package/geometry-first; identity-claim template IDs are forbidden as proof.
+- V1 template set is deliberately small; advanced package families are deferred.
+- Renderer-facing requirements are locked (deterministic, bbox/pin/label/LOD friendly), but renderer implementation choices are explicitly deferred.
+- AI Top-3/ranking UX remains external-lab input only and is not a footprint-library implementation requirement.
+- Static SVG is optional as reference/icon asset only; core dynamic model remains parametric templates.
 
 ## 3. Hard evidence boundaries
 
@@ -83,6 +95,7 @@ Naming preference:
 
 - package-based names (`sot23_3`, `soic_8`, `chip_0805`, `qfn_32`)
 - avoid identity-claim names (`MOSFET`, `IC`, `resistor`) unless human-confirmed separately
+- forbidden as template-proof IDs: `mosfet`, `regulator`, `diode`, `microcontroller`, `opamp`, `relay_driver`, `power_supply`, `5v_regulator`, `eeprom`, `transistor`
 
 Template design:
 
@@ -92,17 +105,36 @@ Template design:
 - centered label/designator area (`U2`, `C17`, `R45`, `K72`)
 - orientation/rotation metadata
 
-Suggested V1 template families:
+Locked V1 template core set:
 
-- chip passives (`chip_0402`, `chip_0603`, `chip_0805`, `chip_1206`)
-- SOT packages (`sot23_3`, `sot23_5`, `sot223`)
-- SOIC/TSSOP (`soic_8`, `soic_14`, `soic_16`, parametric variants)
-- QFN/QFP/TQFP parametric families
-- `two_pin_axial`
+- `unknown_rect`
+- `chip_0402`
+- `chip_0603`
+- `chip_0805`
+- `chip_1206`
 - `two_pin_smd`
+- `two_pin_axial`
 - `three_pin_smd_generic`
 - `three_pin_through_hole_generic`
-- connectors/headers with configurable pin counts
+- `sot23_3`
+- `sot23_5`
+- `sot223`
+- `soic_8`
+- `soic_14`
+- `soic_16`
+- `header_1xn`
+- `header_2xn`
+
+Deferred initially:
+
+- `qfn_16`
+- `qfn_24`
+- `qfn_32`
+- `qfp` / `tqfp` families
+- relay blocks
+- complex connectors
+- transformers
+- large modules
 
 ## 9. Placement model (design semantics)
 
@@ -179,15 +211,9 @@ Deferred:
 
 ## 15. Recommended next pass
 
-`BOARD_PLACEMENT_EVENT_END_TO_END_AUDIT_PASS` (AUDIT_ONLY):
+`VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` (DOCS_SYNC / DESIGN_ONLY):
 
-- verify implemented placement event schema + validator + projection + ZIP behavior as one evidence chain
-- keep AI proposals non-canonical until explicit human confirmation
-- prevent any accidental promotion of visual proposals into electrical certainty
-- require explicit confirmation-state distinction for future flows:
-  - `placement_confirmed`
-  - `template_confirmed`
-  - `identity_confirmed`
-  - `pin_mapping_confirmed`
-  - `visual_trace_confirmed`
-  - `measured_electrical_confirmed`
+- formalize the internal parametric footprint/template specification fields and constraints.
+- preserve package-vs-identity and visual-vs-electrical boundaries.
+- keep AI proposal canonicalization out-of-scope.
+- do not route directly to renderer/UI implementation from this step.

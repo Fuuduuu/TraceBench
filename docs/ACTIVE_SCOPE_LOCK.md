@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS`
+`VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Review queue/state/lock alignment after status-semantics closeout and route the next safest pass without touching code/tooling/runtime surfaces.
+Lock future internal parametric vector footprint/template library scope before any renderer/UI implementation.
 
 ## Allowed surfaces
 
@@ -14,9 +14,8 @@ Review queue/state/lock alignment after status-semantics closeout and route the 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/QUEUE_REVIEW_AFTER_STATUS_SEMANTICS_PASS.md`
-- `docs/PROJECT_MEMORY.md` (only if narrowly needed)
-- `docs/TRUTH_INDEX.md` (only if narrowly needed)
+- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
+- `docs/audit/VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -33,27 +32,69 @@ Review queue/state/lock alignment after status-semantics closeout and route the 
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- schema/validator/materializer implementation
-- runtime/Flutter code
-- renderer/UI implementation
+- Flutter renderer implementation
+- `CustomPainter` implementation
+- scene graph implementation
+- spatial index implementation
+- hit testing implementation
+- component editing UI
+- event-writing UI
 - AI proposal persistence
-- external AI simulation lab files
+- camera/OCR/CV
+- source search
+- KiCad/boardview import/export
+- BLE/cloud
+- Project ZIP contract changes
 
 ## Scope decisions
 
-1. Status-semantics series is closed (`PASS_WITH_NITS` Pro closeout accepted, no further code fix required).
-2. Current routing to already-completed status-semantics work is removed.
-3. Next safest pass is `VECTOR_FOOTPRINT_LIBRARY_SCOPE_LOCK_PASS`.
-4. Rationale: footprint/template model boundaries should be scope-locked before any board-canvas renderer/UI implementation to prevent boundary drift between placement/template/identity semantics.
-5. Keep renderer/UI implementation deferred in this pass.
-6. Keep AI proposal persistence deferred and external simulation lab out-of-repo.
-7. Preserve hard boundaries:
-   - accepted events are current domain truth,
-   - non-accepted events remain audit/history/review data,
-   - known_facts is current projection,
-   - no `visual_trace` -> measured net promotion,
-   - no AI proposal -> confirmed fact promotion,
-   - `board_graph.json` / `view_state.json` forbidden in V1.
+1. Primary footprint model is parametric package/geometry templates.
+2. `template_id` is not identity/electrical function/pin-mapping confirmation/measured net/fault evidence.
+3. Naming is package/geometry-first (`chip_0805`, `sot23_3`, `soic_8`, etc.) and identity-claim IDs (`mosfet`, `regulator`, `diode`, etc.) are forbidden as template proof.
+4. V1 template set is intentionally small and locked:
+   - `unknown_rect`
+   - `chip_0402`
+   - `chip_0603`
+   - `chip_0805`
+   - `chip_1206`
+   - `two_pin_smd`
+   - `two_pin_axial`
+   - `three_pin_smd_generic`
+   - `three_pin_through_hole_generic`
+   - `sot23_3`
+   - `sot23_5`
+   - `sot223`
+   - `soic_8`
+   - `soic_14`
+   - `soic_16`
+   - `header_1xn`
+   - `header_2xn`
+5. Deferred initially:
+   - `qfn_16`
+   - `qfn_24`
+   - `qfn_32`
+   - `qfp` / `tqfp` families
+   - relay blocks
+   - complex connectors
+   - transformers
+   - large modules
+6. Future `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` must define template metadata/geometry/pin-anchor/variant/style-LOD-hit-test-accessibility fields.
+7. Pin-anchor model must support pin number, anchor coordinates, side/shape/size, and optional label anchor.
+8. Variant model must support pins-per-side, pitch, body dimensions, lead dimensions, and orientation marker.
+9. Lock renderer-facing requirements only (deterministic, bbox/pin/label aware, LOD-friendly, spatial-index friendly).
+10. Do not lock renderer implementation choices yet (`CustomPainter` architecture, viewer container, spatial index algorithm, caching, hit testing strategy, layer-manager implementation).
+11. Preserve future UI/UX design requirements as inputs only (dark/light, vector-only default, helper photo layer toggles/opacity, component opacity, layer toggles, side inspector, evidence badges, confirmed/stale/unconfirmed distinction, one-object confirmation, no confirm-all AI flow).
+12. Background photo remains helper-only visual context; pixels/opacity/alignment cannot create identity/placement/trace/measurement/net/fault facts.
+13. Trace color remains visual metadata only and does not confirm measured/electrical nets.
+14. AI Top-3/ranking remains external lab and future audit input only; all AI suggestions remain `unconfirmed_ai_proposal`.
+15. Data ownership remains unchanged:
+   - footprint template definitions are not canonical facts
+   - template assignment is event-driven only if later accepted
+   - render state stays volatile
+   - no `board_graph.json` / `view_state.json` in V1
+   - no Project ZIP contract change in V1
+16. Static SVG may be used later as reference/icon asset only; primary dynamic model remains parametric templates.
+17. Next recommended pass is `VECTOR_FOOTPRINT_LIBRARY_SPEC_PASS` (do not route directly to renderer/UI implementation).
 
 ## Validate
 

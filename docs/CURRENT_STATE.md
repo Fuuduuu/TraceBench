@@ -3,12 +3,41 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
+- Current pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS`
 - Next recommended pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
-- Docs drift countdown: `7`
+- Docs drift countdown: `6`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS` is completed:
+  - records shell audit verdict `PASS_WITH_NITS`.
+  - locks next implementation direction to `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`.
+  - locks rendering scope to read-only projected component placements only.
+  - locks data path for future implementation:
+    - `ProjectState.knownFacts.componentVisualPlacements`
+    - `ProjectState.knownFacts.components`
+    - `VectorFootprintLibrary` metadata
+  - locks coordinate rule for future implementation:
+    - render only `board_normalized` placements
+    - `photo_local` placements are deferred and must not be converted to board coordinates in this pass
+    - encountering `photo_local` must remain safe and non-crashing
+  - locks template/identity boundary for future implementation:
+    - `template_id` is geometry metadata only
+    - missing/unknown template IDs must use neutral fallback rendering
+    - template metadata must not imply electrical identity
+  - preserves strict read-only boundaries:
+    - no event writing
+    - no known-facts mutation
+    - no file writes
+    - no `board_graph.json` / `view_state.json`
+    - no Project ZIP contract change
+  - explicitly defers:
+    - `photo_local` rendering
+    - visual trace/damage/suspect/measurement overlays
+    - inspector
+    - AI proposal surfaces
+    - editing/confirm/save/export actions
+  - preserves required shell chrome text for future implementation: `renderer writes: none`.
 - `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS` is completed:
   - adds first V1 read-only board canvas shell route/screen only.
   - adds `/project/board-canvas` route with `BoardCanvasScreen`.

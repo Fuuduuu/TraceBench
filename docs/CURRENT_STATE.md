@@ -3,12 +3,34 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
-- Docs drift countdown: `6`
+- Current pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed:
+  - renders read-only projected component placements on board canvas for `coordinate_space = board_normalized`.
+  - consumes only:
+    - `ProjectState.knownFacts.componentVisualPlacements`
+    - `ProjectState.knownFacts.components`
+    - `VectorFootprintLibrary` metadata lookup
+  - uses neutral fallback rendering when `template_id` is missing or unknown.
+  - safely handles `unknown_*` template families without identity inference.
+  - preserves no-write/read-only boundaries:
+    - no event writing,
+    - no known-facts mutation,
+    - no file-writing or V1 artifact creation.
+  - keeps existing shell behavior:
+    - required empty states,
+    - no CTA/action affordances,
+    - exact status chrome `renderer writes: none`.
+  - adds non-actionable `photo_local` handling message when placements exist but no `board_normalized` placements are renderable.
+  - keeps deferred out of scope:
+    - no inspector,
+    - no AI/event-writing/editing/export flows,
+    - no visual_trace/measurement/damage/suspect rendering,
+    - no background photo helper.
 - `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS` is completed:
   - records shell audit verdict `PASS_WITH_NITS`.
   - locks next implementation direction to `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`.

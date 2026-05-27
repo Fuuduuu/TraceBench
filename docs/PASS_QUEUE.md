@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS | FLUTTER_PASS | completed | Implement narrow read-only board canvas placement rendering for `board_normalized` `componentVisualPlacements` using KnownFacts + VectorFootprintLibrary metadata, with safe template fallback, preserved shell chrome/empty states, and strict no-write/no-AI/no-inspector boundaries. |
 | BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock next renderer implementation scope to read-only component visual placement rendering only: `board_normalized` placements only, `photo_local` deferred, template-safe fallback required, strict no-write/no-AI/no-edit boundaries preserved, and next routing fixed to `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`. |
 | BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS | FLUTTER_PASS | completed | Implement minimal read-only board canvas shell: add route/screen, empty-state-only UI, exact status chrome `renderer writes: none`, and no-edit/no-AI/no-export/no-rendering guard tests. |
 | BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_FIXUP_PASS | DOCS_SYNC | completed | Apply Claude `PASS_WITH_NITS` renderer-readiness fixups: lock shell-first implementation, defer CustomPainter/placement/evidence overlays, forbid photo_local board rendering before coordinate mapping audit, and add dedicated read-only renderer spec. |
@@ -144,17 +145,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
 
-`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS` is completed.
-Next recommended pass is `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` for first board-normalized placement drawing using KnownFacts + footprint registry, still read-only.
+`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed.
+Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly read-only details panel without opening edit/write surfaces.
 
 ## Deferred / not active
 
@@ -167,4 +168,4 @@ Next recommended pass is `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` for f
 
 ## Docs drift countdown
 
-Current countdown: 6
+Current countdown: 5

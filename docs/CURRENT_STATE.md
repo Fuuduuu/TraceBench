@@ -3,12 +3,27 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS`
-- Next recommended pass: `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
+- Current pass: `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
+- Next recommended pass: `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS`
 - Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` is completed:
+  - validator reference semantics for domain/visual families are normalized toward accepted-source provenance.
+  - placement provenance behavior remains preserved:
+    - `component_visual_placement_confirmed.component_id` requires prior accepted `component_created`.
+    - `photo_local.source_photo_id` requires prior accepted `photo_added`.
+    - placement after `remove_component` remains allowed.
+  - broader validator normalization now enforces accepted-source references for:
+    - `pin_defined` component references
+    - `repair_action_recorded` component/pin target provenance checks
+    - `damage_region_marked`, `suspect_region_marked`, `visual_trace_added` photo references
+    - `net_connection_confirmed.confirmed_by_event_ids` measurement provenance checks
+    - `component_updated` and `component_marked_unknown` component provenance checks
+  - forward reference rejection is preserved for component/photo/measurement references where normalized in this pass.
+  - audit metadata behavior is intentionally preserved for `claim_invalidated` / conflict families via `all_event_ids`-style audit references.
+  - no schema, materializer/projection, ZIP tooling, sample/assets, or runtime/UI changes were made.
 - `GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS` is completed:
   - records `GLOBAL_EVENT_STATUS_SEMANTICS_AUDIT_PASS` verdict: `SPLIT_FIX_NEEDED`.
   - locks global policy direction:

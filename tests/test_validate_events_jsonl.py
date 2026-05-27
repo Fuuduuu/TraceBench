@@ -2253,6 +2253,567 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_pin_defined_rejected_component_created_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1", "status": "unknown"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing component_created", result.stdout + result.stderr)
+
+    def test_component_updated_rejected_component_created_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_updated",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "marking": "K72"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("prior accepted component_created", result.stdout + result.stderr)
+
+    def test_component_marked_unknown_rejected_component_created_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_marked_unknown",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("prior accepted component_created", result.stdout + result.stderr)
+
+    def test_component_updated_component_forward_reference_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_updated",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "marking": "K72"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_repair_action_component_target_rejected_component_created_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "remove_component",
+                    "targets": [{"target_type": "component", "target_id": "Q2"}],
+                    "reason": "remove",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("unknown component", result.stdout + result.stderr)
+
+    def test_damage_region_rejected_photo_added_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "rejected",
+                "payload": {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "damage_region_marked",
+                "status": "accepted",
+                "payload": {
+                    "region_id": "DMG001",
+                    "photo_id": "photo_top_001",
+                    "bbox": {"x": 1, "y": 2, "width": 3, "height": 4},
+                    "damage_type": "burn",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing photo_added photo_id", result.stdout + result.stderr)
+
+    def test_suspect_region_rejected_photo_added_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "rejected",
+                "payload": {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "suspect_region_marked",
+                "status": "accepted",
+                "payload": {
+                    "region_id": "SUSP001",
+                    "photo_id": "photo_top_001",
+                    "bbox": {"x": 1, "y": 2, "width": 3, "height": 4},
+                    "reason": "visual anomaly",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing photo_added photo_id", result.stdout + result.stderr)
+
+    def test_visual_trace_rejected_photo_added_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "rejected",
+                "payload": {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_top_001",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "visual_trace",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference existing photo_added photo_id", result.stdout + result.stderr)
+
+    def test_visual_trace_photo_forward_reference_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "visual_trace_added",
+                "status": "accepted",
+                "payload": {
+                    "trace_id": "VT001",
+                    "photo_id": "photo_top_001",
+                    "from_point": {"x": 1, "y": 2},
+                    "to_point": {"x": 3, "y": 4},
+                    "evidence_type": "visual_trace",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "photo_added",
+                "status": "accepted",
+                "payload": {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_net_confirmed_with_rejected_measurement_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "rejected",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000001"],
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must point to measurement_recorded", result.stdout + result.stderr)
+
+    def test_net_confirmed_with_accepted_measurement_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000001"],
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_net_confirmed_measurement_forward_reference_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "net_connection_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "net_id": "N1",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "confirmation_basis": "measured",
+                    "confirmed_by_event_ids": ["evt_000002"],
+                },
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "measurement_recorded",
+                "status": "accepted",
+                "payload": {
+                    "measurement_id": "M1",
+                    "mode": "continuity",
+                    "from": "Q2.1",
+                    "to": "R1.1",
+                    "reading": {"kind": "numeric", "value": 0.1, "unit": "ohm"},
+                    "power_state": "off",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_repair_action_pin_target_rejected_pin_defined_status_rejected(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "rejected",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1", "status": "unknown"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-06-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "replace_component",
+                    "targets": [{"target_type": "pin", "target_id": "Q2.1"}],
+                    "reason": "rework",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("unknown pin", result.stdout + result.stderr)
+
+    def test_repair_action_pin_target_with_accepted_pin_defined_passes(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "accepted",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "pin_defined",
+                "status": "accepted",
+                "payload": {"component_id": "Q2", "pin_id": "Q2.1", "status": "unknown"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000003",
+                "project_id": "prj_test",
+                "sequence": 3,
+                "created_at": "2026-06-01T00:02:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "repair_action_recorded",
+                "status": "accepted",
+                "payload": {
+                    "repair_action_id": "RA1",
+                    "action_type": "replace_component",
+                    "targets": [{"target_type": "pin", "target_id": "Q2.1"}],
+                    "reason": "rework",
+                    "invalidation_policy": {
+                        "direct_component_measurements": "stale_after_repair",
+                        "connected_net_measurements": "no_change",
+                    },
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_claim_invalidated_may_reference_rejected_event_for_audit_metadata(self):
+        events = [
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-06-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "component_created",
+                "status": "rejected",
+                "payload": {"component_id": "Q2"},
+            },
+            {
+                "schema_version": "1.0",
+                "event_id": "evt_000002",
+                "project_id": "prj_test",
+                "sequence": 2,
+                "created_at": "2026-06-01T00:01:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "claim_invalidated",
+                "status": "accepted",
+                "payload": {
+                    "invalidates_event_id": "evt_000001",
+                    "reason": "audit cleanup",
+                    "invalidation_type": "retracted",
+                },
+            },
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

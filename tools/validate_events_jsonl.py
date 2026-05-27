@@ -309,9 +309,10 @@ def _validate_repair_action(
     payload: dict,
     line: int,
     errors: list[str],
-    component_ids: set[str],
-    component_sequences: dict[str, int],
-    pin_ids: set[str],
+    all_component_ids_by_create_event: set[str],
+    accepted_component_sequence_by_id: dict[str, int],
+    all_pin_ids_by_define_event: set[str],
+    accepted_pin_sequence_by_id: dict[str, int],
     sequence: int,
 ) -> None:
     context = f"line {line}"
@@ -349,21 +350,38 @@ def _validate_repair_action(
         if not isinstance(target_id, str) or not target_id:
             _error(errors, context, f"repair target {index} target_id required")
             continue
-        if target_type == "component" and component_ids and target_id not in component_ids:
+        if (
+            target_type == "component"
+            and (accepted_component_sequence_by_id or all_component_ids_by_create_event)
+            and target_id not in accepted_component_sequence_by_id
+        ):
             _error(errors, context, f"repair target {index} references unknown component {target_id!r}")
         if (
             action_type == "remove_component"
             and target_type == "component"
-            and target_id in component_sequences
-            and component_sequences[target_id] >= sequence
+            and target_id in accepted_component_sequence_by_id
+            and accepted_component_sequence_by_id[target_id] >= sequence
         ):
             _error(
                 errors,
                 context,
                 f"repair target {index} references component {target_id!r} created later than this action",
             )
-        if target_type == "pin" and target_id not in pin_ids:
-            _error(errors, context, f"repair target {index} references unknown pin {target_id!r}")
+        if target_type == "pin":
+            if (
+                (accepted_pin_sequence_by_id or all_pin_ids_by_define_event)
+                and target_id not in accepted_pin_sequence_by_id
+            ):
+                _error(errors, context, f"repair target {index} references unknown pin {target_id!r}")
+            elif (
+                target_id in accepted_pin_sequence_by_id
+                and accepted_pin_sequence_by_id[target_id] >= sequence
+            ):
+                _error(
+                    errors,
+                    context,
+                    f"repair target {index} references pin {target_id!r} defined later than this action",
+                )
         if action_type == "remove_component":
             for key in REMOVE_COMPONENT_FORBIDDEN_KEYS:
                 if key in payload:
@@ -427,6 +445,28 @@ def _validate_component(payload: dict, line: int, errors: list[str], seen_compon
         _error(errors, context, f"component_created status must be one of {sorted(ALLOWED_COMPONENT_STATUS)!r}")
 
 
+def _validate_component_reference_by_accepted_create(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    sequence: int,
+    accepted_component_sequence_by_id: dict[str, int],
+    event_type: str,
+) -> None:
+    context = f"line {line}"
+    component_id = payload.get("component_id")
+    if not isinstance(component_id, str) or not component_id:
+        _error(errors, context, f"{event_type} requires component_id")
+    elif component_id not in accepted_component_sequence_by_id:
+        _error(
+            errors,
+            context,
+            f"{event_type} component_id {component_id!r} must reference prior accepted component_created",
+        )
+    elif accepted_component_sequence_by_id[component_id] >= sequence:
+        _error(errors, context, f"{event_type} component_id {component_id!r} must not be forward reference")
+
+
 def _validate_bbox(context: str, bbox: dict, errors: list[str]) -> None:
     if not isinstance(bbox, dict):
         _error(errors, context, "bbox must be object")
@@ -485,7 +525,8 @@ def _validate_damage_region_marked(
     payload: dict,
     line: int,
     errors: list[str],
-    photo_ids: set[str],
+    sequence: int,
+    accepted_photo_sequence_by_id: dict[str, int],
     seen_region_ids: Counter[str],
     actor_type: str | None,
 ) -> None:
@@ -503,8 +544,10 @@ def _validate_damage_region_marked(
     photo_id = payload.get("photo_id")
     if not isinstance(photo_id, str) or not photo_id:
         _error(errors, context, "photo_id required")
-    elif photo_id not in photo_ids:
+    elif photo_id not in accepted_photo_sequence_by_id:
         _error(errors, context, f"damage_region_marked photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+    elif accepted_photo_sequence_by_id[photo_id] >= sequence:
+        _error(errors, context, f"damage_region_marked photo_id {photo_id!r} must not be forward reference")
 
     _validate_bbox(context, payload.get("bbox"), errors)
 
@@ -520,7 +563,8 @@ def _validate_suspect_region_marked(
     payload: dict,
     line: int,
     errors: list[str],
-    photo_ids: set[str],
+    sequence: int,
+    accepted_photo_sequence_by_id: dict[str, int],
     seen_region_ids: Counter[str],
     actor_type: str | None,
 ) -> None:
@@ -538,8 +582,10 @@ def _validate_suspect_region_marked(
     photo_id = payload.get("photo_id")
     if not isinstance(photo_id, str) or not photo_id:
         _error(errors, context, "photo_id required")
-    elif photo_id not in photo_ids:
+    elif photo_id not in accepted_photo_sequence_by_id:
         _error(errors, context, f"suspect_region_marked photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+    elif accepted_photo_sequence_by_id[photo_id] >= sequence:
+        _error(errors, context, f"suspect_region_marked photo_id {photo_id!r} must not be forward reference")
 
     _validate_bbox(context, payload.get("bbox"), errors)
 
@@ -556,7 +602,8 @@ def _validate_visual_trace_added(
     payload: dict,
     line: int,
     errors: list[str],
-    photo_ids: set[str],
+    sequence: int,
+    accepted_photo_sequence_by_id: dict[str, int],
     seen_trace_ids: Counter[str],
     actor_type: str | None,
 ) -> None:
@@ -574,8 +621,10 @@ def _validate_visual_trace_added(
     photo_id = payload.get("photo_id")
     if not isinstance(photo_id, str) or not photo_id:
         _error(errors, context, "photo_id required")
-    elif photo_id not in photo_ids:
+    elif photo_id not in accepted_photo_sequence_by_id:
         _error(errors, context, f"visual_trace_added photo_id must reference existing photo_added photo_id, got {photo_id!r}")
+    elif accepted_photo_sequence_by_id[photo_id] >= sequence:
+        _error(errors, context, f"visual_trace_added photo_id {photo_id!r} must not be forward reference")
 
     for field in ("confirmation_basis", "confirmed_by_event_ids", "net_id"):
         if field in payload:
@@ -728,14 +777,17 @@ def _validate_pin(
     payload: dict,
     line: int,
     errors: list[str],
-    component_ids: set[str],
+    sequence: int,
+    accepted_component_sequence_by_id: dict[str, int],
     seen_pin_ids: Counter[str],
 ) -> None:
     context = f"line {line}"
     component_id = payload.get("component_id")
     pin_id = payload.get("pin_id")
-    if component_id not in component_ids:
+    if component_id not in accepted_component_sequence_by_id:
         _error(errors, context, f"pin_defined component_id {component_id!r} must reference existing component_created")
+    elif accepted_component_sequence_by_id[component_id] >= sequence:
+        _error(errors, context, f"pin_defined component_id {component_id!r} must not be forward reference")
     if not isinstance(pin_id, str) or not pin_id:
         _error(errors, context, "pin_defined requires pin_id")
         return
@@ -753,8 +805,9 @@ def _validate_net_connection(
     payload: dict,
     line: int,
     errors: list[str],
+    sequence: int,
     all_event_ids: set[str],
-    measurement_event_ids: set[str],
+    accepted_measurement_sequence_by_event_id: dict[str, int],
 ) -> None:
     context = f"line {line}"
     if not isinstance(payload.get("net_id"), str) or not payload.get("net_id"):
@@ -785,8 +838,10 @@ def _validate_net_connection(
             continue
         if ref not in all_event_ids:
             _error(errors, context, f"confirmed_by_event_id {ref!r} does not exist")
-        elif ref not in measurement_event_ids:
+        elif ref not in accepted_measurement_sequence_by_event_id:
             _error(errors, context, f"confirmed_by_event_id {ref!r} must point to measurement_recorded")
+        elif accepted_measurement_sequence_by_event_id[ref] >= sequence:
+            _error(errors, context, f"confirmed_by_event_id {ref!r} must not be forward reference")
 
     if not isinstance(payload.get("from"), str) or not payload["from"]:
         _error(errors, context, "from must be non-empty string")
@@ -897,11 +952,12 @@ def main() -> None:
 
     seen_event_ids: set[str] = set()
     all_event_ids: set[str] = set()
-    measurement_event_ids: set[str] = set()
-    component_ids: set[str] = set()
-    pin_ids: set[str] = set()
-    photo_ids: set[str] = set()
-    photo_sequence_by_id: dict[str, int] = {}
+    all_component_ids_by_create_event: set[str] = set()
+    all_pin_ids_by_define_event: set[str] = set()
+    accepted_measurement_sequence_by_event_id: dict[str, int] = {}
+    accepted_component_sequence_by_id: dict[str, int] = {}
+    accepted_pin_sequence_by_id: dict[str, int] = {}
+    accepted_photo_sequence_by_id: dict[str, int] = {}
     seen_photo_ids: Counter[str] = Counter()
     region_ids: Counter[str] = Counter()
     trace_ids: Counter[str] = Counter()
@@ -910,8 +966,6 @@ def main() -> None:
     conflict_id_counts: Counter[str] = Counter()
     conflict_type_by_id: dict[str, str] = {}
     claim_target_count: Counter[str] = Counter()
-    component_sequence_by_id: dict[str, int] = {}
-
     for _, event in events:
         event_id = event.get("event_id")
         event_type = event.get("event_type")
@@ -922,26 +976,32 @@ def main() -> None:
             component_id = event.get("payload", {}).get("component_id")
             sequence = event.get("sequence")
             if isinstance(component_id, str):
-                component_ids.add(component_id)
-                if event_status == "accepted" and isinstance(sequence, int) and event_id:
-                    component_sequence_by_id[component_id] = sequence
+                all_component_ids_by_create_event.add(component_id)
+            if event_status == "accepted" and isinstance(component_id, str) and isinstance(sequence, int) and event_id:
+                accepted_component_sequence_by_id[component_id] = sequence
         if event_type == "pin_defined":
             pin_id = event.get("payload", {}).get("pin_id")
+            sequence = event.get("sequence")
             if isinstance(pin_id, str):
-                pin_ids.add(pin_id)
+                all_pin_ids_by_define_event.add(pin_id)
+            if event_status == "accepted" and isinstance(pin_id, str) and isinstance(sequence, int):
+                accepted_pin_sequence_by_id[pin_id] = sequence
         if event_type == "photo_added":
             photo_id = event.get("payload", {}).get("photo_id")
             sequence = event.get("sequence")
-            if isinstance(photo_id, str):
-                photo_ids.add(photo_id)
-                if event_status == "accepted" and isinstance(sequence, int):
-                    photo_sequence_by_id[photo_id] = sequence
-        if event_type == "measurement_recorded" and isinstance(event_id, str):
-            measurement_event_ids.add(event_id)
+            if event_status == "accepted" and isinstance(photo_id, str) and isinstance(sequence, int):
+                accepted_photo_sequence_by_id[photo_id] = sequence
+        if (
+            event_type == "measurement_recorded"
+            and event_status == "accepted"
+            and isinstance(event_id, str)
+            and isinstance(event.get("sequence"), int)
+        ):
+            accepted_measurement_sequence_by_event_id[event_id] = event["sequence"]
 
     last_sequence = 0
     conflict_payloads: list[tuple[dict, int]] = []
-    net_payloads: list[tuple[dict, int]] = []
+    net_payloads: list[tuple[dict, int, int]] = []
     resolved_payloads: list[tuple[dict, int]] = []
     claim_payloads: list[tuple[dict, int]] = []
 
@@ -982,9 +1042,10 @@ def main() -> None:
                 payload,
                 line_no,
                 errors,
-                component_ids,
-                component_sequence_by_id,
-                pin_ids,
+                all_component_ids_by_create_event,
+                accepted_component_sequence_by_id,
+                all_pin_ids_by_define_event,
+                accepted_pin_sequence_by_id,
                 sequence,
             )
             continue
@@ -1006,7 +1067,8 @@ def main() -> None:
                 payload,
                 line_no,
                 errors,
-                photo_ids,
+                sequence,
+                accepted_photo_sequence_by_id,
                 region_ids,
                 event.get("actor", {}).get("type"),
             )
@@ -1017,7 +1079,8 @@ def main() -> None:
                 payload,
                 line_no,
                 errors,
-                photo_ids,
+                sequence,
+                accepted_photo_sequence_by_id,
                 region_ids,
                 event.get("actor", {}).get("type"),
             )
@@ -1028,7 +1091,8 @@ def main() -> None:
                 payload,
                 line_no,
                 errors,
-                photo_ids,
+                sequence,
+                accepted_photo_sequence_by_id,
                 trace_ids,
                 event.get("actor", {}).get("type"),
             )
@@ -1041,17 +1105,17 @@ def main() -> None:
                 errors,
                 event.get("actor", {}).get("type"),
                 sequence,
-                component_sequence_by_id,
-                photo_sequence_by_id,
+                accepted_component_sequence_by_id,
+                accepted_photo_sequence_by_id,
             )
             continue
 
         if event_type == "pin_defined":
-            _validate_pin(payload, line_no, errors, component_ids, pin_id_counts)
+            _validate_pin(payload, line_no, errors, sequence, accepted_component_sequence_by_id, pin_id_counts)
             continue
 
         if event_type == "net_connection_confirmed":
-            net_payloads.append((payload, line_no))
+            net_payloads.append((payload, line_no, sequence))
             continue
 
         if event_type == "conflict_detected":
@@ -1076,14 +1140,41 @@ def main() -> None:
             "initial_intake_updated",
             "photo_reference_points_set",
             "photo_layer_aligned",
-            "component_updated",
-            "component_marked_unknown",
             "export_created",
         }:
             continue
 
-    for payload, line_no in net_payloads:
-        _validate_net_connection(payload, line_no, errors, all_event_ids, measurement_event_ids)
+        if event_type == "component_updated":
+            _validate_component_reference_by_accepted_create(
+                payload,
+                line_no,
+                errors,
+                sequence,
+                accepted_component_sequence_by_id,
+                "component_updated",
+            )
+            continue
+
+        if event_type == "component_marked_unknown":
+            _validate_component_reference_by_accepted_create(
+                payload,
+                line_no,
+                errors,
+                sequence,
+                accepted_component_sequence_by_id,
+                "component_marked_unknown",
+            )
+            continue
+
+    for payload, line_no, sequence in net_payloads:
+        _validate_net_connection(
+            payload,
+            line_no,
+            errors,
+            sequence,
+            all_event_ids,
+            accepted_measurement_sequence_by_event_id,
+        )
 
     for payload, line_no in conflict_payloads:
         between = payload.get("between")

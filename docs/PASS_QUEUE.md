@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS`
+`VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Normalize validator reference provenance to accepted-source semantics for component/photo/measurement/pin domain references while preserving audit-metadata reference behavior and placement visual boundary. |
 | GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock global event.status policy and split sequencing after audit: accepted-only domain facts/reference direction, validator normalization first, materializer policy second, regression/fixture follow-up only if impact requires. |
 | BOARD_PLACEMENT_REFERENCE_STATUS_FIX_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Restrict placement provenance reference indexes to prior accepted `component_created` / `photo_added` for `component_visual_placement_confirmed`; add validator tests for rejected/draft create-events and non-creator component events. |
 | BOARD_PLACEMENT_REFERENCE_STATUS_FIX_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow validator-only follow-up so placement references must resolve only to prior accepted `component_created` / `photo_added`; defer broader status semantics to separate audit. |
@@ -122,17 +123,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | recommended |
+| MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS | SCHEMA_PASS / VALIDATOR_FIX | recommended |
+| MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS | TOOLS_PASS | recommended |
 
-`GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS` is completed and locks accepted-only policy direction for domain facts with explicit split implementation sequencing.
-Next recommended pass is `VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` to align validator reference indexes/helpers before any global materializer status filtering changes.
+`VALIDATOR_REFERENCE_STATUS_NORMALIZATION_PASS` is completed and aligns validator domain reference provenance with accepted-source policy while preserving audit-metadata reference behavior.
+Next recommended pass is `MATERIALIZER_ACCEPTED_ONLY_POLICY_PASS` to align materializer projection side effects with the same accepted-only policy direction.
 
 ## Deferred / not active
 

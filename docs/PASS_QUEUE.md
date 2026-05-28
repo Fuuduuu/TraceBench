@@ -183,3 +183,10 @@ Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly r
 ## Docs drift countdown
 
 Current countdown: 9
+
+## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_PASS (completed)
+- Lane: `FLUTTER_PASS`
+- Status: implemented (read-only inspector only)
+- Scope kept: inspector/details panel from existing known_facts placement/component data.
+- Boundaries kept: no hit-testing selection, no edit/save/export/AI/event-writing UI, no raw known_facts JSON parsing.
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.

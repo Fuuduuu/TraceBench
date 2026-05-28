@@ -9,436 +9,591 @@ import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 
-class BoardCanvasScreen extends ConsumerWidget {
+class BoardCanvasScreen extends ConsumerStatefulWidget {
   const BoardCanvasScreen({super.key});
 
-  static const String noProjectText = 'Open a project to view its board.';
-  static const String noComponentsText =
-      'No components recorded for this project.';
-  static const String noPlacementsText = 'No confirmed visual placements yet.';
-  static const String noPlacementsSupportText =
-      'Board canvas is read-only in V1. Placement workflow is a future step.';
-  static const String noBoardNormalizedPlacementsText =
-      'No board-normalized placements available for this read-only canvas.';
-  static const String rendererWritesNoneText = 'renderer writes: none';
+  @override
+  ConsumerState<BoardCanvasScreen> createState() => _BoardCanvasScreenState();
+}
+
+class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
+  String? _selectedPlacementKey;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final ProjectState? projectState = ref.watch(projectStateProvider);
 
+    if (projectState == null) {
+      return _buildScaffold(
+        context,
+        const _EmptyState(
+          title: 'Open a project to view its board.',
+        ),
+      );
+    }
+
+    final knownFacts = projectState.knownFacts;
+    if (knownFacts.components.isEmpty) {
+      return _buildScaffold(
+        context,
+        const _EmptyState(
+          title: 'No components recorded for this project.',
+        ),
+      );
+    }
+
+    final allPlacements = knownFacts.componentVisualPlacements;
+    if (allPlacements.isEmpty) {
+      return _buildScaffold(
+        context,
+        const _EmptyState(
+          title: 'No confirmed visual placements yet.',
+          subtitle:
+              'Board canvas is read-only in V1. Placement workflow is a future step.',
+        ),
+      );
+    }
+
+    final renderable = allPlacements
+        .where((placement) => placement.coordinateSpace == 'board_normalized')
+        .toList(growable: false);
+
+    if (renderable.isEmpty) {
+      return _buildScaffold(
+        context,
+        const _EmptyState(
+          title:
+              'No board-normalized placements available for this read-only canvas.',
+        ),
+      );
+    }
+
+    final componentsById = <String, ComponentFact>{
+      for (final component in knownFacts.components)
+        component.componentId: component,
+    };
+
+    final entries = renderable
+        .map(
+          (placement) => _PlacementEntry(
+            placement: placement,
+            component: componentsById[placement.componentId],
+            template: placement.templateId == null
+                ? null
+                : VectorFootprintLibrary.templateById(placement.templateId!),
+          ),
+        )
+        .toList(growable: false);
+
+    final selectedKey = _coerceSelection(entries);
+    _PlacementEntry? selectedEntry;
+    if (selectedKey != null) {
+      for (final entry in entries) {
+        if (entry.key == selectedKey) {
+          selectedEntry = entry;
+          break;
+        }
+      }
+    }
+
+    return _buildScaffold(
+      context,
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _PlacementSelector(
+              entries: entries,
+              selectedKey: selectedKey,
+              onSelected: (value) {
+                setState(() {
+                  _selectedPlacementKey = value;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final canvas = _CanvasPanel(
+                    entries: entries,
+                    selectedKey: selectedKey,
+                  );
+                  final inspector = _InspectorPanel(selectedEntry: selectedEntry);
+
+                  if (constraints.maxWidth >= 980) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 7, child: canvas),
+                        const SizedBox(width: 16),
+                        Expanded(flex: 4, child: inspector),
+                      ],
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      Expanded(flex: 3, child: canvas),
+                      const SizedBox(height: 12),
+                      Expanded(flex: 2, child: inspector),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? _coerceSelection(List<_PlacementEntry> entries) {
+    if (entries.isEmpty) {
+      if (_selectedPlacementKey != null) {
+        _selectedPlacementKey = null;
+      }
+      return null;
+    }
+
+    final current = _selectedPlacementKey;
+    if (current != null && entries.any((entry) => entry.key == current)) {
+      return current;
+    }
+
+    if (_selectedPlacementKey != null) {
+      _selectedPlacementKey = null;
+    }
+    return null;
+  }
+
+  Widget _buildScaffold(BuildContext context, Widget content) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Board canvas'),
+        title: const Text('Board Canvas'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Center(
-                child: _BoardCanvasStateBody(projectState: projectState),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: content),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: const Text(
+                'renderer writes: none',
+                key: Key('renderer_writes_none'),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          const Divider(height: 1),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
-            child: Text(
-              rendererWritesNoneText,
-              key: ValueKey('board-canvas-read-only-status'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.title, this.subtitle});
+
+  final String title;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
               textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-          ),
-        ],
+            if (subtitle != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                subtitle!,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _BoardCanvasStateBody extends StatelessWidget {
-  const _BoardCanvasStateBody({required this.projectState});
+class _PlacementSelector extends StatelessWidget {
+  const _PlacementSelector({
+    required this.entries,
+    required this.selectedKey,
+    required this.onSelected,
+  });
 
-  final ProjectState? projectState;
+  final List<_PlacementEntry> entries;
+  final String? selectedKey;
+  final ValueChanged<String> onSelected;
 
   @override
   Widget build(BuildContext context) {
-    if (projectState == null) {
-      return const Text(
-        BoardCanvasScreen.noProjectText,
-        key: ValueKey('board-canvas-empty-no-project'),
-        textAlign: TextAlign.center,
-      );
-    }
-
-    final components = projectState!.knownFacts.components;
-    if (components.isEmpty) {
-      return const Text(
-        BoardCanvasScreen.noComponentsText,
-        key: ValueKey('board-canvas-empty-no-components'),
-        textAlign: TextAlign.center,
-      );
-    }
-
-    final placements = projectState!.knownFacts.componentVisualPlacements;
-    if (placements.isEmpty) {
-      return const Column(
-        key: ValueKey('board-canvas-empty-no-placements'),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            BoardCanvasScreen.noPlacementsText,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8),
-          Text(
-            BoardCanvasScreen.noPlacementsSupportText,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-    }
-
-    final renderablePlacements =
-        _buildRenderablePlacements(projectState!.knownFacts);
-    if (renderablePlacements.isEmpty) {
-      return const Text(
-        BoardCanvasScreen.noBoardNormalizedPlacementsText,
-        key: ValueKey('board-canvas-empty-no-board-normalized'),
-        textAlign: TextAlign.center,
-      );
-    }
-
-    return _BoardCanvasPlacementSurface(
-      renderablePlacements: renderablePlacements,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Placement selection (read-only)',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: entries
+                  .map(
+                    (entry) => ChoiceChip(
+                      key: Key('placement_selector_${entry.key}'),
+                      label: Text(entry.selectorLabel),
+                      selected: selectedKey == entry.key,
+                      onSelected: (_) => onSelected(entry.key),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _RenderablePlacement {
-  const _RenderablePlacement({
-    required this.componentId,
-    required this.center,
-    required this.rotationRad,
-    required this.normalizedSize,
-    required this.hasKnownTemplate,
-    required this.isUnknownTemplateFamily,
-    this.designator,
-  });
+class _CanvasPanel extends StatelessWidget {
+  const _CanvasPanel({required this.entries, required this.selectedKey});
 
-  final String componentId;
-  final Offset center;
-  final double rotationRad;
-  final Size normalizedSize;
-  final bool hasKnownTemplate;
-  final bool isUnknownTemplateFamily;
-  final String? designator;
-}
-
-class _BoardCanvasPlacementSurface extends StatelessWidget {
-  const _BoardCanvasPlacementSurface({
-    required this.renderablePlacements,
-  });
-
-  final List<_RenderablePlacement> renderablePlacements;
+  final List<_PlacementEntry> entries;
+  final String? selectedKey;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double maxWidth =
-            constraints.maxWidth.isFinite ? constraints.maxWidth : 320;
-        final double maxHeight =
-            constraints.maxHeight.isFinite ? constraints.maxHeight : 320;
-        final double side = math.max(1, math.min(maxWidth, maxHeight));
-
-        return SizedBox(
-          key: const ValueKey('board-canvas-placement-surface'),
-          width: side,
-          height: side,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _BoardCanvasPlacementPainter(
-                    renderablePlacements: renderablePlacements,
-                  ),
-                ),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return CustomPaint(
+              key: const Key('board_canvas_painter'),
+              painter: _BoardPlacementPainter(
+                entries: entries,
+                selectedKey: selectedKey,
+                colorScheme: Theme.of(context).colorScheme,
               ),
-              ..._buildDesignatorLabels(side),
-            ],
-          ),
-        );
-      },
+              child: SizedBox(
+                width: math.max(240, constraints.maxWidth),
+                height: math.max(220, constraints.maxHeight),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
+}
 
-  List<Widget> _buildDesignatorLabels(double side) {
-    final List<Widget> labels = [];
-    for (final placement in renderablePlacements) {
-      final String? designator = placement.designator;
-      if (designator == null || designator.trim().isEmpty) {
-        continue;
-      }
-      final double left = _clamp((placement.center.dx * side) + 6, 0, side - 84);
-      final double top = _clamp((placement.center.dy * side) + 6, 0, side - 24);
-      labels.add(
-        Positioned(
-          key: ValueKey('board-canvas-label-${placement.componentId}'),
-          left: left,
-          top: top,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              designator,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+class _InspectorPanel extends StatelessWidget {
+  const _InspectorPanel({required this.selectedEntry});
+
+  final _PlacementEntry? selectedEntry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (selectedEntry == null) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Text('Select a placement to view read-only details.'),
           ),
         ),
       );
     }
-    return labels;
+
+    final entry = selectedEntry!;
+    final placement = entry.placement;
+    final component = entry.component;
+    final packageLabel = entry.template?.displayName ?? 'Unknown package geometry';
+    final templateId = placement.templateId ?? 'not provided';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Placement inspector (read-only)',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+              _InspectorField(label: 'Component ID', value: placement.componentId),
+              if ((component?.designator ?? '').isNotEmpty)
+                _InspectorField(
+                  label: 'Designator',
+                  value: component!.designator!,
+                ),
+              _InspectorField(label: 'Template ID', value: templateId),
+              _InspectorField(
+                label: 'Package',
+                value: '$packageLabel (package geometry)',
+              ),
+              _InspectorField(
+                label: 'Identity status',
+                value: _identityStatus(component),
+              ),
+              _InspectorField(
+                label: 'Electrical role',
+                value: 'not confirmed',
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('Template does not prove electrical identity.'),
+              ),
+              _InspectorField(label: 'Placement status', value: placement.status),
+              _InspectorField(
+                label: 'Coordinate space',
+                value: placement.coordinateSpace,
+              ),
+              _InspectorField(label: 'Board side', value: placement.boardSide),
+              _InspectorField(label: 'Center X', value: placement.centerX.toString()),
+              _InspectorField(label: 'Center Y', value: placement.centerY.toString()),
+              _InspectorField(
+                label: 'Rotation (deg)',
+                value: placement.rotationDeg.toString(),
+              ),
+              if (placement.scale != null)
+                _InspectorField(label: 'Scale', value: placement.scale.toString())
+              else ...[
+                if (placement.width != null)
+                  _InspectorField(
+                    label: 'Width',
+                    value: placement.width.toString(),
+                  ),
+                if (placement.height != null)
+                  _InspectorField(
+                    label: 'Height',
+                    value: placement.height.toString(),
+                  ),
+              ],
+              _InspectorField(
+                label: 'Source event ID',
+                value: placement.sourceEventId,
+              ),
+              _InspectorField(label: 'Status', value: placement.status),
+              if (component?.installationStatus != null)
+                _InspectorField(
+                  label: 'Installation status',
+                  value: component!.installationStatus!,
+                ),
+              if (component?.removedByEventId != null)
+                _InspectorField(
+                  label: 'Removed by event ID',
+                  value: component!.removedByEventId!,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _identityStatus(ComponentFact? component) {
+    if (component == null) {
+      return 'unknown';
+    }
+
+    final status = component.status?.toLowerCase();
+    final type = component.type?.trim();
+    const confirmedStates = {
+      'human_confirmed',
+      'user_confirmed',
+      'confirmed',
+      'identity_confirmed',
+    };
+
+    if (type != null && type.isNotEmpty && confirmedStates.contains(status)) {
+      return 'human-confirmed ($type)';
+    }
+
+    return 'unknown';
   }
 }
 
-class _BoardCanvasPlacementPainter extends CustomPainter {
-  const _BoardCanvasPlacementPainter({
-    required this.renderablePlacements,
+class _InspectorField extends StatelessWidget {
+  const _InspectorField({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        '$label: $value',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
+  }
+}
+
+class _PlacementEntry {
+  const _PlacementEntry({
+    required this.placement,
+    required this.component,
+    required this.template,
   });
 
-  final List<_RenderablePlacement> renderablePlacements;
+  final ComponentVisualPlacementFact placement;
+  final ComponentFact? component;
+  final FootprintTemplate? template;
+
+  String get key => '${placement.componentId}|${placement.sourceEventId}';
+
+  String get selectorLabel {
+    final designator = component?.designator?.trim();
+    if (designator != null && designator.isNotEmpty) {
+      return '$designator (${placement.componentId})';
+    }
+    return placement.componentId;
+  }
+}
+
+class _BoardPlacementPainter extends CustomPainter {
+  _BoardPlacementPainter({
+    required this.entries,
+    required this.selectedKey,
+    required this.colorScheme,
+  });
+
+  final List<_PlacementEntry> entries;
+  final String? selectedKey;
+  final ColorScheme colorScheme;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Rect boardRect = Offset.zero & size;
-    canvas.drawRect(
-      boardRect,
-      Paint()..color = const Color(0xFF111827),
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
-      Paint()
-        ..color = const Color(0x663B82F6)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1,
-    );
+    final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    for (final placement in renderablePlacements) {
-      final double centerX = placement.center.dx * size.width;
-      final double centerY = placement.center.dy * size.height;
-      final double widthPx = placement.normalizedSize.width * size.width;
-      final double heightPx = placement.normalizedSize.height * size.height;
+    final boardPaint = Paint()
+      ..color = colorScheme.surfaceContainerLowest
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(boardRect, boardPaint);
+
+    final borderPaint = Paint()
+      ..color = colorScheme.outline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawRect(boardRect.deflate(0.5), borderPaint);
+
+    for (final entry in entries) {
+      final placement = entry.placement;
+      final normalizedX = placement.centerX.toDouble().clamp(0.0, 1.0);
+      final normalizedY = placement.centerY.toDouble().clamp(0.0, 1.0);
+      final center = Offset(normalizedX * size.width, normalizedY * size.height);
+      final bodySize = _placementBodySize(entry);
+      final selected = entry.key == selectedKey;
+
+      final fillPaint = Paint()
+        ..color = selected
+            ? colorScheme.primary.withValues(alpha: 0.35)
+            : colorScheme.tertiaryContainer.withValues(alpha: 0.65)
+        ..style = PaintingStyle.fill;
+
+      final strokePaint = Paint()
+        ..color = selected ? colorScheme.primary : colorScheme.outline
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = selected ? 2 : 1.2;
 
       canvas.save();
-      canvas.translate(centerX, centerY);
-      canvas.rotate(placement.rotationRad);
+      canvas.translate(center.dx, center.dy);
+      canvas.rotate(placement.rotationDeg.toDouble() * math.pi / 180.0);
 
-      final RRect body = RRect.fromRectAndRadius(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: widthPx,
-          height: heightPx,
-        ),
-        const Radius.circular(4),
-      );
-
-      final Color fillColor = placement.hasKnownTemplate
-          ? (placement.isUnknownTemplateFamily
-              ? const Color(0x44F59E0B)
-              : const Color(0x444C7DFF))
-          : const Color(0x559CA3AF);
-      final Color strokeColor = placement.hasKnownTemplate
-          ? (placement.isUnknownTemplateFamily
-              ? const Color(0xFFF59E0B)
-              : const Color(0xFF7DA2FF))
-          : const Color(0xFFB0B7C3);
-
-      canvas.drawRRect(
-        body,
-        Paint()
-          ..color = fillColor
-          ..style = PaintingStyle.fill,
+      final rect = Rect.fromCenter(
+        center: Offset.zero,
+        width: bodySize.width,
+        height: bodySize.height,
       );
       canvas.drawRRect(
-        body,
-        Paint()
-          ..color = strokeColor
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.2,
+        RRect.fromRectAndRadius(rect, const Radius.circular(4)),
+        fillPaint,
       );
-
-      if (placement.hasKnownTemplate) {
-        final double markerY = -heightPx / 2;
-        canvas.drawLine(
-          Offset(-widthPx * 0.18, markerY),
-          Offset(widthPx * 0.18, markerY),
-          Paint()
-            ..color = strokeColor
-            ..strokeWidth = 1.2,
-        );
-      }
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(4)),
+        strokePaint,
+      );
 
       canvas.restore();
+
+      final designator = entry.component?.designator;
+      if (designator != null && designator.trim().isNotEmpty) {
+        final textPainter = TextPainter(
+          textDirection: TextDirection.ltr,
+          text: TextSpan(
+            text: designator,
+            style: TextStyle(
+              color: colorScheme.onSurface,
+              fontSize: 11,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        )..layout(maxWidth: 120);
+        textPainter.paint(
+          canvas,
+          Offset(
+            (center.dx + 6).clamp(0.0, math.max(0.0, size.width - textPainter.width)),
+            (center.dy + 6)
+                .clamp(0.0, math.max(0.0, size.height - textPainter.height)),
+          ),
+        );
+      }
     }
+  }
+
+  Size _placementBodySize(_PlacementEntry entry) {
+    final placement = entry.placement;
+    if (placement.scale != null) {
+      final scale = placement.scale!.toDouble();
+      final base = 28.0;
+      final scaled = (base * scale).clamp(8.0, 140.0);
+      return Size(scaled, (scaled * 0.66).clamp(6.0, 120.0));
+    }
+
+    if (placement.width != null && placement.height != null) {
+      final width = (placement.width!.toDouble() * 60).clamp(8.0, 140.0);
+      final height = (placement.height!.toDouble() * 60).clamp(6.0, 120.0);
+      return Size(width, height);
+    }
+
+    final template = entry.template;
+    if (template != null) {
+      final width = (template.body.width * 40).clamp(8.0, 140.0);
+      final height = (template.body.height * 40).clamp(6.0, 120.0);
+      return Size(width, height);
+    }
+
+    return const Size(24, 16);
   }
 
   @override
-  bool shouldRepaint(covariant _BoardCanvasPlacementPainter oldDelegate) {
-    return oldDelegate.renderablePlacements != renderablePlacements;
+  bool shouldRepaint(covariant _BoardPlacementPainter oldDelegate) {
+    return oldDelegate.entries != entries ||
+        oldDelegate.selectedKey != selectedKey ||
+        oldDelegate.colorScheme != colorScheme;
   }
-}
-
-List<_RenderablePlacement> _buildRenderablePlacements(KnownFacts knownFacts) {
-  final Map<String, ComponentFact> componentsById = {
-    for (final component in knownFacts.components) component.componentId: component,
-  };
-  final List<_RenderablePlacement> placements = [];
-
-  for (final placement in knownFacts.componentVisualPlacements) {
-    if (placement.coordinateSpace != 'board_normalized') {
-      continue;
-    }
-
-    final String? templateId = placement.templateId?.trim();
-    final FootprintTemplate? template =
-        (templateId == null || templateId.isEmpty)
-            ? null
-            : VectorFootprintLibrary.templateById(templateId);
-
-    final ComponentFact? component = componentsById[placement.componentId];
-    final String? designator = (component?.designator?.trim().isEmpty ?? true)
-        ? null
-        : component!.designator!.trim();
-
-    placements.add(
-      _RenderablePlacement(
-        componentId: placement.componentId,
-        center: Offset(
-          _clamp(placement.centerX.toDouble(), 0, 1),
-          _clamp(placement.centerY.toDouble(), 0, 1),
-        ),
-        rotationRad: placement.rotationDeg.toDouble() * math.pi / 180,
-        normalizedSize: _resolveNormalizedPlacementSize(
-          placement: placement,
-          template: template,
-        ),
-        hasKnownTemplate: template != null,
-        isUnknownTemplateFamily:
-            templateId != null && templateId.startsWith('unknown_'),
-        designator: designator,
-      ),
-    );
-  }
-
-  return placements;
-}
-
-Size _resolveNormalizedPlacementSize({
-  required ComponentVisualPlacementFact placement,
-  required FootprintTemplate? template,
-}) {
-  final double? explicitWidth = placement.width?.toDouble();
-  final double? explicitHeight = placement.height?.toDouble();
-  if (explicitWidth != null &&
-      explicitHeight != null &&
-      explicitWidth > 0 &&
-      explicitHeight > 0) {
-    return Size(
-      _clamp(explicitWidth, 0.002, 0.95),
-      _clamp(explicitHeight, 0.002, 0.95),
-    );
-  }
-
-  final double scale = placement.scale?.toDouble() ?? 1.0;
-  final double aspectRatio = _clamp(_templateAspectRatio(template), 0.25, 4.0);
-  final double width = _clamp(0.07 * scale, 0.01, 0.35);
-  final double height = _clamp(width / aspectRatio, 0.01, 0.35);
-  return Size(width, height);
-}
-
-double _templateAspectRatio(FootprintTemplate? template) {
-  if (template == null) {
-    return 1.6;
-  }
-
-  final Map<String, dynamic> map = template.toMap();
-  final Map<String, dynamic>? body = _asMap(map['body']);
-  final Map<String, dynamic>? bbox = _asMap(map['bounding_box']);
-
-  double? width = _firstDouble(body, ['width', 'body_width', 'w']);
-  double? height = _firstDouble(body, ['height', 'body_height', 'h']);
-
-  if ((width == null || height == null) && bbox != null) {
-    width ??= _firstDouble(bbox, ['width', 'w']);
-    height ??= _firstDouble(bbox, ['height', 'h']);
-
-    if (width == null) {
-      final double? minX = _firstDouble(bbox, ['min_x', 'left', 'x_min']);
-      final double? maxX = _firstDouble(bbox, ['max_x', 'right', 'x_max']);
-      if (minX != null && maxX != null) {
-        width = (maxX - minX).abs();
-      }
-    }
-
-    if (height == null) {
-      final double? minY = _firstDouble(bbox, ['min_y', 'top', 'y_min']);
-      final double? maxY = _firstDouble(bbox, ['max_y', 'bottom', 'y_max']);
-      if (minY != null && maxY != null) {
-        height = (maxY - minY).abs();
-      }
-    }
-  }
-
-  if (width == null || height == null || width <= 0 || height <= 0) {
-    return 1.6;
-  }
-  return width / height;
-}
-
-Map<String, dynamic>? _asMap(dynamic value) {
-  if (value is Map) {
-    return value.map((key, value) => MapEntry(key.toString(), value));
-  }
-  return null;
-}
-
-double? _firstDouble(Map<String, dynamic>? map, List<String> keys) {
-  if (map == null) {
-    return null;
-  }
-  for (final key in keys) {
-    final double? parsed = _asDouble(map[key]);
-    if (parsed != null) {
-      return parsed;
-    }
-  }
-  return null;
-}
-
-double? _asDouble(dynamic value) {
-  if (value is num) {
-    return value.toDouble();
-  }
-  if (value is String) {
-    return double.tryParse(value);
-  }
-  return null;
-}
-
-double _clamp(double value, double min, double max) {
-  if (value < min) {
-    return min;
-  }
-  if (value > max) {
-    return max;
-  }
-  return value;
 }

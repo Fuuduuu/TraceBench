@@ -531,3 +531,13 @@ Branch: main
 - Current scope lock: [docs/ACTIVE_SCOPE_LOCK.md](ACTIVE_SCOPE_LOCK.md)
 - Audit evidence: [docs/AUDIT_INDEX.md](AUDIT_INDEX.md)
 
+
+## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_PASS (2026-05-28)
+- Latest accepted implementation target: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`.
+- Board canvas remains read-only and write-free.
+- Added read-only inspector path for selected `board_normalized` placements using non-canvas selection control.
+- Data path remains: `ProjectState.knownFacts` + `VectorFootprintLibrary`.
+- `photo_local` placement non-rendering boundary remains intact.
+- `renderer writes: none` chrome remains visible.
+- No event writing, no known_facts mutation, no AI UI, no `board_graph.json`/`view_state.json`.
+- Recommended next pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.

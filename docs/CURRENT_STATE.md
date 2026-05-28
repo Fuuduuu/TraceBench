@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`
-- Docs drift countdown: `4`
+- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
+- Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
@@ -796,3 +796,32 @@ Branch: main
   - no `board_graph.json` / `view_state.json`,
   - no Project ZIP contract change.
 - Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS (2026-05-28)
+- Codex and Claude independent audits are recorded with verdicts `PASS_WITH_NITS` and `PASS_WITH_NITS`.
+- `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS` is accepted as scope-compliant.
+- Accepted state:
+  - visual-trace support remains read-only inspector/list metadata only,
+  - strict association rules are accepted (`fromComponent`, `toComponent`, `fromPin`, `toPin` with exact/`componentId.` matching),
+  - required safety copy is accepted,
+  - no visual-trace geometry rendering, no `from_point`/`to_point` usage, no photo-to-board transform, no net/connectivity promotion.
+- Preserved board-canvas behavior:
+  - shell + board-normalized placement rendering,
+  - read-only inspector,
+  - read-only measurement summary metadata,
+  - read-only visual-trace metadata summary,
+  - exact chrome text `renderer writes: none`.
+- Deferred remains unchanged:
+  - visual-trace canvas geometry,
+  - `from_point`/`to_point` rendering,
+  - damage/suspect rendering,
+  - background photo helper,
+  - photo/evidence alignment implementation,
+  - AI proposal UI,
+  - edit/event-writing UI.
+- Non-blocking nits recorded:
+  - source-string guard tests are useful but brittle under refactors,
+  - text-only action-label checks may miss icon-only affordances,
+  - optional negative endpoint tests (`AQ2`/`Q2A`) can be added later.
+- ACTIVE_SCOPE_LOCK stale pointer is corrected by this closeout.
+- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.

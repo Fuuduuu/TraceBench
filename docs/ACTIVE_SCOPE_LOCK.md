@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope lock for a future read-only visual-trace metadata summary in board-canvas inspector/list area.
+Docs-only closeout for dual visual-trace inspector audits after accepted implementation.
 
 ## Allowed surfaces
 
@@ -14,13 +14,9 @@ Docs-only scope lock for a future read-only visual-trace metadata summary in boa
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/audit/BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS.md`
-- optional only if stale:
-  - `docs/PHOTO_FLOW_SPEC.md`
-  - `docs/BOARD_GRAPH_SPEC.md`
-  - `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-  - `docs/FLUTTER_UI_SPEC.md`
+- `docs/PROJECT_MEMORY.md` only if stale
+- `docs/TRUTH_INDEX.md` only if stale
+- `docs/audit/BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -37,9 +33,9 @@ Docs-only scope lock for a future read-only visual-trace metadata summary in boa
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter implementation
-- visual trace rendering
-- visual trace canvas polyline
+- Flutter renderer implementation
+- visual_trace canvas rendering
+- `from_point` / `to_point` model changes
 - photo-to-board transform
 - background photo helper
 - damage/suspect rendering
@@ -50,27 +46,17 @@ Docs-only scope lock for a future read-only visual-trace metadata summary in boa
 
 ## Locked decisions
 
-1. Photo evidence alignment decision remains: `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
-2. Future board-canvas visual-trace support is locked to read-only inspector/list metadata only.
-3. Future visual-trace-to-component association is locked to strict rules:
-   - `trace.fromComponent == componentId`
-   - `trace.toComponent == componentId`
-   - `trace.fromPin` starts with `componentId + "."`
-   - `trace.toPin` starts with `componentId + "."`
-4. Explicitly forbidden:
-   - loose prefix matching (`Q2` must not match `Q20`)
-   - matching by nets/proximity/measurement/template/overlap
-   - visual-trace geometry rendering on board canvas
-   - `from_point` / `to_point` board-canvas rendering path
-   - photo-local to board transform/alignment implementation
-   - visual-trace-to-net promotion/inference
-5. Read-only no-write boundaries remain locked:
-   - no events writes
-   - no known-facts mutation
-   - no `board_graph.json` / `view_state.json`
-   - no Project ZIP contract change
-6. Next recommended pass:
-   - `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
+1. `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS` is accepted as read-only metadata-only implementation.
+2. Dual audits are accepted with `PASS_WITH_NITS` / `PASS_WITH_NITS`.
+3. Preserved boundaries:
+   - no visual-trace geometry rendering,
+   - no visual-trace -> electrical/net promotion,
+   - no event writing,
+   - no known-facts mutation,
+   - no `board_graph.json` / `view_state.json`,
+   - no Project ZIP contract change.
+4. Next recommended pass:
+   - `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
 
 ## Validate
 

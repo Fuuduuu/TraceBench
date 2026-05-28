@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
+`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual visual-trace inspector audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata-only implementation, record non-blocking guard-test nits, fix ACTIVE_SCOPE_LOCK stale pointer, and route next to photo-evidence alignment scope audit (not geometry implementation). |
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms visual-trace summary stayed metadata-only with strict association and no geometry/net/write-path drift; non-blocking nits recorded. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS | FLUTTER_PASS | completed | Add read-only visual_trace metadata summary to board-canvas inspector/list using strict selected-component association rules only; preserve metadata-only/no-geometry/no-net-inference boundaries and keep all no-write constraints. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future board-canvas visual_trace support to read-only inspector/list metadata only; forbid visual-trace canvas geometry rendering, photo-alignment implementation, background photo helper, and net/connectivity inference from visual evidence; route next to `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`. |
 | BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Pro + Claude photo-evidence alignment audits: record high-risk alignment boundary and absent infra, set final decision `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`, keep visual evidence overlays deferred, and route next to visual-trace inspector scope lock (metadata-only direction). |
@@ -161,18 +163,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`.
+Next recommended pass is `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -348,3 +350,21 @@ Current countdown: 5
   - no `board_graph.json` / `view_state.json`.
 - Routing:
   - next recommended pass `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Codex and Claude audits recorded with verdicts `PASS_WITH_NITS` and `PASS_WITH_NITS`.
+- Accepted:
+  - read-only visual-trace metadata summary implementation,
+  - strict association rules,
+  - required safe copy,
+  - no visual-trace geometry rendering,
+  - no net/connectivity inference,
+  - no event-writing/canonical-mutation path.
+- Non-blocking nits recorded:
+  - source-string guards are useful but brittle under refactors,
+  - text-only action-label checks may miss icon-only affordances,
+  - optional `AQ2`/`Q2A` negative tests can be added later.
+  - ACTIVE_SCOPE_LOCK stale pointer corrected in this closeout.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.

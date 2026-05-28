@@ -311,3 +311,70 @@ Schema sample tests:
 - visual trace overlay
 - damage/suspect overlays
 - real photo files in sample
+
+## 14. Photo alignment data-model scope-lock direction (no implementation in this pass)
+
+Status source: `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` (docs-only).
+
+### 14.1 Placeholder event policy
+
+- `photo_reference_points_set` and `photo_layer_aligned` remain placeholder event names only.
+- They are unsafe for writer usage until accepted scope locks exist for:
+  - event schema payload semantics,
+  - validator semantics,
+  - materializer projection,
+  - tests.
+- Placeholder pass-through is acceptable only while no writer emits accepted events for these families.
+
+### 14.2 Canonical vs volatile alignment
+
+- If photo-to-board alignment affects board-canvas evidence positioning, report/export output, or repeatable project state, alignment must be canonical:
+  - event-backed,
+  - human-confirmed,
+  - materialized.
+- The following are not canonical truth:
+  - hidden UI transform state,
+  - local cache truth,
+  - `view_state.json`,
+  - `board_graph.json`,
+  - AI-only transform proposals,
+  - background-photo drag state.
+- A future volatile alignment preview may exist only if explicitly non-canonical, not saved/materialized/exported/reported, and reset on reload.
+
+### 14.3 Candidate future canonical event direction (not implemented)
+
+Candidate event family direction:
+
+- `photo_to_board_alignment_confirmed`
+
+Minimum payload direction:
+
+- `alignment_id`
+- `source_photo_id`
+- `board_side`
+- `coordinate_space_from = photo_local`
+- `coordinate_space_to = board_normalized`
+- `reference_points_photo[]`
+- `reference_points_board[]`
+- `transform_type`
+- `alignment_quality_label`
+- `notes` (optional)
+
+Rule direction:
+
+- `actor.type` must be `user` for canonical alignment.
+- AI actor is rejected for canonical alignment.
+- `source_photo_id` must reference prior accepted `photo_added`.
+- `graph_layout` is rejected as canonical source/target coordinate space.
+- Alignment transform is geometry mapping only; it does not confirm identity/net/measurement/fault.
+- Future lifecycle must support supersession/stale-awareness.
+
+### 14.4 Sequencing direction
+
+Recommended sequence before any implementation:
+
+1. `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+2. `PHOTO_ALIGNMENT_VALIDATOR_SCOPE_LOCK_PASS`
+3. `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
+4. `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+5. only later: board-canvas photo helper / photo-evidence rendering scope locks.

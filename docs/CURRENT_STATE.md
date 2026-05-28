@@ -3,12 +3,46 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
+- Current pass: `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
 - Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` is completed:
+  - records `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` verdict: `NEEDS_SCOPE_FIRST`.
+  - locks placeholder policy:
+    - `photo_reference_points_set` and `photo_layer_aligned` remain placeholder-only event types.
+    - these placeholder families are unsafe for writer usage until schema + validator + materializer + tests are formally scoped and accepted.
+  - locks canonical alignment principle:
+    - if photo-to-board alignment affects board-canvas evidence placement, report/export, or repeatable project state, it must be canonical, event-backed, human-confirmed, and materialized.
+    - hidden UI state, local cache truth, `view_state.json`, `board_graph.json`, AI-only transform proposals, and background-photo drag state are not canonical truth.
+  - locks volatile preview principle for future non-canonical workflows:
+    - preview-only alignment must be explicitly labeled non-canonical,
+    - must not be saved/materialized/exported/reported,
+    - must reset on reload,
+    - must never position evidence as accepted board-canvas truth.
+  - locks future candidate event direction (not implemented):
+    - `photo_to_board_alignment_confirmed`
+    - payload direction: `alignment_id`, `source_photo_id`, `board_side`, `coordinate_space_from=photo_local`, `coordinate_space_to=board_normalized`, `reference_points_photo[]`, `reference_points_board[]`, `transform_type`, `alignment_quality_label`, optional `notes`.
+    - actor/rule direction: `actor.type=user` required for canonical alignment, AI actor rejected, `source_photo_id` must reference accepted `photo_added`, `graph_layout` rejected as canonical source/target space, and future lifecycle must support supersession/stale-awareness.
+  - preserves evidence boundaries:
+    - photo pixels are not facts,
+    - photo alignment is not identity/net/measurement/fault proof,
+    - visual_trace remains visual-only and not a net,
+    - damage/suspect remain non-fault-proof visual context,
+    - renderer writes nothing and does not create `board_graph.json`/`view_state.json`.
+  - recommended future sequence:
+    1. `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+    2. `PHOTO_ALIGNMENT_VALIDATOR_SCOPE_LOCK_PASS`
+    3. `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
+    4. `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+    5. only later: board-canvas background/photo helper or visual-evidence rendering scope-lock work.
+  - routes next to `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (with `PHOTO_FLOW_SPEC_AUDIT_PASS` as governance-first alternative if required before schema lock).
+- `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` is completed (audit-only):
+  - verdict: `NEEDS_SCOPE_FIRST`.
+  - confirms alignment placeholders exist without formal payload/validator/materializer/model/test semantics.
+  - confirms scope-lock sequence is required before any alignment implementation work.
 - `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS` is completed:
   - records dual audit inputs (Pro architecture/evidence-boundary review + Claude repo-local review).
   - final closeout decision is `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
@@ -825,3 +859,21 @@ Branch: main
   - optional negative endpoint tests (`AQ2`/`Q2A`) can be added later.
 - ACTIVE_SCOPE_LOCK stale pointer is corrected by this closeout.
 - Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS (2026-05-28)
+- `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` verdict is recorded as `NEEDS_SCOPE_FIRST`.
+- Alignment placeholders are locked as unsafe for writer usage until formalized:
+  - `photo_reference_points_set`
+  - `photo_layer_aligned`
+- Canonical-vs-volatile alignment direction is locked:
+  - canonical alignment must be event-backed, human-confirmed, and materialized when used for repeatable board-canvas evidence placement/reporting.
+  - volatile alignment preview is non-canonical only and must never persist, export, materialize, or become accepted board-canvas truth.
+- Future candidate event direction is locked (not implemented):
+  - `photo_to_board_alignment_confirmed` with explicit `photo_local -> board_normalized` transform metadata and strict actor/photo-reference constraints.
+- Existing boundaries remain unchanged:
+  - no photo-local evidence rendering on board canvas without accepted transform,
+  - no visual_trace -> net promotion,
+  - no damage/suspect -> fault proof,
+  - no `board_graph.json` / `view_state.json`,
+  - renderer writes nothing.
+- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (or `PHOTO_FLOW_SPEC_AUDIT_PASS` if governance requires spec audit first).

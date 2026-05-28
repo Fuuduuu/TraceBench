@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS`
+`PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock photo-alignment data-model direction after `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` (`NEEDS_SCOPE_FIRST`): placeholders remain unsafe for writer usage, canonical-vs-volatile policy is fixed, candidate canonical event direction is documented, and implementation is deferred behind schema/validator/materializer/model scope locks. |
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (`NEEDS_SCOPE_FIRST`) | Audit confirms alignment infrastructure remains placeholder-only and requires scope-first sequencing before any schema/validator/materializer/model/runtime implementation. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual visual-trace inspector audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata-only implementation, record non-blocking guard-test nits, fix ACTIVE_SCOPE_LOCK stale pointer, and route next to photo-evidence alignment scope audit (not geometry implementation). |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms visual-trace summary stayed metadata-only with strict association and no geometry/net/write-path drift; non-blocking nits recorded. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS | FLUTTER_PASS | completed | Add read-only visual_trace metadata summary to board-canvas inspector/list using strict selected-component association rules only; preserve metadata-only/no-geometry/no-net-inference boundaries and keep all no-write constraints. |
@@ -163,18 +165,20 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
 
-`BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
-Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+`BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` is completed with verdict `NEEDS_SCOPE_FIRST`.
+Photo alignment implementation remains deferred and must proceed via scope-lock sequencing.
+Next recommended pass is `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (or `PHOTO_FLOW_SPEC_AUDIT_PASS` if governance requires pre-lock spec audit).
 
 ## Recorded future cleanup candidates (not active)
 
@@ -259,8 +263,10 @@ Current countdown: 5
   - Preserved no-overlay/no-inference/no-write boundaries.
 
 ## Next recommended pass
-- `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS` (FLUTTER_PASS)
-  - Implement read-only visual-trace metadata summary in inspector/list only, with no canvas geometry overlays and no photo-alignment implementation.
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (DOCS_SYNC)
+  - Lock dedicated event-schema scope for alignment payload semantics before validator/materializer/model/runtime work.
+- `PHOTO_FLOW_SPEC_AUDIT_PASS` (AUDIT_ONLY, optional governance-first alternative)
+  - Use only if governance requires reconciling older photo-flow sections before schema scope lock.
 
 ## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -303,7 +309,7 @@ Current countdown: 5
   - board-normalized component placements remain safely implemented.
 - Routing:
   - next recommended pass `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`.
-  - `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` remains future-only and should not be started before explicit alignment risk/scope decision.
+  - `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` was the required next scope-lock after alignment-risk decision and is now completed.
 
 ## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -368,3 +374,22 @@ Current countdown: 5
   - ACTIVE_SCOPE_LOCK stale pointer corrected in this closeout.
 - Routing:
   - next recommended pass `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Audit input recorded:
+  - `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` verdict `NEEDS_SCOPE_FIRST`.
+- Locked decisions:
+  - `photo_reference_points_set` and `photo_layer_aligned` are placeholder-only and unsafe for writer usage until formalized by accepted schema/validator/materializer/tests scope locks.
+  - canonical alignment (if it affects board-canvas evidence positioning/report/export/repeatable project state) must be event-backed, human-confirmed, and materialized.
+  - volatile/session alignment may only exist as explicit non-canonical preview and must not persist/materialize/export/report or survive reload.
+  - candidate future canonical event direction is documented as `photo_to_board_alignment_confirmed` (`photo_local -> board_normalized`, strict actor/photo-reference/space constraints).
+- Boundaries preserved:
+  - no alignment implementation,
+  - no schema/tool/model/runtime changes in this pass,
+  - no `board_graph.json` / `view_state.json`,
+  - no renderer write path,
+  - no visual_trace -> net or damage/suspect -> fault promotion.
+- Routing:
+  - next recommended pass `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`,
+  - optional governance-first alternative: `PHOTO_FLOW_SPEC_AUDIT_PASS`.

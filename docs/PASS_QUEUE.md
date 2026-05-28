@@ -11,12 +11,15 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out inspector audit after `PASS_WITH_NITS`: confirm read-only scope compliance, preserve no-write/no-AI/no-edit boundaries, record non-blocking Windows temp-file lock flake classification, and route next to visual-trace/evidence scope audit. |
+| BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms inspector stayed strictly read-only and within locked scope; no blocker, no code fix required before next scope audit. |
+| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | completed | Implement read-only board canvas inspector/details panel with non-canvas selection control, local volatile selection state, identity-safety warning copy, and strict no-write/no-AI/no-edit boundaries. |
 | BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock next implementation scope to a read-only inspector/details panel for existing board-canvas placements/components only, with non-canvas selection first, strict no-write/no-AI/no-edit boundaries, and no schema/tool/registry/projection changes. |
 | DOCS_DRIFT_MINI_CLEANUP_13_PASS | DOCS_SYNC | completed | Docs/governance cleanup after full codebase audit and accepted board-canvas placement rendering: refresh stale scope-lock pointer, align queue/state routing, clean audit-index ambiguity, preserve evidence boundaries, and route next to inspector scope-lock (not direct implementation). |
 | CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Full codebase audit found no blocker, all validation suites passed, read-only/evidence boundaries held, and non-blocking cleanup candidates were recorded for later narrow passes. |
@@ -148,17 +151,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
-`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed and accepted.
-Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly read-only inspector implementation under the locked scope.
+`BOARD_CANVAS_READONLY_INSPECTOR_PASS` is completed and accepted.
+`BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` is completed with verdict `PASS_WITH_NITS`, and closeout is recorded.
+Next recommended pass is `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` before any visual_trace/evidence rendering implementation.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -182,11 +186,12 @@ Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly r
 
 ## Docs drift countdown
 
-Current countdown: 9
+Current countdown: 8
 
-## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_PASS (completed)
-- Lane: `FLUTTER_PASS`
-- Status: implemented (read-only inspector only)
-- Scope kept: inspector/details panel from existing known_facts placement/component data.
-- Boundaries kept: no hit-testing selection, no edit/save/export/AI/event-writing UI, no raw known_facts JSON parsing.
+## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Status: closeout completed after inspector audit `PASS_WITH_NITS`.
+- Scope confirmed: inspector remains read-only with non-canvas local/volatile selection only.
+- Boundaries confirmed: no hit-testing, no edit/save/export/AI/event-writing UI, no raw known_facts JSON parsing, no `board_graph.json`/`view_state.json`.
+- Non-blocking nit recorded: intermittent Windows temp-file lock flake in full Flutter run (`project_creator_test.dart`), isolated rerun PASS.
 - Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.

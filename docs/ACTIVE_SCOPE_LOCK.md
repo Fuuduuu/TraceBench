@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS`
 
 ## Goal
 
-Lock the implementation scope for the next board-canvas pass: read-only inspector/details panel.
+Docs-only audit closeout after `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` verdict `PASS_WITH_NITS`.
 
 ## Allowed surfaces
 
@@ -14,12 +14,9 @@ Lock the implementation scope for the next board-canvas pass: read-only inspecto
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/audit/BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS.md`
-- Optional only if stale:
-  - `docs/BOARD_GRAPH_SPEC.md`
-  - `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-  - `docs/FLUTTER_UI_SPEC.md`
+- `docs/PROJECT_MEMORY.md` (only if stale)
+- `docs/TRUTH_INDEX.md` (only if stale)
+- `docs/audit/BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,11 +33,12 @@ Lock the implementation scope for the next board-canvas pass: read-only inspecto
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter inspector implementation
-- renderer implementation changes
+- Flutter renderer implementation
 - CustomPainter changes
-- hit testing implementation
-- drag/resize/rotate logic
+- Canvas rendering changes
+- scene graph
+- spatial index
+- hit testing
 - component editing UI
 - event-writing UI
 - AI proposal persistence
@@ -52,39 +50,26 @@ Lock the implementation scope for the next board-canvas pass: read-only inspecto
 
 ## Locked decisions
 
-1. `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is accepted and read-only boundaries are preserved.
-2. Next implementation pass is locked to `BOARD_CANVAS_READONLY_INSPECTOR_PASS`.
-3. First inspector selection model is locked to non-canvas controls only:
-   - no canvas hit-testing in first inspector pass unless a later scope pass explicitly allows it.
-4. Future inspector implementation data path is locked to:
-   - `ProjectState.knownFacts`
-   - `KnownFacts.componentVisualPlacements`
-   - `KnownFacts.components`
-   - `VectorFootprintLibrary` metadata
-5. Future inspector implementation may only add read-only details UI:
-   - selected placement/component details only
-   - local volatile selection state only
-   - no persisted selection (`view_state.json` forbidden)
-6. Future inspector implementation must preserve read-only boundaries:
-   - no event writer imports/usages
-   - no raw `known_facts.json` parsing
-   - no reads from `events.jsonl` or Project ZIP directly
-   - no canonical fact mutation
-   - no file writes
-   - no `board_graph.json` / `view_state.json`
-   - no schema/tool/materializer/registry changes
-7. Future inspector implementation must not introduce:
-   - edit/confirm/change-template/promote/delete actions
-   - AI identify/detect/suggest/proposal actions
-   - measure/apply-to-schematic/fault-probability actions
-   - save/export/upload/start-placement actions
-   - drag/resize/rotate handles
-8. Identity/evidence boundaries remain locked:
-   - no identity inference from `template_id`
-   - no `visual_trace` to electrical-net promotion
-   - no AI proposal canonicalization
-9. Required renderer chrome text remains visible:
-   - `renderer writes: none`.
+1. `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` verdict is recorded as `PASS_WITH_NITS`.
+2. `BOARD_CANVAS_READONLY_INSPECTOR_PASS` is accepted as scope-compliant:
+   - read-only inspector,
+   - non-canvas non-mutating selection,
+   - local/volatile selection state only.
+3. Read-only and evidence boundaries remain locked:
+   - no event writing,
+   - no known-facts mutation,
+   - no raw `known_facts.json` parsing,
+   - no `board_graph.json` / `view_state.json`,
+   - no AI proposal canonicalization,
+   - no `visual_trace` to electrical-net promotion,
+   - no `template_id` to component-identity promotion.
+4. Required identity warning remains part of accepted inspector state:
+   - `Template does not prove electrical identity.`
+5. Non-blocking validation nit is recorded:
+   - intermittent Windows temp-file lock flake in full Flutter suite (`project_creator_test.dart`), isolated rerun PASS.
+6. Next recommended pass is locked to:
+   - `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
+   - no direct visual-trace/evidence rendering implementation before this scope audit.
 
 ## Validate
 

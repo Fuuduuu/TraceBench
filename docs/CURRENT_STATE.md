@@ -3,12 +3,27 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
-- Docs drift countdown: `9`
+- Current pass: `BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
+- Docs drift countdown: `8`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS` is completed:
+  - records `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` verdict: `PASS_WITH_NITS`.
+  - accepts `BOARD_CANVAS_READONLY_INSPECTOR_PASS` as scope-compliant read-only implementation.
+  - records accepted inspector boundaries:
+    - non-canvas, non-mutating selection (`ChoiceChip`/list-like control),
+    - local volatile selection state only,
+    - no event-writing path,
+    - no edit/confirm/promote/delete/AI/measure/export actions,
+    - no raw known-facts JSON parsing,
+    - no `board_graph.json` / `view_state.json`.
+  - records required warning copy present:
+    - `Template does not prove electrical identity.`
+  - records non-blocking nit:
+    - one intermittent Windows temp-file lock (`PathAccessException`, errno 32) occurred in full Flutter suite on `project_creator_test.dart`; isolated rerun passed; no scope fix required in this closeout.
+  - routes next to `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` (audit before any visual-trace/evidence rendering implementation).
 - `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` is completed:
   - records `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` as accepted.
   - locks the next implementation direction to `BOARD_CANVAS_READONLY_INSPECTOR_PASS`.
@@ -540,4 +555,12 @@ Branch: main
 - `photo_local` placement non-rendering boundary remains intact.
 - `renderer writes: none` chrome remains visible.
 - No event writing, no known_facts mutation, no AI UI, no `board_graph.json`/`view_state.json`.
+- Recommended next pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS (2026-05-28)
+- Latest accepted implementation remains: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`.
+- Latest audit closeout: `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` with verdict `PASS_WITH_NITS`.
+- Inspector remains read-only, non-canvas-select, local/volatile-state only.
+- No event writing, no known_facts mutation, no raw JSON parsing, no `board_graph.json`/`view_state.json`.
+- Non-blocking note recorded: intermittent Windows temp-file lock flake in full Flutter suite (`project_creator_test.dart`) with isolated rerun PASS.
 - Recommended next pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.

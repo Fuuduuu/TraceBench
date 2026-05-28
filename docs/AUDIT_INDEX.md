@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS.md | completed |
 | PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS.md | completed |
 | BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | docs/audit/PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS.md | completed (`NEEDS_SCOPE_FIRST`; audit findings recorded as input to data-model scope lock) |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS.md | completed |

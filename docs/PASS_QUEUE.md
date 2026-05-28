@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future photo-alignment event-schema direction without implementation: canonical family direction is `photo_to_board_alignment_confirmed`, placeholders remain deferred/unsafe for writers, payload/actor/coordinate/transform boundary rules are locked, and next routing is risk-first precheck audit. |
 | PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock photo-alignment data-model direction after `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` (`NEEDS_SCOPE_FIRST`): placeholders remain unsafe for writer usage, canonical-vs-volatile policy is fixed, candidate canonical event direction is documented, and implementation is deferred behind schema/validator/materializer/model scope locks. |
 | BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (`NEEDS_SCOPE_FIRST`) | Audit confirms alignment infrastructure remains placeholder-only and requires scope-first sequencing before any schema/validator/materializer/model/runtime implementation. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual visual-trace inspector audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata-only implementation, record non-blocking guard-test nits, fix ACTIVE_SCOPE_LOCK stale pointer, and route next to photo-evidence alignment scope audit (not geometry implementation). |
@@ -165,7 +166,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | DOCS_SYNC | gated after precheck |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
 
 
@@ -173,12 +175,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | DOCS_SYNC | gated after precheck |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
 
-`BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` is completed with verdict `NEEDS_SCOPE_FIRST`.
-Photo alignment implementation remains deferred and must proceed via scope-lock sequencing.
-Next recommended pass is `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (or `PHOTO_FLOW_SPEC_AUDIT_PASS` if governance requires pre-lock spec audit).
+`PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` is completed.
+Schema implementation remains deferred and precheck-audit-gated due high-risk canonical evidence boundary.
+Next recommended pass is `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (with `PHOTO_FLOW_SPEC_AUDIT_PASS` optional if governance wants spec reconciliation first).
 
 ## Recorded future cleanup candidates (not active)
 
@@ -263,10 +266,10 @@ Current countdown: 5
   - Preserved no-overlay/no-inference/no-write boundaries.
 
 ## Next recommended pass
-- `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (DOCS_SYNC)
-  - Lock dedicated event-schema scope for alignment payload semantics before validator/materializer/model/runtime work.
-- `PHOTO_FLOW_SPEC_AUDIT_PASS` (AUDIT_ONLY, optional governance-first alternative)
-  - Use only if governance requires reconciling older photo-flow sections before schema scope lock.
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (AUDIT_ONLY)
+  - Independent risk precheck (recommended GPT Pro / Claude second-review) before opening schema implementation.
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` (DOCS_SYNC, gated)
+  - Implement schema changes only after precheck audit acceptance.
 
 ## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -393,3 +396,28 @@ Current countdown: 5
 - Routing:
   - next recommended pass `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`,
   - optional governance-first alternative: `PHOTO_FLOW_SPEC_AUDIT_PASS`.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Event-family decision is locked:
+  - canonical future event direction: `photo_to_board_alignment_confirmed`,
+  - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred placeholders and unsafe for writer usage until formalized.
+- Future payload direction is locked (schema implementation deferred):
+  - required: `alignment_id`, `source_photo_id`, `board_side`, `coordinate_space_from`, `coordinate_space_to`, `reference_points_photo`, `reference_points_board`, `transform_type`, `alignment_quality_label`,
+  - optional: `notes`,
+  - hard rules: `coordinate_space_from=photo_local`, `coordinate_space_to=board_normalized`, reject `graph_layout`, avoid canonical numeric `confidence_score`.
+- Future structure/rule direction is locked:
+  - equal photo/board reference-point list lengths,
+  - transform-specific minimum point counts (`similarity >= 2`, `affine >= 3`),
+  - no hidden point inference, no AI canonicalization of points.
+- Future actor/status direction is locked:
+  - canonical alignment requires `actor.type=user`,
+  - AI actor rejected,
+  - `system/import` rejected unless separately scoped,
+  - `source_photo_id` must reference prior accepted `photo_added`,
+  - accepted status required for materialization.
+- Boundary lock:
+  - no payload fields that imply identity/net/measurement/fault/proposal confirmation.
+- Routing:
+  - next recommended pass `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS`,
+  - schema implementation (`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`) is precheck-gated.

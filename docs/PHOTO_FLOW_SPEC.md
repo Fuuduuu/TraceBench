@@ -378,3 +378,90 @@ Recommended sequence before any implementation:
 3. `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
 4. `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
 5. only later: board-canvas photo helper / photo-evidence rendering scope locks.
+
+## 15. Photo alignment event-schema scope-lock direction (no schema implementation in this pass)
+
+Status source: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (docs-only).
+
+### 15.1 Event family decision
+
+Locked future schema direction:
+- introduce canonical alignment event family `photo_to_board_alignment_confirmed`.
+
+Placeholder policy remains:
+- `photo_reference_points_set` and `photo_layer_aligned` stay reserved/deferred and unsafe for writer usage until separately formalized.
+- no writer/UI should emit placeholder families while they are undefined.
+
+### 15.2 Minimum future payload direction
+
+Required fields:
+- `alignment_id`
+- `source_photo_id`
+- `board_side`
+- `coordinate_space_from`
+- `coordinate_space_to`
+- `reference_points_photo`
+- `reference_points_board`
+- `transform_type`
+- `alignment_quality_label`
+
+Optional:
+- `notes`
+
+Hard value rules:
+- `coordinate_space_from == photo_local`
+- `coordinate_space_to == board_normalized`
+- `graph_layout` rejected
+- `alignment_quality_label` is descriptive text (not canonical numeric certainty)
+- avoid canonical numeric `confidence_score` field in first schema direction
+
+### 15.3 Reference-point structure direction
+
+`reference_points_photo`:
+- list of `{x, y}` photo-local points tied to `source_photo_id`.
+
+`reference_points_board`:
+- list of `{x, y}` board-normalized points with x/y in `0..1`.
+
+Rules:
+- equal photo/board point-list lengths required.
+- no hidden point inference.
+- no AI-generated point canonicalization.
+- reference points are spatial-alignment evidence only, not identity/net/measurement/fault evidence.
+
+### 15.4 Transform-type direction
+
+Candidate first-direction enum:
+- `similarity`
+- `affine`
+
+Deferred in first direction:
+- `homography_candidate`
+- freeform/manual/nonlinear transforms
+
+Future schema/validator direction must enforce transform-specific minimum pairs:
+- `similarity >= 2`
+- `affine >= 3`
+
+### 15.5 Actor/status/source-photo direction
+
+- canonical alignment requires `actor.type=user`.
+- AI actor rejected.
+- `system/import` actor rejected unless separately scoped in migration/import pass.
+- accepted status required to materialize.
+- `source_photo_id` must reference prior accepted `photo_added`.
+
+### 15.6 Forbidden confirmation payload direction
+
+Future alignment payload must not include identity/net/measurement/fault/proposal confirmation fields, including equivalents of:
+- `net_id`
+- `measurement_id`
+- `fault_id`
+- `component_identity`
+- `identity_status`
+- `ai_proposal_id`
+- `proposal_status`
+- `confidence_score`
+- `confirmed_net`
+- `confirmed_fault`
+- `repair_conclusion`

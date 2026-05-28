@@ -3,12 +3,46 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS`
 - Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` is completed:
+  - records accepted baseline from `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`.
+  - locks future event-family direction to a single canonical alignment event path:
+    - introduce future canonical event family `photo_to_board_alignment_confirmed`,
+    - keep `photo_reference_points_set` and `photo_layer_aligned` reserved/deferred placeholders (not writer-ready).
+  - locks minimum future payload direction for canonical alignment event schema:
+    - required: `alignment_id`, `source_photo_id`, `board_side`, `coordinate_space_from`, `coordinate_space_to`, `reference_points_photo`, `reference_points_board`, `transform_type`, `alignment_quality_label`,
+    - optional: `notes`.
+  - locks hard value rules:
+    - `coordinate_space_from == photo_local`,
+    - `coordinate_space_to == board_normalized`,
+    - `graph_layout` rejected as canonical coordinate space,
+    - `alignment_quality_label` remains descriptive (no canonical numeric `confidence_score` field).
+  - locks reference-point direction:
+    - `reference_points_photo[]` are photo-local points tied to `source_photo_id`,
+    - `reference_points_board[]` are board-normalized points with x/y in `0..1`,
+    - equal list lengths required,
+    - minimum point count must depend on `transform_type`,
+    - no hidden point inference and no AI canonicalization of points.
+  - locks transform-type direction:
+    - candidate allowlist direction: `similarity`, `affine`,
+    - minimum pairs direction: `similarity >= 2`, `affine >= 3`,
+    - defer `homography_candidate` and freeform/nonlinear/manual transform families from first implementation.
+  - locks actor/status rule direction:
+    - canonical alignment must be user-confirmed (`actor.type=user`),
+    - AI actor rejected for canonical alignment,
+    - `system/import` actor rejected unless separately scoped in future migration/import pass,
+    - only accepted status materializes,
+    - `source_photo_id` must reference prior accepted `photo_added`.
+  - locks evidence boundary constraints for future schema:
+    - no identity/net/measurement/fault/repair/proposal confirmation fields in alignment payload.
+  - preserves deferred implementation boundary:
+    - no schema/tool/materializer/Dart/runtime implementation opened by this pass.
+  - routes next to `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` due high-risk canonical-boundary surface.
 - `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` is completed:
   - records `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` verdict: `NEEDS_SCOPE_FIRST`.
   - locks placeholder policy:
@@ -877,3 +911,23 @@ Branch: main
   - no `board_graph.json` / `view_state.json`,
   - renderer writes nothing.
 - Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (or `PHOTO_FLOW_SPEC_AUDIT_PASS` if governance requires spec audit first).
+
+## PASS UPDATE: PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS (2026-05-28)
+- Accepted data-model baseline from `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` is recorded and preserved.
+- Event-family lock decision:
+  - canonical direction is a future `photo_to_board_alignment_confirmed` event family,
+  - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred placeholders and unsafe for writer usage until formalized.
+- Future payload direction is locked (schema not implemented in this pass):
+  - required: `alignment_id`, `source_photo_id`, `board_side`, `coordinate_space_from`, `coordinate_space_to`, `reference_points_photo`, `reference_points_board`, `transform_type`, `alignment_quality_label`,
+  - optional: `notes`,
+  - hard rules: `photo_local -> board_normalized`, reject `graph_layout`, avoid canonical numeric confidence field.
+- Future reference/transform rules are locked:
+  - equal point-list lengths,
+  - no hidden point inference,
+  - `similarity` and `affine` only in first direction with transform-specific minimum point counts.
+- Future actor/status rules are locked:
+  - canonical alignment requires `actor.type=user`,
+  - AI actor rejected,
+  - `source_photo_id` must reference prior accepted `photo_added`,
+  - accepted status required to materialize.
+- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (risk-first review before schema implementation).

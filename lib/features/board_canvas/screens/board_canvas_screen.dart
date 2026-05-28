@@ -101,6 +101,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             knownFacts.measurements,
             selectedEntry.placement.componentId,
           );
+    final relatedVisualTraces = selectedEntry == null
+        ? const <VisualTraceFact>[]
+        : _visualTracesForComponent(
+            knownFacts.visualTraces,
+            selectedEntry.placement.componentId,
+          );
 
     return _buildScaffold(
       context,
@@ -128,6 +134,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final inspector = _InspectorPanel(
                     selectedEntry: selectedEntry,
                     relatedMeasurements: relatedMeasurements,
+                    relatedVisualTraces: relatedVisualTraces,
                   );
 
                   if (constraints.maxWidth >= 980) {
@@ -171,6 +178,28 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
   bool _measurementEndpointMatchesComponent(String endpoint, String componentId) {
     return endpoint == componentId || endpoint.startsWith('$componentId.');
+  }
+
+  List<VisualTraceFact> _visualTracesForComponent(
+    List<VisualTraceFact> visualTraces,
+    String componentId,
+  ) {
+    return visualTraces
+        .where(
+          (trace) =>
+              trace.fromComponent == componentId ||
+              trace.toComponent == componentId ||
+              _visualTracePinMatchesComponent(trace.fromPin, componentId) ||
+              _visualTracePinMatchesComponent(trace.toPin, componentId),
+        )
+        .toList(growable: false);
+  }
+
+  bool _visualTracePinMatchesComponent(String? pinId, String componentId) {
+    if (pinId == null) {
+      return false;
+    }
+    return pinId.startsWith('$componentId.');
   }
 
   String? _coerceSelection(List<_PlacementEntry> entries) {
@@ -334,10 +363,12 @@ class _InspectorPanel extends StatelessWidget {
   const _InspectorPanel({
     required this.selectedEntry,
     required this.relatedMeasurements,
+    required this.relatedVisualTraces,
   });
 
   final _PlacementEntry? selectedEntry;
   final List<MeasurementFact> relatedMeasurements;
+  final List<VisualTraceFact> relatedVisualTraces;
 
   @override
   Widget build(BuildContext context) {
@@ -457,6 +488,26 @@ class _InspectorPanel extends StatelessWidget {
                     )
                     .toList(growable: false),
               ],
+              const SizedBox(height: 10),
+              Text(
+                'Visual trace — read-only metadata',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 6),
+              const Text('Visual trace is not a confirmed electrical net'),
+              const Text('Photo-local evidence; no board coordinate available'),
+              const Text('Does not create or confirm connectivity'),
+              if (relatedVisualTraces.isEmpty) ...[
+                const SizedBox(height: 6),
+                const Text('No related visual traces for selected component.'),
+              ] else ...[
+                const SizedBox(height: 8),
+                ...relatedVisualTraces
+                    .map(
+                      (trace) => _VisualTraceSummaryTile(trace: trace),
+                    )
+                    .toList(growable: false),
+              ],
             ],
           ),
         ),
@@ -527,6 +578,71 @@ class _MeasurementSummaryTile extends StatelessWidget {
                 _InspectorField(
                   label: 'Valid until event ID',
                   value: measurement.validUntilEventId!,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _VisualTraceSummaryTile extends StatelessWidget {
+  const _VisualTraceSummaryTile({required this.trace});
+
+  final VisualTraceFact trace;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _InspectorField(label: 'Trace ID', value: trace.traceId),
+              _InspectorField(label: 'Photo ID', value: trace.photoId),
+              _InspectorField(label: 'Evidence type', value: trace.evidenceType),
+              if (trace.fromComponent != null)
+                _InspectorField(
+                  label: 'From component',
+                  value: trace.fromComponent!,
+                ),
+              if (trace.toComponent != null)
+                _InspectorField(
+                  label: 'To component',
+                  value: trace.toComponent!,
+                ),
+              if (trace.fromPin != null)
+                _InspectorField(
+                  label: 'From pin',
+                  value: trace.fromPin!,
+                ),
+              if (trace.toPin != null)
+                _InspectorField(
+                  label: 'To pin',
+                  value: trace.toPin!,
+                ),
+              if (trace.confidence != null)
+                _InspectorField(
+                  label: 'Confidence',
+                  value: trace.confidence!,
+                ),
+              if (trace.layer != null)
+                _InspectorField(
+                  label: 'Layer',
+                  value: trace.layer!,
+                ),
+              if (trace.notes != null)
+                _InspectorField(
+                  label: 'Notes',
+                  value: trace.notes!,
                 ),
             ],
           ),

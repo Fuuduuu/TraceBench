@@ -13,6 +13,7 @@ ProjectState _inlineProjectState({
   required List<ComponentFact> components,
   required List<ComponentVisualPlacementFact> placements,
   List<MeasurementFact> measurements = const [],
+  List<VisualTraceFact> visualTraces = const [],
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -34,7 +35,7 @@ ProjectState _inlineProjectState({
       photos: const [],
       damageRegions: const [],
       suspectRegions: const [],
-      visualTraces: const [],
+      visualTraces: visualTraces,
       componentVisualPlacements: placements,
     ),
     events: const [],
@@ -551,6 +552,7 @@ void main() {
       'Edit measurement',
       'Change template',
       'Promote',
+      'Promote to net',
       'Delete',
       'Identify with AI',
       'Measure',
@@ -812,6 +814,187 @@ void main() {
     }
   });
 
+  testWidgets(
+      'visual trace summary includes trace when fromComponent equals componentId',
+      (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_001',
+      photoId: 'ph_001',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_r101',
+      toComponent: 'cmp_u1',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Trace ID: tr_001'), findsOneWidget);
+  });
+
+  testWidgets(
+      'visual trace summary includes trace when toComponent equals componentId',
+      (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_002',
+      photoId: 'ph_002',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_u1',
+      toComponent: 'cmp_r101',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Trace ID: tr_002'), findsOneWidget);
+  });
+
+  testWidgets(
+      'visual trace summary includes trace when fromPin starts with componentId dot',
+      (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_003',
+      photoId: 'ph_003',
+      evidenceType: 'visual_trace',
+      fromPin: 'cmp_r101.1',
+      toPin: 'cmp_u1.2',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Trace ID: tr_003'), findsOneWidget);
+  });
+
+  testWidgets(
+      'visual trace summary includes trace when toPin starts with componentId dot',
+      (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_004',
+      photoId: 'ph_004',
+      evidenceType: 'visual_trace',
+      fromPin: 'cmp_u1.1',
+      toPin: 'cmp_r101.2',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Trace ID: tr_004'), findsOneWidget);
+  });
+
+  testWidgets('Q2 does not match Q20 in visual trace association', (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_005',
+      photoId: 'ph_005',
+      evidenceType: 'visual_trace',
+      fromPin: 'Q20.1',
+      toPin: 'GND.1',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'Q2')],
+          placements: const [q2Placement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'Q2');
+
+    expect(find.textContaining('Trace ID: tr_005'), findsNothing);
+    expect(find.text('No related visual traces for selected component.'), findsOneWidget);
+  });
+
+  testWidgets('visual trace summary shows safe copy and metadata fields',
+      (tester) async {
+    const trace = VisualTraceFact(
+      traceId: 'tr_006',
+      photoId: 'ph_006',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_r101',
+      toComponent: 'cmp_u2',
+      fromPin: 'cmp_r101.1',
+      toPin: 'cmp_u2.3',
+      confidence: 'medium',
+      layer: 'top',
+      notes: 'visible copper path near edge',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          visualTraces: const [trace],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.text('Visual trace — read-only metadata'), findsOneWidget);
+    expect(
+      find.text('Visual trace is not a confirmed electrical net'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Photo-local evidence; no board coordinate available'),
+      findsOneWidget,
+    );
+    expect(find.text('Does not create or confirm connectivity'), findsOneWidget);
+    expect(find.textContaining('Trace ID: tr_006'), findsOneWidget);
+    expect(find.textContaining('Photo ID: ph_006'), findsOneWidget);
+    expect(find.textContaining('Evidence type: visual_trace'), findsOneWidget);
+    expect(find.textContaining('From component: cmp_r101'), findsOneWidget);
+    expect(find.textContaining('To component: cmp_u2'), findsOneWidget);
+    expect(find.textContaining('From pin: cmp_r101.1'), findsOneWidget);
+    expect(find.textContaining('To pin: cmp_u2.3'), findsOneWidget);
+    expect(find.textContaining('Confidence: medium'), findsOneWidget);
+    expect(find.textContaining('Layer: top'), findsOneWidget);
+    expect(
+      find.textContaining('Notes: visible copper path near edge'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('selection state is volatile in memory only', (tester) async {
     final state = _inlineProjectState(
       components: const [
@@ -853,10 +1036,15 @@ void main() {
     expect(source, isNot(contains('events.jsonl')));
     expect(source, isNot(contains('board_graph.json')));
     expect(source, isNot(contains('view_state.json')));
-    expect(source, isNot(contains('knownFacts.visualTraces')));
+    expect(source, contains('knownFacts.visualTraces'));
     expect(source, isNot(contains('knownFacts.damageRegions')));
     expect(source, isNot(contains('knownFacts.suspectRegions')));
     expect(source, isNot(contains('knownFacts.nets')));
+    expect(source, isNot(contains('from_point')));
+    expect(source, isNot(contains('to_point')));
+    expect(source, isNot(contains('drawLine(')));
+    expect(source, isNot(contains('drawPath(')));
+    expect(source, isNot(contains('Promote to net')));
     expect(source, isNot(contains('drawMeasurement')));
     expect(source, isNot(contains('measurementOverlay')));
     expect(source, isNot(contains('measurementAnchor')));

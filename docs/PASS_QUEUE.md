@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS | FLUTTER_PASS | completed | Add read-only visual_trace metadata summary to board-canvas inspector/list using strict selected-component association rules only; preserve metadata-only/no-geometry/no-net-inference boundaries and keep all no-write constraints. |
 | BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future board-canvas visual_trace support to read-only inspector/list metadata only; forbid visual-trace canvas geometry rendering, photo-alignment implementation, background photo helper, and net/connectivity inference from visual evidence; route next to `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`. |
 | BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Pro + Claude photo-evidence alignment audits: record high-risk alignment boundary and absent infra, set final decision `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`, keep visual evidence overlays deferred, and route next to visual-trace inspector scope lock (metadata-only direction). |
 | BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual measurement-summary audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata implementation, record non-blocking test/guard nits, and route next conservatively toward photo-evidence alignment scope audit. |
@@ -160,14 +161,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
@@ -321,3 +322,29 @@ Current countdown: 5
   - no known-facts mutation,
   - no `board_graph.json` / `view_state.json`,
   - no Project ZIP contract change.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS (completed)
+- Lane: `FLUTTER_PASS`
+- Status: completed.
+- Added visual-trace summary as read-only inspector/list metadata only for selected component/placement context.
+- Strict association rule implemented:
+  - `trace.fromComponent == componentId`
+  - `trace.toComponent == componentId`
+  - `trace.fromPin` starts with `componentId + "."`
+  - `trace.toPin` starts with `componentId + "."`
+  - no loose prefix matching (`Q2` does not match `Q20`).
+- Required safe copy added:
+  - `Visual trace — read-only metadata`
+  - `Visual trace is not a confirmed electrical net`
+  - `Photo-local evidence; no board coordinate available`
+  - `Does not create or confirm connectivity`
+- Preserved renderer/evidence boundaries:
+  - no visual-trace canvas polyline/geometry,
+  - no `from_point` / `to_point` usage,
+  - no photo-alignment transform,
+  - no net/connectivity inference,
+  - no event-writing path,
+  - no known-facts mutation,
+  - no `board_graph.json` / `view_state.json`.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`.

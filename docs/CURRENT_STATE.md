@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
+- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
@@ -769,3 +769,30 @@ Branch: main
   - `trace.toPin` starts with `componentId + "."`
 - Net/proximity/coordinate/template-based inference remains forbidden.
 - Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS (2026-05-28)
+- Read-only visual-trace metadata summary is added to board-canvas inspector/list flow for selected component placements.
+- Data path remains projection-only:
+  - `ProjectState.knownFacts.visualTraces`
+  - strict association with selected component by exact component-id equality or `componentId.` pin endpoint prefix rules only.
+- Visual-trace summary remains metadata-only:
+  - no visual-trace canvas geometry,
+  - no `from_point` / `to_point` usage,
+  - no photo-local to board coordinate mapping/alignment,
+  - no net/connectivity inference or promotion.
+- Required safe copy is present:
+  - `Visual trace — read-only metadata`
+  - `Visual trace is not a confirmed electrical net`
+  - `Photo-local evidence; no board coordinate available`
+  - `Does not create or confirm connectivity`
+- Existing board-canvas behavior is preserved:
+  - board-normalized placement rendering,
+  - photo-local placement non-rendering,
+  - read-only inspector + measurement summary,
+  - exact chrome text `renderer writes: none`.
+- Read-only/no-write boundaries remain intact:
+  - no event writing,
+  - no known-facts mutation,
+  - no `board_graph.json` / `view_state.json`,
+  - no Project ZIP contract change.
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_AUDIT_PASS`.

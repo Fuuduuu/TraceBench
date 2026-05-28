@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Implement narrow schema + validator support for canonical `photo_to_board_alignment_confirmed`: schema enum/mapping/strict payload contract, validator actor/source-photo/coordinate/point/transform/forbidden-field checks, new valid schema sample, and validator regression tests; materializer/known_facts/UI/ZIP remain deferred. |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Precheck audit from user/context approved proceeding directly to schema implementation with boundary-preserving nits. |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future photo-alignment event-schema direction without implementation: canonical family direction is `photo_to_board_alignment_confirmed`, placeholders remain deferred/unsafe for writers, payload/actor/coordinate/transform boundary rules are locked, and next routing is risk-first precheck audit. |
 | PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock photo-alignment data-model direction after `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` (`NEEDS_SCOPE_FIRST`): placeholders remain unsafe for writer usage, canonical-vs-volatile policy is fixed, candidate canonical event direction is documented, and implementation is deferred behind schema/validator/materializer/model scope locks. |
 | BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (`NEEDS_SCOPE_FIRST`) | Audit confirms alignment infrastructure remains placeholder-only and requires scope-first sequencing before any schema/validator/materializer/model/runtime implementation. |
@@ -166,22 +168,22 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | DOCS_SYNC | gated after precheck |
-| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
+| PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later |
+| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first reconciliation |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
-| PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | DOCS_SYNC | gated after precheck |
-| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first alternative |
+| PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later |
+| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first reconciliation |
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` is completed.
-Schema implementation remains deferred and precheck-audit-gated due high-risk canonical evidence boundary.
-Next recommended pass is `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (with `PHOTO_FLOW_SPEC_AUDIT_PASS` optional if governance wants spec reconciliation first).
+`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is completed.
+Schema + validator support for canonical alignment event is now implemented.
+Next recommended pass is `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -266,10 +268,10 @@ Current countdown: 5
   - Preserved no-overlay/no-inference/no-write boundaries.
 
 ## Next recommended pass
-- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (AUDIT_ONLY)
-  - Independent risk precheck (recommended GPT Pro / Claude second-review) before opening schema implementation.
-- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` (DOCS_SYNC, gated)
-  - Implement schema changes only after precheck audit acceptance.
+- `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS` (DOCS_SYNC)
+  - Lock accepted-only projection behavior for alignment events before touching materializer implementation.
+- `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS` (DOCS_SYNC, later)
+  - Lock Dart projection model additions only after materializer scope is locked.
 
 ## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -421,3 +423,30 @@ Current countdown: 5
 - Routing:
   - next recommended pass `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS`,
   - schema implementation (`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`) is precheck-gated.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS (completed)
+- Lane: `SCHEMA_PASS / VALIDATOR_FIX`
+- Precheck input recorded: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` verdict `PASS_WITH_NITS` from user/context.
+- Implemented:
+  - `schemas/events.schema.json`:
+    - new event_type `photo_to_board_alignment_confirmed`,
+    - conditional payload mapping,
+    - strict payload definition (`additionalProperties: false`).
+  - `tools/validate_events_jsonl.py`:
+    - validator path for `photo_to_board_alignment_confirmed`,
+    - actor/user gate,
+    - source-photo accepted/prior and forward-reference checks,
+    - coordinate-space + `graph_layout` rejection,
+    - reference-point domain/length checks,
+    - transform minimum-pair checks (`similarity`, `affine`),
+    - forbidden alignment payload field rejection,
+    - unique `alignment_id` checks.
+  - `schemas/samples/valid_photo_to_board_alignment_confirmed.json` added.
+  - `tests/test_validate_events_jsonl.py` alignment tests added (happy path + rejection matrix).
+- Explicitly unchanged:
+  - no materializer projection,
+  - no known_facts schema/model projection,
+  - no Project ZIP contract changes,
+  - no board-canvas/runtime UI behavior.
+- Routing:
+  - next recommended pass `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.

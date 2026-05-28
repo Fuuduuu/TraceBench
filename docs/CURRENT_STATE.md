@@ -3,12 +3,42 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS`
+- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
 - Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is completed:
+  - adds `events.schema.json` support for `photo_to_board_alignment_confirmed`:
+    - event type enum entry,
+    - event_type -> payload conditional mapping,
+    - strict payload `$defs` contract with:
+      - required alignment fields,
+      - `coordinate_space_from=photo_local`,
+      - `coordinate_space_to=board_normalized`,
+      - `transform_type` limited to `similarity|affine`,
+      - `additionalProperties: false`.
+  - adds validator support in `tools/validate_events_jsonl.py`:
+    - actor gate (`actor.type=user` required),
+    - source photo must reference prior accepted `photo_added`,
+    - forward-reference rejection,
+    - transform-specific minimum pair checks,
+    - point-domain checks (`photo >= 0`, `board in 0..1`),
+    - forbidden alignment field rejection.
+  - adds canonical sample:
+    - `schemas/samples/valid_photo_to_board_alignment_confirmed.json` (self-contained two-line JSONL sample with prior accepted `photo_added` + accepted alignment event).
+  - adds validator tests:
+    - happy-path similarity/affine,
+    - actor and coordinate-space rejections,
+    - reference-point and transform-type rejections,
+    - forbidden alignment-field rejections.
+  - explicitly deferred and unchanged in this pass:
+    - no materializer projection,
+    - no `known_facts` schema/model projection,
+    - no Project ZIP contract changes,
+    - no board-canvas/UI/photo-helper implementation.
+  - routes next to `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
 - `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` is completed:
   - records accepted baseline from `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS`.
   - locks future event-family direction to a single canonical alignment event path:
@@ -931,3 +961,26 @@ Branch: main
   - `source_photo_id` must reference prior accepted `photo_added`,
   - accepted status required to materialize.
 - Next recommended pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (risk-first review before schema implementation).
+
+## PASS UPDATE: PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS (2026-05-29)
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` input from user/context is recorded as `PASS_WITH_NITS` with recommendation to proceed.
+- Schema support added for canonical alignment event family:
+  - `photo_to_board_alignment_confirmed` is now in `event_type`,
+  - payload mapping and strict `$defs` contract added in `schemas/events.schema.json`.
+- Validator support added:
+  - strict actor gate (`user` only),
+  - source-photo accepted/prior reference checks,
+  - forward-reference protection,
+  - coordinate-space and `graph_layout` rejection rules,
+  - equal-point-list and transform minimum-pair rules,
+  - forbidden evidence-leak field rejection,
+  - unique `alignment_id` checks.
+- Added sample:
+  - `schemas/samples/valid_photo_to_board_alignment_confirmed.json`.
+- Added test coverage in `tests/test_validate_events_jsonl.py` for happy-path and rejection cases.
+- Explicit deferrals remain:
+  - no materializer/known-facts projection,
+  - no Dart model updates,
+  - no Project ZIP changes,
+  - no renderer/UI alignment behavior.
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.

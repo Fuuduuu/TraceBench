@@ -58,6 +58,27 @@ ALLOWED_VISUAL_TRACE_LAYER = {"top", "bottom", "inner_unknown"}
 ALLOWED_PHOTO_LAYERS = {"top", "bottom", "side", "detail"}
 ALLOWED_PLACEMENT_COORDINATE_SPACES = {"board_normalized", "photo_local"}
 ALLOWED_PLACEMENT_BOARD_SIDES = {"top", "bottom", "unknown"}
+ALLOWED_ALIGNMENT_BOARD_SIDES = {"top", "bottom", "unknown"}
+ALIGNMENT_ALLOWED_TRANSFORM_TYPES = {"similarity", "affine"}
+ALIGNMENT_MINIMUM_PAIRS = {"similarity": 2, "affine": 3}
+ALIGNMENT_FORBIDDEN_FIELDS = {
+    "net_id",
+    "measurement_id",
+    "fault_id",
+    "component_identity",
+    "identity_status",
+    "ai_proposal_id",
+    "proposal_status",
+    "confidence_score",
+    "confirmed_net",
+    "confirmed_fault",
+    "repair_conclusion",
+    "component_id",
+    "component_ids",
+    "pin_id",
+    "pin_ids",
+    "trace_id",
+}
 PLACEMENT_FORBIDDEN_FIELDS = {
     "status",
     "proposal_status",
@@ -159,7 +180,7 @@ def _load_schema_constraints(
         except (OSError, json.JSONDecodeError):
             schema = None
     if not isinstance(schema, dict):
-        return set(["project_created", "project_metadata_updated", "initial_intake_updated", "photo_added", "photo_reference_points_set", "photo_layer_aligned", "damage_region_marked", "suspect_region_marked", "component_created", "component_updated", "component_marked_unknown", "footprint_marked_not_populated", "pin_defined", "visual_trace_added", "component_visual_placement_confirmed", "measurement_recorded", "net_connection_confirmed", "repair_action_recorded", "claim_invalidated", "conflict_detected", "conflict_resolved", "export_created"]), set(ALLOWED_STATUS), set(REQUIRED_KEYS)
+        return set(["project_created", "project_metadata_updated", "initial_intake_updated", "photo_added", "photo_reference_points_set", "photo_layer_aligned", "photo_to_board_alignment_confirmed", "damage_region_marked", "suspect_region_marked", "component_created", "component_updated", "component_marked_unknown", "footprint_marked_not_populated", "pin_defined", "visual_trace_added", "component_visual_placement_confirmed", "measurement_recorded", "net_connection_confirmed", "repair_action_recorded", "claim_invalidated", "conflict_detected", "conflict_resolved", "export_created"]), set(ALLOWED_STATUS), set(REQUIRED_KEYS)
 
     allowed_event_types = set(
         schema.get("properties", {}).get("event_type", {}).get("enum", []) or []
@@ -176,6 +197,7 @@ def _load_schema_constraints(
             "photo_added",
             "photo_reference_points_set",
             "photo_layer_aligned",
+            "photo_to_board_alignment_confirmed",
             "damage_region_marked",
             "suspect_region_marked",
             "component_created",
@@ -519,6 +541,124 @@ def _validate_photo_added(
     layer = payload.get("layer")
     if layer is not None and layer not in ALLOWED_PHOTO_LAYERS:
         _error(errors, context, f"photo_added layer must be one of {sorted(ALLOWED_PHOTO_LAYERS)!r}")
+
+
+def _validate_photo_to_board_alignment_confirmed(
+    payload: dict,
+    line: int,
+    errors: list[str],
+    actor_type: str | None,
+    sequence: int,
+    accepted_photo_sequence_by_id: dict[str, int],
+    seen_alignment_ids: Counter[str],
+) -> None:
+    context = f"line {line}"
+    if actor_type != "user":
+        _error(errors, context, "photo_to_board_alignment_confirmed actor.type must be 'user' in V1")
+
+    alignment_id = payload.get("alignment_id")
+    if not isinstance(alignment_id, str) or not re.match(r"^ALN[0-9]+$", alignment_id):
+        _error(errors, context, "alignment_id must match ^ALN[0-9]+$")
+    elif seen_alignment_ids[alignment_id]:
+        _error(errors, context, f"duplicate alignment_id {alignment_id!r}")
+    if isinstance(alignment_id, str):
+        seen_alignment_ids[alignment_id] += 1
+
+    for field in ALIGNMENT_FORBIDDEN_FIELDS:
+        if field in payload:
+            _error(errors, context, f"forbidden alignment field present: {field}")
+
+    source_photo_id = payload.get("source_photo_id")
+    if not isinstance(source_photo_id, str) or not re.match(r"^photo_[a-z0-9_]+$", source_photo_id):
+        _error(errors, context, "source_photo_id must match ^photo_[a-z0-9_]+$")
+    elif source_photo_id not in accepted_photo_sequence_by_id:
+        _error(errors, context, f"source_photo_id {source_photo_id!r} must reference prior accepted photo_added")
+    elif accepted_photo_sequence_by_id[source_photo_id] >= sequence:
+        _error(errors, context, f"source_photo_id {source_photo_id!r} must not be forward reference")
+
+    board_side = payload.get("board_side")
+    if board_side not in ALLOWED_ALIGNMENT_BOARD_SIDES:
+        _error(errors, context, f"board_side must be one of {sorted(ALLOWED_ALIGNMENT_BOARD_SIDES)!r}")
+
+    coordinate_space_from = payload.get("coordinate_space_from")
+    coordinate_space_to = payload.get("coordinate_space_to")
+    if coordinate_space_from != "photo_local":
+        if coordinate_space_from == "graph_layout":
+            _error(errors, context, "graph_layout is not allowed as canonical coordinate_space")
+        else:
+            _error(errors, context, "coordinate_space_from must be 'photo_local'")
+    if coordinate_space_to != "board_normalized":
+        if coordinate_space_to == "graph_layout":
+            _error(errors, context, "graph_layout is not allowed as canonical coordinate_space")
+        else:
+            _error(errors, context, "coordinate_space_to must be 'board_normalized'")
+
+    transform_type = payload.get("transform_type")
+    if transform_type not in ALIGNMENT_ALLOWED_TRANSFORM_TYPES:
+        _error(
+            errors,
+            context,
+            f"transform_type must be one of {sorted(ALIGNMENT_ALLOWED_TRANSFORM_TYPES)!r}",
+        )
+
+    alignment_quality_label = payload.get("alignment_quality_label")
+    if not isinstance(alignment_quality_label, str) or not alignment_quality_label.strip():
+        _error(errors, context, "alignment_quality_label must be non-empty string")
+
+    notes = payload.get("notes")
+    if notes is not None and not isinstance(notes, str):
+        _error(errors, context, "notes must be string when present")
+
+    reference_points_photo = payload.get("reference_points_photo")
+    reference_points_board = payload.get("reference_points_board")
+
+    if not isinstance(reference_points_photo, list):
+        _error(errors, context, "reference_points_photo must be array")
+    if not isinstance(reference_points_board, list):
+        _error(errors, context, "reference_points_board must be array")
+
+    if isinstance(reference_points_photo, list):
+        if len(reference_points_photo) < 2:
+            _error(errors, context, "reference_points_photo must contain at least 2 points")
+        for index, point in enumerate(reference_points_photo, start=1):
+            if not isinstance(point, dict):
+                _error(errors, context, f"reference_points_photo[{index}] must be object")
+                continue
+            x = point.get("x")
+            y = point.get("y")
+            if not isinstance(x, (int, float)):
+                _error(errors, context, f"reference_points_photo[{index}].x must be number")
+            elif x < 0:
+                _error(errors, context, f"reference_points_photo[{index}].x must be >= 0")
+            if not isinstance(y, (int, float)):
+                _error(errors, context, f"reference_points_photo[{index}].y must be number")
+            elif y < 0:
+                _error(errors, context, f"reference_points_photo[{index}].y must be >= 0")
+
+    if isinstance(reference_points_board, list):
+        if len(reference_points_board) < 2:
+            _error(errors, context, "reference_points_board must contain at least 2 points")
+        for index, point in enumerate(reference_points_board, start=1):
+            if not isinstance(point, dict):
+                _error(errors, context, f"reference_points_board[{index}] must be object")
+                continue
+            x = point.get("x")
+            y = point.get("y")
+            if not isinstance(x, (int, float)):
+                _error(errors, context, f"reference_points_board[{index}].x must be number")
+            elif x < 0 or x > 1:
+                _error(errors, context, f"reference_points_board[{index}].x must be within 0..1")
+            if not isinstance(y, (int, float)):
+                _error(errors, context, f"reference_points_board[{index}].y must be number")
+            elif y < 0 or y > 1:
+                _error(errors, context, f"reference_points_board[{index}].y must be within 0..1")
+
+    if isinstance(reference_points_photo, list) and isinstance(reference_points_board, list):
+        if len(reference_points_photo) != len(reference_points_board):
+            _error(errors, context, "reference_points_photo and reference_points_board must have equal length")
+        required_pairs = ALIGNMENT_MINIMUM_PAIRS.get(transform_type)
+        if required_pairs is not None and len(reference_points_photo) < required_pairs:
+            _error(errors, context, f"{transform_type} requires at least {required_pairs} reference point pairs")
 
 
 def _validate_damage_region_marked(
@@ -961,6 +1101,7 @@ def main() -> None:
     seen_photo_ids: Counter[str] = Counter()
     region_ids: Counter[str] = Counter()
     trace_ids: Counter[str] = Counter()
+    alignment_id_counts: Counter[str] = Counter()
     component_id_counts: Counter[str] = Counter()
     pin_id_counts: Counter[str] = Counter()
     conflict_id_counts: Counter[str] = Counter()
@@ -1060,6 +1201,18 @@ def main() -> None:
 
         if event_type == "photo_added":
             _validate_photo_added(payload, line_no, errors, seen_photo_ids, event.get("actor", {}).get("type"))
+            continue
+
+        if event_type == "photo_to_board_alignment_confirmed":
+            _validate_photo_to_board_alignment_confirmed(
+                payload,
+                line_no,
+                errors,
+                event.get("actor", {}).get("type"),
+                sequence,
+                accepted_photo_sequence_by_id,
+                alignment_id_counts,
+            )
             continue
 
         if event_type == "damage_region_marked":

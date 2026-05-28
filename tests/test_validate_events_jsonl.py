@@ -2814,6 +2814,329 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def _photo_alignment_photo_added_event(
+        self,
+        *,
+        event_id: str = "evt_000001",
+        sequence: int = 1,
+        status: str = "accepted",
+        photo_id: str = "photo_alignment_001",
+    ) -> dict:
+        return {
+            "schema_version": "1.0",
+            "event_id": event_id,
+            "project_id": "prj_test",
+            "sequence": sequence,
+            "created_at": "2026-05-29T00:00:00Z",
+            "actor": {"type": "user", "id": "u1"},
+            "event_type": "photo_added",
+            "status": status,
+            "payload": {
+                "photo_id": photo_id,
+                "mode": "normal",
+                "path": "photos/alignment_001.jpg",
+                "layer": "top",
+            },
+        }
+
+    def _photo_alignment_confirmed_event(
+        self,
+        *,
+        event_id: str = "evt_000002",
+        sequence: int = 2,
+        actor_type: str = "user",
+        source_photo_id: str = "photo_alignment_001",
+        payload_overrides: dict | None = None,
+    ) -> dict:
+        payload = {
+            "alignment_id": "ALN1",
+            "source_photo_id": source_photo_id,
+            "board_side": "top",
+            "coordinate_space_from": "photo_local",
+            "coordinate_space_to": "board_normalized",
+            "reference_points_photo": [{"x": 10.0, "y": 20.0}, {"x": 110.0, "y": 220.0}],
+            "reference_points_board": [{"x": 0.1, "y": 0.2}, {"x": 0.9, "y": 0.8}],
+            "transform_type": "similarity",
+            "alignment_quality_label": "manual_check",
+        }
+        if payload_overrides:
+            payload.update(payload_overrides)
+        return {
+            "schema_version": "1.0",
+            "event_id": event_id,
+            "project_id": "prj_test",
+            "sequence": sequence,
+            "created_at": "2026-05-29T00:01:00Z",
+            "actor": {"type": actor_type, "id": f"{actor_type}_1"},
+            "event_type": "photo_to_board_alignment_confirmed",
+            "status": "accepted",
+            "payload": payload,
+        }
+
+    def test_photo_alignment_similarity_with_two_pairs_passes(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_photo_alignment_affine_with_three_pairs_passes(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(
+                payload_overrides={
+                    "transform_type": "affine",
+                    "reference_points_photo": [
+                        {"x": 10.0, "y": 20.0},
+                        {"x": 110.0, "y": 220.0},
+                        {"x": 300.0, "y": 400.0},
+                    ],
+                    "reference_points_board": [
+                        {"x": 0.1, "y": 0.2},
+                        {"x": 0.9, "y": 0.8},
+                        {"x": 0.5, "y": 0.6},
+                    ],
+                }
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_photo_alignment_ai_actor_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(actor_type="ai"),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("actor.type must be 'user'", result.stdout + result.stderr)
+
+    def test_photo_alignment_system_actor_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(actor_type="system"),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("actor.type must be 'user'", result.stdout + result.stderr)
+
+    def test_photo_alignment_missing_alignment_id_rejected(self):
+        alignment = self._photo_alignment_confirmed_event()
+        alignment["payload"].pop("alignment_id")
+        events = [self._photo_alignment_photo_added_event(), alignment]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("alignment_id", result.stdout + result.stderr)
+
+    def test_photo_alignment_missing_source_photo_id_rejected(self):
+        alignment = self._photo_alignment_confirmed_event()
+        alignment["payload"].pop("source_photo_id")
+        events = [self._photo_alignment_photo_added_event(), alignment]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("source_photo_id", result.stdout + result.stderr)
+
+    def test_photo_alignment_missing_transform_type_rejected(self):
+        alignment = self._photo_alignment_confirmed_event()
+        alignment["payload"].pop("transform_type")
+        events = [self._photo_alignment_photo_added_event(), alignment]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("transform_type", result.stdout + result.stderr)
+
+    def test_photo_alignment_empty_alignment_quality_label_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"alignment_quality_label": ""}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("alignment_quality_label", result.stdout + result.stderr)
+
+    def test_photo_alignment_unknown_source_photo_id_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(source_photo_id="photo_unknown_001"),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior accepted photo_added", result.stdout + result.stderr)
+
+    def test_photo_alignment_forward_source_photo_id_rejected(self):
+        events = [
+            self._photo_alignment_confirmed_event(event_id="evt_000001", sequence=1),
+            self._photo_alignment_photo_added_event(event_id="evt_000002", sequence=2),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must not be forward reference", result.stdout + result.stderr)
+
+    def test_photo_alignment_non_accepted_source_photo_id_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(status="rejected"),
+            self._photo_alignment_confirmed_event(),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must reference prior accepted photo_added", result.stdout + result.stderr)
+
+    def test_photo_alignment_coordinate_space_from_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"coordinate_space_from": "board_normalized"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("coordinate_space_from must be 'photo_local'", result.stdout + result.stderr)
+
+    def test_photo_alignment_coordinate_space_to_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"coordinate_space_to": "photo_local"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("coordinate_space_to must be 'board_normalized'", result.stdout + result.stderr)
+
+    def test_photo_alignment_graph_layout_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"coordinate_space_from": "graph_layout"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("graph_layout is not allowed", result.stdout + result.stderr)
+
+    def test_photo_alignment_unequal_reference_lengths_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(
+                payload_overrides={"reference_points_board": [{"x": 0.1, "y": 0.2}]}
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("must have equal length", result.stdout + result.stderr)
+
+    def test_photo_alignment_affine_too_few_pairs_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"transform_type": "affine"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("affine requires at least 3", result.stdout + result.stderr)
+
+    def test_photo_alignment_similarity_too_few_pairs_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(
+                payload_overrides={
+                    "reference_points_photo": [{"x": 10.0, "y": 20.0}],
+                    "reference_points_board": [{"x": 0.1, "y": 0.2}],
+                }
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("similarity requires at least 2", result.stdout + result.stderr)
+
+    def test_photo_alignment_board_point_out_of_range_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(
+                payload_overrides={
+                    "reference_points_board": [{"x": 1.2, "y": 0.2}, {"x": 0.9, "y": 0.8}]
+                }
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("reference_points_board[1].x must be within 0..1", result.stdout + result.stderr)
+
+    def test_photo_alignment_photo_point_negative_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(
+                payload_overrides={
+                    "reference_points_photo": [{"x": -1.0, "y": 20.0}, {"x": 110.0, "y": 220.0}]
+                }
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("reference_points_photo[1].x must be >= 0", result.stdout + result.stderr)
+
+    def test_photo_alignment_unknown_transform_type_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"transform_type": "homography_candidate"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("transform_type must be one of", result.stdout + result.stderr)
+
+    def test_photo_alignment_forbidden_net_id_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"net_id": "N1"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("forbidden alignment field present: net_id", result.stdout + result.stderr)
+
+    def test_photo_alignment_forbidden_confidence_score_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"confidence_score": 0.9}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("forbidden alignment field present: confidence_score", result.stdout + result.stderr)
+
+    def test_photo_alignment_forbidden_component_id_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"component_id": "Q2"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("forbidden alignment field present: component_id", result.stdout + result.stderr)
+
+    def test_photo_alignment_forbidden_pin_id_rejected(self):
+        events = [
+            self._photo_alignment_photo_added_event(),
+            self._photo_alignment_confirmed_event(payload_overrides={"pin_id": "Q2.1"}),
+        ]
+        path = _events_to_temp_jsonl(events)
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("forbidden alignment field present: pin_id", result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

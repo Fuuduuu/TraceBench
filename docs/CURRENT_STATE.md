@@ -3,12 +3,33 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
-- Docs drift countdown: `8`
+- Current pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+- Docs drift countdown: `7`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS` is completed:
+  - records two independent `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` reviews (Codex + Claude) with shared closeout verdict: `DEFER_VISUAL_EVIDENCE`.
+  - records final decision:
+    - do not implement visual_trace/damage/suspect/measurement canvas overlays now,
+    - no currently safe board-canvas evidence overlay path exists.
+  - records core model/coordinate blockers:
+    - visual_trace geometry is photo-local and not safe for board-canvas rendering,
+    - Dart `VisualTraceFact` does not expose `from_point` / `to_point` geometry,
+    - damage/suspect regions are photo-local bbox data tied to `photo_id`,
+    - measurements have no board/canvas coordinates (`from`/`to` are reference strings only),
+    - no accepted photo-to-board mapping/alignment pipeline exists.
+  - records safe interim direction:
+    - measurements are only safe as future read-only inspector/list metadata, not canvas geometry.
+  - preserves evidence boundaries:
+    - visual_trace remains visual-only,
+    - no visual_trace -> net promotion,
+    - no photo_local -> board rendering without accepted transform,
+    - no damage/suspect -> fault proof,
+    - no measurement coordinate inference,
+    - no renderer writes and no `board_graph.json`/`view_state.json`.
+  - routes next to `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.
 - `BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS` is completed:
   - records `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` verdict: `PASS_WITH_NITS`.
   - accepts `BOARD_CANVAS_READONLY_INSPECTOR_PASS` as scope-compliant read-only implementation.
@@ -564,3 +585,11 @@ Branch: main
 - No event writing, no known_facts mutation, no raw JSON parsing, no `board_graph.json`/`view_state.json`.
 - Non-blocking note recorded: intermittent Windows temp-file lock flake in full Flutter suite (`project_creator_test.dart`) with isolated rerun PASS.
 - Recommended next pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS (2026-05-28)
+- Two independent visual/evidence scope audits (Codex + Claude) are recorded and reconciled.
+- Final closeout verdict: `DEFER_VISUAL_EVIDENCE`.
+- No canvas evidence rendering is currently safe.
+- Measurements remain eligible only for future read-only inspector/list summaries, not board-canvas geometry overlays.
+- Photo-local evidence rendering remains blocked until a dedicated coordinate/alignment scope audit is accepted.
+- Recommended next pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.

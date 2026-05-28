@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS`
+`BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Codex+Claude visual/evidence scope audits with shared verdict `DEFER_VISUAL_EVIDENCE`: no safe board-canvas evidence overlay path yet; measurements remain metadata-only candidate; photo-local evidence requires dedicated alignment audit; route next to renderer QA. |
+| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (DEFER_VISUAL_EVIDENCE) | Audit confirms visual_trace/damage/suspect/measurement overlays are not safe on board canvas yet due coordinate/model gaps and evidence-boundary risk; defer implementation. |
 | BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out inspector audit after `PASS_WITH_NITS`: confirm read-only scope compliance, preserve no-write/no-AI/no-edit boundaries, record non-blocking Windows temp-file lock flake classification, and route next to visual-trace/evidence scope audit. |
 | BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms inspector stayed strictly read-only and within locked scope; no blocker, no code fix required before next scope audit. |
 | BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | completed | Implement read-only board canvas inspector/details panel with non-canvas selection control, local volatile selection state, identity-safety warning copy, and strict no-write/no-AI/no-edit boundaries. |
@@ -151,18 +153,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS | recommended |
 
-`BOARD_CANVAS_READONLY_INSPECTOR_PASS` is completed and accepted.
-`BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` is completed with verdict `PASS_WITH_NITS`, and closeout is recorded.
-Next recommended pass is `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` before any visual_trace/evidence rendering implementation.
+`BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
+Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
+Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -186,12 +188,17 @@ Next recommended pass is `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PAS
 
 ## Docs drift countdown
 
-Current countdown: 8
+Current countdown: 7
 
-## PASS UPDATE: BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS (completed)
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
-- Status: closeout completed after inspector audit `PASS_WITH_NITS`.
-- Scope confirmed: inspector remains read-only with non-canvas local/volatile selection only.
-- Boundaries confirmed: no hit-testing, no edit/save/export/AI/event-writing UI, no raw known_facts JSON parsing, no `board_graph.json`/`view_state.json`.
-- Non-blocking nit recorded: intermittent Windows temp-file lock flake in full Flutter run (`project_creator_test.dart`), isolated rerun PASS.
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`.
+- Status: closeout completed with final verdict `DEFER_VISUAL_EVIDENCE`.
+- Shared Codex+Claude findings recorded:
+  - visual_trace/damage/suspect data are photo-local and unsafe for board-canvas overlay without accepted mapping,
+  - measurements have no board/canvas coordinates and are unsafe for geometric overlay.
+- Decision:
+  - no evidence canvas overlay implementation now,
+  - measurements are future read-only metadata candidate only.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`,
+  - defer photo-local evidence rendering until `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.

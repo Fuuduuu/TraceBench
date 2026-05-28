@@ -3,12 +3,40 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS` is completed:
+  - records dual audit inputs (Pro architecture/evidence-boundary review + Claude repo-local review).
+  - final closeout decision is `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
+  - confirms photo-evidence alignment implementation remains deferred:
+    - no photo-local -> board-normalized transform model is accepted,
+    - no background photo helper layer,
+    - no visual_trace canvas overlay,
+    - no damage/suspect canvas overlay.
+  - records Pro risk framing:
+    - photo alignment is high-risk because it bridges `photo_local` and `board_normalized`,
+    - any canonical alignment path must be human-confirmed and event-backed,
+    - no `view_state.json` / hidden UI transform cache / AI auto-fit transform may become truth.
+  - records Claude readiness framing:
+    - repo is ready for scope/audit decisions,
+    - alignment infrastructure is absent (`photo_reference_points_set` / `photo_layer_aligned` remain placeholders without accepted implementation stack).
+  - evidence-family classification:
+    - `visual_trace` geometry: photo-local, defer board-canvas geometry rendering,
+    - `damage_region` geometry: photo-local, defer board-canvas geometry rendering,
+    - `suspect_region` geometry: photo-local, defer board-canvas geometry rendering,
+    - background photo helper: deferred,
+    - measurement summary: already implemented safely as read-only inspector metadata,
+    - `board_normalized` component placements: already implemented safely.
+  - preserves hard boundaries:
+    - photo pixels are not facts,
+    - alignment is not identity/net/measurement proof,
+    - visual_trace is not net, damage is not fault proof, suspect is not probability,
+    - renderer writes nothing and does not create `board_graph.json`/`view_state.json`.
+  - routes next to `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS` (inspector-only metadata direction, no geometry overlay).
 - `BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS` is completed:
   - records Codex and Claude independent audit verdicts for measurement summary pass: `PASS_WITH_NITS` / `PASS_WITH_NITS`.
   - accepts `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` as scope-compliant.
@@ -713,3 +741,15 @@ Branch: main
 - Existing read-only shell/placement/inspector behavior remains intact including `renderer writes: none`.
 - Deferred remains unchanged: visual_trace/damage/suspect canvas rendering, background photo helper, and photo/evidence alignment implementation.
 - Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS (2026-05-28)
+- Pro + Claude audit results are reconciled in a single closeout.
+- Final decision: `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
+- No board-canvas photo evidence overlay implementation is currently allowed.
+- No background-photo helper, no photo-to-board transform implementation, and no visual_trace/damage/suspect canvas geometry rendering is opened by this closeout.
+- Accepted safe state remains:
+  - board canvas shell,
+  - board-normalized placement rendering,
+  - read-only inspector,
+  - read-only measurement summary metadata.
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`.

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
+`BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only audit closeout for board-canvas read-only measurement summary after dual audits (`PASS_WITH_NITS`).
+Docs-only audit closeout for Pro + Claude photo-evidence alignment findings and board-canvas visual-evidence boundary decisioning.
 
 ## Allowed surfaces
 
@@ -16,7 +16,7 @@ Docs-only audit closeout for board-canvas read-only measurement summary after du
 - `docs/AUDIT_INDEX.md`
 - `docs/PROJECT_MEMORY.md` only if stale
 - `docs/TRUTH_INDEX.md` only if stale
-- `docs/audit/BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS.md`
+- `docs/audit/BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -46,24 +46,22 @@ Docs-only audit closeout for board-canvas read-only measurement summary after du
 
 ## Locked decisions
 
-1. `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` is accepted as read-only metadata scope only.
-2. Strict association rule remains required:
-   - `measurement.from == componentId`
-   - `measurement.to == componentId`
-   - `measurement.from` starts with `componentId + "."`
-   - `measurement.to` starts with `componentId + "."`
-3. Loose prefix matching remains forbidden (`Q2` must not match `Q20`, `Q20.1`, `AQ2`, `Q2A`).
-4. Measurement summaries remain non-geometric:
-   - no canvas overlays
-   - no coordinate/anchor inference
-   - no measurement->net inference
+1. Final decision locked by this closeout: `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
+2. `photo_local` evidence remains non-renderable on board canvas without separately accepted transform model/scope.
+3. No visual evidence overlay implementation is opened by this closeout:
+   - no visual_trace canvas geometry
+   - no damage/suspect canvas geometry
+   - no background photo helper layer
+4. Placeholder alignment event names are not implementation authorization:
+   - `photo_reference_points_set`
+   - `photo_layer_aligned`
 5. Read-only no-write boundaries remain locked:
    - no events writes
    - no known-facts mutation
    - no `board_graph.json` / `view_state.json`
    - no Project ZIP contract change
 6. Next recommended pass:
-   - `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
+   - `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
 
 ## Validate
 

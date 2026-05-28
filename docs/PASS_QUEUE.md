@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
+`BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Pro + Claude photo-evidence alignment audits: record high-risk alignment boundary and absent infra, set final decision `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`, keep visual evidence overlays deferred, and route next to visual-trace inspector scope lock (metadata-only direction). |
 | BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual measurement-summary audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata implementation, record non-blocking test/guard nits, and route next conservatively toward photo-evidence alignment scope audit. |
 | BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms measurement summary stayed read-only metadata only with strict association rule and no overlay/inference/write-path drift; non-blocking nits recorded. |
 | BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | completed | Add read-only board-canvas measurement summary metadata in inspector/list area only, with strict component association (`componentId` exact / `componentId.` prefix), verbatim value display, stale labeling, and no-overlay/no-inference/no-write boundaries. |
@@ -158,18 +159,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
+| BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+Next recommended pass is `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -254,8 +255,8 @@ Current countdown: 5
   - Preserved no-overlay/no-inference/no-write boundaries.
 
 ## Next recommended pass
-- `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` (AUDIT_ONLY)
-  - Audit coordinate/alignment requirements and safety boundaries before any photo-local evidence rendering path is scoped for board canvas.
+- `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS` (DOCS_SYNC)
+  - Limit direction to read-only visual-trace inspector metadata/list text only, with no canvas geometry overlays and no photo-alignment implementation.
 
 ## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -281,3 +282,21 @@ Current countdown: 5
   - text-only forbidden-action checks may miss icon-only affordances
   - optional future negatives: `AQ2`/`Q2A` endpoint mismatch checks
   - optional future reading-only display-path test (`value == null`)
+
+## PASS UPDATE: BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Final decision: `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
+- Pro audit closeout conclusions recorded:
+  - photo-local -> board-normalized alignment remains high-risk,
+  - canonical alignment, if ever allowed, must be human-confirmed and event-backed,
+  - no hidden UI transform state, AI auto-fit transform, or `view_state.json` may become truth.
+- Claude repo-local conclusions recorded:
+  - repository is ready for scope/audit decisions,
+  - alignment implementation infrastructure is absent (placeholder event names only; no accepted schema/validator/materializer/model/test stack).
+- Classification recorded:
+  - visual_trace/damage/suspect geometry remain photo-context evidence and deferred from board-canvas geometry rendering,
+  - measurement summary remains safely implemented as read-only metadata,
+  - board-normalized component placements remain safely implemented.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`.
+  - `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` remains future-only and should not be started before explicit alignment risk/scope decision.

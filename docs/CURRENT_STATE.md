@@ -3,12 +3,34 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
-- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS` is completed:
+  - records Codex and Claude independent audit verdicts for measurement summary pass: `PASS_WITH_NITS` / `PASS_WITH_NITS`.
+  - accepts `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` as scope-compliant.
+  - confirms accepted behavior:
+    - read-only measurement summary metadata only (inspector/list context),
+    - strict association rule only (`componentId` exact or `componentId.` prefix),
+    - no loose prefix matching (`Q2` does not match `Q20`/`Q20.1`/`AQ2`/`Q2A`),
+    - verbatim value/unit/reading display,
+    - stale labeling preserved.
+  - confirms preserved boundaries:
+    - no measurement canvas overlays,
+    - no coordinate/anchor inference,
+    - no measurement->net inference,
+    - no event-writing path,
+    - no known-facts mutation,
+    - no `board_graph.json` / `view_state.json`,
+    - no Project ZIP contract change.
+  - records non-blocking nits:
+    - source-scan/string boundary tests are useful but brittle under refactor,
+    - text-only forbidden-action checks may miss icon-only affordances,
+    - optional future negatives (`AQ2`/`Q2A`) and reading-only display-path tests can be added in later QA.
+  - routes next to `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
 - `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` is completed:
   - adds read-only measurement summary metadata to board-canvas inspector for selected components/placements.
   - uses `ProjectState.knownFacts.measurements` only.
@@ -682,3 +704,12 @@ Branch: main
 - Existing read-only renderer boundaries remain intact, including exact chrome text: `renderer writes: none`.
 - Deferred remains unchanged: visual_trace/damage/suspect canvas rendering, measurement overlays, photo/background alignment pipeline.
 - Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (2026-05-28)
+- Codex and Claude audits are both recorded with verdict `PASS_WITH_NITS`.
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` is accepted as read-only inspector/list metadata only.
+- Strict association, verbatim rendering, stale labeling, and required safety copy are accepted.
+- No measurement overlay, coordinate/anchor inference, measurement->net inference, event-writing path, or canonical-mutation path was introduced.
+- Existing read-only shell/placement/inspector behavior remains intact including `renderer writes: none`.
+- Deferred remains unchanged: visual_trace/damage/suspect canvas rendering, background photo helper, and photo/evidence alignment implementation.
+- Next recommended pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.

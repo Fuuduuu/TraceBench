@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope lock for future read-only board-canvas measurement summaries.
+Docs-only audit closeout for board-canvas read-only measurement summary after dual audits (`PASS_WITH_NITS`).
 
 ## Allowed surfaces
 
@@ -14,12 +14,9 @@ Docs-only scope lock for future read-only board-canvas measurement summaries.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/audit/BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS.md`
-- optional only if stale:
-  - `docs/BOARD_GRAPH_SPEC.md`
-  - `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-  - `docs/FLUTTER_UI_SPEC.md`
+- `docs/PROJECT_MEMORY.md` only if stale
+- `docs/TRUTH_INDEX.md` only if stale
+- `docs/audit/BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,7 +33,7 @@ Docs-only scope lock for future read-only board-canvas measurement summaries.
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter implementation
+- Flutter renderer implementation
 - measurement UI implementation
 - measurement canvas overlay
 - visual_trace rendering
@@ -49,24 +46,24 @@ Docs-only scope lock for future read-only board-canvas measurement summaries.
 
 ## Locked decisions
 
-1. Visual/evidence closeout decision remains `DEFER_VISUAL_EVIDENCE`.
-2. Board-canvas measurements are locked as future read-only inspector/list metadata only.
-3. Measurement canvas overlays remain forbidden.
-4. Strict future association rule is locked:
-   - include only when:
-     - `measurement.from == componentId`, or
-     - `measurement.to == componentId`, or
-     - `measurement.from` starts with `componentId + "."`, or
-     - `measurement.to` starts with `componentId + "."`.
-5. Loose prefix matching is forbidden (`Q2` must not match `Q20`).
-6. Net/proximity/coordinate inference from measurement summaries is forbidden.
-7. Future implementation must remain read-only:
-   - no event writing
+1. `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` is accepted as read-only metadata scope only.
+2. Strict association rule remains required:
+   - `measurement.from == componentId`
+   - `measurement.to == componentId`
+   - `measurement.from` starts with `componentId + "."`
+   - `measurement.to` starts with `componentId + "."`
+3. Loose prefix matching remains forbidden (`Q2` must not match `Q20`, `Q20.1`, `AQ2`, `Q2A`).
+4. Measurement summaries remain non-geometric:
+   - no canvas overlays
+   - no coordinate/anchor inference
+   - no measurement->net inference
+5. Read-only no-write boundaries remain locked:
+   - no events writes
    - no known-facts mutation
-   - no file writes
    - no `board_graph.json` / `view_state.json`
-8. Next recommended pass is locked:
-   - `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
+   - no Project ZIP contract change
+6. Next recommended pass:
+   - `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`
 
 ## Validate
 

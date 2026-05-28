@@ -11,12 +11,15 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out dual measurement-summary audits (`PASS_WITH_NITS` + `PASS_WITH_NITS`), accept read-only metadata implementation, record non-blocking test/guard nits, and route next conservatively toward photo-evidence alignment scope audit. |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Audit confirms measurement summary stayed read-only metadata only with strict association rule and no overlay/inference/write-path drift; non-blocking nits recorded. |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | completed | Add read-only board-canvas measurement summary metadata in inspector/list area only, with strict component association (`componentId` exact / `componentId.` prefix), verbatim value display, stale labeling, and no-overlay/no-inference/no-write boundaries. |
 | BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future board-canvas measurements to read-only inspector/list metadata only; forbid measurement canvas overlays, coordinate/anchor inference, and net/proximity inference; preserve no-write boundaries; route next to `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`. |
 | BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS / QA_PASS | completed | Harden accepted read-only board-canvas renderer: deterministic `shouldRepaint` logical-input comparison, preserve typed template sizing path (no template map serialization), strengthen placement size/fallback/read-only/evidence-deferral guard tests, and preserve no-write boundaries. |
 | BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Codex+Claude visual/evidence scope audits with shared verdict `DEFER_VISUAL_EVIDENCE`: no safe board-canvas evidence overlay path yet; measurements remain metadata-only candidate; photo-local evidence requires dedicated alignment audit; route next to renderer QA. |
@@ -155,18 +158,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
+Next recommended pass is `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -251,5 +254,30 @@ Current countdown: 5
   - Preserved no-overlay/no-inference/no-write boundaries.
 
 ## Next recommended pass
-- `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS` (AUDIT_ONLY)
-  - Verify strict read-only behavior, association matching safety (`Q2` not matching `Q20`), and preserved evidence boundaries.
+- `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS` (AUDIT_ONLY)
+  - Audit coordinate/alignment requirements and safety boundaries before any photo-local evidence rendering path is scoped for board canvas.
+
+## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Dual audits recorded:
+  - Codex `PASS_WITH_NITS`
+  - Claude second-review `PASS_WITH_NITS`
+- Accepted:
+  - read-only measurement summary metadata only
+  - strict association rule
+  - verbatim measurement value/unit/reading display
+  - stale labeling
+  - required safe copy
+- Confirmed preserved boundaries:
+  - no measurement canvas overlay
+  - no coordinate/anchor inference
+  - no measurement->net inference
+  - no event-writing path
+  - no known-facts mutation
+  - no `board_graph.json` / `view_state.json`
+  - no Project ZIP contract change
+- Non-blocking nits recorded:
+  - source-scan/string guards are useful but brittle under refactor
+  - text-only forbidden-action checks may miss icon-only affordances
+  - optional future negatives: `AQ2`/`Q2A` endpoint mismatch checks
+  - optional future reading-only display-path test (`value == null`)

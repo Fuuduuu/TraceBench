@@ -56,6 +56,8 @@ Renderer must not consume:
 5. `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
 6. `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
 7. `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+8. `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
+9. `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
 
 ## 6. First implementation pass lock
 
@@ -180,3 +182,26 @@ Future renderer acceptance requires all:
 
 Claude independent readiness audit verdict: `PASS_WITH_NITS`.
 This spec captures the nits as locked sequencing and deferred-surface requirements before implementation.
+
+## 14. Measurement summary scope-lock addendum
+
+`BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS` locks measurement support direction to read-only inspector/list metadata only.
+
+Allowed future direction (`BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`):
+
+- consume `ProjectState.knownFacts.measurements` only.
+- show values verbatim as read-only metadata.
+- keep `renderer writes: none` boundary intact.
+
+Forbidden future direction:
+
+- no measurement canvas overlays.
+- no inferred board/canvas anchors from measurement endpoint strings.
+- no coordinate inference.
+- no net/proximity inference from measurement summaries.
+- no event writing, no known-facts mutation, no file writes.
+
+Strict measurement-to-component association rule:
+
+- include only when endpoint is exact `componentId` or begins with `componentId + "."`.
+- no loose prefix matching (`Q2` must not match `Q20`).

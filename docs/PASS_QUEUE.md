@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+`BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future board-canvas measurements to read-only inspector/list metadata only; forbid measurement canvas overlays, coordinate/anchor inference, and net/proximity inference; preserve no-write boundaries; route next to `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`. |
 | BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS / QA_PASS | completed | Harden accepted read-only board-canvas renderer: deterministic `shouldRepaint` logical-input comparison, preserve typed template sizing path (no template map serialization), strengthen placement size/fallback/read-only/evidence-deferral guard tests, and preserve no-write boundaries. |
 | BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Codex+Claude visual/evidence scope audits with shared verdict `DEFER_VISUAL_EVIDENCE`: no safe board-canvas evidence overlay path yet; measurements remain metadata-only candidate; photo-local evidence requires dedicated alignment audit; route next to renderer QA. |
 | BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (DEFER_VISUAL_EVIDENCE) | Audit confirms visual_trace/damage/suspect/measurement overlays are not safe on board canvas yet due coordinate/model gaps and evidence-boundary risk; defer implementation. |
@@ -154,23 +155,21 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS | FLUTTER_PASS | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.
+Next recommended pass is `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
-- `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`:
-  - `_templateAspectRatio()` `toMap()` avoidance and `shouldRepaint` strictness polish.
 - `KNOWN_FACTS_DART_POLISH_PASS`:
   - `KnownFacts.componentPinIndex` dedup efficiency and `valid_from_event_id` doc-note parity polish.
 - `TOOLS_CLEANUP_PASS`:
@@ -189,7 +188,7 @@ Next recommended pass is `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.
 
 ## Docs drift countdown
 
-Current countdown: 6
+Current countdown: 5
 
 ## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -224,3 +223,24 @@ Current countdown: 6
   - no visual/evidence overlay scope expansion.
 - Routing:
   - next recommended pass `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Status: completed.
+- Scope lock decision:
+  - measurements are future read-only inspector/list metadata only for board canvas,
+  - measurement canvas overlays remain forbidden.
+- Strict association rule for future implementation is locked:
+  - include measurement only when endpoint is exact `componentId` or starts with `componentId + "."`.
+  - loose prefix matching is forbidden (`Q2` must not match `Q20`).
+- Explicitly forbidden:
+  - coordinate/anchor inference from `from`/`to` strings,
+  - proximity/net inference from measurement summaries,
+  - measurement-driven net promotion beyond existing known-facts net data.
+- Boundaries preserved:
+  - no event writes,
+  - no known-facts mutation,
+  - no `board_graph.json` / `view_state.json`,
+  - no Project ZIP contract change.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.

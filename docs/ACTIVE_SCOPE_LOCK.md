@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS`
+`BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout for visual/evidence scope audits with final decision routing.
+Docs-only scope lock for future read-only board-canvas measurement summaries.
 
 ## Allowed surfaces
 
@@ -14,9 +14,12 @@ Docs-only closeout for visual/evidence scope audits with final decision routing.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/PROJECT_MEMORY.md` (only if stale)
-- `docs/TRUTH_INDEX.md` (only if stale)
-- `docs/audit/BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
+- `docs/audit/BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS.md`
+- optional only if stale:
+  - `docs/BOARD_GRAPH_SPEC.md`
+  - `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
+  - `docs/FLUTTER_UI_SPEC.md`
 
 ## Forbidden surfaces
 
@@ -33,31 +36,37 @@ Docs-only closeout for visual/evidence scope audits with final decision routing.
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter renderer implementation
+- Flutter implementation
+- measurement UI implementation
+- measurement canvas overlay
 - visual_trace rendering
-- measurement rendering
 - damage/suspect rendering
 - background photo helper
 - coordinate transform implementation
 - AI proposal persistence
+- edit/confirm/save/export/event-writing UI
+- raw known_facts JSON parsing
 
 ## Locked decisions
 
-1. Codex and Claude independent audits for `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` are both recorded.
-2. Final closeout verdict is locked: `DEFER_VISUAL_EVIDENCE`.
-3. No board-canvas evidence overlay implementation is currently safe.
-4. Measurements are locked as future read-only metadata-only candidate (inspector/list), not canvas geometry.
-5. Photo-local evidence rendering remains deferred until dedicated coordinate/alignment audit.
-6. Evidence boundaries remain strict:
-   - visual_trace remains visual-only
-   - no visual_trace -> net promotion
-   - no photo_local -> board rendering without accepted transform
-   - no damage/suspect -> fault proof
-   - no measurement coordinate inference
-   - no renderer writes
+1. Visual/evidence closeout decision remains `DEFER_VISUAL_EVIDENCE`.
+2. Board-canvas measurements are locked as future read-only inspector/list metadata only.
+3. Measurement canvas overlays remain forbidden.
+4. Strict future association rule is locked:
+   - include only when:
+     - `measurement.from == componentId`, or
+     - `measurement.to == componentId`, or
+     - `measurement.from` starts with `componentId + "."`, or
+     - `measurement.to` starts with `componentId + "."`.
+5. Loose prefix matching is forbidden (`Q2` must not match `Q20`).
+6. Net/proximity/coordinate inference from measurement summaries is forbidden.
+7. Future implementation must remain read-only:
+   - no event writing
+   - no known-facts mutation
+   - no file writes
    - no `board_graph.json` / `view_state.json`
-7. Next recommended pass is locked:
-   - `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+8. Next recommended pass is locked:
+   - `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
 
 ## Validate
 

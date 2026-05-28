@@ -3,12 +3,28 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
-- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
-- Docs drift countdown: `6`
+- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
+- Docs drift countdown: `5`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS` is completed:
+  - records visual/evidence closeout decision remains `DEFER_VISUAL_EVIDENCE`.
+  - locks board-canvas measurement support to future read-only inspector/list metadata only.
+  - explicitly forbids measurement canvas overlays and any measurement coordinate/anchor inference.
+  - locks strict measurement-to-component association for future implementation:
+    - `measurement.from == componentId`
+    - `measurement.to == componentId`
+    - `measurement.from` starts with `componentId + "."`
+    - `measurement.to` starts with `componentId + "."`
+  - forbids loose prefix matching (`Q2` must not match `Q20`), net/proximity inference, and geometry inference from measurement endpoint strings.
+  - preserves no-write/read-only boundaries:
+    - no event writing,
+    - no known-facts mutation,
+    - no `board_graph.json` / `view_state.json`,
+    - no Project ZIP contract change.
+  - routes next to `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
 - `BOARD_CANVAS_READONLY_RENDERER_QA_PASS` is completed:
   - removes unnecessary map-serialization coupling in board-canvas source guard (`template.toMap(...)` usage remains absent in sizing path).
   - hardens painter repaint behavior so a new list instance with identical logical placement render inputs does not force repaint.
@@ -619,3 +635,11 @@ Branch: main
 - Source guards explicitly preserve deferred evidence boundaries: no board-canvas reads of `visualTraces`, `measurements`, `damageRegions`, `suspectRegions`, or `nets`.
 - Read-only boundaries remain unchanged: no writer imports, no known-facts mutation, no `board_graph.json`/`view_state.json`, and `renderer writes: none` remains visible.
 - Recommended next pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS (2026-05-28)
+- Measurements are scope-locked as read-only inspector/list metadata only for board canvas follow-up.
+- Measurement canvas overlays remain forbidden.
+- Strict measurement association rules are locked to exact component-id and `componentId.` endpoint matching only.
+- Net/proximity/coordinate inference from measurements is explicitly forbidden.
+- Visual/evidence closeout decision `DEFER_VISUAL_EVIDENCE` remains in force.
+- Recommended next pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.

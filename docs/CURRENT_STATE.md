@@ -3,12 +3,28 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_13_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
-- Docs drift countdown: `10`
+- Current pass: `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
+- Docs drift countdown: `9`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` is completed:
+  - records `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` as accepted.
+  - locks the next implementation direction to `BOARD_CANVAS_READONLY_INSPECTOR_PASS`.
+  - locks first inspector selection model to non-canvas controls only (no hit-testing in first inspector pass).
+  - locks inspector data path to:
+    - `ProjectState.knownFacts`
+    - `KnownFacts.componentVisualPlacements`
+    - `KnownFacts.components`
+    - `VectorFootprintLibrary` metadata
+  - locks inspector as read-only details only:
+    - no edit/confirm/save/export/event-writing actions,
+    - no AI proposal actions,
+    - no known-facts mutation,
+    - no file writes,
+    - no `board_graph.json` / `view_state.json`.
+  - preserves required renderer chrome text: `renderer writes: none`.
 - `DOCS_DRIFT_MINI_CLEANUP_13_PASS` is completed:
   - records Claude full codebase audit verdict: `PASS_WITH_NITS`.
   - reconciles stale docs routing/state pointers after accepted board-canvas placement rendering.

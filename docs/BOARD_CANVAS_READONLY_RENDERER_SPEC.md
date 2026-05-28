@@ -52,9 +52,10 @@ Renderer must not consume:
 1. `BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS`
 2. `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS`
 3. `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
-4. `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
-5. `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
-6. `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+4. `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
+5. `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
+6. `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS`
+7. `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
 
 ## 6. First implementation pass lock
 
@@ -106,7 +107,35 @@ It also locks explicit deferrals for this stage:
 - no background photo helper layer.
 - no edit/confirm/save/export/event-writing actions.
 
-## 8. Deferred scope (explicit)
+## 8. Third implementation pass scope lock (read-only inspector)
+
+`BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` locks the next implementation pass to:
+
+- add a read-only inspector/details panel for selected, already-rendered placements/components only.
+- use `ProjectState.knownFacts` typed models only:
+  - `KnownFacts.componentVisualPlacements`
+  - `KnownFacts.components`
+  - vector footprint metadata
+- keep selection state volatile/in-memory only.
+- preserve route/render behavior and required status chrome:
+  - `renderer writes: none`.
+
+First inspector implementation selection rule:
+
+- avoid canvas hit-testing in first inspector pass.
+- use non-mutating selection controls (list/row/control selection) only.
+
+Inspector deferrals and prohibitions in first inspector pass:
+
+- no edit/confirm/save/export actions.
+- no AI identify/detect/suggest actions.
+- no event writing imports or callbacks.
+- no `events.jsonl` direct read, no Project ZIP direct read.
+- no raw `known_facts.json` parsing.
+- no `board_graph.json` / `view_state.json`.
+- no measurement/damage/suspect/visual_trace inspector expansion beyond separately scoped audits.
+
+## 9. Deferred scope (explicit)
 
 Deferred to later passes/audits:
 
@@ -120,11 +149,11 @@ Deferred to later passes/audits:
 - AI proposal UI/persistence
 - view-state persistence and any `view_state.json` path
 
-## 9. photo_local rule
+## 10. photo_local rule
 
 `photo_local` visual evidence must not be rendered on board canvas until accepted coordinate mapping is scoped and audited in a dedicated pass.
 
-## 10. UX safety constraints (V1 read-only)
+## 11. UX safety constraints (V1 read-only)
 
 - no edit handles
 - no drag/rotate/resize
@@ -132,7 +161,7 @@ Deferred to later passes/audits:
 - no Top-3 AI candidate UI
 - empty states contain no action CTAs
 
-## 11. Acceptance criteria for future renderer implementation
+## 12. Acceptance criteria for future renderer implementation
 
 Future renderer acceptance requires all:
 
@@ -147,7 +176,7 @@ Future renderer acceptance requires all:
 - no background photo layer in first renderer implementation
 - no raw JSON parsing inside renderer code
 
-## 12. Audit note
+## 13. Audit note
 
 Claude independent readiness audit verdict: `PASS_WITH_NITS`.
 This spec captures the nits as locked sequencing and deferred-surface requirements before implementation.

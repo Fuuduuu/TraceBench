@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_13_PASS`
+`BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock next implementation scope to a read-only inspector/details panel for existing board-canvas placements/components only, with non-canvas selection first, strict no-write/no-AI/no-edit boundaries, and no schema/tool/registry/projection changes. |
 | DOCS_DRIFT_MINI_CLEANUP_13_PASS | DOCS_SYNC | completed | Docs/governance cleanup after full codebase audit and accepted board-canvas placement rendering: refresh stale scope-lock pointer, align queue/state routing, clean audit-index ambiguity, preserve evidence boundaries, and route next to inspector scope-lock (not direct implementation). |
 | CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Full codebase audit found no blocker, all validation suites passed, read-only/evidence boundaries held, and non-blocking cleanup candidates were recorded for later narrow passes. |
 | BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS | FLUTTER_PASS | completed | Implement narrow read-only board canvas placement rendering for `board_normalized` `componentVisualPlacements` using KnownFacts + VectorFootprintLibrary metadata, with safe template fallback, preserved shell chrome/empty states, and strict no-write/no-AI/no-inspector boundaries. |
@@ -147,17 +148,17 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
 
 `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed and accepted.
-Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` to freeze inspector boundaries before any inspector implementation.
+Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly read-only inspector implementation under the locked scope.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -181,4 +182,4 @@ Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` to fr
 
 ## Docs drift countdown
 
-Current countdown: 10
+Current countdown: 9

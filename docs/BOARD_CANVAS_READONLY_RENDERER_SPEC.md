@@ -205,3 +205,46 @@ Strict measurement-to-component association rule:
 
 - include only when endpoint is exact `componentId` or begins with `componentId + "."`.
 - no loose prefix matching (`Q2` must not match `Q20`).
+
+## 15. visual_trace inspector scope-lock addendum
+
+`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS` locks visual-trace support direction to read-only inspector/list metadata only.
+
+Allowed future direction (`BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`):
+
+- consume `ProjectState.knownFacts.visualTraces` only.
+- use currently exposed `VisualTraceFact` metadata fields only:
+  - `traceId`
+  - `photoId`
+  - `evidenceType`
+  - `fromComponent`
+  - `toComponent`
+  - `fromPin`
+  - `toPin`
+  - `confidence`
+  - `layer`
+  - `notes`
+- show explicit safe copy:
+  - `Visual trace — read-only metadata`
+  - `Visual trace is not a confirmed electrical net`
+  - `Photo-local evidence; no board coordinate available`
+  - `Does not create or confirm connectivity`
+- keep `renderer writes: none` boundary intact.
+
+Forbidden future direction:
+
+- no visual-trace canvas polyline/geometry rendering.
+- no `from_point` / `to_point` geometry rendering on board canvas.
+- no photo-local to board transform/alignment implementation.
+- no background photo helper layer.
+- no net/connectivity inference or promotion from visual traces.
+- no event writing, no known-facts mutation, no file writes.
+
+Strict visual-trace-to-component association rule:
+
+- include only when:
+  - `trace.fromComponent == componentId`
+  - `trace.toComponent == componentId`
+  - `trace.fromPin` starts with `componentId + "."`
+  - `trace.toPin` starts with `componentId + "."`
+- no loose prefix matching (`Q2` must not match `Q20`).

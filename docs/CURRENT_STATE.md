@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_AUDIT_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
+- Current pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`
 - Docs drift countdown: `4`
 
 ## Current accepted state snapshot
@@ -36,7 +36,7 @@ Branch: main
     - alignment is not identity/net/measurement proof,
     - visual_trace is not net, damage is not fault proof, suspect is not probability,
     - renderer writes nothing and does not create `board_graph.json`/`view_state.json`.
-  - routes next to `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS` (inspector-only metadata direction, no geometry overlay).
+  - routes next to `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS` (metadata-only inspector implementation direction, no geometry overlay).
 - `BOARD_CANVAS_MEASUREMENT_SUMMARY_CLOSEOUT_PASS` is completed:
   - records Codex and Claude independent audit verdicts for measurement summary pass: `PASS_WITH_NITS` / `PASS_WITH_NITS`.
   - accepts `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` as scope-compliant.
@@ -752,4 +752,20 @@ Branch: main
   - board-normalized placement rendering,
   - read-only inspector,
   - read-only measurement summary metadata.
-- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS`.
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_SCOPE_LOCK_PASS (2026-05-28)
+- Photo-evidence alignment closeout decision remains in force: `DEFER_PHOTO_ALIGNMENT_IMPLEMENTATION`.
+- Future board-canvas `visual_trace` support is scope-locked to read-only inspector/list metadata only.
+- Visual-trace geometry rendering remains forbidden in next implementation:
+  - no board-canvas polyline/geometry rendering,
+  - no `from_point`/`to_point` board rendering path,
+  - no photo-local to board-normalized transform/alignment,
+  - no background photo helper layer.
+- Strict visual-trace association for future metadata-only implementation is locked to:
+  - `trace.fromComponent == componentId`
+  - `trace.toComponent == componentId`
+  - `trace.fromPin` starts with `componentId + "."`
+  - `trace.toPin` starts with `componentId + "."`
+- Net/proximity/coordinate/template-based inference remains forbidden.
+- Next recommended pass: `BOARD_CANVAS_VISUAL_TRACE_INSPECTOR_PASS`.

@@ -3,12 +3,30 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
-- Docs drift countdown: `7`
+- Current pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
+- Docs drift countdown: `6`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_READONLY_RENDERER_QA_PASS` is completed:
+  - removes unnecessary map-serialization coupling in board-canvas source guard (`template.toMap(...)` usage remains absent in sizing path).
+  - hardens painter repaint behavior so a new list instance with identical logical placement render inputs does not force repaint.
+  - keeps repaint sensitivity for real render input changes (coordinates, rotation, sizing mode/values, template geometry identity, and designator label changes).
+  - adds/strengthens board-canvas widget/source guard coverage for:
+    - scale-mode rendering path,
+    - width+height-mode rendering path,
+    - missing sizing fallback path,
+    - missing/unknown `template_id` fallback rendering,
+    - unknown fallback template rendering safety,
+    - preserved `photo_local` non-rendering behavior,
+    - preserved no-read boundaries for deferred evidence surfaces (`visualTraces`, `measurements`, `damageRegions`, `suspectRegions`, `nets`).
+  - preserves read-only/evidence boundaries:
+    - no event writing,
+    - no known-facts mutation,
+    - no `board_graph.json`/`view_state.json`,
+    - no visual/evidence overlay scope expansion.
+  - routes next to `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS` (inspector/list metadata-only scope lock; no canvas evidence geometry).
 - `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS` is completed:
   - records two independent `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` reviews (Codex + Claude) with shared closeout verdict: `DEFER_VISUAL_EVIDENCE`.
   - records final decision:
@@ -593,3 +611,11 @@ Branch: main
 - Measurements remain eligible only for future read-only inspector/list summaries, not board-canvas geometry overlays.
 - Photo-local evidence rendering remains blocked until a dedicated coordinate/alignment scope audit is accepted.
 - Recommended next pass: `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_READONLY_RENDERER_QA_PASS (2026-05-28)
+- QA/polish hardening is completed for the accepted read-only board-canvas renderer.
+- `CustomPainter.shouldRepaint` now uses deterministic logical input comparison and no longer repaints solely due to new list instances.
+- Placement rendering paths were re-validated for scale mode, width+height mode, missing sizing fallback, missing/unknown template fallback, and unknown template families.
+- Source guards explicitly preserve deferred evidence boundaries: no board-canvas reads of `visualTraces`, `measurements`, `damageRegions`, `suspectRegions`, or `nets`.
+- Read-only boundaries remain unchanged: no writer imports, no known-facts mutation, no `board_graph.json`/`view_state.json`, and `renderer writes: none` remains visible.
+- Recommended next pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.

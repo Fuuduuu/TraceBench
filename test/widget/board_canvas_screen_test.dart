@@ -158,6 +158,113 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
+  testWidgets('renders scale-mode placement without error', (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('renders width-height mode placement without error', (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_u1')],
+          placements: const [boardPlacementWidthHeight],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('missing scale-width-height falls back safely', (tester) async {
+    const noSizingPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_no_size',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.33,
+      centerY: 0.66,
+      rotationDeg: 0,
+      sourceEventId: 'evt_000106',
+      status: 'user_confirmed_visual',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_no_size')],
+          placements: const [noSizingPlacement],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+  });
+
+  testWidgets('missing template_id fallback renders without crash', (tester) async {
+    const missingTemplate = ComponentVisualPlacementFact(
+      componentId: 'cmp_missing_template_render',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.4,
+      centerY: 0.4,
+      rotationDeg: 0,
+      sourceEventId: 'evt_000107',
+      status: 'user_confirmed_visual',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_missing_template_render'),
+          ],
+          placements: const [missingTemplate],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+  });
+
+  testWidgets('unknown template_id fallback renders without crash', (tester) async {
+    const unknownTemplate = ComponentVisualPlacementFact(
+      componentId: 'cmp_unknown_template_render',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.6,
+      centerY: 0.25,
+      rotationDeg: 0,
+      templateId: 'unknown_not_in_registry',
+      sourceEventId: 'evt_000108',
+      status: 'user_confirmed_visual',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_unknown_template_render'),
+          ],
+          placements: const [unknownTemplate],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+  });
+
   testWidgets('does not render photo_local placements on board canvas',
       (tester) async {
     await tester.pumpWidget(
@@ -507,6 +614,9 @@ void main() {
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
     ).readAsStringSync();
 
+    expect(source, isNot(contains('template.toMap(')));
+    expect(source, isNot(contains('oldDelegate.entries != entries')));
+    expect(source, contains('_entriesEquivalent('));
     expect(source, isNot(contains('MeasurementEventWriter')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));
@@ -515,5 +625,10 @@ void main() {
     expect(source, isNot(contains('events.jsonl')));
     expect(source, isNot(contains('board_graph.json')));
     expect(source, isNot(contains('view_state.json')));
+    expect(source, isNot(contains('knownFacts.visualTraces')));
+    expect(source, isNot(contains('knownFacts.measurements')));
+    expect(source, isNot(contains('knownFacts.damageRegions')));
+    expect(source, isNot(contains('knownFacts.suspectRegions')));
+    expect(source, isNot(contains('knownFacts.nets')));
   });
 }

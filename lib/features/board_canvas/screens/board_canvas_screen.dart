@@ -592,8 +592,69 @@ class _BoardPlacementPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _BoardPlacementPainter oldDelegate) {
-    return oldDelegate.entries != entries ||
-        oldDelegate.selectedKey != selectedKey ||
-        oldDelegate.colorScheme != colorScheme;
+    if (oldDelegate.selectedKey != selectedKey) {
+      return true;
+    }
+    if (oldDelegate.colorScheme != colorScheme) {
+      return true;
+    }
+    return !_entriesEquivalent(oldDelegate.entries, entries);
+  }
+
+  static bool _entriesEquivalent(
+    List<_PlacementEntry> left,
+    List<_PlacementEntry> right,
+  ) {
+    if (identical(left, right)) {
+      return true;
+    }
+    if (left.length != right.length) {
+      return false;
+    }
+    for (var index = 0; index < left.length; index++) {
+      if (!_entryEquivalent(left[index], right[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static bool _entryEquivalent(_PlacementEntry left, _PlacementEntry right) {
+    final leftPlacement = left.placement;
+    final rightPlacement = right.placement;
+    if (leftPlacement.componentId != rightPlacement.componentId ||
+        leftPlacement.coordinateSpace != rightPlacement.coordinateSpace ||
+        leftPlacement.boardSide != rightPlacement.boardSide ||
+        leftPlacement.centerX != rightPlacement.centerX ||
+        leftPlacement.centerY != rightPlacement.centerY ||
+        leftPlacement.rotationDeg != rightPlacement.rotationDeg ||
+        leftPlacement.scale != rightPlacement.scale ||
+        leftPlacement.width != rightPlacement.width ||
+        leftPlacement.height != rightPlacement.height ||
+        leftPlacement.templateId != rightPlacement.templateId ||
+        leftPlacement.sourceEventId != rightPlacement.sourceEventId ||
+        leftPlacement.status != rightPlacement.status) {
+      return false;
+    }
+
+    final leftDesignator = left.component?.designator ?? '';
+    final rightDesignator = right.component?.designator ?? '';
+    if (leftDesignator != rightDesignator) {
+      return false;
+    }
+
+    final leftTemplate = left.template;
+    final rightTemplate = right.template;
+    if ((leftTemplate == null) != (rightTemplate == null)) {
+      return false;
+    }
+    if (leftTemplate == null || rightTemplate == null) {
+      return true;
+    }
+
+    return leftTemplate.templateId == rightTemplate.templateId &&
+        leftTemplate.templateVersion == rightTemplate.templateVersion &&
+        leftTemplate.body.width == rightTemplate.body.width &&
+        leftTemplate.body.height == rightTemplate.body.height;
   }
 }

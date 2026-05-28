@@ -11,12 +11,13 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS`
+`BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS / QA_PASS | completed | Harden accepted read-only board-canvas renderer: deterministic `shouldRepaint` logical-input comparison, preserve typed template sizing path (no template map serialization), strengthen placement size/fallback/read-only/evidence-deferral guard tests, and preserve no-write boundaries. |
 | BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out Codex+Claude visual/evidence scope audits with shared verdict `DEFER_VISUAL_EVIDENCE`: no safe board-canvas evidence overlay path yet; measurements remain metadata-only candidate; photo-local evidence requires dedicated alignment audit; route next to renderer QA. |
 | BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (DEFER_VISUAL_EVIDENCE) | Audit confirms visual_trace/damage/suspect/measurement overlays are not safe on board canvas yet due coordinate/model gaps and evidence-boundary risk; defer implementation. |
 | BOARD_CANVAS_READONLY_INSPECTOR_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out inspector audit after `PASS_WITH_NITS`: confirm read-only scope compliance, preserve no-write/no-AI/no-edit boundaries, record non-blocking Windows temp-file lock flake classification, and route next to visual-trace/evidence scope audit. |
@@ -153,18 +154,18 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_RENDERER_QA_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 `BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_SCOPE_AUDIT_PASS` is completed with shared audit verdict `DEFER_VISUAL_EVIDENCE`.
 Canvas rendering of visual_trace/damage/suspect/measurement evidence remains deferred.
-Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.
+Next recommended pass is `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -188,7 +189,7 @@ Next recommended pass is `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`.
 
 ## Docs drift countdown
 
-Current countdown: 7
+Current countdown: 6
 
 ## PASS UPDATE: BOARD_CANVAS_VISUAL_TRACE_AND_EVIDENCE_AUDIT_CLOSEOUT_PASS (completed)
 - Lane: `DOCS_SYNC`
@@ -202,3 +203,24 @@ Current countdown: 7
 - Routing:
   - next recommended pass `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`,
   - defer photo-local evidence rendering until `BOARD_CANVAS_PHOTO_EVIDENCE_ALIGNMENT_SCOPE_AUDIT_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_READONLY_RENDERER_QA_PASS (completed)
+- Lane: `FLUTTER_PASS / QA_PASS`
+- Status: completed.
+- QA hardening completed:
+  - painter no longer repaints solely because placement entry list identity changes,
+  - deterministic logical comparison added for repaint-relevant render inputs,
+  - source guard confirms no `template.toMap(...)` sizing path in board-canvas source.
+- Test hardening completed:
+  - scale-mode and width+height-mode placement rendering path coverage,
+  - missing sizing fallback coverage,
+  - missing/unknown template fallback rendering coverage,
+  - unknown fallback template render safety coverage,
+  - deferred-evidence read guards (`visualTraces`/`measurements`/`damageRegions`/`suspectRegions`/`nets` absent from board-canvas source reads).
+- Boundaries preserved:
+  - no event writing,
+  - no canonical fact mutation,
+  - no `board_graph.json` / `view_state.json`,
+  - no visual/evidence overlay scope expansion.
+- Routing:
+  - next recommended pass `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`.

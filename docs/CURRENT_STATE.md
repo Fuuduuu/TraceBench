@@ -3,12 +3,21 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_PASS`
-- Docs drift countdown: `5`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_13_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS`
+- Docs drift countdown: `10`
 
 ## Current accepted state snapshot
 
+- `DOCS_DRIFT_MINI_CLEANUP_13_PASS` is completed:
+  - records Claude full codebase audit verdict: `PASS_WITH_NITS`.
+  - reconciles stale docs routing/state pointers after accepted board-canvas placement rendering.
+  - sets next recommended pass to `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` (scope lock before implementation).
+  - records non-blocking future cleanup candidates without opening implementation scope:
+    - `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`
+    - `KNOWN_FACTS_DART_POLISH_PASS`
+    - `TOOLS_CLEANUP_PASS`
+    - `MEASUREMENT_WRITER_POLISH_PASS`
 - `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed:
   - renders read-only projected component placements on board canvas for `coordinate_space = board_normalized`.
   - consumes only:

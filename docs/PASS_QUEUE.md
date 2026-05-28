@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_13_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_13_PASS | DOCS_SYNC | completed | Docs/governance cleanup after full codebase audit and accepted board-canvas placement rendering: refresh stale scope-lock pointer, align queue/state routing, clean audit-index ambiguity, preserve evidence boundaries, and route next to inspector scope-lock (not direct implementation). |
+| CODEBASE_CLEANUP_AND_EFFICIENCY_AUDIT_PASS | AUDIT_ONLY | completed (PASS_WITH_NITS) | Full codebase audit found no blocker, all validation suites passed, read-only/evidence boundaries held, and non-blocking cleanup candidates were recorded for later narrow passes. |
 | BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS | FLUTTER_PASS | completed | Implement narrow read-only board canvas placement rendering for `board_normalized` `componentVisualPlacements` using KnownFacts + VectorFootprintLibrary metadata, with safe template fallback, preserved shell chrome/empty states, and strict no-write/no-AI/no-inspector boundaries. |
 | BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock next renderer implementation scope to read-only component visual placement rendering only: `board_normalized` placements only, `photo_local` deferred, template-safe fallback required, strict no-write/no-AI/no-edit boundaries preserved, and next routing fixed to `BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS`. |
 | BOARD_CANVAS_READONLY_RENDERER_SHELL_PASS | FLUTTER_PASS | completed | Implement minimal read-only board canvas shell: add route/screen, empty-state-only UI, exact status chrome `renderer writes: none`, and no-edit/no-AI/no-export/no-rendering guard tests. |
@@ -145,17 +147,28 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
 
 ## Next recommended pass after this completion
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_INSPECTOR_PASS | FLUTTER_PASS | recommended |
+| BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
 
-`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed.
-Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly read-only details panel without opening edit/write surfaces.
+`BOARD_CANVAS_COMPONENT_PLACEMENT_RENDERING_PASS` is completed and accepted.
+Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_SCOPE_LOCK_PASS` to freeze inspector boundaries before any inspector implementation.
+
+## Recorded future cleanup candidates (not active)
+
+- `BOARD_CANVAS_READONLY_RENDERER_QA_PASS`:
+  - `_templateAspectRatio()` `toMap()` avoidance and `shouldRepaint` strictness polish.
+- `KNOWN_FACTS_DART_POLISH_PASS`:
+  - `KnownFacts.componentPinIndex` dedup efficiency and `valid_from_event_id` doc-note parity polish.
+- `TOOLS_CLEANUP_PASS`:
+  - validator fallback-event-type list dedup and materializer `footprint_not_populated` list-dedup efficiency polish.
+- `MEASUREMENT_WRITER_POLISH_PASS`:
+  - theoretical fallback uniqueness nit hardening in writer last-resort ID loop.
 
 ## Deferred / not active
 
@@ -168,4 +181,4 @@ Next recommended pass is `BOARD_CANVAS_READONLY_INSPECTOR_PASS` for a strictly r
 
 ## Docs drift countdown
 
-Current countdown: 5
+Current countdown: 10

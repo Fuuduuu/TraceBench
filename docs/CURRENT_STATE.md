@@ -3,12 +3,35 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
-- Docs drift countdown: `5`
+- Current pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`
+- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`
+- Docs drift countdown: `4`
 
 ## Current accepted state snapshot
 
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` is completed:
+  - adds read-only measurement summary metadata to board-canvas inspector for selected components/placements.
+  - uses `ProjectState.knownFacts.measurements` only.
+  - preserves strict association rule:
+    - `from == componentId`
+    - `to == componentId`
+    - `from` starts with `componentId + "."`
+    - `to` starts with `componentId + "."`
+  - preserves anti-overmatch boundary (`Q2` does not match `Q20`).
+  - renders measurement metadata only (no board-canvas geometry/anchors/overlays).
+  - keeps values verbatim and adds safe copy:
+    - `Measurement — read-only summary`
+    - `Value shown verbatim`
+    - `Does not create or confirm a net`
+    - `No board coordinate available`
+    - stale wording: `Stale after repair`
+  - preserves read-only/evidence boundaries:
+    - no event writing
+    - no known-facts mutation
+    - no `board_graph.json` / `view_state.json`
+    - no visual_trace/measurement/damage/suspect canvas overlays
+    - no net/proximity/coordinate inference from measurements
+  - routes next to `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`.
 - `BOARD_CANVAS_MEASUREMENT_SUMMARY_SCOPE_LOCK_PASS` is completed:
   - records visual/evidence closeout decision remains `DEFER_VISUAL_EVIDENCE`.
   - locks board-canvas measurement support to future read-only inspector/list metadata only.
@@ -643,3 +666,19 @@ Branch: main
 - Net/proximity/coordinate inference from measurements is explicitly forbidden.
 - Visual/evidence closeout decision `DEFER_VISUAL_EVIDENCE` remains in force.
 - Recommended next pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
+
+## PASS UPDATE: BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS (2026-05-28)
+- Read-only measurement summary metadata is added to the board-canvas inspector.
+- Data path remains projection-only: `ProjectState.knownFacts.measurements`.
+- Measurement association uses strict component endpoint matching only and blocks loose prefix matches.
+- Measurement values are shown verbatim with explicit non-net/non-coordinate safety copy.
+- No measurement canvas overlays or inferred anchors/coordinates were added.
+- Read-only/no-write boundaries remain intact and `renderer writes: none` remains visible.
+- Recommended next pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`.
+## PASS UPDATE (2026-05-28)
+- Latest accepted implementation pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
+- Board canvas inspector now includes measurement summary metadata only for the selected component, using strict endpoint matching (`componentId`, `componentId.<pin>`).
+- Measurement summary remains read-only metadata only: no board overlay geometry, no inferred coordinates, no net inference, no event writing.
+- Existing read-only renderer boundaries remain intact, including exact chrome text: `renderer writes: none`.
+- Deferred remains unchanged: visual_trace/damage/suspect canvas rendering, measurement overlays, photo/background alignment pipeline.
+- Next recommended pass: `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS`.

@@ -244,3 +244,12 @@ Current countdown: 5
   - no Project ZIP contract change.
 - Routing:
   - next recommended pass `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS`.
+## Completed (2026-05-28)
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_PASS` (FLUTTER_PASS) — completed.
+  - Added read-only measurement summary metadata in board canvas inspector for selected component only.
+  - Enforced strict association rules: exact `componentId` or `componentId.<pin>`; no loose prefix match.
+  - Preserved no-overlay/no-inference/no-write boundaries.
+
+## Next recommended pass
+- `BOARD_CANVAS_MEASUREMENT_SUMMARY_AUDIT_PASS` (AUDIT_ONLY)
+  - Verify strict read-only behavior, association matching safety (`Q2` not matching `Q20`), and preserved evidence boundaries.

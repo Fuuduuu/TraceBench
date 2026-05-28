@@ -95,6 +95,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         }
       }
     }
+    final relatedMeasurements = selectedEntry == null
+        ? const <MeasurementFact>[]
+        : _measurementsForComponent(
+            knownFacts.measurements,
+            selectedEntry.placement.componentId,
+          );
 
     return _buildScaffold(
       context,
@@ -119,7 +125,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     entries: entries,
                     selectedKey: selectedKey,
                   );
-                  final inspector = _InspectorPanel(selectedEntry: selectedEntry);
+                  final inspector = _InspectorPanel(
+                    selectedEntry: selectedEntry,
+                    relatedMeasurements: relatedMeasurements,
+                  );
 
                   if (constraints.maxWidth >= 980) {
                     return Row(
@@ -146,6 +155,22 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         ),
       ),
     );
+  }
+
+  List<MeasurementFact> _measurementsForComponent(
+    List<MeasurementFact> measurements,
+    String componentId,
+  ) {
+    return measurements
+        .where((measurement) {
+          return _measurementEndpointMatchesComponent(measurement.from, componentId) ||
+              _measurementEndpointMatchesComponent(measurement.to, componentId);
+        })
+        .toList(growable: false);
+  }
+
+  bool _measurementEndpointMatchesComponent(String endpoint, String componentId) {
+    return endpoint == componentId || endpoint.startsWith('$componentId.');
   }
 
   String? _coerceSelection(List<_PlacementEntry> entries) {
@@ -306,9 +331,13 @@ class _CanvasPanel extends StatelessWidget {
 }
 
 class _InspectorPanel extends StatelessWidget {
-  const _InspectorPanel({required this.selectedEntry});
+  const _InspectorPanel({
+    required this.selectedEntry,
+    required this.relatedMeasurements,
+  });
 
   final _PlacementEntry? selectedEntry;
+  final List<MeasurementFact> relatedMeasurements;
 
   @override
   Widget build(BuildContext context) {
@@ -406,6 +435,28 @@ class _InspectorPanel extends StatelessWidget {
                   label: 'Removed by event ID',
                   value: component!.removedByEventId!,
                 ),
+              const SizedBox(height: 10),
+              Text(
+                'Measurement — read-only summary',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 6),
+              const Text('Value shown verbatim'),
+              const Text('Does not create or confirm a net'),
+              const Text('No board coordinate available'),
+              if (relatedMeasurements.isEmpty) ...[
+                const SizedBox(height: 6),
+                const Text('No related measurements for selected component.'),
+              ] else ...[
+                const SizedBox(height: 8),
+                ...relatedMeasurements
+                    .map(
+                      (measurement) => _MeasurementSummaryTile(
+                        measurement: measurement,
+                      ),
+                    )
+                    .toList(growable: false),
+              ],
             ],
           ),
         ),
@@ -432,6 +483,56 @@ class _InspectorPanel extends StatelessWidget {
     }
 
     return 'unknown';
+  }
+}
+
+class _MeasurementSummaryTile extends StatelessWidget {
+  const _MeasurementSummaryTile({required this.measurement});
+
+  final MeasurementFact measurement;
+
+  @override
+  Widget build(BuildContext context) {
+    final isStale = measurement.validityStatus == 'stale_after_repair';
+    final valueText = measurement.value == null
+        ? measurement.reading
+        : '${measurement.value}${measurement.unit == null ? '' : ' ${measurement.unit}'}';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _InspectorField(label: 'Measurement ID', value: measurement.measurementId),
+              _InspectorField(label: 'Mode', value: measurement.mode),
+              _InspectorField(label: 'From', value: measurement.from),
+              _InspectorField(label: 'To', value: measurement.to),
+              _InspectorField(label: 'Value', value: valueText),
+              _InspectorField(label: 'Power state', value: measurement.powerState),
+              _InspectorField(label: 'Validity status', value: measurement.validityStatus),
+              if (isStale) const Text('Stale after repair'),
+              if (measurement.originEventId != null)
+                _InspectorField(
+                  label: 'Origin event ID',
+                  value: measurement.originEventId!,
+                ),
+              if (measurement.validUntilEventId != null)
+                _InspectorField(
+                  label: 'Valid until event ID',
+                  value: measurement.validUntilEventId!,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

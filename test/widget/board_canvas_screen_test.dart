@@ -12,6 +12,7 @@ import 'package:trace_bench_viewer/shared/models/project_state.dart';
 ProjectState _inlineProjectState({
   required List<ComponentFact> components,
   required List<ComponentVisualPlacementFact> placements,
+  List<MeasurementFact> measurements = const [],
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -26,7 +27,7 @@ ProjectState _inlineProjectState({
       projectId: 'proj_001',
       components: components,
       pins: const [],
-      measurements: const [],
+      measurements: measurements,
       nets: const [],
       excludedFromFaultCandidates: const [],
       componentPinIndex: const {},
@@ -92,6 +93,17 @@ void main() {
     rotationDeg: 0,
     sourcePhotoId: 'ph_01',
     sourceEventId: 'evt_000103',
+    status: 'user_confirmed_visual',
+  );
+
+  const q2Placement = ComponentVisualPlacementFact(
+    componentId: 'Q2',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.12,
+    centerY: 0.25,
+    rotationDeg: 0,
+    sourceEventId: 'evt_000200',
     status: 'user_confirmed_visual',
   );
 
@@ -533,12 +545,16 @@ void main() {
 
     const forbiddenActions = [
       'Confirm',
+      'Confirm net',
+      'Confirm measurement',
       'Edit',
+      'Edit measurement',
       'Change template',
       'Promote',
       'Delete',
       'Identify with AI',
       'Measure',
+      'Re-measure',
       'Apply to schematic',
       'Confirm fault',
       'Probability',
@@ -553,6 +569,218 @@ void main() {
     for (final action in forbiddenActions) {
       expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
     }
+  });
+
+  testWidgets('measurement summary includes measurement when from equals componentId',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M001',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 5.02,
+      unit: 'V',
+      originEventId: 'evt_800001',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Measurement ID: M001'), findsOneWidget);
+  });
+
+  testWidgets('measurement summary includes measurement when to equals componentId',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M002',
+      mode: 'dc_voltage',
+      from: 'GND',
+      to: 'cmp_r101',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'off',
+      value: 3.3,
+      unit: 'V',
+      originEventId: 'evt_800002',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Measurement ID: M002'), findsOneWidget);
+  });
+
+  testWidgets(
+      'measurement summary includes measurement when from starts with componentId dot',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M003',
+      mode: 'continuity',
+      from: 'cmp_r101.1',
+      to: 'GND',
+      reading: 'beep',
+      validityStatus: 'active',
+      powerState: 'off',
+      originEventId: 'evt_800003',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Measurement ID: M003'), findsOneWidget);
+  });
+
+  testWidgets(
+      'measurement summary includes measurement when to starts with componentId dot',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M004',
+      mode: 'continuity',
+      from: 'GND',
+      to: 'cmp_r101.2',
+      reading: 'beep',
+      validityStatus: 'active',
+      powerState: 'off',
+      originEventId: 'evt_800004',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.textContaining('Measurement ID: M004'), findsOneWidget);
+  });
+
+  testWidgets('Q2 does not match Q20 in measurement association', (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M005',
+      mode: 'dc_voltage',
+      from: 'Q20.1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 12.0,
+      unit: 'V',
+      originEventId: 'evt_800005',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'Q2')],
+          placements: const [q2Placement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'Q2');
+
+    expect(find.textContaining('Measurement ID: M005'), findsNothing);
+    expect(find.text('No related measurements for selected component.'), findsOneWidget);
+  });
+
+  testWidgets('measurement summary shows safe copy and verbatim value', (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M006',
+      mode: 'dc_voltage',
+      from: 'cmp_r101.1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 4.987,
+      unit: 'V',
+      originEventId: 'evt_800006',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.text('Value shown verbatim'), findsOneWidget);
+    expect(find.text('Does not create or confirm a net'), findsOneWidget);
+    expect(find.text('No board coordinate available'), findsOneWidget);
+    expect(find.textContaining('Value: 4.987 V'), findsOneWidget);
+  });
+
+  testWidgets('stale measurement shows stale after repair label', (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M007',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'stale_after_repair',
+      powerState: 'off',
+      value: 3.3,
+      unit: 'V',
+      originEventId: 'evt_800007',
+      validUntilEventId: 'evt_800008',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.text('Stale after repair'), findsOneWidget);
+    expect(find.textContaining('Valid until event ID: evt_800008'), findsOneWidget);
   });
 
   testWidgets('template_id does not render forbidden electrical identity words',
@@ -626,9 +854,13 @@ void main() {
     expect(source, isNot(contains('board_graph.json')));
     expect(source, isNot(contains('view_state.json')));
     expect(source, isNot(contains('knownFacts.visualTraces')));
-    expect(source, isNot(contains('knownFacts.measurements')));
     expect(source, isNot(contains('knownFacts.damageRegions')));
     expect(source, isNot(contains('knownFacts.suspectRegions')));
     expect(source, isNot(contains('knownFacts.nets')));
+    expect(source, isNot(contains('drawMeasurement')));
+    expect(source, isNot(contains('measurementOverlay')));
+    expect(source, isNot(contains('measurementAnchor')));
+    expect(source, isNot(contains('measurementCoordinate')));
+    expect(source, isNot(contains('Confirm net')));
   });
 }

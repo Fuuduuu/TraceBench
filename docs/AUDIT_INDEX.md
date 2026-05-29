@@ -4,6 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed (drift reset to standard value, compact state/queue/lock/index alignment, next routing refreshed) |
+| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; audit evidence captured and accepted in closeout file) |
 | PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; Dart KnownFacts alignment parity accepted, boundaries preserved, non-blocking test/coverage nits recorded) |
 | PHOTO_ALIGNMENT_DART_MODEL_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_PASS.md | completed (Dart KnownFacts parsing/serialization parity for `photo_to_board_alignments` with no transform/coordinate-conversion/inference expansion) |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS.md | completed (docs-only Dart model scope lock for `photo_to_board_alignments`; future model keys/tests/boundaries locked, implementation deferred to Dart pass) |

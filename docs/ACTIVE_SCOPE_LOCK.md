@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Docs-only closeout for `PHOTO_ALIGNMENT_DART_MODEL_PASS` after Claude Code audit verdict `PASS_WITH_NITS`.
+Docs-only drift cleanup after `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS` and compact ledger alignment.
 
 ## Allowed surfaces
 
@@ -14,7 +14,9 @@ Docs-only closeout for `PHOTO_ALIGNMENT_DART_MODEL_PASS` after Claude Code audit
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md` (only if stale)
+- `docs/TRUTH_INDEX.md` (only if stale)
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -54,7 +56,7 @@ Docs-only closeout for `PHOTO_ALIGNMENT_DART_MODEL_PASS` after Claude Code audit
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS`
 
 ## Validate
 

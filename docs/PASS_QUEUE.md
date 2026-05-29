@@ -11,25 +11,26 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | recommended | Docs drift countdown reached `0`; run compact cleanup before next implementation/audit routing. |
-| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | optional | Optional extra independent Dart-model audit if another reviewer pass is needed beyond Claude closeout evidence. |
-| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | TOOLS_PASS / QA_PASS | optional | Optional follow-up for non-blocking audit nits: explicit `damage_regions`/`suspect_regions` side-effect asserts and direct schema-library projection validation coverage. |
+| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | TOOLS_PASS / QA_PASS | recommended | Forward QA hardening follow-up for remaining non-blocking alignment projection test nits. |
+| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Audit was completed and accepted via pushed closeout flow; do not route backward to this pass. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Drift reset completed and ledger/pass pointers aligned after Dart model closeout. |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown and compactly align CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX after Dart model closeout acceptance. |
 | PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit, accept Dart model parity state, record non-blocking nits, align scope-lock pointer, and route to docs-drift cleanup because countdown reached zero. |
 | PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | completed | Implement Dart KnownFacts support for `photo_to_board_alignments` with field/key parity, empty-list fallback, round-trip coverage, and no transform/coordinate-conversion/inference behavior. |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Dart KnownFacts model direction for `photo_to_board_alignments`, JSON key parity, missing-field defaults, no-transform/no-inference boundaries, and future implementation/test allowlist. |
@@ -61,4 +62,4 @@ Detailed pass evidence remains in `docs/audit/*.md` and indexed by `docs/AUDIT_I
 
 ## Docs drift countdown
 
-Current countdown: `0`
+Current countdown: `5`

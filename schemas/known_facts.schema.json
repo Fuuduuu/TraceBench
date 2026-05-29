@@ -224,6 +224,64 @@
         "additionalProperties": false
       }
     },
+    "photo_to_board_alignments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "alignment_id",
+          "source_photo_id",
+          "board_side",
+          "coordinate_space_from",
+          "coordinate_space_to",
+          "reference_points_photo",
+          "reference_points_board",
+          "transform_type",
+          "alignment_quality_label",
+          "source_event_id",
+          "status"
+        ],
+        "properties": {
+          "alignment_id": { "type": "string", "pattern": "^ALN[0-9]+$" },
+          "source_photo_id": { "type": "string", "pattern": "^photo_[a-z0-9_]+$" },
+          "board_side": { "enum": ["top", "bottom", "unknown"] },
+          "coordinate_space_from": { "const": "photo_local" },
+          "coordinate_space_to": { "const": "board_normalized" },
+          "reference_points_photo": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number", "minimum": 0 },
+                "y": { "type": "number", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "reference_points_board": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number", "minimum": 0, "maximum": 1 },
+                "y": { "type": "number", "minimum": 0, "maximum": 1 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "transform_type": { "enum": ["similarity", "affine"] },
+          "alignment_quality_label": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" },
+          "source_event_id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["user_confirmed_alignment"] }
+        },
+        "additionalProperties": false
+      }
+    },
     "measurements": { "type": "array" },
     "nets": { "type": "array" },
     "excluded_from_fault_candidates": { "type": "array" }

@@ -106,6 +106,7 @@ def main() -> int:
     damage_regions: list[dict] = []
     suspect_regions: list[dict] = []
     visual_traces: list[dict] = []
+    photo_to_board_alignments_by_id: dict[str, tuple[int, dict]] = {}
     component_visual_placements_by_component: dict[str, tuple[int, dict]] = {}
     excluded_from_fault_candidates: list[dict] = []
     project_id = manifest_project_id
@@ -310,6 +311,40 @@ def main() -> int:
                 component_visual_placements_by_component[component_id] = (placement_sequence, placement)
             continue
 
+        if event_type == "photo_to_board_alignment_confirmed":
+            actor = event.get("actor")
+            if not isinstance(actor, dict) or actor.get("type") != "user":
+                continue
+            if not isinstance(payload, dict):
+                continue
+            if not isinstance(event_id, str):
+                continue
+            alignment_id = payload.get("alignment_id")
+            if not isinstance(alignment_id, str) or not alignment_id:
+                continue
+
+            alignment = {
+                "alignment_id": alignment_id,
+                "source_photo_id": payload.get("source_photo_id"),
+                "board_side": payload.get("board_side"),
+                "coordinate_space_from": payload.get("coordinate_space_from"),
+                "coordinate_space_to": payload.get("coordinate_space_to"),
+                "reference_points_photo": payload.get("reference_points_photo"),
+                "reference_points_board": payload.get("reference_points_board"),
+                "transform_type": payload.get("transform_type"),
+                "alignment_quality_label": payload.get("alignment_quality_label"),
+                "source_event_id": event_id,
+                "status": "user_confirmed_alignment",
+            }
+            if "notes" in payload:
+                alignment["notes"] = payload.get("notes")
+
+            alignment_sequence = sequence if isinstance(sequence, int) else -1
+            previous = photo_to_board_alignments_by_id.get(alignment_id)
+            if previous is None or alignment_sequence >= previous[0]:
+                photo_to_board_alignments_by_id[alignment_id] = (alignment_sequence, alignment)
+            continue
+
         if event_type == "footprint_marked_not_populated":
             entry = {
                 "footprint_id": payload.get("footprint_id"),
@@ -366,6 +401,13 @@ def main() -> int:
             key=lambda item: str(item[1].get("component_id", "")),
         )
     ]
+    photo_to_board_alignments = [
+        value[1]
+        for value in sorted(
+            photo_to_board_alignments_by_id.values(),
+            key=lambda item: str(item[1].get("alignment_id", "")),
+        )
+    ]
 
     known = {
         "project_id": project_id,
@@ -381,6 +423,8 @@ def main() -> int:
     }
     if component_visual_placements:
         known["component_visual_placements"] = component_visual_placements
+    if photo_to_board_alignments:
+        known["photo_to_board_alignments"] = photo_to_board_alignments
     component_pin_index = {}
     for pin in pins:
         component_id = pin.get("component_id")

@@ -593,6 +593,48 @@ class ProjectZipTests(unittest.TestCase):
             self.assertTrue((output_dir / "events.jsonl").exists())
             self.assertTrue((output_dir / "known_facts.json").exists())
 
+    def test_project_zip_with_photo_alignment_event_validates(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+
+            alignment_event = {
+                "schema_version": "1.0",
+                "event_id": "evt_000120",
+                "project_id": "prj_pelle_pv20_001",
+                "sequence": 120,
+                "created_at": "2026-05-27T10:00:00Z",
+                "actor": {"type": "user", "id": "tech_01"},
+                "event_type": "photo_to_board_alignment_confirmed",
+                "status": "accepted",
+                "payload": {
+                    "alignment_id": "ALN120",
+                    "source_photo_id": "photo_top_backlight_001",
+                    "board_side": "top",
+                    "coordinate_space_from": "photo_local",
+                    "coordinate_space_to": "board_normalized",
+                    "reference_points_photo": [{"x": 120.0, "y": 80.0}, {"x": 420.0, "y": 260.0}],
+                    "reference_points_board": [{"x": 0.12, "y": 0.08}, {"x": 0.42, "y": 0.26}],
+                    "transform_type": "similarity",
+                    "alignment_quality_label": "manual_confirmed",
+                },
+            }
+            with (project_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(alignment_event, separators=(",", ":"), ensure_ascii=False) + "\n")
+
+            materialize_result = _run_tool(
+                [
+                    "tools/materialize_known_facts.py",
+                    str(project_dir / "events.jsonl"),
+                    str(project_dir / "known_facts.json"),
+                ]
+            )
+            self.assertEqual(materialize_result.returncode, 0, materialize_result.stdout + materialize_result.stderr)
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

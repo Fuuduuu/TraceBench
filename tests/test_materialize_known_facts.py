@@ -1339,6 +1339,520 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertIn("source_event_id", required)
         self.assertIn("status", required)
 
+    def test_known_facts_schema_includes_photo_to_board_alignments(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        alignments = schema.get("properties", {}).get("photo_to_board_alignments")
+        self.assertIsInstance(alignments, dict)
+        item = alignments.get("items", {})
+        required = set(item.get("required", []))
+        self.assertIn("alignment_id", required)
+        self.assertIn("source_event_id", required)
+        self.assertIn("status", required)
+
+    def test_known_facts_schema_photo_alignment_status_enum_locked(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        status_enum = (
+            schema.get("properties", {})
+            .get("photo_to_board_alignments", {})
+            .get("items", {})
+            .get("properties", {})
+            .get("status", {})
+            .get("enum", [])
+        )
+        self.assertEqual(status_enum, ["user_confirmed_alignment"])
+
+    def test_known_facts_schema_photo_alignment_coordinate_space_from_const(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        const_value = (
+            schema.get("properties", {})
+            .get("photo_to_board_alignments", {})
+            .get("items", {})
+            .get("properties", {})
+            .get("coordinate_space_from", {})
+            .get("const")
+        )
+        self.assertEqual(const_value, "photo_local")
+
+    def test_known_facts_schema_photo_alignment_board_point_range(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        board_point = (
+            schema.get("properties", {})
+            .get("photo_to_board_alignments", {})
+            .get("items", {})
+            .get("properties", {})
+            .get("reference_points_board", {})
+            .get("items", {})
+            .get("properties", {})
+            .get("x", {})
+        )
+        self.assertEqual(board_point.get("minimum"), 0)
+        self.assertEqual(board_point.get("maximum"), 1)
+
+    def test_photo_to_board_alignment_projects_accepted_user_event(self):
+        events = [
+            make_event(
+                "evt_100001",
+                100001,
+                "photo_added",
+                {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            ),
+            make_event(
+                "evt_100002",
+                100002,
+                "photo_to_board_alignment_confirmed",
+                {
+                    "alignment_id": "ALN1001",
+                    "source_photo_id": "photo_top_001",
+                    "board_side": "top",
+                    "coordinate_space_from": "photo_local",
+                    "coordinate_space_to": "board_normalized",
+                    "reference_points_photo": [{"x": 12.0, "y": 34.0}, {"x": 56.0, "y": 78.0}],
+                    "reference_points_board": [{"x": 0.12, "y": 0.34}, {"x": 0.56, "y": 0.78}],
+                    "transform_type": "similarity",
+                    "alignment_quality_label": "manual_check_ok",
+                    "notes": "operator confirmed",
+                },
+            ),
+        ]
+        data = run_materialize_events(events)
+        self.assertIn("photo_to_board_alignments", data)
+        self.assertEqual(len(data["photo_to_board_alignments"]), 1)
+        alignment = data["photo_to_board_alignments"][0]
+        self.assertEqual(alignment["alignment_id"], "ALN1001")
+        self.assertEqual(alignment["source_photo_id"], "photo_top_001")
+        self.assertEqual(alignment["board_side"], "top")
+        self.assertEqual(alignment["coordinate_space_from"], "photo_local")
+        self.assertEqual(alignment["coordinate_space_to"], "board_normalized")
+        self.assertEqual(alignment["reference_points_photo"], [{"x": 12.0, "y": 34.0}, {"x": 56.0, "y": 78.0}])
+        self.assertEqual(alignment["reference_points_board"], [{"x": 0.12, "y": 0.34}, {"x": 0.56, "y": 0.78}])
+        self.assertEqual(alignment["transform_type"], "similarity")
+        self.assertEqual(alignment["alignment_quality_label"], "manual_check_ok")
+        self.assertEqual(alignment["source_event_id"], "evt_100002")
+        self.assertEqual(alignment["status"], "user_confirmed_alignment")
+        self.assertEqual(alignment["notes"], "operator confirmed")
+
+    def test_photo_to_board_alignment_omits_notes_when_absent(self):
+        events = [
+            make_event(
+                "evt_100001",
+                100001,
+                "photo_added",
+                {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+            ),
+            make_event(
+                "evt_100002",
+                100002,
+                "photo_to_board_alignment_confirmed",
+                {
+                    "alignment_id": "ALN1002",
+                    "source_photo_id": "photo_top_001",
+                    "board_side": "bottom",
+                    "coordinate_space_from": "photo_local",
+                    "coordinate_space_to": "board_normalized",
+                    "reference_points_photo": [{"x": 1.0, "y": 2.0}, {"x": 3.0, "y": 4.0}],
+                    "reference_points_board": [{"x": 0.1, "y": 0.2}, {"x": 0.3, "y": 0.4}],
+                    "transform_type": "affine",
+                    "alignment_quality_label": "good",
+                },
+            ),
+        ]
+        data = run_materialize_events(events)
+        alignment = data["photo_to_board_alignments"][0]
+        self.assertNotIn("notes", alignment)
+
+    def test_photo_to_board_alignment_projection_matches_schema_required_fields(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        required = set(
+            schema.get("properties", {})
+            .get("photo_to_board_alignments", {})
+            .get("items", {})
+            .get("required", [])
+        )
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN1003",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "unknown",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 10.0, "y": 10.0}, {"x": 20.0, "y": 20.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                ),
+            ]
+        )
+        alignment = data["photo_to_board_alignments"][0]
+        self.assertTrue(required.issubset(set(alignment.keys())))
+
+    def test_photo_to_board_alignments_omitted_when_no_alignment_events_exist(self):
+        data = run_materialize_events([make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"})])
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_rejected_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN2001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    status="rejected",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_draft_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN2002",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    status="draft",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_superseded_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN2003",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    status="superseded",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_ai_actor_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN3001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    actor_type="ai",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_system_actor_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN3002",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    actor_type="system",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_import_actor_photo_to_board_alignment_does_not_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN3003",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                    actor_type="import",
+                ),
+            ]
+        )
+        self.assertNotIn("photo_to_board_alignments", data)
+
+    def test_latest_accepted_photo_to_board_alignment_wins_by_alignment_id(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN4001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 10.0, "y": 10.0}, {"x": 20.0, "y": 20.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "first",
+                    },
+                ),
+                make_event(
+                    "evt_100003",
+                    100003,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN4001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "bottom",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 11.0, "y": 11.0}, {"x": 21.0, "y": 21.0}],
+                        "reference_points_board": [{"x": 0.11, "y": 0.11}, {"x": 0.21, "y": 0.21}],
+                        "transform_type": "affine",
+                        "alignment_quality_label": "second",
+                    },
+                ),
+            ]
+        )
+        self.assertEqual(len(data["photo_to_board_alignments"]), 1)
+        alignment = data["photo_to_board_alignments"][0]
+        self.assertEqual(alignment["board_side"], "bottom")
+        self.assertEqual(alignment["transform_type"], "affine")
+        self.assertEqual(alignment["alignment_quality_label"], "second")
+        self.assertEqual(alignment["source_event_id"], "evt_100003")
+
+    def test_two_photo_to_board_alignment_ids_both_project(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN5001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "a",
+                    },
+                ),
+                make_event(
+                    "evt_100003",
+                    100003,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN5002",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "bottom",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 3.0, "y": 3.0}, {"x": 4.0, "y": 4.0}],
+                        "reference_points_board": [{"x": 0.3, "y": 0.3}, {"x": 0.4, "y": 0.4}],
+                        "transform_type": "affine",
+                        "alignment_quality_label": "b",
+                    },
+                ),
+            ]
+        )
+        self.assertEqual(
+            {item["alignment_id"] for item in data["photo_to_board_alignments"]},
+            {"ALN5001", "ALN5002"},
+        )
+
+    def test_photo_to_board_alignment_projection_has_no_side_effect_collections(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN6001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                ),
+            ]
+        )
+        self.assertEqual(data.get("components"), [])
+        self.assertEqual(data.get("pins"), [])
+        self.assertEqual(data.get("measurements"), [])
+        self.assertEqual(data.get("nets"), [])
+        self.assertEqual(data.get("visual_traces"), [])
+        self.assertEqual(data.get("excluded_from_fault_candidates"), [])
+
+    def test_photo_to_board_alignment_projection_does_not_write_board_graph_or_view_state(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            out_path = Path(tmpdir) / "known_facts.json"
+            events = [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN7001",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 1.0, "y": 1.0}, {"x": 2.0, "y": 2.0}],
+                        "reference_points_board": [{"x": 0.1, "y": 0.1}, {"x": 0.2, "y": 0.2}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "ok",
+                    },
+                ),
+            ]
+            with events_path.open("w", encoding="utf-8") as handle:
+                for event in events:
+                    handle.write(json.dumps(event) + "\n")
+            result = subprocess.run(
+                [sys.executable, "tools/materialize_known_facts.py", str(events_path), str(out_path)],
+                text=True,
+                capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertFalse((Path(tmpdir) / "board_graph.json").exists())
+            self.assertFalse((Path(tmpdir) / "view_state.json").exists())
+
     def test_pelle_photo_placeholder_materialized(self):
         data = run_materialize()
         self.assertEqual(data.get("suspect_regions", []), [])

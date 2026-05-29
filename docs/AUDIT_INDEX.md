@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_PASS.md | completed (materializer + known_facts projection support for alignment events; no transform computation, no evidence conversion, no side-effect expansion) |
 | PROMPTING_AND_STATE_COMPACTION_PASS | docs/audit/PROMPTING_AND_STATE_COMPACTION_PASS.md | completed (`NEEDS_DOCS_FIXUP` remediation + `ADOPT_HYBRID_PROMPTS` adoption; CURRENT_STATE/PASS_QUEUE compaction and prompting/routing protocol update) |
 | PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS.md | completed (docs-only projection scope lock; materializer/known_facts implementation deferred, next routed to precheck audit) |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; schema+validator closeout recorded, deferred projection/runtime surfaces unchanged) |

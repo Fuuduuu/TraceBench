@@ -11,25 +11,26 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROMPTING_AND_STATE_COMPACTION_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_PASS`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended | Verify materializer-readiness boundaries before projection implementation. |
-| PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | later (after precheck) | Implement alignment projection in materializer + known_facts schema only after precheck acceptance. |
-| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later | Lock Dart model additions only after materializer direction is accepted. |
+| PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS | AUDIT_ONLY | recommended | Audit projection behavior and no-side-effect boundaries before any Dart/Flutter/model follow-up. |
+| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later | Lock Dart model additions only after materializer audit acceptance. |
+| PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | later | Implement Dart projection-model parity only after scope lock and audit readiness. |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | completed | Project accepted user `photo_to_board_alignment_confirmed` events into optional `known_facts.photo_to_board_alignments` with latest-per-alignment rule and no transform/geometry-conversion/side-effect expansion; add known_facts schema support and projection tests. |
 | PROMPTING_AND_STATE_COMPACTION_PASS | DOCS_SYNC | completed | Compact CURRENT_STATE/PASS_QUEUE duplication and adopt hybrid prompt protocol with guarded templates and routing clarity. |
 | PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future materializer/known_facts projection direction and no-side-effect boundaries for alignment events. |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out schema/validator audit and record deferred projection/runtime surfaces. |

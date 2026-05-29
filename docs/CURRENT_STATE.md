@@ -3,13 +3,28 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PROMPTING_AND_STATE_COMPACTION_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`
+- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS`
 - Docs drift countdown: `4`
 
 ## Handoff snapshot (compact)
 
 ### Latest accepted alignment-governance state
+- `PHOTO_ALIGNMENT_MATERIALIZER_PASS` completed.
+  - Added materializer projection for accepted user `photo_to_board_alignment_confirmed` events into optional `known_facts.photo_to_board_alignments`.
+  - Added known_facts schema support for `photo_to_board_alignments`.
+  - Projection behavior:
+    - accepted events only,
+    - actor type user only,
+    - latest accepted event wins per `alignment_id`,
+    - projected `status=user_confirmed_alignment`,
+    - `source_event_id` preserved from winning event.
+  - Explicitly deferred/forbidden in this pass:
+    - no transform matrix computation,
+    - no photo-local geometry conversion/render overlay data,
+    - no side effects into components/pins/nets/measurements/visual_traces/fault flows,
+    - no Project ZIP contract changes,
+    - no Dart/Flutter alignment support.
 - `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS` completed.
   - Future alignment projection ownership is locked to Python materializer + `known_facts` schema.
   - Future projection direction is locked (`photo_to_board_alignments`, accepted user events only, latest accepted per `alignment_id`).

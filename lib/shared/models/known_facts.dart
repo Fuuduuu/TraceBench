@@ -387,6 +387,96 @@ class VisualTraceFact {
       };
 }
 
+class AlignmentPointFact {
+  const AlignmentPointFact({
+    required this.x,
+    required this.y,
+  });
+
+  final num x;
+  final num y;
+
+  factory AlignmentPointFact.fromJson(Map<String, dynamic> json) {
+    return AlignmentPointFact(
+      x: (json['x'] as num?) ?? 0,
+      y: (json['y'] as num?) ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'x': x,
+        'y': y,
+      };
+}
+
+class PhotoToBoardAlignmentFact {
+  const PhotoToBoardAlignmentFact({
+    required this.alignmentId,
+    required this.sourcePhotoId,
+    required this.boardSide,
+    required this.coordinateSpaceFrom,
+    required this.coordinateSpaceTo,
+    required this.referencePointsPhoto,
+    required this.referencePointsBoard,
+    required this.transformType,
+    required this.alignmentQualityLabel,
+    required this.sourceEventId,
+    required this.status,
+    this.notes,
+  });
+
+  final String alignmentId;
+  final String sourcePhotoId;
+  final String boardSide;
+  final String coordinateSpaceFrom;
+  final String coordinateSpaceTo;
+  final List<AlignmentPointFact> referencePointsPhoto;
+  final List<AlignmentPointFact> referencePointsBoard;
+  final String transformType;
+  final String alignmentQualityLabel;
+  final String? notes;
+  final String sourceEventId;
+  final String status;
+
+  factory PhotoToBoardAlignmentFact.fromJson(Map<String, dynamic> json) {
+    return PhotoToBoardAlignmentFact(
+      alignmentId: json['alignment_id']?.toString() ?? 'unknown',
+      sourcePhotoId: json['source_photo_id']?.toString() ?? 'unknown',
+      boardSide: json['board_side']?.toString() ?? 'unknown',
+      coordinateSpaceFrom:
+          json['coordinate_space_from']?.toString() ?? 'unknown',
+      coordinateSpaceTo: json['coordinate_space_to']?.toString() ?? 'unknown',
+      referencePointsPhoto:
+          _toAlignmentPointList(json['reference_points_photo']),
+      referencePointsBoard:
+          _toAlignmentPointList(json['reference_points_board']),
+      transformType: json['transform_type']?.toString() ?? 'unknown',
+      alignmentQualityLabel:
+          json['alignment_quality_label']?.toString() ?? 'unknown',
+      notes: json['notes']?.toString(),
+      sourceEventId: json['source_event_id']?.toString() ?? 'unknown',
+      status: json['status']?.toString() ?? 'unknown',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'alignment_id': alignmentId,
+        'source_photo_id': sourcePhotoId,
+        'board_side': boardSide,
+        'coordinate_space_from': coordinateSpaceFrom,
+        'coordinate_space_to': coordinateSpaceTo,
+        'reference_points_photo':
+            referencePointsPhoto.map((point) => point.toJson()).toList(),
+        'reference_points_board':
+            referencePointsBoard.map((point) => point.toJson()).toList(),
+        'transform_type': transformType,
+        'alignment_quality_label': alignmentQualityLabel,
+        if (notes != null) 'notes': notes,
+        'source_event_id': sourceEventId,
+        'status': status,
+      };
+}
+
 class ComponentVisualPlacementFact {
   const ComponentVisualPlacementFact({
     required this.componentId,
@@ -467,6 +557,7 @@ class KnownFacts {
     required this.suspectRegions,
     required this.visualTraces,
     this.componentVisualPlacements = const [],
+    this.photoToBoardAlignments = const [],
   });
 
   final String projectId;
@@ -481,6 +572,7 @@ class KnownFacts {
   final List<SuspectRegionFact> suspectRegions;
   final List<VisualTraceFact> visualTraces;
   final List<ComponentVisualPlacementFact> componentVisualPlacements;
+  final List<PhotoToBoardAlignmentFact> photoToBoardAlignments;
 
   factory KnownFacts.fromJson(Map<String, dynamic> json) {
     final components = ((json['components'] as List?) ?? const [])
@@ -535,6 +627,12 @@ class KnownFacts {
             .map((e) => ComponentVisualPlacementFact.fromJson(e))
             .toList(growable: false);
 
+    final photoToBoardAlignments =
+        ((json['photo_to_board_alignments'] as List?) ?? const [])
+            .whereType<Map<String, dynamic>>()
+            .map((e) => PhotoToBoardAlignmentFact.fromJson(e))
+            .toList(growable: false);
+
     final rawPinIndex = json['component_pin_index'] is Map
         ? json['component_pin_index'] as Map
         : null;
@@ -566,6 +664,7 @@ class KnownFacts {
       suspectRegions: suspectRegions,
       visualTraces: visualTraces,
       componentVisualPlacements: componentVisualPlacements,
+      photoToBoardAlignments: photoToBoardAlignments,
     );
   }
 
@@ -637,11 +736,24 @@ class KnownFacts {
       'suspect_regions':
           suspectRegions.map((region) => region.toJson()).toList(),
       'visual_traces': visualTraces.map((trace) => trace.toJson()).toList(),
+      if (photoToBoardAlignments.isNotEmpty)
+        'photo_to_board_alignments':
+            photoToBoardAlignments.map((alignment) => alignment.toJson()).toList(),
       if (componentVisualPlacements.isNotEmpty)
         'component_visual_placements':
             componentVisualPlacements.map((placement) => placement.toJson()).toList(),
     };
   }
+}
+
+List<AlignmentPointFact> _toAlignmentPointList(Object? raw) {
+  if (raw is List) {
+    return raw
+        .whereType<Map<String, dynamic>>()
+        .map((point) => AlignmentPointFact.fromJson(point))
+        .toList(growable: false);
+  }
+  return const [];
 }
 
 List<String> _toStringList(Object? raw) {

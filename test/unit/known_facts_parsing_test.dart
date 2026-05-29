@@ -267,4 +267,175 @@ void main() {
     expect(withoutRemoval.components.single.installationStatus, isNull);
     expect(withoutRemoval.components.single.removedByEventId, isNull);
   });
+
+  test('photo_to_board_alignments parse from known facts projection', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_parse_case',
+      'photo_to_board_alignments': [
+        {
+          'alignment_id': 'ALN1001',
+          'source_photo_id': 'photo_top_001',
+          'board_side': 'top',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 10.5, 'y': 20.25},
+            {'x': 30, 'y': 40},
+          ],
+          'reference_points_board': [
+            {'x': 0.1, 'y': 0.2},
+            {'x': 0.3, 'y': 0.4},
+          ],
+          'transform_type': 'similarity',
+          'alignment_quality_label': 'good',
+          'notes': 'manual board corner match',
+          'source_event_id': 'evt_001000',
+          'status': 'user_confirmed_alignment',
+        },
+      ],
+    });
+
+    expect(knownFacts.photoToBoardAlignments, hasLength(1));
+    final alignment = knownFacts.photoToBoardAlignments.single;
+    expect(alignment.alignmentId, 'ALN1001');
+    expect(alignment.sourcePhotoId, 'photo_top_001');
+    expect(alignment.boardSide, 'top');
+    expect(alignment.coordinateSpaceFrom, 'photo_local');
+    expect(alignment.coordinateSpaceTo, 'board_normalized');
+    expect(alignment.transformType, 'similarity');
+    expect(alignment.alignmentQualityLabel, 'good');
+    expect(alignment.notes, 'manual board corner match');
+    expect(alignment.sourceEventId, 'evt_001000');
+    expect(alignment.status, 'user_confirmed_alignment');
+
+    expect(
+      alignment.referencePointsPhoto.map((point) => point.toJson()).toList(),
+      equals([
+        {'x': 10.5, 'y': 20.25},
+        {'x': 30, 'y': 40},
+      ]),
+    );
+    expect(
+      alignment.referencePointsBoard.map((point) => point.toJson()).toList(),
+      equals([
+        {'x': 0.1, 'y': 0.2},
+        {'x': 0.3, 'y': 0.4},
+      ]),
+    );
+  });
+
+  test('missing photo_to_board_alignments defaults to empty list', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_missing_case',
+      'components': [],
+      'pins': [],
+      'measurements': [],
+      'nets': [],
+      'excluded_from_fault_candidates': [],
+    });
+
+    expect(knownFacts.photoToBoardAlignments, isEmpty);
+  });
+
+  test('photo_to_board_alignments round-trip preserves all fields', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_roundtrip_case',
+      'photo_to_board_alignments': [
+        {
+          'alignment_id': 'ALN1002',
+          'source_photo_id': 'photo_bottom_001',
+          'board_side': 'bottom',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 12, 'y': 24},
+            {'x': 60.5, 'y': 48.25},
+            {'x': 90, 'y': 72},
+          ],
+          'reference_points_board': [
+            {'x': 0.12, 'y': 0.24},
+            {'x': 0.605, 'y': 0.4825},
+            {'x': 0.9, 'y': 0.72},
+          ],
+          'transform_type': 'affine',
+          'alignment_quality_label': 'acceptable',
+          'source_event_id': 'evt_001001',
+          'status': 'user_confirmed_alignment',
+        },
+      ],
+    });
+
+    final raw = knownFacts.toJson();
+    final alignments =
+        raw['photo_to_board_alignments'] as List<dynamic>? ?? const [];
+    expect(alignments, hasLength(1));
+    final alignment = alignments.single as Map<String, dynamic>;
+
+    expect(alignment['alignment_id'], 'ALN1002');
+    expect(alignment['source_photo_id'], 'photo_bottom_001');
+    expect(alignment['board_side'], 'bottom');
+    expect(alignment['coordinate_space_from'], 'photo_local');
+    expect(alignment['coordinate_space_to'], 'board_normalized');
+    expect(alignment['transform_type'], 'affine');
+    expect(alignment['alignment_quality_label'], 'acceptable');
+    expect(alignment['source_event_id'], 'evt_001001');
+    expect(alignment['status'], 'user_confirmed_alignment');
+
+    expect(alignment.containsKey('notes'), isFalse);
+    expect(alignment.containsKey('transform_matrix'), isFalse);
+    expect(alignment.containsKey('similarity_transform'), isFalse);
+    expect(alignment.containsKey('affine_transform'), isFalse);
+    expect(alignment.containsKey('homography'), isFalse);
+
+    expect(
+      alignment['reference_points_photo'],
+      equals([
+        {'x': 12, 'y': 24},
+        {'x': 60.5, 'y': 48.25},
+        {'x': 90, 'y': 72},
+      ]),
+    );
+    expect(
+      alignment['reference_points_board'],
+      equals([
+        {'x': 0.12, 'y': 0.24},
+        {'x': 0.605, 'y': 0.4825},
+        {'x': 0.9, 'y': 0.72},
+      ]),
+    );
+  });
+
+  test('photo_to_board_alignments notes are preserved when present', () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_notes_present_case',
+      'photo_to_board_alignments': [
+        {
+          'alignment_id': 'ALN1003',
+          'source_photo_id': 'photo_top_002',
+          'board_side': 'unknown',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 1, 'y': 2},
+            {'x': 3, 'y': 4},
+          ],
+          'reference_points_board': [
+            {'x': 0.01, 'y': 0.02},
+            {'x': 0.03, 'y': 0.04},
+          ],
+          'transform_type': 'similarity',
+          'alignment_quality_label': 'manual',
+          'notes': 'operator confirmed corners',
+          'source_event_id': 'evt_001002',
+          'status': 'user_confirmed_alignment',
+        },
+      ],
+    });
+
+    final raw = knownFacts.toJson();
+    final alignment =
+        (raw['photo_to_board_alignments'] as List<dynamic>).single
+            as Map<String, dynamic>;
+    expect(alignment['notes'], 'operator confirmed corners');
+  });
 }

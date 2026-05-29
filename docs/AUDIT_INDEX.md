@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_ALIGNMENT_DART_MODEL_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_PASS.md | completed (Dart KnownFacts parsing/serialization parity for `photo_to_board_alignments` with no transform/coordinate-conversion/inference expansion) |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS.md | completed (docs-only Dart model scope lock for `photo_to_board_alignments`; future model keys/tests/boundaries locked, implementation deferred to Dart pass) |
 | PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; materializer projection accepted, deferred Dart/Flutter/runtime surfaces unchanged, non-blocking test nits recorded) |
 | PHOTO_ALIGNMENT_MATERIALIZER_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_PASS.md | completed (materializer + known_facts projection support for alignment events; no transform computation, no evidence conversion, no side-effect expansion) |

@@ -3,13 +3,24 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_PASS`
-- Docs drift countdown: `2`
+- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS`
+- Docs drift countdown: `1`
 
 ## Handoff snapshot (compact)
 
 ### Latest accepted alignment-governance state
+- `PHOTO_ALIGNMENT_DART_MODEL_PASS` completed.
+  - Added Dart KnownFacts parsing/serialization support for optional `photo_to_board_alignments`.
+  - Added `PhotoToBoardAlignmentFact` and alignment point model support in Dart KnownFacts.
+  - Added `KnownFacts.photoToBoardAlignments` with missing-field default to empty list.
+  - Preserved JSON key parity and value preservation for:
+    - `alignment_id`, `source_photo_id`, `board_side`,
+    - `coordinate_space_from`, `coordinate_space_to`,
+    - `reference_points_photo`, `reference_points_board`,
+    - `transform_type`, `alignment_quality_label`,
+    - `notes` (optional), `source_event_id`, `status`.
+  - Confirmed no transform computation, coordinate conversion, inference expansion, or UI/runtime behavior changes.
 - `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS` completed.
   - Locked future Dart KnownFacts direction for `known_facts.photo_to_board_alignments` before implementation.
   - Recorded accepted baseline:

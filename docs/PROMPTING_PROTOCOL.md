@@ -1,146 +1,240 @@
-# PROMPTING_PROTOCOL
+# PROMPTING_PROTOCOL.md
 
-## A. Prompt length policy
+## Purpose
 
-### MINI
+Keep prompts compact, scoped, and auditable without losing safety.
 
-Use for tiny local changes.
+Canonical repo docs win over prompt/chat memory.
 
-Required fields:
-- PASS_ID
-- Lane
-- Goal
-- Write only
-- Never
-- Validate
-- Output
-- Stop if
+## Required prompt fields (always)
 
-### GUARDED
+Every implementation/audit prompt must include:
 
-Use for deterministic accepted-scope implementation.
+- `PASS_ID`
+- `Lane`
+- `Mode`
+- `Goal`
+- `Gate`
+- `Read`
+- `Write only`
+- `Never`
+- `Validate`
+- `Output`
+- `Stop if`
 
-Required fields:
-- PASS_ID
-- Lane
-- Goal
-- Read
-- Write only
-- Never
-- Do
-- Validate
-- Output
-- Stop conditions
+## Hybrid prompt strategy (adopted)
 
-### AUDIT
+- Default for low-risk work: compact template + pass-specific delta.
+- High-risk work: compact skeleton plus explicit boundary blocks.
 
-Use for no-edit review.
+### Low-risk examples
+- `DOCS_SYNC` closeout
+- `DOCS_SYNC` scope lock
+- `AUDIT_ONLY` where no implementation is allowed
 
-Required fields:
-- PASS_ID
-- Audit target
-- Canonical docs to inspect
-- Questions to answer
-- Verdict enum
-- Blockers
-- Decisions needed
-- Codex prompt only if accepted
+### High-risk examples
+- `SCHEMA_PASS`
+- `VALIDATOR_FIX`
+- `TOOLS_PASS` / materializer
+- Project ZIP contract surfaces
+- Evidence-boundary and renderer-scope changes
 
-### DEEP_REVIEW
+## Standard compact skeleton
 
-Use for architecture/risk/policy decisions.
+```text
+PASS_ID: <ID>
+Lane: <LANE>
+Mode: <MODE>
+Goal: <1 narrow objective>
 
-Can be longer, but must end with:
-- verdict
-- concrete decisions
-- exact next pass recommendation
+Gate:
+<git status/log/diff commands + expected state>
 
-## B. Sniper prompt format
+Read:
+<minimal required files>
 
-Standard future prompt skeleton:
+Write only:
+<exact allowlist>
 
-- PASS_ID:
-- Lane:
-- Mode:
-- Goal:
-- Gate:
-- Read:
-- Write only:
-- Never:
-- Do:
-- Validate:
-- Output:
-- Stop if:
+Never:
+<forbidden surfaces>
 
-## C. No-repeat rule
+Do:
+<numbered required outcomes>
 
-Do not paste long canonical history unless the pass directly targets it.
+Validate:
+<exact commands>
 
-Use:
+Output:
+<required report fields>
 
-`Apply canonical constraints from docs/CURRENT_STATE.md, docs/MEMORY_PROTOCOL.md, docs/TRUTH_INDEX.md`.
+Stop if:
+<hard stop conditions>
+```
 
-Only include repeated constraints when:
-- the pass directly targets that constraint,
-- the pass previously drifted on that exact rule,
-- the pass touches protected surfaces,
-- the pass is audit/deep review.
+## Compact templates by pass type
 
-Before implementation prompts and before accepting Codex output, run `docs/SCOPE_DRIFT_CHECK.md`.
-MINI prompts may reference `SCOPE_DRIFT_CHECK` instead of repeating full forbidden lists, but must still include `Stop if`.
+### 1) `AUDIT_ONLY`
 
-## D. Delta-first accepted state
+```text
+PASS_ID: <ID>
+Lane: AUDIT_ONLY
+Mode: audit only; no file changes
+Goal: verify scope/boundaries/readiness
+Gate: git status/log/diff
+Read: targeted docs/spec/code/tests for audit
+Write only: none
+Never: any edits/stage/commit/push/reset/clean
+Do: answer explicit audit questions + verdict
+Validate: required validation/test commands
+Output: verdict + boundary/readiness/risk summary + next pass
+Stop if: missing required evidence to answer audit safely
+```
 
-Keep accepted-state summaries compact:
+### 2) `DOCS_SYNC` closeout
 
-`Base commit: <hash>. Current PASS_QUEUE next recommended: <pass>. Apply canonical docs.`
+```text
+PASS_ID: <ID>
+Lane: DOCS_SYNC
+Mode: docs-only closeout
+Goal: record accepted audit/implementation result and route next pass
+Gate: git status/log/diff
+Read: CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX + relevant audit file
+Write only: ledger/state/index docs + new audit closeout doc
+Never: code/schema/tool/test/runtime/artifact files
+Do: record verdict, accepted/deferred state, non-blocking notes, next route
+Validate: py -3 tools\validate_all.py + git diff + git status
+Output: scope drift + changed files + closeout summary + next pass + final git status
+Stop if: closeout requires non-doc behavior changes
+```
 
-Avoid including full project history in every pass prompt.
+### 3) `DOCS_SYNC` scope lock
 
-## E. Prompt fragments
+```text
+PASS_ID: <ID>
+Lane: DOCS_SYNC
+Mode: docs-only scope lock
+Goal: lock future implementation boundaries before code changes
+Gate: git status/log/diff
+Read: state/queue/lock/spec/audit inputs
+Write only: docs lock files + audit record
+Never: implementation/code/schema/tool/test/runtime files
+Do: lock allowlist/forbidden surfaces + next sequencing
+Validate: py -3 tools\validate_all.py + git diff + git status
+Output: locked decisions + deferred surfaces + next pass + final git status
+Stop if: lock cannot be written without changing product behavior now
+```
 
-### CORE_RULE
-Human is the sensor. AI is the graph engine.
+### 4) `FLUTTER_PASS` guarded
 
-### V1_FORBIDDEN_AUTOMATION
-camera/OCR/CV, AI diagnostics, fault probability, source search, KiCad/boardview, BLE/cloud unless separately scoped.
+```text
+PASS_ID: <ID>
+Lane: FLUTTER_PASS
+Mode: narrow implementation
+Goal: one feature/fixup in locked scope
+Gate: git status/log/diff + required baseline commits
+Read: exact feature/test/spec files only
+Write only: exact Flutter/test/docs allowlist
+Never: schemas/tools/protected artifacts unless explicitly scoped
+Do: implement only locked behavior, preserve read-only/evidence boundaries
+Validate: py -3 tools\validate_all.py + flutter test + git diff + git status
+Output: changed files + behavior summary + boundary confirmation + validation results
+Stop if: scope requires schema/tool/materializer/protected-surface change
+```
 
-### GRAPH_BOUNDARY
-visual_trace is visual-only; no visual_trace → measured net; no board_graph.json/view_state.json in V1.
+### 5) `SCHEMA_PASS / VALIDATOR_FIX` guarded
 
-### ZIP_BOUNDARY
-no Project ZIP contract changes unless pass explicitly targets ZIP.
+```text
+PASS_ID: <ID>
+Lane: SCHEMA_PASS / VALIDATOR_FIX
+Mode: narrow schema+validator implementation
+Goal: one event/model boundary-safe schema/validator increment
+Gate: git status/log/diff + baseline pass acceptance
+Read: schema/validator tests + relevant scope lock/audit docs
+Write only: exact schema/validator/tests/docs allowlist
+Never: materializer/model/UI unless explicitly scoped
+Do: implement strict contracts, actor/provenance checks, required tests
+Validate: validate_all + targeted unittest + schema sample tests + git diff/status
+Output: schema summary + validator summary + test matrix + deferred surfaces
+Stop if: change needs materializer/UI/model semantics not in scope
+```
 
-### EVENT_BOUNDARY
-no event-writing implementation unless pass explicitly targets writing flow.
+### 6) `TOOLS_PASS / materializer` guarded
 
-### VALIDATION_BASELINE
-- py -3 tools\validate_all.py
-- plus Flutter test only for Flutter/Dart changes or when recent Flutter work could be affected.
+```text
+PASS_ID: <ID>
+Lane: TOOLS_PASS
+Mode: narrow materializer/projection implementation
+Goal: accepted-only projection behavior in locked scope
+Gate: git status/log/diff + baseline scope-lock acceptance
+Read: materializer/schema/tests/spec/audit lock docs
+Write only: exact materializer/schema/tests/docs allowlist
+Never: UI/runtime schemas/tools outside allowlist
+Do: implement projection only as locked
 
-## F. Output contract
+MATERIALIZER BOUNDARY (literal, mandatory):
+no side effects into components, pins, nets, measurements, visual_traces, faults, fault_candidates, repair_conclusions;
+no photo-local geometry conversion unless explicitly scoped;
+no transform matrix computation unless explicitly scoped.
 
-Every Codex output must include:
-- MODEL_ROUTING_CHECK result
-- changed files
-- validation commands and pass/fail
-- commit hash if committed
-- push result if pushed
-- final git status
-- explicit forbidden-surface confirmation
+Validate: validate_all + materializer/unit tests + project_zip tests + git diff/status
+Output: projection summary + boundary confirmation + validation results
+Stop if: pass requires Project ZIP contract or Dart/Flutter runtime changes
+```
 
-## G. Anti-bloat rules
+### 7) `QA_PASS`
 
-- do not include full forbidden list in MINI prompts unless current pass changes that surface.
-- do not ask to read 20+ files unless necessary.
-- read affected canonical docs first.
-- prefer one follow-up fixup over speculative checks.
-- do not combine audit, implementation, and docs cleanup in one pass.
-- for docs-only passes, avoid Flutter test unless explicitly useful.
+```text
+PASS_ID: <ID>
+Lane: QA_PASS
+Mode: narrow hardening/verification
+Goal: improve determinism/coverage without scope expansion
+Gate: git status/log/diff
+Read: target implementation/tests/spec
+Write only: target file allowlist
+Never: product-scope expansion surfaces
+Do: harden behavior and tests only inside accepted feature boundaries
+Validate: validate_all + full required test suite + git diff/status
+Output: QA deltas + risk notes + preserved boundaries
+Stop if: fix requires opening new feature scope
+```
 
-## H. Escalation rule
+### 8) GPT Pro review request
 
-- architecture/scope/risk/evidence policy work -> DEEP_REVIEW.
-- product direction -> user decision.
-- deterministic implementation of accepted scope -> Codex.
-- unclear ownership -> stop and ask.
+```text
+PASS_ID: <ID>
+Lane: REVIEW_ONLY
+Mode: architecture/evidence-boundary review
+Goal: pass ordering, risk, and boundary decisions
+Provide: current accepted state + exact questions + options
+Expect: verdict + risks + recommended sequence + stop conditions
+No implementation changes in this review prompt.
+```
+
+### 9) Claude Code second-review request
+
+```text
+PASS_ID: <ID>
+Lane: AUDIT_ONLY
+Mode: repo-local independent audit
+Goal: verify scope compliance and test quality before closeout
+Provide: exact audit questions + gate + validate commands
+Expect: verdict + nits + block/non-block classification + next pass suggestion
+No edits allowed.
+```
+
+## Stop-and-escalate rules
+
+Stop and route to user/deep review if:
+
+- requested change escapes current write allowlist,
+- protected surface semantics would change,
+- evidence boundaries would weaken,
+- current/next pass routing cannot be reconciled safely,
+- non-doc implementation is required in a docs-only pass.
+
+## Validation discipline
+
+- Keep validation commands explicit and literal in prompts.
+- Do not mark PASS success without command evidence.
+- For docs-only passes: run `py -3 tools\validate_all.py`, `git diff --name-only`, `git status --short --branch` unless the pass explicitly changes this.

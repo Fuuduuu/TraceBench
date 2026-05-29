@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` after Claude Code audit (`PASS_WITH_NITS`).
+Docs-only lock for future materializer/known-facts projection direction of `photo_to_board_alignment_confirmed`, before any projection/schema/model/runtime implementation.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only closeout for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` after Claude Code aud
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS.md`
+- `docs/PHOTO_FLOW_SPEC.md` only if needed
 - `docs/PROJECT_MEMORY.md` only if stale
 - `docs/TRUTH_INDEX.md` only if stale
 
@@ -34,33 +35,37 @@ Docs-only closeout for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` after Claude Code aud
 - `view_state.json`
 - Project ZIP tooling/files
 - Flutter/runtime implementation
-- schema/validator/materializer implementation
+- materializer implementation
+- known_facts schema implementation
 - Dart `KnownFacts` implementation
-- photo alignment implementation/UI
+- photo alignment UI
 - background photo helper
-- visual_trace/damage/suspect rendering
+- visual_trace rendering
+- damage/suspect rendering
 - coordinate transform implementation
 - AI proposal persistence
 - raw `known_facts` JSON parsing in board-canvas code
 
 ## Locked decisions
 
-1. `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is accepted; closeout verdict is `PASS_WITH_NITS`.
-2. Accepted in current state:
-   - `photo_to_board_alignment_confirmed` event schema support,
-   - validator enforcement,
-   - validator tests,
-   - valid schema sample.
-3. Still deferred:
-   - materializer projection,
-   - `known_facts` schema/model projection,
-   - Dart `KnownFacts` projection,
-   - board-canvas rendering/alignment UI,
-   - Project ZIP contract changes.
-4. Placeholder policy remains unchanged:
-   - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred and not writer-ready.
-5. Next recommended pass:
-   - `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
+1. Accepted baseline remains:
+   - `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS`.
+2. Projection ownership is locked for future implementation:
+   - canonical alignment projection belongs to Python materializer + `known_facts` schema.
+   - Flutter/UI local transform state cannot become canonical truth.
+3. Future projection direction is locked (not implemented in this pass):
+   - optional top-level `photo_to_board_alignments` in `known_facts`,
+   - canonical event data only plus `source_event_id` and normalized projection `status`.
+4. Materializer boundaries are locked:
+   - no transform matrix computation in first projection pass,
+   - no conversion of photo-local evidence into board-canvas geometry,
+   - no side effects into components/pins/nets/measurements/visual-traces/fault flows,
+   - no `board_graph.json` / `view_state.json`,
+   - no Project ZIP contract changes.
+5. Placeholder policy remains locked:
+   - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred, not writer-ready, not materialized.
+6. Next recommended pass:
+   - `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`.
 
 ## Validate
 

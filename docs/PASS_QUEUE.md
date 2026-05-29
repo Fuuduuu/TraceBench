@@ -11,12 +11,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
 
 ## Completed pass history
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future materializer/known_facts projection direction for `photo_to_board_alignment_confirmed`: project accepted user-confirmed alignment events only into future `known_facts` alignment projection, preserve no-transform/no-evidence-conversion/no-side-effect boundaries, keep placeholders deferred, and route next to precheck audit before implementation. |
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out schema/validator implementation audit, accept `photo_to_board_alignment_confirmed` schema+validator support, record deferred projection/runtime surfaces, and route next to materializer scope lock. |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | SCHEMA_PASS / VALIDATOR_FIX | completed | Implement narrow schema + validator support for canonical `photo_to_board_alignment_confirmed`: schema enum/mapping/strict payload contract, validator actor/source-photo/coordinate/point/transform/forbidden-field checks, new valid schema sample, and validator regression tests; materializer/known_facts/UI/ZIP remain deferred. |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Precheck audit from user/context approved proceeding directly to schema implementation with boundary-preserving nits. |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future photo-alignment event-schema direction without implementation: canonical family direction is `photo_to_board_alignment_confirmed`, placeholders remain deferred/unsafe for writers, payload/actor/coordinate/transform boundary rules are locked, and next routing is risk-first precheck audit. |
@@ -168,7 +170,8 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | later (after precheck) |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first reconciliation |
 
@@ -177,13 +180,14 @@ PASS_QUEUE is the allowlist and status log. Every work item needs a PASS_ID befo
 
 | PASS_ID | Lane | Status |
 |---|---|---|
-| PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | recommended |
+| PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS | AUDIT_ONLY | recommended |
+| PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | later (after precheck) |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional governance-first reconciliation |
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is completed.
-Schema + validator support for canonical alignment event is now implemented.
-Next recommended pass is `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
+`PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS` is completed.
+Materializer/known_facts projection direction for alignment events is now scope-locked (docs-only).
+Next recommended pass is `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`.
 
 ## Recorded future cleanup candidates (not active)
 
@@ -472,3 +476,33 @@ Current countdown: 5
   - unrelated intermittent Windows Flutter timing flake in measurement widget test observed once; isolated rerun passed.
 - Routing:
   - next recommended pass `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Baseline accepted:
+  - `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS` remains accepted.
+- Locked projection ownership:
+  - future alignment projection belongs to Python materializer + `known_facts` schema, not Flutter/UI local state.
+- Locked future projection direction (implementation deferred):
+  - optional top-level `known_facts.photo_to_board_alignments`,
+  - canonical event data projection only:
+    - `alignment_id`, `source_photo_id`, `board_side`,
+    - `coordinate_space_from`, `coordinate_space_to`,
+    - `reference_points_photo`, `reference_points_board`,
+    - `transform_type`, `alignment_quality_label`, optional `notes`,
+    - `source_event_id`, `status=user_confirmed_alignment`.
+- Locked event-selection and lifecycle direction:
+  - project only `photo_to_board_alignment_confirmed` where `status=accepted` and `actor.type=user`,
+  - latest accepted event wins per `alignment_id` in first pass,
+  - no extra supersession lifecycle invention in first materializer pass.
+- Boundaries preserved:
+  - no matrix/homography computation,
+  - no evidence-coordinate conversion/render overlays,
+  - no nets/measurements/components/visual_traces/faults created or altered,
+  - no `board_graph.json` / `view_state.json`,
+  - no Project ZIP contract changes.
+- Placeholder policy unchanged:
+  - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred and not materialized.
+- Routing:
+  - next recommended pass `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`,
+  - implementation pass only after precheck: `PHOTO_ALIGNMENT_MATERIALIZER_PASS`.

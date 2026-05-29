@@ -3,12 +3,43 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
+- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS`
 - Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS` is completed:
+  - records `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS` as accepted baseline.
+  - locks projection ownership and boundaries:
+    - future alignment projection belongs to Python materializer + `known_facts` schema,
+    - no renderer-local transform truth,
+    - no `board_graph.json` / `view_state.json`,
+    - no Project ZIP contract change in scope.
+  - locks first known-facts projection direction (future implementation, not implemented here):
+    - optional top-level `photo_to_board_alignments`,
+    - canonical event data only per item:
+      - `alignment_id`
+      - `source_photo_id`
+      - `board_side`
+      - `coordinate_space_from`
+      - `coordinate_space_to`
+      - `reference_points_photo`
+      - `reference_points_board`
+      - `transform_type`
+      - `alignment_quality_label`
+      - optional `notes`
+      - `source_event_id`
+      - `status` (`user_confirmed_alignment`).
+  - locks selection/projection rules for future materializer pass:
+    - project only `photo_to_board_alignment_confirmed` events that are `accepted` and `actor.type=user`,
+    - latest accepted event wins per `alignment_id`,
+    - no transform matrix computation in first materializer pass,
+    - no photo-evidence geometry conversion/render data projection.
+  - preserves hard evidence boundaries:
+    - no net/measurement/fault/identity side-effect facts,
+    - placeholders `photo_reference_points_set` / `photo_layer_aligned` remain deferred and not materialized.
+  - routes next to `PHOTO_ALIGNMENT_MATERIALIZER_PRECHECK_AUDIT_PASS` before implementation.
 - `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS` is completed:
   - records Claude Code audit verdict for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`: `PASS_WITH_NITS`.
   - accepts and closes out:

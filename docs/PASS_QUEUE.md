@@ -450,3 +450,25 @@ Current countdown: 5
   - no board-canvas/runtime UI behavior.
 - Routing:
   - next recommended pass `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
+
+## PASS UPDATE: PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS (completed)
+- Lane: `DOCS_SYNC`
+- Audit verdict recorded:
+  - Claude Code `PASS_WITH_NITS`.
+- Accepted closeout state:
+  - schema support for `photo_to_board_alignment_confirmed` accepted,
+  - validator support accepted,
+  - validator tests accepted,
+  - valid schema sample accepted.
+- Deferred and unchanged:
+  - no materializer projection yet,
+  - no `known_facts` schema/model support yet,
+  - no Dart `KnownFacts` alignment support yet,
+  - no board-canvas rendering/alignment UI,
+  - no Project ZIP contract changes.
+- Non-blocking notes recorded:
+  - `ACTIVE_SCOPE_LOCK.md` pointer aligned by this closeout,
+  - optional future tests: import actor rejection, forbidden `trace_id`, duplicate `alignment_id`, invalid `alignment_id` pattern,
+  - unrelated intermittent Windows Flutter timing flake in measurement widget test observed once; isolated rerun passed.
+- Routing:
+  - next recommended pass `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.

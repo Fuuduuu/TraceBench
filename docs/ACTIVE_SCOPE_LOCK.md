@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope lock for future photo-alignment event-schema direction before any schema implementation.
+Docs-only closeout for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` after Claude Code audit (`PASS_WITH_NITS`).
 
 ## Allowed surfaces
 
@@ -14,16 +14,17 @@ Docs-only scope lock for future photo-alignment event-schema direction before an
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS.md`
-- `docs/PHOTO_FLOW_SPEC.md` only if needed to align locked direction
+- `docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if stale
+- `docs/TRUTH_INDEX.md` only if stale
 
 ## Forbidden surfaces
 
+- `schemas/**`
+- `tools/**`
 - `lib/**`
 - `test/**`
 - `tests/**`
-- `schemas/**`
-- `tools/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -32,40 +33,34 @@ Docs-only scope lock for future photo-alignment event-schema direction before an
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter implementation
-- schema implementation
-- validator implementation
-- materializer implementation
-- Dart KnownFacts implementation
-- photo alignment implementation
+- Flutter/runtime implementation
+- schema/validator/materializer implementation
+- Dart `KnownFacts` implementation
+- photo alignment implementation/UI
 - background photo helper
-- damage/suspect rendering
-- visual_trace rendering
-- measurement rendering
+- visual_trace/damage/suspect rendering
 - coordinate transform implementation
 - AI proposal persistence
-- edit/confirm/save/export/event-writing UI
-- raw known_facts JSON parsing
+- raw `known_facts` JSON parsing in board-canvas code
 
 ## Locked decisions
 
-1. Accepted baseline from `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` is preserved.
-2. Placeholder policy remains locked:
-   - `photo_reference_points_set` and `photo_layer_aligned` remain placeholder-only,
-   - writer usage is unsafe until schema + validator + materializer + tests are formally scoped and accepted.
-3. Event-family direction is locked:
-   - future canonical alignment schema direction uses `photo_to_board_alignment_confirmed`.
-   - placeholders remain reserved/deferred unless separately formalized in future passes.
-4. Canonical alignment principle is locked:
-   - if alignment affects board-canvas evidence placement/report/export/repeatable project state, it must be canonical, event-backed, human-confirmed, and materialized.
-   - hidden UI state, local cache truth, `view_state.json`, `board_graph.json`, AI-only transforms, and background-photo drag state are not canonical truth.
-5. Volatile preview principle is locked:
-   - preview-only alignment is allowed only as explicit non-canonical preview,
-   - no save/export/materialize/report usage,
-   - resets on reload,
-   - never treated as accepted board-canvas truth.
-6. Next recommended pass:
-   - `PHOTO_ALIGNMENT_EVENT_SCHEMA_PRECHECK_AUDIT_PASS` (or `PHOTO_FLOW_SPEC_AUDIT_PASS` if governance requires audit-first routing).
+1. `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is accepted; closeout verdict is `PASS_WITH_NITS`.
+2. Accepted in current state:
+   - `photo_to_board_alignment_confirmed` event schema support,
+   - validator enforcement,
+   - validator tests,
+   - valid schema sample.
+3. Still deferred:
+   - materializer projection,
+   - `known_facts` schema/model projection,
+   - Dart `KnownFacts` projection,
+   - board-canvas rendering/alignment UI,
+   - Project ZIP contract changes.
+4. Placeholder policy remains unchanged:
+   - `photo_reference_points_set` and `photo_layer_aligned` remain reserved/deferred and not writer-ready.
+5. Next recommended pass:
+   - `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
 
 ## Validate
 

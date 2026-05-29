@@ -3,12 +3,30 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`
+- Current pass: `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS`
 - Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
 - Docs drift countdown: `3`
 
 ## Current accepted state snapshot
 
+- `PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS` is completed:
+  - records Claude Code audit verdict for `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS`: `PASS_WITH_NITS`.
+  - accepts and closes out:
+    - `photo_to_board_alignment_confirmed` schema support,
+    - validator support,
+    - validator tests,
+    - valid schema sample.
+  - records deferred surfaces remain unchanged:
+    - no materializer projection,
+    - no `known_facts` schema/model projection,
+    - no Dart `KnownFacts` projection,
+    - no board-canvas rendering/alignment UI,
+    - no Project ZIP contract changes.
+  - records non-blocking notes:
+    - `ACTIVE_SCOPE_LOCK.md` pointer aligned by this closeout,
+    - optional future tests: import actor rejection, forbidden `trace_id`, duplicate `alignment_id`, invalid `alignment_id` pattern,
+    - unrelated intermittent Windows Flutter timing flake noted as non-blocking.
+  - routes next to `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`.
 - `PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS` is completed:
   - adds `events.schema.json` support for `photo_to_board_alignment_confirmed`:
     - event type enum entry,

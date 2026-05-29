@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; schema+validator closeout recorded, deferred projection/runtime surfaces unchanged) |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS | docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS.md | completed |
 | PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS.md | completed |
 | PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS | docs/audit/PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS.md | completed |

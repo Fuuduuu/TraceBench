@@ -3,13 +3,24 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS`
-- Docs drift countdown: `4`
+- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+- Docs drift countdown: `3`
 
 ## Handoff snapshot (compact)
 
 ### Latest accepted alignment-governance state
+- `PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS` completed (`PASS_WITH_NITS`).
+  - Accepted `PHOTO_ALIGNMENT_MATERIALIZER_PASS` as scope-compliant after Claude Code audit.
+  - Recorded non-blocking nits:
+    - side-effect test does not explicitly assert `damage_regions == []` and `suspect_regions == []`,
+    - no direct JSON Schema library validation test against a projected `photo_to_board_alignments` item.
+  - Deferred surfaces remain unchanged:
+    - no Dart KnownFacts model support yet,
+    - no Flutter/UI/rendering support yet,
+    - no transform matrix computation,
+    - no photo-local evidence conversion,
+    - no Project ZIP contract change.
 - `PHOTO_ALIGNMENT_MATERIALIZER_PASS` completed.
   - Added materializer projection for accepted user `photo_to_board_alignment_confirmed` events into optional `known_facts.photo_to_board_alignments`.
   - Added known_facts schema support for `photo_to_board_alignments`.

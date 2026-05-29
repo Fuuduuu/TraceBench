@@ -11,25 +11,26 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS | AUDIT_ONLY | recommended | Audit projection behavior and no-side-effect boundaries before any Dart/Flutter/model follow-up. |
-| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | later | Lock Dart model additions only after materializer audit acceptance. |
+| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Lock Dart model additions after materializer pass closeout acceptance. |
 | PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | later | Implement Dart projection-model parity only after scope lock and audit readiness. |
+| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | TOOLS_PASS / QA_PASS | optional | Optional follow-up for non-blocking audit nits: explicit `damage_regions`/`suspect_regions` side-effect asserts and direct schema-library projection validation coverage. |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit, accept materializer projection state, record non-blocking test nits, and route next to Dart model scope lock. |
 | PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | completed | Project accepted user `photo_to_board_alignment_confirmed` events into optional `known_facts.photo_to_board_alignments` with latest-per-alignment rule and no transform/geometry-conversion/side-effect expansion; add known_facts schema support and projection tests. |
 | PROMPTING_AND_STATE_COMPACTION_PASS | DOCS_SYNC | completed | Compact CURRENT_STATE/PASS_QUEUE duplication and adopt hybrid prompt protocol with guarded templates and routing clarity. |
 | PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future materializer/known_facts projection direction and no-side-effect boundaries for alignment events. |
@@ -57,4 +58,4 @@ Detailed pass evidence remains in `docs/audit/*.md` and indexed by `docs/AUDIT_I
 
 ## Docs drift countdown
 
-Current countdown: `4`
+Current countdown: `3`

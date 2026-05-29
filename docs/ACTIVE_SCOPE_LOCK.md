@@ -2,32 +2,27 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement narrow materializer + known_facts schema projection for `photo_to_board_alignment_confirmed` only.
+Docs-only closeout for `PHOTO_ALIGNMENT_MATERIALIZER_PASS` after audit verdict `PASS_WITH_NITS`.
 
 ## Allowed surfaces
 
-- `tools/materialize_known_facts.py`
-- `schemas/known_facts.schema.json`
-- `tests/test_materialize_known_facts.py`
-- `tests/test_project_zip.py` (compatibility assertions only)
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
-- `schemas/events.schema.json`
-- `tools/validate_events_jsonl.py`
-- `tools/validate_project_zip.py`
-- `tools/validate_all.py`
+- `schemas/**`
+- `tools/**`
 - `lib/**`
 - `test/**`
+- `tests/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -38,33 +33,25 @@ Implement narrow materializer + known_facts schema projection for `photo_to_boar
 - Project ZIP tooling/files
 - Flutter UI/runtime changes
 - Dart KnownFacts model changes
+- materializer implementation changes
+- validator implementation changes
+- schema implementation changes
 
-## Materializer boundary (locked)
+## Closeout boundary (locked)
 
-- no side effects into components
-- no side effects into pins
-- no side effects into nets
-- no side effects into measurements
-- no side effects into visual_traces
-- no side effects into faults/fault_candidates
-- no side effects into repair conclusions
-- no changes to `excluded_from_fault_candidates`
-- no photo-local geometry conversion
-- no transform matrix computation
-- no homography/affine/similarity matrix output
-- no render-ready overlay data
+- no event/schema/validator changes
+- no materializer changes
+- no Dart/Flutter changes
+- no Project ZIP changes
 - no `board_graph.json`
 - no `view_state.json`
-- no Project ZIP contract change
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_AUDIT_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
-- `py -3 -m unittest tests.test_materialize_known_facts`
-- `py -3 -m unittest tests.test_project_zip`
 - `git diff --name-only`
 - `git status --short --branch`

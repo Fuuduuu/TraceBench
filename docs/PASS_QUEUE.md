@@ -11,18 +11,18 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Lock Dart model additions after materializer pass closeout acceptance. |
-| PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | later | Implement Dart projection-model parity only after scope lock and audit readiness. |
+| PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | recommended | Implement Dart KnownFacts support for `photo_to_board_alignments` using locked JSON-key parity and no-transform boundaries. |
+| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | later | Audit Dart parsing/serialization parity and boundary compliance after implementation. |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | TOOLS_PASS / QA_PASS | optional | Optional follow-up for non-blocking audit nits: explicit `damage_regions`/`suspect_regions` side-effect asserts and direct schema-library projection validation coverage. |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
 
@@ -30,6 +30,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Dart KnownFacts model direction for `photo_to_board_alignments`, JSON key parity, missing-field defaults, no-transform/no-inference boundaries, and future implementation/test allowlist. |
 | PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit, accept materializer projection state, record non-blocking test nits, and route next to Dart model scope lock. |
 | PHOTO_ALIGNMENT_MATERIALIZER_PASS | TOOLS_PASS / SCHEMA_PASS | completed | Project accepted user `photo_to_board_alignment_confirmed` events into optional `known_facts.photo_to_board_alignments` with latest-per-alignment rule and no transform/geometry-conversion/side-effect expansion; add known_facts schema support and projection tests. |
 | PROMPTING_AND_STATE_COMPACTION_PASS | DOCS_SYNC | completed | Compact CURRENT_STATE/PASS_QUEUE duplication and adopt hybrid prompt protocol with guarded templates and routing clarity. |
@@ -58,4 +59,4 @@ Detailed pass evidence remains in `docs/audit/*.md` and indexed by `docs/AUDIT_I
 
 ## Docs drift countdown
 
-Current countdown: `3`
+Current countdown: `2`

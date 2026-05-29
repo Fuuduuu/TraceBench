@@ -3,13 +3,30 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
-- Docs drift countdown: `3`
+- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_PASS`
+- Docs drift countdown: `2`
 
 ## Handoff snapshot (compact)
 
 ### Latest accepted alignment-governance state
+- `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS` completed.
+  - Locked future Dart KnownFacts direction for `known_facts.photo_to_board_alignments` before implementation.
+  - Recorded accepted baseline:
+    - `photo_to_board_alignment_confirmed` schema/validator support is accepted,
+    - `known_facts.photo_to_board_alignments` projection is accepted,
+    - `known_facts` schema support is accepted,
+    - Dart KnownFacts support remains deferred until `PHOTO_ALIGNMENT_DART_MODEL_PASS`,
+    - no board-canvas rendering/alignment UI is added.
+  - Locked future Dart model scope:
+    - add `PhotoToBoardAlignmentFact` and `KnownFacts.photoToBoardAlignments`,
+    - preserve snake_case JSON key parity for all alignment fields,
+    - default missing `photo_to_board_alignments` to empty list,
+    - preserve values verbatim with no transform computation or coordinate conversion.
+  - Deferred/forbidden remain unchanged:
+    - no Dart/Flutter UI implementation in scope-lock pass,
+    - no schema/tool/materializer changes,
+    - no Project ZIP contract change.
 - `PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS` completed (`PASS_WITH_NITS`).
   - Accepted `PHOTO_ALIGNMENT_MATERIALIZER_PASS` as scope-compliant after Claude Code audit.
   - Recorded non-blocking nits:

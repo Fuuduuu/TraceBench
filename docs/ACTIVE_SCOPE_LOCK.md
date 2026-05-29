@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout for `PHOTO_ALIGNMENT_MATERIALIZER_PASS` after audit verdict `PASS_WITH_NITS`.
+Lock the future Dart KnownFacts model direction for `known_facts.photo_to_board_alignments` before implementation.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only closeout for `PHOTO_ALIGNMENT_MATERIALIZER_PASS` after audit verdict `
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS.md`
+- `docs/PHOTO_FLOW_SPEC.md` (only if needed for model-direction wording alignment)
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,19 +37,23 @@ Docs-only closeout for `PHOTO_ALIGNMENT_MATERIALIZER_PASS` after audit verdict `
 - materializer implementation changes
 - validator implementation changes
 - schema implementation changes
+- photo alignment UI
+- background photo helper
+- transform computation
 
-## Closeout boundary (locked)
+## Scope-lock boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
-- no Dart/Flutter changes
+- no Dart/Flutter changes in this pass
 - no Project ZIP changes
+- no raw known_facts JSON parsing in renderer
 - no `board_graph.json`
 - no `view_state.json`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_PASS`
 
 ## Validate
 

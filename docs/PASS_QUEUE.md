@@ -11,18 +11,18 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | recommended | Audit Dart parsing/serialization parity and boundary compliance after implementation. |
-| PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS | DOCS_SYNC | later | Close out Dart model audit and route next alignment-governance pass. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | recommended | Docs drift countdown reached `0`; run compact cleanup before next implementation/audit routing. |
+| PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | optional | Optional extra independent Dart-model audit if another reviewer pass is needed beyond Claude closeout evidence. |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | TOOLS_PASS / QA_PASS | optional | Optional follow-up for non-blocking audit nits: explicit `damage_regions`/`suspect_regions` side-effect asserts and direct schema-library projection validation coverage. |
 | PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
 
@@ -30,6 +30,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit, accept Dart model parity state, record non-blocking nits, align scope-lock pointer, and route to docs-drift cleanup because countdown reached zero. |
 | PHOTO_ALIGNMENT_DART_MODEL_PASS | FLUTTER_PASS | completed | Implement Dart KnownFacts support for `photo_to_board_alignments` with field/key parity, empty-list fallback, round-trip coverage, and no transform/coordinate-conversion/inference behavior. |
 | PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock Dart KnownFacts model direction for `photo_to_board_alignments`, JSON key parity, missing-field defaults, no-transform/no-inference boundaries, and future implementation/test allowlist. |
 | PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit, accept materializer projection state, record non-blocking test nits, and route next to Dart model scope lock. |
@@ -60,4 +61,4 @@ Detailed pass evidence remains in `docs/audit/*.md` and indexed by `docs/AUDIT_I
 
 ## Docs drift countdown
 
-Current countdown: `1`
+Current countdown: `0`

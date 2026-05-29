@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS`
 
 ## Goal
 
-Lock the future Dart KnownFacts model direction for `known_facts.photo_to_board_alignments` before implementation.
+Docs-only closeout for `PHOTO_ALIGNMENT_DART_MODEL_PASS` after Claude Code audit verdict `PASS_WITH_NITS`.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Lock the future Dart KnownFacts model direction for `known_facts.photo_to_board_
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/PHOTO_FLOW_SPEC.md` (only if needed for model-direction wording alignment)
-- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -41,19 +40,21 @@ Lock the future Dart KnownFacts model direction for `known_facts.photo_to_board_
 - background photo helper
 - transform computation
 
-## Scope-lock boundary (locked)
+## Closeout boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
-- no Dart/Flutter changes in this pass
+- no Dart/Flutter changes
 - no Project ZIP changes
+- no photo-local evidence rendering
+- no AI proposal canonicalization
 - no raw known_facts JSON parsing in renderer
 - no `board_graph.json`
 - no `view_state.json`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Validate
 

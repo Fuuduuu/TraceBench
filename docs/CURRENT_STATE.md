@@ -3,13 +3,34 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS`
-- Docs drift countdown: `1`
+- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
 
 ### Latest accepted alignment-governance state
+- `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS` completed (`PASS_WITH_NITS`).
+  - Accepted `PHOTO_ALIGNMENT_DART_MODEL_PASS` as completed and scope-compliant after Claude Code audit.
+  - Accepted Dart model state:
+    - Dart KnownFacts support for `known_facts.photo_to_board_alignments`,
+    - `AlignmentPointFact`, `PhotoToBoardAlignmentFact`, `KnownFacts.photoToBoardAlignments`,
+    - missing `photo_to_board_alignments` defaults to empty list,
+    - exact JSON key parity and field-preserving round-trip behavior,
+    - exact `reference_points_photo` and `reference_points_board` preservation,
+    - `notes` present/absent behavior accepted,
+    - `status=user_confirmed_alignment` preserved,
+    - `coordinate_space_from=photo_local` and `coordinate_space_to=board_normalized` preserved.
+  - Deferred surfaces unchanged:
+    - no Flutter UI / board canvas rendering,
+    - no transform computation,
+    - no coordinate conversion,
+    - no Project ZIP changes,
+    - no event/schema/validator/materializer changes.
+  - Non-blocking nits recorded:
+    - previous active scope-lock pass pointer was stale and is aligned in this closeout,
+    - no dedicated notes-absent-only test (currently covered via round-trip),
+    - no multi-item `photo_to_board_alignments` parsing test.
 - `PHOTO_ALIGNMENT_DART_MODEL_PASS` completed.
   - Added Dart KnownFacts parsing/serialization support for optional `photo_to_board_alignments`.
   - Added `PhotoToBoardAlignmentFact` and alignment point model support in Dart KnownFacts.

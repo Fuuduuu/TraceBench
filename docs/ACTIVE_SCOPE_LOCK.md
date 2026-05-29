@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS`
 
 ## Goal
 
-Docs-only drift cleanup after `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS` and compact ledger alignment.
+Docs-only routing fixup to align active scope lock with post-`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS` queue/state routing.
 
 ## Allowed surfaces
 
@@ -14,9 +14,7 @@ Docs-only drift cleanup after `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS` and com
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/PROJECT_MEMORY.md` (only if stale)
-- `docs/TRUTH_INDEX.md` (only if stale)
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+- `docs/audit/ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS.md`
 
 ## Forbidden surfaces
 
@@ -56,7 +54,7 @@ Docs-only drift cleanup after `PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS` and com
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_AUDIT_PASS`
 
 ## Validate
 

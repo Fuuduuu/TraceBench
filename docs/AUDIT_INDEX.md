@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS | docs/audit/ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS.md | completed (docs-only routing reconciliation: ACTIVE_SCOPE_LOCK aligned to current Dart QA hardening state and forward audit route) |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS.md | completed (test-only hardening: dedicated `notes`-absent alignment behavior coverage and multi-item alignment parse/round-trip preservation coverage) |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS.md | completed (test-only hardening: explicit no-side-effect checks for `damage_regions`/`suspect_regions` and direct schema-contract validation coverage for projected alignment items) |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed (drift reset to standard value, compact state/queue/lock/index alignment, next routing refreshed) |

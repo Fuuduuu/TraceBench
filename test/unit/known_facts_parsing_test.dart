@@ -438,4 +438,166 @@ void main() {
             as Map<String, dynamic>;
     expect(alignment['notes'], 'operator confirmed corners');
   });
+
+  test(
+      'photo_to_board_alignments notes absent parses null and omits notes on toJson',
+      () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_notes_absent_case',
+      'photo_to_board_alignments': [
+        {
+          'alignment_id': 'ALN1004',
+          'source_photo_id': 'photo_top_003',
+          'board_side': 'top',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 11, 'y': 22},
+            {'x': 33, 'y': 44},
+          ],
+          'reference_points_board': [
+            {'x': 0.11, 'y': 0.22},
+            {'x': 0.33, 'y': 0.44},
+          ],
+          'transform_type': 'similarity',
+          'alignment_quality_label': 'manual',
+          'source_event_id': 'evt_001003',
+          'status': 'user_confirmed_alignment',
+        },
+      ],
+    });
+
+    expect(knownFacts.photoToBoardAlignments, hasLength(1));
+    expect(knownFacts.photoToBoardAlignments.single.notes, isNull);
+
+    final raw = knownFacts.toJson();
+    final alignment =
+        (raw['photo_to_board_alignments'] as List<dynamic>).single
+            as Map<String, dynamic>;
+    expect(alignment.containsKey('notes'), isFalse);
+  });
+
+  test(
+      'photo_to_board_alignments multi-item parse and round-trip preserves ordering and point lists',
+      () {
+    final knownFacts = KnownFacts.fromJson({
+      'project_id': 'alignment_multi_item_case',
+      'photo_to_board_alignments': [
+        {
+          'alignment_id': 'ALN2001',
+          'source_photo_id': 'photo_top_010',
+          'board_side': 'top',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 10, 'y': 15},
+            {'x': 20, 'y': 25},
+          ],
+          'reference_points_board': [
+            {'x': 0.1, 'y': 0.15},
+            {'x': 0.2, 'y': 0.25},
+          ],
+          'transform_type': 'similarity',
+          'alignment_quality_label': 'good',
+          'source_event_id': 'evt_002001',
+          'status': 'user_confirmed_alignment',
+        },
+        {
+          'alignment_id': 'ALN2002',
+          'source_photo_id': 'photo_bottom_010',
+          'board_side': 'bottom',
+          'coordinate_space_from': 'photo_local',
+          'coordinate_space_to': 'board_normalized',
+          'reference_points_photo': [
+            {'x': 30, 'y': 35},
+            {'x': 40, 'y': 45},
+            {'x': 50, 'y': 55},
+          ],
+          'reference_points_board': [
+            {'x': 0.3, 'y': 0.35},
+            {'x': 0.4, 'y': 0.45},
+            {'x': 0.5, 'y': 0.55},
+          ],
+          'transform_type': 'affine',
+          'alignment_quality_label': 'acceptable',
+          'source_event_id': 'evt_002002',
+          'status': 'user_confirmed_alignment',
+        },
+      ],
+    });
+
+    expect(knownFacts.photoToBoardAlignments, hasLength(2));
+    expect(knownFacts.photoToBoardAlignments[0].alignmentId, 'ALN2001');
+    expect(knownFacts.photoToBoardAlignments[1].alignmentId, 'ALN2002');
+    expect(
+      knownFacts.photoToBoardAlignments[0]
+          .referencePointsPhoto
+          .map((p) => p.toJson())
+          .toList(),
+      equals([
+        {'x': 10, 'y': 15},
+        {'x': 20, 'y': 25},
+      ]),
+    );
+    expect(
+      knownFacts.photoToBoardAlignments[0]
+          .referencePointsBoard
+          .map((p) => p.toJson())
+          .toList(),
+      equals([
+        {'x': 0.1, 'y': 0.15},
+        {'x': 0.2, 'y': 0.25},
+      ]),
+    );
+    expect(
+      knownFacts.photoToBoardAlignments[1]
+          .referencePointsPhoto
+          .map((p) => p.toJson())
+          .toList(),
+      equals([
+        {'x': 30, 'y': 35},
+        {'x': 40, 'y': 45},
+        {'x': 50, 'y': 55},
+      ]),
+    );
+    expect(
+      knownFacts.photoToBoardAlignments[1]
+          .referencePointsBoard
+          .map((p) => p.toJson())
+          .toList(),
+      equals([
+        {'x': 0.3, 'y': 0.35},
+        {'x': 0.4, 'y': 0.45},
+        {'x': 0.5, 'y': 0.55},
+      ]),
+    );
+
+    final raw = knownFacts.toJson();
+    final alignments =
+        raw['photo_to_board_alignments'] as List<dynamic>? ?? const [];
+    expect(alignments, hasLength(2));
+    expect(
+      (alignments[0] as Map<String, dynamic>)['alignment_id'],
+      'ALN2001',
+    );
+    expect(
+      (alignments[1] as Map<String, dynamic>)['alignment_id'],
+      'ALN2002',
+    );
+    expect(
+      (alignments[0] as Map<String, dynamic>)['reference_points_photo'],
+      equals([
+        {'x': 10, 'y': 15},
+        {'x': 20, 'y': 25},
+      ]),
+    );
+    expect(
+      (alignments[1] as Map<String, dynamic>)['reference_points_board'],
+      equals([
+        {'x': 0.3, 'y': 0.35},
+        {'x': 0.4, 'y': 0.45},
+        {'x': 0.5, 'y': 0.55},
+      ]),
+    );
+  });
 }

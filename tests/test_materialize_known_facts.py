@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -42,6 +43,67 @@ def run_materialize_project(events, manifest=None):
             for event in events:
                 handle.write(json.dumps(event) + "\n")
         return run_materialize(events_path)
+
+
+def _validate_json_schema_subset(value, schema, path="$"):
+    errors = []
+    schema_type = schema.get("type")
+
+    if schema_type == "object":
+        if not isinstance(value, dict):
+            return [f"{path}: expected object, got {type(value).__name__}"]
+        required = schema.get("required", [])
+        for key in required:
+            if key not in value:
+                errors.append(f"{path}.{key}: missing required property")
+        properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            for key in value.keys():
+                if key not in properties:
+                    errors.append(f"{path}.{key}: additional property is not allowed")
+        for key, child_schema in properties.items():
+            if key in value:
+                errors.extend(_validate_json_schema_subset(value[key], child_schema, f"{path}.{key}"))
+
+    elif schema_type == "array":
+        if not isinstance(value, list):
+            return [f"{path}: expected array, got {type(value).__name__}"]
+        min_items = schema.get("minItems")
+        if isinstance(min_items, int) and len(value) < min_items:
+            errors.append(f"{path}: expected at least {min_items} items, got {len(value)}")
+        item_schema = schema.get("items")
+        if isinstance(item_schema, dict):
+            for idx, item in enumerate(value):
+                errors.extend(_validate_json_schema_subset(item, item_schema, f"{path}[{idx}]"))
+
+    elif schema_type == "string":
+        if not isinstance(value, str):
+            return [f"{path}: expected string, got {type(value).__name__}"]
+        min_length = schema.get("minLength")
+        if isinstance(min_length, int) and len(value) < min_length:
+            errors.append(f"{path}: expected minLength {min_length}, got {len(value)}")
+        pattern = schema.get("pattern")
+        if isinstance(pattern, str) and re.fullmatch(pattern, value) is None:
+            errors.append(f"{path}: value {value!r} does not match pattern {pattern!r}")
+
+    elif schema_type == "number":
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            return [f"{path}: expected number, got {type(value).__name__}"]
+        minimum = schema.get("minimum")
+        if isinstance(minimum, (int, float)) and value < minimum:
+            errors.append(f"{path}: value {value} is below minimum {minimum}")
+        maximum = schema.get("maximum")
+        if isinstance(maximum, (int, float)) and value > maximum:
+            errors.append(f"{path}: value {value} is above maximum {maximum}")
+
+    if "const" in schema and value != schema["const"]:
+        errors.append(f"{path}: expected const {schema['const']!r}, got {value!r}")
+
+    enum_values = schema.get("enum")
+    if isinstance(enum_values, list) and value not in enum_values:
+        errors.append(f"{path}: value {value!r} not in enum {enum_values!r}")
+
+    return errors
 
 
 def make_event(
@@ -1497,6 +1559,44 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         alignment = data["photo_to_board_alignments"][0]
         self.assertTrue(required.issubset(set(alignment.keys())))
 
+    def test_photo_to_board_alignment_projection_item_validates_against_known_facts_schema(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        item_schema = (
+            schema.get("properties", {})
+            .get("photo_to_board_alignments", {})
+            .get("items", {})
+        )
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "photo_added",
+                    {"photo_id": "photo_top_001", "mode": "normal", "path": "photos/top_001.jpg"},
+                ),
+                make_event(
+                    "evt_100002",
+                    100002,
+                    "photo_to_board_alignment_confirmed",
+                    {
+                        "alignment_id": "ALN1004",
+                        "source_photo_id": "photo_top_001",
+                        "board_side": "top",
+                        "coordinate_space_from": "photo_local",
+                        "coordinate_space_to": "board_normalized",
+                        "reference_points_photo": [{"x": 5.0, "y": 6.0}, {"x": 7.0, "y": 8.0}],
+                        "reference_points_board": [{"x": 0.05, "y": 0.06}, {"x": 0.07, "y": 0.08}],
+                        "transform_type": "similarity",
+                        "alignment_quality_label": "manual_ok",
+                        "notes": "schema contract test",
+                    },
+                ),
+            ]
+        )
+        alignment = data["photo_to_board_alignments"][0]
+        errors = _validate_json_schema_subset(alignment, item_schema, "$.photo_to_board_alignments[0]")
+        self.assertEqual(errors, [], "\n".join(errors))
+
     def test_photo_to_board_alignments_omitted_when_no_alignment_events_exist(self):
         data = run_materialize_events([make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"})])
         self.assertNotIn("photo_to_board_alignments", data)
@@ -1811,6 +1911,8 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertEqual(data.get("measurements"), [])
         self.assertEqual(data.get("nets"), [])
         self.assertEqual(data.get("visual_traces"), [])
+        self.assertEqual(data.get("damage_regions"), [])
+        self.assertEqual(data.get("suspect_regions"), [])
         self.assertEqual(data.get("excluded_from_fault_candidates"), [])
 
     def test_photo_to_board_alignment_projection_does_not_write_board_graph_or_view_state(self):

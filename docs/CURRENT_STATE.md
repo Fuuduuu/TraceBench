@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS`
+- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -16,6 +16,10 @@ Branch: main
   - `known_facts.photo_to_board_alignments` materializer projection support,
   - `known_facts` schema support for `photo_to_board_alignments`,
   - Dart KnownFacts support for `photoToBoardAlignments`.
+- Latest implementation follow-up:
+  - `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS` added test-only hardening for non-blocking materializer audit nits:
+    - explicit no-side-effect assertions for `damage_regions` and `suspect_regions`,
+    - direct schema-contract validation test for projected `photo_to_board_alignments` items.
 - Accepted Dart parity behavior:
   - missing `photo_to_board_alignments` defaults to empty list,
   - JSON key parity is preserved,

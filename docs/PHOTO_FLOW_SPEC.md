@@ -26,6 +26,20 @@ Board-canvas alignment UI/rendering remains deferred.
 | photo_reference_points_set | reserved/deferred placeholder | Placeholder only; unsafe for writer usage until separately formalized end-to-end. |
 | photo_layer_aligned | reserved/deferred placeholder | Placeholder only; unsafe for writer usage until separately formalized end-to-end. |
 
+### 2.1 Placeholder readiness status (explicit)
+
+- `photo_reference_points_set` currently has:
+  - no payload schema,
+  - no validator business logic,
+  - no materializer projection,
+  - no Dart model.
+- `photo_layer_aligned` currently has:
+  - no payload schema,
+  - no validator business logic,
+  - no materializer projection,
+  - no Dart model.
+- Both remain reserved/deferred and are not writer-ready.
+
 ## 3. photo_added payload spec
 
 Required:
@@ -256,7 +270,7 @@ Rules:
   - `photo_to_board_alignments`
 - `customer_report.md` may mention `photo_id` as text only
 
-No Project ZIP tooling change in this docs-only pass.
+No Project ZIP tooling changes are in scope unless separately authorized.
 No `board_graph.json` or `view_state.json` artifacts.
 
 ## 10. Flutter/UI implications
@@ -283,7 +297,7 @@ Authoritative implementation and coverage evidence:
 - `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS.md`
 - `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS.md`
 
-## 13. Deferred
+## 12. Deferred
 
 - `photo_reference_points_set` placeholder formalization
 - `photo_layer_aligned` placeholder formalization
@@ -300,7 +314,7 @@ Authoritative implementation and coverage evidence:
 - damage/suspect canvas geometry rendering
 - Project ZIP contract changes
 
-## 14. Canonical owners (implemented state)
+## 13. Canonical owners (implemented state)
 
 - Event schema + payload contract:
   - `schemas/events.schema.json`
@@ -312,10 +326,12 @@ Authoritative implementation and coverage evidence:
   - `schemas/known_facts.schema.json`
 - Dart KnownFacts projection model:
   - `lib/shared/models/known_facts.dart`
+- Board-canvas read-only UI boundary owner:
+  - `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
 - Audit and acceptance evidence:
   - `docs/audit/*.md`
 
-## 15. Dart model safety warning
+## 14. Dart model safety warning
 
 Dart alignment model support stores alignment reference-point data only.
 

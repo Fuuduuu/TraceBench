@@ -2,19 +2,20 @@
 
 ## Current pass
 
-`PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`
+`PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
 
 ## Goal
 
-Docs-only closeout for `PHOTO_FLOW_SPEC_FIXUP_PASS` after Claude Code audit.
+Docs-only PHOTO_FLOW_SPEC nit-polish followup with no implementation-surface changes.
 
 ## Allowed surfaces
 
+- `docs/PHOTO_FLOW_SPEC.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -40,7 +41,7 @@ Docs-only closeout for `PHOTO_FLOW_SPEC_FIXUP_PASS` after Claude Code audit.
 - background photo helper
 - transform computation
 
-## Closeout boundary (locked)
+## Followup boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
@@ -55,7 +56,7 @@ Docs-only closeout for `PHOTO_FLOW_SPEC_FIXUP_PASS` after Claude Code audit.
 
 ## Next recommended pass
 
-`PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
 
 ## Validate
 

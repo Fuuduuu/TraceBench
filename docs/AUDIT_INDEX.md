@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS | docs/audit/PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS.md | completed (docs-only spec polish: resolved placeholder explicitness, added board-canvas UI boundary owner pointer, fixed section numbering continuity, and replaced temporary docs-pass wording with durable scope wording) |
 | PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS | docs/audit/PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; Claude Code audit accepted, spec-state alignment confirmed, evidence boundaries preserved, non-blocking spec nits recorded) |
 | PHOTO_FLOW_SPEC_FIXUP_PASS | docs/audit/PHOTO_FLOW_SPEC_FIXUP_PASS.md | completed (docs-only spec reconciliation: update PHOTO_FLOW_SPEC to accepted photo-alignment implementation state, preserve evidence boundaries, and keep board-canvas/UI/alignment rendering deferred) |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code audit accepted, test-only scope confirmed, explicit side-effect assertions and schema-contract coverage accepted) |

@@ -11,22 +11,22 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`DOCS_SCOPE_AND_NOISE_CLEANUP_PASS`
+`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
 
 ## Next recommended pass
 
-`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+`LIVE_LITE_SMOKE_TEST_RUN_PASS`
 
 ## Docs drift countdown (canonical)
 
-`3`
+`2`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| DOCS_SCOPE_AND_NOISE_CLEANUP_PASS | DOCS_SYNC | current | Resolve audit-noted docs noise/staleness, compact handoff docs, and keep routing/boundaries coherent. |
-| LIVE_LITE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | recommended | Conservative next step: define manual smoke checklist for current board-canvas/readiness metadata behavior before broader UI expansion. |
+| LIVE_LITE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Create focused manual live-lite runbook for current board-canvas/readiness behavior before any UI/evidence expansion. |
+| LIVE_LITE_SMOKE_TEST_RUN_PASS | QA_MANUAL | recommended | Execute the live-lite runbook on Windows target(s), capture observations/screenshots, and produce PASS / PASS_WITH_NITS / FAIL verdict. |
 | BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | deferred candidate | Allowed only if kept metadata-only and does not open new evidence surfaces. |
 | PHOTO_ALIGNMENT_TRANSFORM_COMPUTATION_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
 | BOARD_CANVAS_BACKGROUND_PHOTO_HELPER_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
@@ -35,6 +35,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| DOCS_SCOPE_AND_NOISE_CLEANUP_PASS | DOCS_SYNC | completed | Closed Claude-audit docs cleanup: compacted state/queue noise, fixed stale invariants/spec wording, and reconciled canonical countdown ownership. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked V1 photo-alignment UI meaning to metadata-only readiness/status and routed next to live-lite smoke planning. |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | DOCS_SYNC | completed | Closed out readiness QA audit (`PASS`) and aligned scope-lock pointers. |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Confirmed readiness QA stayed test-only and boundary-safe. |

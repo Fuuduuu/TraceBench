@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_SCOPE_AND_NOISE_CLEANUP_PASS`
-- Next recommended pass: `LIVE_LITE_SMOKE_TEST_PLAN_PASS`
-- Docs drift countdown: `3`
+- Current pass: `LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+- Next recommended pass: `LIVE_LITE_SMOKE_TEST_RUN_PASS`
+- Docs drift countdown: `2`
 
 ## Handoff snapshot (compact)
 
@@ -52,11 +52,20 @@ Branch: main
 - Suspect is not probability.
 - AI proposals are non-canonical until explicit accepted human-confirmed paths.
 
-### Current cleanup goals (this pass)
-- Compact docs noise in `CURRENT_STATE.md` and `PASS_QUEUE.md`.
-- Reconcile docs drift countdown with `PASS_QUEUE.md` as canonical owner.
-- Align stale wording in `PROJECT_MEMORY.md`, `PHOTO_FLOW_SPEC.md`, and `BOARD_CANVAS_READONLY_RENDERER_SPEC.md`.
-- Keep scope docs-only and preserve all evidence boundaries.
+### Live-lite smoke-test planning (current)
+- A focused manual runbook is defined in `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
+- Plan targets Windows local app launch and visual verification of accepted read-only board-canvas and readiness-panel behavior.
+- Plan includes:
+  - exact command sequence (`git` state, validation, `flutter devices`, run targets),
+  - route/screen verification checklist,
+  - forbidden UI/behavior checklist,
+  - evidence-boundary checklist,
+  - observation template,
+  - pass/fail criteria and stop conditions.
+- This pass is planning-only:
+  - no implementation changes,
+  - no automated test implementation,
+  - no scope expansion into transform/background/overlay/event-writing surfaces.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

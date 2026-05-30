@@ -2,23 +2,20 @@
 
 ## Current pass
 
-`DOCS_SCOPE_AND_NOISE_CLEANUP_PASS`
+`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
 
 ## Goal
 
-Docs-only cleanup of scope/routing noise after `DOCS_SCOPE_AND_NOISE_AUDIT_PASS`, with no product behavior changes.
+Docs-only planning pass to create a focused manual live-lite smoke-test runbook for current board-canvas and readiness-panel behavior.
 
 ## Allowed surfaces
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/PHOTO_FLOW_SPEC.md`
-- `docs/MODEL_ROUTING.md` (concise no-self-approval rule only)
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/DOCS_SCOPE_AND_NOISE_CLEANUP_PASS.md`
+- `docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md`
+- `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`
 
 ## Forbidden surfaces
 
@@ -46,14 +43,14 @@ Docs-only cleanup of scope/routing noise after `DOCS_SCOPE_AND_NOISE_AUDIT_PASS`
 ## Scope boundary (locked)
 
 - Docs-only updates.
-- No schema/tool/materializer/Dart/Flutter implementation changes.
+- No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - Renderer/view remains no-write.
 
 ## Next recommended pass
 
-`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+`LIVE_LITE_SMOKE_TEST_RUN_PASS`
 
 ## Validate
 

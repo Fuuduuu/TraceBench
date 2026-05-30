@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| LIVE_LITE_SMOKE_TEST_PLAN_PASS | docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md | completed (docs-only manual runbook planning: added live-lite board-canvas smoke checklist, routed to run pass, preserved metadata-only/evidence boundaries, and avoided implementation scope expansion) |
 | DOCS_SCOPE_AND_NOISE_CLEANUP_PASS | docs/audit/DOCS_SCOPE_AND_NOISE_CLEANUP_PASS.md | completed (`NEEDS_DOCS_CLEANUP` remediation: compacted CURRENT_STATE, reconciled drift countdown ownership, corrected stale PROJECT_MEMORY/PHOTO_FLOW/renderer spec wording, and preserved docs-only boundaries/routing) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS.md | completed (docs-only UI scope lock: confirmed accepted baseline, locked V1 photo-alignment UI to readiness/status metadata only, evaluated routes A–E, selected conservative next route `LIVE_LITE_SMOKE_TEST_PLAN_PASS`, and locked high-risk stop gates before any transform/background/rendering/event-writing scope) |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code closeout accepted readiness QA hardening as test-only and scope-compliant, with stale ACTIVE_SCOPE_LOCK pointer aligned) |

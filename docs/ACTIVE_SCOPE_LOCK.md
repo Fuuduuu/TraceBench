@@ -2,20 +2,19 @@
 
 ## Current pass
 
-`PHOTO_FLOW_SPEC_FIXUP_PASS`
+`PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only `PHOTO_FLOW_SPEC.md` reconciliation to current accepted photo-alignment schema -> materializer -> Dart-model -> QA state.
+Docs-only closeout for `PHOTO_FLOW_SPEC_FIXUP_PASS` after Claude Code audit.
 
 ## Allowed surfaces
 
-- `docs/PHOTO_FLOW_SPEC.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_FLOW_SPEC_FIXUP_PASS.md`
+- `docs/audit/PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -41,7 +40,7 @@ Docs-only `PHOTO_FLOW_SPEC.md` reconciliation to current accepted photo-alignmen
 - background photo helper
 - transform computation
 
-## Fixup boundary (locked)
+## Closeout boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
@@ -56,7 +55,7 @@ Docs-only `PHOTO_FLOW_SPEC.md` reconciliation to current accepted photo-alignmen
 
 ## Next recommended pass
 
-`PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`
+`PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
 
 ## Validate
 

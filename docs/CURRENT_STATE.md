@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_FLOW_SPEC_FIXUP_PASS`
-- Next recommended pass: `PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`
+- Current pass: `PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`
+- Next recommended pass: `PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -36,6 +36,13 @@ Branch: main
   - projected `photo_to_board_alignments` item contract validation against `known_facts` schema is in place,
   - no remaining materializer QA test gaps were identified by the closeout audit.
 - `PHOTO_FLOW_SPEC_FIXUP_PASS` updates `PHOTO_FLOW_SPEC.md` to the accepted implemented state for photo alignment schema/validator/materializer/known_facts/Dart model/QA chain and removes stale pre-implementation wording.
+- `PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS` records Claude Code audit verdict `PASS_WITH_NITS`, accepts the spec fixup as scope-compliant, and preserves deferred board-canvas alignment/rendering surfaces.
+
+### PHOTO_FLOW_SPEC fixup closeout nits (non-blocking)
+- Placeholder table can be more explicit that `photo_reference_points_set` and `photo_layer_aligned` still have no payload schema, validator business logic, materializer projection, or Dart model.
+- Canonical-owner section can additionally point to `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` for board-canvas UI boundary ownership.
+- Section numbering gap remains (`11` -> `13`).
+- One phrase still reads “this docs-only pass” and can later be reworded to permanent spec wording.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

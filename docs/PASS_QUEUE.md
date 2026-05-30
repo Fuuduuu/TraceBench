@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_FLOW_SPEC_FIXUP_PASS`
+`PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`
+`PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
 
 ## Planned / Recommended
 
@@ -25,12 +25,14 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit returned `PASS`; findings accepted and closed out in `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`. |
 | PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Audit was completed and accepted via pushed closeout flow; do not route backward to this pass. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Drift reset completed and ledger/pass pointers aligned after Dart model closeout. |
-| PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS | AUDIT_ONLY | recommended | Forward governance-first reconciliation pass after both Dart/model and materializer QA hardening closeouts. |
+| PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Claude Code audit completed; verdict accepted in `PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`. |
+| PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS | DOCS_SYNC | recommended | Optional narrow docs-only polish pass for non-blocking PHOTO_FLOW_SPEC nits (placeholder explicitness, canonical owner pointer, section numbering, wording permanence). |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit for `PHOTO_FLOW_SPEC_FIXUP_PASS`; accept spec-state alignment and boundary preservation, record non-blocking nits, and route forward to optional nits follow-up. |
 | PHOTO_FLOW_SPEC_FIXUP_PASS | DOCS_SYNC | completed | Fix `PHOTO_FLOW_SPEC.md` stale pre-implementation sections to current accepted photo-alignment state; keep boundaries intact and route forward to `PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`. |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS`) | Close out Claude Code audit for materializer QA hardening; accept explicit no-side-effect assertions and direct schema-contract validation coverage, and confirm no production behavior changes. |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS`) | Close out Claude Code audit for Dart-model QA hardening; accept test-only coverage additions, record unrelated widget-test flake as non-blocking, and route forward to the pending materializer QA audit. |

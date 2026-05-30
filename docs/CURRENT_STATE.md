@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -44,7 +44,7 @@ Branch: main
 - Section numbering gap was removed.
 - Durable wording now states: “No Project ZIP tooling changes are in scope unless separately authorized.”
 
-### Board-canvas photo-alignment readiness scope lock (current)
+### Board-canvas photo-alignment readiness scope lock
 - Ready:
   - schema/validator support for `photo_to_board_alignment_confirmed`,
   - materializer projection to `known_facts.photo_to_board_alignments`,
@@ -65,7 +65,41 @@ Branch: main
   - no `board_graph.json` / `view_state.json`,
   - renderer writes nothing.
 
-### Board-canvas photo-alignment UI audit closeout (current)
+### Board-canvas photo-alignment readiness panel scope lock (current)
+- Panel type locked:
+  - read-only readiness/status metadata panel only,
+  - no canvas geometry, overlays, photo rendering, or event writing.
+- Panel placement locked:
+  - project/photo-level board-canvas panel,
+  - may appear when `KnownFacts.photoToBoardAlignments` is non-empty,
+  - must not imply alignment is a selected-component property.
+- Allowed displayed fields only:
+  - `alignment_id`
+  - `source_photo_id`
+  - `board_side`
+  - `coordinate_space_from`
+  - `coordinate_space_to`
+  - reference-point count only
+  - `transform_type` (labeled `declared type — not computed`)
+  - `alignment_quality_label`
+  - `source_event_id`
+  - `status`
+- Required safety copy locked:
+  - `Photo alignment readiness — metadata only`
+  - `Stores alignment reference points only.`
+  - `Does not confirm identity, nets, measurements, or faults.`
+  - `No photo-local evidence is rendered on board canvas.`
+  - `No transform is computed.`
+  - `renderer writes: none`
+  - `Not electrical proof.`
+- Explicitly forbidden:
+  - raw reference-point x/y display,
+  - transformed coordinates or any transform matrix/math output,
+  - mapped visual_trace/damage/suspect regions,
+  - background photo/image overlay rendering,
+  - edit/confirm/save/apply/event-writing controls.
+
+### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.
 - Claude Code verdict recorded: `PASS`.
 - Accepted UI decision: `READINESS_PANEL_ONLY`.
@@ -78,8 +112,9 @@ Branch: main
   - no event-writing UI,
   - no Project ZIP contract change,
   - no `board_graph.json` / `view_state.json`.
-- Next required scope direction:
-  - `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`.
+- Scope lock outcome:
+  - `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS` completed.
+  - Next implementation direction: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

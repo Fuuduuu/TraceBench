@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only audit closeout for `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS` after GPT Pro + Claude Code review.
+Docs-only scope lock for future `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only audit closeout for `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS` 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` (only if boundary wording needs alignment)
+- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -31,37 +32,33 @@ Docs-only audit closeout for `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS` 
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter UI/runtime changes
-- Dart KnownFacts model changes
-- materializer implementation changes
-- validator implementation changes
-- schema implementation changes
-- photo alignment UI
+- Flutter implementation
+- board-canvas rendering implementation
 - background photo helper
 - transform computation
+- matrix computation
+- photo-local evidence conversion
+- visual_trace/damage/suspect canvas geometry
+- event-writing UI
+- AI proposal UI
 
-## Closeout boundary (locked)
+## Scope-lock boundary (locked)
 
-- no event/schema/validator changes
-- no materializer changes
-- no Dart/Flutter changes
-- no Project ZIP changes
-- no photo-local evidence rendering
-- no transform matrix computation
-- no transform computation in renderer as canonical truth
-- no volatile preview state promoted to saved/exported/materialized/reported truth
-- no background photo helper hidden truth
-- no visual_trace/damage/suspect canvas geometry rendering
-- no event-writing UI
-- no reference-point editing/confirm/save/apply controls
-- no AI proposal canonicalization
-- no raw known_facts JSON parsing in renderer
-- no `board_graph.json`
-- no `view_state.json`
+- readiness panel is read-only metadata/status only.
+- no canvas geometry, overlays, or photo rendering.
+- no raw reference-point x/y display.
+- no transformed coordinates or transform matrix/math output.
+- no mapped visual_trace/damage/suspect rendering.
+- no edit/confirm/save/apply controls.
+- no event-writing actions or reference-point editing.
+- panel is project/photo-level, not component-identity proof.
+- renderer writes nothing.
+- no `board_graph.json`.
+- no `view_state.json`.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
 
 ## Validate
 

@@ -14,6 +14,7 @@ ProjectState _inlineProjectState({
   required List<ComponentVisualPlacementFact> placements,
   List<MeasurementFact> measurements = const [],
   List<VisualTraceFact> visualTraces = const [],
+  List<PhotoToBoardAlignmentFact> photoToBoardAlignments = const [],
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -37,6 +38,7 @@ ProjectState _inlineProjectState({
       suspectRegions: const [],
       visualTraces: visualTraces,
       componentVisualPlacements: placements,
+      photoToBoardAlignments: photoToBoardAlignments,
     ),
     events: const [],
     customerReport: '',
@@ -106,6 +108,26 @@ void main() {
     rotationDeg: 0,
     sourceEventId: 'evt_000200',
     status: 'user_confirmed_visual',
+  );
+
+  const readinessAlignment = PhotoToBoardAlignmentFact(
+    alignmentId: 'ALN1001',
+    sourcePhotoId: 'photo_top_001',
+    boardSide: 'top',
+    coordinateSpaceFrom: 'photo_local',
+    coordinateSpaceTo: 'board_normalized',
+    referencePointsPhoto: [
+      AlignmentPointFact(x: 123.456, y: 789.123),
+      AlignmentPointFact(x: 456.789, y: 321.987),
+    ],
+    referencePointsBoard: [
+      AlignmentPointFact(x: 0.12, y: 0.34),
+      AlignmentPointFact(x: 0.56, y: 0.78),
+    ],
+    transformType: 'similarity',
+    alignmentQualityLabel: 'manual_reference_verified',
+    sourceEventId: 'evt_alignment_001',
+    status: 'user_confirmed_alignment',
   );
 
   testWidgets('shows no-project state when project is not loaded',
@@ -314,6 +336,114 @@ void main() {
       find.text('Select a placement to view read-only details.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('readiness panel appears when photoToBoardAlignments is non-empty',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          photoToBoardAlignments: const [readinessAlignment],
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.text('Stores alignment reference points only.'), findsOneWidget);
+    expect(
+      find.text('Does not confirm identity, nets, measurements, or faults.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('No photo-local evidence is rendered on board canvas.'),
+      findsOneWidget,
+    );
+    expect(find.text('No transform is computed.'), findsOneWidget);
+    expect(find.text('Not electrical proof.'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('readiness panel is absent when photoToBoardAlignments is empty',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+
+    expect(find.text('Photo alignment readiness — metadata only'), findsNothing);
+  });
+
+  testWidgets('readiness panel shows allowed metadata and reference pair count only',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          photoToBoardAlignments: const [readinessAlignment],
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+
+    expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
+    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(find.textContaining('Board side: top'), findsOneWidget);
+    expect(find.textContaining('Coordinate space from: photo_local'), findsOneWidget);
+    expect(
+      find.textContaining('Coordinate space to: board_normalized'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('reference pairs: 2'), findsOneWidget);
+    expect(
+      find.textContaining('declared type — not computed: similarity'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining(
+        'Alignment quality label: manual_reference_verified',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Source event ID: evt_alignment_001'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Status: user_confirmed_alignment'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('123.456'), findsNothing);
+    expect(find.textContaining('789.123'), findsNothing);
+    expect(find.textContaining('456.789'), findsNothing);
+    expect(find.textContaining('321.987'), findsNothing);
+  });
+
+  testWidgets('readiness panel avoids layout overflow on constrained viewport',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 520));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          photoToBoardAlignments: const [readinessAlignment],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
   });
 
   testWidgets('selecting placement from dropdown shows read-only inspector details',
@@ -563,6 +693,12 @@ void main() {
       'Save',
       'Export',
       'Upload photo',
+      'Show photo',
+      'Render overlay',
+      'Compute transform',
+      'Edit alignment',
+      'Confirm alignment',
+      'Add reference point',
       'Run AI',
       'Detect components',
       'Add component',
@@ -1037,18 +1173,27 @@ void main() {
     expect(source, isNot(contains('board_graph.json')));
     expect(source, isNot(contains('view_state.json')));
     expect(source, contains('knownFacts.visualTraces'));
+    expect(source, contains('knownFacts.photoToBoardAlignments'));
     expect(source, isNot(contains('knownFacts.damageRegions')));
     expect(source, isNot(contains('knownFacts.suspectRegions')));
     expect(source, isNot(contains('knownFacts.nets')));
     expect(source, isNot(contains('from_point')));
     expect(source, isNot(contains('to_point')));
+    expect(source, isNot(contains('referencePointsPhoto[')));
+    expect(source, isNot(contains('referencePointsBoard[')));
     expect(source, isNot(contains('drawLine(')));
     expect(source, isNot(contains('drawPath(')));
+    expect(source, isNot(contains('Image(')));
+    expect(source, isNot(contains('DecorationImage(')));
+    expect(source, isNot(contains('RawImage(')));
     expect(source, isNot(contains('Promote to net')));
     expect(source, isNot(contains('drawMeasurement')));
     expect(source, isNot(contains('measurementOverlay')));
     expect(source, isNot(contains('measurementAnchor')));
     expect(source, isNot(contains('measurementCoordinate')));
     expect(source, isNot(contains('Confirm net')));
+    expect(source, isNot(contains('Show photo')));
+    expect(source, isNot(contains('Render overlay')));
+    expect(source, isNot(contains('Compute transform')));
   });
 }

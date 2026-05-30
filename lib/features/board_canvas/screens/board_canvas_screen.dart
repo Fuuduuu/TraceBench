@@ -84,6 +84,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
           ),
         )
         .toList(growable: false);
+    final photoToBoardAlignments = knownFacts.photoToBoardAlignments;
 
     final selectedKey = _coerceSelection(entries);
     _PlacementEntry? selectedEntry;
@@ -114,6 +115,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            if (photoToBoardAlignments.isNotEmpty) ...[
+              _PhotoAlignmentReadinessPanel(
+                alignments: photoToBoardAlignments,
+              ),
+              const SizedBox(height: 16),
+            ],
             _PlacementSelector(
               entries: entries,
               selectedKey: selectedKey,
@@ -281,6 +288,47 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
+class _PhotoAlignmentReadinessPanel extends StatelessWidget {
+  const _PhotoAlignmentReadinessPanel({required this.alignments});
+
+  final List<PhotoToBoardAlignmentFact> alignments;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 220),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Photo alignment readiness — metadata only',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 6),
+              const Text('Stores alignment reference points only.'),
+              const Text(
+                'Does not confirm identity, nets, measurements, or faults.',
+              ),
+              const Text('No photo-local evidence is rendered on board canvas.'),
+              const Text('No transform is computed.'),
+              const Text('Not electrical proof.'),
+              const SizedBox(height: 8),
+              ...alignments
+                  .map(
+                    (alignment) => _PhotoAlignmentSummaryTile(alignment: alignment),
+                  )
+                  .toList(growable: false),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PlacementSelector extends StatelessWidget {
   const _PlacementSelector({
     required this.entries,
@@ -353,6 +401,65 @@ class _CanvasPanel extends StatelessWidget {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoAlignmentSummaryTile extends StatelessWidget {
+  const _PhotoAlignmentSummaryTile({required this.alignment});
+
+  final PhotoToBoardAlignmentFact alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    final referencePairCount = math.min(
+      alignment.referencePointsPhoto.length,
+      alignment.referencePointsBoard.length,
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _InspectorField(label: 'Alignment ID', value: alignment.alignmentId),
+              _InspectorField(label: 'Source photo ID', value: alignment.sourcePhotoId),
+              _InspectorField(label: 'Board side', value: alignment.boardSide),
+              _InspectorField(
+                label: 'Coordinate space from',
+                value: alignment.coordinateSpaceFrom,
+              ),
+              _InspectorField(
+                label: 'Coordinate space to',
+                value: alignment.coordinateSpaceTo,
+              ),
+              _InspectorField(
+                label: 'reference pairs',
+                value: referencePairCount.toString(),
+              ),
+              _InspectorField(
+                label: 'declared type — not computed',
+                value: alignment.transformType,
+              ),
+              _InspectorField(
+                label: 'Alignment quality label',
+                value: alignment.alignmentQualityLabel,
+              ),
+              _InspectorField(
+                label: 'Source event ID',
+                value: alignment.sourceEventId,
+              ),
+              _InspectorField(label: 'Status', value: alignment.status),
+            ],
+          ),
         ),
       ),
     );

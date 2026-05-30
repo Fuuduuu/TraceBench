@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -65,7 +65,7 @@ Branch: main
   - no `board_graph.json` / `view_state.json`,
   - renderer writes nothing.
 
-### Board-canvas photo-alignment readiness panel scope lock (current)
+### Board-canvas photo-alignment readiness panel scope lock
 - Panel type locked:
   - read-only readiness/status metadata panel only,
   - no canvas geometry, overlays, photo rendering, or event writing.
@@ -98,6 +98,25 @@ Branch: main
   - mapped visual_trace/damage/suspect regions,
   - background photo/image overlay rendering,
   - edit/confirm/save/apply/event-writing controls.
+
+### Board-canvas photo-alignment readiness panel pass (current)
+- Added read-only project/photo-level readiness metadata panel on board canvas.
+- Panel is shown when `KnownFacts.photoToBoardAlignments` is non-empty.
+- Panel uses constrained scrollable layout to avoid RenderFlex overflow on smaller viewports.
+- Panel displays metadata only:
+  - `alignment_id`
+  - `source_photo_id`
+  - `board_side`
+  - `coordinate_space_from`
+  - `coordinate_space_to`
+  - reference pair count only
+  - `transform_type` as `declared type — not computed`
+  - `alignment_quality_label`
+  - `source_event_id`
+  - `status`
+- Required safety copy is present and non-actionable.
+- Raw reference-point `x/y` coordinates are not displayed.
+- No background photo helper, overlay rendering, transform computation, or event-writing behavior was added.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

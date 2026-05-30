@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_AUDIT_PASS`
 
 ## Planned / Recommended
 
@@ -30,12 +30,14 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked readiness criteria and hard boundaries for any future board-canvas photo-alignment UI/helper work after the accepted data chain. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code verdict `PASS`; GPT Pro direction `PREFER_METADATA_ONLY_NEXT`; accepted safe V1 direction is `READINESS_PANEL_ONLY`. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked exact metadata-only readiness-panel boundaries: allowed fields/copy, project-level placement, transform-type wording, and explicit forbidden rendering/edit/event-writing behavior. |
-| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | FLUTTER_PASS | recommended | Implement narrow read-only readiness/status panel metadata in board-canvas inspector/list area with no geometry/overlay/transform/event-writing behavior. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | FLUTTER_PASS | completed | Implemented narrow read-only readiness/status panel metadata on board canvas with declared-type wording, reference-pair count only, required safety copy, and overflow-safe constrained layout; no geometry/overlay/transform/event-writing behavior. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_AUDIT_PASS | AUDIT_ONLY | recommended | Audit readiness panel implementation boundaries: metadata-only display, no raw x/y, no transform computation, no overlays, no event-writing, and preserved read-only renderer behavior. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | FLUTTER_PASS | completed | Added read-only project/photo-level photo-alignment readiness metadata panel using `KnownFacts.photoToBoardAlignments`, with required safety copy, count-only reference-point display, constrained overflow-safe layout, and no rendering/computation/edit/event-writing expansion. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future readiness-panel implementation scope to metadata-only status display, forbid raw reference-point coordinates and any transform/render/edit paths, and route forward to implementation pass. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out GPT Pro + Claude Code audit synthesis; accept `READINESS_PANEL_ONLY`, record allowed metadata and forbidden rendering/computation surfaces, and route to readiness-panel scope lock. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked what is ready vs not ready for board-canvas alignment UX, preserved no-write/no-transform/no-conversion boundaries, and routed forward to audit-only UI scope gating. |

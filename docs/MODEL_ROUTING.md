@@ -42,6 +42,7 @@ Choose the right helper/model for each pass type and risk profile.
 - If task conflicts with `ACTIVE_SCOPE_LOCK`, stop and request decision.
 - If protected surfaces are implicated, route to GPT Pro or explicit user decision before implementation.
 - If a docs-only pass requires non-doc edits, stop and escalate.
+- High-risk Codex implementation must receive non-Codex review before acceptance, normally Claude Code audit or GPT Pro decision when evidence/architecture boundaries are involved.
 
 ## Practical handoff pattern
 

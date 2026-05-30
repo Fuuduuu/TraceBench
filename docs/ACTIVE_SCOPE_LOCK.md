@@ -2,21 +2,23 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
+`DOCS_SCOPE_AND_NOISE_CLEANUP_PASS`
 
 ## Goal
 
-Docs-only UI scope lock for the next safe board-canvas photo-alignment direction after the accepted readiness panel + QA chain.
+Docs-only cleanup of scope/routing noise after `DOCS_SCOPE_AND_NOISE_AUDIT_PASS`, with no product behavior changes.
 
 ## Allowed surfaces
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
+- `docs/PHOTO_FLOW_SPEC.md`
+- `docs/MODEL_ROUTING.md` (concise no-self-approval rule only)
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` only if needed to clarify UI boundaries
-- `docs/PHOTO_FLOW_SPEC.md` only if needed to add a short pointer
-- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS.md`
+- `docs/audit/DOCS_SCOPE_AND_NOISE_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -33,32 +35,21 @@ Docs-only UI scope lock for the next safe board-canvas photo-alignment direction
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter implementation
-- board-canvas rendering implementation
+- Flutter/runtime implementation
 - background photo helper
-- transform computation
-- matrix computation
+- transform/matrix computation
 - photo-local evidence conversion
-- visual_trace/damage/suspect canvas geometry
+- visual_trace/damage/suspect canvas geometry rendering
 - measurement canvas overlay
-- event-writing UI
-- reference-point editing
-- edit/confirm/save/apply controls
-- AI proposal UI
+- event-writing/edit/confirm/save/apply controls
 
 ## Scope boundary (locked)
 
-- no schema/tool/materializer/Dart model changes.
-- no Project ZIP changes.
-- no transform computation/matrix math or coordinate conversion.
-- no background photo helper.
-- no photo-local evidence board rendering.
-- no visual_trace/damage/suspect canvas geometry.
-- no measurement canvas overlay.
-- no event-writing/reference-point-edit/edit/confirm/save/apply UI.
-- no `board_graph.json`.
-- no `view_state.json`.
-- renderer writes nothing.
+- Docs-only updates.
+- No schema/tool/materializer/Dart/Flutter implementation changes.
+- No Project ZIP contract changes.
+- No evidence-boundary weakening.
+- Renderer/view remains no-write.
 
 ## Next recommended pass
 

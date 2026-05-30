@@ -275,10 +275,14 @@ No `board_graph.json` or `view_state.json` artifacts.
 
 ## 10. Flutter/UI implications
 
-No board-canvas photo alignment UI is implemented in current accepted state.
-No background photo helper is implemented.
-No transform matrix/homography computation is implemented.
-No photo-local evidence geometry is rendered on board canvas.
+- Board-canvas photo-alignment readiness metadata panel is implemented and accepted.
+- Current accepted UI support remains metadata-only.
+- Full photo-alignment UI workflow remains deferred.
+- No background photo helper is implemented.
+- No transform matrix/homography computation is implemented.
+- No photo-local evidence geometry is rendered on board canvas.
+- No visual_trace/damage/suspect canvas geometry rendering is implemented.
+- No Project ZIP contract changes are implemented for alignment UI surfaces.
 
 ## 11. Test and audit evidence pointers
 

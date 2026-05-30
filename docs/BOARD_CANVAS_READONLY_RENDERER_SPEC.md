@@ -248,3 +248,42 @@ Strict visual-trace-to-component association rule:
   - `trace.fromPin` starts with `componentId + "."`
   - `trace.toPin` starts with `componentId + "."`
 - no loose prefix matching (`Q2` must not match `Q20`).
+
+## 16. photo-alignment readiness panel addendum
+
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS` and follow-up QA passes lock photo-alignment panel behavior to metadata-only readiness display.
+
+Allowed direction (accepted):
+
+- project/photo-level readiness panel (not per-component identity semantics),
+- metadata-only rendering from `KnownFacts.photoToBoardAlignments`,
+- allowed metadata fields only:
+  - `alignment_id`
+  - `source_photo_id`
+  - `board_side`
+  - `coordinate_space_from`
+  - `coordinate_space_to`
+  - reference pair count only
+  - `transform_type` (label: `declared type — not computed`)
+  - `alignment_quality_label`
+  - `source_event_id`
+  - `status`
+- required safety copy:
+  - `Photo alignment readiness — metadata only`
+  - `Stores alignment reference points only.`
+  - `Does not confirm identity, nets, measurements, or faults.`
+  - `No photo-local evidence is rendered on board canvas.`
+  - `No transform is computed.`
+  - `Not electrical proof.`
+  - `renderer writes: none`
+
+Forbidden direction:
+
+- no raw reference-point `x/y` display,
+- no background photo helper/rendering,
+- no transform/matrix computation output,
+- no photo-local evidence conversion to board geometry,
+- no visual_trace/damage/suspect board geometry rendering,
+- no event-writing/edit/confirm/save/apply controls.
+
+Boundary remains unchanged: renderer writes nothing.

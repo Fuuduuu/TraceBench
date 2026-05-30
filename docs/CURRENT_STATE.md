@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -43,6 +43,27 @@ Branch: main
 - Canonical-owner pointers now include `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` for board-canvas read-only UI boundaries.
 - Section numbering gap was removed.
 - Durable wording now states: “No Project ZIP tooling changes are in scope unless separately authorized.”
+
+### Board-canvas photo-alignment readiness scope lock (current)
+- Ready:
+  - schema/validator support for `photo_to_board_alignment_confirmed`,
+  - materializer projection to `known_facts.photo_to_board_alignments`,
+  - `known_facts` schema support,
+  - Dart KnownFacts support for `photoToBoardAlignments`,
+  - existing read-only board-canvas shell + inspector + read-only measurement/visual-trace metadata summaries.
+- Not ready:
+  - board-canvas photo-alignment UI,
+  - background photo helper,
+  - transform computation,
+  - photo-local evidence conversion,
+  - visual_trace/damage/suspect canvas geometry rendering,
+  - any Project ZIP contract change.
+- Locked boundaries remain:
+  - alignment data is reference-point data only,
+  - renderer must not compute canonical truth,
+  - no hidden-truth helper state,
+  - no `board_graph.json` / `view_state.json`,
+  - renderer writes nothing.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

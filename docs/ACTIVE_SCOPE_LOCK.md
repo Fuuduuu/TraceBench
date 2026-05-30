@@ -2,20 +2,21 @@
 
 ## Current pass
 
-`PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only PHOTO_FLOW_SPEC nit-polish followup with no implementation-surface changes.
+Docs-only readiness scope lock for future board-canvas photo-alignment UI/background-photo/helper work.
 
 ## Allowed surfaces
 
-- `docs/PHOTO_FLOW_SPEC.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` (only if readiness wording needs alignment)
+- `docs/PHOTO_FLOW_SPEC.md` (only if readiness pointer wording needs alignment)
+- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -41,7 +42,7 @@ Docs-only PHOTO_FLOW_SPEC nit-polish followup with no implementation-surface cha
 - background photo helper
 - transform computation
 
-## Followup boundary (locked)
+## Readiness lock boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
@@ -49,6 +50,10 @@ Docs-only PHOTO_FLOW_SPEC nit-polish followup with no implementation-surface cha
 - no Project ZIP changes
 - no photo-local evidence rendering
 - no transform matrix computation
+- no transform computation in renderer as canonical truth
+- no volatile preview state promoted to saved/exported/materialized/reported truth
+- no background photo helper hidden truth
+- no visual_trace/damage/suspect canvas geometry rendering
 - no AI proposal canonicalization
 - no raw known_facts JSON parsing in renderer
 - no `board_graph.json`
@@ -56,7 +61,7 @@ Docs-only PHOTO_FLOW_SPEC nit-polish followup with no implementation-surface cha
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS`
 
 ## Validate
 

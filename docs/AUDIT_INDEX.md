@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS.md | completed (GPT Pro `PREFER_METADATA_ONLY_NEXT` + Claude `PASS` closeout accepted; next safe V1 UI direction locked as `READINESS_PANEL_ONLY`, routed to readiness-panel scope lock) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS.md | completed (docs-only readiness scope lock: captured accepted data-chain baseline, locked readiness/non-readiness split, fixed conservative next routing to audit-only UI scope gate, and preserved hard no-transform/no-conversion/no-write boundaries) |
 | PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS | docs/audit/PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS.md | completed (docs-only spec polish: resolved placeholder explicitness, added board-canvas UI boundary owner pointer, fixed section numbering continuity, and replaced temporary docs-pass wording with durable scope wording) |
 | PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS | docs/audit/PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; Claude Code audit accepted, spec-state alignment confirmed, evidence boundaries preserved, non-blocking spec nits recorded) |

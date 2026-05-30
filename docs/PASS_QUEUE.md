@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
 
 ## Planned / Recommended
 
@@ -28,12 +28,14 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Claude Code audit completed; verdict accepted in `PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS`. |
 | PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS | DOCS_SYNC | completed | Resolved PHOTO_FLOW_SPEC non-blocking nits: placeholder explicitness, board-canvas canonical owner pointer, section numbering continuity, and durable Project ZIP wording. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked readiness criteria and hard boundaries for any future board-canvas photo-alignment UI/helper work after the accepted data chain. |
-| BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS | AUDIT_ONLY | recommended | Conservative next step: audit-only UI scope/readiness pass before any Flutter/photo-helper/alignment implementation routing. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code verdict `PASS`; GPT Pro direction `PREFER_METADATA_ONLY_NEXT`; accepted safe V1 direction is `READINESS_PANEL_ONLY`. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Lock metadata-only readiness-panel implementation boundaries before any board-canvas alignment UI work. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out GPT Pro + Claude Code audit synthesis; accept `READINESS_PANEL_ONLY`, record allowed metadata and forbidden rendering/computation surfaces, and route to readiness-panel scope lock. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked what is ready vs not ready for board-canvas alignment UX, preserved no-write/no-transform/no-conversion boundaries, and routed forward to audit-only UI scope gating. |
 | PHOTO_FLOW_SPEC_NITS_FOLLOWUP_PASS | DOCS_SYNC | completed | Polish follow-up for `PHOTO_FLOW_SPEC`: resolved all non-blocking closeout nits without expanding implementation scope. |
 | PHOTO_FLOW_SPEC_FIXUP_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Close out Claude Code audit for `PHOTO_FLOW_SPEC_FIXUP_PASS`; accept spec-state alignment and boundary preservation, record non-blocking nits, and route forward to optional nits follow-up. |

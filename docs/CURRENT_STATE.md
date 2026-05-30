@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -64,6 +64,22 @@ Branch: main
   - no hidden-truth helper state,
   - no `board_graph.json` / `view_state.json`,
   - renderer writes nothing.
+
+### Board-canvas photo-alignment UI audit closeout (current)
+- GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.
+- Claude Code verdict recorded: `PASS`.
+- Accepted UI decision: `READINESS_PANEL_ONLY`.
+- Accepted V1-safe direction:
+  - show photo-alignment readiness/status metadata only,
+  - keep no background photo helper,
+  - no transform/matrix computation,
+  - no photo-local evidence conversion,
+  - no visual_trace/damage/suspect canvas geometry rendering,
+  - no event-writing UI,
+  - no Project ZIP contract change,
+  - no `board_graph.json` / `view_state.json`.
+- Next required scope direction:
+  - `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

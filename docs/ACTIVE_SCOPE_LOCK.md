@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only readiness scope lock for future board-canvas photo-alignment UI/background-photo/helper work.
+Docs-only audit closeout for `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS` after GPT Pro + Claude Code review.
 
 ## Allowed surfaces
 
@@ -14,9 +14,7 @@ Docs-only readiness scope lock for future board-canvas photo-alignment UI/backgr
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` (only if readiness wording needs alignment)
-- `docs/PHOTO_FLOW_SPEC.md` (only if readiness pointer wording needs alignment)
-- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_SCOPE_LOCK_PASS.md`
+- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -42,7 +40,7 @@ Docs-only readiness scope lock for future board-canvas photo-alignment UI/backgr
 - background photo helper
 - transform computation
 
-## Readiness lock boundary (locked)
+## Closeout boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
@@ -54,6 +52,8 @@ Docs-only readiness scope lock for future board-canvas photo-alignment UI/backgr
 - no volatile preview state promoted to saved/exported/materialized/reported truth
 - no background photo helper hidden truth
 - no visual_trace/damage/suspect canvas geometry rendering
+- no event-writing UI
+- no reference-point editing/confirm/save/apply controls
 - no AI proposal canonicalization
 - no raw known_facts JSON parsing in renderer
 - no `board_graph.json`
@@ -61,7 +61,7 @@ Docs-only readiness scope lock for future board-canvas photo-alignment UI/backgr
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
 
 ## Validate
 

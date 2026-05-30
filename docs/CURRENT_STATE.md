@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS`
-- Next recommended pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -155,7 +155,7 @@ Branch: main
   - forbidden action labels remain absent.
 - No scope expansion: no schema/tool/materializer/Dart model/Project ZIP/runtime behavior changes.
 
-### Board-canvas photo-alignment readiness panel nits followup closeout (current)
+### Board-canvas photo-alignment readiness panel nits followup closeout (accepted)
 - Claude Code audit verdict recorded: `PASS`.
 - `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS` accepted as completed and scope-compliant.
 - Accepted follow-up state recorded:
@@ -166,7 +166,7 @@ Branch: main
 - Non-blocking note recorded:
   - `ACTIVE_SCOPE_LOCK.md` pointer was stale and is aligned by this closeout.
 
-### Board-canvas alignment readiness QA pass (current)
+### Board-canvas alignment readiness QA pass (accepted)
 - Added broader board-canvas readiness QA coverage without product behavior changes.
 - New combined-state widget coverage verifies readiness panel stability with:
   - board-normalized placements,
@@ -185,6 +185,23 @@ Branch: main
   - raw reference-point `x/y` values absent,
   - forbidden overlay/transform/edit/event-writing action labels absent.
 - Production code unchanged in this pass; test hardening only.
+
+### Board-canvas alignment readiness QA closeout (current)
+- Claude Code audit verdict recorded: `PASS`.
+- `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` accepted as completed and scope-compliant.
+- Accepted QA state recorded:
+  - pass remained strictly test-only,
+  - production board-canvas code unchanged,
+  - no new UI feature or data-model behavior added,
+  - no transform computation or coordinate conversion added,
+  - no background photo helper/overlay/event-writing behavior added,
+  - combined-state readiness widget coverage accepted,
+  - readiness panel remains project/photo-level metadata across selection changes,
+  - raw `x/y` values remain hidden,
+  - forbidden alignment actions remain absent,
+  - validation suites passed.
+- Non-blocking note recorded:
+  - `ACTIVE_SCOPE_LOCK.md` pointer was stale and is aligned by this closeout.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

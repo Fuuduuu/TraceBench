@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code closeout accepted readiness QA hardening as test-only and scope-compliant, with stale ACTIVE_SCOPE_LOCK pointer aligned) |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS | docs/audit/BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS.md | completed (QA-only hardening: added combined-state readiness panel/widget coverage with inspector/measurement/visual-trace coexistence checks; production behavior unchanged) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code audit closeout accepted resolved nits and scope-compliant follow-up with no behavior expansion) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS.md | completed (narrow QA/polish follow-up: readiness-panel label casing normalized to `Reference pairs` and multi-alignment widget test coverage added without product behavior expansion) |

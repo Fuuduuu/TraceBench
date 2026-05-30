@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS`
+`BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
 
 ## Planned / Recommended
 
@@ -37,12 +37,16 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit returned `PASS`; follow-up remained narrow and scope-compliant with no product behavior expansion. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS | DOCS_SYNC | completed | Closeout records audit verdict `PASS`, accepts follow-up QA state, resolves prior nits, and aligns stale ACTIVE_SCOPE_LOCK pointer. |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS | QA_PASS | completed | Added broader board-canvas readiness test hardening for combined-state scenarios (selection + inspector + measurement + visual-trace + readiness alignments) while preserving read-only/no-transform/no-overlay/no-write boundaries and leaving production behavior unchanged. |
-| BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS | AUDIT_ONLY | recommended | Audit-only verification that readiness QA hardening stayed test-only, preserved boundaries, and did not introduce product-scope expansion. |
+| BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit returned `PASS`; readiness QA hardening remained test-only and boundary-safe with no product behavior expansion. |
+| BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | DOCS_SYNC | completed | Closeout records Claude Code `PASS`, accepts readiness QA state, aligns stale ACTIVE_SCOPE_LOCK pointer, and preserves all hard boundaries. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Forward scope-lock pass for any future alignment UI expansion after accepted readiness QA; keep explicit no-transform/no-overlay/no-write boundaries unless newly authorized. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | DOCS_SYNC | completed | Closed out Claude Code audit result (`PASS`) for readiness QA hardening; confirmed test-only scope, accepted combined-state coverage, and aligned scope-lock pointer. |
+| BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Audit confirmed readiness QA hardening stayed within test-only scope and preserved read-only/evidence boundaries. |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS | QA_PASS | completed | Broadened board-canvas readiness QA coverage with combined-state widget assertions for panel stability, project-level metadata semantics, safety copy retention, raw coordinate absence, and forbidden-action absence; production code unchanged. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS | DOCS_SYNC | completed | Closed out Claude Code audit result (`PASS`) for readiness-panel nits follow-up; accepted resolved nits, aligned scope lock pointers, and routed forward to readiness QA. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Audit confirmed follow-up stayed narrow: label casing normalized, multi-alignment test coverage added, no scope expansion or boundary regressions. |

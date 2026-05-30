@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS`
+`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only routing fixup to align active scope lock with post-`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS` queue/state routing.
+Docs-only audit closeout for `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS` after Claude Code review.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only routing fixup to align active scope lock with post-`PHOTO_ALIGNMENT_DA
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -54,7 +54,7 @@ Docs-only routing fixup to align active scope lock with post-`PHOTO_ALIGNMENT_DA
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_AUDIT_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS`
 
 ## Validate
 

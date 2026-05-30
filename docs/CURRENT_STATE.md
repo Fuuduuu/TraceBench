@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_AUDIT_PASS`
+- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS`
+- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -23,11 +23,16 @@ Branch: main
   - `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS` added test-only hardening for non-blocking Dart model audit nits:
     - dedicated `notes`-absent parsing/toJson omission coverage for `PhotoToBoardAlignmentFact`,
     - multi-item `photo_to_board_alignments` parse/round-trip ordering and point-preservation coverage.
+  - `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS` accepted Claude Code audit verdict `PASS` for the Dart QA hardening pass and confirmed scope compliance.
 - Accepted Dart parity behavior:
   - missing `photo_to_board_alignments` defaults to empty list,
   - JSON key parity is preserved,
   - alignment fields round-trip via `fromJson`/`toJson`,
   - `reference_points_photo` and `reference_points_board` are preserved exactly.
+  - dedicated `notes`-absent test and multi-item alignment parse/round-trip coverage are accepted with no production behavior changes.
+
+### Non-blocking note
+- One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.
 
 ### Still deferred
 - Flutter/UI alignment rendering.

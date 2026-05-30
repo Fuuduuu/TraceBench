@@ -129,6 +129,27 @@ void main() {
     sourceEventId: 'evt_alignment_001',
     status: 'user_confirmed_alignment',
   );
+  const readinessAlignmentTwo = PhotoToBoardAlignmentFact(
+    alignmentId: 'ALN1002',
+    sourcePhotoId: 'photo_bottom_002',
+    boardSide: 'bottom',
+    coordinateSpaceFrom: 'photo_local',
+    coordinateSpaceTo: 'board_normalized',
+    referencePointsPhoto: [
+      AlignmentPointFact(x: 654.321, y: 111.222),
+      AlignmentPointFact(x: 333.444, y: 555.666),
+      AlignmentPointFact(x: 777.888, y: 999.111),
+    ],
+    referencePointsBoard: [
+      AlignmentPointFact(x: 0.11, y: 0.22),
+      AlignmentPointFact(x: 0.33, y: 0.44),
+      AlignmentPointFact(x: 0.55, y: 0.66),
+    ],
+    transformType: 'affine',
+    alignmentQualityLabel: 'manual_reference_checked',
+    sourceEventId: 'evt_alignment_002',
+    status: 'user_confirmed_alignment',
+  );
 
   testWidgets('shows no-project state when project is not loaded',
       (tester) async {
@@ -401,7 +422,7 @@ void main() {
       find.textContaining('Coordinate space to: board_normalized'),
       findsOneWidget,
     );
-    expect(find.textContaining('reference pairs: 2'), findsOneWidget);
+    expect(find.textContaining('Reference pairs: 2'), findsOneWidget);
     expect(
       find.textContaining('declared type — not computed: similarity'),
       findsOneWidget,
@@ -424,6 +445,67 @@ void main() {
     expect(find.textContaining('789.123'), findsNothing);
     expect(find.textContaining('456.789'), findsNothing);
     expect(find.textContaining('321.987'), findsNothing);
+  });
+
+  testWidgets(
+      'readiness panel renders multiple alignments with stable ordering and no raw coordinates',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          photoToBoardAlignments: const [readinessAlignment, readinessAlignmentTwo],
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+
+    expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
+    expect(find.textContaining('Alignment ID: ALN1002'), findsOneWidget);
+    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(find.textContaining('Source photo ID: photo_bottom_002'), findsOneWidget);
+    expect(find.textContaining('Reference pairs: 2'), findsOneWidget);
+    expect(find.textContaining('Reference pairs: 3'), findsOneWidget);
+    expect(
+      find.textContaining('declared type — not computed: similarity'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('declared type — not computed: affine'),
+      findsOneWidget,
+    );
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.text('Stores alignment reference points only.'), findsOneWidget);
+    expect(
+      find.text('No photo-local evidence is rendered on board canvas.'),
+      findsOneWidget,
+    );
+    expect(find.text('No transform is computed.'), findsOneWidget);
+    expect(find.text('Not electrical proof.'), findsOneWidget);
+    expect(find.textContaining('123.456'), findsNothing);
+    expect(find.textContaining('789.123'), findsNothing);
+    expect(find.textContaining('654.321'), findsNothing);
+    expect(find.textContaining('111.222'), findsNothing);
+    expect(find.textContaining('999.111'), findsNothing);
+
+    const forbiddenActions = [
+      'Confirm alignment',
+      'Add reference point',
+      'Apply to schematic',
+      'Save',
+    ];
+    for (final action in forbiddenActions) {
+      expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
+    }
+
+    final firstAlignmentDy = tester
+        .getTopLeft(find.textContaining('Alignment ID: ALN1001'))
+        .dy;
+    final secondAlignmentDy = tester
+        .getTopLeft(find.textContaining('Alignment ID: ALN1002'))
+        .dy;
+    expect(firstAlignmentDy < secondAlignmentDy, isTrue);
   });
 
   testWidgets('readiness panel avoids layout overflow on constrained viewport',

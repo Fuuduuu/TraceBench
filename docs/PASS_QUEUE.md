@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS`
 
 ## Planned / Recommended
 
@@ -33,12 +33,14 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | FLUTTER_PASS | completed | Implemented narrow read-only readiness/status panel metadata on board canvas with declared-type wording, reference-pair count only, required safety copy, and overflow-safe constrained layout; no geometry/overlay/transform/event-writing behavior. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Claude Code audit accepted panel scope and layout fix; non-blocking nits recorded for label casing and additional multi-alignment test coverage. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS | DOCS_SYNC | completed | Closeout records `PASS_WITH_NITS`, accepts scope-compliant implementation state, aligns ACTIVE_SCOPE_LOCK routing, and preserves all no-write/no-transform/no-overlay boundaries. |
-| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS | FLUTTER_PASS / QA_PASS | recommended | Optional narrow followup for non-blocking nits: InspectorField label casing normalization and multi-alignment panel test hardening only. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS | QA_PASS / FLUTTER_TEST_PASS | completed | Narrow QA/polish follow-up completed: readiness-panel label casing normalized to `Reference pairs` and focused multi-alignment readiness-panel widget coverage added without scope expansion. |
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS | AUDIT_ONLY | recommended | Audit-only verification that nits follow-up stayed test/polish scoped, preserved safety copy/boundaries, and introduced no product-scope expansion. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS | QA_PASS / FLUTTER_TEST_PASS | completed | Resolved non-blocking readiness-panel nits via narrow polish/test hardening only: normalized InspectorField label casing to `Reference pairs` and added multi-alignment panel coverage for stable ordering, metadata visibility, no raw coordinate display, and no forbidden actions. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Closed out readiness panel after Claude Code audit; accepted metadata-only panel behavior and overflow fix, recorded non-blocking nits, and routed forward to optional nits followup. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | FLUTTER_PASS | completed | Added read-only project/photo-level photo-alignment readiness metadata panel using `KnownFacts.photoToBoardAlignments`, with required safety copy, count-only reference-point display, constrained overflow-safe layout, and no rendering/computation/edit/event-writing expansion. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock future readiness-panel implementation scope to metadata-only status display, forbid raw reference-point coordinates and any transform/render/edit paths, and route forward to implementation pass. |

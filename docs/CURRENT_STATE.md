@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -141,6 +141,19 @@ Branch: main
   - `reference pairs` label casing is inconsistent with other InspectorField labels,
   - no multi-alignment panel test yet,
   - ACTIVE_SCOPE_LOCK pointer was stale and is aligned by this closeout.
+
+### Board-canvas photo-alignment readiness panel nits followup (current)
+- Narrow QA/polish follow-up implemented for non-blocking audit nits.
+- Readiness-panel label casing normalized from `reference pairs` to `Reference pairs`.
+- Added focused multi-alignment readiness-panel widget coverage that verifies:
+  - two alignments render in stable KnownFacts order,
+  - both `alignment_id` and `source_photo_id` values are visible,
+  - per-alignment `Reference pairs` counts are visible,
+  - `declared type — not computed` wording remains visible,
+  - required safety copy remains visible,
+  - raw reference-point `x/y` values are not displayed,
+  - forbidden action labels remain absent.
+- No scope expansion: no schema/tool/materializer/Dart model/Project ZIP/runtime behavior changes.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

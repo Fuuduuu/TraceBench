@@ -442,7 +442,7 @@ class _PhotoAlignmentSummaryTile extends StatelessWidget {
                 value: alignment.coordinateSpaceTo,
               ),
               _InspectorField(
-                label: 'reference pairs',
+                label: 'Reference pairs',
                 value: referencePairCount.toString(),
               ),
               _InspectorField(

@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; Claude Code closeout accepted metadata-only readiness panel behavior, preserved hard boundaries, recorded non-blocking nits, and aligned ACTIVE_SCOPE_LOCK routing) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS.md | completed (FLUTTER_PASS implementation: read-only project/photo-level readiness metadata panel, allowed field subset only, reference-pair count only, declared transform-type wording, required safety copy, overflow-safe constrained layout, and no geometry/overlay/transform/event-writing expansion) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS.md | completed (docs-only scope lock: locked metadata-only readiness panel type, project/photo-level placement, allowed metadata fields, required safety copy, forbidden rendering/computation/edit surfaces, and forward routing to readiness-panel implementation pass) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_CLOSEOUT_PASS.md | completed (GPT Pro `PREFER_METADATA_ONLY_NEXT` + Claude `PASS` closeout accepted; next safe V1 UI direction locked as `READINESS_PANEL_ONLY`, routed to readiness-panel scope lock) |

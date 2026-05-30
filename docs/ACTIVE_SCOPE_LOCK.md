@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope lock for future `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`.
+Docs-only audit closeout for `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS` after Claude Code review.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only scope lock for future `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PA
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` (only if boundary wording needs alignment)
-- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS.md`
+- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -42,23 +41,22 @@ Docs-only scope lock for future `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PA
 - event-writing UI
 - AI proposal UI
 
-## Scope-lock boundary (locked)
+## Closeout boundary (locked)
 
-- readiness panel is read-only metadata/status only.
-- no canvas geometry, overlays, or photo rendering.
-- no raw reference-point x/y display.
-- no transformed coordinates or transform matrix/math output.
-- no mapped visual_trace/damage/suspect rendering.
-- no edit/confirm/save/apply controls.
-- no event-writing actions or reference-point editing.
-- panel is project/photo-level, not component-identity proof.
-- renderer writes nothing.
+- no schema/tool/materializer/Dart model changes.
+- no Project ZIP changes.
+- no transform computation or coordinate conversion.
+- no background photo helper.
+- no photo-local evidence board rendering.
+- no visual_trace/damage/suspect canvas geometry.
+- no event-writing/edit/confirm/save/apply UI.
 - no `board_graph.json`.
 - no `view_state.json`.
+- renderer writes nothing.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
 
 ## Validate
 

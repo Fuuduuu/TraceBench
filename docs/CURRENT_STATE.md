@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -99,7 +99,7 @@ Branch: main
   - background photo/image overlay rendering,
   - edit/confirm/save/apply/event-writing controls.
 
-### Board-canvas photo-alignment readiness panel pass (current)
+### Board-canvas photo-alignment readiness panel pass
 - Added read-only project/photo-level readiness metadata panel on board canvas.
 - Panel is shown when `KnownFacts.photoToBoardAlignments` is non-empty.
 - Panel uses constrained scrollable layout to avoid RenderFlex overflow on smaller viewports.
@@ -117,6 +117,30 @@ Branch: main
 - Required safety copy is present and non-actionable.
 - Raw reference-point `x/y` coordinates are not displayed.
 - No background photo helper, overlay rendering, transform computation, or event-writing behavior was added.
+
+### Board-canvas photo-alignment readiness panel closeout (current)
+- Claude Code audit verdict recorded: `PASS_WITH_NITS`.
+- Accepted implementation state:
+  - panel is read-only metadata-only UI,
+  - panel is project/photo-level and not per-component identity,
+  - panel appears when `KnownFacts.photoToBoardAlignments` is non-empty,
+  - panel is absent when no alignments exist,
+  - panel shows allowed metadata with reference pair count only,
+  - panel labels `transform_type` as `declared type — not computed`,
+  - panel shows required safety copy,
+  - `renderer writes: none` remains visible,
+  - overflow/layout fix accepted and RenderFlex overflow is gone.
+- Confirmed deferred/forbidden surfaces remain unchanged:
+  - no background photo helper,
+  - no transform/matrix computation,
+  - no photo-local evidence conversion,
+  - no visual_trace/damage/suspect canvas geometry,
+  - no event-writing/edit/confirm/save/apply UI,
+  - no `board_graph.json` / `view_state.json`.
+- Non-blocking nits recorded:
+  - `reference pairs` label casing is inconsistent with other InspectorField labels,
+  - no multi-alignment panel test yet,
+  - ACTIVE_SCOPE_LOCK pointer was stale and is aligned by this closeout.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

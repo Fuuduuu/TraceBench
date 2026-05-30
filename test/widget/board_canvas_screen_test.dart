@@ -508,6 +508,95 @@ void main() {
     expect(firstAlignmentDy < secondAlignmentDy, isTrue);
   });
 
+  testWidgets(
+      'readiness panel remains project-level metadata with selection, inspector, measurement, and visual trace state',
+      (tester) async {
+    const linkedMeasurement = MeasurementFact(
+      measurementId: 'M900',
+      mode: 'dc_voltage',
+      from: 'cmp_r101.1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 5.01,
+      unit: 'V',
+      originEventId: 'evt_m900',
+    );
+    const linkedTrace = VisualTraceFact(
+      traceId: 'tr_900',
+      photoId: 'ph_900',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_r101',
+      toComponent: 'cmp_u1',
+      fromPin: 'cmp_r101.1',
+      toPin: 'cmp_u1.2',
+      confidence: 'medium',
+      layer: 'top',
+      notes: 'route near edge',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+            ComponentFact(componentId: 'cmp_u1'),
+          ],
+          placements: const [boardPlacement, boardPlacementWidthHeight],
+          measurements: const [linkedMeasurement],
+          visualTraces: const [linkedTrace],
+          photoToBoardAlignments: const [readinessAlignment],
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
+    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(find.textContaining('Reference pairs: 2'), findsOneWidget);
+    expect(
+      find.textContaining('declared type — not computed: similarity'),
+      findsOneWidget,
+    );
+    expect(find.text('renderer writes: none'), findsOneWidget);
+
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+    expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.textContaining('Measurement ID: M900'), findsOneWidget);
+    expect(find.text('Visual trace — read-only metadata'), findsOneWidget);
+    expect(find.textContaining('Trace ID: tr_900'), findsOneWidget);
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
+
+    await _selectPlacement(tester, 'cmp_u1');
+
+    expect(find.textContaining('Component ID: cmp_u1'), findsOneWidget);
+    expect(find.text('No related measurements for selected component.'), findsOneWidget);
+    expect(find.textContaining('Trace ID: tr_900'), findsOneWidget);
+    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
+    expect(find.textContaining('123.456'), findsNothing);
+    expect(find.textContaining('789.123'), findsNothing);
+
+    const forbiddenActions = [
+      'Show photo',
+      'Render overlay',
+      'Compute transform',
+      'Confirm alignment',
+      'Add reference point',
+      'Apply to schematic',
+      'Save',
+    ];
+    for (final action in forbiddenActions) {
+      expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
+    }
+  });
+
   testWidgets('readiness panel avoids layout overflow on constrained viewport',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 520));

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS`
+- Current pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS`
+- Next recommended pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -165,6 +165,26 @@ Branch: main
   - No product-scope expansion and no runtime/schema/tool/model changes.
 - Non-blocking note recorded:
   - `ACTIVE_SCOPE_LOCK.md` pointer was stale and is aligned by this closeout.
+
+### Board-canvas alignment readiness QA pass (current)
+- Added broader board-canvas readiness QA coverage without product behavior changes.
+- New combined-state widget coverage verifies readiness panel stability with:
+  - board-normalized placements,
+  - selected component inspector,
+  - read-only measurement summary,
+  - read-only visual-trace metadata summary,
+  - `photoToBoardAlignments` present,
+  - `renderer writes: none` visible.
+- QA confirms readiness panel remains project/photo-level metadata:
+  - panel remains visible/consistent while switching selected components,
+  - alignment metadata does not collapse into selected-component identity semantics.
+- QA confirms alignment boundaries in combined state:
+  - allowed metadata and `Reference pairs` count visible,
+  - `declared type — not computed` retained,
+  - required safety copy retained,
+  - raw reference-point `x/y` values absent,
+  - forbidden overlay/transform/edit/event-writing action labels absent.
+- Production code unchanged in this pass; test hardening only.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS`
-- Next recommended pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS`
+- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`
+- Next recommended pass: `PHOTO_FLOW_SPEC_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -20,6 +20,7 @@ Branch: main
   - `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS` added test-only hardening for non-blocking materializer audit nits:
     - explicit no-side-effect assertions for `damage_regions` and `suspect_regions`,
     - direct schema-contract validation test for projected `photo_to_board_alignments` items.
+  - `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS` accepted Claude Code audit verdict `PASS` for the materializer QA hardening pass and confirmed no production behavior changes.
   - `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS` added test-only hardening for non-blocking Dart model audit nits:
     - dedicated `notes`-absent parsing/toJson omission coverage for `PhotoToBoardAlignmentFact`,
     - multi-item `photo_to_board_alignments` parse/round-trip ordering and point-preservation coverage.
@@ -30,6 +31,10 @@ Branch: main
   - alignment fields round-trip via `fromJson`/`toJson`,
   - `reference_points_photo` and `reference_points_board` are preserved exactly.
   - dedicated `notes`-absent test and multi-item alignment parse/round-trip coverage are accepted with no production behavior changes.
+- Accepted materializer QA hardening behavior:
+  - explicit `damage_regions == []` and `suspect_regions == []` no-side-effect assertions are in place,
+  - projected `photo_to_board_alignments` item contract validation against `known_facts` schema is in place,
+  - no remaining materializer QA test gaps were identified by the closeout audit.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

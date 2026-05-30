@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code audit accepted, test-only scope confirmed, explicit side-effect assertions and schema-contract coverage accepted) |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code audit accepted, test-only scope confirmed, non-blocking unrelated Flutter flake recorded) |
 | ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS | docs/audit/ACTIVE_SCOPE_LOCK_ROUTING_FIXUP_AFTER_DART_QA_PASS.md | completed (docs-only routing reconciliation: ACTIVE_SCOPE_LOCK aligned to current Dart QA hardening state and forward audit route) |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS | docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS.md | completed (test-only hardening: dedicated `notes`-absent alignment behavior coverage and multi-item alignment parse/round-trip preservation coverage) |

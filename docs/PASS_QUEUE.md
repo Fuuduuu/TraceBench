@@ -11,26 +11,27 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS`
+`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS`
+`PHOTO_FLOW_SPEC_AUDIT_PASS`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit returned `PASS`; findings accepted and closed out in `PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS`. |
-| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS | AUDIT_ONLY | recommended | Audit-only confirmation that the new QA hardening remains test-only and preserves materializer/projection boundaries. |
+| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit returned `PASS`; findings accepted and closed out in `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`. |
 | PHOTO_ALIGNMENT_DART_MODEL_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Audit was completed and accepted via pushed closeout flow; do not route backward to this pass. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Drift reset completed and ledger/pass pointers aligned after Dart model closeout. |
-| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | optional | Governance-first reconciliation if sequencing/risk requires it. |
+| PHOTO_FLOW_SPEC_AUDIT_PASS | AUDIT_ONLY | recommended | Forward governance-first reconciliation pass after both Dart/model and materializer QA hardening closeouts. |
 
 ## Completed sequence (compact ledger)
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS`) | Close out Claude Code audit for materializer QA hardening; accept explicit no-side-effect assertions and direct schema-contract validation coverage, and confirm no production behavior changes. |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS`) | Close out Claude Code audit for Dart-model QA hardening; accept test-only coverage additions, record unrelated widget-test flake as non-blocking, and route forward to the pending materializer QA audit. |
 | PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS | QA_PASS / FLUTTER_TEST_PASS | completed | Harden Dart KnownFacts alignment tests only: add dedicated `notes`-absent parse/toJson omission test and multi-item `photo_to_board_alignments` parse/round-trip preservation test. |
 | PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS | QA_PASS / TOOLS_TEST_PASS | completed | Harden materializer projection tests only: explicit no-side-effect assertions for `damage_regions`/`suspect_regions` and direct known_facts schema-contract validation test for projected `photo_to_board_alignments` items. |

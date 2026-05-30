@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS`
+`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only audit closeout for `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` after Claude Code review.
+Docs-only UI scope lock for the next safe board-canvas photo-alignment direction after the accepted readiness panel + QA chain.
 
 ## Allowed surfaces
 
@@ -14,7 +14,9 @@ Docs-only audit closeout for `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` after Cl
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` only if needed to clarify UI boundaries
+- `docs/PHOTO_FLOW_SPEC.md` only if needed to add a short pointer
+- `docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -38,25 +40,29 @@ Docs-only audit closeout for `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` after Cl
 - matrix computation
 - photo-local evidence conversion
 - visual_trace/damage/suspect canvas geometry
+- measurement canvas overlay
 - event-writing UI
+- reference-point editing
+- edit/confirm/save/apply controls
 - AI proposal UI
 
-## Closeout boundary (locked)
+## Scope boundary (locked)
 
 - no schema/tool/materializer/Dart model changes.
 - no Project ZIP changes.
-- no transform computation or coordinate conversion.
+- no transform computation/matrix math or coordinate conversion.
 - no background photo helper.
 - no photo-local evidence board rendering.
 - no visual_trace/damage/suspect canvas geometry.
-- no event-writing/edit/confirm/save/apply UI.
+- no measurement canvas overlay.
+- no event-writing/reference-point-edit/edit/confirm/save/apply UI.
 - no `board_graph.json`.
 - no `view_state.json`.
 - renderer writes nothing.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
+`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
 
 ## Validate
 

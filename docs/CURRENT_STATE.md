@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
-- Docs drift countdown: `5`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS`
+- Next recommended pass: `LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+- Docs drift countdown: `4`
 
 ## Handoff snapshot (compact)
 
@@ -186,7 +186,7 @@ Branch: main
   - forbidden overlay/transform/edit/event-writing action labels absent.
 - Production code unchanged in this pass; test hardening only.
 
-### Board-canvas alignment readiness QA closeout (current)
+### Board-canvas alignment readiness QA closeout (accepted)
 - Claude Code audit verdict recorded: `PASS`.
 - `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` accepted as completed and scope-compliant.
 - Accepted QA state recorded:
@@ -202,6 +202,34 @@ Branch: main
   - validation suites passed.
 - Non-blocking note recorded:
   - `ACTIVE_SCOPE_LOCK.md` pointer was stale and is aligned by this closeout.
+
+### Board-canvas photo-alignment UI scope lock (current)
+- Accepted baseline confirmed:
+  - photo-alignment schema/validator chain accepted,
+  - materializer projection accepted,
+  - known_facts schema support accepted,
+  - Dart KnownFacts support accepted,
+  - board-canvas readiness panel accepted,
+  - readiness panel QA and combined-state QA accepted,
+  - current board-canvas alignment UI support remains metadata-only.
+- V1 `photo alignment UI` meaning is locked to readiness/status metadata only:
+  - no transform computation or matrix math,
+  - no background photo helper,
+  - no photo-local evidence rendering or conversion,
+  - no visual_trace/damage/suspect board geometry rendering,
+  - no event-writing alignment workflow,
+  - no Project ZIP contract change.
+- Route options evaluated:
+  - `A. LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+  - `B. BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
+  - `C. BOARD_CANVAS_PHOTO_ALIGNMENT_METADATA_QA_PASS`
+  - `D. PHOTO_ALIGNMENT_TRANSFORM_COMPUTATION_SCOPE_AUDIT_PASS`
+  - `E. BOARD_CANVAS_BACKGROUND_PHOTO_HELPER_SCOPE_AUDIT_PASS`
+- Selected next route: `LIVE_LITE_SMOKE_TEST_PLAN_PASS` (conservative default).
+- Required stop gates locked:
+  - transform/background-photo/photo-local-rendering scope requires GPT Pro + Claude Code before any Codex implementation pass,
+  - event-writing UI requires separate scope lock + audit,
+  - Project ZIP contract changes require separate scope lock + audit.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS.md | completed (`PASS`; Claude Code audit closeout accepted resolved nits and scope-compliant follow-up with no behavior expansion) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS.md | completed (narrow QA/polish follow-up: readiness-panel label casing normalized to `Reference pairs` and multi-alignment widget test coverage added without product behavior expansion) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; Claude Code closeout accepted metadata-only readiness panel behavior, preserved hard boundaries, recorded non-blocking nits, and aligned ACTIVE_SCOPE_LOCK routing) |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS | docs/audit/BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS.md | completed (FLUTTER_PASS implementation: read-only project/photo-level readiness metadata panel, allowed field subset only, reference-pair count only, declared transform-type wording, required safety copy, overflow-safe constrained layout, and no geometry/overlay/transform/event-writing expansion) |

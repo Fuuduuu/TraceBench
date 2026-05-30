@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS`
-- Next recommended pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_CLOSEOUT_PASS`
+- Next recommended pass: `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -118,7 +118,7 @@ Branch: main
 - Raw reference-point `x/y` coordinates are not displayed.
 - No background photo helper, overlay rendering, transform computation, or event-writing behavior was added.
 
-### Board-canvas photo-alignment readiness panel closeout (current)
+### Board-canvas photo-alignment readiness panel closeout (accepted)
 - Claude Code audit verdict recorded: `PASS_WITH_NITS`.
 - Accepted implementation state:
   - panel is read-only metadata-only UI,
@@ -142,7 +142,7 @@ Branch: main
   - no multi-alignment panel test yet,
   - ACTIVE_SCOPE_LOCK pointer was stale and is aligned by this closeout.
 
-### Board-canvas photo-alignment readiness panel nits followup (current)
+### Board-canvas photo-alignment readiness panel nits followup (accepted)
 - Narrow QA/polish follow-up implemented for non-blocking audit nits.
 - Readiness-panel label casing normalized from `reference pairs` to `Reference pairs`.
 - Added focused multi-alignment readiness-panel widget coverage that verifies:
@@ -154,6 +154,17 @@ Branch: main
   - raw reference-point `x/y` values are not displayed,
   - forbidden action labels remain absent.
 - No scope expansion: no schema/tool/materializer/Dart model/Project ZIP/runtime behavior changes.
+
+### Board-canvas photo-alignment readiness panel nits followup closeout (current)
+- Claude Code audit verdict recorded: `PASS`.
+- `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS` accepted as completed and scope-compliant.
+- Accepted follow-up state recorded:
+  - `Reference pairs` label casing fix accepted.
+  - Multi-alignment readiness-panel widget test accepted.
+  - Audit-confirmed coverage includes multiple entries rendering, both alignment/source-photo IDs, per-entry reference-pair counts, stable ordering, retained `declared type — not computed` wording, required safety copy visibility, no raw `x/y` display, and no forbidden action labels.
+  - No product-scope expansion and no runtime/schema/tool/model changes.
+- Non-blocking note recorded:
+  - `ACTIVE_SCOPE_LOCK.md` pointer was stale and is aligned by this closeout.
 
 ### Board-canvas photo-alignment UI audit closeout
 - GPT Pro verdict recorded: `PREFER_METADATA_ONLY_NEXT`.

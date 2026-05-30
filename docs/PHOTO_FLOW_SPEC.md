@@ -1,40 +1,30 @@
+# PHOTO_FLOW_SPEC.md
 
-## 1. Photo-flow milestone scope
+## 1. Current accepted state
 
-First implementation pass after this:
-PHOTO_EVENT_SCHEMA_HARDENING_PASS
+Photo-flow alignment support is partially implemented and accepted at schema/validator/projection/model level.
 
-Scope of that future pass:
-- add $defs to `schemas/events.schema.json` for:
-  - `photo_added`
-  - `damage_region_marked`
-  - `suspect_region_marked`
-  - `visual_trace_added`
-- extend stdlib-only Python validator
-- extend materializer:
-  - `photos`
-  - `damage_regions`
-  - `suspect_regions`
-  - `visual_traces`
-- add 2 Pelle PV20 sample events:
-  - `evt_000014` `photo_added`
-  - `evt_000015` `damage_region_marked`
+Accepted implementation chain:
+- `photo_to_board_alignment_confirmed` schema + validator support is implemented and accepted.
+- `known_facts.photo_to_board_alignments` materializer projection is implemented and accepted.
+- `known_facts` schema support for `photo_to_board_alignments` is implemented and accepted.
+- Dart KnownFacts support for `photoToBoardAlignments` is implemented and accepted.
+- QA hardening for materializer and Dart model coverage is implemented and accepted.
 
-No Flutter code in that pass.
-No camera.
-No OCR/CV.
-No AI.
+This is canonical event/projection/model support only.
+Board-canvas alignment UI/rendering remains deferred.
 
-## 2. Allowed event types in V1 photo-flow
+## 2. Event family status
 
-| event_type | allowed in next schema pass | status | reason |
-|---|---|---|---|
-| photo_added | allowed | allowed | Required to store photo references and capture metadata. |
-| damage_region_marked | allowed | allowed | Required to record visual damage context. |
-| suspect_region_marked | allowed | allowed | Required to record visual suspect context. |
-| visual_trace_added | allowed | allowed, visual evidence only | Must remain non-electrical hypothesis until measured. |
-| photo_reference_points_set | deferred | deferred | Requires additional point-reference contract. |
-| photo_layer_aligned | deferred | deferred | Requires image alignment contract and evidence policy. |
+| event_type | status | role |
+|---|---|---|
+| photo_added | implemented/accepted | Canonical photo reference event for photo evidence metadata. |
+| damage_region_marked | implemented/accepted | Canonical visual damage-region metadata event (visual evidence only). |
+| suspect_region_marked | implemented/accepted | Canonical visual suspect-region metadata event (visual evidence only). |
+| visual_trace_added | implemented/accepted | Canonical visual trace metadata event (visual evidence only; not an electrical net). |
+| photo_to_board_alignment_confirmed | implemented/accepted | Canonical user-confirmed photo-local -> board-normalized alignment event. |
+| photo_reference_points_set | reserved/deferred placeholder | Placeholder only; unsafe for writer usage until separately formalized end-to-end. |
+| photo_layer_aligned | reserved/deferred placeholder | Placeholder only; unsafe for writer usage until separately formalized end-to-end. |
 
 ## 3. photo_added payload spec
 
@@ -182,6 +172,32 @@ Materializer:
 - `known_facts.visual_traces` list.
 - Do not add visual traces to `known_facts.nets`.
 
+## 6.1 photo_to_board_alignment_confirmed payload direction (implemented)
+
+Required payload fields:
+- `alignment_id`
+- `source_photo_id`
+- `board_side`
+- `coordinate_space_from`
+- `coordinate_space_to`
+- `reference_points_photo`
+- `reference_points_board`
+- `transform_type`
+- `alignment_quality_label`
+
+Optional:
+- `notes`
+
+Canonical constraints:
+- `alignment_id` pattern: `^ALN[0-9]+$`
+- `coordinate_space_from == photo_local`
+- `coordinate_space_to == board_normalized`
+- `transform_type` enum: `similarity | affine`
+- `actor.type == user` required for accepted canonical alignment event
+- `source_photo_id` must reference prior accepted `photo_added`
+- `graph_layout` is rejected for canonical alignment coordinate-space roles
+- forbidden identity/net/measurement/fault confirmation fields are rejected
+
 ## 7. Evidence boundary rules
 
 - `photo_added`/`damage_region_marked`/`suspect_region_marked`/`visual_trace_added` are **visual context** only.
@@ -194,6 +210,14 @@ Rules:
 - `suspect_region_marked` may not affect fault probability in V1.
 - `visual_trace_added` may not auto-promote to `net_connection_confirmed`.
 - no hidden-layer inference from photo evidence.
+- `photo_to_board_alignment_confirmed` is geometric alignment evidence only:
+  - not component identity confirmation,
+  - not pin mapping confirmation,
+  - not net confirmation,
+  - not measurement confirmation,
+  - not fault proof.
+- AI transform proposals are not canonical truth.
+- Renderer/view code writes nothing.
 
 ## 8. Capture modes
 
@@ -224,244 +248,81 @@ Rules:
 - `sha256` optional
 - EXIF not processed in V1
 - `exif_stripped` records user/tool intent
-- `known_facts.json` will later include:
+- `known_facts.json` includes projection families for:
   - `photos`
   - `damage_regions`
   - `suspect_regions`
   - `visual_traces`
+  - `photo_to_board_alignments`
 - `customer_report.md` may mention `photo_id` as text only
 
 No Project ZIP tooling change in this docs-only pass.
+No `board_graph.json` or `view_state.json` artifacts.
 
 ## 10. Flutter/UI implications
 
-No Flutter changes in `PHOTO_EVENT_SCHEMA_HARDENING_PASS`.
+No board-canvas photo alignment UI is implemented in current accepted state.
+No background photo helper is implemented.
+No transform matrix/homography computation is implemented.
+No photo-local evidence geometry is rendered on board canvas.
 
-Future `FLUTTER_PHOTO_LIST_PASS` may add:
-- read-only Photos tab
-- photo mode label in beginner mode
-- `photo_id` visible only in advanced mode
-- damage region count only, no coordinate overlay
-- no camera
-- no file picker for photos yet
-- no OCR/CV
+## 11. Test and audit evidence pointers
 
-## 11. Pelle PV20 sample expansion for future schema pass
-
-Future `PHOTO_EVENT_SCHEMA_HARDENING_PASS` should add:
-
-`evt_000014`:
-- `event_type`: `photo_added`
-- payload:
-  - `photo_id`: `photo_top_backlight_001`
-  - `mode`: `backlight`
-  - `path`: `photos/top_backlight_001.jpg`
-  - `layer`: `top`
-  - `exif_stripped`: `null`
-  - `notes`: `Backlight foto enne remonti`
-
-`evt_000015`:
-- `event_type`: `damage_region_marked`
-- payload:
-  - `region_id`: `DMG001`
-  - `photo_id`: `photo_top_backlight_001`
-  - `bbox`:
-    - `x`: `120`
-    - `y`: `85`
-    - `width`: `45`
-    - `height`: `30`
-  - `damage_type`: `burn`
-  - `severity`: `moderate`
-  - `notes`: `Põletuslaik Q2 piirkonnas`
-
-Do not add actual photo files.
-Do not add `visual_trace_added` yet.
-Do not add `suspect_region_marked` yet.
-
-## 12. Tests required for PHOTO_EVENT_SCHEMA_HARDENING_PASS
-
-Validator tests:
-- `test_photo_added_valid_passes`
-- `test_photo_added_ai_actor_rejected`
-- `test_photo_added_invalid_path_rejected`
-- `test_damage_region_requires_photo_id_cross_reference`
-- `test_damage_region_unknown_photo_id_rejected`
-- `test_visual_trace_requires_photo_id`
-- `test_visual_trace_not_added_to_nets_in_materializer`
-
-Materializer tests:
-- `test_photos_list_in_known_facts`
-- `test_damage_regions_in_known_facts`
-- `test_visual_trace_evidence_type_is_visual_trace`
-- `test_visual_trace_not_in_nets_list`
-
-Schema sample tests:
-- `test_valid_photo_added_sample_validates`
-- `test_valid_damage_region_sample_validates`
+Authoritative implementation and coverage evidence:
+- `tests/test_validate_events_jsonl.py`
+- `tests/test_materialize_known_facts.py`
+- `test/unit/known_facts_parsing_test.dart`
+- `docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_EVENT_SCHEMA_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_PASS.md`
+- `docs/audit/PHOTO_ALIGNMENT_DART_MODEL_QA_TEST_HARDENING_CLOSEOUT_PASS.md`
 
 ## 13. Deferred
 
-- `photo_reference_points_set`
-- `photo_layer_aligned`
+- `photo_reference_points_set` placeholder formalization
+- `photo_layer_aligned` placeholder formalization
 - freeform polygon regions
 - `darkfield` / `cross_polarized` / `uv` / `thermal` modes
 - Flutter camera capture
-- EXIF stripping
-- photo file import via file_picker
-- visual trace overlay
-- damage/suspect overlays
-- real photo files in sample
+- EXIF stripping pipeline behavior
+- photo file import via file picker
+- board-canvas photo alignment UI
+- background photo helper
+- transform matrix computation/homography output
+- photo-local evidence conversion onto board canvas
+- visual_trace canvas geometry rendering
+- damage/suspect canvas geometry rendering
+- Project ZIP contract changes
 
-## 14. Photo alignment data-model scope-lock direction (no implementation in this pass)
+## 14. Canonical owners (implemented state)
 
-Status source: `PHOTO_ALIGNMENT_DATA_MODEL_SCOPE_LOCK_PASS` (docs-only).
+- Event schema + payload contract:
+  - `schemas/events.schema.json`
+- Event semantic validation:
+  - `tools/validate_events_jsonl.py`
+- Materialized projection:
+  - `tools/materialize_known_facts.py`
+- known_facts schema contract:
+  - `schemas/known_facts.schema.json`
+- Dart KnownFacts projection model:
+  - `lib/shared/models/known_facts.dart`
+- Audit and acceptance evidence:
+  - `docs/audit/*.md`
 
-### 14.1 Placeholder event policy
+## 15. Dart model safety warning
 
-- `photo_reference_points_set` and `photo_layer_aligned` remain placeholder event names only.
-- They are unsafe for writer usage until accepted scope locks exist for:
-  - event schema payload semantics,
-  - validator semantics,
-  - materializer projection,
-  - tests.
-- Placeholder pass-through is acceptable only while no writer emits accepted events for these families.
+Dart alignment model support stores alignment reference-point data only.
 
-### 14.2 Canonical vs volatile alignment
+It does not compute:
+- transform matrices,
+- similarity/affine solutions,
+- homographies,
+- board-canvas overlay geometry.
 
-- If photo-to-board alignment affects board-canvas evidence positioning, report/export output, or repeatable project state, alignment must be canonical:
-  - event-backed,
-  - human-confirmed,
-  - materialized.
-- The following are not canonical truth:
-  - hidden UI transform state,
-  - local cache truth,
-  - `view_state.json`,
-  - `board_graph.json`,
-  - AI-only transform proposals,
-  - background-photo drag state.
-- A future volatile alignment preview may exist only if explicitly non-canonical, not saved/materialized/exported/reported, and reset on reload.
-
-### 14.3 Candidate future canonical event direction (not implemented)
-
-Candidate event family direction:
-
-- `photo_to_board_alignment_confirmed`
-
-Minimum payload direction:
-
-- `alignment_id`
-- `source_photo_id`
-- `board_side`
-- `coordinate_space_from = photo_local`
-- `coordinate_space_to = board_normalized`
-- `reference_points_photo[]`
-- `reference_points_board[]`
-- `transform_type`
-- `alignment_quality_label`
-- `notes` (optional)
-
-Rule direction:
-
-- `actor.type` must be `user` for canonical alignment.
-- AI actor is rejected for canonical alignment.
-- `source_photo_id` must reference prior accepted `photo_added`.
-- `graph_layout` is rejected as canonical source/target coordinate space.
-- Alignment transform is geometry mapping only; it does not confirm identity/net/measurement/fault.
-- Future lifecycle must support supersession/stale-awareness.
-
-### 14.4 Sequencing direction
-
-Recommended sequence before any implementation:
-
-1. `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS`
-2. `PHOTO_ALIGNMENT_VALIDATOR_SCOPE_LOCK_PASS`
-3. `PHOTO_ALIGNMENT_MATERIALIZER_SCOPE_LOCK_PASS`
-4. `PHOTO_ALIGNMENT_DART_MODEL_SCOPE_LOCK_PASS`
-5. only later: board-canvas photo helper / photo-evidence rendering scope locks.
-
-## 15. Photo alignment event-schema scope-lock direction (no schema implementation in this pass)
-
-Status source: `PHOTO_ALIGNMENT_EVENT_SCHEMA_SCOPE_LOCK_PASS` (docs-only).
-
-### 15.1 Event family decision
-
-Locked future schema direction:
-- introduce canonical alignment event family `photo_to_board_alignment_confirmed`.
-
-Placeholder policy remains:
-- `photo_reference_points_set` and `photo_layer_aligned` stay reserved/deferred and unsafe for writer usage until separately formalized.
-- no writer/UI should emit placeholder families while they are undefined.
-
-### 15.2 Minimum future payload direction
-
-Required fields:
-- `alignment_id`
-- `source_photo_id`
-- `board_side`
-- `coordinate_space_from`
-- `coordinate_space_to`
-- `reference_points_photo`
-- `reference_points_board`
-- `transform_type`
-- `alignment_quality_label`
-
-Optional:
-- `notes`
-
-Hard value rules:
-- `coordinate_space_from == photo_local`
-- `coordinate_space_to == board_normalized`
-- `graph_layout` rejected
-- `alignment_quality_label` is descriptive text (not canonical numeric certainty)
-- avoid canonical numeric `confidence_score` field in first schema direction
-
-### 15.3 Reference-point structure direction
-
-`reference_points_photo`:
-- list of `{x, y}` photo-local points tied to `source_photo_id`.
-
-`reference_points_board`:
-- list of `{x, y}` board-normalized points with x/y in `0..1`.
-
-Rules:
-- equal photo/board point-list lengths required.
-- no hidden point inference.
-- no AI-generated point canonicalization.
-- reference points are spatial-alignment evidence only, not identity/net/measurement/fault evidence.
-
-### 15.4 Transform-type direction
-
-Candidate first-direction enum:
-- `similarity`
-- `affine`
-
-Deferred in first direction:
-- `homography_candidate`
-- freeform/manual/nonlinear transforms
-
-Future schema/validator direction must enforce transform-specific minimum pairs:
-- `similarity >= 2`
-- `affine >= 3`
-
-### 15.5 Actor/status/source-photo direction
-
-- canonical alignment requires `actor.type=user`.
-- AI actor rejected.
-- `system/import` actor rejected unless separately scoped in migration/import pass.
-- accepted status required to materialize.
-- `source_photo_id` must reference prior accepted `photo_added`.
-
-### 15.6 Forbidden confirmation payload direction
-
-Future alignment payload must not include identity/net/measurement/fault/proposal confirmation fields, including equivalents of:
-- `net_id`
-- `measurement_id`
-- `fault_id`
-- `component_identity`
-- `identity_status`
-- `ai_proposal_id`
-- `proposal_status`
-- `confidence_score`
-- `confirmed_net`
-- `confirmed_fault`
-- `repair_conclusion`
+It does not convert photo-local evidence into board-canvas rendered evidence.

@@ -2,19 +2,20 @@
 
 ## Current pass
 
-`PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`
+`PHOTO_FLOW_SPEC_FIXUP_PASS`
 
 ## Goal
 
-Docs-only audit closeout for `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PASS` after Claude Code review.
+Docs-only `PHOTO_FLOW_SPEC.md` reconciliation to current accepted photo-alignment schema -> materializer -> Dart-model -> QA state.
 
 ## Allowed surfaces
 
+- `docs/PHOTO_FLOW_SPEC.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS.md`
+- `docs/audit/PHOTO_FLOW_SPEC_FIXUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -40,13 +41,14 @@ Docs-only audit closeout for `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PAS
 - background photo helper
 - transform computation
 
-## Closeout boundary (locked)
+## Fixup boundary (locked)
 
 - no event/schema/validator changes
 - no materializer changes
 - no Dart/Flutter changes
 - no Project ZIP changes
 - no photo-local evidence rendering
+- no transform matrix computation
 - no AI proposal canonicalization
 - no raw known_facts JSON parsing in renderer
 - no `board_graph.json`
@@ -54,7 +56,7 @@ Docs-only audit closeout for `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_PAS
 
 ## Next recommended pass
 
-`PHOTO_FLOW_SPEC_AUDIT_PASS`
+`PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`
 
 ## Validate
 

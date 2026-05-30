@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `PHOTO_ALIGNMENT_MATERIALIZER_QA_TEST_HARDENING_CLOSEOUT_PASS`
-- Next recommended pass: `PHOTO_FLOW_SPEC_AUDIT_PASS`
+- Current pass: `PHOTO_FLOW_SPEC_FIXUP_PASS`
+- Next recommended pass: `PHOTO_FLOW_SPEC_FIXUP_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
@@ -35,6 +35,7 @@ Branch: main
   - explicit `damage_regions == []` and `suspect_regions == []` no-side-effect assertions are in place,
   - projected `photo_to_board_alignments` item contract validation against `known_facts` schema is in place,
   - no remaining materializer QA test gaps were identified by the closeout audit.
+- `PHOTO_FLOW_SPEC_FIXUP_PASS` updates `PHOTO_FLOW_SPEC.md` to the accepted implemented state for photo alignment schema/validator/materializer/known_facts/Dart model/QA chain and removes stale pre-implementation wording.
 
 ### Non-blocking note
 - One unrelated intermittent Flutter widget flake was observed in `measurement_write_screen_test.dart`; it is unrelated to photo-alignment/KnownFacts QA hardening and requires no fix in this closeout.

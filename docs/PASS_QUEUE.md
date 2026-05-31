@@ -11,23 +11,23 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
-`3`
+`2`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS | DOCS_SYNC | current | Records accepted/pushed ZIP exclusion implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirms blocker closure, preserves Model-B boundaries, and routes forward to viewer implementation. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | FLUTTER_PASS | recommended | Previously blocked viewer pass is now unblocked by accepted ZIP exclusion hardening; proceed under locked Model-B local-sidecar/non-canonical boundaries. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS | AUDIT_ONLY | planned | Post-implementation scope/boundary audit for sidecar viewer pass; confirm no drift into events/known_facts/ZIP/overlay/AI surfaces. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | V1_1_IMPLEMENTATION_PASS | current | Narrow Model-B implementation completed: local picker import (png/jpg/jpeg/webp), sidecar copy to `.tracebench_local/reference_images/`, metadata ledger at `.tracebench_local/reference_images.json`, and read-only viewer with explicit non-evidence/non-ZIP/non-AI safety copy. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Post-implementation audit: confirm scope/boundary compliance (no ZIP contract changes, no canonical-surface writes, no overlay/AI/transform drift). |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded accepted/pushed ZIP exclusion implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirmed blocker closure, and routed forward to viewer implementation. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code post-audit accepted from context: exclusion-only scope held, tests passed, no contract expansion, no boundary drift. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS | TOOLS_PASS | completed | Narrow tooling hardening implemented and accepted/pushed: `.tracebench_local` export exclusion + validate/import symmetry + targeted tests + ZIP spec wording update. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked narrow ZIP-hardening scope to exclude `.tracebench_local` from Project ZIP export before sidecar viewer implementation resumes; preserved Model-B boundaries and no contract expansion. |

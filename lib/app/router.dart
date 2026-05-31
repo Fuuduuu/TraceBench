@@ -13,6 +13,7 @@ import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
 import '../features/photos/screens/photo_list_screen.dart';
+import '../features/reference_images/screens/reference_images_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
 import '../features/measurements/screens/measurement_record_screen.dart';
 
@@ -86,6 +87,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'photos',
                 name: 'photos',
                 builder: (_, __) => const PhotoListScreen(),
+              ),
+              GoRoute(
+                path: 'reference-images',
+                name: 'reference-images',
+                builder: (_, __) => const ReferenceImagesScreen(),
               ),
               GoRoute(
                 path: 'report',

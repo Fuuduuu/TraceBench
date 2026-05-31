@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
-- Docs drift countdown: `3`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS`
+- Docs drift countdown: `2`
 
 ## Handoff snapshot (bounded)
 
@@ -20,10 +20,9 @@ Branch: `main`
   - project-associated local sidecar files + non-canonical sidecar metadata,
   - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
 - Viewer implementation status:
-  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` was blocked before implementation,
-  - blocker was confirmed by audit: `.tracebench_local` was not excluded by ZIP export,
-  - ZIP exclusion hardening and post-audit acceptance are now complete,
-  - viewer pass is unblocked and is the next recommended implementation pass.
+  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` implementation is now completed in a narrow Model-B scope,
+  - local sidecar import/view flow is available via Project overview,
+  - reference images remain non-canonical and outside ZIP/events/known_facts/materializer/evidence rendering.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -45,6 +44,18 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`:
+  - local sidecar reference image viewer implemented,
+  - import supports local picker with png/jpg/jpeg/webp allowlist,
+  - files are copied to `.tracebench_local/reference_images/`,
+  - metadata ledger is maintained at `.tracebench_local/reference_images.json`,
+  - viewer remains read-only with explicit safety copy:
+    - reference only,
+    - not evidence,
+    - not included in Project ZIP,
+    - not used by AI.
+  - no Project ZIP contract changes,
+  - no events/known_facts/schema/materializer changes.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`:
   - closeout recorded for accepted/pushed implementation,
   - Claude Code post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,

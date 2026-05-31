@@ -107,6 +107,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 child: const Text('Foto tõendid'),
               ),
               ElevatedButton(
+                key: const ValueKey('overview-reference-images-button'),
+                onPressed: () => context.go('/project/reference-images'),
+                child: const Text('Reference Images'),
+              ),
+              ElevatedButton(
                 onPressed: () => context.go('/project/events'),
                 child: const Text('Sündmused'),
               ),

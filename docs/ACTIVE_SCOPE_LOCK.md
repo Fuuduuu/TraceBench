@@ -2,25 +2,30 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 
 ## Goal
 
-Docs-only closeout of accepted ZIP exclusion hardening and accepted post-audit result.
+Narrow Model-B implementation of local sidecar reference-image import and read-only viewer.
 
 ## Allowed surfaces
 
+- `lib/features/reference_images/**`
+- `lib/app/router.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/reference_images_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
 - `tools/**`
-- `lib/**`
+- `lib/**` (except `lib/features/reference_images/**`, `lib/app/router.dart`, and `lib/features/project/screens/project_overview_screen.dart`)
 - `test/**`
 - `tests/**`
 - `samples/**`
@@ -31,7 +36,6 @@ Docs-only closeout of accepted ZIP exclusion hardening and accepted post-audit r
 - `board_graph.json`
 - `view_state.json`
 - Project ZIP tooling/files
-- Flutter/runtime implementation
 - schema/materializer semantics changes
 - fixture/sample implementation or edits
 - generated data or artifact changes
@@ -45,19 +49,23 @@ Docs-only closeout of accepted ZIP exclusion hardening and accepted post-audit r
 
 ## Scope boundary (locked)
 
-- Docs-only closeout pass.
-- No code/tool/test/schema/materializer/runtime changes.
+- Narrow viewer implementation pass.
+- No Project ZIP tooling or contract changes.
+- No events/known_facts/schema/materializer changes.
+- No AI/OCR/CV/detection/proposal behavior.
+- No Board Canvas overlay or transform behavior.
 - No fixture/sample/asset/generated-artifact changes.
-- No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - No tag or release-object mutation.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS`
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
+- `py -3 -m unittest tests.test_project_zip`
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
 - `git diff --name-only`
 - `git status --short --branch`

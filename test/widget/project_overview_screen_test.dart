@@ -109,8 +109,13 @@ void main() {
     expect(find.text('Board graph'), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('Foto tõendid'), findsOneWidget);
+    expect(find.text('Reference Images'), findsOneWidget);
     expect(
         find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('overview-reference-images-button')),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -139,8 +144,13 @@ void main() {
       find.byKey(const ValueKey('overview-board-canvas-button')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('overview-reference-images-button')),
+      findsOneWidget,
+    );
     expect(find.text('Board graph'), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
+    expect(find.text('Reference Images'), findsOneWidget);
 
     const forbiddenActions = [
       'Confirm',
@@ -164,5 +174,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets(
+      'overview has Reference Images action and navigates to Reference Images screen',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final referenceImagesAction = find.byKey(
+      const ValueKey('overview-reference-images-button'),
+    );
+    expect(referenceImagesAction, findsOneWidget);
+    await tester.ensureVisible(referenceImagesAction);
+    await tester.pumpAndSettle();
+    await tester.tap(referenceImagesAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Reference Images'), findsAtLeastNWidgets(1));
+    expect(find.text('reference only'), findsOneWidget);
   });
 }

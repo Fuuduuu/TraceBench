@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
 
 ## Next recommended pass
 
@@ -19,16 +19,21 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Docs drift countdown (canonical)
 
-`2`
+`1`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action, defines exact commands/expectations, and preserves no-tag/no-surface-change boundaries in this pass. |
+| REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | DOCS_SYNC | current | Records reference-image-as-AI-context future-work direction while preserving V1 RC boundaries and keeping release-tag routing unchanged. |
 | V1_RELEASE_TAG_VERIFICATION_PASS | DOCS_SYNC / QA_RUN | recommended | Records post-user-tag verification: annotated tag existence/target correctness, clean tree, and unchanged protected boundaries/artifacts. |
 | V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | queued-next | Route roadmap decision only after RC tag verification so V1 baseline remains fixed. |
+| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action with exact commands and verification expectations. |
 | V1_FINAL_SMOKE_CHECK_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Final manual V1 RC smoke verification recorded as `PASS`; Board Canvas, read-only metadata panels, safety copy, readiness metadata, and forbidden-behavior absence confirmed on positive fixture. |
+| REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | deferred V1.1 candidate | Future scope lock for reference-only image import/viewer metadata contract; no canonical-fact creation. |
+| REFERENCE_IMAGE_AI_CONTEXT_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred V2 candidate | Future audit for AI proposal workflow that can consume reference images as context while keeping outputs non-canonical until human confirmation. |
+| BOARD_CANVAS_REFERENCE_IMAGE_LAYER_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk V2 | Future high-risk scope audit for optional board-canvas reference-image layer; requires GPT Pro + Claude Code gate before implementation. |
+| AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS | DOCS_SYNC / RESEARCH_SCOPE | deferred V2+ research | Future benchmark design for reference-image-driven AI layout proposals (top-1/top-3 accuracy) with unconfirmed proposal outputs only. |
 | V1_RELEASE_READINESS_REPO_AUDIT_PASS | AUDIT_ONLY | completed (`READY_WITH_NITS`) | Repo-local release-readiness audit accepted with no true blockers and non-blocking cleanup/tagging/tooling nits. |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded GPT Pro + Claude readiness verdicts (`READY_WITH_NITS`), readiness estimate (94%), no true blockers, and V1 release-checkpointable status. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |

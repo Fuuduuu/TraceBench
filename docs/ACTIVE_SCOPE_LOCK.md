@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
 
 ## Goal
 
-Docs-only V1 release-candidate tag workflow scope lock.
+Docs-only future-work roadmap note for reference-image AI context direction.
 
 ## Allowed surfaces
 
@@ -14,8 +14,8 @@ Docs-only V1 release-candidate tag workflow scope lock.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/V1_RELEASE_CANDIDATE_TAG_SCOPE.md`
-- `docs/audit/V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS.md`
+- `docs/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK.md`
+- `docs/audit/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,15 +47,16 @@ Docs-only V1 release-candidate tag workflow scope lock.
 
 ## Scope boundary (locked)
 
-- Docs-only scope lock for post-smoke V1 release-candidate tag workflow.
+- Docs-only future-work/roadmap recording pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
-- No tag creation/push in this pass (user action only in later flow).
+- No tag creation/push in this pass.
 - Renderer/view remains no-write.
 - No visual evidence geometry expansion.
 - No transform/photo-layer behavior expansion.
+- Reference images remain non-canonical context only.
 
 ## Next recommended pass
 

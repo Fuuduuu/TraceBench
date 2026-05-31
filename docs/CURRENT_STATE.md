@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+- Current pass: `REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
 - Next recommended pass: `V1_RELEASE_TAG_VERIFICATION_PASS`
-- Docs drift countdown: `2`
+- Docs drift countdown: `1`
 
 ## Handoff snapshot (compact)
 
@@ -287,7 +287,7 @@ Branch: main
 - V1 RC scope boundaries remain intact after final smoke verification.
 - Route next to `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
 
-### V1 release-candidate tag workflow scope lock (current)
+### V1 release-candidate tag workflow scope lock (accepted)
 - Purpose locked: define safe, reproducible V1 RC tag workflow before user creates release-candidate tag.
 - Fixed tag contract:
   - exact tag name `v1.0.0-rc1`,
@@ -304,6 +304,20 @@ Branch: main
 - Ordering rule reaffirmed:
   - roadmap decision must not precede RC tag,
   - V2 planning must build on fixed/tagged V1 RC baseline.
+
+### Reference-image AI context future-work note (current)
+- Future-work note recorded in `docs/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK.md`.
+- This note does not change V1 RC scope and does not introduce implementation.
+- Reference images are explicitly non-canonical context:
+  - they do not create facts,
+  - they do not confirm identity/pins/nets/measurements/faults/placements,
+  - AI outputs from reference images remain unconfirmed proposals until human-confirmed accepted events.
+- Roadmap placement locked without disrupting release flow:
+  - safe V1.1 candidate: `REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS` (reference-only import/viewer),
+  - V2 candidate: `REFERENCE_IMAGE_AI_CONTEXT_SCOPE_AUDIT_PASS`,
+  - high-risk V2 candidate: `BOARD_CANVAS_REFERENCE_IMAGE_LAYER_SCOPE_AUDIT_PASS` (gated),
+  - V2+ research: `AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS`.
+- Release route preserved: next remains `V1_RELEASE_TAG_VERIFICATION_PASS`, then `V1_TO_V2_ROADMAP_DECISION_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

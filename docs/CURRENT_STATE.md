@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -151,7 +151,7 @@ Branch: main
 - Next route is implementation-only within the locked polish boundary:
   - `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`.
 
-### Read-only visual polish V1 implementation (current)
+### Read-only visual polish V1 implementation (accepted)
 - Board Canvas visual shell polished within read-only boundaries:
   - three-zone responsive hierarchy (selector / canvas / metadata stack),
   - dark board substrate direction with subtle decorative grid/outline,
@@ -172,6 +172,19 @@ Branch: main
   - visual-trace and readiness non-electrical-proof copy.
 - No transform/photo/overlay/event-writing scope was added.
 - Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`.
+
+### Read-only visual polish V1 QA hardening (current)
+- QA hardening stayed test-only and added focused coverage for audit nits:
+  - explicit assertions for:
+    - `template family — not a part identity`
+    - `identity not confirmed in this projection`
+  - strengthened boundary source guards with targeted forbidden evidence-geometry markers:
+    - visual_trace/damage/suspect/measurement/photo-local path or draw helpers
+    - while keeping decorative board/grid drawing allowed.
+- No production behavior changes were introduced.
+- No schema/tool/materializer/Dart/ZIP/runtime surface changes.
+- Hardcoded board substrate color remains an accepted non-blocking V1 nit.
+- Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

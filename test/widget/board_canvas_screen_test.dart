@@ -359,6 +359,23 @@ void main() {
     );
   });
 
+  testWidgets('inspector shows non-identity template and identity-copy safeguards',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(find.text('template family — not a part identity'), findsOneWidget);
+    expect(find.text('identity not confirmed in this projection'), findsOneWidget);
+  });
+
   testWidgets('readiness panel appears when photoToBoardAlignments is non-empty',
       (tester) async {
     await tester.pumpWidget(
@@ -1363,6 +1380,18 @@ void main() {
     expect(source, isNot(contains('measurementOverlay')));
     expect(source, isNot(contains('measurementAnchor')));
     expect(source, isNot(contains('measurementCoordinate')));
+    expect(source, isNot(contains('visualTracePath')));
+    expect(source, isNot(contains('damagePath')));
+    expect(source, isNot(contains('suspectPath')));
+    expect(source, isNot(contains('measurementPath')));
+    expect(source, isNot(contains('photoLocalPath')));
+    expect(source, isNot(contains('drawVisualTrace')));
+    expect(source, isNot(contains('drawDamage')));
+    expect(source, isNot(contains('drawSuspect')));
+    expect(source, isNot(contains('drawMeasurementPath')));
+    expect(source, isNot(contains('drawMeasurementOverlay')));
+    expect(source, isNot(contains('drawPhotoLocal')));
+    expect(source, isNot(contains('drawPhotoOverlay')));
     expect(source, isNot(contains('Confirm net')));
     expect(source, isNot(contains('Show photo')));
     expect(source, isNot(contains('Render overlay')));

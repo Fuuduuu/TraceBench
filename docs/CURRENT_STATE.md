@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS`
-- Next recommended pass: `BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS`
-- Docs drift countdown: `2`
+- Current pass: `LIVE_LITE_SMOKE_TEST_RUN_PASS`
+- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
+- Docs drift countdown: `1`
 
 ## Handoff snapshot (compact)
 
@@ -56,14 +56,23 @@ Branch: main
 - Manual runbook exists at `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
 - It captures commands, visual checklist, forbidden-behavior checklist, evidence boundaries, observations template, and stop conditions for Windows local smoke runs.
 
-### Board-canvas navigation smoke fixup (current)
-- Project overview now exposes a `Board Canvas` action in addition to existing `Board graph`.
-- `Board Canvas` action navigates to existing `/project/board-canvas` route.
-- Navigation coverage is added in project-overview widget tests:
-  - overview shows both `Board graph` and `Board Canvas`,
-  - activating `Board Canvas` reaches board-canvas screen/title,
-  - forbidden edit/confirm/apply/alignment action labels remain absent in overview.
-- No board-canvas rendering/evidence behavior changes were introduced.
+### Live-lite smoke test run (recorded)
+- Manual smoke run completed on Windows target after live-lite plan pass.
+- `py -3 tools\validate_all.py` passed; expected warning for missing optional `photos/top_backlight_001.jpg` was observed.
+- App launched with `flutter run -d windows`; `flutter run -d chrome` failed because Chrome device was unavailable.
+- Project overview opened and `Board Canvas` was reachable through normal UI navigation.
+- Board canvas showed expected empty-state copy and `renderer writes: none`.
+- Board graph remained separate from board canvas.
+- Known facts/events/report surfaces opened and were readable.
+- Current opened project lacked confirmed visual placements and visible `photo_to_board_alignments`, so positive board-canvas placement rendering and readiness-panel positive-state behavior were not validated in this run.
+- Smoke verdict: `PASS_WITH_FINDINGS`.
+
+### Next recommended pass rationale
+- Route forward to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS` to scope a safe fixture/test-project strategy for positive smoke validation of:
+  - board-normalized component visual placements
+  - measurement summary metadata
+  - visual trace metadata summary
+  - photo alignment readiness panel with projected `photo_to_board_alignments`
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

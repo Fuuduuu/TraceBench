@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| LIVE_LITE_SMOKE_TEST_RUN_PASS | docs/audit/LIVE_LITE_SMOKE_TEST_RUN_PASS.md | completed (`PASS_WITH_FINDINGS`; manual Windows smoke run recorded launch/navigation/shell success, confirmed board-canvas empty-state + no-write copy, and documented that positive placement/readiness-panel behavior was not validated with the opened project data) |
 | BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS | docs/audit/BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS.md | completed (navigation/discoverability fix: project overview now exposes `Board Canvas` action to existing route, `Board graph` retained, focused widget navigation coverage added, no board-canvas rendering or evidence-surface expansion) |
 | LIVE_LITE_SMOKE_TEST_PLAN_PASS | docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md | completed (docs-only manual runbook planning: added live-lite board-canvas smoke checklist, routed to run pass, preserved metadata-only/evidence boundaries, and avoided implementation scope expansion) |
 | DOCS_SCOPE_AND_NOISE_CLEANUP_PASS | docs/audit/DOCS_SCOPE_AND_NOISE_CLEANUP_PASS.md | completed (`NEEDS_DOCS_CLEANUP` remediation: compacted CURRENT_STATE, reconciled drift countdown ownership, corrected stale PROJECT_MEMORY/PHOTO_FLOW/renderer spec wording, and preserved docs-only boundaries/routing) |

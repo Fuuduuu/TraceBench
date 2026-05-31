@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+`LIVE_LITE_SMOKE_TEST_RUN_PASS`
 
 ## Goal
 
-Docs-only planning pass to create a focused manual live-lite smoke-test runbook for current board-canvas and readiness-panel behavior.
+Docs-only smoke-run recording pass to capture observed terminal/UI behavior from the live-lite manual run without implementing fixes.
 
 ## Allowed surfaces
 
@@ -14,8 +14,9 @@ Docs-only planning pass to create a focused manual live-lite smoke-test runbook 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md`
 - `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`
+- `docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md`
+- `docs/audit/LIVE_LITE_SMOKE_TEST_RUN_PASS.md`
 
 ## Forbidden surfaces
 
@@ -33,6 +34,8 @@ Docs-only planning pass to create a focused manual live-lite smoke-test runbook 
 - `view_state.json`
 - Project ZIP tooling/files
 - Flutter/runtime implementation
+- automated test implementation
+- fixture/sample implementation
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -42,15 +45,16 @@ Docs-only planning pass to create a focused manual live-lite smoke-test runbook 
 
 ## Scope boundary (locked)
 
-- Docs-only updates.
+- Docs-only updates that record observed smoke-run behavior.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
+- No fixture/sample implementation.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - Renderer/view remains no-write.
 
 ## Next recommended pass
 
-`LIVE_LITE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
 
 ## Validate
 

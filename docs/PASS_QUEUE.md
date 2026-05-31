@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
+`REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| VALIDATE_ALL_FIXTURE_COVERAGE_PASS | TOOLS_PASS | current | Narrow tools hardening implementation pass: update `tools/validate_all.py` main gate coverage for `board_canvas_positive_smoke` while preserving existing `pelle_pv20_minimal` checks and evidence boundaries. |
-| VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Verify the fixture-coverage implementation in `validate_all.py` is scope-compliant, keeps evidence boundaries intact, and does not introduce unrelated gate changes. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS | DOCS_SYNC | current | Docs-only closeout: records accepted implementation + Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirms fixture-gap closure, aligns ledgers, and preserves V1.1 evidence boundaries. |
+| REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Next V1.1 hardening scope item: lock reference-only image import/viewer metadata contract while preserving non-canonical fact boundaries and no-write renderer policy. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code / Opus post-audit confirmed no scope drift, only `tools/validate_all.py` surface change, and accepted fixture-gate hardening as-is. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_PASS | TOOLS_PASS | completed | Narrow tools hardening implementation pass: `validate_all.py` now covers both fixtures in the main gate with boundary assertions preserved. |
 | VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locks the narrow V1.1 tools-hardening scope to bring `board_canvas_positive_smoke` into the main validation gate without schema/materializer/runtime changes. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Performs due docs drift cleanup after V1.1 validation/smoke closeout and metagovernance audit: compacts state handoff, aligns ledgers, and resets countdown discipline. |
 | V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Records accepted Claude Code/Opus `PASS` for the V1.1 validation/smoke audit, confirms no-change audit execution and baseline integrity, and tracks non-blocking findings. |

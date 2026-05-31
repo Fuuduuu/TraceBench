@@ -2,24 +2,25 @@
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
 
 ## Goal
 
-Narrow tools hardening to bring `board_canvas_positive_smoke` into the main `validate_all.py` gate alongside existing `pelle_pv20_minimal` coverage.
+Docs-only closeout recording for accepted fixture coverage implementation and post-audit verdict.
 
 ## Allowed surfaces
 
-- `tools/validate_all.py`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md` (only if stale wording requires correction)
+- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
+- `tools/**`
 - `lib/**`
 - `test/**`
 - `samples/**`
@@ -32,7 +33,7 @@ Narrow tools hardening to bring `board_canvas_positive_smoke` into the main `val
 - Project ZIP tooling/files
 - Flutter/runtime implementation
 - schema/materializer semantics changes
-- automated test implementation changes unless strictly required
+- automated test implementation changes
 - fixture/sample implementation or edits
 - generated data or artifact changes
 - git tag creation
@@ -47,8 +48,8 @@ Narrow tools hardening to bring `board_canvas_positive_smoke` into the main `val
 
 ## Scope boundary (locked)
 
-- Narrow tools implementation pass.
-- No schema/materializer/Dart/Flutter implementation changes.
+- Docs-only closeout pass.
+- No schema/tool/materializer/Dart/Flutter implementation changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
@@ -60,7 +61,7 @@ Narrow tools hardening to bring `board_canvas_positive_smoke` into the main `val
 
 ## Next recommended pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
+`REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
 
 ## Validate
 

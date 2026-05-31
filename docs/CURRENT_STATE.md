@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
-- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
+- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -19,6 +19,7 @@ Branch: `main`
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
+  - Claude Code / Opus post-audit result for the implementation is accepted: `PASS`, `ACCEPT_AS_IS`.
 
 ### Accepted V1 baseline (still authoritative)
 - Board Canvas V1 is read-only and metadata-safe.
@@ -34,6 +35,14 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` accepted/pushed:
+  - changed surface: `tools/validate_all.py` only,
+  - `board_canvas_positive_smoke` main-gate coverage gap is closed,
+  - existing `pelle_pv20_minimal` gate coverage is preserved.
+- `VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS` accepted from audit context:
+  - verdict `PASS`,
+  - disposition `ACCEPT_AS_IS`,
+  - no scope drift or boundary regression.
 - `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`:
   - next pass locked to `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` (`TOOLS_PASS`),
   - implementation surface locked to `tools/validate_all.py` (+ tests only if strictly required),
@@ -58,7 +67,7 @@ Branch: `main`
   - route remained correct,
   - AI/tool routing remained practical,
   - main process issue was `CURRENT_STATE.md` bloat,
-  - fixture coverage auto-gate gap should be scheduled soon,
+  - fixture coverage auto-gate gap was scheduled and is now closed,
   - audit remained audit-only with no repo modifications.
 
 ### Current non-blocking items

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS`
-- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS`
+- Next recommended pass: `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -67,7 +67,7 @@ Branch: main
 - Current opened project lacked confirmed visual placements and visible `photo_to_board_alignments`, so positive board-canvas placement rendering and readiness-panel positive-state behavior were not validated in this run.
 - Smoke verdict: `PASS_WITH_FINDINGS`.
 
-### Positive smoke fixture implementation (current)
+### Positive smoke fixture implementation (accepted)
 - Dedicated deterministic fixture project created: `samples/board_canvas_positive_smoke`.
 - Fixture contains an 8-event accepted chain (`evt_000001`..`evt_000008`) covering:
   - component + pins,
@@ -82,7 +82,11 @@ Branch: main
 - Asset mirror added at `assets/samples/board_canvas_positive_smoke` with byte-identical checked files.
 - Sync test coverage extended in `tests/test_asset_sample_sync.py` for fixture manifest/events/known_facts/report parity.
 - No schema/tool/lib/runtime/Project-ZIP behavior changes were made.
-- Route next to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_AUDIT_PASS`.
+- Claude Code audit verdict: `PASS_WITH_NITS`.
+- Non-blocking notes:
+  - `ACTIVE_SCOPE_LOCK.md` pointer alignment required in closeout.
+  - `validate_all.py` does not auto-validate the new fixture; fixture pass relied on explicit per-fixture validation commands.
+- Route next to `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

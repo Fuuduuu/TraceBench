@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope-lock pass to define the safest positive-smoke fixture/project strategy after live-lite run findings.
+Docs-only closeout pass to finalize audit acceptance for `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS` and align forward routing.
 
 ## Allowed surfaces
 
@@ -14,10 +14,8 @@ Docs-only scope-lock pass to define the safest positive-smoke fixture/project st
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`
-- `docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md`
-- `docs/audit/LIVE_LITE_SMOKE_TEST_RUN_PASS.md`
-- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS.md`
+- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS.md`
+- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,16 +45,16 @@ Docs-only scope-lock pass to define the safest positive-smoke fixture/project st
 
 ## Scope boundary (locked)
 
-- Docs-only scope decisions for a future positive-smoke fixture pass.
+- Docs-only closeout and routing reconciliation.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
-- No fixture/sample implementation in this pass.
+- No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - Renderer/view remains no-write.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
 
 ## Validate
 

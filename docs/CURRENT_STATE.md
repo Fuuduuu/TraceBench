@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
-- Next recommended pass: `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -127,6 +127,29 @@ Branch: main
   - no visual_trace/damage/suspect board geometry,
   - no edit/confirm/save/apply/event-writing actions.
 - Route next to `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`.
+
+### Read-only visual polish V1 scope lock (current)
+- Scope lock accepted for metadata-only Board Canvas visual polish direction after:
+  - positive smoke run `PASS`,
+  - Claude Design `GO`,
+  - GPT Pro `APPROVE_SCOPE_LOCK`.
+- Allowed V1 polish scope is styling/layout/copy/accessibility only:
+  - boardview substrate/grid/outline styling,
+  - selected/unselected visual states,
+  - placement selector and inspector layout polish,
+  - measurement/visual-trace/readiness metadata-card layout polish,
+  - read-only category tags and copy clarity,
+  - responsive/focus/contrast improvements,
+  - persistent `renderer writes: none`.
+- Forbidden scope remains locked:
+  - no background photo/photo layer,
+  - no transform/matrix computation,
+  - no photo-local evidence board rendering,
+  - no visual_trace/damage/suspect/measurement geometry overlays,
+  - no event-writing/edit/confirm/save/apply/promote/detect/AI controls,
+  - no schema/tool/runtime/sample/ZIP contract changes.
+- Next route is implementation-only within the locked polish boundary:
+  - `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

@@ -287,3 +287,187 @@ Forbidden direction:
 - no event-writing/edit/confirm/save/apply controls.
 
 Boundary remains unchanged: renderer writes nothing.
+
+## 17. V1 read-only visual polish scope lock
+
+`BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS` locks the first polish phase after positive smoke PASS.
+
+### 17.1 Accepted baseline
+
+Baseline is accepted and preserved:
+- board canvas route/shell is stable,
+- `SMP001` positive placement renders/selects in smoke fixture,
+- inspector remains read-only,
+- measurement summary remains read-only metadata,
+- visual trace summary remains read-only metadata,
+- photo-alignment readiness panel remains read-only metadata,
+- `renderer writes: none` remains visible,
+- no forbidden transform/background/overlay/event-writing UI behavior observed.
+
+### 17.2 Allowed V1 polish scope (styling/layout/copy/accessibility only)
+
+Allowed:
+- board substrate styling and visual tokens (dark/light),
+- board outline/subtle grid treatment,
+- vector footprint visual polish for already-rendered placements,
+- pin-pad/pin-1 marker/designator styling only from existing footprint data,
+- selected/unselected visual-state polish,
+- placement selector styling polish,
+- inspector layout/grouping polish,
+- metadata-card layout polish for:
+  - measurement summary,
+  - visual trace metadata,
+  - photo alignment readiness,
+- category tags/labels:
+  - `MEASURED`
+  - `VISUAL`
+  - `READINESS`
+  - `STALE`
+  - `REMOVED`
+  - `UNKNOWN`
+- typography/spacing/hierarchy polish,
+- empty/no-selection/no-placement state polish,
+- responsive layout polish,
+- focus/contrast/a11y polish,
+- right-column metadata stack preference,
+- persistent `renderer writes: none`.
+
+### 17.3 Tag semantics lock
+
+Allowed meanings:
+- `MEASURED` = instrument/human measurement metadata.
+- `VISUAL` = photo-linked visual metadata only (not electrical proof).
+- `READINESS` = alignment metadata exists; no transform computed.
+- `UNKNOWN` = identity unknown/not confirmed.
+- `STALE`/`REMOVED` only when already present in known facts state.
+
+Forbidden tags:
+- `FAULT`
+- `LIKELY FAULT`
+- `CONFIRMED TRACE`
+- `CONFIRMED NET`
+- `ALIGNED PHOTO`
+- `MAPPED`
+- `VERIFIED`
+- `AI CONFIDENT`
+
+### 17.4 Forbidden V1 polish scope
+
+Forbidden:
+- background photo helper or photo layer,
+- transform/matrix computation,
+- computed similarity/affine/homography outputs,
+- photo-local evidence rendered on board,
+- visual_trace/damage/suspect geometry on board,
+- measurement overlay geometry on board,
+- event-writing UI/actions,
+- edit/confirm/save/apply/promote controls,
+- AI proposal/detection/candidate UI,
+- Top-3 candidate UI,
+- persisted view state,
+- `board_graph.json` / `view_state.json`,
+- visual_trace -> net promotion,
+- template_id -> electrical identity promotion,
+- copy implying visual trace establishes electrical connectivity.
+
+### 17.5 Layout direction lock
+
+Desktop/wide:
+- three-zone shell:
+  - left: placement selector/component index,
+  - center: board canvas,
+  - right: inspector + metadata stack.
+- bottom chrome keeps `renderer writes: none` visible.
+- no modals in this polish phase.
+
+Smaller windows:
+- canvas remains dominant.
+- panels reflow below canvas in order:
+  1. inspector
+  2. measurement
+  3. visual trace
+  4. readiness
+- `renderer writes: none` remains visible at all widths.
+
+### 17.6 Copy/safety lock
+
+Must preserve or improve without weakening:
+- `renderer writes: none`
+- `read-only projection`
+- `declared type — not computed: similarity`
+- `Reference pairs: 2`
+- `Template does not prove electrical identity.`
+- `Visual trace is not a confirmed electrical net`
+- `Photo-local evidence; no board coordinate available`
+- `Does not create or confirm connectivity`
+- `Does not confirm identity, nets, measurements, or faults.`
+- `No transform is computed.`
+- `Not electrical proof.`
+
+Allowed additional copy:
+- `template family — not a part identity`
+- `visual metadata — does not establish a net`
+- `measured value — 0.1 ohm continuity`
+- `identity not confirmed in this projection`
+- `read-only · projection view`
+
+Do not introduce:
+- `Confirm`
+- `Save`
+- `Apply`
+- `Edit`
+- `Promote`
+- `Detect`
+- `Run AI`
+- `Re-materialize`
+- `Sync`
+- `Refresh`
+- `compute similarity`
+
+### 17.7 Performance and accessibility guardrails
+
+Allowed:
+- contrast improvements,
+- text-visible tags (not color-only),
+- focus ring and keyboard traversal polish,
+- hit-target improvements,
+- semantic labels for key cards,
+- dark/light token direction.
+
+Forbidden:
+- saveLayer-heavy glow/shadow effects,
+- animated polish,
+- opacity sliders,
+- persisted theme/view state,
+- severity/proof-implying visual effects,
+- accessibility work that introduces write actions.
+
+### 17.8 Future implementation allowlist and route
+
+Next implementation pass:
+- `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
+
+Likely write allowlist:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- docs ledger/audit files
+
+Conditionally allowed:
+- `lib/shared/footprints/**` only for harmless display-token adjustments with no semantics changes.
+
+### 17.9 Future test expectations
+
+Implementation QA should prove:
+- existing board-canvas tests stay passing,
+- positive fixture still renders with `SMP001` visible/selectable,
+- inspector/measurement/visual-trace/readiness remain metadata-only,
+- `renderer writes: none` stays visible,
+- forbidden action labels stay absent,
+- no background photo/image rendering,
+- no transform/matrix/overlay behavior,
+- no visual_trace/damage/suspect/measurement board geometry overlays,
+- constrained viewport has no overflow,
+- smaller-window layout remains usable,
+- category tags are text-visible (not color-only),
+- template_id does not imply identity,
+- visual_trace metadata does not imply net.

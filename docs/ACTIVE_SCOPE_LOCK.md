@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only recording pass for the completed manual positive smoke run using the accepted `board_canvas_positive_smoke` fixture.
+Docs-only visual polish scope lock for Board Canvas V1 read-only renderer surfaces.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only recording pass for the completed manual positive smoke run using the a
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/LIVE_POSITIVE_SMOKE_TEST_RUN_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
+- `docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -44,16 +45,18 @@ Docs-only recording pass for the completed manual positive smoke run using the a
 
 ## Scope boundary (locked)
 
-- Docs-only smoke-run evidence recording and routing reconciliation.
+- Docs-only scope-lock definition and routing reconciliation.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - Renderer/view remains no-write.
+- No visual evidence geometry expansion.
+- No transform/photo-layer behavior expansion.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
 
 ## Validate
 

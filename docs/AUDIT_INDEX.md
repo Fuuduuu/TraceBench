@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS.md | completed (docs-only V1 visual polish scope lock after positive smoke + Claude Design + GPT Pro approval; locked styling/layout/copy/accessibility-only direction with explicit no-transform/no-overlay/no-write boundaries and routed to V1 implementation pass) |
 | LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | docs/audit/LIVE_POSITIVE_SMOKE_TEST_RUN_PASS.md | completed (`PASS`; manual positive smoke run recorded using `board_canvas_positive_smoke`, confirmed Board Canvas reachability/placement/inspector/read-only summaries/readiness panel, and confirmed absence of forbidden transform/overlay/event-writing UI) |
 | LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | docs/audit/LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS.md | completed (docs-only positive smoke runbook: fixture-open strategy, Windows commands, positive/forbidden/evidence-boundary checklists, observation template, and stop criteria before manual run) |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; accepted deterministic positive-smoke fixture chain and boundary compliance, aligned ACTIVE_SCOPE_LOCK pointer, and routed next to live positive smoke planning) |

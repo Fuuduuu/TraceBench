@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_RELEASE_READINESS_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
+- Docs drift countdown: `5`
 
 ## Handoff snapshot (compact)
 
@@ -192,7 +192,7 @@ Branch: main
   - prior `project_exporter_test.dart` flake was not reproduced in final audit validation.
 - Route next to `V1_RELEASE_READINESS_AUDIT_PASS`.
 
-### V1 release-readiness closeout (current)
+### V1 release-readiness closeout (accepted)
 - External audit verdicts recorded:
   - GPT Pro: `READY_WITH_NITS`
   - Claude Code (repo-local): `READY_WITH_NITS`
@@ -213,6 +213,20 @@ Branch: main
   - hardcoded board substrate color remains accepted for V1,
   - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking.
 - Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`, then `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`.
+
+### Docs drift cleanup after V1 release-readiness (current)
+- Docs drift countdown reset from `0` to standard value `5` (canonical in `docs/PASS_QUEUE.md`).
+- Routing aligned forward-only:
+  - current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+  - next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
+- Renderer spec status/addendum wording aligned to current accepted state:
+  - read-only Board Canvas V1 renderer is implemented, polished, QA-hardened, smoke-tested, and release-readiness audited,
+  - readiness panel remains metadata-only (project/photo-level, reference-pair count only, no raw `x/y`, declared type not computed).
+- Deferred/non-blocking release nits remain explicitly tracked:
+  - fixture auto-validation in `validate_all.py` is future tools hardening (no tools change here),
+  - no V1 git tag yet (release action later),
+  - hardcoded board substrate color accepted for V1,
+  - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking and untouched.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

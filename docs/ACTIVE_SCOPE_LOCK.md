@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_RELEASE_READINESS_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Docs-only release-readiness audit closeout for V1 checkpoint status recording.
+Docs-only drift cleanup after V1 release-readiness closeout.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only release-readiness audit closeout for V1 checkpoint status recording.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_RELEASE_READINESS_CLOSEOUT_PASS.md`
+- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -44,7 +45,7 @@ Docs-only release-readiness audit closeout for V1 checkpoint status recording.
 
 ## Scope boundary (locked)
 
-- Docs-only release-readiness closeout recording.
+- Docs-only drift cleanup, countdown reset, and routing/spec wording alignment.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -55,7 +56,7 @@ Docs-only release-readiness audit closeout for V1 checkpoint status recording.
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
 
 ## Validate
 

@@ -1,6 +1,6 @@
 # BOARD_CANVAS_READONLY_RENDERER_SPEC.md
 
-Status: scope-locked design/implementation sequencing spec (no renderer code in this pass)
+Status: implemented/accepted V1 read-only renderer spec (polished, QA-hardened, smoke-tested, and release-readiness audited)
 
 ## 1. Intent
 
@@ -181,7 +181,7 @@ Future renderer acceptance requires all:
 ## 13. Audit note
 
 Claude independent readiness audit verdict: `PASS_WITH_NITS`.
-This spec captures the nits as locked sequencing and deferred-surface requirements before implementation.
+Read-only Board Canvas V1 implementation + QA follow-up are accepted and release-checkpointable with non-blocking nits only.
 
 ## 14. Measurement summary scope-lock addendum
 
@@ -251,7 +251,7 @@ Strict visual-trace-to-component association rule:
 
 ## 16. photo-alignment readiness panel addendum
 
-`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS` and follow-up QA passes lock photo-alignment panel behavior to metadata-only readiness display.
+`BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS` plus implementation/QA/audit follow-ups are accepted and lock panel behavior to metadata-only readiness display.
 
 Allowed direction (accepted):
 
@@ -284,6 +284,7 @@ Forbidden direction:
 - no transform/matrix computation output,
 - no photo-local evidence conversion to board geometry,
 - no visual_trace/damage/suspect board geometry rendering,
+- no measurement canvas geometry rendering,
 - no event-writing/edit/confirm/save/apply controls.
 
 Boundary remains unchanged: renderer writes nothing.

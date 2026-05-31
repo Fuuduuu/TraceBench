@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_TO_V2_ROADMAP_DECISION_PASS`
+`SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
 
 ## Goal
 
-Docs-only roadmap decision lock after accepted/pushed V1 RC tag verification.
+Docs-only source/handoff guide synchronization after accepted V1 RC tag verification and V1->V2 roadmap decision.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only roadmap decision lock after accepted/pushed V1 RC tag verification.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_TO_V2_ROADMAP_DECISION_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/audit/SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,7 +48,7 @@ Docs-only roadmap decision lock after accepted/pushed V1 RC tag verification.
 
 ## Scope boundary (locked)
 
-- Docs-only roadmap/governance recording pass.
+- Docs-only source-guide/governance synchronization pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -60,7 +61,7 @@ Docs-only roadmap decision lock after accepted/pushed V1 RC tag verification.
 
 ## Next recommended pass
 
-`SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
+`V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
 
 ## Validate
 

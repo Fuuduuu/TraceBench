@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_TO_V2_ROADMAP_DECISION_PASS`
-- Next recommended pass: `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
+- Current pass: `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
+- Next recommended pass: `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -349,7 +349,7 @@ Branch: main
   - `board_graph.json` and `view_state.json` absent.
 - Route next to `V1_TO_V2_ROADMAP_DECISION_PASS`.
 
-### V1 to V2 roadmap decision (current)
+### V1 to V2 roadmap decision (accepted)
 - Verified V1 RC tag-first route is complete:
   - `v1.0.0-rc1` annotated tag exists locally and on `origin`,
   - tag verification and closeout are accepted and pushed.
@@ -373,6 +373,29 @@ Branch: main
   - no `board_graph.json` or `view_state.json`,
   - photo alignment/visual trace/damage/suspect metadata do not imply electrical/fault truth.
 - Route next to `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`.
+
+### Source guide sync after V1 RC (current)
+- Source/handoff governance docs are synchronized after accepted V1 RC tag verification and roadmap lock.
+- Confirmed baseline remains:
+  - V1 RC tag `v1.0.0-rc1` tagged + verified,
+  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted/pushed,
+  - `V1_TO_V2_ROADMAP_DECISION_PASS` accepted/pushed.
+- Source guide/handoff governance now explicitly records tool/AI routing logic:
+  - helper selection by risk/authority boundary,
+  - manual-only release/tag mutation authority,
+  - high-risk no-self-approval flow (`GPT Pro -> Claude Code -> Codex -> Claude Code -> ChatGPT -> User`).
+- V1/V2 forward direction is locked in guide docs:
+  - V1.1 hardening is next,
+  - V2 starts with event-writing architecture,
+  - V2 does not start with transform/photo-overlay/background-helper implementation.
+- Evidence boundaries are preserved unchanged:
+  - no AI fact creation,
+  - no photo/reference-image to fact promotion,
+  - no visual_trace to net promotion,
+  - no damage/suspect to fault/probability promotion,
+  - no `board_graph.json` / `view_state.json`.
+- Stale pre-RC `Source Guide v9` references were checked and none remain in active docs.
+- Route next to `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

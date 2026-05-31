@@ -2,28 +2,31 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
 
 ## Goal
 
-Docs-only scope lock for narrow Project ZIP exclusion hardening before local sidecar viewer implementation resumes.
+Narrow Project ZIP tooling hardening to exclude `.tracebench_local` sidecar paths from export and reject them during ZIP validation.
 
 ## Allowed surfaces
 
+- `tools/export_project_zip.py`
+- `tests/test_project_zip.py`
+- `docs/PROJECT_ZIP_SPEC.md`
+- `tools/validate_project_zip.py` (narrow symmetry-only)
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md` (only if architecture/routing wording needs alignment)
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
-- `tools/**`
+- `tools/**` (except `tools/export_project_zip.py` and `tools/validate_project_zip.py`)
 - `lib/**`
 - `test/**`
-- `tests/**`
+- `tests/**` (except `tests/test_project_zip.py`)
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -34,13 +37,9 @@ Docs-only scope lock for narrow Project ZIP exclusion hardening before local sid
 - Project ZIP tooling/files
 - Flutter/runtime implementation
 - schema/materializer semantics changes
-- automated test implementation changes
 - fixture/sample implementation or edits
 - generated data or artifact changes
-- git tag creation
-- git tag push
-- git tag delete/move
-- Project ZIP tooling/files
+- git tag creation/push/delete/move
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -50,23 +49,21 @@ Docs-only scope lock for narrow Project ZIP exclusion hardening before local sid
 
 ## Scope boundary (locked)
 
-- Docs-only scope lock pass.
-- No schema/tool/materializer/Dart/Flutter implementation changes.
-- No fixture/sample/data changes in this pass.
-- No Project ZIP contract changes.
+- Narrow tooling hardening pass only.
+- No Flutter/runtime/reference-viewer implementation.
+- No schema/materializer/events/known_facts changes.
+- No fixture/sample/asset/generated-artifact changes.
+- No Project ZIP contract expansion.
 - No evidence-boundary weakening.
-- No tag mutation in this pass.
-- Renderer/view remains no-write.
-- No visual evidence geometry expansion.
-- No transform/photo-layer behavior expansion.
-- No generated artifacts.
+- No tag or release-object mutation.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS`
 
 ## Validate
 
+- `py -3 -m unittest tests.test_project_zip`
 - `py -3 tools\validate_all.py`
 - `git diff --name-only`
 - `git status --short --branch`

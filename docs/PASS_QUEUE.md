@@ -11,23 +11,23 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
-`5`
+`4`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks narrow ZIP-hardening scope to exclude `.tracebench_local` from Project ZIP export before sidecar viewer implementation resumes; preserves Model-B boundaries and no contract expansion. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS | TOOLS_PASS | recommended | Narrow tooling hardening pass: add `.tracebench_local` export exclusion, preserve required ZIP contents, update ZIP spec wording, and add targeted ZIP tests proving sidecar entries are excluded. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS | AUDIT_ONLY | planned | Post-implementation audit: confirm exclusion-only surface change, no ZIP contract expansion, and no drift into events/known_facts/overlay/AI areas. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS | TOOLS_PASS | current | Narrow tooling hardening implemented: `.tracebench_local` export exclusion added, ZIP validator symmetry added, ZIP spec updated, and targeted tests added to prevent sidecar leakage into exported ZIPs. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Post-implementation audit: confirm exclusion-only surface change, no ZIP contract expansion, and no drift into events/known_facts/overlay/AI areas. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked narrow ZIP-hardening scope to exclude `.tracebench_local` from Project ZIP export before sidecar viewer implementation resumes; preserved Model-B boundaries and no contract expansion. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | FLUTTER_PASS | planned (blocked pending ZIP exclusion) | Viewer implementation remains blocked until `.tracebench_local` exclusion hardening lands and passes tests. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS | AUDIT_ONLY | planned | Post-implementation scope/boundary audit for sidecar viewer pass; confirm no drift into events/known_facts/ZIP/overlay/AI surfaces. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code / Opus audit accepted from context: `.tracebench_local` is currently not excluded; exclusion hardening is safe, narrow, and contract-preserving; no full contract audit required for exclusion. |

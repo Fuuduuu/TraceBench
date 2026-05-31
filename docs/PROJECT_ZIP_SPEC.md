@@ -26,6 +26,9 @@ live merge.
 - ZIP must be self-contained and portable between machines.
 - ZIP must not contain: `.git`, `.codex`, `__pycache__`, `.env`, API keys,
   secrets, local logs, or temporary/local artifacts.
+- ZIP must exclude local sidecar reference-image paths under
+  `.tracebench_local/` (for example `.tracebench_local/reference_images/`
+  and `.tracebench_local/reference_images.json`).
 - `events.jsonl` remains the source event log and canonical raw measurement log.
 - `known_facts.json` is materialized/derived output and may be regenerated.
 - `board_graph.json` and `view_state.json` are forbidden V1 artifacts and must be

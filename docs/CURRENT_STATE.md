@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
-- Docs drift countdown: `5`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS`
+- Docs drift countdown: `4`
 
 ## Handoff snapshot (bounded)
 
@@ -22,11 +22,13 @@ Branch: `main`
 - Viewer implementation status:
   - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` was blocked before implementation,
   - blocker was confirmed by audit: `.tracebench_local` is not yet excluded by ZIP export,
-  - next step is ZIP exclusion hardening before viewer implementation resumes.
+  - ZIP exclusion hardening is now implemented in tooling, pending post-audit closeout before viewer implementation resumes.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
   - Claude Code / Opus post-audit result for the implementation is accepted: `PASS`, `ACCEPT_AS_IS`.
+  - Project ZIP export now excludes `.tracebench_local` sidecar paths.
+  - Project ZIP validation now rejects `.tracebench_local` entries in ZIPs and extracted project directories.
 
 ### Accepted V1 baseline (still authoritative)
 - Board Canvas V1 is read-only and metadata-safe.
@@ -42,6 +44,11 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`:
+  - implementation pass completed: export excludes `.tracebench_local` sidecar paths,
+  - ZIP validation symmetry added to reject `.tracebench_local` entries,
+  - ZIP tests added for export exclusion and validator rejection cases,
+  - Project ZIP spec updated to explicitly document `.tracebench_local` exclusion.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_AUDIT_PASS` accepted from audit context:
   - verdict `PASS`,
   - confirms `.tracebench_local` exclusion hardening is safe and narrow,

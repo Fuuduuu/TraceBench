@@ -22,7 +22,7 @@ REQUIRED_FILES = [
     "exports/customer_report.md",
 ]
 FORBIDDEN_V1_FILES = {"board_graph.json", "view_state.json"}
-FORBIDDEN_PATH_PARTS = {".git", ".codex", "__pycache__", ".env", "logs"}
+FORBIDDEN_PATH_PARTS = {".git", ".codex", ".tracebench_local", "__pycache__", ".env", "logs"}
 
 
 def _safe_member_name(name: str) -> bool:
@@ -111,6 +111,18 @@ def _validate_forbidden_v1_entries(names: set[str], errors: list[str]) -> bool:
     return True
 
 
+def _validate_forbidden_path_parts(names: set[str], errors: list[str]) -> bool:
+    offenders = []
+    for name in names:
+        parts = Path(name.replace("\\", "/")).parts
+        if any(part in FORBIDDEN_PATH_PARTS for part in parts):
+            offenders.append(name)
+    if offenders:
+        errors.extend(f"forbidden ZIP path part present: {name}" for name in sorted(offenders))
+        return False
+    return True
+
+
 def _warn_missing_optional_photo_files(base: Path, warnings: list[str], errors: list[str]) -> None:
     known_facts = _run_json_load(base / "known_facts.json", "known_facts.json", errors)
     if known_facts is None:
@@ -171,6 +183,8 @@ def _validate_project_directory(base_path: Path, errors: list[str]) -> bool:
     if not _validate_paths(names, errors):
         return False
     if not _validate_forbidden_v1_entries(names, errors):
+        return False
+    if not _validate_forbidden_path_parts(names, errors):
         return False
 
     manifest = _run_json_load(base_path / "manifest.json", "manifest.json", errors)

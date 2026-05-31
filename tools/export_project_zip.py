@@ -25,7 +25,7 @@ REQUIRED_INPUT_FILES = (
 )
 FORBIDDEN_EXPORT_FILES = {"board_graph.json", "view_state.json"}
 
-EXCLUDED_DIR_PARTS = {".git", ".codex", "__pycache__", "logs"}
+EXCLUDED_DIR_PARTS = {".git", ".codex", ".tracebench_local", "__pycache__", "logs"}
 
 
 def _is_excluded_path(path: Path, base: Path) -> bool:

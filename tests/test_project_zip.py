@@ -408,6 +408,39 @@ class ProjectZipTests(unittest.TestCase):
             self.assertTrue(all("__pycache__" not in name for name in names))
             self.assertTrue(all(not name.endswith(".pyc") for name in names))
 
+    def test_export_excludes_tracebench_local_sidecar_files(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+
+            sidecar_dir = project_dir / ".tracebench_local" / "reference_images"
+            sidecar_dir.mkdir(parents=True, exist_ok=True)
+            (sidecar_dir / "ref_001.jpg").write_text("not-a-real-image", encoding="utf-8")
+            (project_dir / ".tracebench_local" / "reference_images.json").write_text(
+                json.dumps({"images": [{"file_name": "ref_001.jpg"}]}, indent=2),
+                encoding="utf-8",
+            )
+
+            output_zip = Path(tmpdir) / "project.zip"
+            result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = {name.replace("\\", "/") for name in zf.namelist()}
+
+            self.assertTrue(all(not name.startswith(".tracebench_local/") for name in names))
+            self.assertNotIn(".tracebench_local/reference_images.json", names)
+
+            required = {
+                "manifest.json",
+                "events.jsonl",
+                "known_facts.json",
+                "metadata/schema_versions.json",
+                "exports/customer_report.md",
+            }
+            self.assertTrue(required.issubset(names))
+            self.assertTrue(any(name.startswith("device_profiles/") for name in names))
+
     def test_export_zip_entry_order_is_deterministic(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "project.zip"
@@ -459,6 +492,37 @@ class ProjectZipTests(unittest.TestCase):
             validate_result = _validate_project_zip(bad_zip)
             self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
             self.assertIn("forbidden V1 ZIP artifact", validate_result.stdout + validate_result.stderr)
+
+    def test_zip_rejects_tracebench_local_sidecar_entries(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = Path(tmpdir) / "good.zip"
+            bad_zip = Path(tmpdir) / "bad.zip"
+
+            export_result = _export_project_zip(SAMPLE_DIR, good_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            def mutate(path):
+                sidecar_dir = path / ".tracebench_local" / "reference_images"
+                sidecar_dir.mkdir(parents=True, exist_ok=True)
+                (sidecar_dir / "ref_001.jpg").write_text("not-a-real-image", encoding="utf-8")
+
+            _rewrite_zip(good_zip, bad_zip, mutate)
+            validate_result = _validate_project_zip(bad_zip)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("rejected unsafe zip member", validate_result.stdout + validate_result.stderr)
+
+    def test_project_dir_rejects_tracebench_local_sidecar_entries(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            sidecar_dir = project_dir / ".tracebench_local" / "reference_images"
+            sidecar_dir.mkdir(parents=True, exist_ok=True)
+            (sidecar_dir / "ref_001.jpg").write_text("not-a-real-image", encoding="utf-8")
+
+            validate_result = _validate_project_zip(project_dir)
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn("forbidden ZIP path part present", validate_result.stdout + validate_result.stderr)
 
     def test_export_does_not_include_forbidden_v1_artifacts(self):
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS`
+`V1_RELEASE_READINESS_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only audit closeout for accepted Board Canvas read-only polish V1 implementation and QA hardening.
+Docs-only release-readiness audit closeout for V1 checkpoint status recording.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only audit closeout for accepted Board Canvas read-only polish V1 implement
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS.md`
+- `docs/audit/V1_RELEASE_READINESS_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -44,7 +44,7 @@ Docs-only audit closeout for accepted Board Canvas read-only polish V1 implement
 
 ## Scope boundary (locked)
 
-- Docs-only closeout recording for already accepted implementation + QA audits.
+- Docs-only release-readiness closeout recording.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -55,7 +55,7 @@ Docs-only audit closeout for accepted Board Canvas read-only polish V1 implement
 
 ## Next recommended pass
 
-`V1_RELEASE_READINESS_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Validate
 

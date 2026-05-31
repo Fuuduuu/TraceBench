@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V1_RELEASE_READINESS_CLOSEOUT_PASS | docs/audit/V1_RELEASE_READINESS_CLOSEOUT_PASS.md | completed (docs-only release-readiness closeout: recorded GPT Pro + Claude `READY_WITH_NITS`, readiness estimate `94%`, true blockers `None`, accepted V1 checkpointable scope, and routed to docs drift cleanup) |
 | BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code verdicts `PASS_WITH_NITS` + `PASS`, accepted impl + QA state, aligned scope-lock routing, and preserved read-only/evidence boundaries) |
 | BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS.md | completed (QA-only hardening: added explicit non-identity copy assertions and targeted source guards against non-decorative evidence-geometry rendering without reintroducing blanket drawLine/drawPath bans) |
 | BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS.md | completed (read-only visual polish implementation: responsive three-zone layout direction, dark board substrate styling, metadata-card grouping, evidence-class tags, and preserved no-transform/no-overlay/no-write boundaries) |

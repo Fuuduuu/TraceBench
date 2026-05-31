@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS`
-- Next recommended pass: `V1_RELEASE_READINESS_AUDIT_PASS`
+- Current pass: `V1_RELEASE_READINESS_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -173,7 +173,7 @@ Branch: main
 - No transform/photo/overlay/event-writing scope was added.
 - Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`.
 
-### Read-only visual polish V1 closeout (current)
+### Read-only visual polish V1 closeout (accepted)
 - Claude Code verdicts recorded:
   - `BOARD_CANVAS_READONLY_POLISH_V1_AUDIT_PASS`: `PASS_WITH_NITS`
   - `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`: `PASS`
@@ -191,6 +191,28 @@ Branch: main
   - hardcoded board substrate color remains accepted for V1,
   - prior `project_exporter_test.dart` flake was not reproduced in final audit validation.
 - Route next to `V1_RELEASE_READINESS_AUDIT_PASS`.
+
+### V1 release-readiness closeout (current)
+- External audit verdicts recorded:
+  - GPT Pro: `READY_WITH_NITS`
+  - Claude Code (repo-local): `READY_WITH_NITS`
+- Claude Code readiness estimate: `94%`.
+- True blockers: `None`.
+- Accepted V1 definition: Known Facts Builder + Project ZIP/local-first contract + read-only Board Canvas + evidence-safe metadata UI.
+- Accepted readiness state:
+  - validation stack passed (including full Flutter suite and targeted Python suites),
+  - positive smoke fixture and manual positive smoke run are accepted,
+  - Board Canvas V1 implementation/polish/QA chain is accepted,
+  - evidence boundaries remained intact,
+  - `board_graph.json` and `view_state.json` are absent.
+- Non-blocking nits recorded:
+  - docs drift countdown is `0` (`DOCS_DRIFT_MINI_CLEANUP_PASS` due),
+  - `BOARD_CANVAS_READONLY_RENDERER_SPEC.md` status/addendum alignment is stale,
+  - `validate_all.py` does not auto-validate `board_canvas_positive_smoke`,
+  - no V1 git tag exists yet,
+  - hardcoded board substrate color remains accepted for V1,
+  - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking.
+- Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`, then `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

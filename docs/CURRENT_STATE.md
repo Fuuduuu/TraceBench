@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS`
-- Next recommended pass: `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+- Current pass: `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+- Next recommended pass: `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -87,6 +87,24 @@ Branch: main
   - `ACTIVE_SCOPE_LOCK.md` pointer alignment required in closeout.
   - `validate_all.py` does not auto-validate the new fixture; fixture pass relied on explicit per-fixture validation commands.
 - Route next to `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`.
+
+### Live positive smoke planning (current)
+- Practical manual positive smoke runbook added at:
+  - `docs/BOARD_CANVAS_LIVE_POSITIVE_SMOKE_TEST_PLAN.md`
+- Runbook targets fixture:
+  - `samples/board_canvas_positive_smoke`
+  - `project_id: prj_board_canvas_smoke_001`
+- Opening strategy documented with explicit commands:
+  - Option A: open fixture directory directly (if app supports directory-open UI flow).
+  - Option B: export fixture to ZIP, validate ZIP, then import/open.
+- Runbook includes explicit positive checks for:
+  - Board Canvas route/open state,
+  - `renderer writes: none`,
+  - SMP001 rendered placement and selector behavior,
+  - read-only inspector with M1001 and VT001 visibility,
+  - readiness panel with ALN1001, source photo, reference-pair count, and required safety copy.
+- Runbook includes forbidden observation checklist, evidence-boundary checklist, screenshot/notes template, pass/fail criteria, expected warnings, and stop conditions.
+- Route next to `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

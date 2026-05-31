@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
 
 ## Next recommended pass
 
-`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,8 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS | DOCS_SYNC | current | Claude Code closeout (`PASS_WITH_NITS`): accepted deterministic fixture state, recorded non-blocking nits, and aligned routing/lock pointers. |
-| LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | recommended | Define the manual positive smoke procedure using `board_canvas_positive_smoke`, including open-directory vs export/import ZIP path and explicit boundary checks. |
+| LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Added practical manual positive smoke runbook for `board_canvas_positive_smoke`, including direct-open and ZIP export/import strategies with explicit boundary checks. |
+| LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | recommended | Execute manual positive smoke run using new fixture and record objective PASS/PASS_WITH_NITS/FAIL evidence with screenshots/notes template. |
 | BOARD_CANVAS_POSITIVE_SMOKE_PROJECT_ZIP_FIXTURE_PASS | DOCS_SYNC / TOOLING_SCOPE | deferred alternative | Optional alternative strategy if fixture import path is preferred later; requires separate scope lock for ZIP-fixture surfaces. |
 | BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS | AUDIT_ONLY | deferred | Independent audit for navigation discoverability fix scope and boundary preservation. |
 | BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | deferred candidate | Allowed only if kept metadata-only and does not open new evidence surfaces. |
@@ -37,6 +37,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS | DOCS_SYNC | completed (`PASS_WITH_NITS`) | Closed fixture audit, accepted deterministic sample/mirror state, recorded non-blocking nits, and routed to live positive smoke planning. |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Accepted fixture correctness and boundary compliance; recorded non-blocking lock-pointer + validate-all coverage nits for closeout tracking. |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS | SAMPLE_PASS / QA_PASS | completed | Added deterministic positive-smoke sample and mirrored asset fixture, generated materialized known-facts projection, and extended sample parity checks with no runtime/schema/tool changes. |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Confirmed deterministic fixture strategy is ready for implementation with strict sample/asset-only write surfaces and validator-compatible ID/range constraints. |

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
 
 ## Goal
 
-Docs-only closeout pass to finalize audit acceptance for `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS` and align forward routing.
+Docs-only positive smoke planning pass for manual validation of the accepted `board_canvas_positive_smoke` fixture.
 
 ## Allowed surfaces
 
@@ -14,8 +14,8 @@ Docs-only closeout pass to finalize audit acceptance for `BOARD_CANVAS_POSITIVE_
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS.md`
-- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS.md`
+- `docs/BOARD_CANVAS_LIVE_POSITIVE_SMOKE_TEST_PLAN.md`
+- `docs/audit/LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,7 +45,7 @@ Docs-only closeout pass to finalize audit acceptance for `BOARD_CANVAS_POSITIVE_
 
 ## Scope boundary (locked)
 
-- Docs-only closeout and routing reconciliation.
+- Docs-only planning and routing reconciliation.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -54,7 +54,7 @@ Docs-only closeout pass to finalize audit acceptance for `BOARD_CANVAS_POSITIVE_
 
 ## Next recommended pass
 
-`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
 
 ## Validate
 

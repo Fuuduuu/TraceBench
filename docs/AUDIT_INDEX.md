@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | docs/audit/LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS.md | completed (docs-only positive smoke runbook: fixture-open strategy, Windows commands, positive/forbidden/evidence-boundary checklists, observation template, and stop criteria before manual run) |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_CLOSEOUT_PASS.md | completed (`PASS_WITH_NITS`; accepted deterministic positive-smoke fixture chain and boundary compliance, aligned ACTIVE_SCOPE_LOCK pointer, and routed next to live positive smoke planning) |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS.md | completed (created deterministic positive-smoke sample + asset mirror, generated known_facts via materializer, extended sample sync parity test, and preserved schema/tool/runtime boundaries) |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS.md | completed (docs-only strategy lock: recorded live-smoke validation gap, locked required projected facts for positive smoke fixture, selected deterministic sample-backed strategy, and routed next to precheck audit before any fixture implementation) |

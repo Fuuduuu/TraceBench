@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS`
-- Docs drift countdown: `4`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+- Docs drift countdown: `3`
 
 ## Handoff snapshot (bounded)
 
@@ -21,8 +21,9 @@ Branch: `main`
   - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
 - Viewer implementation status:
   - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` was blocked before implementation,
-  - blocker was confirmed by audit: `.tracebench_local` is not yet excluded by ZIP export,
-  - ZIP exclusion hardening is now implemented in tooling, pending post-audit closeout before viewer implementation resumes.
+  - blocker was confirmed by audit: `.tracebench_local` was not excluded by ZIP export,
+  - ZIP exclusion hardening and post-audit acceptance are now complete,
+  - viewer pass is unblocked and is the next recommended implementation pass.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -44,8 +45,17 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`:
+  - closeout recorded for accepted/pushed implementation,
+  - Claude Code post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,
+  - `.tracebench_local` ZIP export leak blocker is closed,
+  - routing moved forward to `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS` accepted from audit context:
+  - verdict `PASS`,
+  - disposition `ACCEPT_AS_IS`,
+  - no scope drift and Project ZIP contract preserved.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`:
-  - implementation pass completed: export excludes `.tracebench_local` sidecar paths,
+  - implementation accepted/pushed: export excludes `.tracebench_local` sidecar paths,
   - ZIP validation symmetry added to reject `.tracebench_local` entries,
   - ZIP tests added for export exclusion and validator rejection cases,
   - Project ZIP spec updated to explicitly document `.tracebench_local` exclusion.

@@ -2,31 +2,27 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`
 
 ## Goal
 
-Narrow Project ZIP tooling hardening to exclude `.tracebench_local` sidecar paths from export and reject them during ZIP validation.
+Docs-only closeout of accepted ZIP exclusion hardening and accepted post-audit result.
 
 ## Allowed surfaces
 
-- `tools/export_project_zip.py`
-- `tests/test_project_zip.py`
-- `docs/PROJECT_ZIP_SPEC.md`
-- `tools/validate_project_zip.py` (narrow symmetry-only)
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
-- `tools/**` (except `tools/export_project_zip.py` and `tools/validate_project_zip.py`)
+- `tools/**`
 - `lib/**`
 - `test/**`
-- `tests/**` (except `tests/test_project_zip.py`)
+- `tests/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -49,21 +45,19 @@ Narrow Project ZIP tooling hardening to exclude `.tracebench_local` sidecar path
 
 ## Scope boundary (locked)
 
-- Narrow tooling hardening pass only.
-- No Flutter/runtime/reference-viewer implementation.
-- No schema/materializer/events/known_facts changes.
+- Docs-only closeout pass.
+- No code/tool/test/schema/materializer/runtime changes.
 - No fixture/sample/asset/generated-artifact changes.
-- No Project ZIP contract expansion.
+- No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - No tag or release-object mutation.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 
 ## Validate
 
-- `py -3 -m unittest tests.test_project_zip`
 - `py -3 tools\validate_all.py`
 - `git diff --name-only`
 - `git status --short --branch`

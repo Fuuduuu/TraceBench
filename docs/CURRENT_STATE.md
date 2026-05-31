@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -16,6 +16,9 @@ Branch: `main`
 - Roadmap is locked:
   - `TAG_V1_RC_FIRST -> V1_1_HARDENING -> V2_EVENT_WRITING_ARCHITECTURE`.
 - Active phase is `V1.1` hardening.
+- Current scope lock outcome:
+  - accepted LOW finding is recorded: `validate_all.py` does not yet auto-validate `board_canvas_positive_smoke`,
+  - next implementation pass is locked to narrow tools hardening only.
 
 ### Accepted V1 baseline (still authoritative)
 - Board Canvas V1 is read-only and metadata-safe.
@@ -31,6 +34,10 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`:
+  - next pass locked to `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` (`TOOLS_PASS`),
+  - implementation surface locked to `tools/validate_all.py` (+ tests only if strictly required),
+  - sample/schema/materializer/runtime surfaces remain out of scope.
 - `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` accepted:
   - audit verdict PASS recorded,
   - no audit-time file modifications,

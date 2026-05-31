@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only drift cleanup to compact/aligned governance state after V1.1 validation/smoke audit closeout.
+Docs-only scope lock for a small V1.1 tools-hardening pass that brings `board_canvas_positive_smoke` into the main validation gate.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only drift cleanup to compact/aligned governance state after V1.1 validatio
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -33,9 +32,10 @@ Docs-only drift cleanup to compact/aligned governance state after V1.1 validatio
 - `view_state.json`
 - Project ZIP tooling/files
 - Flutter/runtime implementation
-- automated test implementation
-- fixture/sample implementation
-- generated data changes
+- tools implementation changes
+- automated test implementation changes
+- fixture/sample implementation or edits
+- generated data or artifact changes
 - git tag creation
 - git tag push
 - git tag delete/move
@@ -48,7 +48,7 @@ Docs-only drift cleanup to compact/aligned governance state after V1.1 validatio
 
 ## Scope boundary (locked)
 
-- Docs-only drift cleanup pass.
+- Docs-only scope lock pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -61,7 +61,7 @@ Docs-only drift cleanup to compact/aligned governance state after V1.1 validatio
 
 ## Next recommended pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
 
 ## Validate
 

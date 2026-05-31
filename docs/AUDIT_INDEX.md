@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS.md | completed (docs-only V1.1 tools-hardening scope lock: records accepted LOW fixture-gate coverage gap, locks next pass to narrow `TOOLS_PASS` on `tools/validate_all.py`, preserves evidence boundaries, and keeps sample/schema/materializer/runtime/tag surfaces out of scope) |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed (docs-only post-V1.1 drift cleanup: compacted CURRENT_STATE into bounded handoff format, aligned queue/scope/route ledgers, reset countdown discipline, recorded metagovernance audit acceptance, and routed to fixture-coverage scope lock) |
 | GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | accepted (`PASS_WITH_NITS`) from audit context; no scope drift or repo modifications, routing/tool logic practical, CURRENT_STATE bloat flagged, fixture auto-gate scope-lock scheduling recommended |
 | V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted Claude Code/Opus audit verdict `PASS`, confirms no-file-change audit execution and intact validation/smoke baseline, records deferred tools-hardening LOW item + docs-drift NIT, and routes next to docs drift cleanup) |

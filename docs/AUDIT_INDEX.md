@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS | docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS.md | completed (docs-only V1.1 hardening scope lock: fixed first hardening pass type to `AUDIT_ONLY`, locked validation/smoke command/check focus for accepted V1 baseline, preserved no-write evidence boundaries, and routed next to concrete audit pass) |
 | SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS | docs/audit/SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS.md | completed (docs-only source/handoff sync after accepted RC tag + roadmap decision: aligned V1/V2 phase narrative, added risk-based tool routing + no-self-approval governance guidance, preserved evidence boundaries, and routed next to first V1.1 hardening validation/smoke scope-lock pass) |
 | V1_TO_V2_ROADMAP_DECISION_PASS | docs/audit/V1_TO_V2_ROADMAP_DECISION_PASS.md | completed (docs-only roadmap decision lock after verified/pushed `v1.0.0-rc1`: accepted route is `TAG_V1_RC_FIRST` → `V1.1_HARDENING` → `V2_EVENT_WRITING_ARCHITECTURE`; photo overlay/transform/background-helper are not V2 entry work; evidence boundaries preserved; routed next to source-guide sync) |
 | V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | docs/audit/V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code `PASS`, accepted `v1.0.0-rc1` annotated/pushed HEAD-target verification state as V1 RC baseline-compatible, confirmed validation+hygiene status, and routed to roadmap decision) |

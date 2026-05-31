@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
+`V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only source/handoff guide synchronization after accepted V1 RC tag verification and V1->V2 roadmap decision.
+Docs-only scope lock for first V1.1 validation/smoke hardening route after accepted V1 RC + roadmap + source-guide sync.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only source/handoff guide synchronization after accepted V1 RC tag verifica
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/audit/SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS.md`
+- `docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -48,7 +47,7 @@ Docs-only source/handoff guide synchronization after accepted V1 RC tag verifica
 
 ## Scope boundary (locked)
 
-- Docs-only source-guide/governance synchronization pass.
+- Docs-only hardening validation/smoke scope-lock pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -61,7 +60,7 @@ Docs-only source/handoff guide synchronization after accepted V1 RC tag verifica
 
 ## Next recommended pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
 
 ## Validate
 

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
-- Next recommended pass: `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+- Current pass: `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+- Next recommended pass: `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -374,7 +374,7 @@ Branch: main
   - photo alignment/visual trace/damage/suspect metadata do not imply electrical/fault truth.
 - Route next to `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`.
 
-### Source guide sync after V1 RC (current)
+### Source guide sync after V1 RC (accepted)
 - Source/handoff governance docs are synchronized after accepted V1 RC tag verification and roadmap lock.
 - Confirmed baseline remains:
   - V1 RC tag `v1.0.0-rc1` tagged + verified,
@@ -396,6 +396,36 @@ Branch: main
   - no `board_graph.json` / `view_state.json`.
 - Stale pre-RC `Source Guide v9` references were checked and none remain in active docs.
 - Route next to `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`.
+
+### V1.1 hardening validation/smoke scope lock (current)
+- V1.1 hardening phase is started after:
+  - accepted/pushed V1 RC tag verification closeout,
+  - accepted/pushed V1-to-V2 roadmap decision lock,
+  - accepted/pushed source-guide sync.
+- Scope locked for first V1.1 hardening validation/smoke route:
+  - validate current accepted V1 baseline reliability only,
+  - no schema/tool/test/runtime/sample changes in this scope-lock pass.
+- Next pass type is locked to `AUDIT_ONLY`:
+  - `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
+- Audit focus is locked to:
+  - `py -3 tools\validate_all.py` as main V1 validation gate,
+  - explicit `board_canvas_positive_smoke` validation coverage and whether it is auto-gated or must remain explicit,
+  - evidence-safe state for `board_canvas_positive_smoke`,
+  - forbidden artifact rejection/absence (`board_graph.json`, `view_state.json`),
+  - renderer/view read-only (`renderer writes: none` boundary),
+  - optional missing photo warning classification remains non-blocking unless separately scoped.
+- Expected command set for the audit pass is locked:
+  - `py -3 tools\validate_all.py`
+  - `py -3 tools\validate_events_jsonl.py samples\board_canvas_positive_smoke\events.jsonl schemas\events.schema.json`
+  - `py -3 tools\materialize_known_facts.py samples\board_canvas_positive_smoke\events.jsonl samples\board_canvas_positive_smoke\known_facts.json`
+  - `py -3 -m unittest tests.test_asset_sample_sync`
+  - `py -3 -m unittest tests.test_project_zip`
+  - `py -3 -m unittest tests.test_materialize_known_facts`
+  - `py -3 -m unittest tests.test_validate_events_jsonl`
+- Follow-on routing from audit is locked:
+  - if no gap: closeout + keep baseline as-is,
+  - if gap found: route to dedicated scope lock for smallest required tools/test hardening (no direct broad implementation jump).
+- Route next to `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

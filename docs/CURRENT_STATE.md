@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -16,6 +16,9 @@ Branch: `main`
 - Roadmap is locked:
   - `TAG_V1_RC_FIRST -> V1_1_HARDENING -> V2_EVENT_WRITING_ARCHITECTURE`.
 - Active phase is `V1.1` hardening.
+- GPT Pro architecture decision for V1.1 reference images is locked to Model B:
+  - project-associated local sidecar files + non-canonical sidecar metadata,
+  - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -35,6 +38,12 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS` accepted from audit context:
+  - audit-only route, no repo modifications,
+  - routed to Model-B scope lock.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`:
+  - next pass locked to `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`,
+  - V1.1 reference images locked to local sidecar/reference-only/non-canonical behavior.
 - `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` accepted/pushed:
   - changed surface: `tools/validate_all.py` only,
   - `board_canvas_positive_smoke` main-gate coverage gap is closed,
@@ -86,7 +95,7 @@ Branch: `main`
 - Suspect is not probability.
 - `template_id` / footprint family is not electrical identity.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Reference images are future proposal context only; they do not create canonical facts.
+- V1.1 reference images are local sidecar/reference-only metadata and do not create canonical facts.
 - Only human-confirmed accepted events may update canonical projected truth.
 
 ## CURRENT_STATE size/archive discipline (durable rule)

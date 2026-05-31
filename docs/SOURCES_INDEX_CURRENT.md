@@ -12,12 +12,18 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
 - `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` is accepted/pushed.
 - `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS` is accepted/pushed.
 - `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` is accepted/pushed.
+- `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` and closeout are accepted/pushed.
+- `REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS` is accepted from audit context as audit-only (no repo modifications).
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS` is active/accepted for V1.1.
 - Accepted roadmap sequence:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`
   - then `V2_EVENT_WRITING_ARCHITECTURE`
 - V2 does not start with transform/photo-overlay/background-photo-helper implementation.
-- Reference-image context remains future work and non-canonical until human-confirmed accepted events.
+- GPT Pro architecture decision for V1.1 reference images is Model B:
+  - project-associated local sidecar files + non-canonical local metadata ledger,
+  - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
+- Reference images remain non-canonical and cannot create accepted facts without separate human-confirmed event pathways.
 
 ## CURRENT_STATE size/archive discipline
 

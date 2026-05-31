@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS | DOCS_SYNC | current | Docs-only closeout: records accepted implementation + Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirms fixture-gap closure, aligns ledgers, and preserves V1.1 evidence boundaries. |
-| REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Next V1.1 hardening scope item: lock reference-only image import/viewer metadata contract while preserving non-canonical fact boundaries and no-write renderer policy. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks V1.1 Model-B reference-image scope: project-associated local sidecar files + non-canonical metadata ledger, explicitly outside canonical event/projection and outside Project ZIP. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | FLUTTER_PASS | recommended | Narrow V1.1 implementation pass: local file picker import, sidecar copy + sidecar ledger, read-only reference viewer/panel and warnings, with strict no-canonical/no-ZIP/no-overlay/no-AI boundaries. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS | AUDIT_ONLY | planned | Post-implementation scope/boundary audit for sidecar viewer pass; confirm no drift into events/known_facts/ZIP/overlay/AI surfaces. |
+| REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS | AUDIT_ONLY | completed (context accepted) | Audit-only pass from user context: no repo modifications; GPT Pro architecture decision routed to Model-B sidecar scope lock. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout: records accepted implementation + Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirms fixture-gap closure, aligns ledgers, and preserves V1.1 evidence boundaries. |
 | VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code / Opus post-audit confirmed no scope drift, only `tools/validate_all.py` surface change, and accepted fixture-gate hardening as-is. |
 | VALIDATE_ALL_FIXTURE_COVERAGE_PASS | TOOLS_PASS | completed | Narrow tools hardening implementation pass: `validate_all.py` now covers both fixtures in the main gate with boundary assertions preserved. |
 | VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locks the narrow V1.1 tools-hardening scope to bring `board_canvas_positive_smoke` into the main validation gate without schema/materializer/runtime changes. |
@@ -42,7 +45,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | DOCS_SYNC | completed | Recorded reference-image-as-AI-context future-work direction while preserving V1 RC boundaries and release-tag flow. |
 | V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action with exact commands and verification expectations. |
 | V1_FINAL_SMOKE_CHECK_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Final manual V1 RC smoke verification recorded as `PASS`; Board Canvas, read-only metadata panels, safety copy, readiness metadata, and forbidden-behavior absence confirmed on positive fixture. |
-| REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | deferred V1.1 candidate | Future scope lock for reference-only image import/viewer metadata contract; no canonical-fact creation. |
+| REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | superseded | Superseded by `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS` after GPT Pro Model-B decision lock. |
 | REFERENCE_IMAGE_AI_CONTEXT_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred V2 candidate | Future audit for AI proposal workflow that can consume reference images as context while keeping outputs non-canonical until human confirmation. |
 | BOARD_CANVAS_REFERENCE_IMAGE_LAYER_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk V2 | Future high-risk scope audit for optional board-canvas reference-image layer; requires GPT Pro + Claude Code gate before implementation. |
 | AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS | DOCS_SYNC / RESEARCH_SCOPE | deferred V2+ research | Future benchmark design for reference-image-driven AI layout proposals (top-1/top-3 accuracy) with unconfirmed proposal outputs only. |

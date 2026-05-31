@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout recording for accepted fixture coverage implementation and post-audit verdict.
+Docs-only scope lock for V1.1 local sidecar reference image viewer direction (Model B), without implementation.
 
 ## Allowed surfaces
 
@@ -14,8 +14,8 @@ Docs-only closeout recording for accepted fixture coverage implementation and po
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md` (only if stale wording requires correction)
-- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md` (only if architecture/routing wording needs alignment)
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -23,6 +23,7 @@ Docs-only closeout recording for accepted fixture coverage implementation and po
 - `tools/**`
 - `lib/**`
 - `test/**`
+- `tests/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -39,6 +40,7 @@ Docs-only closeout recording for accepted fixture coverage implementation and po
 - git tag creation
 - git tag push
 - git tag delete/move
+- Project ZIP tooling/files
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -48,7 +50,7 @@ Docs-only closeout recording for accepted fixture coverage implementation and po
 
 ## Scope boundary (locked)
 
-- Docs-only closeout pass.
+- Docs-only scope lock pass.
 - No schema/tool/materializer/Dart/Flutter implementation changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -61,7 +63,7 @@ Docs-only closeout recording for accepted fixture coverage implementation and po
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
 
 ## Validate
 

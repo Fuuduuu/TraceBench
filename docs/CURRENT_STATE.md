@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS`
-- Docs drift countdown: `2`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
+- Docs drift countdown: `1`
 
 ## Handoff snapshot (bounded)
 
@@ -19,8 +19,9 @@ Branch: `main`
 - GPT Pro architecture decision for V1.1 reference images is locked to Model B:
   - project-associated local sidecar files + non-canonical sidecar metadata,
   - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
-- Viewer implementation status:
-  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` implementation is now completed in a narrow Model-B scope,
+- Viewer implementation + audit status:
+  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` is accepted/pushed in a narrow Model-B scope,
+  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS` is accepted from audit context with `PASS` and `ACCEPT_AS_IS`,
   - local sidecar import/view flow is available via Project overview,
   - reference images remain non-canonical and outside ZIP/events/known_facts/materializer/evidence rendering.
 - Current implementation outcome:
@@ -56,6 +57,11 @@ Branch: `main`
     - not used by AI.
   - no Project ZIP contract changes,
   - no events/known_facts/schema/materializer changes.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS` accepted from audit context:
+  - verdict `PASS`,
+  - disposition `ACCEPT_AS_IS`,
+  - all audited claims accepted with no scope drift,
+  - no ZIP/events/known_facts/schema/materializer/overlay/AI drift.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`:
   - closeout recorded for accepted/pushed implementation,
   - Claude Code post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,
@@ -121,6 +127,9 @@ Branch: `main`
 
 ### Current non-blocking items
 - NIT: keep state docs compact; this cleanup resets/locks size discipline.
+- LOW: optional future hardening can clamp/revalidate preview ledger paths under `.tracebench_local/reference_images/`.
+- NIT: SHA-256 implementation may later migrate to `package:crypto` if dependency policy allows.
+- NIT: `Random()` for local sidecar IDs remains accepted because IDs are non-security metadata.
 
 ## Hard boundaries (unchanged)
 

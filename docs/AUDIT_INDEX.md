@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed viewer implementation and accepted Claude post-audit verdict `PASS` with `ACCEPT_AS_IS`, records non-blocking future notes, preserves Model-B non-canonical boundaries, and routes forward to optional path-clamp scope lock) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS.md | completed (V1.1 Model-B implementation: local file-picker import for png/jpg/jpeg/webp, sidecar copy to `.tracebench_local/reference_images/`, non-canonical metadata ledger `.tracebench_local/reference_images.json`, read-only viewer safety copy, and no drift into ZIP/events/known_facts/materializer/overlay/AI surfaces) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed ZIP exclusion implementation and accepted Claude post-audit verdict `PASS`/`ACCEPT_AS_IS`, confirms blocker closure, preserves Model-B boundaries, and routes to viewer pass) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS.md | accepted from audit context (`PASS`, `ACCEPT_AS_IS`); confirms no scope drift, tests passed, and Project ZIP contract preserved |

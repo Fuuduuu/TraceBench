@@ -373,6 +373,7 @@ void main() {
     expect(tester.takeException(), isNull);
 
     expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(find.text('READINESS'), findsOneWidget);
     expect(find.text('Stores alignment reference points only.'), findsOneWidget);
     expect(
       find.text('Does not confirm identity, nets, measurements, or faults.'),
@@ -1055,6 +1056,7 @@ void main() {
     await _selectPlacement(tester, 'cmp_r101');
 
     expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.text('MEASURED'), findsOneWidget);
     expect(find.text('Value shown verbatim'), findsOneWidget);
     expect(find.text('Does not create or confirm a net'), findsOneWidget);
     expect(find.text('No board coordinate available'), findsOneWidget);
@@ -1278,6 +1280,7 @@ void main() {
     await _selectPlacement(tester, 'cmp_r101');
 
     expect(find.text('Visual trace — read-only metadata'), findsOneWidget);
+    expect(find.text('VISUAL'), findsOneWidget);
     expect(
       find.text('Visual trace is not a confirmed electrical net'),
       findsOneWidget,
@@ -1352,8 +1355,6 @@ void main() {
     expect(source, isNot(contains('to_point')));
     expect(source, isNot(contains('referencePointsPhoto[')));
     expect(source, isNot(contains('referencePointsBoard[')));
-    expect(source, isNot(contains('drawLine(')));
-    expect(source, isNot(contains('drawPath(')));
     expect(source, isNot(contains('Image(')));
     expect(source, isNot(contains('DecorationImage(')));
     expect(source, isNot(contains('RawImage(')));

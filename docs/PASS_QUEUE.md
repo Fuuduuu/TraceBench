@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,9 +25,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks safe V1 read-only Board Canvas visual polish scope to styling/layout/copy/accessibility only; no geometry/write/transform/photo-overlay expansion allowed. |
-| BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | FLUTTER_PASS | recommended | Implement visual polish within locked read-only boundaries (no new data interpretation, geometry overlays, write actions, or transform/photo-layer behavior). |
-| BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | QA_PASS | queued | Validate no-regression and boundary preservation after polish implementation, including constrained viewport and metadata-only guardrails. |
+| BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked safe V1 read-only Board Canvas visual polish scope to styling/layout/copy/accessibility only; no geometry/write/transform/photo-overlay expansion allowed. |
+| BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | FLUTTER_PASS | current | Implemented scoped read-only board-canvas visual polish (three-zone responsive hierarchy, metadata-card polish, evidence tags) without behavior or evidence-surface expansion. |
+| BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | QA_PASS | recommended | Validate no-regression and boundary preservation after polish implementation, including constrained viewport and metadata-only guardrails. |
 | LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Added practical manual positive smoke runbook for `board_canvas_positive_smoke`, including direct-open and ZIP export/import strategies with explicit boundary checks. |
 | LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Manual positive smoke run completed and recorded with confirmed placement/inspector/measurement/visual-trace/readiness-panel behavior and preserved boundaries. |
 | BOARD_CANVAS_POSITIVE_SMOKE_PROJECT_ZIP_FIXTURE_PASS | DOCS_SYNC / TOOLING_SCOPE | deferred alternative | Optional alternative strategy if fixture import path is preferred later; requires separate scope lock for ZIP-fixture surfaces. |

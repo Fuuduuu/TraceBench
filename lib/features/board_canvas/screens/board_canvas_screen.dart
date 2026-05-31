@@ -113,15 +113,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       context,
       Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (photoToBoardAlignments.isNotEmpty) ...[
-              _PhotoAlignmentReadinessPanel(
-                alignments: photoToBoardAlignments,
-              ),
-              const SizedBox(height: 16),
-            ],
-            _PlacementSelector(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final selector = _PlacementSelector(
               entries: entries,
               selectedKey: selectedKey,
               onSelected: (value) {
@@ -129,43 +123,62 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   _selectedPlacementKey = value;
                 });
               },
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final canvas = _CanvasPanel(
-                    entries: entries,
-                    selectedKey: selectedKey,
-                  );
-                  final inspector = _InspectorPanel(
-                    selectedEntry: selectedEntry,
-                    relatedMeasurements: relatedMeasurements,
-                    relatedVisualTraces: relatedVisualTraces,
-                  );
+            );
+            final canvas = _CanvasPanel(
+              entries: entries,
+              selectedKey: selectedKey,
+            );
+            final metadata = _InspectorPanel(
+              selectedEntry: selectedEntry,
+              relatedMeasurements: relatedMeasurements,
+              relatedVisualTraces: relatedVisualTraces,
+              photoToBoardAlignments: photoToBoardAlignments,
+            );
 
-                  if (constraints.maxWidth >= 980) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            if (constraints.maxWidth >= 1180) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(width: 260, child: selector),
+                  const SizedBox(width: 16),
+                  Expanded(flex: 7, child: canvas),
+                  const SizedBox(width: 16),
+                  SizedBox(width: 370, child: metadata),
+                ],
+              );
+            }
+
+            if (constraints.maxWidth >= 900) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 260,
+                    child: Column(
                       children: [
-                        Expanded(flex: 7, child: canvas),
-                        const SizedBox(width: 16),
-                        Expanded(flex: 4, child: inspector),
+                        selector,
+                        const SizedBox(height: 12),
+                        Expanded(child: metadata),
                       ],
-                    );
-                  }
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(child: canvas),
+                ],
+              );
+            }
 
-                  return Column(
-                    children: [
-                      Expanded(flex: 3, child: canvas),
-                      const SizedBox(height: 12),
-                      Expanded(flex: 2, child: inspector),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                selector,
+                const SizedBox(height: 12),
+                Expanded(flex: 3, child: canvas),
+                const SizedBox(height: 12),
+                Expanded(flex: 2, child: metadata),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -295,7 +308,13 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 220),
         child: SingleChildScrollView(
@@ -303,9 +322,9 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Photo alignment readiness — metadata only',
-                style: Theme.of(context).textTheme.titleSmall,
+              _SectionHeader(
+                title: 'Photo alignment readiness — metadata only',
+                tag: 'READINESS',
               ),
               const SizedBox(height: 6),
               const Text('Stores alignment reference points only.'),
@@ -342,15 +361,21 @@ class _PlacementSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Placement selection (read-only)',
-              style: Theme.of(context).textTheme.labelLarge,
+            const _SectionHeader(
+              title: 'Placement selection (read-only)',
+              subtitle: 'read-only · projection view',
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -382,7 +407,13 @@ class _CanvasPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -471,177 +502,265 @@ class _InspectorPanel extends StatelessWidget {
     required this.selectedEntry,
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
+    required this.photoToBoardAlignments,
   });
 
   final _PlacementEntry? selectedEntry;
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
+  final List<PhotoToBoardAlignmentFact> photoToBoardAlignments;
 
   @override
   Widget build(BuildContext context) {
+    final children = <Widget>[];
+
     if (selectedEntry == null) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text('Select a placement to view read-only details.'),
+      children.add(
+        Card(
+          child: const Padding(
+            padding: EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text('Select a placement to view read-only details.'),
+            ),
           ),
         ),
       );
+    } else {
+      children.add(_PlacementInspectorCard(entry: selectedEntry!));
+      children.add(
+        _MeasurementSummaryCard(relatedMeasurements: relatedMeasurements),
+      );
+      children.add(
+        _VisualTraceMetadataCard(relatedVisualTraces: relatedVisualTraces),
+      );
     }
 
-    final entry = selectedEntry!;
+    if (photoToBoardAlignments.isNotEmpty) {
+      children.add(
+        _PhotoAlignmentReadinessPanel(alignments: photoToBoardAlignments),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < children.length; index++) ...[
+            if (index > 0) const SizedBox(height: 12),
+            children[index],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PlacementInspectorCard extends StatelessWidget {
+  const _PlacementInspectorCard({required this.entry});
+
+  final _PlacementEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
     final placement = entry.placement;
     final component = entry.component;
     final packageLabel = entry.template?.displayName ?? 'Unknown package geometry';
     final templateId = placement.templateId ?? 'not provided';
+    final identityStatus = _identityStatus(component);
 
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Placement inspector (read-only)',
-                style: Theme.of(context).textTheme.titleMedium,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SectionHeader(
+              title: 'Placement inspector (read-only)',
+              tag: identityStatus == 'unknown' ? 'UNKNOWN' : null,
+              subtitle: 'read-only · projection view',
+            ),
+            const SizedBox(height: 12),
+            _InspectorField(label: 'Component ID', value: placement.componentId),
+            if ((component?.designator ?? '').isNotEmpty)
+              _InspectorField(
+                label: 'Designator',
+                value: component!.designator!,
               ),
-              const SizedBox(height: 12),
-              _InspectorField(label: 'Component ID', value: placement.componentId),
-              if ((component?.designator ?? '').isNotEmpty)
+            _InspectorField(label: 'Template ID', value: templateId),
+            _InspectorField(
+              label: 'Package',
+              value: '$packageLabel (package geometry)',
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 6),
+              child: Text('template family — not a part identity'),
+            ),
+            _InspectorField(
+              label: 'Identity status',
+              value: identityStatus,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 6),
+              child: Text('identity not confirmed in this projection'),
+            ),
+            _InspectorField(
+              label: 'Electrical role',
+              value: 'not confirmed',
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 6),
+              child: Text('Template does not prove electrical identity.'),
+            ),
+            _InspectorField(label: 'Placement status', value: placement.status),
+            _InspectorField(
+              label: 'Coordinate space',
+              value: placement.coordinateSpace,
+            ),
+            _InspectorField(label: 'Board side', value: placement.boardSide),
+            _InspectorField(label: 'Center X', value: placement.centerX.toString()),
+            _InspectorField(label: 'Center Y', value: placement.centerY.toString()),
+            _InspectorField(
+              label: 'Rotation (deg)',
+              value: placement.rotationDeg.toString(),
+            ),
+            if (placement.scale != null)
+              _InspectorField(label: 'Scale', value: placement.scale.toString())
+            else ...[
+              if (placement.width != null)
                 _InspectorField(
-                  label: 'Designator',
-                  value: component!.designator!,
+                  label: 'Width',
+                  value: placement.width.toString(),
                 ),
-              _InspectorField(label: 'Template ID', value: templateId),
-              _InspectorField(
-                label: 'Package',
-                value: '$packageLabel (package geometry)',
-              ),
-              _InspectorField(
-                label: 'Identity status',
-                value: _identityStatus(component),
-              ),
-              _InspectorField(
-                label: 'Electrical role',
-                value: 'not confirmed',
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 6),
-                child: Text('Template does not prove electrical identity.'),
-              ),
-              _InspectorField(label: 'Placement status', value: placement.status),
-              _InspectorField(
-                label: 'Coordinate space',
-                value: placement.coordinateSpace,
-              ),
-              _InspectorField(label: 'Board side', value: placement.boardSide),
-              _InspectorField(label: 'Center X', value: placement.centerX.toString()),
-              _InspectorField(label: 'Center Y', value: placement.centerY.toString()),
-              _InspectorField(
-                label: 'Rotation (deg)',
-                value: placement.rotationDeg.toString(),
-              ),
-              if (placement.scale != null)
-                _InspectorField(label: 'Scale', value: placement.scale.toString())
-              else ...[
-                if (placement.width != null)
-                  _InspectorField(
-                    label: 'Width',
-                    value: placement.width.toString(),
-                  ),
-                if (placement.height != null)
-                  _InspectorField(
-                    label: 'Height',
-                    value: placement.height.toString(),
-                  ),
-              ],
-              _InspectorField(
-                label: 'Source event ID',
-                value: placement.sourceEventId,
-              ),
-              _InspectorField(label: 'Status', value: placement.status),
-              if (component?.installationStatus != null)
+              if (placement.height != null)
                 _InspectorField(
-                  label: 'Installation status',
-                  value: component!.installationStatus!,
+                  label: 'Height',
+                  value: placement.height.toString(),
                 ),
-              if (component?.removedByEventId != null)
-                _InspectorField(
-                  label: 'Removed by event ID',
-                  value: component!.removedByEventId!,
-                ),
-              const SizedBox(height: 10),
-              Text(
-                'Measurement — read-only summary',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 6),
-              const Text('Value shown verbatim'),
-              const Text('Does not create or confirm a net'),
-              const Text('No board coordinate available'),
-              if (relatedMeasurements.isEmpty) ...[
-                const SizedBox(height: 6),
-                const Text('No related measurements for selected component.'),
-              ] else ...[
-                const SizedBox(height: 8),
-                ...relatedMeasurements
-                    .map(
-                      (measurement) => _MeasurementSummaryTile(
-                        measurement: measurement,
-                      ),
-                    )
-                    .toList(growable: false),
-              ],
-              const SizedBox(height: 10),
-              Text(
-                'Visual trace — read-only metadata',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 6),
-              const Text('Visual trace is not a confirmed electrical net'),
-              const Text('Photo-local evidence; no board coordinate available'),
-              const Text('Does not create or confirm connectivity'),
-              if (relatedVisualTraces.isEmpty) ...[
-                const SizedBox(height: 6),
-                const Text('No related visual traces for selected component.'),
-              ] else ...[
-                const SizedBox(height: 8),
-                ...relatedVisualTraces
-                    .map(
-                      (trace) => _VisualTraceSummaryTile(trace: trace),
-                    )
-                    .toList(growable: false),
-              ],
             ],
-          ),
+            _InspectorField(
+              label: 'Source event ID',
+              value: placement.sourceEventId,
+            ),
+            _InspectorField(label: 'Status', value: placement.status),
+            if (component?.installationStatus != null)
+              _InspectorField(
+                label: 'Installation status',
+                value: component!.installationStatus!,
+              ),
+            if (component?.removedByEventId != null)
+              _InspectorField(
+                label: 'Removed by event ID',
+                value: component!.removedByEventId!,
+              ),
+          ],
         ),
       ),
     );
   }
+}
 
-  String _identityStatus(ComponentFact? component) {
-    if (component == null) {
-      return 'unknown';
-    }
+class _MeasurementSummaryCard extends StatelessWidget {
+  const _MeasurementSummaryCard({required this.relatedMeasurements});
 
-    final status = component.status?.toLowerCase();
-    final type = component.type?.trim();
-    const confirmedStates = {
-      'human_confirmed',
-      'user_confirmed',
-      'confirmed',
-      'identity_confirmed',
-    };
+  final List<MeasurementFact> relatedMeasurements;
 
-    if (type != null && type.isNotEmpty && confirmedStates.contains(status)) {
-      return 'human-confirmed ($type)';
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionHeader(
+              title: 'Measurement — read-only summary',
+              tag: 'MEASURED',
+            ),
+            const SizedBox(height: 6),
+            const Text('measured value — shown verbatim'),
+            const Text('Value shown verbatim'),
+            const Text('Does not create or confirm a net'),
+            const Text('No board coordinate available'),
+            if (relatedMeasurements.isEmpty) ...[
+              const SizedBox(height: 6),
+              const Text('No related measurements for selected component.'),
+            ] else ...[
+              const SizedBox(height: 8),
+              ...relatedMeasurements
+                  .map(
+                    (measurement) => _MeasurementSummaryTile(
+                      measurement: measurement,
+                    ),
+                  )
+                  .toList(growable: false),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
 
+class _VisualTraceMetadataCard extends StatelessWidget {
+  const _VisualTraceMetadataCard({required this.relatedVisualTraces});
+
+  final List<VisualTraceFact> relatedVisualTraces;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionHeader(
+              title: 'Visual trace — read-only metadata',
+              tag: 'VISUAL',
+            ),
+            const SizedBox(height: 6),
+            const Text('visual metadata — does not establish a net'),
+            const Text('Visual trace is not a confirmed electrical net'),
+            const Text('Photo-local evidence; no board coordinate available'),
+            const Text('Does not create or confirm connectivity'),
+            if (relatedVisualTraces.isEmpty) ...[
+              const SizedBox(height: 6),
+              const Text('No related visual traces for selected component.'),
+            ] else ...[
+              const SizedBox(height: 8),
+              ...relatedVisualTraces
+                  .map(
+                    (trace) => _VisualTraceSummaryTile(trace: trace),
+                  )
+                  .toList(growable: false),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _identityStatus(ComponentFact? component) {
+  if (component == null) {
     return 'unknown';
   }
+
+  final status = component.status?.toLowerCase();
+  final type = component.type?.trim();
+  const confirmedStates = {
+    'human_confirmed',
+    'user_confirmed',
+    'confirmed',
+    'identity_confirmed',
+  };
+
+  if (type != null && type.isNotEmpty && confirmedStates.contains(status)) {
+    return 'human-confirmed ($type)';
+  }
+
+  return 'unknown';
 }
 
 class _MeasurementSummaryTile extends StatelessWidget {
@@ -759,6 +878,71 @@ class _VisualTraceSummaryTile extends StatelessWidget {
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, this.tag, this.subtitle});
+
+  final String title;
+  final String? tag;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.titleSmall,
+              ),
+            ),
+            if (tag != null) ...[
+              const SizedBox(width: 8),
+              _EvidenceTag(label: tag!),
+            ],
+          ],
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 2),
+          Text(
+            subtitle!,
+            style: theme.textTheme.bodySmall,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _EvidenceTag extends StatelessWidget {
+  const _EvidenceTag({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Text(
+          label,
+          style: theme.textTheme.labelSmall,
+        ),
+      ),
+    );
+  }
+}
+
 class _InspectorField extends StatelessWidget {
   const _InspectorField({required this.label, required this.value});
 
@@ -814,13 +998,35 @@ class _BoardPlacementPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
+    const boardBase = Color(0xFF101A17);
+    const boardInset = Color(0xFF172722);
+    const boardBorder = Color(0xFF325247);
+    const gridColor = Color(0x2F4D7A65);
+
     final boardPaint = Paint()
-      ..color = colorScheme.surfaceContainerLowest
+      ..color = boardBase
       ..style = PaintingStyle.fill;
     canvas.drawRect(boardRect, boardPaint);
 
+    final innerBoardPaint = Paint()
+      ..color = boardInset
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(boardRect.deflate(6), innerBoardPaint);
+
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    const gridStep = 26.0;
+    for (double x = 6; x < size.width - 6; x += gridStep) {
+      canvas.drawLine(Offset(x, 6), Offset(x, size.height - 6), gridPaint);
+    }
+    for (double y = 6; y < size.height - 6; y += gridStep) {
+      canvas.drawLine(Offset(6, y), Offset(size.width - 6, y), gridPaint);
+    }
+
     final borderPaint = Paint()
-      ..color = colorScheme.outline
+      ..color = boardBorder
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     canvas.drawRect(boardRect.deflate(0.5), borderPaint);

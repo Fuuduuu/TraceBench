@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -128,7 +128,7 @@ Branch: main
   - no edit/confirm/save/apply/event-writing actions.
 - Route next to `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`.
 
-### Read-only visual polish V1 scope lock (current)
+### Read-only visual polish V1 scope lock (accepted)
 - Scope lock accepted for metadata-only Board Canvas visual polish direction after:
   - positive smoke run `PASS`,
   - Claude Design `GO`,
@@ -150,6 +150,28 @@ Branch: main
   - no schema/tool/runtime/sample/ZIP contract changes.
 - Next route is implementation-only within the locked polish boundary:
   - `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`.
+
+### Read-only visual polish V1 implementation (current)
+- Board Canvas visual shell polished within read-only boundaries:
+  - three-zone responsive hierarchy (selector / canvas / metadata stack),
+  - dark board substrate direction with subtle decorative grid/outline,
+  - refined card styling and read-only metadata grouping.
+- Metadata cards remain read-only and evidence-safe:
+  - inspector,
+  - measurement summary,
+  - visual trace metadata,
+  - photo-alignment readiness.
+- Text-visible category tags are present:
+  - `MEASURED`
+  - `VISUAL`
+  - `READINESS`
+  - `UNKNOWN` (when identity is not confirmed).
+- Required safety copy remains present, including:
+  - `renderer writes: none`,
+  - `declared type — not computed`,
+  - visual-trace and readiness non-electrical-proof copy.
+- No transform/photo/overlay/event-writing scope was added.
+- Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

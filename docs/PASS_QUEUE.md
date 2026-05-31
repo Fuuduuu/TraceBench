@@ -11,23 +11,24 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_FINAL_SMOKE_CHECK_PASS`
+`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+`V1_RELEASE_TAG_VERIFICATION_PASS`
 
 ## Docs drift countdown (canonical)
 
-`3`
+`2`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action, defines exact commands/expectations, and preserves no-tag/no-surface-change boundaries in this pass. |
+| V1_RELEASE_TAG_VERIFICATION_PASS | DOCS_SYNC / QA_RUN | recommended | Records post-user-tag verification: annotated tag existence/target correctness, clean tree, and unchanged protected boundaries/artifacts. |
+| V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | queued-next | Route roadmap decision only after RC tag verification so V1 baseline remains fixed. |
 | V1_FINAL_SMOKE_CHECK_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Final manual V1 RC smoke verification recorded as `PASS`; Board Canvas, read-only metadata panels, safety copy, readiness metadata, and forbidden-behavior absence confirmed on positive fixture. |
-| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Scope lock for V1 release-candidate tag workflow after successful final smoke check. |
-| V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded Claude Code audit `PASS`, accepted V1 RC scope lock, preserved boundaries, and routed to final smoke check before tag-scope lock. |
 | V1_RELEASE_READINESS_REPO_AUDIT_PASS | AUDIT_ONLY | completed (`READY_WITH_NITS`) | Repo-local release-readiness audit accepted with no true blockers and non-blocking cleanup/tagging/tooling nits. |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded GPT Pro + Claude readiness verdicts (`READY_WITH_NITS`), readiness estimate (94%), no true blockers, and V1 release-checkpointable status. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |

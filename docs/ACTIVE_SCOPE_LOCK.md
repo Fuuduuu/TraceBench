@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_FINAL_SMOKE_CHECK_PASS`
+`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only final smoke check recording for V1 release candidate boundary confirmation.
+Docs-only V1 release-candidate tag workflow scope lock.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only final smoke check recording for V1 release candidate boundary confirma
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_FINAL_SMOKE_CHECK_PASS.md`
+- `docs/V1_RELEASE_CANDIDATE_TAG_SCOPE.md`
+- `docs/audit/V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -35,6 +36,8 @@ Docs-only final smoke check recording for V1 release candidate boundary confirma
 - automated test implementation
 - fixture/sample implementation
 - generated data changes
+- git tag creation
+- git tag push
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -44,18 +47,19 @@ Docs-only final smoke check recording for V1 release candidate boundary confirma
 
 ## Scope boundary (locked)
 
-- Docs-only recording of final manual smoke PASS observations.
+- Docs-only scope lock for post-smoke V1 release-candidate tag workflow.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
+- No tag creation/push in this pass (user action only in later flow).
 - Renderer/view remains no-write.
 - No visual evidence geometry expansion.
 - No transform/photo-layer behavior expansion.
 
 ## Next recommended pass
 
-`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+`V1_RELEASE_TAG_VERIFICATION_PASS`
 
 ## Validate
 

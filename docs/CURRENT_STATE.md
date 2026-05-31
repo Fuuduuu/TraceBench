@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_FINAL_SMOKE_CHECK_PASS`
-- Next recommended pass: `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
-- Docs drift countdown: `3`
+- Current pass: `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+- Next recommended pass: `V1_RELEASE_TAG_VERIFICATION_PASS`
+- Docs drift countdown: `2`
 
 ## Handoff snapshot (compact)
 
@@ -267,7 +267,7 @@ Branch: main
   - both readiness audit pass IDs in queue history are harmless and do not affect active routing.
 - Route next to `V1_FINAL_SMOKE_CHECK_PASS`, then `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
 
-### V1 final smoke check (current)
+### V1 final smoke check (accepted)
 - Final manual smoke verdict recorded: `PASS`.
 - Board Canvas routing and core read-only behavior confirmed on positive fixture state:
   - board canvas open + SMP001 placement visible/selectable,
@@ -286,6 +286,24 @@ Branch: main
   - no `board_graph.json` or `view_state.json` behavior.
 - V1 RC scope boundaries remain intact after final smoke verification.
 - Route next to `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
+
+### V1 release-candidate tag workflow scope lock (current)
+- Purpose locked: define safe, reproducible V1 RC tag workflow before user creates release-candidate tag.
+- Fixed tag contract:
+  - exact tag name `v1.0.0-rc1`,
+  - annotated tag required,
+  - exact message `TraceBench v1.0.0-rc1`,
+  - tag target must be the latest accepted V1 RC baseline commit after this scope-lock pass is committed/pushed.
+- Ownership and execution boundaries locked:
+  - tag creation is user action only,
+  - agent must not create tag in this pass,
+  - agent must not push tag in this pass.
+- Post-tag routing locked:
+  - next pass `V1_RELEASE_TAG_VERIFICATION_PASS`,
+  - then `V1_TO_V2_ROADMAP_DECISION_PASS`.
+- Ordering rule reaffirmed:
+  - roadmap decision must not precede RC tag,
+  - V2 planning must build on fixed/tagged V1 RC baseline.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

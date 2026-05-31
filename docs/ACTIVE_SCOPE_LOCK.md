@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`LIVE_LITE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only smoke-run recording pass to capture observed terminal/UI behavior from the live-lite manual run without implementing fixes.
+Docs-only scope-lock pass to define the safest positive-smoke fixture/project strategy after live-lite run findings.
 
 ## Allowed surfaces
 
@@ -17,6 +17,7 @@ Docs-only smoke-run recording pass to capture observed terminal/UI behavior from
 - `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`
 - `docs/audit/LIVE_LITE_SMOKE_TEST_PLAN_PASS.md`
 - `docs/audit/LIVE_LITE_SMOKE_TEST_RUN_PASS.md`
+- `docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,6 +37,7 @@ Docs-only smoke-run recording pass to capture observed terminal/UI behavior from
 - Flutter/runtime implementation
 - automated test implementation
 - fixture/sample implementation
+- generated data changes
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -45,16 +47,16 @@ Docs-only smoke-run recording pass to capture observed terminal/UI behavior from
 
 ## Scope boundary (locked)
 
-- Docs-only updates that record observed smoke-run behavior.
+- Docs-only scope decisions for a future positive-smoke fixture pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
-- No fixture/sample implementation.
+- No fixture/sample implementation in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
 - Renderer/view remains no-write.
 
 ## Next recommended pass
 
-`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`
 
 ## Validate
 

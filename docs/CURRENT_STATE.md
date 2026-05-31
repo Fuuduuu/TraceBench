@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `LIVE_LITE_SMOKE_TEST_RUN_PASS`
-- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
-- Docs drift countdown: `1`
+- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
+- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`
+- Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
 
@@ -56,7 +56,7 @@ Branch: main
 - Manual runbook exists at `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
 - It captures commands, visual checklist, forbidden-behavior checklist, evidence boundaries, observations template, and stop conditions for Windows local smoke runs.
 
-### Live-lite smoke test run (recorded)
+### Live-lite smoke test run (accepted)
 - Manual smoke run completed on Windows target after live-lite plan pass.
 - `py -3 tools\validate_all.py` passed; expected warning for missing optional `photos/top_backlight_001.jpg` was observed.
 - App launched with `flutter run -d windows`; `flutter run -d chrome` failed because Chrome device was unavailable.
@@ -67,12 +67,25 @@ Branch: main
 - Current opened project lacked confirmed visual placements and visible `photo_to_board_alignments`, so positive board-canvas placement rendering and readiness-panel positive-state behavior were not validated in this run.
 - Smoke verdict: `PASS_WITH_FINDINGS`.
 
-### Next recommended pass rationale
-- Route forward to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS` to scope a safe fixture/test-project strategy for positive smoke validation of:
-  - board-normalized component visual placements
-  - measurement summary metadata
-  - visual trace metadata summary
-  - photo alignment readiness panel with projected `photo_to_board_alignments`
+### Positive smoke fixture strategy scope-lock (current)
+- Recorded live-smoke gap: opened project did not contain confirmed `board_normalized` visual placements or visible `photo_to_board_alignments`, so positive board-canvas rendering/readiness-panel behavior was not validated.
+- Locked future positive smoke fixture required facts:
+  - at least one accepted component,
+  - pins for that component,
+  - at least one accepted `board_normalized` `component_visual_placement_confirmed`,
+  - at least one accepted measurement tied to component/pin endpoints,
+  - at least one accepted `visual_trace_added` metadata item linked by component or pin,
+  - at least one accepted `photo_to_board_alignment_confirmed` materialized into `known_facts.photo_to_board_alignments`.
+- Locked expected positive smoke outcomes:
+  - board-canvas route reachable from Project Overview,
+  - `renderer writes: none` visible,
+  - board-normalized placement rendered,
+  - read-only inspector + measurement summary + visual-trace summary visible,
+  - readiness panel visible with reference-pair count only and `declared type — not computed`,
+  - no raw point `x/y`, no background photo/overlay/transform output, no edit/confirm/save/apply/event-writing actions.
+- Strategy decision:
+  - Recommend a dedicated deterministic positive-smoke fixture project (sample-backed), implemented in a later pass only after a precheck audit.
+  - Route next to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

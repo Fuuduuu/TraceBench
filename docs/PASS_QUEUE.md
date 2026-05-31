@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks first V1.1 hardening validation/smoke route, boundaries, command set expectations, and pass-type decision before any hardening implementation. |
-| V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS | AUDIT_ONLY | recommended | First concrete V1.1 hardening pass: audit validation/smoke reliability, fixture coverage, forbidden-artifact policy, and no-write boundaries; route to minimal scoped hardening only if real gaps are found. |
+| V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | current | Records accepted Claude Code/Opus `PASS` for the V1.1 validation/smoke audit, confirms no-change audit execution and baseline integrity, and tracks non-blocking findings. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | recommended | Perform compact docs drift cleanup after closeout (`CURRENT_STATE` size + countdown `0`) while preserving fixed V1 boundaries/routing. |
+| V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Audit-only verification accepted: validation baseline intact, positive smoke fixture evidence-safe, forbidden artifacts absent/rejected, renderer no-write boundary preserved, and no files modified. |
+| V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locks first V1.1 hardening validation/smoke route, boundaries, command set expectations, and pass-type decision before any hardening implementation. |
 | SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS | DOCS_SYNC | completed | Syncs source/handoff governance after accepted RC tag verification + roadmap lock, including risk-based tool routing and explicit no-self-approval high-risk flow. |
 | V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | completed | Locks accepted post-tag route: `TAG_V1_RC_FIRST` → `V1.1_HARDENING` → `V2_EVENT_WRITING_ARCHITECTURE`, while preserving evidence boundaries and rejecting photo-overlay/transform-first V2 sequencing. |
 | V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Records Claude Code audit `PASS`, accepts tag verification as complete/scope-compliant, confirms annotated/pushed `v1.0.0-rc1` at accepted V1 RC baseline, and routes to roadmap decision. |

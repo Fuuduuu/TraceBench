@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
-- Next recommended pass: `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
+- Current pass: `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -397,7 +397,7 @@ Branch: main
 - Stale pre-RC `Source Guide v9` references were checked and none remain in active docs.
 - Route next to `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`.
 
-### V1.1 hardening validation/smoke scope lock (current)
+### V1.1 hardening validation/smoke scope lock (accepted)
 - V1.1 hardening phase is started after:
   - accepted/pushed V1 RC tag verification closeout,
   - accepted/pushed V1-to-V2 roadmap decision lock,
@@ -426,6 +426,30 @@ Branch: main
   - if no gap: closeout + keep baseline as-is,
   - if gap found: route to dedicated scope lock for smallest required tools/test hardening (no direct broad implementation jump).
 - Route next to `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`.
+
+### V1.1 hardening validation/smoke audit closeout (current)
+- Claude Code / Opus audit result for `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS` is accepted:
+  - verdict `PASS`,
+  - `MODEL_ROUTING_CHECK`: `PASS`,
+  - scope drift check: `PASS`,
+  - no files modified during audit-only execution.
+- Accepted validation/smoke baseline:
+  - `py -3 tools\validate_all.py`: `PASS` (231 tests),
+  - Flutter tests: `PASS` (182 tests),
+  - targeted Python suites: `OK` (211 tests combined),
+  - `board_canvas_positive_smoke` remains present, valid, and evidence-safe.
+- Accepted boundary confirmations from audit:
+  - `visual_trace` does not promote to net,
+  - photo alignment remains readiness/alignment metadata only,
+  - positive fixture `nets: []` remains true,
+  - `board_graph.json` and `view_state.json` remain absent/rejected,
+  - Board Canvas V1 remains read-only,
+  - forbidden action labels remain absent,
+  - `renderer writes: none` remains visible/tested.
+- Accepted non-blocking findings:
+  - LOW: `validate_all.py` does not auto-validate `board_canvas_positive_smoke` (deferred tools hardening; not a blocker),
+  - NIT: docs drift cleanup is due soon (`CURRENT_STATE.md` length + countdown `0`).
+- Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

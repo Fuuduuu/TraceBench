@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only scope lock for first V1.1 validation/smoke hardening route after accepted V1 RC + roadmap + source-guide sync.
+Docs-only closeout for accepted V1.1 validation/smoke audit result.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only scope lock for first V1.1 validation/smoke hardening route after accep
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS.md`
+- `docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,7 +47,7 @@ Docs-only scope lock for first V1.1 validation/smoke hardening route after accep
 
 ## Scope boundary (locked)
 
-- Docs-only hardening validation/smoke scope-lock pass.
+- Docs-only audit closeout recording pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -60,7 +60,7 @@ Docs-only scope lock for first V1.1 validation/smoke hardening route after accep
 
 ## Next recommended pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Validate
 

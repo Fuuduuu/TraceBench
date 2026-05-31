@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
-- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+- Current pass: `VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -16,9 +16,9 @@ Branch: `main`
 - Roadmap is locked:
   - `TAG_V1_RC_FIRST -> V1_1_HARDENING -> V2_EVENT_WRITING_ARCHITECTURE`.
 - Active phase is `V1.1` hardening.
-- Current scope lock outcome:
-  - accepted LOW finding is recorded: `validate_all.py` does not yet auto-validate `board_canvas_positive_smoke`,
-  - next implementation pass is locked to narrow tools hardening only.
+- Current implementation outcome:
+  - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
+  - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
 
 ### Accepted V1 baseline (still authoritative)
 - Board Canvas V1 is read-only and metadata-safe.
@@ -62,7 +62,6 @@ Branch: `main`
   - audit remained audit-only with no repo modifications.
 
 ### Current non-blocking items
-- LOW: `validate_all.py` does not auto-validate `board_canvas_positive_smoke` (deferred tools hardening).
 - NIT: keep state docs compact; this cleanup resets/locks size discipline.
 
 ## Hard boundaries (unchanged)

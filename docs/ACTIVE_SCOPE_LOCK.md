@@ -2,27 +2,26 @@
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
 
 ## Goal
 
-Docs-only scope lock for a small V1.1 tools-hardening pass that brings `board_canvas_positive_smoke` into the main validation gate.
+Narrow tools hardening to bring `board_canvas_positive_smoke` into the main `validate_all.py` gate alongside existing `pelle_pv20_minimal` coverage.
 
 ## Allowed surfaces
 
+- `tools/validate_all.py`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS.md`
+- `docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
-- `tools/**`
 - `lib/**`
 - `test/**`
-- `tests/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -32,8 +31,8 @@ Docs-only scope lock for a small V1.1 tools-hardening pass that brings `board_ca
 - `view_state.json`
 - Project ZIP tooling/files
 - Flutter/runtime implementation
-- tools implementation changes
-- automated test implementation changes
+- schema/materializer semantics changes
+- automated test implementation changes unless strictly required
 - fixture/sample implementation or edits
 - generated data or artifact changes
 - git tag creation
@@ -48,8 +47,8 @@ Docs-only scope lock for a small V1.1 tools-hardening pass that brings `board_ca
 
 ## Scope boundary (locked)
 
-- Docs-only scope lock pass.
-- No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
+- Narrow tools implementation pass.
+- No schema/materializer/Dart/Flutter implementation changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
@@ -61,7 +60,7 @@ Docs-only scope lock for a small V1.1 tools-hardening pass that brings `board_ca
 
 ## Next recommended pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
 
 ## Validate
 

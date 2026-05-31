@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
 
 ## Next recommended pass
 
-`VALIDATE_ALL_FIXTURE_COVERAGE_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks the narrow V1.1 tools-hardening scope to bring `board_canvas_positive_smoke` into the main validation gate without schema/materializer/runtime changes. |
-| VALIDATE_ALL_FIXTURE_COVERAGE_PASS | TOOLS_PASS | recommended | Narrow tools hardening implementation pass: update `tools/validate_all.py` main gate coverage for `board_canvas_positive_smoke` while preserving existing `pelle_pv20_minimal` checks and evidence boundaries. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_PASS | TOOLS_PASS | current | Narrow tools hardening implementation pass: update `tools/validate_all.py` main gate coverage for `board_canvas_positive_smoke` while preserving existing `pelle_pv20_minimal` checks and evidence boundaries. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Verify the fixture-coverage implementation in `validate_all.py` is scope-compliant, keeps evidence boundaries intact, and does not introduce unrelated gate changes. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locks the narrow V1.1 tools-hardening scope to bring `board_canvas_positive_smoke` into the main validation gate without schema/materializer/runtime changes. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Performs due docs drift cleanup after V1.1 validation/smoke closeout and metagovernance audit: compacts state handoff, aligns ledgers, and resets countdown discipline. |
 | V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Records accepted Claude Code/Opus `PASS` for the V1.1 validation/smoke audit, confirms no-change audit execution and baseline integrity, and tracks non-blocking findings. |
 | GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Metagovernance audit accepted from user-provided result: no scope drift, routing/tooling logic practical, CURRENT_STATE bloat flagged, fixture auto-gate scheduling recommended; audit-only with no repo modifications. |

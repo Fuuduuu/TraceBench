@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -19,6 +19,10 @@ Branch: `main`
 - GPT Pro architecture decision for V1.1 reference images is locked to Model B:
   - project-associated local sidecar files + non-canonical sidecar metadata,
   - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
+- Viewer implementation status:
+  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` was blocked before implementation,
+  - blocker was confirmed by audit: `.tracebench_local` is not yet excluded by ZIP export,
+  - next step is ZIP exclusion hardening before viewer implementation resumes.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -38,6 +42,14 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_AUDIT_PASS` accepted from audit context:
+  - verdict `PASS`,
+  - confirms `.tracebench_local` exclusion hardening is safe and narrow,
+  - confirms no Project ZIP contract expansion is required.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`:
+  - next pass locked to `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS` (`TOOLS_PASS`),
+  - goal locked to ZIP exclusion hardening before viewer implementation resumes,
+  - viewer pass remains deferred until exclusion pass lands.
 - `REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS` accepted from audit context:
   - audit-only route, no repo modifications,
   - routed to Model-B scope lock.

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only scope lock for V1.1 local sidecar reference image viewer direction (Model B), without implementation.
+Docs-only scope lock for narrow Project ZIP exclusion hardening before local sidecar viewer implementation resumes.
 
 ## Allowed surfaces
 
@@ -15,7 +15,7 @@ Docs-only scope lock for V1.1 local sidecar reference image viewer direction (Mo
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/SOURCES_INDEX_CURRENT.md` (only if architecture/routing wording needs alignment)
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -63,7 +63,7 @@ Docs-only scope lock for V1.1 local sidecar reference image viewer direction (Mo
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`
 
 ## Validate
 

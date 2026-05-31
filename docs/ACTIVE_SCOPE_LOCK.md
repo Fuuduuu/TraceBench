@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
 
 ## Goal
 
-Docs-only positive smoke planning pass for manual validation of the accepted `board_canvas_positive_smoke` fixture.
+Docs-only recording pass for the completed manual positive smoke run using the accepted `board_canvas_positive_smoke` fixture.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only positive smoke planning pass for manual validation of the accepted `bo
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_LIVE_POSITIVE_SMOKE_TEST_PLAN.md`
-- `docs/audit/LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS.md`
+- `docs/audit/LIVE_POSITIVE_SMOKE_TEST_RUN_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,7 +44,7 @@ Docs-only positive smoke planning pass for manual validation of the accepted `bo
 
 ## Scope boundary (locked)
 
-- Docs-only planning and routing reconciliation.
+- Docs-only smoke-run evidence recording and routing reconciliation.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -54,7 +53,7 @@ Docs-only positive smoke planning pass for manual validation of the accepted `bo
 
 ## Next recommended pass
 
-`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
 
 ## Validate
 

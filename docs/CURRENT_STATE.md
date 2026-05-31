@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
-- Next recommended pass: `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
+- Current pass: `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
+- Next recommended pass: `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -88,7 +88,7 @@ Branch: main
   - `validate_all.py` does not auto-validate the new fixture; fixture pass relied on explicit per-fixture validation commands.
 - Route next to `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`.
 
-### Live positive smoke planning (current)
+### Live positive smoke planning (accepted)
 - Practical manual positive smoke runbook added at:
   - `docs/BOARD_CANVAS_LIVE_POSITIVE_SMOKE_TEST_PLAN.md`
 - Runbook targets fixture:
@@ -105,6 +105,28 @@ Branch: main
   - readiness panel with ALN1001, source photo, reference-pair count, and required safety copy.
 - Runbook includes forbidden observation checklist, evidence-boundary checklist, screenshot/notes template, pass/fail criteria, expected warnings, and stop conditions.
 - Route next to `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`.
+
+### Live positive smoke run (accepted)
+- Manual positive smoke test run completed using `board_canvas_positive_smoke`.
+- Smoke verdict: `PASS`.
+- Board Canvas was reachable from Project Overview and opened with title `Board Canvas`.
+- `renderer writes: none` remained visible.
+- Positive board-canvas rendering/inspection path was confirmed:
+  - placement `SMP001` rendered and selectable,
+  - read-only inspector worked for `SMP001`,
+  - read-only measurement summary (`M1001`) appeared,
+  - read-only visual trace summary (`VT001`) appeared,
+  - photo-alignment readiness panel (`ALN1001`) appeared.
+- Readiness panel stayed metadata-only:
+  - reference-pair count shown,
+  - no raw alignment reference `x/y` values shown,
+  - `declared type — not computed` wording retained.
+- Evidence boundaries remained preserved:
+  - no transform computation,
+  - no background photo helper or overlays,
+  - no visual_trace/damage/suspect board geometry,
+  - no edit/confirm/save/apply/event-writing actions.
+- Route next to `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

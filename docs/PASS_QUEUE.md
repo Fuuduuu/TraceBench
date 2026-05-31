@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`
+`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
 
 ## Next recommended pass
 
-`LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,11 +25,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Added practical manual positive smoke runbook for `board_canvas_positive_smoke`, including direct-open and ZIP export/import strategies with explicit boundary checks. |
-| LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | recommended | Execute manual positive smoke run using new fixture and record objective PASS/PASS_WITH_NITS/FAIL evidence with screenshots/notes template. |
+| LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Added practical manual positive smoke runbook for `board_canvas_positive_smoke`, including direct-open and ZIP export/import strategies with explicit boundary checks. |
+| LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | current (`PASS`) | Manual positive smoke run completed and recorded with confirmed placement/inspector/measurement/visual-trace/readiness-panel behavior and preserved boundaries. |
 | BOARD_CANVAS_POSITIVE_SMOKE_PROJECT_ZIP_FIXTURE_PASS | DOCS_SYNC / TOOLING_SCOPE | deferred alternative | Optional alternative strategy if fixture import path is preferred later; requires separate scope lock for ZIP-fixture surfaces. |
 | BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS | AUDIT_ONLY | deferred | Independent audit for navigation discoverability fix scope and boundary preservation. |
-| BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | deferred candidate | Allowed only if kept metadata-only and does not open new evidence surfaces. |
+| BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Next forward scope-lock candidate after successful positive smoke run; must remain metadata-only and preserve evidence boundaries. |
 | PHOTO_ALIGNMENT_TRANSFORM_COMPUTATION_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
 | BOARD_CANVAS_BACKGROUND_PHOTO_HELPER_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
 

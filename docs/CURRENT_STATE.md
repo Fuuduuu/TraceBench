@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
-- Docs drift countdown: `5`
+- Current pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
+- Next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS`
+- Docs drift countdown: `4`
 
 ## Handoff snapshot (compact)
 
@@ -214,7 +214,7 @@ Branch: main
   - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking.
 - Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`, then `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`.
 
-### Docs drift cleanup after V1 release-readiness (current)
+### Docs drift cleanup after V1 release-readiness (accepted)
 - Docs drift countdown reset from `0` to standard value `5` (canonical in `docs/PASS_QUEUE.md`).
 - Routing aligned forward-only:
   - current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
@@ -227,6 +227,30 @@ Branch: main
   - no V1 git tag yet (release action later),
   - hardcoded board substrate color accepted for V1,
   - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking and untouched.
+
+### V1 release-candidate scope lock (current)
+- V1 release-candidate scope is now explicitly locked in:
+  - `docs/V1_RELEASE_CANDIDATE_SCOPE.md`
+- Included V1 RC scope is locked to:
+  - event-backed Known Facts Builder,
+  - Project ZIP/local-first contract,
+  - read-only Board Canvas route + board_normalized placement rendering + read-only metadata panels,
+  - accepted positive fixture + positive manual smoke PASS,
+  - `renderer writes: none`.
+- Excluded/deferred V1 RC scope is locked:
+  - no background photo helper,
+  - no transform/matrix computation,
+  - no photo-local board rendering or evidence geometry overlays,
+  - no event-writing/edit/confirm/save/apply/promote/detect UI,
+  - no AI proposal/detection/candidate UI,
+  - no Project ZIP contract expansion,
+  - no `board_graph.json` or `view_state.json`.
+- Evidence boundaries are reaffirmed unchanged:
+  - human is sensor, AI is graph engine,
+  - `events.jsonl` canonical truth,
+  - `known_facts.json` materialized projection,
+  - template/visual/photo alignment metadata never become electrical truth by implication.
+- Non-blocking release nits remain tracked and accepted for V1 RC.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

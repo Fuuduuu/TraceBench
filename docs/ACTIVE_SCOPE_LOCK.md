@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only drift cleanup after V1 release-readiness closeout.
+Docs-only V1 release-candidate scope lock after release-readiness closeout and drift cleanup.
 
 ## Allowed surfaces
 
@@ -14,8 +14,8 @@ Docs-only drift cleanup after V1 release-readiness closeout.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+- `docs/V1_RELEASE_CANDIDATE_SCOPE.md`
+- `docs/audit/V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,7 +45,7 @@ Docs-only drift cleanup after V1 release-readiness closeout.
 
 ## Scope boundary (locked)
 
-- Docs-only drift cleanup, countdown reset, and routing/spec wording alignment.
+- Docs-only release-candidate scope definition, routing update, and boundary lock.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -56,7 +56,7 @@ Docs-only drift cleanup after V1 release-readiness closeout.
 
 ## Next recommended pass
 
-`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
+`V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS`
 
 ## Validate
 

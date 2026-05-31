@@ -11,15 +11,15 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
+`V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
-`5`
+`4`
 
 ## Planned / Recommended
 
@@ -27,8 +27,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 |---|---|---|---|
 | V1_RELEASE_READINESS_REPO_AUDIT_PASS | AUDIT_ONLY | completed (`READY_WITH_NITS`) | Repo-local release-readiness audit accepted with no true blockers and non-blocking cleanup/tagging/tooling nits. |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded GPT Pro + Claude readiness verdicts (`READY_WITH_NITS`), readiness estimate (94%), no true blockers, and V1 release-checkpointable status. |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | current | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |
-| V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Define guarded release-candidate scope after drift cleanup, without expanding V1 evidence/render/write boundaries. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |
+| V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks V1 release-candidate included/excluded scope, acceptance checklist, and evidence boundaries without implementation changes. |
+| V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS | AUDIT_ONLY | recommended | Independent audit of V1 RC scope-lock correctness and boundary preservation before any release-candidate execution pass. |
 | BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked safe V1 read-only Board Canvas visual polish scope to styling/layout/copy/accessibility only; no geometry/write/transform/photo-overlay expansion allowed. |
 | BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | FLUTTER_PASS | completed | Implemented scoped read-only board-canvas visual polish (three-zone responsive hierarchy, metadata-card polish, evidence tags) without behavior or evidence-surface expansion. |
 | BOARD_CANVAS_READONLY_POLISH_V1_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Claude Code audit accepted V1 read-only polish implementation and recorded non-blocking QA nits. |

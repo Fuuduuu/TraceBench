@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`LIVE_LITE_SMOKE_TEST_PLAN_PASS`
+`BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS`
 
 ## Next recommended pass
 
-`LIVE_LITE_SMOKE_TEST_RUN_PASS`
+`BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| LIVE_LITE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Create focused manual live-lite runbook for current board-canvas/readiness behavior before any UI/evidence expansion. |
-| LIVE_LITE_SMOKE_TEST_RUN_PASS | QA_MANUAL | recommended | Execute the live-lite runbook on Windows target(s), capture observations/screenshots, and produce PASS / PASS_WITH_NITS / FAIL verdict. |
+| BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS | FLUTTER_PASS / FIXUP_PASS | current | Add project-overview discoverability path to existing board-canvas route and verify focused navigation coverage without changing board-canvas rendering behavior. |
+| BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS | AUDIT_ONLY | recommended | Independent audit to confirm navigation-only scope, preserved board-canvas boundaries, and no schema/tool/model/runtime surface drift. |
+| LIVE_LITE_SMOKE_TEST_RUN_PASS | QA_MANUAL | queued | Run manual live-lite checklist and capture PASS / PASS_WITH_NITS / FAIL evidence after navigation discoverability fix. |
 | BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | deferred candidate | Allowed only if kept metadata-only and does not open new evidence surfaces. |
 | PHOTO_ALIGNMENT_TRANSFORM_COMPUTATION_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
 | BOARD_CANVAS_BACKGROUND_PHOTO_HELPER_SCOPE_AUDIT_PASS | AUDIT_ONLY | deferred high-risk | Must stay audit-only until GPT Pro + Claude Code gate is completed. |
@@ -35,6 +36,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| LIVE_LITE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Added practical manual Windows runbook for board-canvas/readiness-panel visual verification with explicit forbidden-behavior and evidence-boundary checks. |
 | DOCS_SCOPE_AND_NOISE_CLEANUP_PASS | DOCS_SYNC | completed | Closed Claude-audit docs cleanup: compacted state/queue noise, fixed stale invariants/spec wording, and reconciled canonical countdown ownership. |
 | BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked V1 photo-alignment UI meaning to metadata-only readiness/status and routed next to live-lite smoke planning. |
 | BOARD_CANVAS_ALIGNMENT_READINESS_QA_CLOSEOUT_PASS | DOCS_SYNC | completed | Closed out readiness QA audit (`PASS`) and aligned scope-lock pointers. |

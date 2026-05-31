@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `LIVE_LITE_SMOKE_TEST_PLAN_PASS`
-- Next recommended pass: `LIVE_LITE_SMOKE_TEST_RUN_PASS`
+- Current pass: `BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS`
+- Next recommended pass: `BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_AUDIT_PASS`
 - Docs drift countdown: `2`
 
 ## Handoff snapshot (compact)
@@ -52,20 +52,18 @@ Branch: main
 - Suspect is not probability.
 - AI proposals are non-canonical until explicit accepted human-confirmed paths.
 
-### Live-lite smoke-test planning (current)
-- A focused manual runbook is defined in `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
-- Plan targets Windows local app launch and visual verification of accepted read-only board-canvas and readiness-panel behavior.
-- Plan includes:
-  - exact command sequence (`git` state, validation, `flutter devices`, run targets),
-  - route/screen verification checklist,
-  - forbidden UI/behavior checklist,
-  - evidence-boundary checklist,
-  - observation template,
-  - pass/fail criteria and stop conditions.
-- This pass is planning-only:
-  - no implementation changes,
-  - no automated test implementation,
-  - no scope expansion into transform/background/overlay/event-writing surfaces.
+### Live-lite smoke-test planning (accepted)
+- Manual runbook exists at `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
+- It captures commands, visual checklist, forbidden-behavior checklist, evidence boundaries, observations template, and stop conditions for Windows local smoke runs.
+
+### Board-canvas navigation smoke fixup (current)
+- Project overview now exposes a `Board Canvas` action in addition to existing `Board graph`.
+- `Board Canvas` action navigates to existing `/project/board-canvas` route.
+- Navigation coverage is added in project-overview widget tests:
+  - overview shows both `Board graph` and `Board Canvas`,
+  - activating `Board Canvas` reaches board-canvas screen/title,
+  - forbidden edit/confirm/apply/alignment action labels remain absent in overview.
+- No board-canvas rendering/evidence behavior changes were introduced.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

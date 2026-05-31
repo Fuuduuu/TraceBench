@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -106,8 +107,62 @@ void main() {
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
     expect(find.text('Kõik komponendid'), findsOneWidget);
     expect(find.text('Board graph'), findsOneWidget);
+    expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('Foto tõendid'), findsOneWidget);
     expect(
         find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
+  });
+
+  testWidgets(
+      'overview has Board Canvas action and navigates to Board Canvas screen',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('overview-board-graph-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('overview-board-canvas-button')),
+      findsOneWidget,
+    );
+    expect(find.text('Board graph'), findsOneWidget);
+    expect(find.text('Board Canvas'), findsOneWidget);
+
+    const forbiddenActions = [
+      'Confirm',
+      'Save',
+      'Apply',
+      'Edit alignment',
+      'Confirm alignment',
+      'Add reference point',
+      'Run AI',
+    ];
+    for (final action in forbiddenActions) {
+      expect(find.text(action), findsNothing, reason: 'Unexpected label: $action');
+    }
+
+    final boardCanvasAction = find.byKey(
+      const ValueKey('overview-board-canvas-button'),
+    );
+    await tester.ensureVisible(boardCanvasAction);
+    await tester.pumpAndSettle();
+    await tester.tap(boardCanvasAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
   });
 }

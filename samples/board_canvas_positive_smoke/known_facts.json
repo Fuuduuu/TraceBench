@@ -1,0 +1,131 @@
+{
+  "project_id": "prj_board_canvas_smoke_001",
+  "components": [
+    {
+      "component_id": "SMP001",
+      "designator": "SMP001",
+      "type": "unknown_component",
+      "status": "needs_identification"
+    }
+  ],
+  "pins": [
+    {
+      "component_id": "SMP001",
+      "pin_id": "SMP001.1",
+      "label": "A",
+      "status": "user_confirmed_visual"
+    },
+    {
+      "component_id": "SMP001",
+      "pin_id": "SMP001.2",
+      "label": "B",
+      "status": "user_confirmed_visual"
+    }
+  ],
+  "measurements": [
+    {
+      "measurement_id": "M1001",
+      "mode": "continuity",
+      "from": "SMP001.1",
+      "to": "TP1",
+      "reading": {
+        "kind": "numeric",
+        "value": 0.1,
+        "unit": "ohm"
+      },
+      "power_state": "off",
+      "origin_event_id": "evt_000005",
+      "valid_from_event_id": "evt_000005",
+      "valid_until_event_id": null,
+      "validity_status": "active"
+    }
+  ],
+  "nets": [],
+  "photos": [
+    {
+      "photo_id": "photo_smoke_top_001",
+      "mode": "normal",
+      "path": "photos/smoke_top_001.jpg",
+      "notes": "Positive smoke fixture placeholder photo",
+      "layer": "top"
+    }
+  ],
+  "damage_regions": [],
+  "suspect_regions": [],
+  "visual_traces": [
+    {
+      "trace_id": "VT001",
+      "photo_id": "photo_smoke_top_001",
+      "from_point": {
+        "x": 120.0,
+        "y": 80.0
+      },
+      "to_point": {
+        "x": 260.0,
+        "y": 82.0
+      },
+      "evidence_type": "visual_trace",
+      "from_component": "SMP001",
+      "from_pin": "SMP001.1",
+      "confidence": "medium",
+      "layer": "top",
+      "notes": "Read-only visual metadata for smoke coverage"
+    }
+  ],
+  "excluded_from_fault_candidates": [],
+  "component_visual_placements": [
+    {
+      "component_id": "SMP001",
+      "coordinate_space": "board_normalized",
+      "board_side": "top",
+      "center_x": 0.42,
+      "center_y": 0.36,
+      "rotation_deg": 0,
+      "source_event_id": "evt_000007",
+      "status": "user_confirmed_visual",
+      "width": 0.08,
+      "height": 0.05,
+      "template_id": "unknown_sot23"
+    }
+  ],
+  "photo_to_board_alignments": [
+    {
+      "alignment_id": "ALN1001",
+      "source_photo_id": "photo_smoke_top_001",
+      "board_side": "top",
+      "coordinate_space_from": "photo_local",
+      "coordinate_space_to": "board_normalized",
+      "reference_points_photo": [
+        {
+          "x": 10.0,
+          "y": 10.0
+        },
+        {
+          "x": 200.0,
+          "y": 10.0
+        }
+      ],
+      "reference_points_board": [
+        {
+          "x": 0.1,
+          "y": 0.1
+        },
+        {
+          "x": 0.7,
+          "y": 0.1
+        }
+      ],
+      "transform_type": "similarity",
+      "alignment_quality_label": "manual_smoke_reference",
+      "source_event_id": "evt_000008",
+      "status": "user_confirmed_alignment",
+      "notes": "Reference-point metadata only; declared transform type is not computed."
+    }
+  ],
+  "component_pin_index": {
+    "SMP001": [
+      "SMP001.1",
+      "SMP001.2"
+    ]
+  }
+}

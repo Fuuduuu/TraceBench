@@ -1,0 +1,6 @@
+{
+  "events_schema": "1.0",
+  "known_facts_schema": "1.0",
+  "project_manifest_schema": "1.0",
+  "project_zip_contract": "1.0"
+}

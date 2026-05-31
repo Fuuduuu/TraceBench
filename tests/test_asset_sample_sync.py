@@ -27,6 +27,22 @@ class AssetSampleSyncTests(unittest.TestCase):
                 base / "samples/pelle_pv20_minimal/exports/customer_report.md",
                 base / "assets/samples/pelle_pv20_minimal/exports/customer_report.md",
             ),
+            (
+                base / "samples/board_canvas_positive_smoke/manifest.json",
+                base / "assets/samples/board_canvas_positive_smoke/manifest.json",
+            ),
+            (
+                base / "samples/board_canvas_positive_smoke/events.jsonl",
+                base / "assets/samples/board_canvas_positive_smoke/events.jsonl",
+            ),
+            (
+                base / "samples/board_canvas_positive_smoke/known_facts.json",
+                base / "assets/samples/board_canvas_positive_smoke/known_facts.json",
+            ),
+            (
+                base / "samples/board_canvas_positive_smoke/exports/customer_report.md",
+                base / "assets/samples/board_canvas_positive_smoke/exports/customer_report.md",
+            ),
         ]
 
         for source, asset in pairs:
@@ -42,4 +58,3 @@ class AssetSampleSyncTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

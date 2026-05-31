@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS.md | completed (created deterministic positive-smoke sample + asset mirror, generated known_facts via materializer, extended sample sync parity test, and preserved schema/tool/runtime boundaries) |
 | BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS.md | completed (docs-only strategy lock: recorded live-smoke validation gap, locked required projected facts for positive smoke fixture, selected deterministic sample-backed strategy, and routed next to precheck audit before any fixture implementation) |
 | LIVE_LITE_SMOKE_TEST_RUN_PASS | docs/audit/LIVE_LITE_SMOKE_TEST_RUN_PASS.md | completed (`PASS_WITH_FINDINGS`; manual Windows smoke run recorded launch/navigation/shell success, confirmed board-canvas empty-state + no-write copy, and documented that positive placement/readiness-panel behavior was not validated with the opened project data) |
 | BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS | docs/audit/BOARD_CANVAS_NAVIGATION_SMOKE_FIXUP_PASS.md | completed (navigation/discoverability fix: project overview now exposes `Board Canvas` action to existing route, `Board graph` retained, focused widget navigation coverage added, no board-canvas rendering or evidence-surface expansion) |

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PASS`
+- Next recommended pass: `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_AUDIT_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -67,25 +67,22 @@ Branch: main
 - Current opened project lacked confirmed visual placements and visible `photo_to_board_alignments`, so positive board-canvas placement rendering and readiness-panel positive-state behavior were not validated in this run.
 - Smoke verdict: `PASS_WITH_FINDINGS`.
 
-### Positive smoke fixture strategy scope-lock (current)
-- Recorded live-smoke gap: opened project did not contain confirmed `board_normalized` visual placements or visible `photo_to_board_alignments`, so positive board-canvas rendering/readiness-panel behavior was not validated.
-- Locked future positive smoke fixture required facts:
-  - at least one accepted component,
-  - pins for that component,
-  - at least one accepted `board_normalized` `component_visual_placement_confirmed`,
-  - at least one accepted measurement tied to component/pin endpoints,
-  - at least one accepted `visual_trace_added` metadata item linked by component or pin,
-  - at least one accepted `photo_to_board_alignment_confirmed` materialized into `known_facts.photo_to_board_alignments`.
-- Locked expected positive smoke outcomes:
-  - board-canvas route reachable from Project Overview,
-  - `renderer writes: none` visible,
-  - board-normalized placement rendered,
-  - read-only inspector + measurement summary + visual-trace summary visible,
-  - readiness panel visible with reference-pair count only and `declared type — not computed`,
-  - no raw point `x/y`, no background photo/overlay/transform output, no edit/confirm/save/apply/event-writing actions.
-- Strategy decision:
-  - Recommend a dedicated deterministic positive-smoke fixture project (sample-backed), implemented in a later pass only after a precheck audit.
-  - Route next to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_PRECHECK_AUDIT_PASS`.
+### Positive smoke fixture implementation (current)
+- Dedicated deterministic fixture project created: `samples/board_canvas_positive_smoke`.
+- Fixture contains an 8-event accepted chain (`evt_000001`..`evt_000008`) covering:
+  - component + pins,
+  - measurement metadata,
+  - visual trace metadata,
+  - `board_normalized` visual placement,
+  - accepted `photo_to_board_alignment_confirmed`.
+- `known_facts.json` was generated with materializer and includes:
+  - `components`, `pins`, `measurements`, `visual_traces`,
+  - `component_visual_placements`,
+  - `photo_to_board_alignments`.
+- Asset mirror added at `assets/samples/board_canvas_positive_smoke` with byte-identical checked files.
+- Sync test coverage extended in `tests/test_asset_sample_sync.py` for fixture manifest/events/known_facts/report parity.
+- No schema/tool/lib/runtime/Project-ZIP behavior changes were made.
+- Route next to `BOARD_CANVAS_POSITIVE_SMOKE_FIXTURE_AUDIT_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

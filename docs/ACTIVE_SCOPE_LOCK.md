@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS`
+`V1_FINAL_SMOKE_CHECK_PASS`
 
 ## Goal
 
-Docs-only audit closeout for accepted V1 release-candidate scope lock.
+Docs-only final smoke check recording for V1 release candidate boundary confirmation.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only audit closeout for accepted V1 release-candidate scope lock.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V1_FINAL_SMOKE_CHECK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -44,7 +44,7 @@ Docs-only audit closeout for accepted V1 release-candidate scope lock.
 
 ## Scope boundary (locked)
 
-- Docs-only closeout recording for accepted scope lock and audit verdict.
+- Docs-only recording of final manual smoke PASS observations.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -55,7 +55,7 @@ Docs-only audit closeout for accepted V1 release-candidate scope lock.
 
 ## Next recommended pass
 
-`V1_FINAL_SMOKE_CHECK_PASS`
+`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
 
 ## Validate
 

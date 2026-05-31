@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `V1_FINAL_SMOKE_CHECK_PASS`
-- Docs drift countdown: `4`
+- Current pass: `V1_FINAL_SMOKE_CHECK_PASS`
+- Next recommended pass: `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
+- Docs drift countdown: `3`
 
 ## Handoff snapshot (compact)
 
@@ -252,7 +252,7 @@ Branch: main
   - template/visual/photo alignment metadata never become electrical truth by implication.
 - Non-blocking release nits remain tracked and accepted for V1 RC.
 
-### V1 release-candidate scope lock closeout (current)
+### V1 release-candidate scope lock closeout (accepted)
 - Claude Code repo-local audit verdict recorded: `PASS`.
 - `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS` accepted as completed and scope-compliant.
 - V1 RC scope lock remains accurate, complete, and boundary-preserving.
@@ -266,6 +266,26 @@ Branch: main
   - local untracked IDE/platform artifacts remain non-blocking,
   - both readiness audit pass IDs in queue history are harmless and do not affect active routing.
 - Route next to `V1_FINAL_SMOKE_CHECK_PASS`, then `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
+
+### V1 final smoke check (current)
+- Final manual smoke verdict recorded: `PASS`.
+- Board Canvas routing and core read-only behavior confirmed on positive fixture state:
+  - board canvas open + SMP001 placement visible/selectable,
+  - read-only inspector and required identity/safety copy visible,
+  - measurement metadata card visible (M1001 continuity metadata),
+  - visual-trace metadata card visible (VT001 with non-net safety copy),
+  - photo-alignment readiness card visible (ALN1001 metadata, reference pairs count only, declared type not computed),
+  - board graph remained separate and consistent with fixture expectations,
+  - components list and photo evidence views opened with expected fixture records.
+- Forbidden behavior remained absent in smoke observations:
+  - no edit/confirm/save/apply/event-writing controls,
+  - no transform computation/matrix output,
+  - no background photo/photo overlay behavior,
+  - no visual_trace/damage/suspect board geometry overlays,
+  - no AI/detect/promote actions,
+  - no `board_graph.json` or `view_state.json` behavior.
+- V1 RC scope boundaries remain intact after final smoke verification.
+- Route next to `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

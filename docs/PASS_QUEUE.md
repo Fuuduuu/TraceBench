@@ -11,23 +11,23 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS`
+`V1_FINAL_SMOKE_CHECK_PASS`
 
 ## Next recommended pass
 
-`V1_FINAL_SMOKE_CHECK_PASS`
+`V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`
 
 ## Docs drift countdown (canonical)
 
-`4`
+`3`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC | current | Records Claude Code audit `PASS`, accepts V1 RC scope lock, preserves boundaries, and routes to final smoke check before tag-scope lock. |
-| V1_FINAL_SMOKE_CHECK_PASS | QA_PASS | recommended | Final release-candidate smoke verification against locked V1 boundaries before tag scope lock. |
-| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | queued-next | Scope lock for tag/release action workflow after final smoke verification. |
+| V1_FINAL_SMOKE_CHECK_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Final manual V1 RC smoke verification recorded as `PASS`; Board Canvas, read-only metadata panels, safety copy, readiness metadata, and forbidden-behavior absence confirmed on positive fixture. |
+| V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Scope lock for V1 release-candidate tag workflow after successful final smoke check. |
+| V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded Claude Code audit `PASS`, accepted V1 RC scope lock, preserved boundaries, and routed to final smoke check before tag-scope lock. |
 | V1_RELEASE_READINESS_REPO_AUDIT_PASS | AUDIT_ONLY | completed (`READY_WITH_NITS`) | Repo-local release-readiness audit accepted with no true blockers and non-blocking cleanup/tagging/tooling nits. |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded GPT Pro + Claude readiness verdicts (`READY_WITH_NITS`), readiness estimate (94%), no true blockers, and V1 release-checkpointable status. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |

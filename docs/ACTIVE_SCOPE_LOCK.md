@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only visual polish scope lock for Board Canvas V1 read-only renderer surfaces.
+Docs-only audit closeout for accepted Board Canvas read-only polish V1 implementation and QA hardening.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only visual polish scope lock for Board Canvas V1 read-only renderer surfac
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md`
-- `docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS.md`
+- `docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,7 +44,7 @@ Docs-only visual polish scope lock for Board Canvas V1 read-only renderer surfac
 
 ## Scope boundary (locked)
 
-- Docs-only scope-lock definition and routing reconciliation.
+- Docs-only closeout recording for already accepted implementation + QA audits.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -56,7 +55,7 @@ Docs-only visual polish scope lock for Board Canvas V1 read-only renderer surfac
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`
+`V1_RELEASE_READINESS_AUDIT_PASS`
 
 ## Validate
 

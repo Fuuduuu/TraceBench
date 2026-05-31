@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS`
+- Next recommended pass: `V1_RELEASE_READINESS_AUDIT_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -173,18 +173,24 @@ Branch: main
 - No transform/photo/overlay/event-writing scope was added.
 - Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`.
 
-### Read-only visual polish V1 QA hardening (current)
-- QA hardening stayed test-only and added focused coverage for audit nits:
-  - explicit assertions for:
-    - `template family — not a part identity`
-    - `identity not confirmed in this projection`
-  - strengthened boundary source guards with targeted forbidden evidence-geometry markers:
-    - visual_trace/damage/suspect/measurement/photo-local path or draw helpers
-    - while keeping decorative board/grid drawing allowed.
-- No production behavior changes were introduced.
-- No schema/tool/materializer/Dart/ZIP/runtime surface changes.
-- Hardcoded board substrate color remains an accepted non-blocking V1 nit.
-- Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`.
+### Read-only visual polish V1 closeout (current)
+- Claude Code verdicts recorded:
+  - `BOARD_CANVAS_READONLY_POLISH_V1_AUDIT_PASS`: `PASS_WITH_NITS`
+  - `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`: `PASS`
+- `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS` and `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS` are accepted and scope-compliant.
+- Accepted implementation/QA state:
+  - read-only visual polish remained styling/layout/copy/accessibility only,
+  - boardview-style shell + responsive layout + metadata cards are accepted,
+  - evidence-class tags (`MEASURED`, `VISUAL`, `READINESS`, `UNKNOWN`) are accepted,
+  - required non-identity copy assertions are covered in widget tests,
+  - targeted no-evidence-geometry source guards are in place,
+  - blanket `drawLine`/`drawPath` bans were not restored,
+  - full Flutter suite passed in QA audit validation (183 tests),
+  - `py -3 tools\validate_all.py` passed.
+- Non-blocking notes recorded:
+  - hardcoded board substrate color remains accepted for V1,
+  - prior `project_exporter_test.dart` flake was not reproduced in final audit validation.
+- Route next to `V1_RELEASE_READINESS_AUDIT_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`
+`BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`
+`V1_RELEASE_READINESS_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -27,8 +27,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 |---|---|---|---|
 | BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked safe V1 read-only Board Canvas visual polish scope to styling/layout/copy/accessibility only; no geometry/write/transform/photo-overlay expansion allowed. |
 | BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | FLUTTER_PASS | completed | Implemented scoped read-only board-canvas visual polish (three-zone responsive hierarchy, metadata-card polish, evidence tags) without behavior or evidence-surface expansion. |
-| BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | QA_PASS / FLUTTER_TEST_PASS | current | Added focused QA hardening for non-identity copy assertions and targeted no-evidence-geometry source guards without changing product behavior. |
-| BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS | AUDIT_ONLY | recommended | Audit QA hardening pass for scope compliance and boundary preservation before closeout. |
+| BOARD_CANVAS_READONLY_POLISH_V1_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Claude Code audit accepted V1 read-only polish implementation and recorded non-blocking QA nits. |
+| BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | QA_PASS / FLUTTER_TEST_PASS | completed | Added focused QA hardening for non-identity copy assertions and targeted no-evidence-geometry source guards without changing product behavior. |
+| BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code audit accepted QA hardening and confirmed boundary-safe test-only scope. |
+| BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS | DOCS_SYNC | current | Records dual audit verdicts, accepts implementation + QA state, aligns lock pointer, and routes forward. |
+| V1_RELEASE_READINESS_AUDIT_PASS | AUDIT_ONLY | recommended | Release-readiness checkpoint audit after accepted positive smoke + read-only polish implementation + QA chain. |
 | LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Added practical manual positive smoke runbook for `board_canvas_positive_smoke`, including direct-open and ZIP export/import strategies with explicit boundary checks. |
 | LIVE_POSITIVE_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Manual positive smoke run completed and recorded with confirmed placement/inspector/measurement/visual-trace/readiness-panel behavior and preserved boundaries. |
 | BOARD_CANVAS_POSITIVE_SMOKE_PROJECT_ZIP_FIXTURE_PASS | DOCS_SYNC / TOOLING_SCOPE | deferred alternative | Optional alternative strategy if fixture import path is preferred later; requires separate scope lock for ZIP-fixture surfaces. |

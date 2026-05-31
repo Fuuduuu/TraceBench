@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code verdicts `PASS_WITH_NITS` + `PASS`, accepted impl + QA state, aligned scope-lock routing, and preserved read-only/evidence boundaries) |
 | BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS.md | completed (QA-only hardening: added explicit non-identity copy assertions and targeted source guards against non-decorative evidence-geometry rendering without reintroducing blanket drawLine/drawPath bans) |
 | BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS.md | completed (read-only visual polish implementation: responsive three-zone layout direction, dark board substrate styling, metadata-card grouping, evidence-class tags, and preserved no-transform/no-overlay/no-write boundaries) |
 | BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS.md | completed (docs-only V1 visual polish scope lock after positive smoke + Claude Design + GPT Pro approval; locked styling/layout/copy/accessibility-only direction with explicit no-transform/no-overlay/no-write boundaries and routed to V1 implementation pass) |

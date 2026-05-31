@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
+`V1_TO_V2_ROADMAP_DECISION_PASS`
 
 ## Goal
 
-Docs-only closeout for accepted V1 release-tag verification audit.
+Docs-only roadmap decision lock after accepted/pushed V1 RC tag verification.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only closeout for accepted V1 release-tag verification audit.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS.md`
+- `docs/audit/V1_TO_V2_ROADMAP_DECISION_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,7 +47,7 @@ Docs-only closeout for accepted V1 release-tag verification audit.
 
 ## Scope boundary (locked)
 
-- Docs-only audit closeout recording pass.
+- Docs-only roadmap/governance recording pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -60,7 +60,7 @@ Docs-only closeout for accepted V1 release-tag verification audit.
 
 ## Next recommended pass
 
-`V1_TO_V2_ROADMAP_DECISION_PASS`
+`SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
 
 ## Validate
 

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
+`V1_TO_V2_ROADMAP_DECISION_PASS`
 
 ## Next recommended pass
 
-`V1_TO_V2_ROADMAP_DECISION_PASS`
+`SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | current | Records Claude Code audit `PASS`, accepts tag verification as complete/scope-compliant, confirms annotated/pushed `v1.0.0-rc1` at accepted V1 RC baseline, and routes to roadmap decision. |
-| V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | recommended | Use accepted roadmap audits/decision context to lock forward plan from fixed V1 RC baseline. |
+| V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | current | Locks accepted post-tag route: `TAG_V1_RC_FIRST` → `V1.1_HARDENING` → `V2_EVENT_WRITING_ARCHITECTURE`, while preserving evidence boundaries and rejecting photo-overlay/transform-first V2 sequencing. |
+| SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS | DOCS_SYNC | recommended | Sync canonical source guides after RC tag + roadmap lock so operator-facing docs align with fixed V1 baseline and forward V1.1/V2 sequencing. |
+| V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Records Claude Code audit `PASS`, accepts tag verification as complete/scope-compliant, confirms annotated/pushed `v1.0.0-rc1` at accepted V1 RC baseline, and routes to roadmap decision. |
 | V1_RELEASE_TAG_VERIFICATION_PASS | AUDIT_ONLY | completed (`PASS`) | Verified local+remote `v1.0.0-rc1` existence, annotated type/message, HEAD target compatibility, clean repo hygiene, forbidden artifact absence, and full validation suite PASS. |
 | REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | DOCS_SYNC | completed | Recorded reference-image-as-AI-context future-work direction while preserving V1 RC boundaries and release-tag flow. |
 | V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action with exact commands and verification expectations. |

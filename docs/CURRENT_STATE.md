@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
-- Next recommended pass: `V1_TO_V2_ROADMAP_DECISION_PASS`
+- Current pass: `V1_TO_V2_ROADMAP_DECISION_PASS`
+- Next recommended pass: `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
@@ -319,7 +319,7 @@ Branch: main
   - V2+ research: `AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS`.
 - Release route preserved: next remains `V1_RELEASE_TAG_VERIFICATION_PASS`, then `V1_TO_V2_ROADMAP_DECISION_PASS`.
 
-### V1 release-tag verification closeout (current)
+### V1 release-tag verification closeout (accepted)
 - Claude Code audit verdict recorded: `PASS`.
 - `V1_RELEASE_TAG_VERIFICATION_PASS` accepted as completed and scope-compliant.
 - Accepted tag verification state:
@@ -348,6 +348,31 @@ Branch: main
   - only expected unrelated local untracked paths,
   - `board_graph.json` and `view_state.json` absent.
 - Route next to `V1_TO_V2_ROADMAP_DECISION_PASS`.
+
+### V1 to V2 roadmap decision (current)
+- Verified V1 RC tag-first route is complete:
+  - `v1.0.0-rc1` annotated tag exists locally and on `origin`,
+  - tag verification and closeout are accepted and pushed.
+- Accepted roadmap decision is now locked:
+  - `TAG_V1_RC_FIRST`
+  - then `V1_1_HARDENING`
+  - then `V2_EVENT_WRITING_ARCHITECTURE`
+- V2 start is explicitly constrained:
+  - do not start V2 with transform/matrix work,
+  - do not start V2 with photo overlay/background photo helper,
+  - do not start V2 with photo-local evidence board rendering.
+- Reference-image context remains future work:
+  - safe V1.1 candidate remains reference-only image import/viewer,
+  - AI context remains proposal-only (`unconfirmed_ai_proposal`) until human-confirmed accepted events,
+  - high-risk board-canvas reference-image layer remains gated for later GPT Pro + Claude Code review.
+- Hard evidence boundaries remain unchanged:
+  - human is sensor, AI is graph engine,
+  - `events.jsonl` canonical truth,
+  - `known_facts.json` materialized projection,
+  - renderer/view writes nothing,
+  - no `board_graph.json` or `view_state.json`,
+  - photo alignment/visual trace/damage/suspect metadata do not imply electrical/fault truth.
+- Route next to `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

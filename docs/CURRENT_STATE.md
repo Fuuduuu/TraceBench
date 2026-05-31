@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
-- Next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS`
+- Current pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `V1_FINAL_SMOKE_CHECK_PASS`
 - Docs drift countdown: `4`
 
 ## Handoff snapshot (compact)
@@ -228,7 +228,7 @@ Branch: main
   - hardcoded board substrate color accepted for V1,
   - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking and untouched.
 
-### V1 release-candidate scope lock (current)
+### V1 release-candidate scope lock (accepted)
 - V1 release-candidate scope is now explicitly locked in:
   - `docs/V1_RELEASE_CANDIDATE_SCOPE.md`
 - Included V1 RC scope is locked to:
@@ -251,6 +251,21 @@ Branch: main
   - `known_facts.json` materialized projection,
   - template/visual/photo alignment metadata never become electrical truth by implication.
 - Non-blocking release nits remain tracked and accepted for V1 RC.
+
+### V1 release-candidate scope lock closeout (current)
+- Claude Code repo-local audit verdict recorded: `PASS`.
+- `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS` accepted as completed and scope-compliant.
+- V1 RC scope lock remains accurate, complete, and boundary-preserving.
+- Included and excluded/deferred V1 scope remain aligned with canonical repo state.
+- No true blockers found; validation suite status remains passing at audit checkpoint.
+- Non-blocking observations recorded:
+  - optional photo warning for `photos/top_backlight_001.jpg` remains non-blocking,
+  - `validate_all.py` fixture auto-validation gap remains deferred tools hardening,
+  - hardcoded board substrate colors remain accepted for V1,
+  - no V1 git tag yet (later user/release action),
+  - local untracked IDE/platform artifacts remain non-blocking,
+  - both readiness audit pass IDs in queue history are harmless and do not affect active routing.
+- Route next to `V1_FINAL_SMOKE_CHECK_PASS`, then `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

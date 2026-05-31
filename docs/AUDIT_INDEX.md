@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/V1_RELEASE_CANDIDATE_SCOPE_LOCK_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code audit `PASS`, accepted V1 RC scope lock as accurate/complete/boundary-preserving, recorded non-blocking observations, and routed to final smoke check) |
 | V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS | docs/audit/V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS.md | completed (docs-only release-candidate scope lock: fixed included/deferred V1 boundary contract, preserved evidence-floor rules, locked acceptance checklist, and routed next to independent scope-lock audit) |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | docs/audit/V1_RELEASE_READINESS_CLOSEOUT_PASS.md | completed (docs-only release-readiness closeout: recorded GPT Pro + Claude `READY_WITH_NITS`, readiness estimate `94%`, true blockers `None`, accepted V1 checkpointable scope, and routed to docs drift cleanup) |
 | BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_READONLY_POLISH_V1_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code verdicts `PASS_WITH_NITS` + `PASS`, accepted impl + QA state, aligned scope-lock routing, and preserved read-only/evidence boundaries) |

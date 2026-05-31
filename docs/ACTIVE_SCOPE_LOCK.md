@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
+`V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only future-work roadmap note for reference-image AI context direction.
+Docs-only closeout for accepted V1 release-tag verification audit.
 
 ## Allowed surfaces
 
@@ -14,8 +14,7 @@ Docs-only future-work roadmap note for reference-image AI context direction.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK.md`
-- `docs/audit/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS.md`
+- `docs/audit/V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -38,6 +37,7 @@ Docs-only future-work roadmap note for reference-image AI context direction.
 - generated data changes
 - git tag creation
 - git tag push
+- git tag delete/move
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -47,20 +47,20 @@ Docs-only future-work roadmap note for reference-image AI context direction.
 
 ## Scope boundary (locked)
 
-- Docs-only future-work/roadmap recording pass.
+- Docs-only audit closeout recording pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
 - No evidence-boundary weakening.
-- No tag creation/push in this pass.
+- No tag mutation in this pass.
 - Renderer/view remains no-write.
 - No visual evidence geometry expansion.
 - No transform/photo-layer behavior expansion.
-- Reference images remain non-canonical context only.
+- No generated artifacts.
 
 ## Next recommended pass
 
-`V1_RELEASE_TAG_VERIFICATION_PASS`
+`V1_TO_V2_ROADMAP_DECISION_PASS`
 
 ## Validate
 

@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | docs/audit/V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS.md | completed (docs-only closeout: recorded Claude Code `PASS`, accepted `v1.0.0-rc1` annotated/pushed HEAD-target verification state as V1 RC baseline-compatible, confirmed validation+hygiene status, and routed to roadmap decision) |
 | REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | docs/audit/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS.md | completed (docs-only future-work note: records reference-image import/view/context roadmap direction, locks non-canonical proposal-only boundaries, and preserves V1 RC release-tag routing) |
 | V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | docs/audit/V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS.md | completed (docs-only scope lock for user-only annotated RC tag workflow: fixed tag contract for `v1.0.0-rc1`, explicit user command set, verification expectations, and ordered routing to tag verification then roadmap decision) |
 | V1_FINAL_SMOKE_CHECK_PASS | docs/audit/V1_FINAL_SMOKE_CHECK_PASS.md | completed (`PASS`; final manual V1 RC smoke checks recorded with positive Board Canvas + read-only metadata confirmation, forbidden-behavior absence, and unchanged V1 evidence boundaries) |

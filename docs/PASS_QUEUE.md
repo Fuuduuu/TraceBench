@@ -11,23 +11,24 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
+`V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V1_RELEASE_TAG_VERIFICATION_PASS`
+`V1_TO_V2_ROADMAP_DECISION_PASS`
 
 ## Docs drift countdown (canonical)
 
-`1`
+`0`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | DOCS_SYNC | current | Records reference-image-as-AI-context future-work direction while preserving V1 RC boundaries and keeping release-tag routing unchanged. |
-| V1_RELEASE_TAG_VERIFICATION_PASS | DOCS_SYNC / QA_RUN | recommended | Records post-user-tag verification: annotated tag existence/target correctness, clean tree, and unchanged protected boundaries/artifacts. |
-| V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | queued-next | Route roadmap decision only after RC tag verification so V1 baseline remains fixed. |
+| V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | current | Records Claude Code audit `PASS`, accepts tag verification as complete/scope-compliant, confirms annotated/pushed `v1.0.0-rc1` at accepted V1 RC baseline, and routes to roadmap decision. |
+| V1_TO_V2_ROADMAP_DECISION_PASS | DOCS_SYNC | recommended | Use accepted roadmap audits/decision context to lock forward plan from fixed V1 RC baseline. |
+| V1_RELEASE_TAG_VERIFICATION_PASS | AUDIT_ONLY | completed (`PASS`) | Verified local+remote `v1.0.0-rc1` existence, annotated type/message, HEAD target compatibility, clean repo hygiene, forbidden artifact absence, and full validation suite PASS. |
+| REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS | DOCS_SYNC | completed | Recorded reference-image-as-AI-context future-work direction while preserving V1 RC boundaries and release-tag flow. |
 | V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked the V1 RC annotated-tag workflow (`v1.0.0-rc1`) as user-only action with exact commands and verification expectations. |
 | V1_FINAL_SMOKE_CHECK_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Final manual V1 RC smoke verification recorded as `PASS`; Board Canvas, read-only metadata panels, safety copy, readiness metadata, and forbidden-behavior absence confirmed on positive fixture. |
 | REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS | DOCS_SYNC | deferred V1.1 candidate | Future scope lock for reference-only image import/viewer metadata contract; no canonical-fact creation. |

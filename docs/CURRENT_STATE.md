@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact
 Branch: main
 
-- Current pass: `REFERENCE_IMAGE_CONTEXT_FUTURE_WORK_PASS`
-- Next recommended pass: `V1_RELEASE_TAG_VERIFICATION_PASS`
-- Docs drift countdown: `1`
+- Current pass: `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
+- Next recommended pass: `V1_TO_V2_ROADMAP_DECISION_PASS`
+- Docs drift countdown: `0`
 
 ## Handoff snapshot (compact)
 
@@ -305,7 +305,7 @@ Branch: main
   - roadmap decision must not precede RC tag,
   - V2 planning must build on fixed/tagged V1 RC baseline.
 
-### Reference-image AI context future-work note (current)
+### Reference-image AI context future-work note (accepted)
 - Future-work note recorded in `docs/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK.md`.
 - This note does not change V1 RC scope and does not introduce implementation.
 - Reference images are explicitly non-canonical context:
@@ -318,6 +318,36 @@ Branch: main
   - high-risk V2 candidate: `BOARD_CANVAS_REFERENCE_IMAGE_LAYER_SCOPE_AUDIT_PASS` (gated),
   - V2+ research: `AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS`.
 - Release route preserved: next remains `V1_RELEASE_TAG_VERIFICATION_PASS`, then `V1_TO_V2_ROADMAP_DECISION_PASS`.
+
+### V1 release-tag verification closeout (current)
+- Claude Code audit verdict recorded: `PASS`.
+- `V1_RELEASE_TAG_VERIFICATION_PASS` accepted as completed and scope-compliant.
+- Accepted tag verification state:
+  - local `v1.0.0-rc1` exists,
+  - remote `origin` tag exists and is pushed,
+  - tag is annotated (`git cat-file -t v1.0.0-rc1` => `tag`),
+  - tag message matches exactly `TraceBench v1.0.0-rc1`,
+  - tagger/date recorded in audit evidence,
+  - tag object `25df79aefcc2db8c465dbf13a487e283a1954385`,
+  - peeled target `efd3e4d0f527fdf28c7ae478f12ff22e80359587`,
+  - target equals `HEAD`,
+  - target commit message: `docs: record reference image context future work`.
+- Accepted interpretation:
+  - tagged commit is docs-only future-work note,
+  - no V2 implementation behavior is introduced,
+  - V1 RC boundary remains intact.
+- Validation status accepted:
+  - `py -3 tools\validate_all.py` PASS,
+  - Flutter full suite PASS,
+  - targeted Python suites PASS.
+- Non-blocking warning retained:
+  - missing optional `photos/top_backlight_001.jpg` remains expected/non-blocking.
+- Repo hygiene accepted:
+  - tracked tree clean,
+  - no staged files,
+  - only expected unrelated local untracked paths,
+  - `board_graph.json` and `view_state.json` absent.
+- Route next to `V1_TO_V2_ROADMAP_DECISION_PASS`.
 
 ## Canonical pointers
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`

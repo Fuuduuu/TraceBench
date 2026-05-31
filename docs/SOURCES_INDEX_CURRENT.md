@@ -9,12 +9,28 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
 - V1 RC tag `v1.0.0-rc1` is tagged and verified (local + origin).
 - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` is accepted/pushed.
 - `V1_TO_V2_ROADMAP_DECISION_PASS` is accepted/pushed.
+- `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` is accepted/pushed.
+- `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS` is accepted/pushed.
+- `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` is accepted/pushed.
 - Accepted roadmap sequence:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`
   - then `V2_EVENT_WRITING_ARCHITECTURE`
 - V2 does not start with transform/photo-overlay/background-photo-helper implementation.
 - Reference-image context remains future work and non-canonical until human-confirmed accepted events.
+
+## CURRENT_STATE size/archive discipline
+
+- `docs/CURRENT_STATE.md` is a bounded active handoff file, not a long historical log.
+- Keep only:
+  - current pass,
+  - next recommended pass,
+  - current phase,
+  - hard boundaries,
+  - short latest accepted summaries.
+- Move older narrative/history to `docs/audit/*.md`.
+- Use `docs/AUDIT_INDEX.md` as lookup and `docs/PASS_QUEUE.md` as routing owner.
+- When `CURRENT_STATE.md` grows beyond compact handoff use, schedule `DOCS_DRIFT_MINI_CLEANUP_PASS`.
 
 ## AI read order
 

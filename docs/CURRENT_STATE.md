@@ -1,459 +1,98 @@
 # CURRENT_STATE.md
 
-Project: TraceBench AI / BoardFact
-Branch: main
+Project: TraceBench AI / BoardFact  
+Branch: `main`
 
-- Current pass: `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass: `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
+- Docs drift countdown: `5`
 
-## Handoff snapshot (compact)
+## Handoff snapshot (bounded)
 
-### Accepted board-canvas readiness chain
-- `BOARD_CANVAS_PHOTO_ALIGNMENT_UI_SCOPE_AUDIT_PASS` and closeout are accepted (`PASS` / `PREFER_METADATA_ONLY_NEXT`).
-- `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_SCOPE_LOCK_PASS` is accepted.
-- `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_PASS` is accepted.
-- `BOARD_CANVAS_PHOTO_ALIGNMENT_READINESS_PANEL_NITS_FOLLOWUP_PASS` and closeout are accepted (`PASS`).
-- `BOARD_CANVAS_ALIGNMENT_READINESS_QA_PASS` and closeout are accepted (`PASS`).
+### Current phase
+- V1 RC is fixed and verified:
+  - tag `v1.0.0-rc1` exists locally and on `origin`,
+  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted/pushed.
+- Roadmap is locked:
+  - `TAG_V1_RC_FIRST -> V1_1_HARDENING -> V2_EVENT_WRITING_ARCHITECTURE`.
+- Active phase is `V1.1` hardening.
 
-### Accepted photo-alignment data chain
-- `photo_to_board_alignment_confirmed` schema + validator support is accepted.
-- `known_facts.photo_to_board_alignments` materializer projection is accepted.
-- `known_facts` schema support for `photo_to_board_alignments` is accepted.
-- Dart KnownFacts support for `photoToBoardAlignments` is accepted.
-- Materializer and Dart QA hardening passes are accepted.
+### Accepted V1 baseline (still authoritative)
+- Board Canvas V1 is read-only and metadata-safe.
+- Positive fixture `board_canvas_positive_smoke` is accepted and evidence-safe.
+- Known Facts pipeline accepted:
+  - event schema + validator for photo alignment,
+  - materializer projection,
+  - known_facts schema support,
+  - Dart KnownFacts parity.
+- Validation baseline remains passing:
+  - `py -3 tools\validate_all.py` PASS,
+  - Flutter suite PASS,
+  - targeted Python suites PASS.
 
-### Current board-canvas photo-alignment UI meaning (locked)
-- UI support is metadata-only readiness/status display.
-- Readiness panel is project/photo-level, not per-component identity.
-- Reference points are displayed as pair count only (no raw `x/y`).
-- `transform_type` is labeled `declared type — not computed`.
-- Required safety copy remains mandatory.
-- `renderer writes: none` remains visible.
+### Recent accepted pass chain (latest-first)
+- `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` accepted:
+  - audit verdict PASS recorded,
+  - no audit-time file modifications,
+  - baseline reliability accepted.
+- `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS` accepted:
+  - first V1.1 hardening route locked as audit-first.
+- `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` accepted:
+  - source/handoff guidance synchronized to post-RC state,
+  - risk-based tool routing and no-self-approval rule aligned.
+- `V1_TO_V2_ROADMAP_DECISION_PASS` accepted:
+  - V2 does not start with transform/photo-overlay/background-helper implementation.
+- `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted:
+  - annotated tag and target baseline accepted.
 
-### Still deferred
-- Full board-canvas photo-alignment UI workflow.
-- Background photo helper.
-- Transform/matrix computation.
-- Photo-local evidence conversion onto board canvas.
-- visual_trace/damage/suspect canvas geometry rendering.
-- Event-writing/confirm/save/apply alignment controls.
-- Project ZIP contract changes.
+### Accepted metagovernance audit summary
+- `GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS` accepted from audit context (`PASS_WITH_NITS`):
+  - no scope drift detected,
+  - route remained correct,
+  - AI/tool routing remained practical,
+  - main process issue was `CURRENT_STATE.md` bloat,
+  - fixture coverage auto-gate gap should be scheduled soon,
+  - audit remained audit-only with no repo modifications.
 
-### Hard boundaries (unchanged)
+### Current non-blocking items
+- LOW: `validate_all.py` does not auto-validate `board_canvas_positive_smoke` (deferred tools hardening).
+- NIT: keep state docs compact; this cleanup resets/locks size discipline.
+
+## Hard boundaries (unchanged)
+
+- Human is the sensor. AI is the graph engine.
 - `events.jsonl` is canonical event truth.
-- `known_facts.json` is Python-materialized projection.
-- Renderer/view code writes nothing.
-- `board_graph.json` and `view_state.json` remain forbidden.
+- `known_facts.json` is materialized projection.
+- Renderer/view writes nothing unless separately scoped later.
 - Photo pixels are not facts.
-- Photo alignment is not identity, pin mapping, net confirmation, measurement, or fault proof.
-- `visual_trace` is visual-only and not a net.
+- Photo alignment is not identity/pin mapping/net confirmation/measurement/fault proof.
+- `visual_trace` is not a net.
 - Damage is not fault proof.
 - Suspect is not probability.
-- AI proposals are non-canonical until explicit accepted human-confirmed paths.
+- `template_id` / footprint family is not electrical identity.
+- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- Reference images are future proposal context only; they do not create canonical facts.
+- Only human-confirmed accepted events may update canonical projected truth.
 
-### Live-lite smoke-test planning (accepted)
-- Manual runbook exists at `docs/BOARD_CANVAS_LIVE_LITE_SMOKE_TEST_PLAN.md`.
-- It captures commands, visual checklist, forbidden-behavior checklist, evidence boundaries, observations template, and stop conditions for Windows local smoke runs.
+## CURRENT_STATE size/archive discipline (durable rule)
 
-### Live-lite smoke test run (accepted)
-- Manual smoke run completed on Windows target after live-lite plan pass.
-- `py -3 tools\validate_all.py` passed; expected warning for missing optional `photos/top_backlight_001.jpg` was observed.
-- App launched with `flutter run -d windows`; `flutter run -d chrome` failed because Chrome device was unavailable.
-- Project overview opened and `Board Canvas` was reachable through normal UI navigation.
-- Board canvas showed expected empty-state copy and `renderer writes: none`.
-- Board graph remained separate from board canvas.
-- Known facts/events/report surfaces opened and were readable.
-- Current opened project lacked confirmed visual placements and visible `photo_to_board_alignments`, so positive board-canvas placement rendering and readiness-panel positive-state behavior were not validated in this run.
-- Smoke verdict: `PASS_WITH_FINDINGS`.
-
-### Positive smoke fixture implementation (accepted)
-- Dedicated deterministic fixture project created: `samples/board_canvas_positive_smoke`.
-- Fixture contains an 8-event accepted chain (`evt_000001`..`evt_000008`) covering:
-  - component + pins,
-  - measurement metadata,
-  - visual trace metadata,
-  - `board_normalized` visual placement,
-  - accepted `photo_to_board_alignment_confirmed`.
-- `known_facts.json` was generated with materializer and includes:
-  - `components`, `pins`, `measurements`, `visual_traces`,
-  - `component_visual_placements`,
-  - `photo_to_board_alignments`.
-- Asset mirror added at `assets/samples/board_canvas_positive_smoke` with byte-identical checked files.
-- Sync test coverage extended in `tests/test_asset_sample_sync.py` for fixture manifest/events/known_facts/report parity.
-- No schema/tool/lib/runtime/Project-ZIP behavior changes were made.
-- Claude Code audit verdict: `PASS_WITH_NITS`.
-- Non-blocking notes:
-  - `ACTIVE_SCOPE_LOCK.md` pointer alignment required in closeout.
-  - `validate_all.py` does not auto-validate the new fixture; fixture pass relied on explicit per-fixture validation commands.
-- Route next to `LIVE_POSITIVE_SMOKE_TEST_PLAN_PASS`.
-
-### Live positive smoke planning (accepted)
-- Practical manual positive smoke runbook added at:
-  - `docs/BOARD_CANVAS_LIVE_POSITIVE_SMOKE_TEST_PLAN.md`
-- Runbook targets fixture:
-  - `samples/board_canvas_positive_smoke`
-  - `project_id: prj_board_canvas_smoke_001`
-- Opening strategy documented with explicit commands:
-  - Option A: open fixture directory directly (if app supports directory-open UI flow).
-  - Option B: export fixture to ZIP, validate ZIP, then import/open.
-- Runbook includes explicit positive checks for:
-  - Board Canvas route/open state,
-  - `renderer writes: none`,
-  - SMP001 rendered placement and selector behavior,
-  - read-only inspector with M1001 and VT001 visibility,
-  - readiness panel with ALN1001, source photo, reference-pair count, and required safety copy.
-- Runbook includes forbidden observation checklist, evidence-boundary checklist, screenshot/notes template, pass/fail criteria, expected warnings, and stop conditions.
-- Route next to `LIVE_POSITIVE_SMOKE_TEST_RUN_PASS`.
-
-### Live positive smoke run (accepted)
-- Manual positive smoke test run completed using `board_canvas_positive_smoke`.
-- Smoke verdict: `PASS`.
-- Board Canvas was reachable from Project Overview and opened with title `Board Canvas`.
-- `renderer writes: none` remained visible.
-- Positive board-canvas rendering/inspection path was confirmed:
-  - placement `SMP001` rendered and selectable,
-  - read-only inspector worked for `SMP001`,
-  - read-only measurement summary (`M1001`) appeared,
-  - read-only visual trace summary (`VT001`) appeared,
-  - photo-alignment readiness panel (`ALN1001`) appeared.
-- Readiness panel stayed metadata-only:
-  - reference-pair count shown,
-  - no raw alignment reference `x/y` values shown,
-  - `declared type — not computed` wording retained.
-- Evidence boundaries remained preserved:
-  - no transform computation,
-  - no background photo helper or overlays,
-  - no visual_trace/damage/suspect board geometry,
-  - no edit/confirm/save/apply/event-writing actions.
-- Route next to `BOARD_CANVAS_UI_POLISH_SCOPE_LOCK_PASS`.
-
-### Read-only visual polish V1 scope lock (accepted)
-- Scope lock accepted for metadata-only Board Canvas visual polish direction after:
-  - positive smoke run `PASS`,
-  - Claude Design `GO`,
-  - GPT Pro `APPROVE_SCOPE_LOCK`.
-- Allowed V1 polish scope is styling/layout/copy/accessibility only:
-  - boardview substrate/grid/outline styling,
-  - selected/unselected visual states,
-  - placement selector and inspector layout polish,
-  - measurement/visual-trace/readiness metadata-card layout polish,
-  - read-only category tags and copy clarity,
-  - responsive/focus/contrast improvements,
-  - persistent `renderer writes: none`.
-- Forbidden scope remains locked:
-  - no background photo/photo layer,
-  - no transform/matrix computation,
-  - no photo-local evidence board rendering,
-  - no visual_trace/damage/suspect/measurement geometry overlays,
-  - no event-writing/edit/confirm/save/apply/promote/detect/AI controls,
-  - no schema/tool/runtime/sample/ZIP contract changes.
-- Next route is implementation-only within the locked polish boundary:
-  - `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS`.
-
-### Read-only visual polish V1 implementation (accepted)
-- Board Canvas visual shell polished within read-only boundaries:
-  - three-zone responsive hierarchy (selector / canvas / metadata stack),
-  - dark board substrate direction with subtle decorative grid/outline,
-  - refined card styling and read-only metadata grouping.
-- Metadata cards remain read-only and evidence-safe:
-  - inspector,
-  - measurement summary,
-  - visual trace metadata,
-  - photo-alignment readiness.
-- Text-visible category tags are present:
-  - `MEASURED`
-  - `VISUAL`
-  - `READINESS`
-  - `UNKNOWN` (when identity is not confirmed).
-- Required safety copy remains present, including:
-  - `renderer writes: none`,
-  - `declared type — not computed`,
-  - visual-trace and readiness non-electrical-proof copy.
-- No transform/photo/overlay/event-writing scope was added.
-- Route next to `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS`.
-
-### Read-only visual polish V1 closeout (accepted)
-- Claude Code verdicts recorded:
-  - `BOARD_CANVAS_READONLY_POLISH_V1_AUDIT_PASS`: `PASS_WITH_NITS`
-  - `BOARD_CANVAS_READONLY_POLISH_V1_QA_AUDIT_PASS`: `PASS`
-- `BOARD_CANVAS_READONLY_POLISH_V1_IMPL_PASS` and `BOARD_CANVAS_READONLY_POLISH_V1_QA_PASS` are accepted and scope-compliant.
-- Accepted implementation/QA state:
-  - read-only visual polish remained styling/layout/copy/accessibility only,
-  - boardview-style shell + responsive layout + metadata cards are accepted,
-  - evidence-class tags (`MEASURED`, `VISUAL`, `READINESS`, `UNKNOWN`) are accepted,
-  - required non-identity copy assertions are covered in widget tests,
-  - targeted no-evidence-geometry source guards are in place,
-  - blanket `drawLine`/`drawPath` bans were not restored,
-  - full Flutter suite passed in QA audit validation (183 tests),
-  - `py -3 tools\validate_all.py` passed.
-- Non-blocking notes recorded:
-  - hardcoded board substrate color remains accepted for V1,
-  - prior `project_exporter_test.dart` flake was not reproduced in final audit validation.
-- Route next to `V1_RELEASE_READINESS_AUDIT_PASS`.
-
-### V1 release-readiness closeout (accepted)
-- External audit verdicts recorded:
-  - GPT Pro: `READY_WITH_NITS`
-  - Claude Code (repo-local): `READY_WITH_NITS`
-- Claude Code readiness estimate: `94%`.
-- True blockers: `None`.
-- Accepted V1 definition: Known Facts Builder + Project ZIP/local-first contract + read-only Board Canvas + evidence-safe metadata UI.
-- Accepted readiness state:
-  - validation stack passed (including full Flutter suite and targeted Python suites),
-  - positive smoke fixture and manual positive smoke run are accepted,
-  - Board Canvas V1 implementation/polish/QA chain is accepted,
-  - evidence boundaries remained intact,
-  - `board_graph.json` and `view_state.json` are absent.
-- Non-blocking nits recorded:
-  - docs drift countdown is `0` (`DOCS_DRIFT_MINI_CLEANUP_PASS` due),
-  - `BOARD_CANVAS_READONLY_RENDERER_SPEC.md` status/addendum alignment is stale,
-  - `validate_all.py` does not auto-validate `board_canvas_positive_smoke`,
-  - no V1 git tag exists yet,
-  - hardcoded board substrate color remains accepted for V1,
-  - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking.
-- Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`, then `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`.
-
-### Docs drift cleanup after V1 release-readiness (accepted)
-- Docs drift countdown reset from `0` to standard value `5` (canonical in `docs/PASS_QUEUE.md`).
-- Routing aligned forward-only:
-  - current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-  - next recommended pass: `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
-- Renderer spec status/addendum wording aligned to current accepted state:
-  - read-only Board Canvas V1 renderer is implemented, polished, QA-hardened, smoke-tested, and release-readiness audited,
-  - readiness panel remains metadata-only (project/photo-level, reference-pair count only, no raw `x/y`, declared type not computed).
-- Deferred/non-blocking release nits remain explicitly tracked:
-  - fixture auto-validation in `validate_all.py` is future tools hardening (no tools change here),
-  - no V1 git tag yet (release action later),
-  - hardcoded board substrate color accepted for V1,
-  - local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking and untouched.
-
-### V1 release-candidate scope lock (accepted)
-- V1 release-candidate scope is now explicitly locked in:
-  - `docs/V1_RELEASE_CANDIDATE_SCOPE.md`
-- Included V1 RC scope is locked to:
-  - event-backed Known Facts Builder,
-  - Project ZIP/local-first contract,
-  - read-only Board Canvas route + board_normalized placement rendering + read-only metadata panels,
-  - accepted positive fixture + positive manual smoke PASS,
-  - `renderer writes: none`.
-- Excluded/deferred V1 RC scope is locked:
-  - no background photo helper,
-  - no transform/matrix computation,
-  - no photo-local board rendering or evidence geometry overlays,
-  - no event-writing/edit/confirm/save/apply/promote/detect UI,
-  - no AI proposal/detection/candidate UI,
-  - no Project ZIP contract expansion,
-  - no `board_graph.json` or `view_state.json`.
-- Evidence boundaries are reaffirmed unchanged:
-  - human is sensor, AI is graph engine,
-  - `events.jsonl` canonical truth,
-  - `known_facts.json` materialized projection,
-  - template/visual/photo alignment metadata never become electrical truth by implication.
-- Non-blocking release nits remain tracked and accepted for V1 RC.
-
-### V1 release-candidate scope lock closeout (accepted)
-- Claude Code repo-local audit verdict recorded: `PASS`.
-- `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS` accepted as completed and scope-compliant.
-- V1 RC scope lock remains accurate, complete, and boundary-preserving.
-- Included and excluded/deferred V1 scope remain aligned with canonical repo state.
-- No true blockers found; validation suite status remains passing at audit checkpoint.
-- Non-blocking observations recorded:
-  - optional photo warning for `photos/top_backlight_001.jpg` remains non-blocking,
-  - `validate_all.py` fixture auto-validation gap remains deferred tools hardening,
-  - hardcoded board substrate colors remain accepted for V1,
-  - no V1 git tag yet (later user/release action),
-  - local untracked IDE/platform artifacts remain non-blocking,
-  - both readiness audit pass IDs in queue history are harmless and do not affect active routing.
-- Route next to `V1_FINAL_SMOKE_CHECK_PASS`, then `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
-
-### V1 final smoke check (accepted)
-- Final manual smoke verdict recorded: `PASS`.
-- Board Canvas routing and core read-only behavior confirmed on positive fixture state:
-  - board canvas open + SMP001 placement visible/selectable,
-  - read-only inspector and required identity/safety copy visible,
-  - measurement metadata card visible (M1001 continuity metadata),
-  - visual-trace metadata card visible (VT001 with non-net safety copy),
-  - photo-alignment readiness card visible (ALN1001 metadata, reference pairs count only, declared type not computed),
-  - board graph remained separate and consistent with fixture expectations,
-  - components list and photo evidence views opened with expected fixture records.
-- Forbidden behavior remained absent in smoke observations:
-  - no edit/confirm/save/apply/event-writing controls,
-  - no transform computation/matrix output,
-  - no background photo/photo overlay behavior,
-  - no visual_trace/damage/suspect board geometry overlays,
-  - no AI/detect/promote actions,
-  - no `board_graph.json` or `view_state.json` behavior.
-- V1 RC scope boundaries remain intact after final smoke verification.
-- Route next to `V1_RELEASE_CANDIDATE_TAG_SCOPE_LOCK_PASS`.
-
-### V1 release-candidate tag workflow scope lock (accepted)
-- Purpose locked: define safe, reproducible V1 RC tag workflow before user creates release-candidate tag.
-- Fixed tag contract:
-  - exact tag name `v1.0.0-rc1`,
-  - annotated tag required,
-  - exact message `TraceBench v1.0.0-rc1`,
-  - tag target must be the latest accepted V1 RC baseline commit after this scope-lock pass is committed/pushed.
-- Ownership and execution boundaries locked:
-  - tag creation is user action only,
-  - agent must not create tag in this pass,
-  - agent must not push tag in this pass.
-- Post-tag routing locked:
-  - next pass `V1_RELEASE_TAG_VERIFICATION_PASS`,
-  - then `V1_TO_V2_ROADMAP_DECISION_PASS`.
-- Ordering rule reaffirmed:
-  - roadmap decision must not precede RC tag,
-  - V2 planning must build on fixed/tagged V1 RC baseline.
-
-### Reference-image AI context future-work note (accepted)
-- Future-work note recorded in `docs/REFERENCE_IMAGE_CONTEXT_FUTURE_WORK.md`.
-- This note does not change V1 RC scope and does not introduce implementation.
-- Reference images are explicitly non-canonical context:
-  - they do not create facts,
-  - they do not confirm identity/pins/nets/measurements/faults/placements,
-  - AI outputs from reference images remain unconfirmed proposals until human-confirmed accepted events.
-- Roadmap placement locked without disrupting release flow:
-  - safe V1.1 candidate: `REFERENCE_IMAGE_IMPORT_SCOPE_LOCK_PASS` (reference-only import/viewer),
-  - V2 candidate: `REFERENCE_IMAGE_AI_CONTEXT_SCOPE_AUDIT_PASS`,
-  - high-risk V2 candidate: `BOARD_CANVAS_REFERENCE_IMAGE_LAYER_SCOPE_AUDIT_PASS` (gated),
-  - V2+ research: `AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS`.
-- Release route preserved: next remains `V1_RELEASE_TAG_VERIFICATION_PASS`, then `V1_TO_V2_ROADMAP_DECISION_PASS`.
-
-### V1 release-tag verification closeout (accepted)
-- Claude Code audit verdict recorded: `PASS`.
-- `V1_RELEASE_TAG_VERIFICATION_PASS` accepted as completed and scope-compliant.
-- Accepted tag verification state:
-  - local `v1.0.0-rc1` exists,
-  - remote `origin` tag exists and is pushed,
-  - tag is annotated (`git cat-file -t v1.0.0-rc1` => `tag`),
-  - tag message matches exactly `TraceBench v1.0.0-rc1`,
-  - tagger/date recorded in audit evidence,
-  - tag object `25df79aefcc2db8c465dbf13a487e283a1954385`,
-  - peeled target `efd3e4d0f527fdf28c7ae478f12ff22e80359587`,
-  - target equals `HEAD`,
-  - target commit message: `docs: record reference image context future work`.
-- Accepted interpretation:
-  - tagged commit is docs-only future-work note,
-  - no V2 implementation behavior is introduced,
-  - V1 RC boundary remains intact.
-- Validation status accepted:
-  - `py -3 tools\validate_all.py` PASS,
-  - Flutter full suite PASS,
-  - targeted Python suites PASS.
-- Non-blocking warning retained:
-  - missing optional `photos/top_backlight_001.jpg` remains expected/non-blocking.
-- Repo hygiene accepted:
-  - tracked tree clean,
-  - no staged files,
-  - only expected unrelated local untracked paths,
-  - `board_graph.json` and `view_state.json` absent.
-- Route next to `V1_TO_V2_ROADMAP_DECISION_PASS`.
-
-### V1 to V2 roadmap decision (accepted)
-- Verified V1 RC tag-first route is complete:
-  - `v1.0.0-rc1` annotated tag exists locally and on `origin`,
-  - tag verification and closeout are accepted and pushed.
-- Accepted roadmap decision is now locked:
-  - `TAG_V1_RC_FIRST`
-  - then `V1_1_HARDENING`
-  - then `V2_EVENT_WRITING_ARCHITECTURE`
-- V2 start is explicitly constrained:
-  - do not start V2 with transform/matrix work,
-  - do not start V2 with photo overlay/background photo helper,
-  - do not start V2 with photo-local evidence board rendering.
-- Reference-image context remains future work:
-  - safe V1.1 candidate remains reference-only image import/viewer,
-  - AI context remains proposal-only (`unconfirmed_ai_proposal`) until human-confirmed accepted events,
-  - high-risk board-canvas reference-image layer remains gated for later GPT Pro + Claude Code review.
-- Hard evidence boundaries remain unchanged:
-  - human is sensor, AI is graph engine,
-  - `events.jsonl` canonical truth,
-  - `known_facts.json` materialized projection,
-  - renderer/view writes nothing,
-  - no `board_graph.json` or `view_state.json`,
-  - photo alignment/visual trace/damage/suspect metadata do not imply electrical/fault truth.
-- Route next to `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`.
-
-### Source guide sync after V1 RC (accepted)
-- Source/handoff governance docs are synchronized after accepted V1 RC tag verification and roadmap lock.
-- Confirmed baseline remains:
-  - V1 RC tag `v1.0.0-rc1` tagged + verified,
-  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted/pushed,
-  - `V1_TO_V2_ROADMAP_DECISION_PASS` accepted/pushed.
-- Source guide/handoff governance now explicitly records tool/AI routing logic:
-  - helper selection by risk/authority boundary,
-  - manual-only release/tag mutation authority,
-  - high-risk no-self-approval flow (`GPT Pro -> Claude Code -> Codex -> Claude Code -> ChatGPT -> User`).
-- V1/V2 forward direction is locked in guide docs:
-  - V1.1 hardening is next,
-  - V2 starts with event-writing architecture,
-  - V2 does not start with transform/photo-overlay/background-helper implementation.
-- Evidence boundaries are preserved unchanged:
-  - no AI fact creation,
-  - no photo/reference-image to fact promotion,
-  - no visual_trace to net promotion,
-  - no damage/suspect to fault/probability promotion,
-  - no `board_graph.json` / `view_state.json`.
-- Stale pre-RC `Source Guide v9` references were checked and none remain in active docs.
-- Route next to `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`.
-
-### V1.1 hardening validation/smoke scope lock (accepted)
-- V1.1 hardening phase is started after:
-  - accepted/pushed V1 RC tag verification closeout,
-  - accepted/pushed V1-to-V2 roadmap decision lock,
-  - accepted/pushed source-guide sync.
-- Scope locked for first V1.1 hardening validation/smoke route:
-  - validate current accepted V1 baseline reliability only,
-  - no schema/tool/test/runtime/sample changes in this scope-lock pass.
-- Next pass type is locked to `AUDIT_ONLY`:
-  - `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`
-- Audit focus is locked to:
-  - `py -3 tools\validate_all.py` as main V1 validation gate,
-  - explicit `board_canvas_positive_smoke` validation coverage and whether it is auto-gated or must remain explicit,
-  - evidence-safe state for `board_canvas_positive_smoke`,
-  - forbidden artifact rejection/absence (`board_graph.json`, `view_state.json`),
-  - renderer/view read-only (`renderer writes: none` boundary),
-  - optional missing photo warning classification remains non-blocking unless separately scoped.
-- Expected command set for the audit pass is locked:
-  - `py -3 tools\validate_all.py`
-  - `py -3 tools\validate_events_jsonl.py samples\board_canvas_positive_smoke\events.jsonl schemas\events.schema.json`
-  - `py -3 tools\materialize_known_facts.py samples\board_canvas_positive_smoke\events.jsonl samples\board_canvas_positive_smoke\known_facts.json`
-  - `py -3 -m unittest tests.test_asset_sample_sync`
-  - `py -3 -m unittest tests.test_project_zip`
-  - `py -3 -m unittest tests.test_materialize_known_facts`
-  - `py -3 -m unittest tests.test_validate_events_jsonl`
-- Follow-on routing from audit is locked:
-  - if no gap: closeout + keep baseline as-is,
-  - if gap found: route to dedicated scope lock for smallest required tools/test hardening (no direct broad implementation jump).
-- Route next to `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS`.
-
-### V1.1 hardening validation/smoke audit closeout (current)
-- Claude Code / Opus audit result for `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS` is accepted:
-  - verdict `PASS`,
-  - `MODEL_ROUTING_CHECK`: `PASS`,
-  - scope drift check: `PASS`,
-  - no files modified during audit-only execution.
-- Accepted validation/smoke baseline:
-  - `py -3 tools\validate_all.py`: `PASS` (231 tests),
-  - Flutter tests: `PASS` (182 tests),
-  - targeted Python suites: `OK` (211 tests combined),
-  - `board_canvas_positive_smoke` remains present, valid, and evidence-safe.
-- Accepted boundary confirmations from audit:
-  - `visual_trace` does not promote to net,
-  - photo alignment remains readiness/alignment metadata only,
-  - positive fixture `nets: []` remains true,
-  - `board_graph.json` and `view_state.json` remain absent/rejected,
-  - Board Canvas V1 remains read-only,
-  - forbidden action labels remain absent,
-  - `renderer writes: none` remains visible/tested.
-- Accepted non-blocking findings:
-  - LOW: `validate_all.py` does not auto-validate `board_canvas_positive_smoke` (deferred tools hardening; not a blocker),
-  - NIT: docs drift cleanup is due soon (`CURRENT_STATE.md` length + countdown `0`).
-- Route next to `DOCS_DRIFT_MINI_CLEANUP_PASS`.
+- Keep this file as bounded active handoff only.
+- Keep:
+  - current pass,
+  - next recommended pass,
+  - active phase,
+  - hard boundaries,
+  - a small latest accepted summary block.
+- Do not keep long historical narratives here.
+- Move older narrative detail to `docs/audit/*.md`.
+- Use `docs/PASS_QUEUE.md` for queue/routing and `docs/AUDIT_INDEX.md` for audit lookup.
+- Trigger `DOCS_DRIFT_MINI_CLEANUP_PASS` when this file starts expanding beyond compact handoff usage.
 
 ## Canonical pointers
+
 - Pass sequencing and countdown: `docs/PASS_QUEUE.md`
 - Active scope allowlist/forbidden surfaces: `docs/ACTIVE_SCOPE_LOCK.md`
+- Source/handoff routing and memory conflict order: `docs/SOURCES_INDEX_CURRENT.md`
 - Stable product invariants: `docs/PROJECT_MEMORY.md`
 - Audit index: `docs/AUDIT_INDEX.md`
 - Detailed pass evidence: `docs/audit/*.md`

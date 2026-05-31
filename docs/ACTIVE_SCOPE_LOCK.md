@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Docs-only closeout for accepted V1.1 validation/smoke audit result.
+Docs-only drift cleanup to compact/aligned governance state after V1.1 validation/smoke audit closeout.
 
 ## Allowed surfaces
 
@@ -14,7 +14,8 @@ Docs-only closeout for accepted V1.1 validation/smoke audit result.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -47,7 +48,7 @@ Docs-only closeout for accepted V1.1 validation/smoke audit result.
 
 ## Scope boundary (locked)
 
-- Docs-only audit closeout recording pass.
+- Docs-only drift cleanup pass.
 - No schema/tool/materializer/Dart/Flutter implementation or automated test changes.
 - No fixture/sample/data changes in this pass.
 - No Project ZIP contract changes.
@@ -60,7 +61,7 @@ Docs-only closeout for accepted V1.1 validation/smoke audit result.
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
 
 ## Validate
 

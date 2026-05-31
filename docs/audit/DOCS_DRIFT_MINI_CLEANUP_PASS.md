@@ -7,66 +7,59 @@
 `DOCS_SYNC`
 
 ## Mode
-Docs-only drift cleanup before V1 release-candidate scope lock.
+Docs-only drift cleanup after V1.1 validation/smoke audit closeout.
 
-## Reason
-- Docs drift countdown reached `0` after `V1_RELEASE_READINESS_CLOSEOUT_PASS`.
-- V1 release-readiness audit recorded small docs-only cleanup nits.
+## Result
+Completed.
+
+## Gate confirmation
+- Branch confirmed: `main`.
+- Remote confirmed: `origin https://github.com/Fuuduuu/TraceBench.git`.
+- HEAD confirmed synced with `origin/main`.
+- Tracked working tree confirmed clean at gate start.
+- Only known unrelated local untracked paths present:
+  - `.idea/`
+  - `.metadata`
+  - `assets/samples/pelle_pv20_minimal/metadata/`
+  - `trace_bench_viewer.iml`
+  - `windows/`
+- `v1.0.0-rc1` confirmed locally and on origin.
+- Required prior passes confirmed accepted/pushed:
+  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`
+  - `V1_TO_V2_ROADMAP_DECISION_PASS`
+  - `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS`
+  - `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS`
+  - `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
+
+## Accepted metagovernance audit record
+- `GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS` accepted from audit context with verdict `PASS_WITH_NITS`.
+- Accepted findings recorded:
+  - no scope drift,
+  - route remains correct,
+  - AI/tool routing remains practical,
+  - `CURRENT_STATE.md` bloat is the primary process issue,
+  - `validate_all.py` fixture coverage gap should be scheduled soon.
+- Confirmed as audit-only with no repo modifications.
 
 ## Cleanup summary
-- `docs/CURRENT_STATE.md`
-  - current pass set to `DOCS_DRIFT_MINI_CLEANUP_PASS`,
-  - next recommended pass set to `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`,
-  - countdown synchronized to canonical value in `PASS_QUEUE.md`,
-  - compact V1 release-readiness accepted state retained.
-- `docs/PASS_QUEUE.md`
-  - canonical docs drift countdown reset to standard value `5`,
-  - current pass set to this cleanup pass,
-  - next recommended pass set to `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`,
-  - release-readiness closeout moved to completed status.
-- `docs/ACTIVE_SCOPE_LOCK.md`
-  - current pass aligned to this cleanup pass,
-  - docs-only allowlist updated for cleanup scope,
-  - next recommended pass aligned to `V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`.
-- `docs/AUDIT_INDEX.md`
-  - `DOCS_DRIFT_MINI_CLEANUP_PASS` entry refreshed to current post-release cleanup summary.
+- `docs/CURRENT_STATE.md` compacted from long narrative state into bounded active handoff snapshot.
+- Added durable `CURRENT_STATE` size/archive discipline:
+  - keep only active state + short recent accepted summary,
+  - move older narratives to `docs/audit/*.md`.
+- `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/SOURCES_INDEX_CURRENT.md` aligned to the same current/next direction.
+- Docs drift countdown aligned/reset to canonical `5`.
 
-## Renderer spec status/addendum fixes
-- `docs/BOARD_CANVAS_READONLY_RENDERER_SPEC.md` status line updated to current accepted state:
-  - implemented, polished, QA-hardened, smoke-tested, and release-readiness audited.
-- Readiness panel addendum wording aligned with accepted V1 behavior:
-  - implemented/accepted metadata-only panel,
-  - project/photo-level (not per-component identity semantics),
-  - reference pairs count only,
-  - raw alignment `x/y` hidden,
-  - `declared type — not computed`,
-  - no transform computation,
-  - no background photo helper,
-  - no photo-local evidence board rendering,
-  - no visual_trace/damage/suspect/measurement canvas geometry,
-  - no event-writing/edit controls,
-  - renderer writes nothing.
+## Routing result
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass:
+  - `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
 
-## Countdown reset result
-- Reset complete: `0` -> `5` (canonical owner: `docs/PASS_QUEUE.md`).
-- `docs/CURRENT_STATE.md` synchronized to `5`.
-
-## Deferred/non-blocking nits carried forward
-- `validate_all.py` auto-validation gap for `board_canvas_positive_smoke` remains a future tools-validation hardening item (no tools changes in this pass).
-- No V1 git tag exists yet; remains a later user/release action (no tagging in this pass).
-- Hardcoded board substrate color remains accepted for V1.
-- Local untracked `assets/samples/pelle_pv20_minimal/metadata/` remains non-blocking and untouched.
-
-## Next recommended pass
-`V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS`
-
-## Validation result
-- `py -3 tools\validate_all.py` passed.
-- Docs-only changed surfaces confirmed.
-
-## Forbidden-surface confirmation
-- No schema/tool/lib/test/tests/samples/assets/pubspec changes.
-- No generated data or Project ZIP tooling changes.
-- No runtime/product behavior changes.
-- No transform/background/overlay/event-writing scope expansion.
-- No `board_graph.json` or `view_state.json`.
+## Boundary confirmation
+- Human is sensor; AI is graph engine.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains materialized projection.
+- Renderer/view remains no-write.
+- No photo-to-fact promotion.
+- No alignment/trace/damage/suspect semantic promotion.
+- `board_graph.json` and `view_state.json` remain forbidden.
+- No schema/tool/test/sample/runtime/tag/release-object changes in this pass.

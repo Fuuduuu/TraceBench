@@ -11,22 +11,24 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`
 
 ## Docs drift countdown (canonical)
 
-`0`
+`5`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | current | Records accepted Claude Code/Opus `PASS` for the V1.1 validation/smoke audit, confirms no-change audit execution and baseline integrity, and tracks non-blocking findings. |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | recommended | Perform compact docs drift cleanup after closeout (`CURRENT_STATE` size + countdown `0`) while preserving fixed V1 boundaries/routing. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | current | Performs due docs drift cleanup after V1.1 validation/smoke closeout and metagovernance audit: compacts state handoff, aligns ledgers, and resets countdown discipline. |
+| VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Next concrete V1.1 hardening item: scope-lock whether/how `validate_all.py` should include explicit `board_canvas_positive_smoke` coverage without broad tools changes. |
+| V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | DOCS_SYNC | completed | Records accepted Claude Code/Opus `PASS` for the V1.1 validation/smoke audit, confirms no-change audit execution and baseline integrity, and tracks non-blocking findings. |
+| GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS | AUDIT_ONLY | completed (`PASS_WITH_NITS`) | Metagovernance audit accepted from user-provided result: no scope drift, routing/tooling logic practical, CURRENT_STATE bloat flagged, fixture auto-gate scheduling recommended; audit-only with no repo modifications. |
 | V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Audit-only verification accepted: validation baseline intact, positive smoke fixture evidence-safe, forbidden artifacts absent/rejected, renderer no-write boundary preserved, and no files modified. |
 | V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locks first V1.1 hardening validation/smoke route, boundaries, command set expectations, and pass-type decision before any hardening implementation. |
 | SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS | DOCS_SYNC | completed | Syncs source/handoff governance after accepted RC tag verification + roadmap lock, including risk-based tool routing and explicit no-self-approval high-risk flow. |
@@ -42,7 +44,6 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | AI_LAYOUT_PROPOSAL_BENCHMARK_SCOPE_PASS | DOCS_SYNC / RESEARCH_SCOPE | deferred V2+ research | Future benchmark design for reference-image-driven AI layout proposals (top-1/top-3 accuracy) with unconfirmed proposal outputs only. |
 | V1_RELEASE_READINESS_REPO_AUDIT_PASS | AUDIT_ONLY | completed (`READY_WITH_NITS`) | Repo-local release-readiness audit accepted with no true blockers and non-blocking cleanup/tagging/tooling nits. |
 | V1_RELEASE_READINESS_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded GPT Pro + Claude readiness verdicts (`READY_WITH_NITS`), readiness estimate (94%), no true blockers, and V1 release-checkpointable status. |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Reset docs drift countdown to standard value `5`, aligned renderer-spec status/addendum wording, and preserved docs-only/no-surface-expansion boundaries. |
 | V1_RELEASE_CANDIDATE_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked V1 release-candidate included/excluded scope, acceptance checklist, and evidence boundaries without implementation changes. |
 | V1_RELEASE_CANDIDATE_SCOPE_LOCK_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`) | Claude Code repo-local audit confirmed V1 RC scope lock accuracy/completeness and boundary preservation. |
 | BOARD_CANVAS_READONLY_POLISH_V1_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked safe V1 read-only Board Canvas visual polish scope to styling/layout/copy/accessibility only; no geometry/write/transform/photo-overlay expansion allowed. |

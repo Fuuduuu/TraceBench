@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NONE` (no immediate implementation pass queued)
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -28,4 +28,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Created manual Windows smoke plan for sidecar viewer, ZIP/sidecar behavior, and navigation/route checkpoints. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Ran manual smoke and confirmed project overview entry, local sidecar import/persistence, and route/ZIP boundary invariants. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS | DOCS_SYNC / QA_CLOSEOUT | completed | Recorded PASS smoke run outcomes and the non-blocking duplicate `device_profiles/default.json` ZIP observation as note. |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | current | Compacting governance handoff/state docs and aligning current/next routing pointers after smoke closeout. |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | DOCS_SYNC | current | Locks dedup scope for Project ZIP export duplicate arc names, specifically `device_profiles/default.json`; implementation target is `TOOLS_PASS`. |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | TOOLS_PASS | planned | Remove duplicate archive entry behavior by ensuring unique ZIP arc names while preserving required export behavior and exclusions. |

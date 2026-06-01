@@ -2,11 +2,12 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Compact governance handoff docs after `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS` and re-align current/next routing boundaries.
+Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive path emission for
+`device_profiles/default.json` before any implementation.
 
 ## Allowed surfaces
 
@@ -15,14 +16,13 @@ Compact governance handoff docs after `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
-- `schemas/**`
-- `tools/**`
+- `schemas/**` (no schema changes in this scope lock pass)
+- `tools/**` (implementation deferred to next `TOOLS_PASS`)
 - `lib/**`
-- `test/**`
-- `tests/**`
 - `samples/**`
 - `assets/**`
 - `pubspec*`
@@ -42,18 +42,26 @@ Compact governance handoff docs after `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_
 
 ## Scope boundary (locked)
 
-- This is a docs-only cleanup pass.
-- Keep `CURRENT_STATE.md`, `PASS_QUEUE.md`, and `ACTIVE_SCOPE_LOCK.md` compact and bounded to current handoff state.
-- Keep `AUDIT_INDEX.md` and the pass audit doc aligned to the same cleanup outcome.
-- Do not expand implementation scope while compacting docs.
+- Docs-only scope lock only.
+- Next implementation pass is fixed as:
+  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` (lane: `TOOLS_PASS`)
+- Allowed implementation file set for the next pass:
+  - `tools/export_project_zip.py`
+  - `tests/test_project_zip.py`
+  - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
+- Implementation must preserve:
+  - existing `.tracebench_local`, `.codex`, `.git`, `__pycache__`, `.env`, log exclusions,
+  - `board_graph.json` / `view_state.json` rejection behavior.
+- No Project ZIP contract expansion.
+- No new event/schema/materializer/runtime behavior.
+- No renderer/view write behavior.
+- Evidence boundaries remain unchanged (no transform/photo overlay/reference-image path inclusion, no event-writing logic).
 
 ## Next recommended pass
 
-`NONE` (no immediate implementation pass queued)
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
-- `git diff --name-only`
-- `git diff --cached --name-only`
 - `git status --short --branch`

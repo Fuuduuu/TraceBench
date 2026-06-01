@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `NONE` (no immediate implementation pass queued after docs-only cleanup)
+- Current pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
+- Next recommended pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -32,10 +32,18 @@ Branch: `main`
     - no event/log/materializer/surface expansion,
     - `resolveStoredImageFile` clamps path escape/traversal.
   - `py -3 tools\validate_all.py` includes `board_canvas_positive_smoke` in baseline fixture checks.
-- Current cleanup pass is docs-only:
+- Current pass is docs-only lock + routing state update:
   - compact `CURRENT_STATE.md`, `PASS_QUEUE.md`, `ACTIVE_SCOPE_LOCK.md`, `AUDIT_INDEX.md` into bounded routing handoff form,
   - remove duplicated/non-bounded history from `CURRENT_STATE.md`,
   - ensure routing pointers are coherent and docs-only.
+
+- V1.1 post-smoke review action:
+  - manual side-effect note identified a LOW export hygiene issue:
+    duplicate `device_profiles/default.json` in exported ZIP.
+  - confirmed root cause was duplicate arc collection:
+    project walk + explicit `device_profiles/` collection.
+  - routed to `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
+    for narrow `TOOLS_PASS` export dedup hardening.
 
 ## Hard boundaries (current)
 
@@ -46,4 +54,4 @@ Branch: `main`
 - `photo` content is non-factual unless separately confirmed through accepted event paths.
 - `visual_trace` is visual-only and never an electrical net.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- This cleanup pass is docs-only and does not touch runtime/schema/tooling/materializer/runtimes.
+- This active pass is docs-only and does not touch runtime/schema/tooling/materializer/runtimes.

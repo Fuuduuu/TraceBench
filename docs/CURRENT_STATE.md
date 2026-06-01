@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS`
-- Next recommended pass: `PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`
+- Current pass: `PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`
+- Next recommended pass: `PROJECT_EXPORTER_TEST_FIX_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -41,6 +41,12 @@ Branch: `main`
   - import label is `Import from this computer`,
   - SHA-256 caption in selected metadata is `File integrity / duplicate check — not an evidence seal.`,
   - service behavior is unchanged in this slice.
+- `PROJECT_EXPORTER_TEST_FAILURE_TRIAGE_PASS` confirmed as an unrelated, order-dependent test isolation issue:
+  - failing case is in `test/unit/project_exporter_test.dart` only,
+  - deterministic when running the full `project_exporter_test.dart` file,
+  - by-name test run succeeds,
+  - no reference-image scope coupling,
+  - production command discovery remains a likely candidate-safe area requiring a test-only isolation fix.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

@@ -2,11 +2,15 @@
 
 ## Current pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
 
 ## Goal
 
-Lock the low-staleness governance diagram plan before any Mermaid artifacts are created.
+Implement the locked low-staleness governance diagrams:
+
+- pass lifecycle
+- evidence boundaries
+- tool/model routing
 
 ## Allowed surfaces
 
@@ -14,7 +18,11 @@ Lock the low-staleness governance diagram plan before any Mermaid artifacts are 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
+- `docs/PASS_LIFECYCLE.md`
+- `docs/ARCHITECTURE_BOUNDARIES.md`
+- `docs/MODEL_ROUTING.md`
 - `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS.md`
 
 ## Forbidden surfaces
 
@@ -36,16 +44,19 @@ Lock the low-staleness governance diagram plan before any Mermaid artifacts are 
 
 ## Scope boundary (lock)
 
-- This is a docs-only scope lock.
-- Next implementation pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`.
 - Locked diagram set for next pass:
   - pass lifecycle
   - evidence-boundary
   - tool/model routing
-- Preferred implementation locations:
+- Implementation is docs-only and must not include:
+  - current pass-chain as the primary diagram truth,
+  - timeline expansion,
+  - AI to canonical-fact claims,
+  - reference-image canonical/ZIP/materializer/Board Canvas/AI flows.
+- Implementation targets:
   - `docs/PASS_LIFECYCLE.md` (new)
   - `docs/ARCHITECTURE_BOUNDARIES.md` (new)
-  - `docs/MODEL_ROUTING.md` (small Mermaid section or reference anchor)
+  - `docs/MODEL_ROUTING.md` (small Mermaid section or compact anchor)
 - `TraceBench_Project_Source_Guide.md` remains a source-orientation companion document, not a live pass ledger.
 - Evidence policy remains unchanged:
   - AI does not set canonical facts.
@@ -60,7 +71,7 @@ Lock the low-staleness governance diagram plan before any Mermaid artifacts are 
 
 ## Next recommended pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS`
 
 ## Closeout validations
 

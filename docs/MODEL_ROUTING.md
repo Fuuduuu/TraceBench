@@ -51,6 +51,27 @@ Choose the right helper/model for each pass type and risk profile.
 3. If boundary/sequence uncertainty remains, escalate to GPT Pro.
 4. User resolves product-priority tie-breakers.
 
+### Tool/model routing (compact)
+
+```mermaid
+flowchart LR
+  ChatGPT["ChatGPT"]
+  Codex["Codex"]
+  Claude["Claude Code / Opus"]
+  GPTPro["GPT Pro"]
+  Design["Claude Design / Claude Chat"]
+  User["User"]
+
+  ChatGPT -->|orchestration / prompt / review| Handoff["repo-local pass execution"]
+  Codex -->|scoped docs / implementation| Handoff
+  Claude -->|audit / validation| Handoff
+  GPTPro -->|architecture / boundaries| Handoff
+  Design -->|UX / design / spec critique| Handoff
+  User -->|priority / release / commit| Handoff
+```
+
+This diagram is orientation only; canonical repo docs win.
+
 ## Minimal handoff payload requirements
 
 When routing to another model/helper, include:

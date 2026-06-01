@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -42,4 +42,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PROJECT_EXPORTER_TEST_FIX_PASS | TEST_FIX_PASS | completed | Applied test-only normalization in fallback assertions (`_commandExecutable`) to make `ProjectExporter falls back to python3/python when earlier candidates fail` order-independent; no production behavior change; accepted post-audit (`PASS`, `ACCEPT_AS_IS`). |
 | PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out `PROJECT_EXPORTER_TEST_FIX_PASS` with post-audit summary, accepted status propagation, and routing to `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`. |
 | PROMPT_PROTOCOL_GUARD_CLAUSES_PASS | DOCS_SYNC | completed | Added reusable prompt guard clauses for test hangs, FS-image test guardrails, bounded waits, and model/tool routing reminders; docs-only implementation. |
-| TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | DOCS_SYNC | in_progress | Lock the low-staleness Mermaid diagram set for governance orientation before implementation: pass lifecycle, evidence boundaries, and tool/model routing. |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the low-staleness Mermaid diagram set for governance orientation before implementation: pass lifecycle, evidence boundaries, and tool/model routing. |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | DOCS_SYNC | in_progress | Implement the locked diagram docs: `docs/PASS_LIFECYCLE.md`, `docs/ARCHITECTURE_BOUNDARIES.md`, and routing section in `docs/MODEL_ROUTING.md`. |

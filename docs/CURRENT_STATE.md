@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
-- Next recommended pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
+- Current pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
+- Next recommended pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -61,6 +61,10 @@ Branch: `main`
   - only a harmless redundant assertion remained as NIT.
 - Governance lock in progress:
   - `TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS` defines the next three low-staleness Mermaid diagrams (pass lifecycle, evidence boundary, tool/model routing) for implementation.
+- Governance diagrams in progress:
+  - `docs/PASS_LIFECYCLE.md` tracks the pass chain structure.
+  - `docs/ARCHITECTURE_BOUNDARIES.md` tracks evidence-directional safety.
+  - `docs/MODEL_ROUTING.md` now includes a compact role-to-tool routing diagram section.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

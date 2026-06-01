@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`
-- Next recommended pass: `PROJECT_EXPORTER_TEST_FIX_PASS`
+- Current pass: `PROJECT_EXPORTER_TEST_FIX_PASS`
+- Next recommended pass: `PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -47,6 +47,11 @@ Branch: `main`
   - by-name test run succeeds,
   - no reference-image scope coupling,
   - production command discovery remains a likely candidate-safe area requiring a test-only isolation fix.
+- `PROJECT_EXPORTER_TEST_FIX_PASS` applies a test-only normalization of fallback-version assertions in
+  `test/unit/project_exporter_test.dart`:
+  - normalizes executable checks (`py`/`python3`/`python`) via basename,
+  - keeps the fallback behavior assertion deterministic across full-file execution,
+  - does not touch production `ProjectExporter` code.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

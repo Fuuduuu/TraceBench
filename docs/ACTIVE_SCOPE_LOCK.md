@@ -2,12 +2,11 @@
 
 ## Current pass
 
-`PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`
+`PROJECT_EXPORTER_TEST_FIX_PASS`
 
 ## Goal
 
-Lock a docs-only scope pass for the test-order-isolated `ProjectExporter` fallback test fix.
-Implementation is intentionally deferred to `PROJECT_EXPORTER_TEST_FIX_PASS` (`TEST_FIX_PASS`).
+Implement a narrow test-only fix for the `ProjectExporter` fallback test-order isolation case.
 
 ## Allowed surfaces
 
@@ -15,13 +14,8 @@ Implementation is intentionally deferred to `PROJECT_EXPORTER_TEST_FIX_PASS` (`T
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS.md`
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS.md`
+- `docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md`
 
 ## Forbidden surfaces
 
@@ -48,7 +42,7 @@ Implementation is intentionally deferred to `PROJECT_EXPORTER_TEST_FIX_PASS` (`T
 
 ## Scope boundary (lock)
 
-Scope is docs-only and test-fix targeted:
+Scope is test-fix targeted:
 
 - allowed implementation surface:
   - `test/unit/project_exporter_test.dart` only (for `PROJECT_EXPORTER_TEST_FIX_PASS`)
@@ -57,7 +51,9 @@ Scope is docs-only and test-fix targeted:
   - no production behavior changes unless real production bug is demonstrated.
 - required test-fix properties:
   - deterministic pass-by-name and full-file execution,
-  - no hidden shared state leaks across test cases,
+  - deterministic fallback executable resolution checks irrespective of invocation order,
+  - no cross-test call-history assumptions.
+- no hidden shared state leaks across test cases,
 - no temp-root/fake-runner leakage,
 - no cross-test call-history leakage.
 - prohibited implementation spillover:
@@ -69,7 +65,7 @@ Scope is docs-only and test-fix targeted:
 
 ## Next recommended pass
 
-`PROJECT_EXPORTER_TEST_FIX_PASS`
+`PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS`
 
 ## Closeout validations
 

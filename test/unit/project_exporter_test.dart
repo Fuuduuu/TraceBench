@@ -86,6 +86,13 @@ bool _containsScript(List<String> command, String script) {
   return command.any((part) => part.contains(script));
 }
 
+String _commandExecutable(List<String> command) {
+  if (command.isEmpty) {
+    return '';
+  }
+  return p.basename(command.first);
+}
+
 Future<Directory> _createProjectDirectory({
   bool withEvents = true,
   bool withKnownFacts = true,
@@ -230,22 +237,43 @@ void main() {
       ).exportProjectZip(_inlineProjectState(projectDirectory: dir.path));
 
       expect(result, isA<ExportSuccess>());
+      final materializerCalls = runner.calls
+          .where((call) => _containsScript(call, 'materialize_known_facts.py'))
+          .toList();
+      expect(materializerCalls.isNotEmpty, isTrue);
+      final materializerCommand = materializerCalls.first;
+      final fallbackCommand = _commandExecutable(materializerCommand);
+      expect(fallbackCommand, isIn(<String>['python3', 'python']));
+      expect(
+        fallbackCommand == 'python3' || fallbackCommand == 'python',
+        isTrue,
+      );
       expect(
         runner.calls.any(
           (call) =>
-              call.first == 'python' &&
-              !_containsScript(call, '-3') &&
-              _containsScript(call, 'materialize_known_facts.py'),
+              call.last == '--version' &&
+              _commandExecutable(call) == fallbackCommand,
         ),
         isTrue,
       );
       expect(
         runner.calls.any(
           (call) =>
-              call.first == 'python' && _containsScript(call, '--version'),
+              call.last == '--version' &&
+              _commandExecutable(call) == 'py',
         ),
         isTrue,
       );
+      if (fallbackCommand == 'python3') {
+        expect(
+          runner.calls.any(
+            (call) =>
+                call.last == '--version' &&
+                _commandExecutable(call) == 'python3',
+          ),
+          isTrue,
+        );
+      }
     });
 
     test('returns pythonNotFound when none available', () async {

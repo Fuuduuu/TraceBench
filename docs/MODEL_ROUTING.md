@@ -42,7 +42,7 @@ Choose the right helper/model for each pass type and risk profile.
 - If task conflicts with `ACTIVE_SCOPE_LOCK`, stop and request decision.
 - If protected surfaces are implicated, route to GPT Pro or explicit user decision before implementation.
 - If a docs-only pass requires non-doc edits, stop and escalate.
-- High-risk Codex implementation must receive non-Codex review before acceptance, normally Claude Code audit or GPT Pro decision when evidence/architecture boundaries are involved.
+- High-risk Codex implementation must receive non-Codex review before acceptance (typically Claude Code, and GPT Pro when evidence/architecture boundaries are at risk).
 
 ## Practical handoff pattern
 
@@ -61,6 +61,12 @@ When routing to another model/helper, include:
 - exact boundaries and forbidden surfaces
 - required validation commands
 - expected output format/verdict enum
+- routing sequence (`who reviews what`) before execution
+
+### No self-approval rule (high-risk paths)
+
+- Do not finalize high-risk implementations as accepted based only on Codex/Claude-internal review.
+- Explicitly route through the reviewer model(s) documented in the pass plan before closure.
 
 ## MODEL_ROUTING_CHECK convention
 

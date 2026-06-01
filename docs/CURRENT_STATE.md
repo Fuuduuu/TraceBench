@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS`
-- Next recommended pass: `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
+- Current pass: `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
+- Next recommended pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -59,6 +59,8 @@ Branch: `main`
   - `py -3 tools\validate_all.py`: PASS,
   - order-dependent isolate bug in this test is resolved,
   - only a harmless redundant assertion remained as NIT.
+- Governance recovery pass in progress:
+  - `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS` updates prompting guidance with reusable guard clauses for: test-hang stop behavior, no full-screen rewrite in UI polish, no real-image decode/widget filesystem-heavy testing, bounded waits, small-slice UX slicing, and model/tool routing reminders.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

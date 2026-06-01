@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS`
+`PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
 
 ## Goal
 
-Record the accepted closeout for `PROJECT_EXPORTER_TEST_FIX_PASS` and preserve scope discipline.
+Add reusable prompt guard clauses to prevent known implementation failure patterns and route post-recovery next steps.
 
 ## Allowed surfaces
 
@@ -17,6 +17,7 @@ Record the accepted closeout for `PROJECT_EXPORTER_TEST_FIX_PASS` and preserve s
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS.md`
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md`
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS.md`
+- `docs/audit/PROMPT_PROTOCOL_GUARD_CLAUSES_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,15 +46,21 @@ Record the accepted closeout for `PROJECT_EXPORTER_TEST_FIX_PASS` and preserve s
 
 Closeout state:
 
-- `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted and remains test-only.
-- Post-audit result was `PASS` with `ACCEPT_AS_IS`.
-- No production behavior changes were introduced.
-- The remaining issue from implementation is a harmless redundant assertion (no patch required).
-- `PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS` remains docs-only and does not open implementation scope.
+- Existing closeout state remains accepted:
+  - `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted and remains test-only.
+  - post-audit result remains `PASS` with `ACCEPT_AS_IS`.
+  - no production behavior changes were introduced.
+  - a harmless redundant assertion remains non-blocking.
+- New guard-lock goals are docs-only and include:
+  - bounded recoveries for hanging/failing tests;
+  - no full-screen/file rewrite in Flutter polish without explicit scope lock;
+  - no real image decode in widget tests and no temp fs-heavy widget test patterns;
+  - bounded wait helpers instead of indefinite settles;
+  - small-slice UX sequencing for high-risk polish cards.
 
 ## Next recommended pass
 
-`PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
 
 ## Closeout validations
 
@@ -63,7 +70,6 @@ Closeout state:
 
 ## Validation commands for next pass
 
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test/unit/project_exporter_test.dart --reporter expanded`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test/unit/project_exporter_test.dart --reporter expanded --plain-name "ProjectExporter falls back to python3/python when earlier candidates fail"`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
 - `py -3 tools\validate_all.py`
+- `git status --short --branch`
+- `git diff --name-only`

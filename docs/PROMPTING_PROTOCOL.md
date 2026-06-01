@@ -238,3 +238,55 @@ Stop and route to user/deep review if:
 - Keep validation commands explicit and literal in prompts.
 - Do not mark PASS success without command evidence.
 - For docs-only passes: run `py -3 tools\validate_all.py`, `git diff --name-only`, `git status --short --branch` unless the pass explicitly changes this.
+
+## Reusable guard clauses for implementation prompts
+
+### 1) Stop-if-tests-hang clause
+
+If a test hangs, times out, or stalls:
+
+- stop after at most **2 focused patch attempts**;
+- report current changed files, last failing command, last error, and suspected root cause;
+- do not continue patching indefinitely or broaden to unrelated features;
+- request triage if the issue is unresolved.
+
+### 2) No full screen/file rewrite clause
+
+For UI polish/Flutter implementation passes:
+
+- do not rewrite entire screens/files unless explicitly scoped;
+- prefer small additive edits and small slices;
+- if a broad rewrite is required, stop and request a new scope lock.
+
+### 3) No real `Image.file` / filesystem-heavy widget test clause
+
+For Flutter widget tests:
+
+- do not render real `Image.file(...)` paths or decode real image bytes in widget tests;
+- avoid temp filesystem-heavy setup unless testing service/filesystem behavior explicitly;
+- use injected preview builders/placeholders for image rendering.
+
+### 4) Bounded test waiting clause
+
+For widgets with async loading, animations, streams, or progress indicators:
+
+- avoid unbounded `pumpAndSettle`;
+- use bounded pump helpers (or concrete finder waits with bounded loops);
+- on timeout, report cause and stop for review instead of continuing patch loops.
+
+### 5) Small-slice UX implementation clause
+
+For broad UX/design cards:
+
+- split into narrow slices (`copy/safety`, `metadata`, `state`, `accessibility`, `responsive layout`);
+- each slice should have its own scope lock and implementation pass;
+- avoid one-pass screen rewrites.
+
+### 6) Model/tool routing reminder
+
+Every implementation/audit prompt should state:
+
+- best model/helper for the pass;
+- why that helper is chosen;
+- whether Claude Code / GPT Pro / Claude Design review is required and why;
+- exact validation sequence.

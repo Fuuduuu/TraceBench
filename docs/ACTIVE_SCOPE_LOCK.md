@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout recording accepted implementation and accepted post-audit result for the local sidecar reference-image viewer pass.
+Docs-only scope lock for a narrow defense-in-depth follow-up: constrain reference-image preview path resolution to the sidecar image directory.
 
 ## Allowed surfaces
 
@@ -14,7 +14,7 @@ Docs-only closeout recording accepted implementation and accepted post-audit res
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
@@ -44,8 +44,9 @@ Docs-only closeout recording accepted implementation and accepted post-audit res
 
 ## Scope boundary (locked)
 
-- Closeout-only pass; no implementation changes.
-- Record accepted `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` and accepted `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS`.
+- Scope-lock-only pass; no implementation changes.
+- Record accepted LOW post-audit note and lock the next implementation pass to narrow path clamp/revalidation for preview reads.
+- Lock implementation intent: reject absolute/escape traversal read paths and preserve valid generated sidecar paths.
 - Preserve Model-B boundary: local sidecar only, non-canonical, outside ZIP/events/known_facts/Board Canvas evidence rendering/AI-OCR-CV, and no URL import.
 - No fixture/sample/asset/generated-artifact changes.
 - No evidence-boundary weakening.
@@ -53,7 +54,7 @@ Docs-only closeout recording accepted implementation and accepted post-audit res
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
 
 ## Validate
 

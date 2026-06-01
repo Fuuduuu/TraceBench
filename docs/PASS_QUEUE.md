@@ -11,22 +11,23 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
 
 ## Docs drift countdown (canonical)
 
-`1`
+`0`
 
 ## Planned / Recommended
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS | DOCS_SYNC | current | Docs-only closeout recording accepted/pushed `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` and accepted Claude post-audit verdict (`PASS`, `ACCEPT_AS_IS`), with Model-B boundary reaffirmation and forward routing. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS | DOCS_SYNC | recommended | Optional narrow scope lock for future hardening of sidecar preview path-clamp/revalidation (`resolveStoredImageFile`) without changing canonical surfaces or ZIP/events/known_facts boundaries. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS | DOCS_SYNC | current | Docs-only scope lock for defense-in-depth: define narrow path clamp/revalidation pass so preview reads cannot escape `.tracebench_local/reference_images/`, while preserving Model-B non-canonical boundaries. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS | V1_1_IMPLEMENTATION_PASS | recommended | Narrow implementation hardening: clamp/revalidate `resolveStoredImageFile` path resolution to sidecar image directory, reject absolute/`..`/escape paths, preserve valid generated paths, and add focused traversal/escape tests. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recorded accepted/pushed `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` and accepted Claude post-audit verdict (`PASS`, `ACCEPT_AS_IS`), with Model-B boundary reaffirmation and forward routing. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | V1_1_IMPLEMENTATION_PASS | completed | Narrow Model-B implementation completed: local picker import (png/jpg/jpeg/webp), sidecar copy to `.tracebench_local/reference_images/`, metadata ledger at `.tracebench_local/reference_images.json`, and read-only viewer with explicit non-evidence/non-ZIP/non-AI safety copy. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code post-audit accepted from context: all audited claims verified, no scope drift, no ZIP contract change, and no overlay/AI/transform/canonical-surface expansion. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded accepted/pushed ZIP exclusion implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), confirmed blocker closure, and routed forward to viewer implementation. |

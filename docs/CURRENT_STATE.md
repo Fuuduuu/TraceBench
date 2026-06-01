@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
-- Docs drift countdown: `1`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
+- Docs drift countdown: `0`
 
 ## Handoff snapshot (bounded)
 
@@ -24,6 +24,9 @@ Branch: `main`
   - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS` is accepted from audit context with `PASS` and `ACCEPT_AS_IS`,
   - local sidecar import/view flow is available via Project overview,
   - reference images remain non-canonical and outside ZIP/events/known_facts/materializer/evidence rendering.
+- Defense-in-depth hardening status:
+  - accepted LOW note from post-audit: preview resolve path clamp/revalidation is not yet implemented,
+  - this scope-lock pass defines a narrow follow-up implementation to keep `resolveStoredImageFile` reads constrained to `.tracebench_local/reference_images/`.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -45,6 +48,10 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`:
+  - closeout recorded for accepted/pushed viewer implementation,
+  - accepted post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,
+  - boundary-safe route advanced to path-clamp scope lock.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`:
   - local sidecar reference image viewer implemented,
   - import supports local picker with png/jpg/jpeg/webp allowlist,

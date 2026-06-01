@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_HARDENING_BACKLOG_REVIEW_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (bounded)
@@ -28,6 +28,8 @@ Branch: `main`
   - accepted LOW note from post-audit is implemented in a narrow hardening pass,
   - `resolveStoredImageFile` now revalidates ledger path input and rejects unresolved/escape paths outside `.tracebench_local/reference_images/`,
   - focused tests now cover absolute path rejection, traversal rejection, escape rejection, and valid path resolution.
+  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS` is accepted from audit context with `PASS` and `ACCEPT_AS_IS`,
+  - prior LOW finding is resolved without scope drift.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -49,6 +51,18 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`:
+  - closeout recorded for accepted/pushed path-clamp implementation and accepted post-audit result,
+  - prior LOW path-clamp finding marked resolved,
+  - Model-B/evidence boundaries reaffirmed.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`:
+  - narrow hardening implemented in `resolveStoredImageFile`,
+  - absolute/traversal/escape ledger paths rejected/unresolved,
+  - valid generated sidecar paths preserved.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS` accepted from audit context:
+  - verdict `PASS`,
+  - disposition `ACCEPT_AS_IS`,
+  - no scope drift and full validation green.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`:
   - accepted LOW path-clamp finding recorded and locked to a narrow implementation follow-up,
   - implementation/test allowlist and forbidden surfaces locked without boundary expansion.
@@ -138,8 +152,9 @@ Branch: `main`
 
 ### Current non-blocking items
 - NIT: keep state docs compact; this cleanup resets/locks size discipline.
-- LOW: optional future hardening can clamp/revalidate preview ledger paths under `.tracebench_local/reference_images/`.
-- NIT: SHA-256 implementation may later migrate to `package:crypto` if dependency policy allows.
+- NIT: single-dot `.` path segments are harmless and cannot escape sidecar directory boundaries.
+- NIT: symlink validation remains outside the tampered-ledger-string threat model.
+- NIT: hand-rolled SHA-256 remains unchanged and out of scope.
 - NIT: `Random()` for local sidecar IDs remains accepted because IDs are non-security metadata.
 
 ## Hard boundaries (unchanged)

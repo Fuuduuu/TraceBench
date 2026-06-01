@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS`
+`V1_1_HARDENING_BACKLOG_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS | V1_1_IMPLEMENTATION_PASS | current | Narrow hardening implementation: `resolveStoredImageFile` path clamp/revalidation added to reject absolute/`..`/escape paths outside `.tracebench_local/reference_images/`, while preserving valid generated sidecar paths and adding focused rejection/valid-resolution tests. |
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Post-implementation audit: verify no scope drift, confirm path-clamp behavior/tests, and confirm unchanged Model-B/ZIP/events/known_facts/materializer boundaries. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS | DOCS_SYNC | current | Docs-only closeout recording accepted/pushed path-clamp implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), with LOW finding resolution and Model-B boundary confirmation. |
+| V1_1_HARDENING_BACKLOG_REVIEW_PASS | DOCS_SYNC | recommended | Select next concrete V1.1 hardening work item after path-clamp closure; keep route within accepted V1.1 backlog/governance boundaries before any new implementation pass. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code post-audit accepted from context: LOW finding resolved, no scope drift, tests/validation green, and boundaries preserved. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS | V1_1_IMPLEMENTATION_PASS | completed | Narrow hardening implementation: `resolveStoredImageFile` path clamp/revalidation rejects absolute/`..`/escape paths outside `.tracebench_local/reference_images/`, preserves valid generated sidecar paths, and adds focused rejection/valid-resolution tests. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Docs-only scope lock recorded accepted LOW note and locked narrow path-clamp implementation/test surfaces with explicit no-expansion boundaries. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recorded accepted/pushed `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` and accepted Claude post-audit verdict (`PASS`, `ACCEPT_AS_IS`), with Model-B boundary reaffirmation and forward routing. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS | V1_1_IMPLEMENTATION_PASS | completed | Narrow Model-B implementation completed: local picker import (png/jpg/jpeg/webp), sidecar copy to `.tracebench_local/reference_images/`, metadata ledger at `.tracebench_local/reference_images.json`, and read-only viewer with explicit non-evidence/non-ZIP/non-AI safety copy. |

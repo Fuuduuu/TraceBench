@@ -2,21 +2,19 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`
 
 ## Goal
 
-Narrow V1.1 defense-in-depth implementation: clamp preview path resolution to sidecar image directory and reject traversal/escape inputs.
+Docs-only closeout recording accepted implementation and accepted post-audit result for the sidecar path-clamp hardening pass.
 
 ## Allowed surfaces
 
-- `lib/features/reference_images/services/reference_image_sidecar_service.dart`
-- `test/widget/reference_images_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -46,9 +44,9 @@ Narrow V1.1 defense-in-depth implementation: clamp preview path resolution to si
 
 ## Scope boundary (locked)
 
-- Implementation hardening only; no feature expansion.
-- `resolveStoredImageFile` path resolution must reject absolute paths, `..` traversal, and escapes outside `.tracebench_local/reference_images/`.
-- Valid generated sidecar relative paths must continue resolving.
+- Closeout-only pass; no implementation changes.
+- Record accepted/pushed `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`.
+- Record accepted `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS` (`PASS`, `ACCEPT_AS_IS`) and LOW finding resolution.
 - Preserve Model-B boundary: local sidecar only, non-canonical, outside ZIP/events/known_facts/Board Canvas evidence rendering/AI-OCR-CV, and no URL import.
 - No fixture/sample/asset/generated-artifact changes.
 - No evidence-boundary weakening.
@@ -56,7 +54,7 @@ Narrow V1.1 defense-in-depth implementation: clamp preview path resolution to si
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS`
+`V1_1_HARDENING_BACKLOG_REVIEW_PASS`
 
 ## Validate
 

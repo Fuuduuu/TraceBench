@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (bounded)
@@ -25,8 +25,9 @@ Branch: `main`
   - local sidecar import/view flow is available via Project overview,
   - reference images remain non-canonical and outside ZIP/events/known_facts/materializer/evidence rendering.
 - Defense-in-depth hardening status:
-  - accepted LOW note from post-audit: preview resolve path clamp/revalidation is not yet implemented,
-  - this scope-lock pass defines a narrow follow-up implementation to keep `resolveStoredImageFile` reads constrained to `.tracebench_local/reference_images/`.
+  - accepted LOW note from post-audit is implemented in a narrow hardening pass,
+  - `resolveStoredImageFile` now revalidates ledger path input and rejects unresolved/escape paths outside `.tracebench_local/reference_images/`,
+  - focused tests now cover absolute path rejection, traversal rejection, escape rejection, and valid path resolution.
 - Current implementation outcome:
   - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
   - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
@@ -48,6 +49,9 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`:
+  - accepted LOW path-clamp finding recorded and locked to a narrow implementation follow-up,
+  - implementation/test allowlist and forbidden surfaces locked without boundary expansion.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`:
   - closeout recorded for accepted/pushed viewer implementation,
   - accepted post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,

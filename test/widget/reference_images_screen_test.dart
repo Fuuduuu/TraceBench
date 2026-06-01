@@ -157,4 +157,71 @@ void main() {
       }
     }
   });
+
+  test('service clamps ledger preview paths to sidecar image directory', () async {
+    final tempRoot = await Directory.systemTemp.createTemp('tracebench_ref_clamp_');
+    try {
+      final projectDir = Directory('${tempRoot.path}${Platform.pathSeparator}project');
+      await projectDir.create(recursive: true);
+
+      const service = ReferenceImageSidecarService();
+      ReferenceImageRecord recordWithPath(String path) {
+        return ReferenceImageRecord(
+          referenceImageId: 'refimg_test',
+          originalFilenameDisplay: 'x.png',
+          storedRelativePath: path,
+          mimeType: 'image/png',
+          fileSizeBytes: 1,
+          importedAt: '2026-06-01T00:00:00Z',
+          source: 'local_file_picker',
+          projectId: 'prj_ref_test_001',
+        );
+      }
+
+      final valid = service.resolveStoredImageFile(
+        projectDirectory: projectDir.path,
+        record: recordWithPath('.tracebench_local/reference_images/refimg_valid.png'),
+      );
+      expect(valid, isNotNull);
+
+      final rootPath =
+          '${projectDir.path}${Platform.pathSeparator}.tracebench_local${Platform.pathSeparator}reference_images';
+      String normalize(String value) {
+        var out = value.replaceAll('\\', '/');
+        while (out.endsWith('/')) {
+          out = out.substring(0, out.length - 1);
+        }
+        return Platform.isWindows ? out.toLowerCase() : out;
+      }
+
+      final normalizedRoot = normalize(rootPath);
+      final normalizedValid = normalize(valid!.path);
+      expect(normalizedValid.startsWith('$normalizedRoot/'), isTrue);
+
+      const escapingPaths = <String>[
+        r'C:\Windows\win.ini',
+        '/etc/passwd',
+        '.tracebench_local/reference_images/../outside.png',
+        '.tracebench_local/reference_images/../../outside.png',
+        '../.tracebench_local/reference_images/outside.png',
+        '.tracebench_local/other_images/file.png',
+      ];
+
+      for (final storedRelativePath in escapingPaths) {
+        final rejected = service.resolveStoredImageFile(
+          projectDirectory: projectDir.path,
+          record: recordWithPath(storedRelativePath),
+        );
+        expect(
+          rejected,
+          isNull,
+          reason: 'Expected path to be rejected: $storedRelativePath',
+        );
+      }
+    } finally {
+      if (await tempRoot.exists()) {
+        await tempRoot.delete(recursive: true);
+      }
+    }
+  });
 }

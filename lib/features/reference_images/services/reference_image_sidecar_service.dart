@@ -226,13 +226,66 @@ class ReferenceImageSidecarService {
     return ImportReferenceImageResult.success(record);
   }
 
-  File resolveStoredImageFile({
+  File? resolveStoredImageFile({
     required String projectDirectory,
     required ReferenceImageRecord record,
   }) {
-    final normalized = record.storedRelativePath.replaceAll('/', Platform.pathSeparator);
-    final fullPath = _joinPath(projectDirectory, normalized);
-    return File(fullPath);
+    final relative = _normalizeStoredRelativePath(record.storedRelativePath);
+    if (relative == null) {
+      return null;
+    }
+    final fullPath = _joinPath(
+      projectDirectory,
+      relative.replaceAll('/', Platform.pathSeparator),
+    );
+    final resolved = File(fullPath).absolute;
+    final imagesRoot = _imagesDirectory(projectDirectory).absolute;
+    final resolvedPath = _normalizedPathForComparison(resolved.path);
+    final imagesRootPath = _normalizedPathForComparison(imagesRoot.path);
+    final rootPrefix = '$imagesRootPath/';
+    if (resolvedPath == imagesRootPath || !resolvedPath.startsWith(rootPrefix)) {
+      return null;
+    }
+    return resolved;
+  }
+
+  static String? _normalizeStoredRelativePath(String raw) {
+    final normalized = raw.trim().replaceAll('\\', '/');
+    if (normalized.isEmpty) {
+      return null;
+    }
+    if (normalized.startsWith('/') ||
+        normalized.startsWith('//') ||
+        RegExp(r'^[A-Za-z]:/').hasMatch(normalized)) {
+      return null;
+    }
+    final segments = normalized
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList(growable: false);
+    if (segments.isEmpty) {
+      return null;
+    }
+    if (segments.any((segment) => segment == '..')) {
+      return null;
+    }
+    const requiredPrefix = '$sidecarRootName/$sidecarImagesDirName/';
+    final canonical = segments.join('/');
+    if (!canonical.startsWith(requiredPrefix)) {
+      return null;
+    }
+    return canonical;
+  }
+
+  static String _normalizedPathForComparison(String path) {
+    var normalized = path.replaceAll('\\', '/');
+    while (normalized.endsWith('/')) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    if (Platform.isWindows) {
+      normalized = normalized.toLowerCase();
+    }
+    return normalized;
   }
 
   File _ledgerFile(String projectDirectory) {

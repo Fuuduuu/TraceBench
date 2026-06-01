@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Add reusable prompt guard clauses to prevent known implementation failure patterns and route post-recovery next steps.
+Lock the low-staleness governance diagram plan before any Mermaid artifacts are created.
 
 ## Allowed surfaces
 
@@ -14,53 +14,53 @@ Add reusable prompt guard clauses to prevent known implementation failure patter
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS.md`
-- `docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md`
-- `docs/audit/PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS.md`
-- `docs/audit/PROMPT_PROTOCOL_GUARD_CLAUSES_PASS.md`
+- `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
 - `tools/**`
+- `schemas/**`
+- `lib/**`
+- `test/**`
 - `assets/**`
 - `board_graph.json`
 - `view_state.json`
 - `events.jsonl`
 - `known_facts.json`
-- `materializer/**`
-- `schemas/**`
-- `Project ZIP tooling/contracts`
-- runtime/schema/materializer/sample/model changes
-- path/storage/model expansion
-- Board Canvas overlay/alignment/transform/photo-layer work
-- AI/OCR/CV/proposal UI
-- event-writing/edit/confirm/save/apply controls
-- reference-image URL import/download
-- `lib/features/reference_images/services` / path-clamp changes
-- metadata grouping expansion
-- missing/error/unsupported state rewrite
-- accessibility overhaul
-- responsive layout rewrite.
+- materializer/schema/tool expansion
+- project surface re-implementation in this pass
+- prompt-chain or roadmap as primary first-class diagram content
+- diagrams implying AI creates canonical facts
+- diagrams implying reference images belong in `events.jsonl`, `known_facts.json`, materializer, Board Canvas evidence, or Project ZIP
+- implementation of diagrams outside governance docs
 
 ## Scope boundary (lock)
 
-Closeout state:
-
-- Existing closeout state remains accepted:
-  - `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted and remains test-only.
-  - post-audit result remains `PASS` with `ACCEPT_AS_IS`.
-  - no production behavior changes were introduced.
-  - a harmless redundant assertion remains non-blocking.
-- New guard-lock goals are docs-only and include:
-  - bounded recoveries for hanging/failing tests;
-  - no full-screen/file rewrite in Flutter polish without explicit scope lock;
-  - no real image decode in widget tests and no temp fs-heavy widget test patterns;
-  - bounded wait helpers instead of indefinite settles;
-  - small-slice UX sequencing for high-risk polish cards.
+- This is a docs-only scope lock.
+- Next implementation pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`.
+- Locked diagram set for next pass:
+  - pass lifecycle
+  - evidence-boundary
+  - tool/model routing
+- Preferred implementation locations:
+  - `docs/PASS_LIFECYCLE.md` (new)
+  - `docs/ARCHITECTURE_BOUNDARIES.md` (new)
+  - `docs/MODEL_ROUTING.md` (small Mermaid section or reference anchor)
+- `TraceBench_Project_Source_Guide.md` remains a source-orientation companion document, not a live pass ledger.
+- Evidence policy remains unchanged:
+  - AI does not set canonical facts.
+  - `events.jsonl` remains canonical.
+  - `known_facts.json` remains materialized projection only.
+  - UI/renderer remains read-only.
+  - `board_graph.json` and `view_state.json` remain forbidden.
+- Forbidden diagram content for this pass:
+  - stale pass chain as governance truth
+  - V1/V1.1/V2 timeline as the first diagram shape
+  - transform/alignment/photo-overlay/board-canvas reference-image workflow in this initial diagram batch.
 
 ## Next recommended pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
 
 ## Closeout validations
 

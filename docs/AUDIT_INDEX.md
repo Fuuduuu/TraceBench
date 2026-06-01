@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS.md | current (docs-only QA plan creating manual smoke checklist for sidecar viewer reachability/import/sidecar/ZIP/path-clamp validation and routing to run pass) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed path-clamp implementation, accepted Claude post-audit verdict `PASS` with `ACCEPT_AS_IS`, confirms prior LOW finding resolved, and preserves Model-B boundaries) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS.md | accepted from audit context (`PASS`, `ACCEPT_AS_IS`); confirms LOW finding resolved, no scope drift, and validation green |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS.md | completed (narrow V1.1 hardening: `resolveStoredImageFile` now clamps/revalidates ledger preview paths, rejects absolute/traversal/escape paths outside `.tracebench_local/reference_images/`, preserves valid generated paths, and adds focused path-rejection/valid-resolution tests without ZIP/events/known_facts/materializer drift) |

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`
 
 ## Next recommended pass
 
-`V1_1_HARDENING_BACKLOG_REVIEW_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -25,8 +25,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS | DOCS_SYNC | current | Docs-only closeout recording accepted/pushed path-clamp implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), with LOW finding resolution and Model-B boundary confirmation. |
-| V1_1_HARDENING_BACKLOG_REVIEW_PASS | DOCS_SYNC | recommended | Select next concrete V1.1 hardening work item after path-clamp closure; keep route within accepted V1.1 backlog/governance boundaries before any new implementation pass. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Docs-only QA plan created for manual Windows smoke verification of local sidecar reference image viewer path-clamp and ZIP/forbidden behavior scope; next recommended pass is run pass. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | recommended | Manual smoke run to execute the plan: viewer reachability, allowed import/store behavior, ZIP exclusion check, path-clamp defensive behavior, and forbidden-boundary checklist. |
+| V1_1_HARDENING_BACKLOG_REVIEW_PASS | DOCS_SYNC | completed | Audit-only backlog review completed and next forward action resolved into reference-image smoke-plan/runner pass sequencing. |
+| REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed path-clamp implementation and accepted Claude post-audit (`PASS`, `ACCEPT_AS_IS`), with LOW finding resolution and Model-B boundary confirmation. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS | AUDIT_ONLY | completed (`PASS`, `ACCEPT_AS_IS`) | Claude Code post-audit accepted from context: LOW finding resolved, no scope drift, tests/validation green, and boundaries preserved. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS | V1_1_IMPLEMENTATION_PASS | completed | Narrow hardening implementation: `resolveStoredImageFile` path clamp/revalidation rejects absolute/`..`/escape paths outside `.tracebench_local/reference_images/`, preserves valid generated sidecar paths, and adds focused rejection/valid-resolution tests. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Docs-only scope lock recorded accepted LOW note and locked narrow path-clamp implementation/test surfaces with explicit no-expansion boundaries. |

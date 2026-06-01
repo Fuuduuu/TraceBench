@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_HARDENING_BACKLOG_REVIEW_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`
+- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (bounded)
@@ -51,6 +51,9 @@ Branch: `main`
   - targeted Python suites PASS.
 
 ### Recent accepted pass chain (latest-first)
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`:
+  - docs-only manual smoke test plan created for V1.1 local sidecar reference-image viewer validation.
+  - route fixed to `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`:
   - closeout recorded for accepted/pushed path-clamp implementation and accepted post-audit result,
   - prior LOW path-clamp finding marked resolved,

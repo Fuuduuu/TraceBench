@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS`
 
 ## Goal
 
-Lock safe UX polish scope for the accepted Reference Images local sidecar viewer.
+Record the final Claude Design deepening package before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
 
 ## Allowed surfaces
 
@@ -15,41 +15,69 @@ Lock safe UX polish scope for the accepted Reference Images local sidecar viewer
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS.md`
 
 ## Forbidden surfaces
 
-- `schemas/**`
 - `tools/**`
 - `test/**`
 - `lib/**`
-- `schemas/**`
 - `assets/**`
 - `board_graph.json`
 - `view_state.json`
 - `events.jsonl`
 - `known_facts.json`
-- `materializer`
-- `schemas/**` or `tools/validate_events_jsonl.py`
+- `materializer/**`
+- `schemas/**`
 - `Project ZIP tooling/contracts`
-- runtime/schema/materializer/sample/asset/tooling changes
-- path, storage, or metadata model expansion
+- runtime/schema/materializer/sample/asset/tooling/model changes
+- path, storage, or metadata-model expansion
 - Board Canvas overlay/alignment/transform/photo-layer paths
 - AI/OCR/CV/proposal UI
 - event-writing/edit/confirm/save/apply controls
-- reference image URL import/download
+- reference-image URL import/download
 
 ## Scope boundary (locked)
 
 For this scope-lock pass:
 
-- Docs-only lock of implementation boundary and acceptance criteria before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
-- Locked implementation direction:
-  - Reference Images screen is a reference shelf, not evidence.
-  - Header + safety strip must stay explicit (`reference only`, `not evidence`, `not included in Project ZIP`, `not used by AI`, `renderer writes: none`).
-  - Layout/accessibility polish is allowed, and metadata framing must not imply evidence.
-  - Preserve read-only semantics and non-canonical local sidecar model.
-  - Keep Board Canvas, transform, photo alignment overlays, and event/known_facts/ZIP inclusion out of this pass.
-- Preserve all evidence boundaries and V1 forbidden artifacts.
+- Docs-only addendum pass to lock final UX package before implementation.
+- Final locked package before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`:
+  - six fixed zones:
+    - header band,
+    - image list/contact sheet,
+    - preview,
+    - details/metadata,
+    - safety strip,
+    - footer/provenance.
+  - required strings are locked verbatim and must remain visible across states:
+    - `reference only`
+    - `not evidence`
+    - `not included in Project ZIP`
+    - `not used by AI`
+    - `renderer writes: none`
+  - required state coverage is locked:
+    - empty,
+    - selected image,
+    - missing local file,
+    - unsupported format,
+    - import failure,
+    - large file rejected,
+    - max count reached.
+  - required microcopy and labels are locked as listed in the addendum pass spec (including `No reference images yet`, `Import from this computer`, `Reference images`, `Reference image · not evidence`, etc.).
+  - required accessibility constraints:
+    - keyboard navigation,
+    - visible focus ring,
+    - screen-reader labels,
+    - AA contrast,
+    - no color-only meaning,
+    - hit targets at least 44px,
+    - safety strip and footer visible in every state.
+  - forbidden wording remains in-scope blocked for both UI chrome and metadata content:
+    - `confirmed`, `detected`, `measured`, `fault`, `suspect`, `probability`, `net`, `trace proof`, `AI found`, `verified`, `identified`, `proven`, `match found`, `candidate`.
+  - preserve Model B boundaries: local sidecar, non-canonical, outside ZIP/events/known_facts/materializer, no Board Canvas evidence coupling.
+- Board Canvas polishing remains a separate track: `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`.
+- Prescribe no code changes in this pass.
 
 ## Next recommended pass
 

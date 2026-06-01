@@ -11,6 +11,20 @@ import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 
+class _FakeReferenceImageSidecarService extends ReferenceImageSidecarService {
+  const _FakeReferenceImageSidecarService(this.ledger);
+
+  final ReferenceImageLedger ledger;
+
+  @override
+  Future<ReferenceImageLedger> loadLedger({
+    required String projectDirectory,
+    required String projectId,
+  }) async {
+    return ledger;
+  }
+}
+
 ProjectState _projectState({String? projectDirectory}) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -43,28 +57,64 @@ ProjectState _projectState({String? projectDirectory}) {
 }
 
 void main() {
-  testWidgets('shows safety copy and local-directory requirement', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => _projectState()),
-        ],
-        child: const MaterialApp(home: ReferenceImagesScreen()),
-      ),
-    );
-    await tester.pumpAndSettle();
+  testWidgets(
+    'shows required safety copy for empty no-image state',
+    (tester) async {
+      const fakeProjectDirectory = 'C:/tracebench_fake_project';
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectStateProvider.overrideWith(
+              (_) => _projectState(projectDirectory: fakeProjectDirectory),
+            ),
+          ],
+          child: const MaterialApp(
+            home: ReferenceImagesScreen(
+              service: _FakeReferenceImageSidecarService(
+                ReferenceImageLedger(
+                  projectId: 'prj_ref_test_001',
+                  images: [],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
 
-    expect(find.text('Reference Images'), findsOneWidget);
-    expect(find.text('reference only'), findsOneWidget);
-    expect(find.text('not evidence'), findsOneWidget);
-    expect(find.text('not included in Project ZIP'), findsOneWidget);
-    expect(find.text('not used by AI'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
-    expect(
-      find.text('Local project directory is required for sidecar storage.'),
-      findsOneWidget,
-    );
-  });
+      expect(find.text('Reference Images'), findsOneWidget);
+      expect(find.text('Reference images (local sidecar)'), findsOneWidget);
+      expect(find.text('reference only'), findsOneWidget);
+      expect(find.text('not evidence'), findsOneWidget);
+      expect(find.text('not included in Project ZIP'), findsOneWidget);
+      expect(find.text('not used by AI'), findsOneWidget);
+      expect(find.text('renderer writes: none'), findsOneWidget);
+      expect(find.text('personal reference only'), findsOneWidget);
+      expect(find.text('Import from this computer'), findsOneWidget);
+      expect(find.text('No local sidecar reference images yet.'), findsOneWidget);
+      expect(find.text('Select a reference image to preview.'), findsOneWidget);
+
+      const forbiddenWords = <String>[
+        'confirmed',
+        'detected',
+        'measured',
+        'fault',
+        'suspect',
+        'probability',
+        'net',
+        'trace proof',
+        'AI found',
+        'verified',
+        'identified',
+        'proven',
+        'match found',
+        'candidate',
+      ];
+      for (final word in forbiddenWords) {
+        expect(find.textContaining(word), findsNothing);
+      }
+    },
+  );
 
   test('service imports local reference image into sidecar and writes metadata',
       () async {

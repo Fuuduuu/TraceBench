@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -36,8 +36,11 @@ Branch: `main`
 - `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS` is accepted as final UX deepening input.
 - `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS` is accepted as final implementation input sync.
 - `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is accepted with `PASS`; broad implementation was reverted and a constrained recovery slice was selected.
-- Current copy/safety scope lock is `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`; implementation next is:
-  - `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+- Current copy/safety implementation pass is `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`:
+  - required safety strings are now visible in empty state,
+  - import label is `Import from this computer`,
+  - SHA-256 caption in selected metadata is `File integrity / duplicate check — not an evidence seal.`,
+  - service behavior is unchanged in this slice.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

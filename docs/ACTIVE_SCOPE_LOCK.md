@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
 
 ## Goal
 
-Lock the next recovery copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` and keep this pass docs-only.
+Implement the constrained copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` only.
 
 ## Allowed surfaces
 
@@ -18,12 +18,13 @@ Lock the next recovery copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS.md`
-- (Next pass target) `lib/features/reference_images/screens/reference_images_screen.dart`
-- (Next pass target) `test/widget/reference_images_screen_test.dart`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS.md`
+- `lib/features/reference_images/screens/reference_images_screen.dart`
+- `test/widget/reference_images_screen_test.dart`
 
 ## Forbidden surfaces
 
-- `tools/**` in this scope
+- `tools/**`
 - `assets/**`
 - `board_graph.json`
 - `view_state.json`
@@ -38,25 +39,23 @@ Lock the next recovery copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY
 - AI/OCR/CV/proposal UI
 - event-writing/edit/confirm/save/apply controls
 - reference-image URL import/download
-- `lib/features/reference_images/services` / path-clamp changes (already completed in prior implementation passes)
-- metadata grouping expansion, empty/missing/unsupported test rewrite, accessibility overhaul, responsive layout rewrite.
+- `lib/features/reference_images/services` / path-clamp changes
+- metadata grouping expansion
+- missing/error/unsupported state rewrite
+- accessibility overhaul
+- responsive layout rewrite.
 
 ## Scope boundary (locked)
 
-For this docs-only scope-lock pass:
-
-- `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is recorded as the recovered input (`PASS`, no production change).
-- No code changes in this pass.
-
-For the next implementation pass (`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`), lock:
+For `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`, lock:
 
 - copy/safety polish only (empty-state safety copy and import label text),
 - no full screen rewrite,
 - no metadata grouping expansion,
 - no accessibility/layout overhauls,
-- no filesystem-heavy test fixtures,
-- no `Image.file` decode in selected-image/widget tests,
-- deferred slices: metadata grouping, missing/error/unsupported states, narrow-window polish, accessibility refinements.
+- no filesystem-heavy test fixtures in updated tests,
+- no `Image.file` decode in updated selected-image/widget tests,
+- service behavior remains unchanged.
 
 Required implementation assertions to keep:
 
@@ -67,6 +66,11 @@ Required implementation assertions to keep:
   - `not used by AI`
   - `renderer writes: none`
 - import button text is exactly `Import from this computer`.
+- import safety copy remains present:
+  - `Reference images (local sidecar)`
+  - `personal reference only`
+  - `local sidecar, non-canonical`
+  - `outside project-wide canonical evidence`
 - safe forbidden-word guard remains intact.
 - service behavior remains unchanged.
 - keep model-B boundaries:
@@ -75,10 +79,11 @@ Required implementation assertions to keep:
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_POST_AUDIT_PASS`
 
 ## Validate
 
-- `git status --short --branch`
 - `py -3 tools\validate_all.py`
-- `git diff --name-only`
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test/widget/reference_images_screen_test.dart --reporter expanded`
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
+- `git status --short --branch`

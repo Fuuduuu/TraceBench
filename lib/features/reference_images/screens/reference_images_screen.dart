@@ -167,7 +167,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                     child: Text(
                       _isImporting
                           ? 'Importing...'
-                          : 'Import local reference image',
+                          : 'Import from this computer',
                     ),
                   ),
                   Text(
@@ -269,6 +269,10 @@ class _ReferenceOnlyWarningCard extends StatelessWidget {
               Text('not included in Project ZIP'),
               Text('not used by AI'),
               Text('renderer writes: none'),
+              SizedBox(height: 4),
+              Text('personal reference only'),
+              Text('local sidecar, non-canonical'),
+              Text('outside project-wide canonical evidence'),
             ],
           ),
         ),
@@ -357,7 +361,13 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
         Text('Stored path: ${record!.storedRelativePath}'),
         Text('Type: ${record!.mimeType}'),
         Text('Size: ${record!.fileSizeBytes} bytes'),
-        if (record!.sha256 != null) Text('SHA-256: ${record!.sha256}'),
+        if (record!.sha256 != null) ...[
+          const SizedBox(height: 8),
+          const Text(
+            'File integrity / duplicate check — not an evidence seal.',
+          ),
+          Text('SHA-256: ${record!.sha256}'),
+        ],
         Text('Imported at: ${record!.importedAt}'),
         Text('Source: ${record!.source}'),
         if (record!.notes != null) Text('Notes: ${record!.notes}'),

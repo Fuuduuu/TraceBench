@@ -2,12 +2,12 @@
 
 ## Current pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement a narrow Project ZIP export hardening pass to eliminate duplicate archive path emission for
-`device_profiles/default.json` while preserving existing ZIP contract behavior.
+Document closeout recording for `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` after ACCEPT_AS_IS audit and preserve
+existing ZIP contract boundaries.
 
 ## Allowed surfaces
 
@@ -17,6 +17,7 @@ Implement a narrow Project ZIP export hardening pass to eliminate duplicate arch
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md`
 - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
+- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -41,12 +42,11 @@ Implement a narrow Project ZIP export hardening pass to eliminate duplicate arch
 
 ## Scope boundary (locked)
 
-- Implementation lane: `TOOLS_PASS`.
-- Allowed implementation file set:
-  - `tools/export_project_zip.py`
-  - `tests/test_project_zip.py`
-  - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
-- Implementation must preserve:
+For this closeout pass, implementation lane remains unchanged and no code changes are allowed.
+Allowed focus is:
+- docs governance/audit updates for closeout recording.
+
+Implementation results recorded in `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` must preserve:
   - existing `.tracebench_local`, `.codex`, `.git`, `__pycache__`, `.env`, log exclusions,
   - `board_graph.json` / `view_state.json` rejection behavior.
 - No Project ZIP contract expansion.
@@ -56,9 +56,10 @@ Implement a narrow Project ZIP export hardening pass to eliminate duplicate arch
 
 ## Next recommended pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_POST_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
+- `py -3 -m unittest tests.test_project_zip`

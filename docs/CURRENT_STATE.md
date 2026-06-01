@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
-- Next recommended pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_POST_AUDIT_PASS`
+- Current pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -32,9 +32,9 @@ Branch: `main`
     - no event/log/materializer/surface expansion,
     - `resolveStoredImageFile` clamps path escape/traversal.
   - `py -3 tools\validate_all.py` includes `board_canvas_positive_smoke` in baseline fixture checks.
-- Current pass is narrow Project ZIP tooling implementation:
-  - remove duplicate archive entries for `device_profiles/default.json` during export.
-  - keep required ZIP contents, exclusions, and forbidden artifact checks unchanged.
+- `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed:
+  - duplicate `device_profiles/default.json` export hygiene was fixed by deduplicating ZIP arc entries.
+  - required ZIP contents, exclusions, and forbidden artifact checks are unchanged.
 
 - V1.1 post-smoke review action:
   - manual side-effect note identified a LOW export hygiene issue:
@@ -54,4 +54,3 @@ Branch: `main`
 - `visual_trace` is visual-only and never an electrical net.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - This active pass is tooling-only and does not touch runtime/schema/materializer/samples/assets.
-

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_POST_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -29,4 +29,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Ran manual smoke and confirmed project overview entry, local sidecar import/persistence, and route/ZIP boundary invariants. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS | DOCS_SYNC / QA_CLOSEOUT | completed | Recorded PASS smoke run outcomes and the non-blocking duplicate `device_profiles/default.json` ZIP observation as note. |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked dedup scope for Project ZIP export duplicate arc names, specifically `device_profiles/default.json`; implementation target is `TOOLS_PASS`. |
-| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | TOOLS_PASS | in_progress | Remove duplicate archive entry behavior by ensuring unique ZIP arc names while preserving required export behavior and exclusions. |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | TOOLS_PASS | completed | Remove duplicate archive entry behavior by ensuring unique ZIP arc names while preserving required export behavior and exclusions. |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Record accepted `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` implementation and closeout audit outcome (`PASS`, `ACCEPT_AS_IS`); preserve ZIP contract boundaries and route forward. |

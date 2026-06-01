@@ -4,7 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md | current |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md | completed |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md | current |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md | completed |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS.md | completed (docs-only closeout recording PASS manual Windows smoke run for V1.1 local sidecar reference image viewer and non-blocking ZIP hygiene note) |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS.md | completed (docs-only QA plan creating manual smoke checklist for sidecar viewer reachability/import/sidecar/ZIP/path-clamp validation and routing to run pass) |

@@ -32,8 +32,9 @@ Lazy-loading index for pass audit documents.
 | PROJECT_EXPORTER_TEST_FIX_PASS | docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md | completed |
 | PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS | docs/audit/PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS.md | completed |
 | PROMPT_PROTOCOL_GUARD_CLAUSES_PASS | docs/audit/PROMPT_PROTOCOL_GUARD_CLAUSES_PASS.md | in_progress |
-| TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS.md | in_progress |
-| TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS.md | in_progress |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS.md | completed |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS.md | completed |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS.md | in_progress |
 | VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS.md | completed (docs-only closeout: records implementation accepted/pushed, records Claude Code / Opus post-audit verdict `PASS` with `ACCEPT_AS_IS`, confirms main-gate fixture-gap closure, aligns governance ledgers, and preserves V1.1 evidence boundaries) |
 | VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS.md | accepted from audit context (`PASS`, `ACCEPT_AS_IS`); no scope drift, implementation accepted as-is, and no out-of-scope surface changes |
 | VALIDATE_ALL_FIXTURE_COVERAGE_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_PASS.md | completed (tools hardening: main `validate_all.py` gate now explicitly validates `board_canvas_positive_smoke` alongside `pelle_pv20_minimal`, including materialization + fixture invariants + ZIP validation flow, while preserving evidence boundaries and forbidden-surface policy) |

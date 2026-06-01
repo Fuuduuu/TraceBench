@@ -2,15 +2,16 @@
 
 ## Current pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
+`TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement the locked low-staleness governance diagrams:
+Record and close out the accepted governance diagram pass:
 
-- pass lifecycle
-- evidence boundaries
-- tool/model routing
+- record `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS` accepted outcome
+- record Claude Code post-audit result (`PASS`, `ACCEPT_AS_IS`)
+- record NITs and evidence-boundary checks
+- route to `DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Allowed surfaces
 
@@ -23,6 +24,7 @@ Implement the locked low-staleness governance diagrams:
 - `docs/MODEL_ROUTING.md`
 - `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS.md`
 - `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS.md`
+- `docs/audit/TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -71,7 +73,7 @@ Implement the locked low-staleness governance diagrams:
 
 ## Next recommended pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Closeout validations
 

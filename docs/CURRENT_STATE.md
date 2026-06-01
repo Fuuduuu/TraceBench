@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS`
-- Next recommended pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS`
+- Current pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -59,12 +59,12 @@ Branch: `main`
   - `py -3 tools\validate_all.py`: PASS,
   - order-dependent isolate bug in this test is resolved,
   - only a harmless redundant assertion remained as NIT.
-- Governance lock in progress:
-  - `TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS` defines the next three low-staleness Mermaid diagrams (pass lifecycle, evidence boundary, tool/model routing) for implementation.
-- Governance diagrams in progress:
-  - `docs/PASS_LIFECYCLE.md` tracks the pass chain structure.
-  - `docs/ARCHITECTURE_BOUNDARIES.md` tracks evidence-directional safety.
-  - `docs/MODEL_ROUTING.md` now includes a compact role-to-tool routing diagram section.
+- `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS` is accepted:
+  - `docs/PASS_LIFECYCLE.md` tracks pass-chain states.
+  - `docs/ARCHITECTURE_BOUNDARIES.md` tracks evidence-boundary flow.
+  - `docs/MODEL_ROUTING.md` includes compact tool/model routing Mermaid updates.
+- `TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS` is the preceding pass gate result.
+- `TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS` records final PASS acceptance and moves sequencing forward to docs drift cleanup.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,
@@ -73,6 +73,11 @@ Branch: `main`
   - accessibility targets and explicit forbidden wording,
   - strict `Reference Images` and `Board Canvas` track separation.
 - `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` remains separate and deferred.
+
+## Non-blocking NITs
+
+- `docs/MODEL_ROUTING.md` is a routing/state graph, not a full approval-flow graph.
+- `docs/ARCHITECTURE_BOUNDARIES.md` does not call out “no URL import” as a separate node; this is covered in governance notes and existing boundary text.
 
 ## Hard boundaries
 

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -31,16 +31,10 @@ Branch: `main`
     - read-only viewer safety copy,
     - no event/log/materializer/surface expansion,
     - `resolveStoredImageFile` clamps path escape/traversal.
-  - `py -3 tools\validate_all.py` includes `board_canvas_positive_smoke` in baseline fixture checks.
-- `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed:
-  - duplicate `device_profiles/default.json` ZIP entries resolved by arc-name dedupe.
-  - Project ZIP contract/exclusions and forbidden artifact checks (`board_graph.json`, `view_state.json`) unchanged.
-- Local sidecar reference-image viewer is closed out:
-  - `.tracebench_local/reference_images/` storage + `.tracebench_local/reference_images.json` ledger accepted.
-  - read-only viewer behavior and path-clamp hardening accepted.
-  - no event/schema/materializer/runtime changes from this workstream.
-
-- Route review for next V1.1 step is pending; next pass is currently `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`.
+  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed; duplicate `device_profiles/default.json` ZIP entries are resolved.
+- Claude Design review for Reference Images UX polish direction is accepted as GO for safe `REFERENCE_IMAGES_UX` polishing scope.
+- This scope lock locks `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` and keeps it bounded to UX-only polish.
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` remains deferred.
 
 ## Hard boundaries
 
@@ -51,4 +45,4 @@ Branch: `main`
 - `photo` content is non-factual unless separately confirmed through accepted event paths.
 - `visual_trace` is visual-only and never an electrical net.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- This active pass is tooling-only and does not touch runtime/schema/materializer/samples/assets.
+- Local reference images remain Model B: non-canonical sidecar only, outside ZIP/events/known_facts/materializer/Board Canvas evidence surfaces.

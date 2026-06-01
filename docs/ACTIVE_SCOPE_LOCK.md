@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Compact docs-only cleanup and routing realignment after `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`.
+Lock safe UX polish scope for the accepted Reference Images local sidecar viewer.
 
 ## Allowed surfaces
 
@@ -14,50 +14,49 @@ Compact docs-only cleanup and routing realignment after `PROJECT_ZIP_DEVICE_PROF
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md`
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
 - `schemas/**`
-- `Project ZIP contract files outside this pass (no contract expansion)`
+- `tools/**`
+- `test/**`
 - `lib/**`
-- `samples/**`
+- `schemas/**`
 - `assets/**`
-- `pubspec*`
-- `events.jsonl`
-- `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- Project ZIP tooling files outside allowed implementation set
-- schema/materializer/runtime surface changes
-- fixture/sample/asset or generated-artifact edits
-- background photo helper
-- transform/matrix computation
-- photo-local evidence conversion
-- visual_trace/damage/suspect canvas geometry inference
+- `events.jsonl`
+- `known_facts.json`
+- `materializer`
+- `schemas/**` or `tools/validate_events_jsonl.py`
+- `Project ZIP tooling/contracts`
+- runtime/schema/materializer/sample/asset/tooling changes
+- path, storage, or metadata model expansion
+- Board Canvas overlay/alignment/transform/photo-layer paths
+- AI/OCR/CV/proposal UI
 - event-writing/edit/confirm/save/apply controls
+- reference image URL import/download
 
 ## Scope boundary (locked)
 
-For this cleanup pass:
+For this scope-lock pass:
 
-- Docs-only updates only.
-- Update governance files to keep current/next routing compact and consistent:
-  - [CURRENT_STATE.md](docs/CURRENT_STATE.md)
-  - [PASS_QUEUE.md](docs/PASS_QUEUE.md)
-  - [AUDIT_INDEX.md](docs/AUDIT_INDEX.md).
-- Preserve all evidence boundaries.
-- No code/tool/schema/materializer/runtime/sample/tag/release-object modifications.
-- Maintain next pass as `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS` unless governance selects a higher-priority queued V1.1 pass.
+- Docs-only lock of implementation boundary and acceptance criteria before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
+- Locked implementation direction:
+  - Reference Images screen is a reference shelf, not evidence.
+  - Header + safety strip must stay explicit (`reference only`, `not evidence`, `not included in Project ZIP`, `not used by AI`, `renderer writes: none`).
+  - Layout/accessibility polish is allowed, and metadata framing must not imply evidence.
+  - Preserve read-only semantics and non-canonical local sidecar model.
+  - Keep Board Canvas, transform, photo alignment overlays, and event/known_facts/ZIP inclusion out of this pass.
+- Preserve all evidence boundaries and V1 forbidden artifacts.
 
 ## Next recommended pass
 
-`V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`
+`REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
 
 ## Validate
 
-- `py -3 tools\validate_all.py`
 - `git status --short --branch`
-- `py -3 -m unittest tests.test_project_zip`
+- `py -3 tools\validate_all.py`
 - `git diff --name-only`

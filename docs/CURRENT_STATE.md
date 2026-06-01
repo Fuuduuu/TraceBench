@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_EXPORTER_TEST_FIX_PASS`
-- Next recommended pass: `PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS`
+- Current pass: `PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS`
+- Next recommended pass: `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -47,11 +47,18 @@ Branch: `main`
   - by-name test run succeeds,
   - no reference-image scope coupling,
   - production command discovery remains a likely candidate-safe area requiring a test-only isolation fix.
-- `PROJECT_EXPORTER_TEST_FIX_PASS` applies a test-only normalization of fallback-version assertions in
+- `PROJECT_EXPORTER_TEST_FIX_PASS` applied a test-only normalization of fallback-version assertions in
   `test/unit/project_exporter_test.dart`:
   - normalizes executable checks (`py`/`python3`/`python`) via basename,
   - keeps the fallback behavior assertion deterministic across full-file execution,
   - does not touch production `ProjectExporter` code.
+- `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted (`PASS`) after Claude Code post-audit:
+  - `PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS` concluded ACCEPT_AS_IS,
+  - full-file `project_exporter_test.dart`: 12/12 passing,
+  - full Flutter suite: 186 tests passed,
+  - `py -3 tools\validate_all.py`: PASS,
+  - order-dependent isolate bug in this test is resolved,
+  - only a harmless redundant assertion remained as NIT.
 
 - Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,

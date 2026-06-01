@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROJECT_EXPORTER_TEST_FIX_PASS`
+`PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS`
+`PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -39,4 +39,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS | FLUTTER_PASS | completed | Implement required copy/safety microcopy, required safety strings, and import wording in `ReferenceImagesScreen` with focused widget coverage; no rewrite, no filesystem-heavy new behaviors. |
 | REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS | DOCS_SYNC | accepted (`PASS`) | Close out copy/safety implementation with accepted implementation/post-audit state, closeout exception handling, boundary lock persistence, and routing to `PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`. |
 | PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked a focused test-only fix scope for `test/unit/project_exporter_test.dart` order-dependent isolation and routed to `PROJECT_EXPORTER_TEST_FIX_PASS` (`TEST_FIX_PASS`). |
-| PROJECT_EXPORTER_TEST_FIX_PASS | TEST_FIX_PASS | in_progress | Apply a narrow fallback-assertion hardening in `test/unit/project_exporter_test.dart` so full-file execution is deterministic and order-independent while preserving test intent (no production behavior change). |
+| PROJECT_EXPORTER_TEST_FIX_PASS | TEST_FIX_PASS | completed | Applied test-only normalization in fallback assertions (`_commandExecutable`) to make `ProjectExporter falls back to python3/python when earlier candidates fail` order-independent; no production behavior change; accepted post-audit (`PASS`, `ACCEPT_AS_IS`). |
+| PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Close out `PROJECT_EXPORTER_TEST_FIX_PASS` with post-audit summary, accepted status propagation, and next routing to `PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`. |

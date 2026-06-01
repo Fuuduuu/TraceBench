@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`PROJECT_EXPORTER_TEST_FIX_PASS`
+`PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement a narrow test-only fix for the `ProjectExporter` fallback test-order isolation case.
+Record the accepted closeout for `PROJECT_EXPORTER_TEST_FIX_PASS` and preserve scope discipline.
 
 ## Allowed surfaces
 
@@ -16,6 +16,7 @@ Implement a narrow test-only fix for the `ProjectExporter` fallback test-order i
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS.md`
 - `docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md`
+- `docs/audit/PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -42,30 +43,17 @@ Implement a narrow test-only fix for the `ProjectExporter` fallback test-order i
 
 ## Scope boundary (lock)
 
-Scope is test-fix targeted:
+Closeout state:
 
-- allowed implementation surface:
-  - `test/unit/project_exporter_test.dart` only (for `PROJECT_EXPORTER_TEST_FIX_PASS`)
-- lock the issue class:
-  - order-dependent test isolation in the project exporter unit test file,
-  - no production behavior changes unless real production bug is demonstrated.
-- required test-fix properties:
-  - deterministic pass-by-name and full-file execution,
-  - deterministic fallback executable resolution checks irrespective of invocation order,
-  - no cross-test call-history assumptions.
-- no hidden shared state leaks across test cases,
-- no temp-root/fake-runner leakage,
-- no cross-test call-history leakage.
-- prohibited implementation spillover:
-  - Reference Images files,
-  - Board Canvas scope,
-  - Project ZIP contract or tooling,
-  - schemas / materializer / events / known_facts / runtime behavior,
-  - broad suite refactors.
+- `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted and remains test-only.
+- Post-audit result was `PASS` with `ACCEPT_AS_IS`.
+- No production behavior changes were introduced.
+- The remaining issue from implementation is a harmless redundant assertion (no patch required).
+- `PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS` remains docs-only and does not open implementation scope.
 
 ## Next recommended pass
 
-`PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS`
+`PROMPT_PROTOCOL_GUARD_CLAUSES_PASS`
 
 ## Closeout validations
 

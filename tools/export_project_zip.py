@@ -95,7 +95,9 @@ def _ensure_customer_report(project_dir: Path) -> None:
     )
 
 
-def _collect_files(base_dir: Path, arc_prefix: str = "") -> Iterable[tuple[Path, str]]:
+def _collect_files(
+    base_dir: Path, arc_prefix: str = "", *, seen_arc_names: set[str] | None = None
+) -> Iterable[tuple[Path, str]]:
     if not base_dir.exists():
         return []
 
@@ -112,6 +114,10 @@ def _collect_files(base_dir: Path, arc_prefix: str = "") -> Iterable[tuple[Path,
             continue
         rel = path.relative_to(base_dir)
         arc_name = str((Path(arc_prefix) / rel).as_posix()) if arc_prefix else str(rel.as_posix())
+        if seen_arc_names is not None and arc_name in seen_arc_names:
+            continue
+        if seen_arc_names is not None:
+            seen_arc_names.add(arc_name)
         collected.append((path, arc_name))
     return collected
 
@@ -143,9 +149,10 @@ def export_project_zip(project_dir: Path, output_zip: Path) -> int:
     _ensure_schema_metadata(project_dir)
     _ensure_customer_report(project_dir)
 
+    seen_arc_names: set[str] = set()
     files: list[tuple[Path, str]] = []
     try:
-        files.extend(_collect_files(project_dir))
+        files.extend(_collect_files(project_dir, seen_arc_names=seen_arc_names))
     except ValueError as exc:
         print(f"[ERROR] {exc}")
         return 1
@@ -155,7 +162,12 @@ def export_project_zip(project_dir: Path, output_zip: Path) -> int:
         profiles_source = REPO_DEVICE_PROFILES
     if profiles_source.exists():
         try:
-            files.extend((path, arc_name) for path, arc_name in _collect_files(profiles_source, "device_profiles"))
+            files.extend(
+                (path, arc_name)
+                for path, arc_name in _collect_files(
+                    profiles_source, "device_profiles", seen_arc_names=seen_arc_names
+                )
+            )
         except ValueError as exc:
             print(f"[ERROR] {exc}")
             return 1

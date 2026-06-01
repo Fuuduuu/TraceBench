@@ -2,12 +2,12 @@
 
 ## Current pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
 
 ## Goal
 
-Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive path emission for
-`device_profiles/default.json` before any implementation.
+Implement a narrow Project ZIP export hardening pass to eliminate duplicate archive path emission for
+`device_profiles/default.json` while preserving existing ZIP contract behavior.
 
 ## Allowed surfaces
 
@@ -15,13 +15,13 @@ Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive p
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
 - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md`
+- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
 
 ## Forbidden surfaces
 
-- `schemas/**` (no schema changes in this scope lock pass)
-- `tools/**` (implementation deferred to next `TOOLS_PASS`)
+- `schemas/**`
+- `Project ZIP contract files outside this pass (no contract expansion)`
 - `lib/**`
 - `samples/**`
 - `assets/**`
@@ -30,10 +30,9 @@ Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive p
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- Project ZIP tooling/files
-- schema/materializer/runtime/tooling surface changes
+- Project ZIP tooling files outside allowed implementation set
+- schema/materializer/runtime surface changes
 - fixture/sample/asset or generated-artifact edits
-- Git tag actions
 - background photo helper
 - transform/matrix computation
 - photo-local evidence conversion
@@ -42,10 +41,8 @@ Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive p
 
 ## Scope boundary (locked)
 
-- Docs-only scope lock only.
-- Next implementation pass is fixed as:
-  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` (lane: `TOOLS_PASS`)
-- Allowed implementation file set for the next pass:
+- Implementation lane: `TOOLS_PASS`.
+- Allowed implementation file set:
   - `tools/export_project_zip.py`
   - `tests/test_project_zip.py`
   - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
@@ -59,7 +56,7 @@ Lock a narrow Project ZIP export hardening pass to eliminate duplicate archive p
 
 ## Next recommended pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
+`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_POST_AUDIT_PASS`
 
 ## Validate
 

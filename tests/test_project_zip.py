@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 import os
 import shutil
 import subprocess
@@ -450,6 +451,35 @@ class ProjectZipTests(unittest.TestCase):
             with ZipFile(output_zip, "r") as zf:
                 names = zf.namelist()
             self.assertEqual(names, sorted(names))
+
+    def test_export_project_zip_has_unique_archive_names(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(SAMPLE_DIR, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = [name.replace("\\", "/") for name in zf.namelist()]
+            duplicates = [name for name, count in Counter(names).items() if count > 1]
+            self.assertEqual(duplicates, [])
+
+    def test_export_project_zip_default_device_profile_once_when_present(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            profiles_dir = project_dir / "device_profiles"
+            profiles_dir.mkdir(exist_ok=True)
+            (profiles_dir / "default.json").write_text("{}", encoding="utf-8")
+
+            output_zip = Path(tmpdir) / "project.zip"
+            export_result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(export_result.returncode, 0, export_result.stdout + export_result.stderr)
+
+            with ZipFile(output_zip, "r") as zf:
+                names = [name.replace("\\", "/") for name in zf.namelist()]
+            self.assertEqual(names.count("device_profiles/default.json"), 1)
+            self.assertIn("device_profiles/default.json", names)
+            self.assertTrue(any(name.startswith("device_profiles/") for name in names))
 
     def test_project_zip_contains_customer_report(self):
         with tempfile.TemporaryDirectory() as tmpdir:

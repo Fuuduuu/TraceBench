@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Record the final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
+Lock the next recovery copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` and keep this pass docs-only.
 
 ## Allowed surfaces
 
@@ -17,12 +17,13 @@ Record the final Claude Design scope-lock card as accepted implementation input 
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS.md`
+- (Next pass target) `lib/features/reference_images/screens/reference_images_screen.dart`
+- (Next pass target) `test/widget/reference_images_screen_test.dart`
 
 ## Forbidden surfaces
 
-- `tools/**`
-- `test/**`
-- `lib/**`
+- `tools/**` in this scope
 - `assets/**`
 - `board_graph.json`
 - `view_state.json`
@@ -31,88 +32,50 @@ Record the final Claude Design scope-lock card as accepted implementation input 
 - `materializer/**`
 - `schemas/**`
 - `Project ZIP tooling/contracts`
-- runtime/schema/materializer/sample/asset/tooling/model changes
-- path, storage, or metadata-model expansion
-- Board Canvas overlay/alignment/transform/photo-layer paths
+- runtime/schema/materializer/sample/model changes
+- path/storage/model expansion
+- Board Canvas overlay/alignment/transform/photo-layer work
 - AI/OCR/CV/proposal UI
 - event-writing/edit/confirm/save/apply controls
 - reference-image URL import/download
+- `lib/features/reference_images/services` / path-clamp changes (already completed in prior implementation passes)
+- metadata grouping expansion, empty/missing/unsupported test rewrite, accessibility overhaul, responsive layout rewrite.
 
 ## Scope boundary (locked)
 
-For this scope-lock card-sync pass:
+For this docs-only scope-lock pass:
 
-- Docs-only sync of final accepted design card before implementation.
-- Accepted final card for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` before implementation:
-  - six fixed zones:
-    - header band,
-    - image list / contact sheet,
-    - preview,
-    - details/metadata,
-    - safety strip,
-    - footer/provenance.
-  - required strings (must render verbatim in empty/selected states):
-    - `reference only`
-    - `not evidence`
-    - `not included in Project ZIP`
-    - `not used by AI`
-    - `renderer writes: none`
-  - required state coverage:
-    - empty,
-    - selected,
-    - missing local file,
-    - unsupported,
-    - import failure,
-    - large file,
-    - max count,
-    - narrow window.
-  - required metadata grouping:
-    - Identity:
-      - `reference_image_id` as `Reference ID`
-      - `original_filename_display` as `As imported`
-      - `notes` as `Your notes`
-    - File details:
-      - `mime_type` as `Type`
-      - `file_size_bytes` as `Size`
-      - `sha256` as `SHA-256`
-      - `stored_relative_path` as `Stored path`
-    - Provenance:
-      - `imported_at` as `Imported`
-      - `source` as `added via local file picker`
-      - project binding as `Project`
-  - required microcopy includes:
-    - `Reference images`
-    - `No reference images yet`
-    - `Import from this computer`
-    - `Reference image · not evidence`
-    - `File integrity / duplicate check — not an evidence seal`
-    - `Personal annotation only — not a recorded finding`
-    - `non-canonical · local sidecar · not evidence — personal reference only.`
-  - required accessibility constraints:
-    - keyboard navigation,
-    - visible focus ring,
-    - screen-reader labels,
-    - AA contrast,
-    - no color-only meaning,
-    - hit targets at least 44px,
-    - safety strip and footer visible in every state.
-  - required forbidden wording:
-    - `confirmed`, `detected`, `measured`, `fault`, `suspect`, `probability`, `net`, `trace proof`, `AI found`, `verified`, `identified`, `proven`, `match found`, `candidate`.
-  - preserve Model B boundaries:
-    - local sidecar only,
-    - non-canonical,
-    - outside ZIP/events/known_facts/materializer,
-    - outside Board Canvas evidence rendering,
-    - outside AI/OCR/CV.
-  - preserve strict track separation:
-    - Reference Images polish does not overlap Board Canvas polish scope.
-    - Board Canvas polish remains separate track: `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`.
-  - no code changes in this pass.
-- `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` must take this card as implementation input.
+- `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is recorded as the recovered input (`PASS`, no production change).
+- No code changes in this pass.
+
+For the next implementation pass (`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`), lock:
+
+- copy/safety polish only (empty-state safety copy and import label text),
+- no full screen rewrite,
+- no metadata grouping expansion,
+- no accessibility/layout overhauls,
+- no filesystem-heavy test fixtures,
+- no `Image.file` decode in selected-image/widget tests,
+- deferred slices: metadata grouping, missing/error/unsupported states, narrow-window polish, accessibility refinements.
+
+Required implementation assertions to keep:
+
+- empty-state required safety strings are visible:
+  - `reference only`
+  - `not evidence`
+  - `not included in Project ZIP`
+  - `not used by AI`
+  - `renderer writes: none`
+- import button text is exactly `Import from this computer`.
+- safe forbidden-word guard remains intact.
+- service behavior remains unchanged.
+- keep model-B boundaries:
+  - local sidecar only,
+  - outside `events.jsonl` / `known_facts.json` / materializer / ZIP / Board Canvas evidence / AI/CV.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
 
 ## Validate
 

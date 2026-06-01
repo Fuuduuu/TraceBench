@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -34,4 +34,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Ran docs drift cleanup after dedup closeout and kept docs compact while fixing route context. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
-| REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | in_progress | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |
+| REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |
+| REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS | DOCS_SYNC | in_progress | Lock constrained copy/safety implementation slice for `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` after `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS`; required copy and non-fs-heavy tests only. |

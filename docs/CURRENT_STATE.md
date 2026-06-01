@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -34,7 +34,12 @@ Branch: `main`
   - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed; duplicate `device_profiles/default.json` ZIP entries are resolved.
 - Claude Design review for Reference Images UX polish direction is accepted as GO for safe `REFERENCE_IMAGES_UX` polishing scope.
 - `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS` is accepted as final UX deepening input.
-- Current card-sync records the final Claude Design scope-lock card for implementation:
+- `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS` is accepted as final implementation input sync.
+- `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is accepted with `PASS`; broad implementation was reverted and a constrained recovery slice was selected.
+- Current copy/safety scope lock is `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS`; implementation next is:
+  - `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+
+- Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
   - six fixed zones,
   - required copy and microcopy contract,
   - required metadata groups and required states (including narrow-window behavior),

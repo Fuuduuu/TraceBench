@@ -3,202 +3,47 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Docs drift countdown: `0`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass: `NONE` (no immediate implementation pass queued after docs-only cleanup)
+- Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
 
-### Current phase
-- V1 RC is fixed and verified:
-  - tag `v1.0.0-rc1` exists locally and on `origin`,
-  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted/pushed.
-- Roadmap is locked:
-  - `TAG_V1_RC_FIRST -> V1_1_HARDENING -> V2_EVENT_WRITING_ARCHITECTURE`.
-- Active phase is `V1.1` hardening.
-- GPT Pro architecture decision for V1.1 reference images is locked to Model B:
-  - project-associated local sidecar files + non-canonical sidecar metadata,
-  - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
-- Viewer implementation + audit status:
-  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` is accepted/pushed in a narrow Model-B scope,
-  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS` is accepted from audit context with `PASS` and `ACCEPT_AS_IS`,
-  - local sidecar import/view flow is available via Project overview,
-  - reference images remain non-canonical and outside ZIP/events/known_facts/materializer/evidence rendering.
-- Defense-in-depth hardening status:
-  - accepted LOW note from post-audit is implemented in a narrow hardening pass,
-  - `resolveStoredImageFile` now revalidates ledger path input and rejects unresolved/escape paths outside `.tracebench_local/reference_images/`,
-  - focused tests now cover absolute path rejection, traversal rejection, escape rejection, and valid path resolution.
-  - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS` is accepted from audit context with `PASS` and `ACCEPT_AS_IS`,
-  - prior LOW finding is resolved without scope drift.
-- Current implementation outcome:
-  - `validate_all.py` now explicitly validates both `pelle_pv20_minimal` and `board_canvas_positive_smoke`,
-  - positive fixture invariants are now checked in the main validation gate (including `nets: []`, no forbidden projection keys, and no computed transform fields in alignment projection).
-  - Claude Code / Opus post-audit result for the implementation is accepted: `PASS`, `ACCEPT_AS_IS`.
-  - Project ZIP export now excludes `.tracebench_local` sidecar paths.
-  - Project ZIP validation now rejects `.tracebench_local` entries in ZIPs and extracted project directories.
+- V1 is fixed and verified:
+  - `v1.0.0-rc1` exists locally and on `origin`.
+  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`, `V1_TO_V2_ROADMAP_DECISION_PASS`, and `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` are accepted.
+- Roadmap remains:
+  - `TAG_V1_RC_FIRST`
+  - then `V1_1_HARDENING`
+  - then `V2_EVENT_WRITING_ARCHITECTURE`.
+- V2 remains event-writing-first and does not start with photo overlay/transform/background-photo-helper.
+- Accepted baseline for this phase:
+  - Board Canvas V1 remains read-only and evidence-safe.
+  - `photo_to_board_alignment_confirmed` chain accepted end-to-end:
+    - schema + validator
+    - `known_facts.photo_to_board_alignments` materializer projection
+    - known_facts schema support
+    - Dart `photoToBoardAlignments` parity.
+  - Positive fixture `board_canvas_positive_smoke` is accepted and evidence-safe.
+  - Local sidecar reference-image flow is accepted under Model B:
+    - local `.tracebench_local/reference_images/` storage,
+    - `.tracebench_local/reference_images.json` ledger,
+    - read-only viewer safety copy,
+    - no event/log/materializer/surface expansion,
+    - `resolveStoredImageFile` clamps path escape/traversal.
+  - `py -3 tools\validate_all.py` includes `board_canvas_positive_smoke` in baseline fixture checks.
+- Current cleanup pass is docs-only:
+  - compact `CURRENT_STATE.md`, `PASS_QUEUE.md`, `ACTIVE_SCOPE_LOCK.md`, `AUDIT_INDEX.md` into bounded routing handoff form,
+  - remove duplicated/non-bounded history from `CURRENT_STATE.md`,
+  - ensure routing pointers are coherent and docs-only.
 
-### Accepted V1 baseline (still authoritative)
-- Board Canvas V1 is read-only and metadata-safe.
-- Positive fixture `board_canvas_positive_smoke` is accepted and evidence-safe.
-- Known Facts pipeline accepted:
-  - event schema + validator for photo alignment,
-  - materializer projection,
-  - known_facts schema support,
-  - Dart KnownFacts parity.
-- Validation baseline remains passing:
-  - `py -3 tools\validate_all.py` PASS,
-  - Flutter suite PASS,
-  - targeted Python suites PASS.
-
-### Recent accepted pass chain (latest-first)
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`:
-  - docs-only manual smoke test plan created for V1.1 local sidecar reference-image viewer validation.
-  - route fixed to `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS`:
-  - manual Windows smoke run recorded as PASS for local sidecar reference-image viewer.
-  - boundary checks passed: local import, sidecar persistence, ZIP exclusion, no canonical projection/overlay/API boundary regressions.
-  - duplicate `device_profiles/default.json` in exported ZIP recorded as non-blocking observation.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`:
-  - closeout recorded for accepted/pushed path-clamp implementation and accepted post-audit result,
-  - prior LOW path-clamp finding marked resolved,
-  - Model-B/evidence boundaries reaffirmed.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_PASS`:
-  - narrow hardening implemented in `resolveStoredImageFile`,
-  - absolute/traversal/escape ledger paths rejected/unresolved,
-  - valid generated sidecar paths preserved.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_POST_AUDIT_PASS` accepted from audit context:
-  - verdict `PASS`,
-  - disposition `ACCEPT_AS_IS`,
-  - no scope drift and full validation green.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_SCOPE_LOCK_PASS`:
-  - accepted LOW path-clamp finding recorded and locked to a narrow implementation follow-up,
-  - implementation/test allowlist and forbidden surfaces locked without boundary expansion.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_CLOSEOUT_PASS`:
-  - closeout recorded for accepted/pushed viewer implementation,
-  - accepted post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,
-  - boundary-safe route advanced to path-clamp scope lock.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`:
-  - local sidecar reference image viewer implemented,
-  - import supports local picker with png/jpg/jpeg/webp allowlist,
-  - files are copied to `.tracebench_local/reference_images/`,
-  - metadata ledger is maintained at `.tracebench_local/reference_images.json`,
-  - viewer remains read-only with explicit safety copy:
-    - reference only,
-    - not evidence,
-    - not included in Project ZIP,
-    - not used by AI.
-  - no Project ZIP contract changes,
-  - no events/known_facts/schema/materializer changes.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_POST_AUDIT_PASS` accepted from audit context:
-  - verdict `PASS`,
-  - disposition `ACCEPT_AS_IS`,
-  - all audited claims accepted with no scope drift,
-  - no ZIP/events/known_facts/schema/materializer/overlay/AI drift.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_CLOSEOUT_PASS`:
-  - closeout recorded for accepted/pushed implementation,
-  - Claude Code post-audit verdict recorded as `PASS`, `ACCEPT_AS_IS`,
-  - `.tracebench_local` ZIP export leak blocker is closed,
-  - routing moved forward to `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_POST_AUDIT_PASS` accepted from audit context:
-  - verdict `PASS`,
-  - disposition `ACCEPT_AS_IS`,
-  - no scope drift and Project ZIP contract preserved.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS`:
-  - implementation accepted/pushed: export excludes `.tracebench_local` sidecar paths,
-  - ZIP validation symmetry added to reject `.tracebench_local` entries,
-  - ZIP tests added for export exclusion and validator rejection cases,
-  - Project ZIP spec updated to explicitly document `.tracebench_local` exclusion.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_AUDIT_PASS` accepted from audit context:
-  - verdict `PASS`,
-  - confirms `.tracebench_local` exclusion hardening is safe and narrow,
-  - confirms no Project ZIP contract expansion is required.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_SCOPE_LOCK_PASS`:
-  - next pass locked to `REFERENCE_IMAGE_LOCAL_SIDECAR_ZIP_EXCLUSION_PASS` (`TOOLS_PASS`),
-  - goal locked to ZIP exclusion hardening before viewer implementation resumes,
-  - viewer pass remains deferred until exclusion pass lands.
-- `REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS` accepted from audit context:
-  - audit-only route, no repo modifications,
-  - routed to Model-B scope lock.
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS`:
-  - next pass locked to `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS`,
-  - V1.1 reference images locked to local sidecar/reference-only/non-canonical behavior.
-- `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` accepted/pushed:
-  - changed surface: `tools/validate_all.py` only,
-  - `board_canvas_positive_smoke` main-gate coverage gap is closed,
-  - existing `pelle_pv20_minimal` gate coverage is preserved.
-- `VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS` accepted from audit context:
-  - verdict `PASS`,
-  - disposition `ACCEPT_AS_IS`,
-  - no scope drift or boundary regression.
-- `VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS`:
-  - next pass locked to `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` (`TOOLS_PASS`),
-  - implementation surface locked to `tools/validate_all.py` (+ tests only if strictly required),
-  - sample/schema/materializer/runtime surfaces remain out of scope.
-- `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` accepted:
-  - audit verdict PASS recorded,
-  - no audit-time file modifications,
-  - baseline reliability accepted.
-- `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS` accepted:
-  - first V1.1 hardening route locked as audit-first.
-- `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` accepted:
-  - source/handoff guidance synchronized to post-RC state,
-  - risk-based tool routing and no-self-approval rule aligned.
-- `V1_TO_V2_ROADMAP_DECISION_PASS` accepted:
-  - V2 does not start with transform/photo-overlay/background-helper implementation.
-- `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` accepted:
-  - annotated tag and target baseline accepted.
-
-### Accepted metagovernance audit summary
-- `GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS` accepted from audit context (`PASS_WITH_NITS`):
-  - no scope drift detected,
-  - route remained correct,
-  - AI/tool routing remained practical,
-  - main process issue was `CURRENT_STATE.md` bloat,
-  - fixture coverage auto-gate gap was scheduled and is now closed,
-  - audit remained audit-only with no repo modifications.
-
-### Current non-blocking items
-- NIT: keep state docs compact; this cleanup resets/locks size discipline.
-- NIT: single-dot `.` path segments are harmless and cannot escape sidecar directory boundaries.
-- NIT: symlink validation remains outside the tampered-ledger-string threat model.
-- NIT: hand-rolled SHA-256 remains unchanged and out of scope.
-- NIT: `Random()` for local sidecar IDs remains accepted because IDs are non-security metadata.
-
-## Hard boundaries (unchanged)
+## Hard boundaries (current)
 
 - Human is the sensor. AI is the graph engine.
 - `events.jsonl` is canonical event truth.
-- `known_facts.json` is materialized projection.
-- Renderer/view writes nothing unless separately scoped later.
-- Photo pixels are not facts.
-- Photo alignment is not identity/pin mapping/net confirmation/measurement/fault proof.
-- `visual_trace` is not a net.
-- Damage is not fault proof.
-- Suspect is not probability.
-- `template_id` / footprint family is not electrical identity.
+- `known_facts.json` is the materialized projection.
+- Renderer/view writes nothing.
+- `photo` content is non-factual unless separately confirmed through accepted event paths.
+- `visual_trace` is visual-only and never an electrical net.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- V1.1 reference images are local sidecar/reference-only metadata and do not create canonical facts.
-- Only human-confirmed accepted events may update canonical projected truth.
-
-## CURRENT_STATE size/archive discipline (durable rule)
-
-- Keep this file as bounded active handoff only.
-- Keep:
-  - current pass,
-  - next recommended pass,
-  - active phase,
-  - hard boundaries,
-  - a small latest accepted summary block.
-- Do not keep long historical narratives here.
-- Move older narrative detail to `docs/audit/*.md`.
-- Use `docs/PASS_QUEUE.md` for queue/routing and `docs/AUDIT_INDEX.md` for audit lookup.
-- Trigger `DOCS_DRIFT_MINI_CLEANUP_PASS` when this file starts expanding beyond compact handoff usage.
-
-## Canonical pointers
-
-- Pass sequencing and countdown: `docs/PASS_QUEUE.md`
-- Active scope allowlist/forbidden surfaces: `docs/ACTIVE_SCOPE_LOCK.md`
-- Source/handoff routing and memory conflict order: `docs/SOURCES_INDEX_CURRENT.md`
-- Stable product invariants: `docs/PROJECT_MEMORY.md`
-- Audit index: `docs/AUDIT_INDEX.md`
-- Detailed pass evidence: `docs/audit/*.md`
+- This cleanup pass is docs-only and does not touch runtime/schema/tooling/materializer/runtimes.

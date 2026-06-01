@@ -2,11 +2,12 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement the constrained copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` only.
+Record docs-only closeout evidence for accepted copy/safety UX work in
+`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS` and route to the next pass.
 
 ## Allowed surfaces
 
@@ -19,8 +20,7 @@ Implement the constrained copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_C
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS.md`
-- `lib/features/reference_images/screens/reference_images_screen.dart`
-- `test/widget/reference_images_screen_test.dart`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,45 +45,24 @@ Implement the constrained copy/safety UX slice for `REFERENCE_IMAGES_UX_POLISH_C
 - accessibility overhaul
 - responsive layout rewrite.
 
-## Scope boundary (locked)
+## Scope boundary (closeout)
 
-For `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`, lock:
+Closeout scope is docs-only:
 
 - copy/safety polish only (empty-state safety copy and import label text),
-- no full screen rewrite,
-- no metadata grouping expansion,
-- no accessibility/layout overhauls,
-- no filesystem-heavy test fixtures in updated tests,
-- no `Image.file` decode in updated selected-image/widget tests,
-- service behavior remains unchanged.
-
-Required implementation assertions to keep:
-
-- empty-state required safety strings are visible:
-  - `reference only`
-  - `not evidence`
-  - `not included in Project ZIP`
-  - `not used by AI`
-  - `renderer writes: none`
-- import button text is exactly `Import from this computer`.
-- import safety copy remains present:
-  - `Reference images (local sidecar)`
-  - `personal reference only`
-  - `local sidecar, non-canonical`
-  - `outside project-wide canonical evidence`
-- safe forbidden-word guard remains intact.
-- service behavior remains unchanged.
-- keep model-B boundaries:
+- no implementation changes.
+- required routing/docs updates only.
+- no service/model/storage/schema/tooling/runtime changes.
+- required boundary recap:
   - local sidecar only,
   - outside `events.jsonl` / `known_facts.json` / materializer / ZIP / Board Canvas evidence / AI/CV.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_POST_AUDIT_PASS`
+`PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS`
 
-## Validate
+## Closeout validations
 
 - `py -3 tools\validate_all.py`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test/widget/reference_images_screen_test.dart --reporter expanded`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
 - `git status --short --branch`
+- `git diff --name-only`

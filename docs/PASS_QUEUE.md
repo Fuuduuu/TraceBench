@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -30,4 +30,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS | DOCS_SYNC / QA_CLOSEOUT | completed | Recorded PASS smoke run outcomes and the non-blocking duplicate `device_profiles/default.json` ZIP observation as note. |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked dedup scope for Project ZIP export duplicate arc names, specifically `device_profiles/default.json`; implementation target is `TOOLS_PASS`. |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | TOOLS_PASS | completed | Remove duplicate archive entry behavior by ensuring unique ZIP arc names while preserving required export behavior and exclusions. |
-| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Record accepted `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` implementation and closeout audit outcome (`PASS`, `ACCEPT_AS_IS`); preserve ZIP contract boundaries and route forward. |
+| PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded accepted `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` implementation and closeout outcome (`PASS`, `ACCEPT_AS_IS`); contract boundaries preserved. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | in_progress | Compact docs and routing ledgers after dedup closeout; confirm dedup observation is closed and next route review pass is selected (`V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`). |

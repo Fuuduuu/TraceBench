@@ -2,12 +2,11 @@
 
 ## Current pass
 
-`PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Document closeout recording for `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` after ACCEPT_AS_IS audit and preserve
-existing ZIP contract boundaries.
+Compact docs-only cleanup and routing realignment after `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`.
 
 ## Allowed surfaces
 
@@ -15,9 +14,8 @@ existing ZIP contract boundaries.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md`
-- `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md`
 - `docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md`
+- `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
@@ -42,24 +40,24 @@ existing ZIP contract boundaries.
 
 ## Scope boundary (locked)
 
-For this closeout pass, implementation lane remains unchanged and no code changes are allowed.
-Allowed focus is:
-- docs governance/audit updates for closeout recording.
+For this cleanup pass:
 
-Implementation results recorded in `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` must preserve:
-  - existing `.tracebench_local`, `.codex`, `.git`, `__pycache__`, `.env`, log exclusions,
-  - `board_graph.json` / `view_state.json` rejection behavior.
-- No Project ZIP contract expansion.
-- No new event/schema/materializer/runtime behavior.
-- No renderer/view write behavior.
-- Evidence boundaries remain unchanged (no transform/photo overlay/reference-image path inclusion, no event-writing logic).
+- Docs-only updates only.
+- Update governance files to keep current/next routing compact and consistent:
+  - [CURRENT_STATE.md](docs/CURRENT_STATE.md)
+  - [PASS_QUEUE.md](docs/PASS_QUEUE.md)
+  - [AUDIT_INDEX.md](docs/AUDIT_INDEX.md).
+- Preserve all evidence boundaries.
+- No code/tool/schema/materializer/runtime/sample/tag/release-object modifications.
+- Maintain next pass as `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS` unless governance selects a higher-priority queued V1.1 pass.
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`
 
 ## Validate
 
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `py -3 -m unittest tests.test_project_zip`
+- `git diff --name-only`

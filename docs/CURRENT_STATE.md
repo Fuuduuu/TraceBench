@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass: `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -33,16 +33,14 @@ Branch: `main`
     - `resolveStoredImageFile` clamps path escape/traversal.
   - `py -3 tools\validate_all.py` includes `board_canvas_positive_smoke` in baseline fixture checks.
 - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed:
-  - duplicate `device_profiles/default.json` export hygiene was fixed by deduplicating ZIP arc entries.
-  - required ZIP contents, exclusions, and forbidden artifact checks are unchanged.
+  - duplicate `device_profiles/default.json` ZIP entries resolved by arc-name dedupe.
+  - Project ZIP contract/exclusions and forbidden artifact checks (`board_graph.json`, `view_state.json`) unchanged.
+- Local sidecar reference-image viewer is closed out:
+  - `.tracebench_local/reference_images/` storage + `.tracebench_local/reference_images.json` ledger accepted.
+  - read-only viewer behavior and path-clamp hardening accepted.
+  - no event/schema/materializer/runtime changes from this workstream.
 
-- V1.1 post-smoke review action:
-  - manual side-effect note identified a LOW export hygiene issue:
-    duplicate `device_profiles/default.json` in exported ZIP.
-  - confirmed root cause was duplicate arc collection:
-    project walk + explicit `device_profiles/` collection.
-  - routed to `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS`
-    then `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` for narrow implementation.
+- Route review for next V1.1 step is pending; next pass is currently `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`.
 
 ## Hard boundaries
 

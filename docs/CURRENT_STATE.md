@@ -3,7 +3,7 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS`
 - Next recommended pass: `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`
 - Docs drift countdown: `5`
 
@@ -33,13 +33,14 @@ Branch: `main`
     - `resolveStoredImageFile` clamps path escape/traversal.
   - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed; duplicate `device_profiles/default.json` ZIP entries are resolved.
 - Claude Design review for Reference Images UX polish direction is accepted as GO for safe `REFERENCE_IMAGES_UX` polishing scope.
-- This lock addendum records the final design package before implementation:
+- `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS` is accepted as final UX deepening input.
+- Current card-sync records the final Claude Design scope-lock card for implementation:
   - six fixed zones,
-  - mandatory safety string set,
-  - final required error/empty states,
-  - required accessibility targets,
-  - and strict anti-inference wording.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` remains deferred.
+  - required copy and microcopy contract,
+  - required metadata groups and required states (including narrow-window behavior),
+  - accessibility targets and explicit forbidden wording,
+  - strict `Reference Images` and `Board Canvas` track separation.
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` remains separate and deferred.
 
 ## Hard boundaries
 

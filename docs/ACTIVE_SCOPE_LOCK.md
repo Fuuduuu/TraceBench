@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS`
+`REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS`
 
 ## Goal
 
-Record the final Claude Design deepening package before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
+Record the final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`.
 
 ## Allowed surfaces
 
@@ -16,6 +16,7 @@ Record the final Claude Design deepening package before `REFERENCE_IMAGES_UX_POL
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS.md`
 
 ## Forbidden surfaces
 
@@ -39,32 +40,54 @@ Record the final Claude Design deepening package before `REFERENCE_IMAGES_UX_POL
 
 ## Scope boundary (locked)
 
-For this scope-lock pass:
+For this scope-lock card-sync pass:
 
-- Docs-only addendum pass to lock final UX package before implementation.
-- Final locked package before `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS`:
+- Docs-only sync of final accepted design card before implementation.
+- Accepted final card for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` before implementation:
   - six fixed zones:
     - header band,
-    - image list/contact sheet,
+    - image list / contact sheet,
     - preview,
     - details/metadata,
     - safety strip,
     - footer/provenance.
-  - required strings are locked verbatim and must remain visible across states:
+  - required strings (must render verbatim in empty/selected states):
     - `reference only`
     - `not evidence`
     - `not included in Project ZIP`
     - `not used by AI`
     - `renderer writes: none`
-  - required state coverage is locked:
+  - required state coverage:
     - empty,
-    - selected image,
+    - selected,
     - missing local file,
-    - unsupported format,
+    - unsupported,
     - import failure,
-    - large file rejected,
-    - max count reached.
-  - required microcopy and labels are locked as listed in the addendum pass spec (including `No reference images yet`, `Import from this computer`, `Reference images`, `Reference image · not evidence`, etc.).
+    - large file,
+    - max count,
+    - narrow window.
+  - required metadata grouping:
+    - Identity:
+      - `reference_image_id` as `Reference ID`
+      - `original_filename_display` as `As imported`
+      - `notes` as `Your notes`
+    - File details:
+      - `mime_type` as `Type`
+      - `file_size_bytes` as `Size`
+      - `sha256` as `SHA-256`
+      - `stored_relative_path` as `Stored path`
+    - Provenance:
+      - `imported_at` as `Imported`
+      - `source` as `added via local file picker`
+      - project binding as `Project`
+  - required microcopy includes:
+    - `Reference images`
+    - `No reference images yet`
+    - `Import from this computer`
+    - `Reference image · not evidence`
+    - `File integrity / duplicate check — not an evidence seal`
+    - `Personal annotation only — not a recorded finding`
+    - `non-canonical · local sidecar · not evidence — personal reference only.`
   - required accessibility constraints:
     - keyboard navigation,
     - visible focus ring,
@@ -73,11 +96,19 @@ For this scope-lock pass:
     - no color-only meaning,
     - hit targets at least 44px,
     - safety strip and footer visible in every state.
-  - forbidden wording remains in-scope blocked for both UI chrome and metadata content:
+  - required forbidden wording:
     - `confirmed`, `detected`, `measured`, `fault`, `suspect`, `probability`, `net`, `trace proof`, `AI found`, `verified`, `identified`, `proven`, `match found`, `candidate`.
-  - preserve Model B boundaries: local sidecar, non-canonical, outside ZIP/events/known_facts/materializer, no Board Canvas evidence coupling.
-- Board Canvas polishing remains a separate track: `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`.
-- Prescribe no code changes in this pass.
+  - preserve Model B boundaries:
+    - local sidecar only,
+    - non-canonical,
+    - outside ZIP/events/known_facts/materializer,
+    - outside Board Canvas evidence rendering,
+    - outside AI/OCR/CV.
+  - preserve strict track separation:
+    - Reference Images polish does not overlap Board Canvas polish scope.
+    - Board Canvas polish remains separate track: `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`.
+  - no code changes in this pass.
+- `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` must take this card as implementation input.
 
 ## Next recommended pass
 

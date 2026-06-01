@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`
-- Next recommended pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`
+- Current pass: `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS`
+- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
 - Docs drift countdown: `0`
 
 ## Handoff snapshot (bounded)
@@ -54,6 +54,10 @@ Branch: `main`
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`:
   - docs-only manual smoke test plan created for V1.1 local sidecar reference-image viewer validation.
   - route fixed to `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`.
+- `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS`:
+  - manual Windows smoke run recorded as PASS for local sidecar reference-image viewer.
+  - boundary checks passed: local import, sidecar persistence, ZIP exclusion, no canonical projection/overlay/API boundary regressions.
+  - duplicate `device_profiles/default.json` in exported ZIP recorded as non-blocking observation.
 - `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PATH_CLAMP_CLOSEOUT_PASS`:
   - closeout recorded for accepted/pushed path-clamp implementation and accepted post-audit result,
   - prior LOW path-clamp finding marked resolved,

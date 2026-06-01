@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS`
+`REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS`
 
 ## Goal
 
-Create and record the manual Windows smoke test plan for the accepted V1.1 local sidecar reference image viewer.
+Record the completed manual Windows smoke run for `REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS` and preserve V1.1 Model-B sidecar boundaries.
 
 ## Allowed surfaces
 
@@ -16,6 +16,7 @@ Create and record the manual Windows smoke test plan for the accepted V1.1 local
 - `docs/AUDIT_INDEX.md`
 - `docs/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN.md`
 - `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS.md`
+- `docs/audit/REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,24 +46,31 @@ Create and record the manual Windows smoke test plan for the accepted V1.1 local
 
 ## Scope boundary (locked)
 
-- QA-plan-only pass; no implementation changes.
-- Create manual Windows smoke plan for:
-  - Reference Images panel reachability from Project Overview,
-  - local picker import for `png/jpg/jpeg/webp`,
-  - `.tracebench_local/reference_images/` write verification,
-  - `.tracebench_local/reference_images.json` safety metadata verification,
-  - preview safety copy verification,
-  - ZIP export sidecar-exclusion verification,
-  - optional ledger path-clamp defensive check.
-- Record that `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_PASS` + path-clamp closure + post-audit are accepted and preserved as accepted implementation context.
+- QA-closeout pass; docs-only, no implementation changes.
+- Record completed smoke run evidence:
+  - Project Overview reachability for the Reference Images viewer.
+  - Local picker import support for `png`, `jpg`, `jpeg`, `webp`; unsupported formats blocked.
+  - Sidecar writes to `.tracebench_local/reference_images/`.
+  - Ledger metadata written to `.tracebench_local/reference_images.json`.
+  - Safety copy and evidence boundaries visible in viewer:
+    - `reference only`,
+    - `not evidence`,
+    - `not included in Project ZIP`,
+    - `not used by AI`,
+    - `renderer writes: none`.
+  - Exported ZIP excludes `.tracebench_local` contents.
+  - Exported ZIP contains no `board_graph.json` and no `view_state.json`.
+  - Reference-image flow does not write `events.jsonl` or `known_facts.json`.
+  - No URL import, no Board Canvas overlay, no AI/OCR/CV/proposal behavior.
 - Preserve Model-B boundary: local sidecar only, non-canonical, outside ZIP/events/known_facts/Board Canvas evidence rendering/AI-OCR-CV, and no URL import.
 - No fixture/sample/asset/generated-artifact changes.
 - No evidence-boundary weakening.
 - No tag or release-object mutation.
+- Non-blocking observation (recorded, not blocking): exported ZIP contained duplicate `device_profiles/default.json`.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Validate
 

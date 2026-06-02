@@ -2,53 +2,74 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
 
 ## Goal
-Record the closeout of `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`.
 
-- implementation scope was limited to empty/missing/error states only
-- required safety copy and calm wording preserved
-- no selected-image preview rewrite
-- no metadata grouping or accessibility redesign
-- no responsive layout rewrite
-- no service/storage/model/known-facts/schema/Project ZIP/Board Canvas/AI scope changes
-- no filesystem-heavy behavior added
-- no Reference Image URL import
+Lock the next narrow Reference Images implementation slice:
 
-## Allowed surfaces
+- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
+
+This pass records allowed implementation and guardrails before implementation begins.
+
+## Scope lock summary
+
+- implementation is metadata-grouping only for selected-image details
+- no full screen rewrite
+- no broad layout architecture rewrite
+- no accessibility/focus redesign in this slice
+- no service/storage/model/schema/Project ZIP/tool/materializer/runtimes changes
+- no Board Canvas/AI/OCR/CV/URL-import/transform or event-writing scopes
+- no `board_graph.json` or `view_state.json`
+- no filesystem-heavy selected-image runtime rendering in tests
+
+## Required guardrails for implementation
+
+- preserve existing Model-B boundary:
+  - local sidecar only
+  - not in `events.jsonl`
+  - not in `known_facts.json`
+  - not in materializer
+- selected-image safety strings stay required and visible
+- grouped metadata order must stay stable by source `KnownReferenceImage` order
+- selected-image grouping tests must avoid real image decoding:
+  - use fake service/placeholder path flow
+  - test seam only if needed, with production default unchanged
+  - no temp-file image writes
+
+## Allowed implementation surfaces
+
+- `lib/features/reference_images/screens/reference_images_screen.dart`
+- `test/widget/reference_images_screen_test.dart`
+
+## Allowed docs surfaces
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
-- `lib/**`
-- `test/**`
+- `lib/shared/models/**`
+- `lib/shared/services/**` (except no changes in this pass)
+- `lib/features/board_canvas/**`
 - `tools/**`
 - `schemas/**`
+- `samples/**`
 - `assets/**`
 - `events.jsonl`
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- Project ZIP contract changes
-- Reference Images implementation/model/schema changes
-- Project artifacts/generation changes
 - tags/release objects
-
-## Scope boundary
-
-- This closeout pass is docs-only.
-- Current accepted state records `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` only.
-- No docs surface expansion beyond this closeout ledger is expected.
+- `lib/features/reference_images/services/reference_image_sidecar_service.dart`
+- any reference-image transform/overlay/URL import path
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
 
 ## Validation
 

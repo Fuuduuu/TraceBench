@@ -28,6 +28,7 @@ Lazy-loading index for pass audit documents.
 | REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS | docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_SCOPE_LOCK_PASS.md | completed |
 | REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS | docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS.md | accepted (`PASS`; ACCEPT_AS_IS) |
 | REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS | docs/audit/REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS.md | accepted (`PASS`) |
+| REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS | docs/audit/REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS.md | in_progress |
 | PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS | docs/audit/PROJECT_EXPORTER_TEST_FIX_SCOPE_LOCK_PASS.md | completed |
 | PROJECT_EXPORTER_TEST_FIX_PASS | docs/audit/PROJECT_EXPORTER_TEST_FIX_PASS.md | completed |
 | PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS | docs/audit/PROJECT_EXPORTER_TEST_FIX_CLOSEOUT_PASS.md | completed |
@@ -39,7 +40,7 @@ Lazy-loading index for pass audit documents.
 | VALIDATE_ALL_FIXTURE_COVERAGE_POST_AUDIT_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_CLOSEOUT_PASS.md | accepted from audit context (`PASS`, `ACCEPT_AS_IS`); no scope drift, implementation accepted as-is, and no out-of-scope surface changes |
 | VALIDATE_ALL_FIXTURE_COVERAGE_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_PASS.md | completed (tools hardening: main `validate_all.py` gate now explicitly validates `board_canvas_positive_smoke` alongside `pelle_pv20_minimal`, including materialization + fixture invariants + ZIP validation flow, while preserving evidence boundaries and forbidden-surface policy) |
 | VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS | docs/audit/VALIDATE_ALL_FIXTURE_COVERAGE_SCOPE_LOCK_PASS.md | completed (docs-only V1.1 tools-hardening scope lock: records accepted LOW fixture-gate coverage gap, locks next pass to narrow `TOOLS_PASS` on `tools/validate_all.py`, preserves evidence boundaries, and keeps sample/schema/materializer/runtime/tag surfaces out of scope) |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | in_progress |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | completed |
 | GOVERNANCE_PROMPTING_MEMORY_SCOPE_DRIFT_AUDIT_PASS | docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md | accepted (`PASS_WITH_NITS`) from audit context; no scope drift or repo modifications, routing/tool logic practical, CURRENT_STATE bloat flagged, fixture auto-gate scope-lock scheduling recommended |
 | V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS | docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted Claude Code/Opus audit verdict `PASS`, confirms no-file-change audit execution and intact validation/smoke baseline, records deferred tools-hardening LOW item + docs-drift NIT, and routes next to docs drift cleanup) |
 | V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS | docs/audit/V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS.md | completed (docs-only V1.1 hardening scope lock: fixed first hardening pass type to `AUDIT_ONLY`, locked validation/smoke command/check focus for accepted V1 baseline, preserved no-write evidence boundaries, and routed next to concrete audit pass) |

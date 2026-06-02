@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
-- Next recommended pass: `V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -41,6 +41,9 @@ Branch: `main`
   - import label is `Import from this computer`,
   - SHA-256 caption in selected metadata is `File integrity / duplicate check — not an evidence seal.`,
   - service behavior is unchanged in this slice.
+- `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS` is now locked:
+  - implementation target: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+  - allowed implementation scope: empty/missing/error state UX only.
 - `PROJECT_EXPORTER_TEST_FAILURE_TRIAGE_PASS` confirmed as an unrelated, order-dependent test isolation issue:
   - failing case is in `test/unit/project_exporter_test.dart` only,
   - deterministic when running the full `project_exporter_test.dart` file,

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -31,7 +31,8 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked dedup scope for Project ZIP export duplicate arc names, specifically `device_profiles/default.json`; implementation target is `TOOLS_PASS`. |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | TOOLS_PASS | completed | Remove duplicate archive entry behavior by ensuring unique ZIP arc names while preserving required export behavior and exclusions. |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded accepted `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` implementation and closeout outcome (`PASS`, `ACCEPT_AS_IS`); contract boundaries preserved. |
-| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Ran docs drift cleanup after dedup closeout and kept docs compact while fixing route context. |
+| DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | in_progress | Replace stale `docs/SOURCES_INDEX_CURRENT.md` “Current release/governance state” content with canonical pointers, align this pass routing docs, and preserve compact docs-only drift cleanup. |
+| V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS | DOCS_SYNC | planned | Review and align next-pass routing after V1.1 governance cleanups, with no implementation changes and no passive scope drift. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |
@@ -44,5 +45,5 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PROMPT_PROTOCOL_GUARD_CLAUSES_PASS | DOCS_SYNC | completed | Added reusable prompt guard clauses for test hangs, FS-image test guardrails, bounded waits, and model/tool routing reminders; docs-only implementation. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the low-staleness Mermaid diagram set for governance orientation before implementation: pass lifecycle, evidence boundaries, and tool/model routing. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | DOCS_SYNC | completed | Implemented locked governance diagram docs: `docs/PASS_LIFECYCLE.md`, `docs/ARCHITECTURE_BOUNDARIES.md`, and routing section in `docs/MODEL_ROUTING.md`. |
-| TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Close out the pass by recording accepted closeout outcomes, NITs, and routing to docs drift cleanup. |
+| TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out the pass by recording accepted closeout outcomes, NITs, and routing to docs drift cleanup. |
 

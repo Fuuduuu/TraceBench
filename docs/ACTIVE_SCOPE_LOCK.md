@@ -2,16 +2,16 @@
 
 ## Current pass
 
-`TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
+`DOCS_DRIFT_MINI_CLEANUP_PASS`
 
 ## Goal
 
-Record and close out the accepted governance diagram pass:
+Fix stale governance source-index drift after the accepted diagrams closeout:
 
-- record `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS` accepted outcome
-- record Claude Code post-audit result (`PASS`, `ACCEPT_AS_IS`)
-- record NITs and evidence-boundary checks
-- route to `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- replace embedded “current pass/closeout” duplication in `docs/SOURCES_INDEX_CURRENT.md`
+- realign pass-routing and scope-lock docs after `TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
+- preserve evidence-boundary and compactness guarantees
+- route next to `V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`
 
 ## Allowed surfaces
 
@@ -46,34 +46,27 @@ Record and close out the accepted governance diagram pass:
 
 ## Scope boundary (lock)
 
-- Locked diagram set for next pass:
-  - pass lifecycle
-  - evidence-boundary
-  - tool/model routing
-- Implementation is docs-only and must not include:
-  - current pass-chain as the primary diagram truth,
-  - timeline expansion,
-  - AI to canonical-fact claims,
-  - reference-image canonical/ZIP/materializer/Board Canvas/AI flows.
-- Implementation targets:
-  - `docs/PASS_LIFECYCLE.md` (new)
-  - `docs/ARCHITECTURE_BOUNDARIES.md` (new)
-  - `docs/MODEL_ROUTING.md` (small Mermaid section or compact anchor)
-- `TraceBench_Project_Source_Guide.md` remains a source-orientation companion document, not a live pass ledger.
-- Evidence policy remains unchanged:
-  - AI does not set canonical facts.
-  - `events.jsonl` remains canonical.
-  - `known_facts.json` remains materialized projection only.
-  - UI/renderer remains read-only.
-  - `board_graph.json` and `view_state.json` remain forbidden.
-- Forbidden diagram content for this pass:
-  - stale pass chain as governance truth
-  - V1/V1.1/V2 timeline as the first diagram shape
-  - transform/alignment/photo-overlay/board-canvas reference-image workflow in this initial diagram batch.
+- docs-only cleanup scope:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/DOCS_DRIFT_MINI_CLEANUP_PASS.md`
+  - `docs/SOURCES_INDEX_CURRENT.md`
+  - existing governance diagrams (`docs/PASS_LIFECYCLE.md`, `docs/ARCHITECTURE_BOUNDARIES.md`, `docs/MODEL_ROUTING.md`) only as compact pointers
+
+- Forbidden:
+  - `schemas/**`, `tools/**`, `lib/**`, `test/**`, `assets/**`
+  - `board_graph.json`
+  - `view_state.json`
+  - `events.jsonl`
+  - `known_facts.json`
+  - Project ZIP contract expansion
+  - implementation behavior changes in this pass
 
 ## Next recommended pass
 
-`DOCS_DRIFT_MINI_CLEANUP_PASS`
+`V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`
 
 ## Closeout validations
 

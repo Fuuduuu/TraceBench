@@ -7,54 +7,47 @@
 `DOCS_SYNC`
 
 ## Mode
-Docs-only mini cleanup after `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`.
+Docs-only drift cleanup.
 
-## Result
-`PASS` (docs cleanup pass completed).
-
-## Gate confirmation
+## Gate
 - Branch confirmed: `main`.
 - Remote confirmed: `origin https://github.com/Fuuduuu/TraceBench.git`.
-- `HEAD` tracks and is synced with `origin/main`.
-- Working tree is clean aside from known unrelated untracked paths:
-  - `.idea/`
-  - `.metadata`
-  - `assets/samples/pelle_pv20_minimal/metadata/`
-  - `trace_bench_viewer.iml`
-  - `windows/`
-- Tag `v1.0.0-rc1` confirmed present locally and on origin.
-- Required prior pass closure confirmed:
-  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS`
-  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS`
+- Working tree clean except known unrelated untracked paths (`.idea/`, `.metadata`, `assets/samples/pelle_pv20_minimal/metadata/`, `trace_bench_viewer.iml`, `windows/`).
+- Current pass in docs sequencing is `DOCS_DRIFT_MINI_CLEANUP_PASS`.
 
 ## Scope cleanup summary
-- Realigned pass ownership:
-  - `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, and `docs/AUDIT_INDEX.md`
-    now reference current pass `DOCS_DRIFT_MINI_CLEANUP_PASS`.
-- Compactified `CURRENT_STATE.md` to keep only:
-  - current/next pass,
-  - compact active handoff summary,
-  - short accepted-fact snapshot,
-  - hard boundaries.
-- Preserved compact routing rule:
-  - next pass set to `V1_1_POST_DEDUP_NEXT_ROUTE_REVIEW_PASS`.
+- Removed stale embedded active-pass duplication from `docs/SOURCES_INDEX_CURRENT.md` by replacing the “Current release/governance state” section with canonical doc pointers.
+- Preserved compactness by pointing to:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md` + `docs/audit/*.md`
+  - `docs/PROJECT_MEMORY.md`
+  - `docs/PROTECTED_SURFACES.md`
+  - `docs/PASS_LIFECYCLE.md`
+  - `docs/ARCHITECTURE_BOUNDARIES.md`
+  - `docs/MODEL_ROUTING.md`
+- Re-aligned pass-routing docs for this cleanup:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+- Left other long-form historical specs and audit docs unchanged.
 
-## State and route recorded
-- Active accepted state recorded:
-  - local sidecar reference-image flow is accepted and closed out.
-  - `device_profiles/default.json` duplicate ZIP entry issue is resolved.
-  - Project ZIP contract and forbidden artifact checks remain unchanged.
-- No deferred ZIP expansion or image-in-project portability was introduced.
-- This cleanup is docs-only and non-expansive.
-
-## Validation commands
+## Validation summary
 - `py -3 tools\validate_all.py`
-- `git diff --name-only`
 - `git status --short --branch`
+- `git diff --name-only`
 
 ## Boundary confirmation
-- Human is the sensor; AI is the graph engine.
-- `events.jsonl` remains canonical event truth.
-- `known_facts.json` remains materialized projection.
-- `board_graph.json` and `view_state.json` remain forbidden.
-- No event-writing / project ZIP contract expansion / transform / overlay / AI fact derivation behavior change.
+- No implementation scope was modified.
+- No `schemas/**`, `tools/**`, `lib/**`, `test/**`, artifacts, or runtime surfaces were changed.
+- Canonical evidence boundaries remain unchanged:
+  - `events.jsonl` is canonical event truth.
+  - `known_facts.json` is the projection.
+  - `board_graph.json` / `view_state.json` remain forbidden V1 artifacts.
+- This pass did not alter behavior in any product surface.
+
+## Routing decision
+- Current pass outcome recorded as in-progress cleanup; next pass recommended:
+  - `V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`

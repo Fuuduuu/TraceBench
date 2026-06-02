@@ -6,24 +6,16 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
 
 ## Current release/governance state
 
-- V1 RC tag `v1.0.0-rc1` is tagged and verified (local + origin).
-- `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS` is accepted/pushed.
-- `V1_TO_V2_ROADMAP_DECISION_PASS` is accepted/pushed.
-- `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` is accepted/pushed.
-- `V1_1_HARDENING_VALIDATION_SMOKE_SCOPE_LOCK_PASS` is accepted/pushed.
-- `V1_1_HARDENING_VALIDATION_SMOKE_AUDIT_CLOSEOUT_PASS` is accepted/pushed.
-- `VALIDATE_ALL_FIXTURE_COVERAGE_PASS` and closeout are accepted/pushed.
-- `REFERENCE_IMAGE_IMPORT_PRE_SCOPE_AUDIT_PASS` is accepted from audit context as audit-only (no repo modifications).
-- `REFERENCE_IMAGE_LOCAL_SIDECAR_VIEWER_SCOPE_LOCK_PASS` is active/accepted for V1.1.
-- Accepted roadmap sequence:
-  - `TAG_V1_RC_FIRST`
-  - then `V1_1_HARDENING`
-  - then `V2_EVENT_WRITING_ARCHITECTURE`
-- V2 does not start with transform/photo-overlay/background-photo-helper implementation.
-- GPT Pro architecture decision for V1.1 reference images is Model B:
-  - project-associated local sidecar files + non-canonical local metadata ledger,
-  - explicitly outside `events.jsonl`, `known_facts.json`, and Project ZIP.
-- Reference images remain non-canonical and cannot create accepted facts without separate human-confirmed event pathways.
+- Current pass and next route: `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
+- Active scope lock: `docs/ACTIVE_SCOPE_LOCK.md`.
+- Accepted history and evidence of pass outcomes: `docs/AUDIT_INDEX.md` plus `docs/audit/*.md`.
+- Durable invariants: `docs/PROJECT_MEMORY.md` and `docs/PROTECTED_SURFACES.md`.
+- Governance diagrams / routing diagrams:
+  - `docs/PASS_LIFECYCLE.md`
+  - `docs/ARCHITECTURE_BOUNDARIES.md`
+  - `docs/MODEL_ROUTING.md`
+- External orientation file:
+  - `TraceBench_Project_Source_Guide.md` remains non-governance orientation material only.
 
 ## CURRENT_STATE size/archive discipline
 

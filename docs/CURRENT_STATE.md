@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS`
-- Next recommended pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Current pass: `DOCS_DRIFT_MINI_CLEANUP_PASS`
+- Next recommended pass: `V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)

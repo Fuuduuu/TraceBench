@@ -2,13 +2,13 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
 
 ## Goal
 
 Lock the next narrow Reference Images UX recovery slice:
 
-- lock empty/missing/error-state UX recovery implementation next step (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`)
+- implement empty/missing/error-state UX recovery (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`)
 - keep implementation scope limited to calm state messaging and required safety copy
 - preserve all existing Model-B and evidence boundaries
 - defer larger UX slices:
@@ -49,19 +49,19 @@ Lock the next narrow Reference Images UX recovery slice:
 
 ## Scope boundary (lock)
 
-- Current scope lock (docs-only) applies to:
+- Current implementation scope applies to:
   - `docs/CURRENT_STATE.md`
   - `docs/PASS_QUEUE.md`
   - `docs/ACTIVE_SCOPE_LOCK.md`
   - `docs/AUDIT_INDEX.md`
   - `docs/audit/REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS.md`
-- The locked future implementation target for this slice (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`) may touch only:
+- The active implementation target for this slice (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`) may touch only:
   - `lib/features/reference_images/screens/reference_images_screen.dart`
   - `test/widget/reference_images_screen_test.dart`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+`REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS`
 
 ## Closeout validations
 

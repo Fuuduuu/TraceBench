@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -44,6 +44,11 @@ Branch: `main`
 - `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS` is now locked:
   - implementation target: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
   - allowed implementation scope: empty/missing/error state UX only.
+- `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` is in progress:
+  - empty state copy and behavior is updated to required safety framing,
+  - missing local file state renders a local-sidecar-only missing-file message,
+  - import failure copy now maps known failure strings to calm UX text where already reachable,
+  - unsupported/large-file/max-count/missing-source import paths remain within the states-only slice.
 - `PROJECT_EXPORTER_TEST_FAILURE_TRIAGE_PASS` confirmed as an unrelated, order-dependent test isolation issue:
   - failing case is in `test/unit/project_exporter_test.dart` only,
   - deterministic when running the full `project_exporter_test.dart` file,

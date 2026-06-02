@@ -110,7 +110,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
     if (!result.isSuccess || result.record == null) {
       setState(() {
         _isImporting = false;
-        _errorMessage = result.errorMessage ?? 'Import failed.';
+        _errorMessage = _humanReadableImportError(result.errorMessage);
       });
       return;
     }
@@ -128,6 +128,30 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
       _selectedReferenceImageId = result.record!.referenceImageId;
       _errorMessage = null;
     });
+  }
+
+  String _humanReadableImportError(String? raw) {
+    final rawMessage = raw?.trim() ?? '';
+    if (rawMessage.isEmpty) {
+      return 'Import failed.';
+    }
+    if (rawMessage.contains('Unsupported file type')) {
+      return 'Unsupported format. Supported: png, jpg, jpeg, webp.';
+    }
+    if (rawMessage.contains('File is too large')) {
+      return 'File is too large. Maximum import size is '
+          '${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB.';
+    }
+    if (rawMessage.contains('Reference image limit reached')) {
+      return 'Maximum reference image count reached.';
+    }
+    if (rawMessage.contains('Selected file was not found')) {
+      return 'The selected file is no longer available.';
+    }
+    if (rawMessage.contains('Selected file is empty')) {
+      return 'Selected file is empty.';
+    }
+    return rawMessage;
   }
 
   @override
@@ -188,7 +212,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                   'Local project directory is required for sidecar storage.',
                 ),
               ),
-            if (_errorMessage != null)
+        if (_errorMessage != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: Text(
@@ -198,7 +222,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
               ),
             const SizedBox(height: 8),
             Expanded(
-              child: _isLoading
+        child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Row(
                       children: [
@@ -296,7 +320,7 @@ class _ReferenceImageListPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     if (records.isEmpty) {
       return const Center(
-        child: Text('No local sidecar reference images yet.'),
+        child: Text('No reference images yet.'),
       );
     }
 
@@ -383,7 +407,14 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
             ),
           )
         else
-          const Text('Stored file is missing from local sidecar storage.'),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('File not found at its stored path.'),
+              SizedBox(height: 8),
+              Text('Reference images are local-sidecar only and must stay on disk.'),
+            ],
+          ),
       ],
     );
   }

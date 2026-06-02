@@ -23,6 +23,92 @@ class _FakeReferenceImageSidecarService extends ReferenceImageSidecarService {
   }) async {
     return ledger;
   }
+
+  @override
+  Future<ImportReferenceImageResult> importFromLocalFile({
+    required String projectDirectory,
+    required String projectId,
+    required String sourceFilePath,
+  }) async {
+    return ImportReferenceImageResult.failure('Import failed.');
+  }
+}
+
+class _FakeReferenceImageSidecarServiceForImportError
+    extends ReferenceImageSidecarService {
+  const _FakeReferenceImageSidecarServiceForImportError({
+    required this.ledger,
+    required this.result,
+  });
+
+  final ReferenceImageLedger ledger;
+  final ImportReferenceImageResult result;
+
+  @override
+  Future<ReferenceImageLedger> loadLedger({
+    required String projectDirectory,
+    required String projectId,
+  }) async {
+    return ledger;
+  }
+
+  @override
+  Future<ImportReferenceImageResult> importFromLocalFile({
+    required String projectDirectory,
+    required String projectId,
+    required String sourceFilePath,
+  }) async {
+    return result;
+  }
+}
+
+class _FakeReferenceImageSidecarServiceForMissingFile
+    extends _FakeReferenceImageSidecarService {
+  const _FakeReferenceImageSidecarServiceForMissingFile(this.ledger) : super(ledger);
+
+  final ReferenceImageLedger ledger;
+
+  @override
+  Future<ReferenceImageLedger> loadLedger({
+    required String projectDirectory,
+    required String projectId,
+  }) async {
+    return ledger;
+  }
+
+  @override
+  File? resolveStoredImageFile({
+    required String projectDirectory,
+    required ReferenceImageRecord record,
+  }) {
+    return null;
+  }
+}
+
+Future<void> _pumpReferenceImagesScreen(
+  WidgetTester tester, {
+  required ReferenceImageSidecarService service,
+  String projectDirectory = 'C:/tracebench_fake_project',
+  Future<String?> Function()? pickReferenceImageFile,
+}) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        projectStateProvider.overrideWith(
+          (_) => _projectState(projectDirectory: projectDirectory),
+        ),
+      ],
+      child: MaterialApp(
+        home: ReferenceImagesScreen(
+          service: service,
+          pickReferenceImageFile: pickReferenceImageFile,
+        ),
+      ),
+    ),
+  );
+  for (var i = 0; i < 3; i++) {
+    await tester.pump(const Duration(milliseconds: 1));
+  }
 }
 
 ProjectState _projectState({String? projectDirectory}) {
@@ -61,26 +147,16 @@ void main() {
     'shows required safety copy for empty no-image state',
     (tester) async {
       const fakeProjectDirectory = 'C:/tracebench_fake_project';
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            projectStateProvider.overrideWith(
-              (_) => _projectState(projectDirectory: fakeProjectDirectory),
-            ),
-          ],
-          child: const MaterialApp(
-            home: ReferenceImagesScreen(
-              service: _FakeReferenceImageSidecarService(
-                ReferenceImageLedger(
-                  projectId: 'prj_ref_test_001',
-                  images: [],
-                ),
-              ),
-            ),
+      await _pumpReferenceImagesScreen(
+        tester,
+        service: const _FakeReferenceImageSidecarService(
+          ReferenceImageLedger(
+            projectId: 'prj_ref_test_001',
+            images: [],
           ),
         ),
+        projectDirectory: fakeProjectDirectory,
       );
-      await tester.pump();
 
       expect(find.text('Reference Images'), findsOneWidget);
       expect(find.text('Reference images (local sidecar)'), findsOneWidget);
@@ -91,7 +167,7 @@ void main() {
       expect(find.text('renderer writes: none'), findsOneWidget);
       expect(find.text('personal reference only'), findsOneWidget);
       expect(find.text('Import from this computer'), findsOneWidget);
-      expect(find.text('No local sidecar reference images yet.'), findsOneWidget);
+      expect(find.text('No reference images yet.'), findsOneWidget);
       expect(find.text('Select a reference image to preview.'), findsOneWidget);
 
       const forbiddenWords = <String>[
@@ -115,6 +191,136 @@ void main() {
       }
     },
   );
+
+  testWidgets('shows missing local file state', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(
+      projectId: 'prj_ref_test_001',
+      images: [
+        ReferenceImageRecord(
+          referenceImageId: 'refimg_001',
+          originalFilenameDisplay: 'smoke_reference.png',
+          storedRelativePath: '.tracebench_local/reference_images/refimg_missing.png',
+          mimeType: 'image/png',
+          fileSizeBytes: 1234,
+          importedAt: '2026-06-01T00:00:00Z',
+          source: 'local_file_picker',
+          projectId: 'prj_ref_test_001',
+        ),
+      ],
+    );
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceForMissingFile(ledger),
+      projectDirectory: fakeProjectDirectory,
+    );
+    await tester.pump();
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.text('File not found at its stored path.'),
+      100,
+      scrollable: find.byType(Scrollable).at(1),
+    );
+
+    expect(find.text('File not found at its stored path.'), findsOneWidget);
+    expect(
+      find.text(
+        'Reference images are local-sidecar only and must stay on disk.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows import unsupported format error', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceForImportError(
+        ledger: ledger,
+        result: ImportReferenceImageResult.failure(
+          'Unsupported file type. Use png, jpg, jpeg, or webp.',
+        ),
+      ),
+      projectDirectory: fakeProjectDirectory,
+      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+    );
+    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester.pump();
+
+    expect(
+      find.text('Unsupported format. Supported: png, jpg, jpeg, webp.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows import too-large file message', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceForImportError(
+        ledger: ledger,
+        result: ImportReferenceImageResult.failure(
+          'File is too large. Max size is 20 MB.',
+        ),
+      ),
+      projectDirectory: fakeProjectDirectory,
+      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+    );
+    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester.pump();
+
+    expect(
+      find.text('File is too large. Maximum import size is 20 MB.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows import max count reached message', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceForImportError(
+        ledger: ledger,
+        result: ImportReferenceImageResult.failure(
+          'Reference image limit reached (50).',
+        ),
+      ),
+      projectDirectory: fakeProjectDirectory,
+      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+    );
+    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester.pump();
+
+    expect(find.text('Maximum reference image count reached.'), findsOneWidget);
+  });
+
+  testWidgets('shows import missing source file message', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceForImportError(
+        ledger: ledger,
+        result: ImportReferenceImageResult.failure(
+          'Selected file was not found.',
+        ),
+      ),
+      projectDirectory: fakeProjectDirectory,
+      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+    );
+    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester.pump();
+
+    expect(find.text('The selected file is no longer available.'), findsOneWidget);
+  });
 
   test('service imports local reference image into sidecar and writes metadata',
       () async {

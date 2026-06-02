@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+`REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -33,8 +33,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | DOCS_SYNC | completed | Recorded accepted `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` implementation and closeout outcome (`PASS`, `ACCEPT_AS_IS`); contract boundaries preserved. |
 | DOCS_DRIFT_MINI_CLEANUP_PASS | DOCS_SYNC | completed | Replaced stale `docs/SOURCES_INDEX_CURRENT.md` “Current release/governance state” content with canonical pointers, aligned routing docs, and preserved compact docs-only drift cleanup. |
 | V1_1_POST_GOVERNANCE_CLEANUP_NEXT_ROUTE_REVIEW_PASS | DOCS_SYNC | completed | Confirmed that route review is complete and that the next safe pass is `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS`. |
-| REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS | DOCS_SYNC | in_progress | Lock the next narrow Reference Images recovery slice for empty/missing/error states only. |
-| REFERENCE_IMAGES_UX_STATES_IMPL_PASS | FLUTTER_PASS | planned | Implement empty/missing/error state copy and behavior for Reference Images, with existing Model-B boundary and no full preview/metadata grouping/accessibility/layout changes. |
+| REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the next narrow Reference Images recovery slice for empty/missing/error states only. |
+| REFERENCE_IMAGES_UX_STATES_IMPL_PASS | FLUTTER_PASS | in_progress | Implement empty/missing/error state copy and behavior for Reference Images, with existing Model-B boundary and no full preview/metadata grouping/accessibility/layout changes. |
+| REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS | DOCS_SYNC | planned | Claude Code post-implementation audit and closeout for `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

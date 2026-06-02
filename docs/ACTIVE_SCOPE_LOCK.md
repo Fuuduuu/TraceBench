@@ -2,20 +2,19 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
+`REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS`
 
 ## Goal
+Record the closeout of `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`.
 
-Lock the next narrow Reference Images UX recovery slice:
-
-- implement empty/missing/error-state UX recovery (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`)
-- keep implementation scope limited to calm state messaging and required safety copy
-- preserve all existing Model-B and evidence boundaries
-- defer larger UX slices:
-  - metadata grouping,
-  - accessibility/focus,
-  - responsive/layout expansion,
-  - background photo/Board Canvas/AI overlays.
+- implementation scope was limited to empty/missing/error states only
+- required safety copy and calm wording preserved
+- no selected-image preview rewrite
+- no metadata grouping or accessibility redesign
+- no responsive layout rewrite
+- no service/storage/model/known-facts/schema/Project ZIP/Board Canvas/AI scope changes
+- no filesystem-heavy behavior added
+- no Reference Image URL import
 
 ## Allowed surfaces
 
@@ -23,53 +22,35 @@ Lock the next narrow Reference Images UX recovery slice:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
+- `lib/**`
+- `test/**`
 - `tools/**`
 - `schemas/**`
-- `lib/shared/models/**`
-- `lib/shared/services/**`
-- `schemas/known_facts.schema.json`
-- `lib/features/reference_images/services/reference_image_sidecar_service.dart`
-- `sample*/**`
 - `assets/**`
 - `events.jsonl`
 - `known_facts.json`
 - `board_graph.json`
 - `view_state.json`
-- reference-image URL import
-- Board Canvas overlay
-- photo overlay transform/matrix workflows
-- AI/OCR/CV/AI proposal rendering
-- event-writing/proposal confirmation UIs
-- metadata grouping implementation
-- accessibility/focus broad refactor
+- Project ZIP contract changes
+- Reference Images implementation/model/schema changes
+- Project artifacts/generation changes
+- tags/release objects
 
-## Scope boundary (lock)
+## Scope boundary
 
-- Current implementation scope applies to:
-  - `docs/CURRENT_STATE.md`
-  - `docs/PASS_QUEUE.md`
-  - `docs/ACTIVE_SCOPE_LOCK.md`
-  - `docs/AUDIT_INDEX.md`
-  - `docs/audit/REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS.md`
-- The active implementation target for this slice (`REFERENCE_IMAGES_UX_STATES_IMPL_PASS`) may touch only:
-  - `lib/features/reference_images/screens/reference_images_screen.dart`
-  - `test/widget/reference_images_screen_test.dart`
+- This closeout pass is docs-only.
+- Current accepted state records `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` only.
+- No docs surface expansion beyond this closeout ledger is expected.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
 
-## Closeout validations
-
-- `py -3 tools\validate_all.py`
-- `git status --short --branch`
-- `git diff --name-only`
-
-## Validation commands for next pass
+## Validation
 
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`

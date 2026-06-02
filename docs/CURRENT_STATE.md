@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_STATES_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -44,11 +44,15 @@ Branch: `main`
 - `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS` is now locked:
   - implementation target: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
   - allowed implementation scope: empty/missing/error state UX only.
-- `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` is in progress:
-  - empty state copy and behavior is updated to required safety framing,
+- `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` is accepted/pushed and closeout is recorded:
+  - post-audit verdict: `PASS`, `ACCEPT_AS_IS`
+  - validation: `Reference Images tests: 8/8`, `Full Flutter suite: 191 tests`
+  - `py -3 tools\validate_all.py`: `PASS`
+  - empty state copy and behavior are updated to required safety framing,
   - missing local file state renders a local-sidecar-only missing-file message,
   - import failure copy now maps known failure strings to calm UX text where already reachable,
-  - unsupported/large-file/max-count/missing-source import paths remain within the states-only slice.
+  - unsupported/large-file/max-count/missing-source import paths remain within the states-only slice,
+  - required safety strings preserved in empty state and missing-file state.
 - `PROJECT_EXPORTER_TEST_FAILURE_TRIAGE_PASS` confirmed as an unrelated, order-dependent test isolation issue:
   - failing case is in `test/unit/project_exporter_test.dart` only,
   - deterministic when running the full `project_exporter_test.dart` file,
@@ -86,6 +90,9 @@ Branch: `main`
 
 - `docs/MODEL_ROUTING.md` is a routing/state graph, not a full approval-flow graph.
 - `docs/ARCHITECTURE_BOUNDARIES.md` does not call out “no URL import” as a separate node; this is covered in governance notes and existing boundary text.
+- States-only UX closeout NITs are non-blocking for this pass:
+  - minor indentation formatting nit
+  - `_humanReadableImportError` raw string mapping approach is acceptable for this scope
 
 ## Hard boundaries
 

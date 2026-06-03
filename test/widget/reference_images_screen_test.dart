@@ -205,6 +205,27 @@ void main() {
       expect(find.text('renderer writes: none'), findsOneWidget);
       expect(find.text('personal reference only'), findsOneWidget);
       expect(find.text('Import from this computer'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('reference-images-import-button')),
+        findsOneWidget,
+      );
+      final importSemantics = tester.widget<Semantics>(
+        find.byKey(const ValueKey('reference-images-import-button-semantics')),
+      );
+      expect(importSemantics.properties.button, isTrue);
+      expect(importSemantics.properties.label, 'Import reference image');
+      expect(
+        importSemantics.properties.hint,
+        'Open a file picker and import a local image into sidecar storage.',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Tooltip &&
+              widget.message == 'Import reference image from this computer',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('No reference images yet.'), findsOneWidget);
       expect(find.text('Select a reference image to preview.'), findsOneWidget);
 
@@ -305,7 +326,52 @@ void main() {
     );
     await _pumpUntilNoLoading(tester);
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.byKey(const ValueKey('reference-image-refimg_local_001')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey('reference-image-refimg_local_001')));
+    await tester.pump(const Duration(milliseconds: 16));
 
+    expect(
+      find.byKey(
+        const ValueKey('reference-image-refimg_local_001-semantics'),
+      ),
+      findsOneWidget,
+    );
+    final selectedItemSemantics = tester.widget<Semantics>(
+      find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
+    );
+    expect(
+      selectedItemSemantics.properties.label,
+      'Reference image reference_smoke.png, id refimg_local_001',
+    );
+    expect(
+      selectedItemSemantics.properties.hint,
+      'Select this image to view its grouped metadata and sidecar information.',
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Identity / user-supplied display section',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'File details section',
+      ),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.text('Identity / user-supplied display'),
+      120,
+      scrollable: find.byType(Scrollable).at(1),
+    );
     expect(find.text('Identity / user-supplied display'), findsOneWidget);
     expect(find.text('Reference ID: refimg_local_001'), findsOneWidget);
     expect(find.text('As imported: reference_smoke.png'), findsOneWidget);
@@ -326,6 +392,11 @@ void main() {
       120,
       scrollable: find.byType(Scrollable).at(1),
     );
+    await tester.scrollUntilVisible(
+      find.text('Notes'),
+      120,
+      scrollable: find.byType(Scrollable).at(1),
+    );
     expect(find.text('Provenance'), findsOneWidget);
     expect(find.text('Imported at: 2026-06-01T12:00:00Z'), findsOneWidget);
     expect(find.text('Source: local_file_picker'), findsOneWidget);
@@ -337,11 +408,6 @@ void main() {
     );
     expect(find.text('Notes'), findsOneWidget);
     expect(find.text('manual reference capture'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('reference-image-preview-placeholder')),
-      120,
-      scrollable: find.byType(Scrollable).at(1),
-    );
     expect(
       find.byKey(const ValueKey('reference-image-preview-placeholder')),
       findsOneWidget,

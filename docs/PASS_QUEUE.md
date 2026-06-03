@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_POST_AUDIT_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -39,7 +39,8 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the next narrow metadata grouping UX scope with strict test seam and no full-screen rewrite; preview decoding constraints must remain in place. |
 | REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS | FLUTTER_PASS | completed | Implement selected-image metadata grouping (Identity, File details, Provenance), required label/copy improvements, and non-invasive test-seam support. |
 | REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS | DOCS_SYNC | completed | Metadata grouping closeout accepted and closeout nits recorded; route to `REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`. |
-| REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS | DOCS_SYNC | in_progress | Lock accessibility/focus-only improvements for Reference Images metadata/readability/interactive affordance semantics without changing runtime behavior. |
+| REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock accessibility/focus-only improvements for Reference Images metadata/readability/interactive affordance semantics without changing runtime behavior. |
+| REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS | FLUTTER_PASS | in_progress | Implement accessibility/focus polish for import action, list items, and metadata headings while preserving all Model-B boundaries and safety copy. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

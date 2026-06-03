@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -17,6 +17,10 @@ Branch: `main`
   - implementation target: selected-image metadata grouping and labels only.
   - grouped sections: Identity, File details, Provenance, optional Notes.
   - required safety strings remain present and unchanged.
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS` is in progress:
+  - added import affordance focus order and semantics,
+  - added readable semantics labels for reference image list items and metadata section headings,
+  - kept required safety strings and all runtime Model-B boundaries unchanged.
 - Roadmap remains:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`

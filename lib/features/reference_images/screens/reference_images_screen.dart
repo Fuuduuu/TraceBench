@@ -180,26 +180,40 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
             const _ReferenceOnlyWarningCard(),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              child: Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  ElevatedButton(
-                    key: const ValueKey('reference-images-import-button'),
-                    onPressed: hasLocalProjectDirectory && !_isImporting
-                        ? _importReferenceImage
-                        : null,
-                    child: Text(
-                      _isImporting
-                          ? 'Importing...'
-                          : 'Import from this computer',
-                    ),
+              child: FocusTraversalOrder(
+                order: const NumericFocusOrder(1),
+                child: Semantics(
+                  key: const ValueKey('reference-images-import-button-semantics'),
+                  button: true,
+                  enabled: hasLocalProjectDirectory && !_isImporting,
+                  label: 'Import reference image',
+                  hint: 'Open a file picker and import a local image into sidecar storage.',
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Tooltip(
+                        message: 'Import reference image from this computer',
+                        child: ElevatedButton(
+                          key: const ValueKey('reference-images-import-button'),
+                          onPressed: hasLocalProjectDirectory && !_isImporting
+                              ? _importReferenceImage
+                              : null,
+                          child: Text(
+                            _isImporting
+                                ? 'Importing...'
+                                : 'Import from this computer',
+                          ),
+                        ),
+                      ),
+                       Text(
+                         'Allowed: png, jpg, jpeg, webp · max ${ReferenceImageSidecarService.maxFileCount} files · max ${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
+                         softWrap: true,
+                       ),
+                    ],
                   ),
-                  Text(
-                    'Allowed: png, jpg, jpeg, webp · max ${ReferenceImageSidecarService.maxFileCount} files · max ${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
-                  ),
-                ],
+                ),
               ),
             ),
             if (!hasProject)
@@ -214,7 +228,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                   'Local project directory is required for sidecar storage.',
                 ),
               ),
-        if (_errorMessage != null)
+            if (_errorMessage != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: Text(
@@ -224,7 +238,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
               ),
             const SizedBox(height: 8),
             Expanded(
-        child: _isLoading
+              child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Row(
                       children: [
@@ -286,21 +300,25 @@ class _ReferenceOnlyWarningCard extends StatelessWidget {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text('Reference images (local sidecar)'),
-              SizedBox(height: 6),
-              Text('reference only'),
-              Text('not evidence'),
-              Text('not included in Project ZIP'),
-              Text('not used by AI'),
-              Text('renderer writes: none'),
-              SizedBox(height: 4),
-              Text('personal reference only'),
-              Text('local sidecar, non-canonical'),
-              Text('outside project-wide canonical evidence'),
-            ],
+          child: Semantics(
+            container: true,
+            label: 'Reference image safety boundary information',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text('Reference images (local sidecar)'),
+                SizedBox(height: 6),
+                Text('reference only'),
+                Text('not evidence'),
+                Text('not included in Project ZIP'),
+                Text('not used by AI'),
+                Text('renderer writes: none'),
+                SizedBox(height: 4),
+                Text('personal reference only'),
+                Text('local sidecar, non-canonical'),
+                Text('outside project-wide canonical evidence'),
+              ],
+            ),
           ),
         ),
       ),
@@ -327,23 +345,34 @@ class _ReferenceImageListPanel extends StatelessWidget {
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.all(12),
-      itemCount: records.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
+      return ListView.separated(
+        padding: const EdgeInsets.all(12),
+        itemCount: records.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
         final record = records[index];
         final selected = record.referenceImageId == selectedReferenceImageId;
-        return Card(
-          color: selected
-              ? Theme.of(context).colorScheme.surfaceContainerHighest
-              : null,
-          child: ListTile(
-            key: ValueKey('reference-image-${record.referenceImageId}'),
-            title: Text(record.originalFilenameDisplay),
-            subtitle: Text(record.referenceImageId),
-            trailing: Text('${record.fileSizeBytes} B'),
-            onTap: () => onSelected(record.referenceImageId),
+        return FocusTraversalOrder(
+          order: NumericFocusOrder(index.toDouble() + 2),
+          child: Semantics(
+            key: ValueKey('reference-image-${record.referenceImageId}-semantics'),
+            button: true,
+            label:
+                'Reference image ${record.originalFilenameDisplay}, id ${record.referenceImageId}',
+            hint:
+                'Select this image to view its grouped metadata and sidecar information.',
+            child: Card(
+              color: selected
+                  ? Theme.of(context).colorScheme.surfaceContainerHighest
+                  : null,
+              child: ListTile(
+                key: ValueKey('reference-image-${record.referenceImageId}'),
+                title: Text(record.originalFilenameDisplay),
+                subtitle: Text(record.referenceImageId),
+                trailing: Text('${record.fileSizeBytes} B'),
+                onTap: () => onSelected(record.referenceImageId),
+              ),
+            ),
           ),
         );
       },
@@ -463,9 +492,13 @@ class _ReferenceImageMetadataSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleSmall,
+            Semantics(
+              label: '$title section',
+              header: true,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
             ),
             const SizedBox(height: 6),
             ...children,

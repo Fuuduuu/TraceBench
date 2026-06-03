@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
 
 ## Goal
 
-Lock the next narrow Reference Images accessibility/focus recovery slice.
+Implement narrow Reference Images accessibility/focus recovery slice while preserving all scope boundaries.
 
 Implementation files:
 
@@ -15,7 +15,7 @@ Implementation files:
 
 ## Scope lock summary
 
-- this pass scopes to accessibility/focus polish only
+- this pass is implementation and includes only accessibility/focus polish for existing UI strings and labels
 - no full screen rewrite
 - no broad layout architecture rewrite
 - no metadata-grouping behavior changes in this slice
@@ -43,7 +43,7 @@ Implementation files:
 - no filesystem-heavy widget tests in this pass
 - bounded pump/test helpers only (no indefinite settling)
 - no temporary image file writes in this pass
-- selected-image metadata ordering remains by source `KnownReferenceImage` order
+ - selected-image metadata ordering remains by source `KnownReferenceImage` order
 - selected-image grouping accessibility checks avoid real image decoding:
   - use fake service/placeholder path flow
   - test seam only if needed, with production default unchanged
@@ -51,12 +51,12 @@ Implementation files:
 
 ## Required tests for next implementation pass
 
-- import button and existing affordance labels/tooltip semantics
-- reference image list item readable labels for filename/reference ID
-- metadata-group headings/labels are exposed and semantic
-- required safety copy remains present
-- current forbidden affordances remain absent
-- no new board-canvas/AI/URL/import behavior introduced
+- accessibility tests now include:
+  - import button/tooltip/affordance labels
+  - reference image list item readable labels and hints
+  - metadata-group heading labels and semantic headers
+  - required safety copy remains present
+  - forbidden affordances remain absent
 
 ## Allowed implementation surfaces
 

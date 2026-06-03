@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -12,8 +12,11 @@ Branch: `main`
 - V1 is fixed and verified:
   - `v1.0.0-rc1` exists locally and on `origin`.
   - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`, `V1_TO_V2_ROADMAP_DECISION_PASS`, and `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` are accepted.
-- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` is now in-progress:
+- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` is accepted/pushed:
+  - post-audit verdict: `PASS_WITH_NITS`, `ACCEPT_AS_IS`
   - implementation target: selected-image metadata grouping and labels only.
+  - grouped sections: Identity, File details, Provenance, optional Notes.
+  - required safety strings remain present and unchanged.
 - Roadmap remains:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`
@@ -95,6 +98,10 @@ Branch: `main`
 - States-only UX closeout NITs are non-blocking for this pass:
   - minor indentation formatting nit
   - `_humanReadableImportError` raw string mapping approach is acceptable for this scope
+- REFERENCE_IMAGES metadata grouping closeout NITs are non-blocking:
+  - `Project ID` is surfaced in Provenance; it is existing record metadata.
+  - unrelated intermittent `project_creator_test.dart` temp-file flake is isolated and non-blocking.
+  - CRLF/LF warnings are non-blocking.
 
 ## Hard boundaries
 

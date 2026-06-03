@@ -2,17 +2,18 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement the next narrow Reference Images metadata-grouping slice in:
+Record and route the accepted metadata-grouping implementation.
 - `lib/features/reference_images/screens/reference_images_screen.dart`
 - `test/widget/reference_images_screen_test.dart`
 
 ## Scope lock summary
 
-- implementation is selected-image metadata-grouping only
+- implementation is now accepted (`PASS_WITH_NITS`, `ACCEPT_AS_IS`)
+- post-audit findings are non-blocking NITs only.
 - no full screen rewrite
 - no broad layout architecture rewrite
 - no accessibility/focus redesign in this slice
@@ -49,6 +50,7 @@ Implement the next narrow Reference Images metadata-grouping slice in:
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS.md`
 - `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -69,7 +71,7 @@ Implement the next narrow Reference Images metadata-grouping slice in:
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_POST_AUDIT_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
 
 ## Validation
 

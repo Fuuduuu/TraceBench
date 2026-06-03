@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -31,9 +31,14 @@ Branch: `main`
   - `py -3 tools\validate_all.py`: PASS,
   - full Flutter suite had one unrelated Windows temp-file flake in `test/unit/project_creator_test.dart`; isolated rerun passed (non-blocking),
   - no forbidden-surface changes.
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` is accepted in progress by implementation:
+  - removed inert `FocusTraversalOrder` wrappers from import and list semantics paths,
+  - fixed import affordance semantics so helper text is no longer merged into the actionable label,
+  - exposed selected list-item state via rendered semantics (`selected: true/false`),
+  - reduced duplicate list-item announcements with `ExcludeSemantics`,
+  - updated tests to assert rendered semantics via `tester.getSemantics(...)` and `matchesSemantics(...)`.
 - Non-blocking findings recorded:
-  - LOW: selected-item `selected:` semantic state is not yet exposed; list selection remains visual.
-  - fixup scope lock now routes `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
+  - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
 - NIT: cosmetic indentation drift.
 - NIT: CRLF/LF warning noise on Windows.

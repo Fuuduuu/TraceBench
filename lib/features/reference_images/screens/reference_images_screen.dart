@@ -12,10 +12,12 @@ class ReferenceImagesScreen extends ConsumerStatefulWidget {
     super.key,
     this.service,
     this.pickReferenceImageFile,
+    this.imagePreviewBuilder,
   });
 
   final ReferenceImageSidecarService? service;
   final Future<String?> Function()? pickReferenceImageFile;
+  final Widget Function(BuildContext context, File file)? imagePreviewBuilder;
 
   @override
   ConsumerState<ReferenceImagesScreen> createState() => _ReferenceImagesScreenState();
@@ -245,6 +247,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                             record: selected,
                             file: selectedFile,
                             hasLocalProjectDirectory: hasLocalProjectDirectory,
+                            imagePreviewBuilder: widget.imagePreviewBuilder,
                           ),
                         ),
                       ],
@@ -353,11 +356,13 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
     required this.record,
     required this.file,
     required this.hasLocalProjectDirectory,
+    required this.imagePreviewBuilder,
   });
 
   final ReferenceImageRecord? record;
   final File? file;
   final bool hasLocalProjectDirectory;
+  final Widget Function(BuildContext context, File file)? imagePreviewBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -376,27 +381,48 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
       );
     }
 
-    final hasFile = file != null && file!.existsSync();
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        Text('ID: ${record!.referenceImageId}'),
-        Text('Original file: ${record!.originalFilenameDisplay}'),
-        Text('Stored path: ${record!.storedRelativePath}'),
-        Text('Type: ${record!.mimeType}'),
-        Text('Size: ${record!.fileSizeBytes} bytes'),
-        if (record!.sha256 != null) ...[
-          const SizedBox(height: 8),
-          const Text(
-            'File integrity / duplicate check — not an evidence seal.',
-          ),
-          Text('SHA-256: ${record!.sha256}'),
-        ],
-        Text('Imported at: ${record!.importedAt}'),
-        Text('Source: ${record!.source}'),
-        if (record!.notes != null) Text('Notes: ${record!.notes}'),
+        _ReferenceImageMetadataSection(
+          title: 'Identity / user-supplied display',
+          children: [
+            Text('Reference ID: ${record!.referenceImageId}'),
+            Text('As imported: ${record!.originalFilenameDisplay}'),
+          ],
+        ),
         const SizedBox(height: 12),
-        if (hasFile)
+        _ReferenceImageMetadataSection(
+          title: 'File details',
+          children: [
+            Text('Type: ${record!.mimeType}'),
+            Text('Size: ${record!.fileSizeBytes} bytes'),
+            Text('Stored path: ${record!.storedRelativePath}'),
+            if (record!.sha256 != null) ...[
+              const SizedBox(height: 8),
+              const Text('File integrity / duplicate check — not an evidence seal.'),
+              Text('SHA-256: ${record!.sha256}'),
+            ],
+          ],
+        ),
+        const SizedBox(height: 12),
+        _ReferenceImageMetadataSection(
+          title: 'Provenance',
+          children: [
+            Text('Imported at: ${record!.importedAt}'),
+            Text('Source: ${record!.source}'),
+            Text('Project ID: ${record!.projectId}'),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (record!.notes != null && record!.notes!.trim().isNotEmpty)
+          _ReferenceImageMetadataSection(
+            title: 'Notes',
+            children: [Text(record!.notes!)],
+          ),
+        if (imagePreviewBuilder != null && file != null)
+          imagePreviewBuilder!(context, file!)
+        else if (file != null && file!.existsSync())
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.file(
@@ -416,6 +442,36 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
             ],
           ),
       ],
+    );
+  }
+}
+
+class _ReferenceImageMetadataSection extends StatelessWidget {
+  const _ReferenceImageMetadataSection({
+    required this.title,
+    required this.children,
+  });
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            ...children,
+          ],
+        ),
+      ),
     );
   }
 }

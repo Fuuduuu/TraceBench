@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -12,9 +12,8 @@ Branch: `main`
 - V1 is fixed and verified:
   - `v1.0.0-rc1` exists locally and on `origin`.
   - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`, `V1_TO_V2_ROADMAP_DECISION_PASS`, and `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` are accepted.
-- `REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS` is now the active lock target:
-  - implementation target: `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
-  - scope: selected-image metadata grouping and labels only.
+- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` is now in-progress:
+  - implementation target: selected-image metadata grouping and labels only.
 - Roadmap remains:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`

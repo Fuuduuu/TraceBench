@@ -2,26 +2,25 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
 
 ## Goal
 
-Lock the next narrow Reference Images implementation slice:
-
-- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
-
-This pass records allowed implementation and guardrails before implementation begins.
+Implement the next narrow Reference Images metadata-grouping slice in:
+- `lib/features/reference_images/screens/reference_images_screen.dart`
+- `test/widget/reference_images_screen_test.dart`
 
 ## Scope lock summary
 
-- implementation is metadata-grouping only for selected-image details
+- implementation is selected-image metadata-grouping only
 - no full screen rewrite
 - no broad layout architecture rewrite
 - no accessibility/focus redesign in this slice
-- no service/storage/model/schema/Project ZIP/tool/materializer/runtimes changes
+- no service/storage/model/schema/Project ZIP/tool/materializer/runtime changes
 - no Board Canvas/AI/OCR/CV/URL-import/transform or event-writing scopes
 - no `board_graph.json` or `view_state.json`
 - no filesystem-heavy selected-image runtime rendering in tests
+- optional test seam for image previews only (no production behavior change)
 
 ## Required guardrails for implementation
 
@@ -49,6 +48,7 @@ This pass records allowed implementation and guardrails before implementation be
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS.md`
 
 ## Forbidden surfaces
 
@@ -69,7 +69,7 @@ This pass records allowed implementation and guardrails before implementation be
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS`
+`REFERENCE_IMAGES_UX_METADATA_GROUPING_POST_AUDIT_PASS`
 
 ## Validation
 

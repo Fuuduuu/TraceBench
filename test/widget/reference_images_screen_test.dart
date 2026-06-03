@@ -85,11 +85,36 @@ class _FakeReferenceImageSidecarServiceForMissingFile
   }
 }
 
+class _FakeReferenceImageSidecarServiceWithResolvableFile
+    extends _FakeReferenceImageSidecarService {
+  const _FakeReferenceImageSidecarServiceWithResolvableFile(this.ledger)
+      : super(ledger);
+
+  final ReferenceImageLedger ledger;
+
+  @override
+  Future<ReferenceImageLedger> loadLedger({
+    required String projectDirectory,
+    required String projectId,
+  }) async {
+    return ledger;
+  }
+
+  @override
+  File? resolveStoredImageFile({
+    required String projectDirectory,
+    required ReferenceImageRecord record,
+  }) {
+    return File('$projectDirectory/.tracebench_local/reference_images/${record.referenceImageId}.png');
+  }
+}
+
 Future<void> _pumpReferenceImagesScreen(
   WidgetTester tester, {
   required ReferenceImageSidecarService service,
   String projectDirectory = 'C:/tracebench_fake_project',
   Future<String?> Function()? pickReferenceImageFile,
+  Widget Function(BuildContext context, File file)? imagePreviewBuilder,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -102,12 +127,25 @@ Future<void> _pumpReferenceImagesScreen(
         home: ReferenceImagesScreen(
           service: service,
           pickReferenceImageFile: pickReferenceImageFile,
+          imagePreviewBuilder: imagePreviewBuilder,
         ),
       ),
     ),
   );
   for (var i = 0; i < 3; i++) {
     await tester.pump(const Duration(milliseconds: 1));
+  }
+}
+
+Future<void> _pumpUntilNoLoading(
+  WidgetTester tester, {
+  int maxIterations = 20,
+}) async {
+  for (var i = 0; i < maxIterations; i++) {
+    if (find.byType(CircularProgressIndicator).evaluate().isEmpty) {
+      return;
+    }
+    await tester.pump(const Duration(milliseconds: 10));
   }
 }
 
@@ -228,6 +266,84 @@ void main() {
       find.text(
         'Reference images are local-sidecar only and must stay on disk.',
       ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('renders selected image metadata in grouped details', (tester) async {
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(
+      projectId: 'prj_ref_test_001',
+      images: [
+        ReferenceImageRecord(
+          referenceImageId: 'refimg_local_001',
+          originalFilenameDisplay: 'reference_smoke.png',
+          storedRelativePath: '.tracebench_local/reference_images/refimg_local_001.png',
+          mimeType: 'image/png',
+          fileSizeBytes: 9876,
+          importedAt: '2026-06-01T12:00:00Z',
+          source: 'local_file_picker',
+          projectId: 'prj_ref_test_001',
+          sha256: 'abc123',
+          notes: 'manual reference capture',
+        ),
+      ],
+    );
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceWithResolvableFile(
+        ledger,
+      ),
+      projectDirectory: fakeProjectDirectory,
+      imagePreviewBuilder: (context, file) {
+        return const SizedBox(
+          key: ValueKey('reference-image-preview-placeholder'),
+          child: Text('Reference image preview placeholder'),
+        );
+      },
+    );
+    await _pumpUntilNoLoading(tester);
+    await tester.pump();
+
+    expect(find.text('Identity / user-supplied display'), findsOneWidget);
+    expect(find.text('Reference ID: refimg_local_001'), findsOneWidget);
+    expect(find.text('As imported: reference_smoke.png'), findsOneWidget);
+    expect(find.text('File details'), findsOneWidget);
+    expect(find.text('Type: image/png'), findsOneWidget);
+    expect(find.text('Size: 9876 bytes'), findsOneWidget);
+    expect(
+      find.text('Stored path: .tracebench_local/reference_images/refimg_local_001.png'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('File integrity / duplicate check — not an evidence seal.'),
+      findsOneWidget,
+    );
+    expect(find.text('SHA-256: abc123'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Provenance'),
+      120,
+      scrollable: find.byType(Scrollable).at(1),
+    );
+    expect(find.text('Provenance'), findsOneWidget);
+    expect(find.text('Imported at: 2026-06-01T12:00:00Z'), findsOneWidget);
+    expect(find.text('Source: local_file_picker'), findsOneWidget);
+    expect(find.text('Project ID: prj_ref_test_001'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Notes'),
+      120,
+      scrollable: find.byType(Scrollable).at(1),
+    );
+    expect(find.text('Notes'), findsOneWidget);
+    expect(find.text('manual reference capture'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('reference-image-preview-placeholder')),
+      120,
+      scrollable: find.byType(Scrollable).at(1),
+    );
+    expect(
+      find.byKey(const ValueKey('reference-image-preview-placeholder')),
       findsOneWidget,
     );
   });

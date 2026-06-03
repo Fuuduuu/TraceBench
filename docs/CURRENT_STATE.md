@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -17,10 +17,25 @@ Branch: `main`
   - implementation target: selected-image metadata grouping and labels only.
   - grouped sections: Identity, File details, Provenance, optional Notes.
   - required safety strings remain present and unchanged.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS` is in progress:
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS` is accepted (`PASS_WITH_NITS`, `ACCEPT_AS_IS`):
   - added import affordance focus order and semantics,
   - added readable semantics labels for reference image list items and metadata section headings,
   - kept required safety strings and all runtime Model-B boundaries unchanged.
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_CLOSEOUT_PASS` is accepted as a docs-only closeout (`PASS_WITH_NITS`, `ACCEPT_AS_IS`):
+  - post-audit outcome is accepted and recorded for `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`.
+  - Targeted Reference Images widget tests passed.
+  - `py -3 tools\validate_all.py` passed.
+  - no scope drift, no forbidden-surface diff.
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_POST_AUDIT_PASS` reported PASS_WITH_NITS / ACCEPT_AS_IS:
+  - targeted Reference Images widget tests: PASS,
+  - `py -3 tools\validate_all.py`: PASS,
+  - full Flutter suite had one unrelated Windows temp-file flake in `test/unit/project_creator_test.dart`; isolated rerun passed (non-blocking),
+  - no forbidden-surface changes.
+- Non-blocking findings recorded:
+  - LOW: selected-item `selected:` semantic state is not yet exposed; list selection remains visual.
+- NIT: unrelated `project_creator_test.dart` flake in full suite.
+- NIT: cosmetic indentation drift.
+- NIT: CRLF/LF warning noise on Windows.
 - Roadmap remains:
   - `TAG_V1_RC_FIRST`
   - then `V1_1_HARDENING`

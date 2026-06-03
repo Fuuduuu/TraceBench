@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -33,6 +33,7 @@ Branch: `main`
   - no forbidden-surface changes.
 - Non-blocking findings recorded:
   - LOW: selected-item `selected:` semantic state is not yet exposed; list selection remains visual.
+  - fixup scope lock now routes `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
 - NIT: cosmetic indentation drift.
 - NIT: CRLF/LF warning noise on Windows.

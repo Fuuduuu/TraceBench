@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -12,7 +12,7 @@ Branch: `main`
 - V1 is fixed and verified:
   - `v1.0.0-rc1` exists locally and on `origin`.
   - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`, `V1_TO_V2_ROADMAP_DECISION_PASS`, and `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` are accepted.
-- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` is accepted/pushed:
+- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` and `REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS` are accepted/pushed:
   - post-audit verdict: `PASS_WITH_NITS`, `ACCEPT_AS_IS`
   - implementation target: selected-image metadata grouping and labels only.
   - grouped sections: Identity, File details, Provenance, optional Notes.
@@ -41,6 +41,7 @@ Branch: `main`
 - `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS` is accepted as final UX deepening input.
 - `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS` is accepted as final implementation input sync.
 - `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is accepted with `PASS`; broad implementation was reverted and a constrained recovery slice was selected.
+- `REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS` and `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS` are accepted/pushed.
 - Accepted copy/safety pass is `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`:
   - required safety strings are now visible in empty state,
   - import label is `Import from this computer`,

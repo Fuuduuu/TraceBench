@@ -2,26 +2,29 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Record and route the accepted metadata-grouping implementation.
+Lock the next narrow Reference Images accessibility/focus recovery slice.
+
+Implementation files:
+
 - `lib/features/reference_images/screens/reference_images_screen.dart`
 - `test/widget/reference_images_screen_test.dart`
 
 ## Scope lock summary
 
-- implementation is now accepted (`PASS_WITH_NITS`, `ACCEPT_AS_IS`)
-- post-audit findings are non-blocking NITs only.
+- this pass scopes to accessibility/focus polish only
 - no full screen rewrite
 - no broad layout architecture rewrite
-- no accessibility/focus redesign in this slice
+- no metadata-grouping behavior changes in this slice
+- no empty/missing/error-state rewrite
+- no selected-image preview rewrite
 - no service/storage/model/schema/Project ZIP/tool/materializer/runtime changes
 - no Board Canvas/AI/OCR/CV/URL-import/transform or event-writing scopes
 - no `board_graph.json` or `view_state.json`
-- no filesystem-heavy selected-image runtime rendering in tests
-- optional test seam for image previews only (no production behavior change)
+- required strings and behavior remain unchanged
 
 ## Required guardrails for implementation
 
@@ -30,12 +33,30 @@ Record and route the accepted metadata-grouping implementation.
   - not in `events.jsonl`
   - not in `known_facts.json`
   - not in materializer
-- selected-image safety strings stay required and visible
-- grouped metadata order must stay stable by source `KnownReferenceImage` order
-- selected-image grouping tests must avoid real image decoding:
+- required safety strings stay required and visible:
+  - `reference only`
+  - `not evidence`
+  - `not included in Project ZIP`
+  - `not used by AI`
+  - `renderer writes: none`
+- no real `Image.file` decode in tests
+- no filesystem-heavy widget tests in this pass
+- bounded pump/test helpers only (no indefinite settling)
+- no temporary image file writes in this pass
+- selected-image metadata ordering remains by source `KnownReferenceImage` order
+- selected-image grouping accessibility checks avoid real image decoding:
   - use fake service/placeholder path flow
   - test seam only if needed, with production default unchanged
   - no temp-file image writes
+
+## Required tests for next implementation pass
+
+- import button and existing affordance labels/tooltip semantics
+- reference image list item readable labels for filename/reference ID
+- metadata-group headings/labels are exposed and semantic
+- required safety copy remains present
+- current forbidden affordances remain absent
+- no new board-canvas/AI/URL/import behavior introduced
 
 ## Allowed implementation surfaces
 
@@ -48,14 +69,12 @@ Record and route the accepted metadata-grouping implementation.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_SCOPE_LOCK_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS.md`
-- `docs/audit/REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
 - `lib/shared/models/**`
-- `lib/shared/services/**` (except no changes in this pass)
+- `lib/shared/services/**` (no changes in this pass)
 - `lib/features/board_canvas/**`
 - `tools/**`
 - `schemas/**`
@@ -71,7 +90,7 @@ Record and route the accepted metadata-grouping implementation.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`
 
 ## Validation
 

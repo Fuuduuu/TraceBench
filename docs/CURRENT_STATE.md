@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -38,8 +38,17 @@ Branch: `main`
   - added selected list-item semantic state + tap action coverage,
   - reduced duplicate list-item announcements with `ExcludeSemantics`,
   - updated tests to assert rendered semantics via `tester.getSemantics(...)` and `matchesSemantics(...)`.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS` is in progress by docs:
-  - records closed fixup outcome, validation counts, routing, and nits.
+- `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` is accepted as a docs-only smoke run checkpoint (`PASS_WITH_NITS`):
+  - `Reference Images` empty state walk confirms required safety copy framing is visible and unchanged.
+  - Required strings are visible in empty-state checks:
+    - `reference only`
+    - `not evidence`
+    - `not included in Project ZIP`
+    - `not used by AI`
+    - `renderer writes: none`
+  - `Reference Images` widget tests are accepted as passing.
+  - `py -3 tools\validate_all.py` is passing.
+  - no forbidden UX affordances or evidence-boundary regressions are present.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
@@ -131,6 +140,10 @@ Branch: `main`
   - `Project ID` is surfaced in Provenance; it is existing record metadata.
   - unrelated intermittent `project_creator_test.dart` temp-file flake is isolated and non-blocking.
   - CRLF/LF warnings are non-blocking.
+- `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` NITs:
+  - layout is currently non-responsive and cramped in parts.
+  - safety copy card + import row consume excess vertical space.
+  - long stored path and SHA text needs responsive layout follow-up.
 
 ## Hard boundaries
 

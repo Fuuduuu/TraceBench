@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS`
+`REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS`
 
 ## Goal
 
-Docs-only closeout for accepted Reference Images accessibility/focus semantics follow-up.
+Docs-only post-slice smoke run recording for the Reference Images UX chain after accepted accessibility and copy/state/grouping work.
 
 ## Allowed implementation surfaces
 
@@ -14,7 +14,7 @@ Docs-only closeout for accepted Reference Images accessibility/focus semantics f
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS.md`
 
 ## Scope lock summary
 
@@ -24,6 +24,7 @@ Docs-only closeout for accepted Reference Images accessibility/focus semantics f
   - selected-item `selected` semantics + tap behavior preserved,
   - duplicate announcement reduction validated,
   - rendered-semantics assertions added.
+- Record PASS_WITH_NITS smoke observations for Reference Images empty-state safety framing and no-forbidden affordance status.
 - Preserve all Model-B and evidence boundaries.
 - Required tests remain updated for rendered-semantics assertions and required safety strings.
 - Preserve required Model-B boundaries:
@@ -39,7 +40,7 @@ Docs-only closeout for accepted Reference Images accessibility/focus semantics f
 
 ## Next recommended pass
 
-`V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Validation
 

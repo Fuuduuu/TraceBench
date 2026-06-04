@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -31,12 +31,15 @@ Branch: `main`
   - `py -3 tools\validate_all.py`: PASS,
   - full Flutter suite had one unrelated Windows temp-file flake in `test/unit/project_creator_test.dart`; isolated rerun passed (non-blocking),
   - no forbidden-surface changes.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` is accepted in progress by implementation:
-  - removed inert `FocusTraversalOrder` wrappers from import and list semantics paths,
-  - fixed import affordance semantics so helper text is no longer merged into the actionable label,
-  - exposed selected list-item state via rendered semantics (`selected: true/false`),
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` is accepted/pushed:
+  - post-audit `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS` returned `PASS` (`APPROVED` / `ACCEPT_AS_IS`),
+  - fixed inert `FocusTraversalOrder` / `NumericFocusOrder` wrappers,
+  - fixed duplicate import action semantics and helper-text announcement scope,
+  - added selected list-item semantic state + tap action coverage,
   - reduced duplicate list-item announcements with `ExcludeSemantics`,
   - updated tests to assert rendered semantics via `tester.getSemantics(...)` and `matchesSemantics(...)`.
+- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS` is in progress by docs:
+  - records closed fixup outcome, validation counts, routing, and nits.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.

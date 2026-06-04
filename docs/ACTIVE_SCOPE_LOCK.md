@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS`
 
 ## Goal
 
-Narrow implementation follow-up for Reference Images accessibility/focus semantics with no behavior expansion.
+Docs-only closeout for accepted Reference Images accessibility/focus semantics follow-up.
 
 ## Allowed implementation surfaces
 
@@ -14,19 +14,18 @@ Narrow implementation follow-up for Reference Images accessibility/focus semanti
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS.md`
-- `lib/features/reference_images/screens/reference_images_screen.dart`
-- `test/widget/reference_images_screen_test.dart`
+- `docs/audit/REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS.md`
 
 ## Scope lock summary
 
-- Implement narrow fix-up behavior only:
-  - remove inert focus-order wrapper effects unless they are effective,
-  - keep import action semantics non-duplicative (action + helper text separated),
-  - expose `selected: true/false` for reference image list items,
-  - reduce duplicate list-item screen-reader announcements while preserving tap behavior.
+- Record and reconcile closeout evidence for `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`:
+  - inert focus-order wrapper cleanup complete,
+  - import action semantics and helper text separation fixed,
+  - selected-item `selected` semantics + tap behavior preserved,
+  - duplicate announcement reduction validated,
+  - rendered-semantics assertions added.
 - Preserve all Model-B and evidence boundaries.
-- Required tests now include rendered semantics checks (`matchesSemantics`, `getSemantics`) and unchanged required safety strings.
+- Required tests remain updated for rendered-semantics assertions and required safety strings.
 - Preserve required Model-B boundaries:
   - local sidecar only
   - non-canonical
@@ -40,7 +39,7 @@ Narrow implementation follow-up for Reference Images accessibility/focus semanti
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS`
+`V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
 
 ## Validation
 

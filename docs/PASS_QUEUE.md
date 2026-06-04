@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`
+`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS`
+`V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -43,7 +43,8 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS | FLUTTER_PASS | completed | Implement accessibility/focus polish for import action, list items, and metadata headings while preserving all Model-B boundaries and safety copy. |
 | REFERENCE_IMAGES_UX_ACCESSIBILITY_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out accessibility/focus implementation with accepted post-audit outcome (`PASS_WITH_NITS`, `ACCEPT_AS_IS`), preserved boundaries, and route to `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_SCOPE_LOCK_PASS`. |
 | REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock narrow follow-up semantics/focus scope for `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`; no runtime, schema, tool, or ZIP surface expansion. |
-| REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS | FLUTTER_PASS | in_progress | Fix inert focus wrappers, import action semantics, and selected-item accessibility announcements for Reference Images; preserve required safety strings and Model-B boundaries. |
+| REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS | FLUTTER_PASS | completed | Fixed inert focus wrappers, import action semantics, and selected-item accessibility announcements for Reference Images; preserved required safety strings and Model-B boundaries. |
+| REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Close out accepted accessibility fixup with final closeout ledger and routing to `V1_1_REFERENCE_IMAGES_UX_NEXT_ROUTE_REVIEW_PASS`. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

@@ -20,7 +20,8 @@ class ReferenceImagesScreen extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, File file)? imagePreviewBuilder;
 
   @override
-  ConsumerState<ReferenceImagesScreen> createState() => _ReferenceImagesScreenState();
+  ConsumerState<ReferenceImagesScreen> createState() =>
+      _ReferenceImagesScreenState();
 }
 
 class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
@@ -180,46 +181,29 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
             const _ReferenceOnlyWarningCard(),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              child: FocusTraversalOrder(
-                order: const NumericFocusOrder(1),
-                child: Semantics(
-                  key: const ValueKey('reference-images-import-button-semantics'),
-                  button: true,
-                  enabled: hasLocalProjectDirectory && !_isImporting,
-                  label: 'Import reference image',
-                  hint: 'Open a file picker and import a local image into sidecar storage.',
-                  child: Wrap(
-                    spacing: 12,
-                    runSpacing: 8,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Tooltip(
-                        message: 'Import reference image from this computer',
-                        child: ElevatedButton(
-                          key: const ValueKey('reference-images-import-button'),
-                          onPressed: hasLocalProjectDirectory && !_isImporting
-                              ? _importReferenceImage
-                              : null,
-                          child: Text(
-                            _isImporting
-                                ? 'Importing...'
-                                : 'Import from this computer',
-                          ),
-                        ),
-                      ),
-                       Text(
-                         'Allowed: png, jpg, jpeg, webp · max ${ReferenceImageSidecarService.maxFileCount} files · max ${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
-                         softWrap: true,
-                       ),
-                    ],
-                  ),
+              child: Tooltip(
+                message: 'Import reference image from this computer',
+                child: ElevatedButton(
+                  key: const ValueKey('reference-images-import-button'),
+                  onPressed: hasLocalProjectDirectory && !_isImporting
+                      ? _importReferenceImage
+                      : null,
+                  child: const Text('Import from this computer'),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+              child: Text(
+                'Allowed: png, jpg, jpeg, webp · max ${ReferenceImageSidecarService.maxFileCount} files · max ${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
+                softWrap: true,
               ),
             ),
             if (!hasProject)
               const Padding(
                 padding: EdgeInsets.all(12),
-                child: Text('Open a project to use local sidecar reference images.'),
+                child: Text(
+                    'Open a project to use local sidecar reference images.'),
               ),
             if (hasProject && !hasLocalProjectDirectory)
               const Padding(
@@ -345,26 +329,30 @@ class _ReferenceImageListPanel extends StatelessWidget {
       );
     }
 
-      return ListView.separated(
-        padding: const EdgeInsets.all(12),
-        itemCount: records.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(12),
+      itemCount: records.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
         final record = records[index];
         final selected = record.referenceImageId == selectedReferenceImageId;
-        return FocusTraversalOrder(
-          order: NumericFocusOrder(index.toDouble() + 2),
-          child: Semantics(
-            key: ValueKey('reference-image-${record.referenceImageId}-semantics'),
-            button: true,
-            label:
-                'Reference image ${record.originalFilenameDisplay}, id ${record.referenceImageId}',
-            hint:
-                'Select this image to view its grouped metadata and sidecar information.',
-            child: Card(
-              color: selected
-                  ? Theme.of(context).colorScheme.surfaceContainerHighest
-                  : null,
+        return Semantics(
+          key: ValueKey('reference-image-${record.referenceImageId}-semantics'),
+          button: true,
+          selected: selected,
+          enabled: true,
+          label:
+              'Reference image ${record.originalFilenameDisplay}, id ${record.referenceImageId}',
+          hint:
+              'Select this image to view its grouped metadata and sidecar information.',
+          onTapHint:
+              'Select this image to view its grouped metadata and sidecar information.',
+          onTap: () => onSelected(record.referenceImageId),
+          child: Card(
+            color: selected
+                ? Theme.of(context).colorScheme.surfaceContainerHighest
+                : null,
+            child: ExcludeSemantics(
               child: ListTile(
                 key: ValueKey('reference-image-${record.referenceImageId}'),
                 title: Text(record.originalFilenameDisplay),
@@ -399,7 +387,8 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(12),
-          child: Text('Preview is available after opening a local project directory.'),
+          child: Text(
+              'Preview is available after opening a local project directory.'),
         ),
       );
     }
@@ -429,7 +418,8 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
             Text('Stored path: ${record!.storedRelativePath}'),
             if (record!.sha256 != null) ...[
               const SizedBox(height: 8),
-              const Text('File integrity / duplicate check — not an evidence seal.'),
+              const Text(
+                  'File integrity / duplicate check — not an evidence seal.'),
               Text('SHA-256: ${record!.sha256}'),
             ],
           ],
@@ -467,7 +457,8 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
             children: [
               Text('File not found at its stored path.'),
               SizedBox(height: 8),
-              Text('Reference images are local-sidecar only and must stay on disk.'),
+              Text(
+                  'Reference images are local-sidecar only and must stay on disk.'),
             ],
           ),
       ],

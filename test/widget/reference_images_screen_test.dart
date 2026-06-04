@@ -64,7 +64,8 @@ class _FakeReferenceImageSidecarServiceForImportError
 
 class _FakeReferenceImageSidecarServiceForMissingFile
     extends _FakeReferenceImageSidecarService {
-  const _FakeReferenceImageSidecarServiceForMissingFile(this.ledger) : super(ledger);
+  const _FakeReferenceImageSidecarServiceForMissingFile(this.ledger)
+      : super(ledger);
 
   final ReferenceImageLedger ledger;
 
@@ -105,7 +106,8 @@ class _FakeReferenceImageSidecarServiceWithResolvableFile
     required String projectDirectory,
     required ReferenceImageRecord record,
   }) {
-    return File('$projectDirectory/.tracebench_local/reference_images/${record.referenceImageId}.png');
+    return File(
+        '$projectDirectory/.tracebench_local/reference_images/${record.referenceImageId}.png');
   }
 }
 
@@ -209,14 +211,20 @@ void main() {
         find.byKey(const ValueKey('reference-images-import-button')),
         findsOneWidget,
       );
-      final importSemantics = tester.widget<Semantics>(
-        find.byKey(const ValueKey('reference-images-import-button-semantics')),
+      final importSemantics = tester.getSemantics(
+        find.byKey(const ValueKey('reference-images-import-button')),
       );
-      expect(importSemantics.properties.button, isTrue);
-      expect(importSemantics.properties.label, 'Import reference image');
       expect(
-        importSemantics.properties.hint,
-        'Open a file picker and import a local image into sidecar storage.',
+        importSemantics,
+        matchesSemantics(
+          label: 'Import from this computer',
+          isButton: true,
+          isFocusable: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+          hasEnabledState: true,
+          isEnabled: true,
+        ),
       );
       expect(
         find.byWidgetPredicate(
@@ -259,7 +267,8 @@ void main() {
         ReferenceImageRecord(
           referenceImageId: 'refimg_001',
           originalFilenameDisplay: 'smoke_reference.png',
-          storedRelativePath: '.tracebench_local/reference_images/refimg_missing.png',
+          storedRelativePath:
+              '.tracebench_local/reference_images/refimg_missing.png',
           mimeType: 'image/png',
           fileSizeBytes: 1234,
           importedAt: '2026-06-01T00:00:00Z',
@@ -291,7 +300,8 @@ void main() {
     );
   });
 
-  testWidgets('renders selected image metadata in grouped details', (tester) async {
+  testWidgets('renders selected image metadata in grouped details',
+      (tester) async {
     const fakeProjectDirectory = 'C:/tracebench_fake_project';
     const ledger = ReferenceImageLedger(
       projectId: 'prj_ref_test_001',
@@ -299,7 +309,8 @@ void main() {
         ReferenceImageRecord(
           referenceImageId: 'refimg_local_001',
           originalFilenameDisplay: 'reference_smoke.png',
-          storedRelativePath: '.tracebench_local/reference_images/refimg_local_001.png',
+          storedRelativePath:
+              '.tracebench_local/reference_images/refimg_local_001.png',
           mimeType: 'image/png',
           fileSizeBytes: 9876,
           importedAt: '2026-06-01T12:00:00Z',
@@ -331,7 +342,8 @@ void main() {
       find.byKey(const ValueKey('reference-image-refimg_local_001')),
       findsOneWidget,
     );
-    await tester.tap(find.byKey(const ValueKey('reference-image-refimg_local_001')));
+    await tester
+        .tap(find.byKey(const ValueKey('reference-image-refimg_local_001')));
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
@@ -340,22 +352,29 @@ void main() {
       ),
       findsOneWidget,
     );
-    final selectedItemSemantics = tester.widget<Semantics>(
-      find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
-    );
-    expect(
-      selectedItemSemantics.properties.label,
-      'Reference image reference_smoke.png, id refimg_local_001',
-    );
-    expect(
-      selectedItemSemantics.properties.hint,
-      'Select this image to view its grouped metadata and sidecar information.',
-    );
+      final selectedItemSemantics = tester.getSemantics(
+        find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
+      );
+      expect(
+        selectedItemSemantics,
+        matchesSemantics(
+          label: 'Reference image reference_smoke.png, id refimg_local_001',
+          hint:
+              'Select this image to view its grouped metadata and sidecar information.',
+          isButton: true,
+          isSelected: true,
+          hasSelectedState: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          hasTapAction: true,
+        ),
+      );
     expect(
       find.byWidgetPredicate(
         (widget) =>
             widget is Semantics &&
-            widget.properties.label == 'Identity / user-supplied display section',
+            widget.properties.label ==
+                'Identity / user-supplied display section',
       ),
       findsOneWidget,
     );
@@ -379,7 +398,8 @@ void main() {
     expect(find.text('Type: image/png'), findsOneWidget);
     expect(find.text('Size: 9876 bytes'), findsOneWidget);
     expect(
-      find.text('Stored path: .tracebench_local/reference_images/refimg_local_001.png'),
+      find.text(
+          'Stored path: .tracebench_local/reference_images/refimg_local_001.png'),
       findsOneWidget,
     );
     expect(
@@ -416,7 +436,8 @@ void main() {
 
   testWidgets('shows import unsupported format error', (tester) async {
     const fakeProjectDirectory = 'C:/tracebench_fake_project';
-    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+    const ledger =
+        ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
 
     await _pumpReferenceImagesScreen(
       tester,
@@ -427,9 +448,11 @@ void main() {
         ),
       ),
       projectDirectory: fakeProjectDirectory,
-      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+      pickReferenceImageFile: () async =>
+          'C:/tracebench_fake_project/sample.png',
     );
-    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester
+        .tap(find.byKey(const ValueKey('reference-images-import-button')));
     await tester.pump();
 
     expect(
@@ -440,7 +463,8 @@ void main() {
 
   testWidgets('shows import too-large file message', (tester) async {
     const fakeProjectDirectory = 'C:/tracebench_fake_project';
-    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+    const ledger =
+        ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
 
     await _pumpReferenceImagesScreen(
       tester,
@@ -451,9 +475,11 @@ void main() {
         ),
       ),
       projectDirectory: fakeProjectDirectory,
-      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+      pickReferenceImageFile: () async =>
+          'C:/tracebench_fake_project/sample.png',
     );
-    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester
+        .tap(find.byKey(const ValueKey('reference-images-import-button')));
     await tester.pump();
 
     expect(
@@ -464,7 +490,8 @@ void main() {
 
   testWidgets('shows import max count reached message', (tester) async {
     const fakeProjectDirectory = 'C:/tracebench_fake_project';
-    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+    const ledger =
+        ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
 
     await _pumpReferenceImagesScreen(
       tester,
@@ -475,9 +502,11 @@ void main() {
         ),
       ),
       projectDirectory: fakeProjectDirectory,
-      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+      pickReferenceImageFile: () async =>
+          'C:/tracebench_fake_project/sample.png',
     );
-    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester
+        .tap(find.byKey(const ValueKey('reference-images-import-button')));
     await tester.pump();
 
     expect(find.text('Maximum reference image count reached.'), findsOneWidget);
@@ -485,7 +514,8 @@ void main() {
 
   testWidgets('shows import missing source file message', (tester) async {
     const fakeProjectDirectory = 'C:/tracebench_fake_project';
-    const ledger = ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
+    const ledger =
+        ReferenceImageLedger(projectId: 'prj_ref_test_001', images: []);
 
     await _pumpReferenceImagesScreen(
       tester,
@@ -496,32 +526,98 @@ void main() {
         ),
       ),
       projectDirectory: fakeProjectDirectory,
-      pickReferenceImageFile: () async => 'C:/tracebench_fake_project/sample.png',
+      pickReferenceImageFile: () async =>
+          'C:/tracebench_fake_project/sample.png',
     );
-    await tester.tap(find.byKey(const ValueKey('reference-images-import-button')));
+    await tester
+        .tap(find.byKey(const ValueKey('reference-images-import-button')));
     await tester.pump();
 
-    expect(find.text('The selected file is no longer available.'), findsOneWidget);
+    expect(
+        find.text('The selected file is no longer available.'), findsOneWidget);
   });
 
   test('service imports local reference image into sidecar and writes metadata',
       () async {
-    final tempRoot = await Directory.systemTemp.createTemp('tracebench_ref_test_');
+    final tempRoot =
+        await Directory.systemTemp.createTemp('tracebench_ref_test_');
     try {
-      final projectDir = Directory('${tempRoot.path}${Platform.pathSeparator}project');
+      final projectDir =
+          Directory('${tempRoot.path}${Platform.pathSeparator}project');
       await projectDir.create(recursive: true);
 
-      final sourceFile = File('${tempRoot.path}${Platform.pathSeparator}source.png');
+      final sourceFile =
+          File('${tempRoot.path}${Platform.pathSeparator}source.png');
       await sourceFile.writeAsBytes(const [
-        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-        0x89, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x44, 0x41,
-        0x54, 0x78, 0x9C, 0x63, 0xF8, 0xCF, 0xC0, 0x00,
-        0x00, 0x03, 0x01, 0x01, 0x00, 0x18, 0xDD, 0x8D,
-        0x18, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,
-        0x44, 0xAE, 0x42, 0x60, 0x82,
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1F,
+        0x15,
+        0xC4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9C,
+        0x63,
+        0xF8,
+        0xCF,
+        0xC0,
+        0x00,
+        0x00,
+        0x03,
+        0x01,
+        0x01,
+        0x00,
+        0x18,
+        0xDD,
+        0x8D,
+        0x18,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4E,
+        0x44,
+        0xAE,
+        0x42,
+        0x60,
+        0x82,
       ]);
 
       const service = ReferenceImageSidecarService();
@@ -539,8 +635,8 @@ void main() {
       expect(record.source, 'local_file_picker');
       expect(record.projectId, 'prj_ref_test_001');
 
-      final sidecarDir =
-          Directory('${projectDir.path}${Platform.pathSeparator}.tracebench_local');
+      final sidecarDir = Directory(
+          '${projectDir.path}${Platform.pathSeparator}.tracebench_local');
       final imagesDir = Directory(
         '${sidecarDir.path}${Platform.pathSeparator}reference_images',
       );
@@ -556,8 +652,8 @@ void main() {
           imagesDir.listSync().whereType<File>().toList(growable: false);
       expect(imageFiles.length, 1);
 
-      final ledger = jsonDecode(await ledgerFile.readAsString())
-          as Map<String, dynamic>;
+      final ledger =
+          jsonDecode(await ledgerFile.readAsString()) as Map<String, dynamic>;
       expect(ledger['project_id'], 'prj_ref_test_001');
       final images = (ledger['images'] as List).cast<Map<String, dynamic>>();
       expect(images.length, 1);
@@ -596,10 +692,13 @@ void main() {
     }
   });
 
-  test('service clamps ledger preview paths to sidecar image directory', () async {
-    final tempRoot = await Directory.systemTemp.createTemp('tracebench_ref_clamp_');
+  test('service clamps ledger preview paths to sidecar image directory',
+      () async {
+    final tempRoot =
+        await Directory.systemTemp.createTemp('tracebench_ref_clamp_');
     try {
-      final projectDir = Directory('${tempRoot.path}${Platform.pathSeparator}project');
+      final projectDir =
+          Directory('${tempRoot.path}${Platform.pathSeparator}project');
       await projectDir.create(recursive: true);
 
       const service = ReferenceImageSidecarService();
@@ -618,7 +717,8 @@ void main() {
 
       final valid = service.resolveStoredImageFile(
         projectDirectory: projectDir.path,
-        record: recordWithPath('.tracebench_local/reference_images/refimg_valid.png'),
+        record: recordWithPath(
+            '.tracebench_local/reference_images/refimg_valid.png'),
       );
       expect(valid, isNotNull);
 

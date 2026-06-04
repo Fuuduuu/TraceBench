@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only post-slice smoke run recording for the Reference Images UX chain after accepted accessibility and copy/state/grouping work.
+Lock a narrow responsive/narrow-window layout implementation slice for Reference Images; code behavior remains bounded to layout adaptation only.
 
 ## Allowed implementation surfaces
 
@@ -14,33 +14,42 @@ Docs-only post-slice smoke run recording for the Reference Images UX chain after
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS.md`
 
 ## Scope lock summary
 
-- Record and reconcile closeout evidence for `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS`:
-  - inert focus-order wrapper cleanup complete,
-  - import action semantics and helper text separation fixed,
-  - selected-item `selected` semantics + tap behavior preserved,
-  - duplicate announcement reduction validated,
-  - rendered-semantics assertions added.
-- Record PASS_WITH_NITS smoke observations for Reference Images empty-state safety framing and no-forbidden affordance status.
-- Preserve all Model-B and evidence boundaries.
-- Required tests remain updated for rendered-semantics assertions and required safety strings.
-- Preserve required Model-B boundaries:
-  - local sidecar only
-  - non-canonical
-  - outside ZIP/events/known_facts/materializer/Board Canvas/AI.
+- Preserve accepted Reference Images UX baseline from prior passes:
+  - safety strings and required copy,
+  - metadata grouping,
+  - accessibility/focus semantics,
+  - service/state behavior.
+- Lock only narrow/medium-window layout adaptation for `ReferenceImagesScreen`.
+- Keep wide-screen behavior stable while improving narrow behavior.
+- Ensure long stored-path and SHA-256 fields do not overflow in constrained widths.
+- No transforms, no overlaying behavior, no canonical-path drift, no ZIP/project-surface expansion.
+- Route to implementation pass `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
 
 ## Forbidden surfaces
 
-- runtime/fileset scope outside allowed implementation/test/document surfaces
-- service/model/tooling/surface changes that expand behavior or add canonical paths
-- Board Canvas overlays, transforms, AI/OCR/CV, URL import, or `board_graph.json` / `view_state.json` introduction.
+- Flutter runtime behavior changes outside responsive layout structure.
+- New screen semantics beyond preserving existing accessible behavior.
+- State-grouping redesign or required-copy changes.
+- Board Canvas overlay/AI/OCR/CV/transform work.
+- URL import.
+- `board_graph.json` / `view_state.json`.
+- Project ZIP contract expansion.
+- Service/storage/model/tool/schema/known_facts changes.
+
+## Test-shape guardrails
+
+- No real `Image.file` decode in widget tests.
+- No filesystem-heavy widget test setup.
+- Use bounded pumps only.
+- Exercise both wide and narrow constraints for layout verification.
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
 
 ## Validation
 

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -49,6 +49,11 @@ Branch: `main`
   - `Reference Images` widget tests are accepted as passing.
   - `py -3 tools\validate_all.py` is passing.
   - no forbidden UX affordances or evidence-boundary regressions are present.
+- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS` is now active:
+  - locks the next implementation to responsive/narrow-window layout only,
+  - keeps wide behavior stable,
+  - preserves existing metadata grouping, copy/safety, accessibility semantics, and state handling,
+  - keeps model-B and evidence-boundary constraints intact.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
 
 ## Goal
 
-Lock a narrow responsive/narrow-window layout implementation slice for Reference Images; code behavior remains bounded to layout adaptation only.
+Implement constrained-width responsive layout behavior for Reference Images; keep existing behavior bounded to layout adaptation only.
 
 ## Allowed implementation surfaces
 
@@ -15,6 +15,9 @@ Lock a narrow responsive/narrow-window layout implementation slice for Reference
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS.md`
+- `lib/features/reference_images/screens/reference_images_screen.dart`
+- `test/widget/reference_images_screen_test.dart`
+- `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS.md`
 
 ## Scope lock summary
 
@@ -23,11 +26,11 @@ Lock a narrow responsive/narrow-window layout implementation slice for Reference
   - metadata grouping,
   - accessibility/focus semantics,
   - service/state behavior.
-- Lock only narrow/medium-window layout adaptation for `ReferenceImagesScreen`.
+- Implement narrow/medium-window layout adaptation for `ReferenceImagesScreen`.
 - Keep wide-screen behavior stable while improving narrow behavior.
 - Ensure long stored-path and SHA-256 fields do not overflow in constrained widths.
 - No transforms, no overlaying behavior, no canonical-path drift, no ZIP/project-surface expansion.
-- Route to implementation pass `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
+- This pass is the implementation pass `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
 
 ## Forbidden surfaces
 
@@ -49,7 +52,7 @@ Lock a narrow responsive/narrow-window layout implementation slice for Reference
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`
 
 ## Validation
 

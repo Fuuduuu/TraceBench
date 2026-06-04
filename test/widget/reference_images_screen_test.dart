@@ -117,7 +117,11 @@ Future<void> _pumpReferenceImagesScreen(
   String projectDirectory = 'C:/tracebench_fake_project',
   Future<String?> Function()? pickReferenceImageFile,
   Widget Function(BuildContext context, File file)? imagePreviewBuilder,
+  Size? surfaceSize,
 }) async {
+  if (surfaceSize != null) {
+    await tester.binding.setSurfaceSize(surfaceSize);
+  }
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -149,6 +153,17 @@ Future<void> _pumpUntilNoLoading(
     }
     await tester.pump(const Duration(milliseconds: 10));
   }
+}
+
+Finder _previewScrollableFinder(WidgetTester tester) {
+  final panelScrollables = find.descendant(
+    of: find.byKey(const ValueKey('reference-image-preview-panel')),
+    matching: find.byType(Scrollable),
+  );
+  if (panelScrollables.evaluate().isNotEmpty) {
+    return panelScrollables;
+  }
+  return find.byType(Scrollable);
 }
 
 ProjectState _projectState({String? projectDirectory}) {
@@ -288,7 +303,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('File not found at its stored path.'),
       100,
-      scrollable: find.byType(Scrollable).at(1),
+      scrollable: _previewScrollableFinder(tester),
     );
 
     expect(find.text('File not found at its stored path.'), findsOneWidget);
@@ -298,6 +313,135 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('keeps list and preview side-by-side on wide windows',
+      (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const ledger = ReferenceImageLedger(
+      projectId: 'prj_ref_test_001',
+      images: [
+        ReferenceImageRecord(
+          referenceImageId: 'refimg_local_001',
+          originalFilenameDisplay: 'reference_smoke.png',
+          storedRelativePath:
+              '.tracebench_local/reference_images/refimg_local_001.png',
+          mimeType: 'image/png',
+          fileSizeBytes: 9876,
+          importedAt: '2026-06-01T12:00:00Z',
+          source: 'local_file_picker',
+          projectId: 'prj_ref_test_001',
+          sha256: 'abc123',
+          notes: 'manual reference capture',
+        ),
+      ],
+    );
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceWithResolvableFile(
+        ledger,
+      ),
+      projectDirectory: fakeProjectDirectory,
+      surfaceSize: const Size(1200, 900),
+      imagePreviewBuilder: (context, file) {
+        return const SizedBox(
+          key: ValueKey('reference-image-preview-placeholder'),
+          child: Text('Reference image preview placeholder'),
+        );
+      },
+    );
+    await _pumpUntilNoLoading(tester);
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final listPanelRect = tester.getRect(
+      find.byKey(const ValueKey('reference-image-list-panel')),
+    );
+    final previewPanelRect = tester.getRect(
+      find.byKey(const ValueKey('reference-image-preview-panel')),
+    );
+    expect(listPanelRect.left, lessThan(previewPanelRect.left));
+    expect(previewPanelRect.top, closeTo(listPanelRect.top, 1.0));
+    expect(
+      find.byKey(const ValueKey('reference-image-preview-panel')),
+      findsOneWidget,
+    );
+    expect(find.text('Reference images (local sidecar)'), findsOneWidget);
+    expect(find.text('reference only'), findsOneWidget);
+    expect(find.text('Reference ID: refimg_local_001'), findsOneWidget);
+    expect(find.text('No reference images yet.'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('stacks list and preview in narrow windows with wrapped metadata',
+      (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const fakeProjectDirectory = 'C:/tracebench_fake_project';
+    const longRelativePath =
+        '.tracebench_local/reference_images/very_long_reference_image_name_'
+        'with_many_nested_segments_and_additional_tokens_that_could_previously'
+        '_overflow_reference_0123456789abcdef.png';
+    const longSha =
+        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+        '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+
+    const ledger = ReferenceImageLedger(
+      projectId: 'prj_ref_test_001',
+      images: [
+        ReferenceImageRecord(
+          referenceImageId: 'refimg_local_long',
+          originalFilenameDisplay: 'reference_smoke_long_name.png',
+          storedRelativePath: longRelativePath,
+          mimeType: 'image/png',
+          fileSizeBytes: 9876,
+          importedAt: '2026-06-01T12:00:00Z',
+          source: 'local_file_picker',
+          projectId: 'prj_ref_test_001',
+          sha256: longSha,
+          notes: 'manual reference capture',
+        ),
+      ],
+    );
+
+    await _pumpReferenceImagesScreen(
+      tester,
+      service: const _FakeReferenceImageSidecarServiceWithResolvableFile(
+        ledger,
+      ),
+      projectDirectory: fakeProjectDirectory,
+      surfaceSize: const Size(360, 900),
+      imagePreviewBuilder: (context, file) {
+        return const SizedBox(
+          key: ValueKey('reference-image-preview-placeholder'),
+          child: Text('Reference image preview placeholder'),
+        );
+      },
+    );
+    await _pumpUntilNoLoading(tester);
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final listPanelRect = tester.getRect(
+      find.byKey(const ValueKey('reference-image-list-panel')),
+    );
+    final previewPanelRect = tester.getRect(
+      find.byKey(const ValueKey('reference-image-preview-panel')),
+    );
+    expect(listPanelRect.top, lessThan(previewPanelRect.top));
+    expect(
+      find.text('Stored path: $longRelativePath'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('SHA-256: $longSha'),
+      findsOneWidget,
+    );
+    expect(find.text('Reference images (local sidecar)'), findsOneWidget);
+    expect(find.text('reference only'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('renders selected image metadata in grouped details',
@@ -355,41 +499,26 @@ void main() {
       final selectedItemSemantics = tester.getSemantics(
         find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
       );
-      expect(
-        selectedItemSemantics,
-        matchesSemantics(
-          label: 'Reference image reference_smoke.png, id refimg_local_001',
-          hint:
-              'Select this image to view its grouped metadata and sidecar information.',
-          isButton: true,
-          isSelected: true,
-          hasSelectedState: true,
-          hasEnabledState: true,
-          isEnabled: true,
-          hasTapAction: true,
-        ),
-      );
     expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.label ==
-                'Identity / user-supplied display section',
+      selectedItemSemantics,
+      matchesSemantics(
+        label: 'Reference image reference_smoke.png, id refimg_local_001',
+        hint:
+            'Select this image to view its grouped metadata and sidecar information.',
+        isButton: true,
+        isSelected: true,
+        hasSelectedState: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasTapAction: true,
       ),
-      findsOneWidget,
     );
-    expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.label == 'File details section',
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('Identity / user-supplied display'), findsOneWidget);
+    expect(find.text('File details'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Identity / user-supplied display'),
       120,
-      scrollable: find.byType(Scrollable).at(1),
+      scrollable: _previewScrollableFinder(tester),
     );
     expect(find.text('Identity / user-supplied display'), findsOneWidget);
     expect(find.text('Reference ID: refimg_local_001'), findsOneWidget);
@@ -410,12 +539,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Provenance'),
       120,
-      scrollable: find.byType(Scrollable).at(1),
+      scrollable: _previewScrollableFinder(tester),
     );
     await tester.scrollUntilVisible(
       find.text('Notes'),
       120,
-      scrollable: find.byType(Scrollable).at(1),
+      scrollable: _previewScrollableFinder(tester),
     );
     expect(find.text('Provenance'), findsOneWidget);
     expect(find.text('Imported at: 2026-06-01T12:00:00Z'), findsOneWidget);
@@ -424,14 +553,10 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Notes'),
       120,
-      scrollable: find.byType(Scrollable).at(1),
+      scrollable: _previewScrollableFinder(tester),
     );
     expect(find.text('Notes'), findsOneWidget);
     expect(find.text('manual reference capture'), findsOneWidget);
-    expect(
-      find.byKey(const ValueKey('reference-image-preview-placeholder')),
-      findsOneWidget,
-    );
   });
 
   testWidgets('shows import unsupported format error', (tester) async {

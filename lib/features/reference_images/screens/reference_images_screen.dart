@@ -25,6 +25,8 @@ class ReferenceImagesScreen extends ConsumerStatefulWidget {
 }
 
 class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
+  static const double _responsiveNarrowThreshold = 760.0;
+
   late final ReferenceImageSidecarService _service;
   late final Future<String?> Function() _pickReferenceImageFile;
 
@@ -175,83 +177,133 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Reference Images')),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const _ReferenceOnlyWarningCard(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              child: Tooltip(
-                message: 'Import reference image from this computer',
-                child: ElevatedButton(
-                  key: const ValueKey('reference-images-import-button'),
-                  onPressed: hasLocalProjectDirectory && !_isImporting
-                      ? _importReferenceImage
-                      : null,
-                  child: const Text('Import from this computer'),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-              child: Text(
-                'Allowed: png, jpg, jpeg, webp · max ${ReferenceImageSidecarService.maxFileCount} files · max ${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
-                softWrap: true,
-              ),
-            ),
-            if (!hasProject)
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: Text(
-                    'Open a project to use local sidecar reference images.'),
-              ),
-            if (hasProject && !hasLocalProjectDirectory)
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: Text(
-                  'Local project directory is required for sidecar storage.',
-                ),
-              ),
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: _ReferenceImageListPanel(
-                            records: _ledger.images,
-                            selectedReferenceImageId: _selectedReferenceImageId,
-                            onSelected: (id) {
-                              setState(() {
-                                _selectedReferenceImageId = id;
-                              });
-                            },
-                          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < _responsiveNarrowThreshold;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _ReferenceOnlyWarningCard(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Tooltip(
+                        message: 'Import reference image from this computer',
+                        child: ElevatedButton(
+                          key: const ValueKey('reference-images-import-button'),
+                          onPressed: hasLocalProjectDirectory && !_isImporting
+                              ? _importReferenceImage
+                              : null,
+                          child: const Text('Import from this computer'),
                         ),
-                        const VerticalDivider(width: 1),
-                        Expanded(
-                          flex: 3,
-                          child: _ReferenceImagePreviewPanel(
-                            record: selected,
-                            file: selectedFile,
-                            hasLocalProjectDirectory: hasLocalProjectDirectory,
-                            imagePreviewBuilder: widget.imagePreviewBuilder,
-                          ),
-                        ),
-                      ],
+                      ),
+                      Text(
+                        'Allowed: png, jpg, jpeg, webp · max '
+                        '${ReferenceImageSidecarService.maxFileCount} files · max '
+                        '${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
+                        softWrap: true,
+                      ),
+                    ],
+                  ),
+                ),
+                if (!hasProject)
+                  const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                        'Open a project to use local sidecar reference images.'),
+                  ),
+                if (hasProject && !hasLocalProjectDirectory)
+                  const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      'Local project directory is required for sidecar storage.',
                     ),
-            ),
-          ],
+                  ),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                    child: Text(
+                      _errorMessage!,
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : isNarrow
+                          ? Column(
+                              key: const ValueKey('reference-image-content-column'),
+                              children: [
+                                Expanded(
+                                  child: _ReferenceImageListPanel(
+                                    key: const ValueKey(
+                                        'reference-image-list-panel'),
+                                    records: _ledger.images,
+                                    selectedReferenceImageId:
+                                        _selectedReferenceImageId,
+                                    onSelected: (id) {
+                                      setState(() {
+                                        _selectedReferenceImageId = id;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const Divider(height: 1),
+                                Expanded(
+                                  child: _ReferenceImagePreviewPanel(
+                                    key: const ValueKey(
+                                        'reference-image-preview-panel'),
+                                    record: selected,
+                                    file: selectedFile,
+                                    hasLocalProjectDirectory:
+                                        hasLocalProjectDirectory,
+                                    imagePreviewBuilder: widget.imagePreviewBuilder,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  key: const ValueKey(
+                                      'reference-image-list-panel'),
+                                  flex: 2,
+                                  child: _ReferenceImageListPanel(
+                                    records: _ledger.images,
+                                    selectedReferenceImageId:
+                                        _selectedReferenceImageId,
+                                    onSelected: (id) {
+                                      setState(() {
+                                        _selectedReferenceImageId = id;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const VerticalDivider(width: 1),
+                                Expanded(
+                                  key: const ValueKey(
+                                      'reference-image-preview-panel'),
+                                  flex: 3,
+                                  child: _ReferenceImagePreviewPanel(
+                                    record: selected,
+                                    file: selectedFile,
+                                    hasLocalProjectDirectory:
+                                        hasLocalProjectDirectory,
+                                    imagePreviewBuilder: widget.imagePreviewBuilder,
+                                  ),
+                                  ),
+                              ],
+                            ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -312,6 +364,7 @@ class _ReferenceOnlyWarningCard extends StatelessWidget {
 
 class _ReferenceImageListPanel extends StatelessWidget {
   const _ReferenceImageListPanel({
+    super.key,
     required this.records,
     required this.selectedReferenceImageId,
     required this.onSelected,
@@ -330,6 +383,7 @@ class _ReferenceImageListPanel extends StatelessWidget {
     }
 
     return ListView.separated(
+      key: const ValueKey('reference-image-list-scroll'),
       padding: const EdgeInsets.all(12),
       itemCount: records.length,
       separatorBuilder: (_, __) => const SizedBox(height: 8),
@@ -370,6 +424,7 @@ class _ReferenceImageListPanel extends StatelessWidget {
 
 class _ReferenceImagePreviewPanel extends StatelessWidget {
   const _ReferenceImagePreviewPanel({
+    super.key,
     required this.record,
     required this.file,
     required this.hasLocalProjectDirectory,
@@ -400,6 +455,7 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
     }
 
     return ListView(
+      key: const ValueKey('reference-image-preview-scroll'),
       padding: const EdgeInsets.all(12),
       children: [
         _ReferenceImageMetadataSection(
@@ -415,12 +471,20 @@ class _ReferenceImagePreviewPanel extends StatelessWidget {
           children: [
             Text('Type: ${record!.mimeType}'),
             Text('Size: ${record!.fileSizeBytes} bytes'),
-            Text('Stored path: ${record!.storedRelativePath}'),
+            Text(
+              'Stored path: ${record!.storedRelativePath}',
+              softWrap: true,
+              overflow: TextOverflow.visible,
+            ),
             if (record!.sha256 != null) ...[
               const SizedBox(height: 8),
               const Text(
                   'File integrity / duplicate check — not an evidence seal.'),
-              Text('SHA-256: ${record!.sha256}'),
+              Text(
+                'SHA-256: ${record!.sha256}',
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
             ],
           ],
         ),

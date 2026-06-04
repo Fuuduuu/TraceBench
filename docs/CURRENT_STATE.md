@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
+- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -49,11 +49,11 @@ Branch: `main`
   - `Reference Images` widget tests are accepted as passing.
   - `py -3 tools\validate_all.py` is passing.
   - no forbidden UX affordances or evidence-boundary regressions are present.
-- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS` is now active:
-  - locks the next implementation to responsive/narrow-window layout only,
-  - keeps wide behavior stable,
-  - preserves existing metadata grouping, copy/safety, accessibility semantics, and state handling,
-  - keeps model-B and evidence-boundary constraints intact.
+- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS` is currently in progress:
+  - implemented constrained-width responsive behavior for `ReferenceImagesScreen` while preserving existing wide layout,
+  - adds narrow-window stacking for list + preview and avoids overflow with wrapped long metadata text/fields,
+  - adds stable widget test coverage for both wide and narrow width behavior with bounded pumps,
+  - preserves metadata grouping, required copy/safety wording, accessibility semantics, and Model-B boundaries.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
@@ -146,9 +146,9 @@ Branch: `main`
   - unrelated intermittent `project_creator_test.dart` temp-file flake is isolated and non-blocking.
   - CRLF/LF warnings are non-blocking.
 - `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` NITs:
-  - layout is currently non-responsive and cramped in parts.
-  - safety copy card + import row consume excess vertical space.
-  - long stored path and SHA text needs responsive layout follow-up.
+  - responsive layout follow-up is now implemented in `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
+  - safety copy card + import row now render within narrow constraints.
+  - long stored-path and SHA text overflow handling is addressed in narrow layout.
 
 ## Hard boundaries
 

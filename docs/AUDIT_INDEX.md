@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS.md | in_progress (docs-only scope lock: records Claude Design GO, locks read-only Board Canvas visual polish scope and exact allowed files, routes to `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`; evidence boundaries preserved) |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md | completed |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md | completed |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_SCOPE_LOCK_PASS.md | completed |

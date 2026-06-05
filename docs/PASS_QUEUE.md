@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -49,6 +49,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Locked the narrow responsive layout implementation scope; implementation target is `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`. |
 | REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS | FLUTTER_PASS | completed | Implement constrained-width responsive behavior for Reference Images: wide/narrow layout handling, overflow-safe long-path metadata display, and layout-focused widget verification (`11/11` tests). |
 | REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out accepted responsive-layout implementation, record `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS` outcome (`ACCEPT_AS_IS`), and route next to `V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS`. |
+| V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed Reference Images UX track complete and governance clean; recommended opening the Board Canvas read-only visual polish track via scope lock. Decision recorded in `CURRENT_STATE`. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | in_progress | Docs-only lock of a small read-only Board Canvas visual polish scope (presentation/styling/layout/label clarity on existing projection facts); records Claude Design GO; locks exact allowed files and read-only geometry sources; routes to `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | FLUTTER_PASS | planned | Implement locked read-only Board Canvas visual polish in `lib/features/board_canvas/screens/board_canvas_screen.dart` + `test/widget/board_canvas_screen_test.dart` only; preserve evidence boundaries (renderer writes none; no schema/materializer/ZIP/board_graph/view_state; no AI/OCR/CV; no overlay/transform; no edit/confirm/promote). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

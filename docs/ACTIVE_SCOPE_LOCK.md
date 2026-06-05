@@ -2,14 +2,14 @@
 
 ## Current pass
 
-- Current pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`
-- Lane: `DOCS_SYNC`
-- Mode: Docs-only closeout.
-- Next recommended pass: `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`
+- Lane: `CODEX / DOCS_SYNC_SCOPE_LOCK`
+- Mode: Docs-only scope lock. No runtime implementation.
+- Next recommended pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Goal
 
-Record the accepted and pushed `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`, its Claude Code / Opus post-audit result, the small `CURRENT_STATE.md` self-loop fix, and the preserved non-canonical sourced-values / research-sidecar boundaries.
+Lock future Reference Values Panel display/provenance rules so measured values, reference/source values, candidate values, and notes are visually and semantically distinct before any UX styling, helper, or implementation work.
 
 ## Write allowlist
 
@@ -19,29 +19,47 @@ Record the accepted and pushed `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_S
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
-- `docs/audit/TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
-- No runtime code, Flutter runtime, tests, tools, schemas, validators, materializer, samples, assets, generated artifacts, tags, or release objects.
-- No Project ZIP contract changes.
-- No Board Canvas runtime changes.
-- No Reference Images runtime changes.
-- No AI/OCR/CV, URL import, source search, or event-writing implementation.
+- No implementation code, tests, UI runtime, Reference Values Panel runtime, schemas, validators, tools, materializer, samples, assets, generated artifacts, platform folders, tags, or release objects.
+- No Project ZIP logic or contract change.
+- No Board Canvas runtime change.
+- No Reference Images runtime change.
+- No AI/OCR/CV, source search, URL import, web scrape, datasheet parser, public upload, cloud sync, resource-pack, commercial/licensing, or event-writing implementation.
 - No `events.jsonl`, `known_facts.json`, `board_graph.json`, or `view_state.json` changes.
+- No real Save Measurement / Add Component / Edit Component before `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`.
 
-## Evidence and product boundaries
+## Core boundaries
 
 - Human is the sensor. AI is the graph engine.
-- `events.jsonl` remains canonical event truth.
-- `known_facts.json` remains a materialized projection.
-- Sourced/reference/research/candidate values remain non-canonical sidecar concepts unless separately scoped and human-confirmed.
-- They are not measurements, confirmed component facts, nets, diagnoses, probability claims, or Board Canvas evidence.
-- Reference/research values may guide a technician but must visually rank below local human measurements and must not mutate canonical facts.
+- AI must not create canonical facts.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains materialized projection.
+- Renderer/view writes nothing unless explicitly scoped.
+- Sourced/reference/research/candidate values are non-canonical, not measurements, not facts, not nets, not diagnoses, not probability claims, and must visually rank below human measurements.
+- Damage/suspect/source/research are not proof.
 
-## Closeout notes
+## Reference Values Panel rules locked
 
-- The scope-lock pass was accepted/pushed.
-- Claude Code / Opus post-audit returned `NEEDS_SMALL_PATCH` for a routing self-loop in `CURRENT_STATE.md` only.
-- The two-line `CURRENT_STATE.md` route fix was applied and revalidated with `py -3 tools\validate_all.py`: PASS.
-- Closeout routes to `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS` before implementation work.
+- Docs-only scope lock - no runtime implementation; lock allowed files + future implementation pass only.
+- The panel displays values and writes nothing.
+- Lock distinct visual treatment for measured vs reference/source vs candidate vs note.
+- Reference/candidate/note must never look measured.
+- Reference/candidate/note must rank below local human measurements.
+- Non-canonical: no mutation of events.jsonl, known_facts.json, materializer output, Project ZIP contract, or Board Canvas evidence rendering.
+- No AI/OCR/CV, source search, URL import, web scrape, or datasheet parsing.
+- No promotion of reference/candidate/note to measured/canonical without a separately scoped human-confirmed measurement/event-writing workflow.
+- No real Save Measurement / Add Component / Edit Component.
+- Technician-first: the measured-vs-reference distinction must be obvious to a repair tech without schema/event/projection/sidecar knowledge.
+- No fault diagnosis, net inference, component-identity confirmation, or probability claims.
+- Damage/suspect/source/research are not proof.
+
+## Future pass split
+
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`: required independent post-audit before implementation.
+- `REFERENCE_VALUES_PANEL_IMPL_PASS`: future display-only implementation after this lock is accepted and post-audited; must not write events or canonical facts.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design / UX critique after requesting full prototype bundle.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
+- `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.

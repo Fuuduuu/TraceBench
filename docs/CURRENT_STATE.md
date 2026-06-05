@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`
+- Current pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`
+- Next recommended pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -61,19 +61,20 @@ Branch: `main`
 - `V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`: records user-created/pushed verified `v1.1.0-rc1` milestone tag.
 - `V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS`: records automated/static baseline PASS and user live smoke `PASS_WITH_NITS`.
 - `TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`: records accepted technician-first workflow direction and future route candidates.
+- `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`: read-only route review returned `PASS` and selected `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS` as highest-value, lowest-risk, ready-now next pass.
 
 ## Future candidates
 
-- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: completed/pushed docs-only scope lock; Claude Code / Opus post-audit returned `NEEDS_SMALL_PATCH`, the `CURRENT_STATE.md` self-loop was patched, validation passed, and closeout routes to post-scope route review.
-- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`: next recommended Claude Code / Opus audit for the sidecar scope lock.
-- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted/pushed scope lock, post-audit small patch, preserved boundaries, and route to `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`.
-- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: display distinction between measured, reference, candidate, and note values.
+- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: completed/pushed docs-only scope lock; non-canonical sourced/reference/research/candidate values remain sidecar concepts below human measurements.
+- `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`: accepted read-only route review; selected `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS` because it builds on the just-locked sidecar boundary, clarifies measured/reference/candidate/note display before UX/helper work, avoids premature V2 event writing, and does not start implementation.
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: current docs-only scope lock; locks display/provenance rules only for measured, reference/source, candidate, and note values; no runtime panel implementation.
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`: next recommended Claude Code / Opus audit for the Reference Values Panel scope lock.
+- `REFERENCE_VALUES_PANEL_IMPL_PASS`: future display-only implementation only after this scope lock is accepted and post-audited; must not write events or canonical facts.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design UX review; requires full prototype bundle request first.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.
-
 ## Hard boundaries
 
 - Human is the sensor. AI is the graph engine.
@@ -92,4 +93,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`
+`REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`

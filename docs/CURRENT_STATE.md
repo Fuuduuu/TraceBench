@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_TEST_AND_LINT_HYGIENE_PASS`
-- Next recommended pass: `V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`
+- Current pass: `V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -55,6 +55,8 @@ Branch: `main`
 - `V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`: accepted/pushed docs-only closeout.
 - `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`: audit-only; confirmed governance clean, found a `docs/AUDIT_INDEX.md` backtick-n table artifact, and recommended the test/lint/docs hygiene pass.
 - `V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`: accepted/pushed docs-only lock; `flutter analyze` = 52 issues/0 errors; locks one behavior-preserving pass (AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, mechanical lint cleanup) with 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`.
+- `V1_1_TEST_AND_LINT_HYGIENE_PASS`: accepted/pushed behavior-preserving hygiene implementation; repaired AUDIT_INDEX formatting, added measurement success error-absence assertion, added direct `path` dev dependency with lockfile consistency, and reduced analyzer output to 5 explicitly deferred residuals.
+- `V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`: accepted re-audit outcome `ACCEPT_AS_IS` after small-patch authorization for `board_graph_model.dart`, `home_screen.dart`, and `pubspec.lock` inclusion.
 
 ## Roadmap
 
@@ -65,8 +67,7 @@ Branch: `main`
 
 ## Future candidates after route review
 
-- Small test/lint hygiene pass for `measurement_write_screen_test.dart` errorFinder assertion.
-- Analyzer/lint cleanup.
+- Post test/lint hygiene route review.
 - Import/export usage runbook.
 - Commercial-readiness strategy lane.
 
@@ -90,4 +91,4 @@ These are candidates only. They are not started by this pass.
 
 ## Next recommended pass
 
-`V1_1_TEST_AND_LINT_HYGIENE_PASS`
+`V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`

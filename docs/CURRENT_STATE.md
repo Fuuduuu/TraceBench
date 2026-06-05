@@ -3,9 +3,9 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_CURRENT_STATE_COMPACTION_PASS`
-- Next recommended pass: `V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS`
-- Docs drift countdown: `5`
+- Current pass: `V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS`
+- Next recommended pass: `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
+- Docs drift countdown: `5` (to be superseded by a line-count trigger per the locked memory reconciliation scope)
 
 ## Compact handoff
 
@@ -47,7 +47,9 @@ Branch: `main`
 
 - `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`: completed and accepted.
 - `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`: audit-only, no repo modifications; accepted input recommends this compaction pass because `CURRENT_STATE.md` had grown too long.
-- `V1_1_CURRENT_STATE_COMPACTION_PASS`: current docs-only bounded compaction.
+- `V1_1_CURRENT_STATE_COMPACTION_PASS`: accepted/pushed docs-only bounded compaction (CURRENT_STATE 205 → 86 lines; no history pruned).
+- Memory-consolidation audit (audit-only): link-clean memory system with meta-drift findings F1–F6 (broken drift trigger, divergent read-order/conflict-order, stale cleanup pointer, registry omissions, stale `PROJECT_STATE.yml`).
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS`: current docs-only lock; routes to `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` (supersedes the post-compaction route review).
 
 ## Roadmap
 
@@ -83,4 +85,4 @@ These are candidates only. They are not started by this pass.
 
 ## Next recommended pass
 
-`V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS`
+`V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`

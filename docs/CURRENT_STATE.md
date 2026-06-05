@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
-- Next recommended pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS`
+- Current pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -74,7 +74,7 @@ Branch: `main`
   - no scope drift,
   - Board Canvas widget tests passed (`43/43`),
   - `py -3 tools\validate_all.py` passed,
-  - full Flutter suite had one unrelated known `project_creator_test.dart` Windows temp-file flake; isolated rerun passed,
+  - the unrelated `project_creator_test.dart` Windows full-suite flake recorded at that time is now resolved by `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`,
   - forbidden-surface diff clean and evidence boundaries preserved.
 - `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS` (AUDIT_ONLY) confirmed both V1.1 tracks (Reference Images UX, Board Canvas read-only visual polish) are complete and recommended fixing the `project_creator_test.dart` flake next.
 - `PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS` is accepted/pushed:
@@ -82,16 +82,24 @@ Branch: `main`
   - locks `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` (TEST_FIX) as the next implementation pass,
   - locks exact allowed file (`test/unit/project_creator_test.dart`) + governance/audit docs, and forbids any production/materializer/schema/tools/sample/ZIP/Board Canvas/Reference Images change,
   - locks the fix (synchronous/awaited fake write + post-`createProject` `known_facts.json` existence assertion) and validation (targeted test, full suite repeated 3–5×, `validate_all.py`).
-- `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` is the current test-only implementation pass:
+- `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` is accepted/pushed:
   - makes the fake materializer write `known_facts.json` synchronously before the fake runner returns,
   - adds a deterministic post-`createProject` assertion that `known_facts.json` exists,
   - leaves production `ProjectCreator`, materializer, tools, schemas, samples, Project ZIP, Board Canvas, and Reference Images untouched,
-  - routes next to `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS`.
+  - post-audit `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS` returned `ACCEPT_AS_IS`,
+  - targeted project creator test passed (`7/7`),
+  - full Flutter suite repeated passed (`5/5` runs),
+  - `py -3 tools\validate_all.py` passed,
+  - no scope drift and no forbidden-surface diff.
+- `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS` is the current docs-only closeout:
+  - records accepted/pushed status for `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`,
+  - records Claude Code / Opus post-audit `ACCEPT_AS_IS`,
+  - retires the standing `project_creator_test.dart` flake NIT from current routing,
+  - routes next to `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
   - import row now uses `Wrap` for responsive alignment.
   - key placement differs between wide and narrow branches.
-- NIT: unrelated `project_creator_test.dart` flake in full suite.
 - NIT: some smoke identifiers are covered by fixture + `validate_all.py`, not all as widget-test string assertions.
 - NIT: cosmetic indentation drift.
 - NIT: CRLF/LF warning noise on Windows.
@@ -179,7 +187,6 @@ Branch: `main`
   - `_humanReadableImportError` raw string mapping approach is acceptable for this scope
 - REFERENCE_IMAGES metadata grouping closeout NITs are non-blocking:
   - `Project ID` is surfaced in Provenance; it is existing record metadata.
-  - unrelated intermittent `project_creator_test.dart` temp-file flake is isolated and non-blocking.
   - CRLF/LF warnings are non-blocking.
 - `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` NITs:
   - responsive layout follow-up is now implemented in `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.

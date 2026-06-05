@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
+`PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS`
+`V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -57,7 +57,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed both V1.1 tracks complete and governance clean; recommended fixing the `project_creator_test.dart` flake next via a test-only scope lock. Decision recorded in `CURRENT_STATE`. |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of a test-only fix for the `project_creator_test.dart` Windows full-suite flake (un-awaited fake materializer write -> read-before-write race on `known_facts.json`); locks exact allowed test file + the fix + validation; routes to `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`. |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_PASS | TEST_FIX_PASS | completed | Applied the locked test-only fix in `test/unit/project_creator_test.dart` (synchronous fake materializer write + post-`createProject` `known_facts.json` existence assertion); no production change; targeted test, 3 full Flutter suite runs, and `validate_all.py` passed; route next to post-audit. |
-| PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus post-audit and repeated reliability validation for the test-only `project_creator_test.dart` flake fix before acceptance. |
+| PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the test-only `project_creator_test.dart` flake fix: no scope drift; targeted test PASS (`7/7`); full Flutter suite repeated PASS (`5/5`); `validate_all.py` PASS; forbidden surfaces clean. |
+| PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`, Claude Code post-audit `ACCEPT_AS_IS`, flake-NIT retirement, and route to `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`. |
+| V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Review V1.1 routing after test reliability hardening and choose the next safe governance/backlog step without starting V2 implementation. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

@@ -2,59 +2,54 @@
 
 ## Current pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`
+`V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout for the accepted `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` implementation and Claude Code / Opus post-audit re-audit result. Record accepted state, validation, no scope drift, and route to the next post-memory reconciliation route review without changing product/evidence semantics.
+Docs-only scope lock for a behavior-preserving test/lint/docs hygiene pass: repair the `AUDIT_INDEX.md` backtick-n table artifact, add the missing measurement-write error-absence assertion, and clear the mechanical analyzer warnings. No logic/behavior/evidence-semantics change.
 
-## Allowed docs surfaces
+## Accepted input
+
+- `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS` (AUDIT_ONLY) recommended this pass; this lock adopts that recommendation. Memory-system reconciliation chain is accepted/pushed.
+- `flutter analyze` = 52 issues, 0 errors (info/warning only).
+
+## Allowed docs surfaces (this pass)
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS.md`
+- `docs/audit/V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS.md`
 
-## Accepted closeout state
+## Locked decision
 
-- `V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS` is accepted/pushed.
-- `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` is accepted/pushed.
-- `V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS` re-audit verdict is `ACCEPT_AS_IS`.
-- Canonical read order is owned by `docs/MEMORY_PROTOCOL.md` §5.
-- Canonical conflict order is owned by `docs/MEMORY_REGISTRY.yml` `rules.conflict_order`.
-- Schema/data-contract precedence is restored above routing/handoff docs.
-- `docs/MEMORY_MAINTENANCE.md` is the single canonical owner for the `CURRENT_STATE.md` line-count compaction trigger.
-- `docs/PROJECT_STATE.yml` is deprecated/deprioritized as non-canonical snapshot/debug data.
-- No audit history was pruned.
-- No product/evidence semantics changed.
+One combined behavior-preserving pass `V1_1_TEST_AND_LINT_HYGIENE_PASS` covering: (A) AUDIT_INDEX `` `n `` repair, (B) measurement-write error-absence assertion, (C) mechanical analyzer cleanup (allowed rule categories only). pumpAndSettle migration and 4 judgment analyzer items are DEFERRED. Full scope, exact allowed files, allowed/deferred rule categories, and validation are detailed in `docs/audit/V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS.md`.
 
-## Forbidden surfaces
+## Locked implementation surfaces (next pass)
 
-- No code changes.
-- No test changes.
-- No tools changes.
-- No schemas.
-- No materializer changes.
-- No samples/assets.
-- No generated artifacts.
-- No tags/releases.
-- No Project ZIP changes.
-- No Board Canvas implementation changes.
-- No Reference Images implementation changes.
-- No product/evidence semantics changes.
-- No V2 implementation.
-- No commercial/licensing implementation.
-- No audit-history pruning.
-- No `board_graph.json`.
-- No `view_state.json`.
+Docs: `docs/AUDIT_INDEX.md`, `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/audit/V1_1_TEST_AND_LINT_HYGIENE_PASS.md`.
+Test: `test/widget/measurement_write_screen_test.dart`, `test/widget/reference_images_screen_test.dart`, `test/widget/customer_report_screen_test.dart`, `test/widget/new_project_wizard_screen_test.dart`, `test/unit/board_graph_projection_test.dart`, `test/unit/event_parsing_test.dart`, `test/unit/project_exporter_test.dart`, `test/integration/pelle_sample_end_to_end_test.dart`.
+Lib (mechanical lint only): `lib/features/board_canvas/screens/board_canvas_screen.dart`, `lib/features/board_graph/screens/board_graph_screen.dart`, `lib/features/board_graph/widgets/board_graph_canvas.dart`, `lib/features/photos/screens/photo_list_screen.dart`, `lib/features/reference_images/screens/reference_images_screen.dart`, `lib/features/reference_images/services/reference_image_sidecar_service.dart`, `lib/shared/models/project_state.dart`, `lib/shared/services/project_loader.dart`, `lib/shared/widgets/projection_stale_banner.dart`.
+Manifest: `pubspec.yaml` (add `path` to `dev_dependencies` only).
+
+Excluded lib files (deferred-rule only, do NOT modify): `lib/features/report/screens/customer_report_screen.dart`, `lib/shared/services/python_runner.dart`, `lib/features/measurements/screens/measurement_record_screen.dart`.
+
+## Deferred (not in the hygiene pass)
+
+- `unreachable_switch_case` (customer_report_screen.dart), `library_private_types_in_public_api` (python_runner.dart), value→initialValue deprecation (measurement_record_screen.dart), `overridden_fields` restructure (reference_images_screen_test.dart), all `pumpAndSettle` migration.
+
+## Forbidden surfaces (next pass)
+
+- No feature/product/evidence-semantics/event-writing changes; no behavior change in lib lint edits.
+- No Reference Images/Board Canvas feature logic; no Project ZIP/schema/materializer/tools/sample/asset/generated-artifact/tag/release changes.
+- No `board_graph.json`/`view_state.json`; no V2/commercial/licensing.
+- No audit-history pruning; no broad formatting sweep; no broad test refactor; none of the deferred analyzer items.
 
 ## Hard boundaries preserved
 
 - Human is the sensor. AI is the graph engine.
-- `events.jsonl` remains canonical truth; `known_facts.json` remains materialized projection.
-- Renderer/view writes nothing unless explicitly scoped.
-- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- `events.jsonl` canonical truth; `known_facts.json` materialized projection; renderer/view writes nothing unless explicitly scoped.
+- `board_graph.json` / `view_state.json` forbidden V1 artifacts.
 - `visual_trace` is not a net; `template_id` / footprint family is not electrical identity.
 - Photo pixels are not facts; photo alignment is not identity/pin/net/measurement/fault proof; damage/suspect are not proof or probability.
 - Reference Images remain local sidecar only, non-canonical, outside Project ZIP/events/known_facts/materializer/Board Canvas/AI/OCR/CV/URL import.
@@ -64,12 +59,8 @@ Docs-only closeout for the accepted `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` imp
 
 - `git status --short --branch`
 - `git diff --name-only`
-- `py -3 tools/validate_all.py`
-- Verify CURRENT_STATE / PASS_QUEUE / ACTIVE_SCOPE_LOCK agree on current and next.
-- Verify AUDIT_INDEX contains the closeout row.
-- Verify CURRENT_STATE remains compact and below the approximately 120-line trigger.
-- Verify no non-doc files changed.
+- `py -3 tools\validate_all.py`
 
 ## Next recommended pass
 
-`V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`
+`V1_1_TEST_AND_LINT_HYGIENE_PASS`

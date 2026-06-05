@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS`
+`PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`
+`PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -53,8 +53,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of a small read-only Board Canvas visual polish scope (presentation/styling/layout/label clarity on existing projection facts); records Claude Design GO; locks exact allowed files and read-only geometry sources; routes to `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`. |
 | BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | FLUTTER_PASS | completed | Implemented first narrow read-only Board Canvas visual polish slice: canvas hierarchy, static footprint legend/safety caption, existing-template footprint body/pad/orientation rendering, and focused widget assertions; preserved evidence boundaries. |
 | BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the read-only Board Canvas visual polish implementation slice: no scope drift, Board Canvas widget tests PASS (`43/43`), `validate_all.py` PASS, forbidden-surface diff clean; unrelated `project_creator_test.dart` Windows temp-file flake isolated/non-blocking. |
-| BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Docs-only closeout recording accepted implementation and post-audit result for `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`; route next to `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`. |
-| V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS | DOCS_SYNC / ROUTE_REVIEW | planned | Review V1.1 route after accepted Board Canvas read-only visual polish; choose next bounded V1.1 hardening/docs route without starting V2 or evidence-write work. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted implementation and post-audit (`ACCEPT_AS_IS`) for `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`; routed to `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`. |
+| V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed both V1.1 tracks complete and governance clean; recommended fixing the `project_creator_test.dart` flake next via a test-only scope lock. Decision recorded in `CURRENT_STATE`. |
+| PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | in_progress | Docs-only lock of a test-only fix for the `project_creator_test.dart` Windows full-suite flake (un-awaited fake materializer write → read-before-write race on `known_facts.json`); locks exact allowed test file + the fix + validation; routes to `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`. |
+| PROJECT_CREATOR_TEST_FLAKE_FIX_PASS | TEST_FIX_PASS | planned | Apply the locked test-only fix in `test/unit/project_creator_test.dart` (synchronous/awaited fake materializer write + post-`createProject` `known_facts.json` existence assertion); no production change; validate with repeated full-suite runs. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

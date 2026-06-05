@@ -2,11 +2,15 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS`
+`PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Docs-only closeout for the accepted V1.1 Board Canvas **read-only visual polish** implementation slice. Record `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS` as `ACCEPT_AS_IS`, preserve evidence boundaries, and route to post-polish route review.
+Docs-only scope lock for a **test-only** fix of the intermittent Windows full-suite flake in `test/unit/project_creator_test.dart`. Production `ProjectCreator` is correct and must not change.
+
+## Accepted root cause (test-only)
+
+The fake process-runner `behavior` is synchronous but starts an un-awaited async write of `known_facts.json` (`_writeMaterializedKnownFacts`) and returns immediately. `known_facts.json` is created only by that write; production reads it right after `run(...)` resolves. Under full-suite parallel load the read can precede the write → `PathNotFound` → intermittent failure of the one materializer test (~20%, passes isolated).
 
 ## Allowed docs surfaces (this pass)
 
@@ -14,42 +18,42 @@ Docs-only closeout for the accepted V1.1 Board Canvas **read-only visual polish*
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS.md`
+- `docs/audit/PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS.md`
 
-## Scope lock summary
+## Locked implementation surfaces (next pass `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`)
 
-- Allowed (presentation-only, on existing projection facts): substrate/contrast; real vector footprint outline + pads + pin-1 marker + designator from existing `FootprintTemplate` geometry; right-hand metadata card hierarchy in fixed order; non-color-only category tags (`MEASURED`/`VISUAL`/`READINESS`); selected/hover/focus clarity (read-only, no edit/proof cues); static legend + zoom label density via existing `lodHints`; calm empty/loading/error copy; evidence-safety captions; persistent `renderer writes: none`; responsive collapse with canvas dominant and metadata reflow below.
-- Board Canvas remains read-only; canvas remains the hero; no persisted view state.
-- This track is separate from Reference Images.
+- `test/unit/project_creator_test.dart`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PROJECT_CREATOR_TEST_FLAKE_FIX_PASS.md`
 
-## Forbidden surfaces
+## Scope lock summary (what the next pass does)
 
-- Event writing; `events.jsonl` / `known_facts.json` mutation; materializer changes; schema changes.
-- Project ZIP contract changes; `board_graph.json`; `view_state.json`; any persisted view state.
-- Overlay / background-photo helper; transform / matrix / photo alignment; computed similarity.
-- AI / OCR / CV / detect / propose / top-3.
-- `visual_trace` / damage / suspect geometry on canvas; on-canvas measurement annotations unless already rendered and read-only.
-- `visual_trace` → net; `template_id` → electrical identity; damage/suspect → fault/probability promotion.
-- Edit / confirm / save / apply / promote controls.
-- Broad screen rewrite; Reference Images work; V2 work.
-- Changes to `lib/features/board_graph/**`, services, tools, schemas, samples/assets, generated artifacts, tags/release objects.
-- New footprint geometry/fields in `footprint_models.dart` / `vector_footprint_library.dart` (registry stays read-only; presentation reads existing geometry only).
+- Make the fake materializer write complete before the fake `behavior` returns (preferred: synchronous `File(path).writeAsStringSync(..., flush: true)`; equivalent: async `behavior` that `await`s the write — pick one).
+- Add a regression assertion after `createProject` success that `known_facts.json` exists.
+- Optional only if trivial: best-effort temp-dir teardown hardening.
+- No production change; the bug is entirely in the test fake.
 
-## Test-shape guardrails (next pass)
+## Forbidden surfaces (next pass)
 
-- Existing Board Canvas smoke/positive tests stay green.
-- Assert smoke identifiers: `SMP001`, `SMP001.1`, `TP1`, `M1001`, `VT001`, `ALN1001`, `photo_smoke_top_001`, `0.1 ohm`, `Reference pairs: 2`, `declared type — not computed: similarity`, `renderer writes: none`.
-- Forbidden-wording/affordance scan (no confirm/save/apply/promote/detect/run/align/compute).
-- No-new-geometry assertion; provenance visible in in-scope modes; calm empty/loading/error states with no CTA.
-- Accessibility (contrast/focus/keyboard) where feasible.
-- No real `Image.file` decode; no filesystem-heavy widget setup; bounded pumps; prefer painter-presence + no-exception + string assertions over flaky pixel goldens.
+- Production code of any kind; specifically `lib/shared/services/project_creator.dart`.
+- Materializer, schema, tools, sample/assets, Project ZIP, Board Canvas, Reference Images.
+- V2 work; broad test refactor; unrelated flake/lint cleanup.
+- `board_graph.json` / `view_state.json`; tag/release-object mutation.
+
+## Required validation (next pass)
+
+- `flutter test test/unit/project_creator_test.dart --reporter expanded` (7/7).
+- `flutter test --reporter expanded` (full suite green); repeat 3–5× if practical to confirm the flake is gone.
+- `py -3 tools\validate_all.py` (PASS).
 
 ## Next recommended pass
 
-`V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`
+`PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
 
-## Validation
+## Validation (this scope-lock pass)
 
-- `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

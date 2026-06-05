@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
+`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`
+`TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -79,7 +79,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS | docs/audit/V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS.md | completed (docs-only closeout: automated/static baseline PASS, user live smoke PASS_WITH_NITS, no fix pass required, route to IDEALAB workflow anchor) |
 | TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS | DOCS_SYNC / PRODUCT_WORKFLOW_ANCHOR | completed | Anchored Ideelabor technician-first workflow direction, BoardFact Measure Sheet prototype as visual-only input, anti-spreadsheet UX guardrails, and future route candidates; no implementation started. |
 | TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | CODEX / DOCS_ONLY_SCOPE_LOCK | completed | Locked non-canonical sourced/reference/research/candidate-value sidecar boundaries: not measurements, facts, nets, diagnoses, probabilities, Project ZIP contract, materializer output, Board Canvas evidence, AI/OCR/CV, or event/known_facts mutation; promotion requires separately scoped human-confirmed event-writing workflow. |
-| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus audit of the sourced-values/research-sidecar scope lock before any implementation or follow-on scope split. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Post-audit returned `NEEDS_SMALL_PATCH`; `CURRENT_STATE.md` self-loop/cross-doc route conflict was fixed by a two-line docs-only patch and `py -3 tools\validate_all.py` passed. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Records accepted/pushed sourced-values sidecar scope lock, post-audit `NEEDS_SMALL_PATCH`, small CURRENT_STATE route fix, validation PASS, preserved boundaries, and route to post-scope route review. |
+| TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS | ROUTE_REVIEW / DOCS_SYNC | planned | Choose the next value-track route after sourced-values sidecar scope lock closeout; consider technician-first UX design, reference values panel, guided measurement helper, and V2 event-writing architecture without starting implementation. |
 | QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
 | V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Required before real Save Measurement, Add Component, or Edit Component behavior; no shortcut from prototype save behavior to canonical event writing. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock measured vs reference vs hint vs candidate value display rules so reference/research/candidate values never look measured. |

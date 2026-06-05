@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
-- Next recommended pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -64,8 +64,9 @@ Branch: `main`
 
 ## Future candidates
 
-- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: current docs-only scope lock; non-canonical sourced/reference/research/candidate values only, visually below human measurements, no canonical mutation.
+- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: completed/pushed docs-only scope lock; Claude Code / Opus post-audit returned `NEEDS_SMALL_PATCH`, the `CURRENT_STATE.md` self-loop was patched, validation passed, and closeout routes to post-scope route review.
 - `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`: next recommended Claude Code / Opus audit for the sidecar scope lock.
+- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted/pushed scope lock, post-audit small patch, preserved boundaries, and route to `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`.
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: display distinction between measured, reference, candidate, and note values.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design UX review; requires full prototype bundle request first.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.

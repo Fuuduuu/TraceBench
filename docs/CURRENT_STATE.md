@@ -70,7 +70,6 @@ Branch: `main`
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: display distinction between measured, reference, candidate, and note values.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design UX review; requires full prototype bundle request first.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
-- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: measured vs reference vs hint vs candidate display rules.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.
@@ -93,4 +92,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`
+`TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`

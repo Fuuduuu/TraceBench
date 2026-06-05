@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
+`V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`
+`V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -64,7 +64,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | superseded | Superseded by the memory-consolidation audit, which served as the deeper post-compaction review and produced memory findings F1–F6. |
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock reconciling memory/governance meta-docs (F1–F6): canonical read-order owner `MEMORY_PROTOCOL.md`, canonical conflict-order owner `MEMORY_REGISTRY.yml`, registry completeness, stale `_04` pointer fix, maintenance trigger -> line-count (Option B), and `PROJECT_STATE.yml` deprecation; routes to `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`. |
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS | DOCS_SYNC | completed | Applied the locked memory reconciliation in governance/meta docs only: single owners for read/conflict order with pointers, registry additions, non-stale cleanup pointer, line-count maintenance trigger, and `PROJECT_STATE.yml` deprecation; no code/test/tool/schema/product change; no audit-history pruning. |
-| V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus post-audit for memory/governance reconciliation consistency, boundary preservation, and no duplicate read/conflict order payloads. |
+| V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit and re-audit accepted the memory/governance reconciliation after the small precedence/canonical-owner patch; no scope drift, validation green, and forbidden surfaces clean. |
+| V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed memory reconciliation implementation and re-audit `ACCEPT_AS_IS`; routes next to `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`. |
+| V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Route review after memory-system reconciliation closeout; choose the next bounded V1.1 hardening/governance pass without starting V2 or unrelated cleanup. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

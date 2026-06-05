@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
-- Next recommended pass: `V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`
+- Current pass: `V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -50,7 +50,9 @@ Branch: `main`
 - `V1_1_CURRENT_STATE_COMPACTION_PASS`: accepted/pushed docs-only bounded compaction (CURRENT_STATE 205 → 86 lines; no history pruned).
 - Memory-consolidation audit (audit-only): link-clean memory system with meta-drift findings F1–F6 (broken drift trigger, divergent read-order/conflict-order, stale cleanup pointer, registry omissions, stale `PROJECT_STATE.yml`).
 - `V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS`: accepted/pushed docs-only lock; routes to `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` (supersedes the post-compaction route review).
-- `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`: current docs-only implementation; reconciles read-order/conflict-order ownership, memory registry completeness, line-count maintenance trigger, non-stale cleanup pointer, and non-canonical `PROJECT_STATE.yml` treatment.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`: accepted/pushed docs-only implementation; reconciled read-order/conflict-order ownership, memory registry completeness, line-count maintenance trigger, non-stale cleanup pointer, and non-canonical `PROJECT_STATE.yml` treatment.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`: accepted re-audit outcome `ACCEPT_AS_IS` after the small precedence/canonical-owner patch.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`: current docs-only closeout; records accepted implementation, re-audit, validation, and route to post-memory reconciliation route review.
 
 ## Roadmap
 
@@ -86,4 +88,4 @@ These are candidates only. They are not started by this pass.
 
 ## Next recommended pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`
+`V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`

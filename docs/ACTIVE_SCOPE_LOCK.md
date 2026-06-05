@@ -2,33 +2,32 @@
 
 ## Current pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
+`V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only memory/governance reconciliation after the accepted scope lock. Implement canonical ownership of read order and conflict order, registry completeness, stale cleanup pointer repair, line-count maintenance trigger, and non-canonical `PROJECT_STATE.yml` treatment without changing product/evidence semantics.
+Docs-only closeout for the accepted `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` implementation and Claude Code / Opus post-audit re-audit result. Record accepted state, validation, no scope drift, and route to the next post-memory reconciliation route review without changing product/evidence semantics.
 
 ## Allowed docs surfaces
 
-- `docs/MEMORY_PROTOCOL.md`
-- `docs/MEMORY_REGISTRY.yml`
-- `docs/MEMORY_MAINTENANCE.md`
-- `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/PROJECT_STATE.yml`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS.md`
+- `docs/audit/V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS.md`
 
-## Implemented decisions (F1-F6)
+## Accepted closeout state
 
-- F2 read order: canonical owner is `docs/MEMORY_PROTOCOL.md` §5; `docs/SOURCES_INDEX_CURRENT.md` points there.
-- F3 conflict order: canonical owner is `docs/MEMORY_REGISTRY.yml` `rules.conflict_order`; `docs/SOURCES_INDEX_CURRENT.md` points there.
-- F5 registry completeness: `docs/CURRENT_STATE.md`, `docs/TRUTH_INDEX.md`, and `docs/MEMORY_PROTOCOL.md` are represented in `docs/MEMORY_REGISTRY.yml`.
-- F4 stale pointer: hard-coded `DOCS_DRIFT_MINI_CLEANUP_04_PASS` pointer is replaced with a non-stale `docs/AUDIT_INDEX.md` lookup pattern.
-- F1 maintenance trigger: canonical trigger is `CURRENT_STATE.md` line count over approximately 120 lines; the old manual countdown is deprecated/superseded.
-- F6 `PROJECT_STATE.yml`: explicitly deprecated/deprioritized as non-canonical; live state remains owned by `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS` is accepted/pushed.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS` is accepted/pushed.
+- `V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS` re-audit verdict is `ACCEPT_AS_IS`.
+- Canonical read order is owned by `docs/MEMORY_PROTOCOL.md` §5.
+- Canonical conflict order is owned by `docs/MEMORY_REGISTRY.yml` `rules.conflict_order`.
+- Schema/data-contract precedence is restored above routing/handoff docs.
+- `docs/MEMORY_MAINTENANCE.md` is the single canonical owner for the `CURRENT_STATE.md` line-count compaction trigger.
+- `docs/PROJECT_STATE.yml` is deprecated/deprioritized as non-canonical snapshot/debug data.
+- No audit history was pruned.
+- No product/evidence semantics changed.
 
 ## Forbidden surfaces
 
@@ -66,10 +65,11 @@ Docs-only memory/governance reconciliation after the accepted scope lock. Implem
 - `git status --short --branch`
 - `git diff --name-only`
 - `py -3 tools/validate_all.py`
-- Verify no duplicate read-order/conflict-order payload remains.
-- Verify no broken doc references introduced by this pass.
-- Verify audit history was not pruned.
+- Verify CURRENT_STATE / PASS_QUEUE / ACTIVE_SCOPE_LOCK agree on current and next.
+- Verify AUDIT_INDEX contains the closeout row.
+- Verify CURRENT_STATE remains compact and below the approximately 120-line trigger.
+- Verify no non-doc files changed.
 
 ## Next recommended pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`
+`V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`

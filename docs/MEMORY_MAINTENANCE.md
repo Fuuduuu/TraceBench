@@ -32,14 +32,17 @@ Do not implement unplanned ideas directly.
 - Active next step lives in one place?
 - Duplicate facts introduced?
 - Deferred ideas routed?
-- Docs drift countdown decremented?
+- `CURRENT_STATE.md` line count checked?
 
-## Drift countdown
+## Current-state compaction trigger
 
-- Start at 5.
-- Decrement after accepted pass.
-- At 0, run the latest active mini cleanup pass (currently `DOCS_DRIFT_MINI_CLEANUP_04_PASS`) before another feature pass.
-- Reset to 5 after cleanup.
+This file is the single canonical owner for the rule: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
+
+- Canonical maintenance trigger: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
+- Check the line count during route reviews and closeouts.
+- If compaction is needed, route a bounded docs-only current-state compaction pass before another feature pass unless a higher-priority safety fix is already locked.
+- The old manually decremented docs-drift countdown is deprecated/superseded and must not be re-armed as the canonical maintenance mechanism.
+- For historical cleanup evidence, use the latest applicable `DOCS_DRIFT_MINI_CLEANUP_*` entry in `docs/AUDIT_INDEX.md`; do not hard-code a stale cleanup pass number.
 
 ## Deep cleanup
 

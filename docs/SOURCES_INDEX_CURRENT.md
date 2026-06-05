@@ -28,17 +28,11 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
   - short latest accepted summaries.
 - Move older narrative/history to `docs/audit/*.md`.
 - Use `docs/AUDIT_INDEX.md` as lookup and `docs/PASS_QUEUE.md` as routing owner.
-- When `CURRENT_STATE.md` grows beyond compact handoff use, schedule `DOCS_DRIFT_MINI_CLEANUP_PASS`.
+- Canonical maintenance trigger: compact `CURRENT_STATE.md` when it exceeds approximately 120 lines. See `docs/MEMORY_MAINTENANCE.md`.
 
 ## AI read order
 
-1. `docs/PROJECT_MEMORY.md`
-2. `docs/ACTIVE_SCOPE_LOCK.md`
-3. `docs/SOURCES_INDEX_CURRENT.md`
-4. `docs/MEMORY_REGISTRY.yml`
-5. `docs/PASS_QUEUE.md`
-6. `docs/PROMPTING_PROTOCOL.md`
-7. `docs/PROTECTED_SURFACES.md`
+Canonical read order lives in `docs/MEMORY_PROTOCOL.md` §5. Do not duplicate the ordered payload here.
 
 ## Tool / AI routing logic
 
@@ -146,15 +140,7 @@ High-risk Codex implementation must receive non-Codex review before acceptance:
 
 ## Conflict order
 
-1. `AGENTS.md`
-2. `docs/PROJECT_MEMORY.md`
-3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `schemas/*.json`
-5. `docs/DATA_MODEL.md`
-6. `docs/PASS_QUEUE.md`
-7. `docs/PROJECT_STATE.yml` snapshot only
-8. `docs/audit/*.md` pass evidence only
-9. `docs/archive/**` historical only
+Canonical conflict order lives in `docs/MEMORY_REGISTRY.yml` at `rules.conflict_order`. Do not duplicate the ordered payload here.
 
 ## Canonical truth
 
@@ -167,6 +153,7 @@ High-risk Codex implementation must receive non-Codex review before acceptance:
 
 - `docs/PROJECT_STATE.yml`
 - `tools/validate_project_state.py`
+- `docs/PROJECT_STATE.yml` is non-canonical/deprioritized. Live state is owned by `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
 
 ## Archive policy
 

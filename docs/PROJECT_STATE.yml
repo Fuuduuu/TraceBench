@@ -1,4 +1,6 @@
-# Snapshot only — not canonical truth.
+# Deprecated / deprioritized snapshot only — not canonical truth.
+# Live state is owned by docs/CURRENT_STATE.md and docs/PASS_QUEUE.md.
+# Do not use this file for routing; retained for legacy validation/debug only.
 project:
   name: TraceBench AI
   repo: unknown

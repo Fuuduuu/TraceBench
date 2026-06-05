@@ -2,56 +2,53 @@
 
 ## Current pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS`
+`V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
 
 ## Goal
 
-Docs-only scope lock for reconciling TraceBench memory/governance meta-docs after the memory-consolidation audit. Lock canonical ownership of read-order and conflict-order, registry completeness, the stale-cleanup pointer fix, the maintenance-trigger repair, and the `PROJECT_STATE.yml` treatment — without touching code, evidence semantics, or product boundaries.
+Docs-only memory/governance reconciliation after the accepted scope lock. Implement canonical ownership of read order and conflict order, registry completeness, stale cleanup pointer repair, line-count maintenance trigger, and non-canonical `PROJECT_STATE.yml` treatment without changing product/evidence semantics.
 
-## Accepted input
-
-- The memory-consolidation audit (audit-only) found a link-clean but meta-drifted memory system (findings F1–F6).
-- `V1_1_CURRENT_STATE_COMPACTION_PASS` is accepted/pushed (CURRENT_STATE 205 → 86 lines; no history pruned). The previously-queued `V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS` is superseded by the memory audit.
-
-## Allowed docs surfaces (this pass)
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V1_1_MEMORY_SYSTEM_RECONCILIATION_SCOPE_LOCK_PASS.md`
-
-## Locked implementation surfaces (next pass `V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`)
+## Allowed docs surfaces
 
 - `docs/MEMORY_PROTOCOL.md`
 - `docs/MEMORY_REGISTRY.yml`
 - `docs/MEMORY_MAINTENANCE.md`
 - `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/PROJECT_STATE.yml` (F6 deprecation annotation / optional regeneration only)
-- `docs/CURRENT_STATE.md` (small pointer / current-pass / countdown-label update only)
+- `docs/PROJECT_STATE.yml`
+- `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS.md`
 
-## Locked decisions (F1–F6)
+## Implemented decisions (F1-F6)
 
-- F2 read order: canonical owner `MEMORY_PROTOCOL.md §5`; `SOURCES_INDEX_CURRENT.md` becomes a pointer (no duplicate payload).
-- F3 conflict order: canonical owner `MEMORY_REGISTRY.yml conflict_order`; `SOURCES_INDEX_CURRENT.md` becomes a pointer (no duplicate payload).
-- F5 registry completeness: add `CURRENT_STATE.md`, `TRUTH_INDEX.md`, `MEMORY_PROTOCOL.md` to `MEMORY_REGISTRY.yml` (CURRENT_STATE mandatory as first-read file).
-- F4 stale pointer: replace hard-coded `DOCS_DRIFT_MINI_CLEANUP_04_PASS` with a non-stale pointer ("latest `DOCS_DRIFT_MINI_CLEANUP_NN` in `AUDIT_INDEX.md`").
-- **F1 maintenance trigger: LOCKED = Option B (line-count trigger).** Compact `CURRENT_STATE.md` when it exceeds ~120 lines, verifiable at every route review/closeout via `wc -l`. Redefine the legacy "Docs drift countdown" as deprecated/superseded; do not reintroduce a manually-decremented counter as the canonical mechanism.
-- **F6 `PROJECT_STATE.yml`: LOCKED = explicitly deprecate/deprioritize** (docs-only header annotation; live state lives in CURRENT_STATE + PASS_QUEUE). Optional one-time regeneration via existing `tools/validate_project_state.py` only if the tool is not modified. No new state system; no deletion.
+- F2 read order: canonical owner is `docs/MEMORY_PROTOCOL.md` §5; `docs/SOURCES_INDEX_CURRENT.md` points there.
+- F3 conflict order: canonical owner is `docs/MEMORY_REGISTRY.yml` `rules.conflict_order`; `docs/SOURCES_INDEX_CURRENT.md` points there.
+- F5 registry completeness: `docs/CURRENT_STATE.md`, `docs/TRUTH_INDEX.md`, and `docs/MEMORY_PROTOCOL.md` are represented in `docs/MEMORY_REGISTRY.yml`.
+- F4 stale pointer: hard-coded `DOCS_DRIFT_MINI_CLEANUP_04_PASS` pointer is replaced with a non-stale `docs/AUDIT_INDEX.md` lookup pattern.
+- F1 maintenance trigger: canonical trigger is `CURRENT_STATE.md` line count over approximately 120 lines; the old manual countdown is deprecated/superseded.
+- F6 `PROJECT_STATE.yml`: explicitly deprecated/deprioritized as non-canonical; live state remains owned by `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
 
-## Preserved core governance
+## Forbidden surfaces
 
-- `CURRENT_STATE.md` live handoff; `PASS_QUEUE.md` route queue; `ACTIVE_SCOPE_LOCK.md` current scope; `AUDIT_INDEX.md` ledger; `docs/audit/**` append-only evidence (no pruning). `PROJECT_MEMORY.md` / `TRUTH_INDEX.md` / `PROTECTED_SURFACES.md` ownership unchanged.
-
-## Forbidden surfaces (next pass)
-
-- No code/test/tool/schema/materializer/sample/asset/generated-artifact/tag/release changes.
-- No audit-history pruning; no broad docs rewrite; no product/evidence-semantics or hard-boundary meaning changes.
-- No `board_graph.json` / `view_state.json`; no V2 / commercial / licensing work.
+- No code changes.
+- No test changes.
+- No tools changes.
+- No schemas.
+- No materializer changes.
+- No samples/assets.
+- No generated artifacts.
+- No tags/releases.
+- No Project ZIP changes.
+- No Board Canvas implementation changes.
+- No Reference Images implementation changes.
+- No product/evidence semantics changes.
+- No V2 implementation.
+- No commercial/licensing implementation.
+- No audit-history pruning.
+- No `board_graph.json`.
+- No `view_state.json`.
 
 ## Hard boundaries preserved
 
@@ -68,8 +65,11 @@ Docs-only scope lock for reconciling TraceBench memory/governance meta-docs afte
 
 - `git status --short --branch`
 - `git diff --name-only`
-- `py -3 tools\validate_all.py`
+- `py -3 tools/validate_all.py`
+- Verify no duplicate read-order/conflict-order payload remains.
+- Verify no broken doc references introduced by this pass.
+- Verify audit history was not pruned.
 
 ## Next recommended pass
 
-`V1_1_MEMORY_SYSTEM_RECONCILIATION_PASS`
+`V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`

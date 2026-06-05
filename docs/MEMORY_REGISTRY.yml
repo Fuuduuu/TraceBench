@@ -10,17 +10,36 @@ rules:
   conflict_order:
     - AGENTS.md
     - docs/PROJECT_MEMORY.md
-    - docs/ACTIVE_SCOPE_LOCK.md
+    - docs/TRUTH_INDEX.md
+    - docs/PROTECTED_SURFACES.md
     - schemas/*.json
     - docs/DATA_MODEL.md
+    - docs/ACTIVE_SCOPE_LOCK.md
+    - docs/CURRENT_STATE.md
     - docs/PASS_QUEUE.md
+    - docs/MEMORY_PROTOCOL.md
+    - docs/MEMORY_REGISTRY.yml
+    - docs/AUDIT_INDEX.md
+    - docs/audit/*
+    - docs/archive/**
     - docs/PROJECT_STATE.yml
 
 layers:
+  first_read_context:
+    read_by_default: true
+    files:
+      - docs/CURRENT_STATE.md
+      - docs/PASS_QUEUE.md
+      - docs/ACTIVE_SCOPE_LOCK.md
+      - docs/TRUTH_INDEX.md
+      - docs/MEMORY_PROTOCOL.md
+
   canonical_truth:
     read_by_default: true
     files:
       - docs/PROJECT_MEMORY.md
+      - docs/TRUTH_INDEX.md
+      - docs/MEMORY_PROTOCOL.md
       - docs/ACTIVE_SCOPE_LOCK.md
       - docs/PROTECTED_SURFACES.md
       - schemas/events.schema.json
@@ -29,6 +48,7 @@ layers:
   active_lock_workflow:
     read_by_default: true
     files:
+      - docs/CURRENT_STATE.md
       - docs/PASS_QUEUE.md
       - docs/PROMPTING_PROTOCOL.md
       - docs/MEMORY_MAINTENANCE.md
@@ -36,7 +56,6 @@ layers:
       - docs/ACTIVE_SCOPE_LOCK.md
       - docs/SOURCES_INDEX_CURRENT.md
       - docs/AUDIT_INDEX.md
-      - docs/PROJECT_STATE.yml
       - docs/PROTECTED_SURFACES.md
       - docs/PROJECT_ZIP_SPEC.md
       - docs/FLUTTER_UI_SPEC.md
@@ -55,12 +74,14 @@ layers:
 
   snapshot_debug:
     read_by_default: false
+    truth_level: non_canonical_legacy_snapshot
     files:
       - docs/PROJECT_STATE.yml
       - tools/validate_project_state.py
 
   audit_history:
     read_by_default: false
+    truth_level: historical_evidence_only
     index: docs/AUDIT_INDEX.md
     paths:
       - docs/audit/**

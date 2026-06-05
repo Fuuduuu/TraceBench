@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
-- Next recommended pass: `V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
+- Current pass: `V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_FULL_APP_MANUAL_SMOKE_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -16,6 +16,10 @@ Branch: `main`
   - Claude Code / Opus readiness assessment returned PASS/no blockers.
   - strict-hardening backlog is exhausted to diminishing returns.
   - remaining residuals are low-value, judgment-requiring, and deferred.
+- V1.1 RC milestone tag is verified:
+  - `v1.1.0-rc1` is an annotated tag on local and `origin`.
+  - tag target is `da3f055aac912b6da43a23eeda0bd33811bb29f8`.
+  - no tag/release mutation was performed by AI.
 - Current compaction pass is docs-only:
   - `CURRENT_STATE.md` is intentionally bounded.
   - Older accepted-pass details remain in `docs/audit/*.md` and `docs/PASS_QUEUE.md`.
@@ -65,23 +69,24 @@ Branch: `main`
 - `V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`: accepted re-audit outcome `ACCEPT_AS_IS` after small-patch authorization for `board_graph_model.dart`, `home_screen.dart`, and `pubspec.lock` inclusion.
 - `V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`: accepted/pushed docs-only closeout.
 - `V1_1_HARDENING_READINESS_AND_NEXT_PHASE_ASSESSMENT_PASS`: accepted audit input; V1.1 hardening is effectively complete.
+- `V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`: accepted/pushed readiness/tag-decision docs sync.
+- `V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`: records user-created/pushed verified `v1.1.0-rc1` milestone tag.
 
 ## Roadmap
 
 - `TAG_V1_RC_FIRST`: complete.
-- `V1_1_HARDENING`: effectively complete; ready for V1.1 tag decision.
+- `V1_1_HARDENING`: effectively complete; `v1.1.0-rc1` milestone tag verified.
 - `V2_EVENT_WRITING_ARCHITECTURE`: later and separately scoped.
 - V2 does not start with photo overlay, transform, background photo helper, or Reference Images Board Canvas layering.
 
-## V1.1 tag decision
+## V1.1 tag and smoke
 
-- Do not create or move tags in docs-sync passes.
-- Recommended option: user creates a protected manual `v1.1.0-rc` milestone tag after this docs-sync is accepted/pushed, then a verification pass checks it.
-- Alternatives: continue without a V1.1 tag, or defer tagging to a later release gate.
+- `v1.1.0-rc1` is user-created, pushed, annotated, and verified.
+- Full-app manual V1.1 smoke remains pending and is the recommended next QA follow-up.
 
 ## Future candidates after tag decision
 
-- Preferred value track: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
+- Preferred value track after smoke: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
 - Alternatives: guided measurement flow scope lock, commercial-readiness/GTM/licensing strategy lane, V2 event-writing architecture scoping, or tiny deferred analyzer/pumpAndSettle hygiene tail.
 
 These are candidates only. They are not started by this pass.
@@ -104,4 +109,4 @@ These are candidates only. They are not started by this pass.
 
 ## Next recommended pass
 
-`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
+`V1_1_FULL_APP_MANUAL_SMOKE_PASS`

@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
+`V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only readiness record and tag-decision setup after accepted V1.1 hardening readiness assessment. Do not create tags or modify release objects.
+Docs-only closeout for the user-created and verified `v1.1.0-rc1` milestone tag. Do not create, move, delete, push, or otherwise mutate tags or release objects.
 
 ## Allowed files
 
-Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS.md`.
+Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS.md`.
 
-## Allowed docs-sync actions
+## Allowed closeout actions
 
-- Record V1.1 hardening readiness assessment as accepted input.
-- Record V1.1 done-enough definition and deferred residuals.
-- Record tag decision options; tag creation remains manual/user-owned and separately verified.
-- Route next to a tag decision/verification docs pass before implementation work.
-- Record the preferred post-tag-decision value track as `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
+- Record `v1.1.0-rc1` as user-created, pushed, annotated, and verified.
+- Record tag target `da3f055aac912b6da43a23eeda0bd33811bb29f8`.
+- Record `v1.0.0-rc1` remains intact.
+- Record that Codex performed no tag/release mutation.
+- Route next to full-app manual V1.1 smoke before implementation work.
 
 ## Explicitly deferred
 
@@ -66,4 +66,4 @@ Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOC
 
 ## Next recommended pass
 
-`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
+`V1_1_FULL_APP_MANUAL_SMOKE_PASS`

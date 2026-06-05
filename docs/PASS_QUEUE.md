@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
+`V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
+`V1_1_FULL_APP_MANUAL_SMOKE_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -73,8 +73,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed hygiene implementation, re-audit `ACCEPT_AS_IS`, validation state, deferred analyzer residuals, and authorized small-patch expansion reality. |
 | V1_1_HARDENING_READINESS_AND_NEXT_PHASE_ASSESSMENT_PASS | AUDIT_ONLY / ROUTE_REVIEW | accepted (`PASS`) | Claude Code / Opus readiness assessment accepted as input: V1.1 hardening is effectively complete, no blockers remain, strict-hardening backlog is exhausted to diminishing returns, and readiness docs/tag-decision sync is the next route. |
 | V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS | DOCS_SYNC | completed | Record V1.1 done-enough readiness, deferred residuals, manual/user-owned tag decision options, and next-phase routing without creating tags or touching implementation surfaces. |
-| V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS | DOCS_SYNC / RELEASE_DECISION | planned | User-owned decision/verification route for a possible `v1.1.0-rc` milestone tag; must not create/move tags without explicit user command and must verify any tag separately before implementation work resumes. |
-| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after tag decision: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
+| V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS | DOCS_SYNC / RELEASE_DECISION | completed | User-owned tag decision/verification route completed from manual tag context: `v1.1.0-rc1` exists locally and on origin, is annotated, and targets `da3f055aac912b6da43a23eeda0bd33811bb29f8`; Codex did not mutate tags. |
+| V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording verified annotated `v1.1.0-rc1`, intact `v1.0.0-rc1`, V1.1 milestone state, and pending full-app manual V1.1 smoke. |
+| V1_1_FULL_APP_MANUAL_SMOKE_PASS | DOCS_SYNC / QA_RUN | planned | Manual full-app V1.1 smoke against the verified `v1.1.0-rc1` milestone before starting the next value track. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after full-app V1.1 smoke: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

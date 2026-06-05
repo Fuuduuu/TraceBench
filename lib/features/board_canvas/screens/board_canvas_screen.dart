@@ -419,21 +419,139 @@ class _CanvasPanel extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return CustomPaint(
-              key: const Key('board_canvas_painter'),
-              painter: _BoardPlacementPainter(
-                entries: entries,
-                selectedKey: selectedKey,
-                colorScheme: Theme.of(context).colorScheme,
-              ),
-              child: SizedBox(
-                width: math.max(240, constraints.maxWidth),
-                height: math.max(220, constraints.maxHeight),
-              ),
+            final compact = constraints.maxHeight < 190;
+            if (compact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: CustomPaint(
+                      key: const Key('board_canvas_painter'),
+                      painter: _BoardPlacementPainter(
+                        entries: entries,
+                        selectedKey: selectedKey,
+                        colorScheme: Theme.of(context).colorScheme,
+                      ),
+                      child: SizedBox(
+                        width: math.max(240, constraints.maxWidth),
+                        height: math.max(96, constraints.maxHeight - 28),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Footprint geometry is read-only display metadata.',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _SectionHeader(
+                  title: 'Board projection canvas',
+                  tag: 'READ-ONLY',
+                  subtitle: 'Existing board-normalized placements only',
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: CustomPaint(
+                    key: const Key('board_canvas_painter'),
+                    painter: _BoardPlacementPainter(
+                      entries: entries,
+                      selectedKey: selectedKey,
+                      colorScheme: Theme.of(context).colorScheme,
+                    ),
+                    child: SizedBox(
+                      width: math.max(240, constraints.maxWidth),
+                      height: math.max(180, constraints.maxHeight - 96),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const _BoardCanvasLegend(),
+              ],
             );
           },
         ),
       ),
+    );
+  }
+}
+
+class _BoardCanvasLegend extends StatelessWidget {
+  const _BoardCanvasLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 10,
+              runSpacing: 6,
+              children: const [
+                _LegendItem(label: 'Body outline'),
+                _LegendItem(label: 'Pin pads'),
+                _LegendItem(label: 'Pin-1 marker'),
+                _LegendItem(label: 'Designator'),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Footprint geometry is read-only display metadata.',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              'Template family is not electrical identity; visual metadata does not establish a net.',
+              style: theme.textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LegendItem extends StatelessWidget {
+  const _LegendItem({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer,
+            border: Border.all(color: theme.colorScheme.primary),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 5),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall,
+        ),
+      ],
     );
   }
 }
@@ -1041,14 +1159,29 @@ class _BoardPlacementPainter extends CustomPainter {
 
       final fillPaint = Paint()
         ..color = selected
-            ? colorScheme.primary.withValues(alpha: 0.35)
-            : colorScheme.tertiaryContainer.withValues(alpha: 0.65)
+            ? colorScheme.primary.withValues(alpha: 0.28)
+            : const Color(0xFFE5DDC5).withValues(alpha: 0.88)
         ..style = PaintingStyle.fill;
 
       final strokePaint = Paint()
-        ..color = selected ? colorScheme.primary : colorScheme.outline
+        ..color = selected ? colorScheme.primary : const Color(0xFF222821)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = selected ? 2 : 1.2;
+        ..strokeWidth = selected ? 2.4 : 1.3;
+
+      final padFillPaint = Paint()
+        ..color = selected
+            ? colorScheme.primaryContainer.withValues(alpha: 0.95)
+            : const Color(0xFFD8B36A)
+        ..style = PaintingStyle.fill;
+
+      final padStrokePaint = Paint()
+        ..color = selected ? colorScheme.primary : const Color(0xFF312817)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = selected ? 1.1 : 0.8;
+
+      final markerPaint = Paint()
+        ..color = selected ? colorScheme.primary : const Color(0xFF161914)
+        ..style = PaintingStyle.fill;
 
       canvas.save();
       canvas.translate(center.dx, center.dy);
@@ -1059,14 +1192,24 @@ class _BoardPlacementPainter extends CustomPainter {
         width: bodySize.width,
         height: bodySize.height,
       );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(rect, const Radius.circular(4)),
-        fillPaint,
-      );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(rect, const Radius.circular(4)),
-        strokePaint,
-      );
+      _drawFootprintBody(canvas, rect, entry.template, fillPaint, strokePaint);
+
+      final template = entry.template;
+      if (template != null) {
+        _drawTemplatePins(
+          canvas: canvas,
+          template: template,
+          bodySize: bodySize,
+          fillPaint: padFillPaint,
+          strokePaint: padStrokePaint,
+        );
+        _drawOrientationMarker(
+          canvas: canvas,
+          template: template,
+          bodySize: bodySize,
+          markerPaint: markerPaint,
+        );
+      }
 
       canvas.restore();
 
@@ -1118,6 +1261,120 @@ class _BoardPlacementPainter extends CustomPainter {
     }
 
     return const Size(24, 16);
+  }
+
+  void _drawFootprintBody(
+    Canvas canvas,
+    Rect rect,
+    FootprintTemplate? template,
+    Paint fillPaint,
+    Paint strokePaint,
+  ) {
+    final bodyShape = template?.body.shape ?? FootprintBodyShape.roundedRect;
+    switch (bodyShape) {
+      case FootprintBodyShape.oval:
+        canvas.drawOval(rect, fillPaint);
+        canvas.drawOval(rect, strokePaint);
+        break;
+      case FootprintBodyShape.rect:
+      case FootprintBodyShape.customPath:
+        canvas.drawRect(rect, fillPaint);
+        canvas.drawRect(rect, strokePaint);
+        break;
+      case FootprintBodyShape.roundedRect:
+        final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(4));
+        canvas.drawRRect(rrect, fillPaint);
+        canvas.drawRRect(rrect, strokePaint);
+        break;
+    }
+  }
+
+  void _drawTemplatePins({
+    required Canvas canvas,
+    required FootprintTemplate template,
+    required Size bodySize,
+    required Paint fillPaint,
+    required Paint strokePaint,
+  }) {
+    for (final pin in template.pinAnchors) {
+      final center = _templatePointToCanvas(pin.anchor, template, bodySize);
+      final pinSize = _pinSize(pin, template, bodySize);
+      final pinRect = Rect.fromCenter(
+        center: center,
+        width: pinSize.width,
+        height: pinSize.height,
+      );
+
+      switch (pin.shape) {
+        case FootprintPinShape.circle:
+        case FootprintPinShape.oval:
+          canvas.drawOval(pinRect, fillPaint);
+          canvas.drawOval(pinRect, strokePaint);
+          break;
+        case FootprintPinShape.rect:
+          final pad = RRect.fromRectAndRadius(pinRect, const Radius.circular(1.5));
+          canvas.drawRRect(pad, fillPaint);
+          canvas.drawRRect(pad, strokePaint);
+          break;
+      }
+    }
+  }
+
+  void _drawOrientationMarker({
+    required Canvas canvas,
+    required FootprintTemplate template,
+    required Size bodySize,
+    required Paint markerPaint,
+  }) {
+    final marker = template.orientationMarker;
+    final markerCenter = _templatePointToCanvas(marker.point, template, bodySize);
+    final markerRadius = _templateLengthToCanvas(
+      marker.size,
+      template,
+      bodySize,
+    ).clamp(2.0, 5.0);
+    canvas.drawCircle(markerCenter, markerRadius, markerPaint);
+  }
+
+  Size _pinSize(
+    FootprintPinAnchor pin,
+    FootprintTemplate template,
+    Size bodySize,
+  ) {
+    final scale = _templateScale(template, bodySize);
+    if (pin.radius != null) {
+      final diameter = (pin.radius! * 2 * scale).clamp(3.0, 13.0);
+      return Size.square(diameter);
+    }
+
+    final width = ((pin.width ?? 0.08) * scale).clamp(3.0, 15.0);
+    final height = ((pin.height ?? 0.08) * scale).clamp(3.0, 15.0);
+    return Size(width, height);
+  }
+
+  Offset _templatePointToCanvas(
+    FootprintPoint point,
+    FootprintTemplate template,
+    Size bodySize,
+  ) {
+    return Offset(
+      point.x * bodySize.width / template.body.width,
+      point.y * bodySize.height / template.body.height,
+    );
+  }
+
+  double _templateLengthToCanvas(
+    double value,
+    FootprintTemplate template,
+    Size bodySize,
+  ) {
+    return value * _templateScale(template, bodySize);
+  }
+
+  double _templateScale(FootprintTemplate template, Size bodySize) {
+    final scaleX = bodySize.width / template.body.width;
+    final scaleY = bodySize.height / template.body.height;
+    return math.min(scaleX, scaleY);
   }
 
   @override

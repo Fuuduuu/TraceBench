@@ -56,7 +56,7 @@ Widget _harness({required ProjectState? projectState, Key? boardCanvasKey}) {
 
 Future<void> _selectPlacement(WidgetTester tester, String label) async {
   await tester.tap(find.text(label).first);
-  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 16));
 }
 
 void main() {
@@ -210,8 +210,50 @@ void main() {
 
     expect(find.byType(BoardCanvasScreen), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(
+      find.text('Footprint geometry is read-only display metadata.'),
+      findsOneWidget,
+    );
     expect(find.text('No confirmed visual placements yet.'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('wide board canvas shows static read-only footprint legend',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('Board projection canvas'), findsOneWidget);
+    expect(find.text('Existing board-normalized placements only'), findsOneWidget);
+    expect(find.text('Body outline'), findsOneWidget);
+    expect(find.text('Pin pads'), findsOneWidget);
+    expect(find.text('Pin-1 marker'), findsOneWidget);
+    expect(find.text('Designator'), findsOneWidget);
+    expect(
+      find.text('Footprint geometry is read-only display metadata.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Template family is not electrical identity; visual metadata does not establish a net.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('renders scale-mode placement without error', (tester) async {
@@ -1339,7 +1381,7 @@ void main() {
     await tester.pumpWidget(
       _harness(projectState: state, boardCanvasKey: const ValueKey('second')),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 16));
 
     expect(
       find.text('Select a placement to view read-only details.'),
@@ -1355,6 +1397,8 @@ void main() {
     expect(source, isNot(contains('template.toMap(')));
     expect(source, isNot(contains('oldDelegate.entries != entries')));
     expect(source, contains('_entriesEquivalent('));
+    expect(source, contains('template.pinAnchors'));
+    expect(source, contains('template.orientationMarker'));
     expect(source, isNot(contains('MeasurementEventWriter')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));

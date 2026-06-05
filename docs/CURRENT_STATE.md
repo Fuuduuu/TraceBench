@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
+- Next recommended pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -59,12 +59,16 @@ Branch: `main`
   - `py -3 tools\validate_all.py`: `PASS`.
   - required safety strings remain present and unchanged.
 - `V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS` (AUDIT_ONLY) confirmed the Reference Images UX track is complete and recommended opening the Board Canvas read-only visual polish track next.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` is the current docs-only scope lock:
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` is accepted/pushed:
   - records accepted Claude Design GO for a small read-only Board Canvas visual polish scope,
   - locks `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` as the next implementation pass,
   - locks exact allowed files (`lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`, governance/audit docs) and read-only geometry sources (`shared/footprints/*`, `shared/models/*`, smoke fixture),
   - keeps Board Canvas read-only and evidence-safe (renderer writes nothing; no schema/materializer/ZIP/board_graph/view_state; no AI/OCR/CV; no overlay/transform; no edit/confirm/promote),
   - this track is separate from Reference Images and from the older `board_graph` feature.
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` is the current narrow implementation pass:
+  - first slice only: canvas visual hierarchy, static footprint legend/safety caption, and existing-template footprint body/pad/orientation rendering,
+  - preserves smoke identifiers, `renderer writes: none`, and Board Canvas read-only evidence boundaries,
+  - routes next to `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
   - import row now uses `Wrap` for responsive alignment.

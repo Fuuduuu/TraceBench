@@ -2,21 +2,13 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
 
 ## Goal
 
-Docs-only scope lock for a small V1.1 Board Canvas **read-only visual polish** pass. Lock presentation/styling/layout/label-clarity improvements for already-rendered projection facts. Board Canvas stays read-only and evidence-safe; the renderer writes nothing.
+Implement the first small V1.1 Board Canvas **read-only visual polish** slice: canvas hierarchy, static footprint legend/safety caption, and existing-template footprint body/pad/orientation rendering. Board Canvas stays read-only and evidence-safe; the renderer writes nothing.
 
-## Allowed implementation surfaces (this scope-lock pass)
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS.md`
-
-## Locked implementation surfaces (next pass `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`)
+## Allowed implementation surfaces (this pass)
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
@@ -58,7 +50,7 @@ Read-only (read allowed, modify forbidden): `lib/shared/footprints/footprint_mod
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`
 
 ## Validation
 

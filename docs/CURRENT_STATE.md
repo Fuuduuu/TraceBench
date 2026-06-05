@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`
-- Next recommended pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
+- Current pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
+- Next recommended pass: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -64,7 +64,9 @@ Branch: `main`
 
 ## Future candidates
 
-- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: next recommended pass; non-canonical sourced/reference/research values only.
+- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: current docs-only scope lock; non-canonical sourced/reference/research/candidate values only, visually below human measurements, no canonical mutation.
+- `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`: next recommended Claude Code / Opus audit for the sidecar scope lock.
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: display distinction between measured, reference, candidate, and note values.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design UX review; requires full prototype bundle request first.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: measured vs reference vs hint vs candidate display rules.
@@ -90,4 +92,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
+`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`

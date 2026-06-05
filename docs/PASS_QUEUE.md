@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`
+`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
+`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -78,7 +78,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_FULL_APP_MANUAL_SMOKE_PASS | User live smoke context | accepted (`PASS_WITH_NITS`; image add, project create/load, and general app behavior worked; no new visible issue; some checklist surfaces not explicitly itemized) |
 | V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS | docs/audit/V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS.md | completed (docs-only closeout: automated/static baseline PASS, user live smoke PASS_WITH_NITS, no fix pass required, route to IDEALAB workflow anchor) |
 | TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS | DOCS_SYNC / PRODUCT_WORKFLOW_ANCHOR | completed | Anchored Ideelabor technician-first workflow direction, BoardFact Measure Sheet prototype as visual-only input, anti-spreadsheet UX guardrails, and future route candidates; no implementation started. |
-| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after full-app V1.1 smoke: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | CODEX / DOCS_ONLY_SCOPE_LOCK | completed | Locked non-canonical sourced/reference/research/candidate-value sidecar boundaries: not measurements, facts, nets, diagnoses, probabilities, Project ZIP contract, materializer output, Board Canvas evidence, AI/OCR/CV, or event/known_facts mutation; promotion requires separately scoped human-confirmed event-writing workflow. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus audit of the sourced-values/research-sidecar scope lock before any implementation or follow-on scope split. |
 | QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
 | V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Required before real Save Measurement, Add Component, or Edit Component behavior; no shortcut from prototype save behavior to canonical event writing. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock measured vs reference vs hint vs candidate value display rules so reference/research/candidate values never look measured. |

@@ -10,5 +10,5 @@ Unplanned findings and ideas go here before PASS_QUEUE promotion.
 | WI-004 | Export-refresh and Flutter ZIP export direction selected after stale projection UI completion; queue review loop avoided. | queue-routing | routed |
 | WI-005 | AUI-02: exported report artifact absence test for stale banner is deferred to export/report artifact validation. | validation-deferral | routed |
 | WI-006 | Technician-first measure sheet: default bench flow should be Koht -> Väärtus -> Ühik -> Salvesta, with internals behind progressive disclosure. | product-workflow | queued |
-| WI-007 | Sourced/reference/research values should be sidecar/non-canonical and must not look measured. | evidence-boundary | queued |
+| WI-007 | Sourced/reference/research values should be sidecar/non-canonical, visually below human measurements, and must not look measured. | evidence-boundary | scope-locked |
 | WI-008 | Guided measurement helper may suggest next measurements and gaps/conflicts, but must not diagnose faults or create canonical facts. | helper-boundary | queued |

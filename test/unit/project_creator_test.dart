@@ -44,7 +44,7 @@ ProcessResult _ok([String stdout = 'ok']) => ProcessResult(0, 0, stdout, '');
 ProcessResult _fail([String stderr = 'failed']) =>
     ProcessResult(0, 2, '', stderr);
 
-Future<void> _writeMaterializedKnownFacts(String path, String projectId) async {
+void _writeMaterializedKnownFacts(String path, String projectId) {
   final knownFacts = <String, dynamic>{
     'project_id': projectId,
     'components': <dynamic>[],
@@ -58,7 +58,7 @@ Future<void> _writeMaterializedKnownFacts(String path, String projectId) async {
     'excluded_from_fault_candidates': <dynamic>[],
     'component_pin_index': <String, dynamic>{},
   };
-  await File(path).writeAsString(
+  File(path).writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(knownFacts),
     flush: true,
   );
@@ -168,6 +168,9 @@ void main() {
       expect(result, isA<ProjectCreationSuccess>());
       final state = (result as ProjectCreationSuccess).projectState;
       final projectPath = state.projectDirectory!;
+      final knownFactsFile =
+          File('$projectPath${Platform.pathSeparator}known_facts.json');
+      expect(knownFactsFile.existsSync(), isTrue);
 
       expect(state.manifest.projectId, projectId);
       expect(state.manifest.schemaVersion, '1.0');

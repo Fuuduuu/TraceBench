@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS`
-- Next recommended pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
+- Current pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`
+- Next recommended pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -77,11 +77,16 @@ Branch: `main`
   - full Flutter suite had one unrelated known `project_creator_test.dart` Windows temp-file flake; isolated rerun passed,
   - forbidden-surface diff clean and evidence boundaries preserved.
 - `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS` (AUDIT_ONLY) confirmed both V1.1 tracks (Reference Images UX, Board Canvas read-only visual polish) are complete and recommended fixing the `project_creator_test.dart` flake next.
-- `PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS` is the current docs-only scope lock:
+- `PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS` is accepted/pushed:
   - records the accepted test-only root cause (fake materializer starts an un-awaited async `known_facts.json` write inside a synchronous fake `behavior`; production reads it before it exists under full-suite load; production `ProjectCreator` is correct),
   - locks `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` (TEST_FIX) as the next implementation pass,
   - locks exact allowed file (`test/unit/project_creator_test.dart`) + governance/audit docs, and forbids any production/materializer/schema/tools/sample/ZIP/Board Canvas/Reference Images change,
   - locks the fix (synchronous/awaited fake write + post-`createProject` `known_facts.json` existence assertion) and validation (targeted test, full suite repeated 3–5×, `validate_all.py`).
+- `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` is the current test-only implementation pass:
+  - makes the fake materializer write `known_facts.json` synchronously before the fake runner returns,
+  - adds a deterministic post-`createProject` assertion that `known_facts.json` exists,
+  - leaves production `ProjectCreator`, materializer, tools, schemas, samples, Project ZIP, Board Canvas, and Reference Images untouched,
+  - routes next to `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS`.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
   - import row now uses `Wrap` for responsive alignment.

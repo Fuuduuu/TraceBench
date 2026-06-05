@@ -17,6 +17,17 @@ AI must never invent component identities, hidden-layer connections, measurement
 
 V1.0 is a Known Facts Builder, not an AI repair agent.
 
+## Technician-first workflow invariant
+
+TraceBench should be a technician-first bench workflow, not an engineering spreadsheet.
+
+- Default workflow: select place/component/pin -> measure -> enter value -> choose unit -> save -> show status / next step.
+- Short form: `Koht -> Väärtus -> Ühik -> Salvesta`.
+- Default UI must be measure-first, not form-first; keep ordinary visible fields small and put internal/provenance/schema details behind progressive disclosure.
+- Repair technicians should not need to understand canonical schemas, event IDs, projection state, sidecar semantics, or internal graph rules during normal use.
+- Human local measurements must visually outrank research/reference/candidate values; reference/research/candidate values must not look measured.
+- AI/helper may suggest next measurements, organize accepted context, surface gaps/conflicts, and summarize confirmed facts, but must not create canonical facts, diagnose faults, infer nets, confirm identity, or make probability-style fault claims.
+
 ## Stable architecture invariants
 
 - `events.jsonl` is the only canonical truth.

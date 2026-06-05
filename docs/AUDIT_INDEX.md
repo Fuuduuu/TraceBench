@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS | docs/audit/TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS.md | completed (docs-only product workflow anchor: records Ideelabor technician-first direction, BoardFact Measure Sheet prototype as visual/design input only, anti-spreadsheet UX guardrails, ask-for-full-prototype-bundle rule, future pass roadmap, and preserved evidence/product boundaries) |
 | V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS | docs/audit/V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS.md | completed (docs-only manual smoke closeout: automated/static baseline PASS, user live smoke PASS_WITH_NITS for image add/project create/load/general use, no new visible issue, some checklist surfaces not explicitly itemized, no fix pass required, route to IDEALAB workflow anchor) |
 | V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS | docs/audit/V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS.md | completed (docs-only tag verification closeout: records user-created/pushed annotated `v1.1.0-rc1`, target `da3f055aac912b6da43a23eeda0bd33811bb29f8`, origin tag presence, intact `v1.0.0-rc1`, no Codex tag mutation, V1.1 milestone state, and route to full-app manual smoke) |
 | V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS | docs/audit/V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS.md | completed from user verification context (`v1.1.0-rc1` annotated/pushed and verified; tag creation was manual/user-owned; full-app manual smoke remains pending) |

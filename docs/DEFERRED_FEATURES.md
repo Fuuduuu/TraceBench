@@ -12,3 +12,6 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - BLE multimeter
 - cloud sync
 - ArUco/ChArUco automatic marker workflow
+- actual Save Measurement / Add Component / Edit Component implementation before accepted V2 event-writing architecture
+- prototype-to-production measurement sheet shortcut without UX design and full prototype bundle review
+- reference/research/candidate value promotion into canonical facts without human measurement/confirmation

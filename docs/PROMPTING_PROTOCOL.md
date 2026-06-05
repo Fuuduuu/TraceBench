@@ -282,6 +282,16 @@ For broad UX/design cards:
 - each slice should have its own scope lock and implementation pass;
 - avoid one-pass screen rewrites.
 
+### 7) Technician-first workflow guard
+
+For measurement, repair-flow, or bench-workflow prompts:
+
+- do not turn technician-first workflows into spreadsheet-style UX;
+- default flow should be `Koht -> Väärtus -> Ühik -> Salvesta` or an equivalent measure-first path;
+- keep canonical schemas, event IDs, projection state, sidecar semantics, and provenance/status internals behind progressive disclosure unless explicitly scoped;
+- ensure reference/research/candidate values do not look measured;
+- do not treat visual prototypes as implementation permission or event-writing authorization.
+
 ### 6) Model/tool routing reminder
 
 Every implementation/audit prompt should state:

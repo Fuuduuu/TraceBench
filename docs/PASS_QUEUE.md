@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
+`TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`
 
 ## Next recommended pass
 
-`V1_1_FULL_APP_MANUAL_SMOKE_PASS`
+`TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -77,8 +77,13 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording verified annotated `v1.1.0-rc1`, intact `v1.0.0-rc1`, V1.1 milestone state, and pending full-app manual V1.1 smoke. |
 | V1_1_FULL_APP_MANUAL_SMOKE_PASS | User live smoke context | accepted (`PASS_WITH_NITS`; image add, project create/load, and general app behavior worked; no new visible issue; some checklist surfaces not explicitly itemized) |
 | V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS | docs/audit/V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS.md | completed (docs-only closeout: automated/static baseline PASS, user live smoke PASS_WITH_NITS, no fix pass required, route to IDEALAB workflow anchor) |
-| TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS | TBD | planned (anchor next product/value workflow after accepted V1.1 RC smoke; preserve evidence boundaries before implementation routing) |
-| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after full-app V1.1 smoke: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
+| TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS | DOCS_SYNC / PRODUCT_WORKFLOW_ANCHOR | completed | Anchored Ideelabor technician-first workflow direction, BoardFact Measure Sheet prototype as visual-only input, anti-spreadsheet UX guardrails, and future route candidates; no implementation started. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after full-app V1.1 smoke: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
+| QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Required before real Save Measurement, Add Component, or Edit Component behavior; no shortcut from prototype save behavior to canonical event writing. |
+| REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock measured vs reference vs hint vs candidate value display rules so reference/research/candidate values never look measured. |
+| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DESIGN_REVIEW / UX_DESIGN | planned | Claude Design review of the measurement sheet UX; before starting, ask user for HTML, CSS, JS, screenshots/video if available, and whether prototype behavior should be preserved. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

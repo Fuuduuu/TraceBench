@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
+`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement constrained-width responsive layout behavior for Reference Images; keep existing behavior bounded to layout adaptation only.
+Record accepted responsive layout closeout for Reference Images and preserve existing behavior and all Model-B boundaries.
 
 ## Allowed implementation surfaces
 
@@ -15,9 +15,8 @@ Implement constrained-width responsive layout behavior for Reference Images; kee
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_SCOPE_LOCK_PASS.md`
-- `lib/features/reference_images/screens/reference_images_screen.dart`
-- `test/widget/reference_images_screen_test.dart`
 - `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS.md`
+- `docs/audit/REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS.md`
 
 ## Scope lock summary
 
@@ -30,7 +29,7 @@ Implement constrained-width responsive layout behavior for Reference Images; kee
 - Keep wide-screen behavior stable while improving narrow behavior.
 - Ensure long stored-path and SHA-256 fields do not overflow in constrained widths.
 - No transforms, no overlaying behavior, no canonical-path drift, no ZIP/project-surface expansion.
-- This pass is the implementation pass `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
+- This pass is docs-only closeout for `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
 
 ## Forbidden surfaces
 
@@ -52,7 +51,7 @@ Implement constrained-width responsive layout behavior for Reference Images; kee
 
 ## Next recommended pass
 
-`REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`
+`V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS`
 
 ## Validation
 

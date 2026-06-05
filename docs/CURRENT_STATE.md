@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`
-- Next recommended pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -49,13 +49,19 @@ Branch: `main`
   - `Reference Images` widget tests are accepted as passing.
   - `py -3 tools\validate_all.py` is passing.
   - no forbidden UX affordances or evidence-boundary regressions are present.
-- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS` is currently in progress:
-  - implemented constrained-width responsive behavior for `ReferenceImagesScreen` while preserving existing wide layout,
-  - adds narrow-window stacking for list + preview and avoids overflow with wrapped long metadata text/fields,
-  - adds stable widget test coverage for both wide and narrow width behavior with bounded pumps,
-  - preserves metadata grouping, required copy/safety wording, accessibility semantics, and Model-B boundaries.
+- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS` is accepted/pushed:
+  - post-audit verdict from `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`: `ACCEPT_AS_IS`.
+  - constrained-width responsive behavior is implemented for `ReferenceImagesScreen` with existing wide/narrow two-state layout.
+  - narrow layout stacks list and preview/details.
+  - long stored-path and SHA text overflow is handled with wrapped/compact metadata rendering.
+  - stable widget test coverage in both wide and narrow modes (`11/11` responsive tests passing).
+  - full Flutter suite: `194` tests passing.
+  - `py -3 tools\validate_all.py`: `PASS`.
+  - required safety strings remain present and unchanged.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
+  - import row now uses `Wrap` for responsive alignment.
+  - key placement differs between wide and narrow branches.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
 - NIT: cosmetic indentation drift.
 - NIT: CRLF/LF warning noise on Windows.

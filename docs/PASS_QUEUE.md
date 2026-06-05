@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`
+`V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`
+`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -71,7 +71,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_TEST_AND_LINT_HYGIENE_PASS | FLUTTER_PASS | completed | Accepted/pushed behavior-preserving hygiene: repaired AUDIT_INDEX table artifact, added measurement-write error-absence assertion, fixed mechanical analyzer warnings in locked/authorized files, added direct `path` dev-dependency with `pubspec.lock` consistency, and preserved product/evidence boundaries. |
 | V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit initially returned `NEEDS_SMALL_PATCH`; re-audit accepted after `pubspec.lock` inclusion and the two explicitly authorized mechanical residual fixes in `board_graph_model.dart` and `home_screen.dart`; analyzer residuals are the 5 explicitly deferred items only. |
 | V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed hygiene implementation, re-audit `ACCEPT_AS_IS`, validation state, deferred analyzer residuals, and authorized small-patch expansion reality. |
-| V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Review next V1.1 route after test/lint hygiene closeout; do not start deferred analyzer fixes, pumpAndSettle migration, commercial/licensing work, or V2 without a new scope lock. |
+| V1_1_HARDENING_READINESS_AND_NEXT_PHASE_ASSESSMENT_PASS | AUDIT_ONLY / ROUTE_REVIEW | accepted (`PASS`) | Claude Code / Opus readiness assessment accepted as input: V1.1 hardening is effectively complete, no blockers remain, strict-hardening backlog is exhausted to diminishing returns, and readiness docs/tag-decision sync is the next route. |
+| V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS | DOCS_SYNC | completed | Record V1.1 done-enough readiness, deferred residuals, manual/user-owned tag decision options, and next-phase routing without creating tags or touching implementation surfaces. |
+| V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS | DOCS_SYNC / RELEASE_DECISION | planned | User-owned decision/verification route for a possible `v1.1.0-rc` milestone tag; must not create/move tags without explicit user command and must verify any tag separately before implementation work resumes. |
+| TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Preferred next value track after tag decision: non-canonical sourced-values/research sidecar support only; no canonical facts, fault diagnosis, net inference, identity confirmation, or probability-style claims. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

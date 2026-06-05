@@ -2,22 +2,23 @@
 
 ## Current pass
 
-`V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`
+`V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
 
 ## Goal
 
-Docs-only closeout for the accepted/pushed `V1_1_TEST_AND_LINT_HYGIENE_PASS` implementation and Claude Code / Opus re-audit result `ACCEPT_AS_IS`.
+Docs-only readiness record and tag-decision setup after accepted V1.1 hardening readiness assessment. Do not create tags or modify release objects.
 
 ## Allowed files
 
-Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS.md`.
+Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS.md`.
 
-## Allowed closeout actions
+## Allowed docs-sync actions
 
-- Record accepted implementation and re-audit outcomes.
-- Record validation state and final deferred analyzer residuals.
-- Record that `board_graph_model.dart`, `home_screen.dart`, and `pubspec.lock` were authorized by the small-patch/re-audit path.
-- Update routing to the next route-review pass.
+- Record V1.1 hardening readiness assessment as accepted input.
+- Record V1.1 done-enough definition and deferred residuals.
+- Record tag decision options; tag creation remains manual/user-owned and separately verified.
+- Route next to a tag decision/verification docs pass before implementation work.
+- Record the preferred post-tag-decision value track as `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
 
 ## Explicitly deferred
 
@@ -48,6 +49,7 @@ Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOC
 - No samples/assets changes.
 - No generated artifacts.
 - No tags/releases.
+- No tag or release-object creation, deletion, movement, or push.
 - No V2 implementation.
 - No commercial/licensing implementation.
 - No audit-history pruning.
@@ -59,7 +61,9 @@ Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOC
 - `py -3 tools/validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`
+- Confirm `CURRENT_STATE.md` remains below the ~120-line trigger.
+- Confirm no tag was created or mutated.
 
 ## Next recommended pass
 
-`V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`
+`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`
+- Current pass: `V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`
+- Next recommended pass: `V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -12,10 +12,10 @@ Branch: `main`
 - V1 release candidate is fixed and verified:
   - tag `v1.0.0-rc1` exists locally and on `origin`.
   - V1 remains protected; V2 implementation is not active.
-- V1.1 hardening is active:
-  - Reference Images UX track is complete enough for V1.1.
-  - Board Canvas read-only visual polish is complete enough for V1.1.
-  - Project Creator Windows full-suite flake is fixed, closed out, and no longer an active NIT.
+- V1.1 hardening is effectively complete:
+  - Claude Code / Opus readiness assessment returned PASS/no blockers.
+  - strict-hardening backlog is exhausted to diminishing returns.
+  - remaining residuals are low-value, judgment-requiring, and deferred.
 - Current compaction pass is docs-only:
   - `CURRENT_STATE.md` is intentionally bounded.
   - Older accepted-pass details remain in `docs/audit/*.md` and `docs/PASS_QUEUE.md`.
@@ -42,6 +42,12 @@ Branch: `main`
   - targeted project creator test passed (`7/7`),
   - full Flutter suite repeated passed (`5/5`),
   - `py -3 tools\validate_all.py` passed.
+- Governance/test hygiene baseline is accepted/pushed:
+  - `CURRENT_STATE.md` remains compact and below the ~120-line trigger,
+  - memory read/conflict ownership is reconciled,
+  - `flutter analyze` has 0 errors and 5 explicitly deferred residuals,
+  - full Flutter suite passed (`195/195`),
+  - `py -3 tools\validate_all.py` passed.
 
 ## Recent completed summary
 
@@ -57,19 +63,26 @@ Branch: `main`
 - `V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`: accepted/pushed docs-only lock; `flutter analyze` = 52 issues/0 errors; locks one behavior-preserving pass (AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, mechanical lint cleanup) with 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`.
 - `V1_1_TEST_AND_LINT_HYGIENE_PASS`: accepted/pushed behavior-preserving hygiene implementation; repaired AUDIT_INDEX formatting, added measurement success error-absence assertion, added direct `path` dev dependency with lockfile consistency, and reduced analyzer output to 5 explicitly deferred residuals.
 - `V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`: accepted re-audit outcome `ACCEPT_AS_IS` after small-patch authorization for `board_graph_model.dart`, `home_screen.dart`, and `pubspec.lock` inclusion.
+- `V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS`: accepted/pushed docs-only closeout.
+- `V1_1_HARDENING_READINESS_AND_NEXT_PHASE_ASSESSMENT_PASS`: accepted audit input; V1.1 hardening is effectively complete.
 
 ## Roadmap
 
 - `TAG_V1_RC_FIRST`: complete.
-- `V1_1_HARDENING`: active.
+- `V1_1_HARDENING`: effectively complete; ready for V1.1 tag decision.
 - `V2_EVENT_WRITING_ARCHITECTURE`: later and separately scoped.
 - V2 does not start with photo overlay, transform, background photo helper, or Reference Images Board Canvas layering.
 
-## Future candidates after route review
+## V1.1 tag decision
 
-- Post test/lint hygiene route review.
-- Import/export usage runbook.
-- Commercial-readiness strategy lane.
+- Do not create or move tags in docs-sync passes.
+- Recommended option: user creates a protected manual `v1.1.0-rc` milestone tag after this docs-sync is accepted/pushed, then a verification pass checks it.
+- Alternatives: continue without a V1.1 tag, or defer tagging to a later release gate.
+
+## Future candidates after tag decision
+
+- Preferred value track: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
+- Alternatives: guided measurement flow scope lock, commercial-readiness/GTM/licensing strategy lane, V2 event-writing architecture scoping, or tiny deferred analyzer/pumpAndSettle hygiene tail.
 
 These are candidates only. They are not started by this pass.
 
@@ -91,4 +104,4 @@ These are candidates only. They are not started by this pass.
 
 ## Next recommended pass
 
-`V1_1_POST_TEST_AND_LINT_HYGIENE_ROUTE_REVIEW_PASS`
+`V1_1_RC_TAG_DECISION_AND_VERIFICATION_PASS`

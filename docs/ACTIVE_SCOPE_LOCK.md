@@ -2,68 +2,63 @@
 
 ## Current pass
 
-`V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
+`V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS`
 
 ## Goal
 
-Docs-only closeout for the user-created and verified `v1.1.0-rc1` milestone tag. Do not create, move, delete, push, or otherwise mutate tags or release objects.
+Docs-only closeout for V1.1 full-app manual smoke against verified `v1.1.0-rc1`. Record automated/static baseline PASS and user live smoke `PASS_WITH_NITS`; do not mutate code, tests, tags, release objects, or product behavior.
 
 ## Allowed files
 
-Docs only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS.md`.
+Docs/governance only: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS.md`.
 
 ## Allowed closeout actions
 
-- Record `v1.1.0-rc1` as user-created, pushed, annotated, and verified.
-- Record tag target `da3f055aac912b6da43a23eeda0bd33811bb29f8`.
-- Record `v1.0.0-rc1` remains intact.
-- Record that Codex performed no tag/release mutation.
-- Route next to full-app manual V1.1 smoke before implementation work.
-
-## Explicitly deferred
-
-- `unreachable_switch_case` in `customer_report_screen.dart`
-- `library_private_types_in_public_api` in `python_runner.dart`
-- `deprecated_member_use` value -> initialValue in `measurement_record_screen.dart`
-- `overridden_fields` restructure in `reference_images_screen_test.dart`
-- all `pumpAndSettle` migration
-- broad formatting sweeps
-- broad test refactors
+- Record the automated/static baseline as PASS.
+- Record user live smoke observation as PASS_WITH_NITS.
+- Record observed/tested by user: image add, project create/load, and general app behavior.
+- Record that no new visible issue was observed.
+- Record that some checklist surfaces were not explicitly itemized in the user note.
+- Record that no fix pass is required based on current smoke evidence.
+- Route next to the IDEALAB workflow anchor before new implementation scope.
 
 ## Forbidden surfaces
 
 - No code or test changes.
 - No Flutter runtime changes.
 - No tools, schemas, materializers, samples, assets, generated artifacts, tags, or release-object changes.
-- No deferred analyzer residual fixes.
-- No pumpAndSettle migration.
-- No feature work.
-- No product/evidence semantics changes.
-- No event-writing work.
-- No Reference Images feature logic changes.
-- No Board Canvas feature/evidence logic changes.
-- No Project ZIP changes.
-- No schemas changes.
-- No materializer changes.
-- No tools changes.
-- No samples/assets changes.
-- No generated artifacts.
-- No tags/releases.
 - No tag or release-object creation, deletion, movement, or push.
-- No V2 implementation.
+- No Project ZIP changes.
+- No Board Canvas implementation changes.
+- No Reference Images implementation changes.
 - No commercial/licensing implementation.
+- No V2 implementation.
+- No product/evidence semantics changes.
 - No audit-history pruning.
 - No files outside the docs-only allowlist.
-- No behavior-changing refactors.
+
+## Hard boundaries preserved
+
+- Human is the sensor. AI is the graph engine.
+- AI must not create canonical facts.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains materialized projection.
+- Renderer/view writes nothing unless explicitly scoped.
+- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- Reference Images remain local sidecar only, non-canonical, outside Project ZIP/events/known_facts/materializer/Board Canvas/AI/OCR/CV/URL import.
+- Board Canvas remains read-only.
 
 ## Validation
 
 - `py -3 tools/validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`
-- Confirm `CURRENT_STATE.md` remains below the ~120-line trigger.
+- Confirm no non-doc files changed.
 - Confirm no tag was created or mutated.
+- Confirm `CURRENT_STATE.md` remains below the ~120-line trigger if possible.
+- Confirm current/next route is aligned across `CURRENT_STATE.md`, `PASS_QUEUE.md`, and `ACTIVE_SCOPE_LOCK.md`.
+- Confirm `AUDIT_INDEX.md` contains the closeout row.
 
 ## Next recommended pass
 
-`V1_1_FULL_APP_MANUAL_SMOKE_PASS`
+`TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`

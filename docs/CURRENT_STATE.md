@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_FULL_APP_MANUAL_SMOKE_PASS`
+- Current pass: `V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS`
+- Next recommended pass: `TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -71,6 +71,7 @@ Branch: `main`
 - `V1_1_HARDENING_READINESS_AND_NEXT_PHASE_ASSESSMENT_PASS`: accepted audit input; V1.1 hardening is effectively complete.
 - `V1_1_READINESS_DOCS_SYNC_AND_TAG_DECISION_PASS`: accepted/pushed readiness/tag-decision docs sync.
 - `V1_1_RC_TAG_VERIFICATION_CLOSEOUT_PASS`: records user-created/pushed verified `v1.1.0-rc1` milestone tag.
+- V1_1_FULL_APP_MANUAL_SMOKE_CLOSEOUT_PASS: docs-only closeout records automated/static baseline PASS, user live smoke PASS_WITH_NITS, no new visible issue, no required fix pass, and route to the IDEALAB workflow anchor.
 
 ## Roadmap
 
@@ -81,12 +82,16 @@ Branch: `main`
 
 ## V1.1 tag and smoke
 
-- `v1.1.0-rc1` is user-created, pushed, annotated, and verified.
-- Full-app manual V1.1 smoke remains pending and is the recommended next QA follow-up.
+- 1.1.0-rc1: annotated and pushed on origin; tag target da3f055aac912b6da43a23eeda0bd33811bb29f8.
+- Automated/static smoke baseline: PASS (repo/tag verification, validation gate, Windows desktop availability, Reference Images boundary strings, and Board Canvas read-only/static forbidden-affordance checks).
+- User live smoke observation: PASS_WITH_NITS; observed/tested by user: image add, project create/load, and general app behavior.
+- No new visible issues were observed.
+- NIT: some checklist surfaces were not explicitly itemized in the user note, including Board Canvas, Measurement flow, and Export/report surface.
+- No fix pass is required based on current smoke evidence.
 
 ## Future candidates after tag decision
 
-- Preferred value track after smoke: `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`.
+- Next route after accepted smoke: `TRACEBENCH_IDEALAB_WORKFLOW_ANCHOR_PASS`; `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS` remains a later value-track candidate.
 - Alternatives: guided measurement flow scope lock, commercial-readiness/GTM/licensing strategy lane, V2 event-writing architecture scoping, or tiny deferred analyzer/pumpAndSettle hygiene tail.
 
 These are candidates only. They are not started by this pass.

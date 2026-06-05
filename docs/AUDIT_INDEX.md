@@ -4,7 +4,9 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS.md | implemented; pending post-audit (first narrow implementation slice: Board Canvas hierarchy, static read-only footprint legend, existing-template footprint body/pad/orientation rendering, and focused widget assertions; validation green; routes to post-audit) |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS.md | in_progress (docs-only closeout: records accepted/pushed Board Canvas visual polish implementation, Claude Code post-audit `ACCEPT_AS_IS`, non-blocking nits, and route to post-polish route review) |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS.md | accepted from audit context (`ACCEPT_AS_IS`; no scope drift; Board Canvas widget tests `43/43`; `validate_all.py` PASS; forbidden-surface diff clean; unrelated Windows temp-file flake isolated/non-blocking) |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS.md | completed (first narrow implementation slice: Board Canvas hierarchy, static read-only footprint legend, existing-template footprint body/pad/orientation rendering, and focused widget assertions; validation green; accepted as-is by post-audit) |
 | BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS | docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS.md | completed (docs-only scope lock: records Claude Design GO, locks read-only Board Canvas visual polish scope and exact allowed files, routes to `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`; evidence boundaries preserved) |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS.md | completed |
 | PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS | docs/audit/PROJECT_ZIP_DEVICE_PROFILES_DEDUP_CLOSEOUT_PASS.md | completed |

@@ -2,23 +2,19 @@
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS`
 
 ## Goal
 
-Implement the first small V1.1 Board Canvas **read-only visual polish** slice: canvas hierarchy, static footprint legend/safety caption, and existing-template footprint body/pad/orientation rendering. Board Canvas stays read-only and evidence-safe; the renderer writes nothing.
+Docs-only closeout for the accepted V1.1 Board Canvas **read-only visual polish** implementation slice. Record `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS` as `ACCEPT_AS_IS`, preserve evidence boundaries, and route to post-polish route review.
 
-## Allowed implementation surfaces (this pass)
+## Allowed docs surfaces (this pass)
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS.md`
-
-Read-only (read allowed, modify forbidden): `lib/shared/footprints/footprint_models.dart`, `lib/shared/footprints/vector_footprint_library.dart`, `lib/shared/models/known_facts.dart`, `lib/shared/models/project_state.dart`, `assets/samples/board_canvas_positive_smoke/**`.
+- `docs/audit/BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS.md`
 
 ## Scope lock summary
 
@@ -50,7 +46,7 @@ Read-only (read allowed, modify forbidden): `lib/shared/footprints/footprint_mod
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`
+`V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`
 
 ## Validation
 

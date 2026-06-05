@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
+`BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`
+`V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -51,8 +51,10 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out accepted responsive-layout implementation, record `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS` outcome (`ACCEPT_AS_IS`), and route next to `V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS`. |
 | V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed Reference Images UX track complete and governance clean; recommended opening the Board Canvas read-only visual polish track via scope lock. Decision recorded in `CURRENT_STATE`. |
 | BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of a small read-only Board Canvas visual polish scope (presentation/styling/layout/label clarity on existing projection facts); records Claude Design GO; locks exact allowed files and read-only geometry sources; routes to `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`. |
-| BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | FLUTTER_PASS | implemented; pending post-audit | Implement first narrow read-only Board Canvas visual polish slice: canvas hierarchy, static footprint legend/safety caption, existing-template footprint body/pad/orientation rendering, and focused widget assertions; preserve evidence boundaries and route to `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`. |
-| BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus post-audit for the read-only Board Canvas visual polish implementation slice; verify no evidence-boundary, schema, materializer, ZIP, board_graph/view_state, overlay/transform, or write-path drift. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS | FLUTTER_PASS | completed | Implemented first narrow read-only Board Canvas visual polish slice: canvas hierarchy, static footprint legend/safety caption, existing-template footprint body/pad/orientation rendering, and focused widget assertions; preserved evidence boundaries. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the read-only Board Canvas visual polish implementation slice: no scope drift, Board Canvas widget tests PASS (`43/43`), `validate_all.py` PASS, forbidden-surface diff clean; unrelated `project_creator_test.dart` Windows temp-file flake isolated/non-blocking. |
+| BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS | DOCS_SYNC | in_progress | Docs-only closeout recording accepted implementation and post-audit result for `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`; route next to `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`. |
+| V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS | DOCS_SYNC / ROUTE_REVIEW | planned | Review V1.1 route after accepted Board Canvas read-only visual polish; choose next bounded V1.1 hardening/docs route without starting V2 or evidence-write work. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

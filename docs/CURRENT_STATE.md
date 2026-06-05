@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS`
-- Next recommended pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`
+- Current pass: `BOARD_CANVAS_READONLY_VISUAL_POLISH_CLOSEOUT_PASS`
+- Next recommended pass: `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
 ## Handoff snapshot (bounded)
@@ -65,15 +65,23 @@ Branch: `main`
   - locks exact allowed files (`lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`, governance/audit docs) and read-only geometry sources (`shared/footprints/*`, `shared/models/*`, smoke fixture),
   - keeps Board Canvas read-only and evidence-safe (renderer writes nothing; no schema/materializer/ZIP/board_graph/view_state; no AI/OCR/CV; no overlay/transform; no edit/confirm/promote),
   - this track is separate from Reference Images and from the older `board_graph` feature.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` is the current narrow implementation pass:
-  - first slice only: canvas visual hierarchy, static footprint legend/safety caption, and existing-template footprint body/pad/orientation rendering,
-  - preserves smoke identifiers, `renderer writes: none`, and Board Canvas read-only evidence boundaries,
-  - routes next to `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS`.
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` is accepted/pushed:
+  - first slice only: canvas visual hierarchy, read-only header, static footprint legend/safety caption, substrate/contrast polish, and existing-template footprint body/pad/orientation rendering,
+  - pin pads remain display geometry only and do not infer pins, nets, identity, measurements, or faults,
+  - `renderer writes: none` remains visible,
+  - no schema/model/materializer/Project ZIP/board_graph/view_state/persisted-state/AI/OCR/CV/overlay/transform/event-writing/known_facts mutation was added.
+- `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS` returned `ACCEPT_AS_IS`:
+  - no scope drift,
+  - Board Canvas widget tests passed (`43/43`),
+  - `py -3 tools\validate_all.py` passed,
+  - full Flutter suite had one unrelated known `project_creator_test.dart` Windows temp-file flake; isolated rerun passed,
+  - forbidden-surface diff clean and evidence boundaries preserved.
 - Non-blocking findings recorded:
   - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
   - import row now uses `Wrap` for responsive alignment.
   - key placement differs between wide and narrow branches.
 - NIT: unrelated `project_creator_test.dart` flake in full suite.
+- NIT: some smoke identifiers are covered by fixture + `validate_all.py`, not all as widget-test string assertions.
 - NIT: cosmetic indentation drift.
 - NIT: CRLF/LF warning noise on Windows.
 - Roadmap remains:

@@ -3,203 +3,84 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`
-- Next recommended pass: `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`
+- Current pass: `V1_1_CURRENT_STATE_COMPACTION_PASS`
+- Next recommended pass: `V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS`
 - Docs drift countdown: `5`
 
-## Handoff snapshot (bounded)
+## Compact handoff
 
-- V1 is fixed and verified:
-  - `v1.0.0-rc1` exists locally and on `origin`.
-  - `V1_RELEASE_TAG_VERIFICATION_CLOSEOUT_PASS`, `V1_TO_V2_ROADMAP_DECISION_PASS`, and `SOURCE_GUIDE_SYNC_AFTER_V1_RC_PASS` are accepted.
-- `REFERENCE_IMAGES_UX_METADATA_GROUPING_IMPL_PASS` and `REFERENCE_IMAGES_UX_METADATA_GROUPING_CLOSEOUT_PASS` are accepted/pushed:
-  - post-audit verdict: `PASS_WITH_NITS`, `ACCEPT_AS_IS`
-  - implementation target: selected-image metadata grouping and labels only.
-  - grouped sections: Identity, File details, Provenance, optional Notes.
-  - required safety strings remain present and unchanged.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS` is accepted (`PASS_WITH_NITS`, `ACCEPT_AS_IS`):
-  - added import affordance focus order and semantics,
-  - added readable semantics labels for reference image list items and metadata section headings,
-  - kept required safety strings and all runtime Model-B boundaries unchanged.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_CLOSEOUT_PASS` is accepted as a docs-only closeout (`PASS_WITH_NITS`, `ACCEPT_AS_IS`):
-  - post-audit outcome is accepted and recorded for `REFERENCE_IMAGES_UX_ACCESSIBILITY_IMPL_PASS`.
-  - Targeted Reference Images widget tests passed.
-  - `py -3 tools\validate_all.py` passed.
-  - no scope drift, no forbidden-surface diff.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_POST_AUDIT_PASS` reported PASS_WITH_NITS / ACCEPT_AS_IS:
-  - targeted Reference Images widget tests: PASS,
-  - `py -3 tools\validate_all.py`: PASS,
-  - full Flutter suite had one unrelated Windows temp-file flake in `test/unit/project_creator_test.dart`; isolated rerun passed (non-blocking),
-  - no forbidden-surface changes.
-- `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_PASS` is accepted/pushed:
-  - post-audit `REFERENCE_IMAGES_UX_ACCESSIBILITY_FIXUP_POST_AUDIT_PASS` returned `PASS` (`APPROVED` / `ACCEPT_AS_IS`),
-  - fixed inert `FocusTraversalOrder` / `NumericFocusOrder` wrappers,
-  - fixed duplicate import action semantics and helper-text announcement scope,
-  - added selected list-item semantic state + tap action coverage,
-  - reduced duplicate list-item announcements with `ExcludeSemantics`,
-  - updated tests to assert rendered semantics via `tester.getSemantics(...)` and `matchesSemantics(...)`.
-- `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` is accepted as a docs-only smoke run checkpoint (`PASS_WITH_NITS`):
-  - `Reference Images` empty state walk confirms required safety copy framing is visible and unchanged.
-  - Required strings are visible in empty-state checks:
-    - `reference only`
-    - `not evidence`
-    - `not included in Project ZIP`
-    - `not used by AI`
-    - `renderer writes: none`
-  - `Reference Images` widget tests are accepted as passing.
-  - `py -3 tools\validate_all.py` is passing.
-  - no forbidden UX affordances or evidence-boundary regressions are present.
-- `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS` is accepted/pushed:
-  - post-audit verdict from `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_POST_AUDIT_PASS`: `ACCEPT_AS_IS`.
-  - constrained-width responsive behavior is implemented for `ReferenceImagesScreen` with existing wide/narrow two-state layout.
-  - narrow layout stacks list and preview/details.
-  - long stored-path and SHA text overflow is handled with wrapped/compact metadata rendering.
-  - stable widget test coverage in both wide and narrow modes (`11/11` responsive tests passing).
-  - full Flutter suite: `194` tests passing.
-  - `py -3 tools\validate_all.py`: `PASS`.
-  - required safety strings remain present and unchanged.
-- `V1_1_REFERENCE_IMAGES_UX_POST_RESPONSIVE_ROUTE_REVIEW_PASS` (AUDIT_ONLY) confirmed the Reference Images UX track is complete and recommended opening the Board Canvas read-only visual polish track next.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` is accepted/pushed:
-  - records accepted Claude Design GO for a small read-only Board Canvas visual polish scope,
-  - locks `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` as the next implementation pass,
-  - locks exact allowed files (`lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`, governance/audit docs) and read-only geometry sources (`shared/footprints/*`, `shared/models/*`, smoke fixture),
-  - keeps Board Canvas read-only and evidence-safe (renderer writes nothing; no schema/materializer/ZIP/board_graph/view_state; no AI/OCR/CV; no overlay/transform; no edit/confirm/promote),
-  - this track is separate from Reference Images and from the older `board_graph` feature.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_IMPL_PASS` is accepted/pushed:
-  - first slice only: canvas visual hierarchy, read-only header, static footprint legend/safety caption, substrate/contrast polish, and existing-template footprint body/pad/orientation rendering,
-  - pin pads remain display geometry only and do not infer pins, nets, identity, measurements, or faults,
-  - `renderer writes: none` remains visible,
-  - no schema/model/materializer/Project ZIP/board_graph/view_state/persisted-state/AI/OCR/CV/overlay/transform/event-writing/known_facts mutation was added.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_POST_AUDIT_PASS` returned `ACCEPT_AS_IS`:
-  - no scope drift,
-  - Board Canvas widget tests passed (`43/43`),
-  - `py -3 tools\validate_all.py` passed,
-  - the unrelated `project_creator_test.dart` Windows full-suite flake recorded at that time is now resolved by `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`,
-  - forbidden-surface diff clean and evidence boundaries preserved.
-- `V1_1_POST_BOARD_CANVAS_POLISH_ROUTE_REVIEW_PASS` (AUDIT_ONLY) confirmed both V1.1 tracks (Reference Images UX, Board Canvas read-only visual polish) are complete and recommended fixing the `project_creator_test.dart` flake next.
-- `PROJECT_CREATOR_TEST_FLAKE_FIX_SCOPE_LOCK_PASS` is accepted/pushed:
-  - records the accepted test-only root cause (fake materializer starts an un-awaited async `known_facts.json` write inside a synchronous fake `behavior`; production reads it before it exists under full-suite load; production `ProjectCreator` is correct),
-  - locks `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` (TEST_FIX) as the next implementation pass,
-  - locks exact allowed file (`test/unit/project_creator_test.dart`) + governance/audit docs, and forbids any production/materializer/schema/tools/sample/ZIP/Board Canvas/Reference Images change,
-  - locks the fix (synchronous/awaited fake write + post-`createProject` `known_facts.json` existence assertion) and validation (targeted test, full suite repeated 3–5×, `validate_all.py`).
-- `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS` is accepted/pushed:
-  - makes the fake materializer write `known_facts.json` synchronously before the fake runner returns,
-  - adds a deterministic post-`createProject` assertion that `known_facts.json` exists,
-  - leaves production `ProjectCreator`, materializer, tools, schemas, samples, Project ZIP, Board Canvas, and Reference Images untouched,
-  - post-audit `PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS` returned `ACCEPT_AS_IS`,
+- V1 release candidate is fixed and verified:
+  - tag `v1.0.0-rc1` exists locally and on `origin`.
+  - V1 remains protected; V2 implementation is not active.
+- V1.1 hardening is active:
+  - Reference Images UX track is complete enough for V1.1.
+  - Board Canvas read-only visual polish is complete enough for V1.1.
+  - Project Creator Windows full-suite flake is fixed, closed out, and no longer an active NIT.
+- Current compaction pass is docs-only:
+  - `CURRENT_STATE.md` is intentionally bounded.
+  - Older accepted-pass details remain in `docs/audit/*.md` and `docs/PASS_QUEUE.md`.
+  - No audit history was pruned.
+
+## Latest accepted baseline
+
+- Reference Images remain Model B local sidecar only:
+  - local `.tracebench_local/reference_images/` storage and `.tracebench_local/reference_images.json` ledger,
+  - read-only viewer with safety copy,
+  - complete V1.1 UX slices: copy/safety, states, metadata grouping, accessibility/focus, semantics fixup, smoke/QA, responsive layout,
+  - outside Project ZIP, `events.jsonl`, `known_facts.json`, materializer, Board Canvas, AI/OCR/CV, and URL import.
+- Board Canvas remains read-only:
+  - visual polish is accepted/pushed,
+  - `renderer writes: none` remains part of the UI boundary,
+  - footprint rendering is display-only from existing template geometry,
+  - pin pads do not infer pins, nets, identity, measurements, or faults,
+  - no schema/model/materializer/Project ZIP changes,
+  - no `board_graph.json` or `view_state.json`.
+- Project Creator reliability fix is accepted/pushed:
+  - production `ProjectCreator` remains untouched,
+  - test fake now writes `known_facts.json` synchronously,
+  - regression assertion confirms `known_facts.json` exists after successful create,
   - targeted project creator test passed (`7/7`),
-  - full Flutter suite repeated passed (`5/5` runs),
-  - `py -3 tools\validate_all.py` passed,
-  - no scope drift and no forbidden-surface diff.
-- `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS` is the current docs-only closeout:
-  - records accepted/pushed status for `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`,
-  - records Claude Code / Opus post-audit `ACCEPT_AS_IS`,
-  - retires the standing `project_creator_test.dart` flake NIT from current routing,
-  - routes next to `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`.
-- Non-blocking findings recorded:
-  - fixup scope lock had already routed this pass for: focus-order wrapper cleanup, import semantics cleanup, selected-list-item state, and rendered-semantics assertions.
-  - import row now uses `Wrap` for responsive alignment.
-  - key placement differs between wide and narrow branches.
-- NIT: some smoke identifiers are covered by fixture + `validate_all.py`, not all as widget-test string assertions.
-- NIT: cosmetic indentation drift.
-- NIT: CRLF/LF warning noise on Windows.
-- Roadmap remains:
-  - `TAG_V1_RC_FIRST`
-  - then `V1_1_HARDENING`
-  - then `V2_EVENT_WRITING_ARCHITECTURE`.
-- V2 remains event-writing-first and does not start with photo overlay/transform/background-photo-helper.
-- Accepted baseline for this phase:
-  - Board Canvas V1 remains read-only and evidence-safe.
-  - `photo_to_board_alignment_confirmed` chain accepted end-to-end:
-    - schema + validator
-    - `known_facts.photo_to_board_alignments` materializer projection
-    - known_facts schema support
-    - Dart `photoToBoardAlignments` parity.
-  - Positive fixture `board_canvas_positive_smoke` is accepted and evidence-safe.
-  - Local sidecar reference-image flow is accepted under Model B:
-    - local `.tracebench_local/reference_images/` storage,
-    - `.tracebench_local/reference_images.json` ledger,
-    - read-only viewer safety copy,
-    - no event/log/materializer/surface expansion,
-    - `resolveStoredImageFile` clamps path escape/traversal.
-  - `PROJECT_ZIP_DEVICE_PROFILES_DEDUP_PASS` is completed; duplicate `device_profiles/default.json` ZIP entries are resolved.
-- Claude Design review for Reference Images UX polish direction is accepted as GO for safe `REFERENCE_IMAGES_UX` polishing scope.
-- `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS` is accepted as final UX deepening input.
-- `REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS` is accepted as final implementation input sync.
-- `REFERENCE_IMAGES_UX_POLISH_RECOVERY_AUDIT_PASS` is accepted with `PASS`; broad implementation was reverted and a constrained recovery slice was selected.
-- `REFERENCE_IMAGES_UX_STATES_CLOSEOUT_PASS` and `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_CLOSEOUT_PASS` are accepted/pushed.
-- Accepted copy/safety pass is `REFERENCE_IMAGES_UX_POLISH_COPY_SAFETY_IMPL_PASS`:
-  - required safety strings are now visible in empty state,
-  - import label is `Import from this computer`,
-  - SHA-256 caption in selected metadata is `File integrity / duplicate check — not an evidence seal.`,
-  - service behavior is unchanged in this slice.
-- `REFERENCE_IMAGES_UX_STATES_SCOPE_LOCK_PASS` is now locked:
-  - implementation target: `REFERENCE_IMAGES_UX_STATES_IMPL_PASS`
-  - allowed implementation scope: empty/missing/error state UX only.
-- `REFERENCE_IMAGES_UX_STATES_IMPL_PASS` is accepted/pushed and closeout is recorded:
-  - post-audit verdict: `PASS`, `ACCEPT_AS_IS`
-  - validation: `Reference Images tests: 8/8`, `Full Flutter suite: 191 tests`
-  - `py -3 tools\validate_all.py`: `PASS`
-  - empty state copy and behavior are updated to required safety framing,
-  - missing local file state renders a local-sidecar-only missing-file message,
-  - import failure copy now maps known failure strings to calm UX text where already reachable,
-  - unsupported/large-file/max-count/missing-source import paths remain within the states-only slice,
-  - required safety strings preserved in empty state and missing-file state.
-- `PROJECT_EXPORTER_TEST_FAILURE_TRIAGE_PASS` confirmed as an unrelated, order-dependent test isolation issue:
-  - failing case is in `test/unit/project_exporter_test.dart` only,
-  - deterministic when running the full `project_exporter_test.dart` file,
-  - by-name test run succeeds,
-  - no reference-image scope coupling,
-  - production command discovery remains a likely candidate-safe area requiring a test-only isolation fix.
-- `PROJECT_EXPORTER_TEST_FIX_PASS` applied a test-only normalization of fallback-version assertions in
-  `test/unit/project_exporter_test.dart`:
-  - normalizes executable checks (`py`/`python3`/`python`) via basename,
-  - keeps the fallback behavior assertion deterministic across full-file execution,
-  - does not touch production `ProjectExporter` code.
-- `PROJECT_EXPORTER_TEST_FIX_PASS` is accepted (`PASS`) after Claude Code post-audit:
-  - `PROJECT_EXPORTER_TEST_FIX_POST_AUDIT_PASS` concluded ACCEPT_AS_IS,
-  - full-file `project_exporter_test.dart`: 12/12 passing,
-  - full Flutter suite: 186 tests passed,
-  - `py -3 tools\validate_all.py`: PASS,
-  - order-dependent isolate bug in this test is resolved,
-  - only a harmless redundant assertion remained as NIT.
-- `TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS` is accepted:
-  - `docs/PASS_LIFECYCLE.md` tracks pass-chain states.
-  - `docs/ARCHITECTURE_BOUNDARIES.md` tracks evidence-boundary flow.
-  - `docs/MODEL_ROUTING.md` includes compact tool/model routing Mermaid updates.
-- `TRACEBENCH_GOVERNANCE_DIAGRAMS_POST_AUDIT_PASS` is the preceding pass gate result.
-- `TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS` records final PASS acceptance and moves sequencing forward to docs drift cleanup.
+  - full Flutter suite repeated passed (`5/5`),
+  - `py -3 tools\validate_all.py` passed.
 
-- Current card-sync previously recorded the final Claude Design scope-lock card for implementation:
-  - six fixed zones,
-  - required copy and microcopy contract,
-  - required metadata groups and required states (including narrow-window behavior),
-  - accessibility targets and explicit forbidden wording,
-  - strict `Reference Images` and `Board Canvas` track separation.
-- `BOARD_CANVAS_READONLY_VISUAL_POLISH_SCOPE_LOCK_PASS` remains separate and deferred.
+## Recent completed summary
 
-## Non-blocking NITs
+- `PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`: completed and accepted.
+- `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`: audit-only, no repo modifications; accepted input recommends this compaction pass because `CURRENT_STATE.md` had grown too long.
+- `V1_1_CURRENT_STATE_COMPACTION_PASS`: current docs-only bounded compaction.
 
-- `docs/MODEL_ROUTING.md` is a routing/state graph, not a full approval-flow graph.
-- `docs/ARCHITECTURE_BOUNDARIES.md` does not call out “no URL import” as a separate node; this is covered in governance notes and existing boundary text.
-- States-only UX closeout NITs are non-blocking for this pass:
-  - minor indentation formatting nit
-  - `_humanReadableImportError` raw string mapping approach is acceptable for this scope
-- REFERENCE_IMAGES metadata grouping closeout NITs are non-blocking:
-  - `Project ID` is surfaced in Provenance; it is existing record metadata.
-  - CRLF/LF warnings are non-blocking.
-- `REFERENCE_IMAGES_UX_POST_SLICE_SMOKE_RUN_PASS` NITs:
-  - responsive layout follow-up is now implemented in `REFERENCE_IMAGES_UX_RESPONSIVE_LAYOUT_IMPL_PASS`.
-  - safety copy card + import row now render within narrow constraints.
-  - long stored-path and SHA text overflow handling is addressed in narrow layout.
+## Roadmap
+
+- `TAG_V1_RC_FIRST`: complete.
+- `V1_1_HARDENING`: active.
+- `V2_EVENT_WRITING_ARCHITECTURE`: later and separately scoped.
+- V2 does not start with photo overlay, transform, background photo helper, or Reference Images Board Canvas layering.
+
+## Future candidates after route review
+
+- Small test/lint hygiene pass for `measurement_write_screen_test.dart` errorFinder assertion.
+- Analyzer/lint cleanup.
+- Import/export usage runbook.
+- Commercial-readiness strategy lane.
+
+These are candidates only. They are not started by this pass.
 
 ## Hard boundaries
 
 - Human is the sensor. AI is the graph engine.
-- `events.jsonl` is canonical event truth.
-- `known_facts.json` is the materialized projection.
-- Renderer/view writes nothing.
-- `photo` content is non-factual unless separately confirmed through accepted event paths.
-- `visual_trace` is visual-only and never an electrical net.
+- AI must not create canonical facts.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains materialized projection.
+- Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Local reference images remain Model B: non-canonical sidecar only, outside ZIP/events/known_facts/materializer/Board Canvas evidence surfaces.
+- `visual_trace` is not a net.
+- `template_id` / footprint family is not electrical identity.
+- Photo pixels are not facts.
+- Photo alignment is not identity, pin mapping, net confirmation, measurement, or fault proof.
+- Damage/suspect are not proof or probability.
+- Reference Images remain local sidecar only, non-canonical, outside Project ZIP/events/known_facts/materializer/Board Canvas/AI/OCR/CV/URL import.
+- Board Canvas remains read-only and renderer writes nothing.
+
+## Next recommended pass
+
+`V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS`

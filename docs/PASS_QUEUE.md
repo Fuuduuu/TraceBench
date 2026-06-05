@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS`
+`V1_1_CURRENT_STATE_COMPACTION_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`
+`V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS`
 
 ## Docs drift countdown (canonical)
 
@@ -59,7 +59,9 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 | PROJECT_CREATOR_TEST_FLAKE_FIX_PASS | TEST_FIX_PASS | completed | Applied the locked test-only fix in `test/unit/project_creator_test.dart` (synchronous fake materializer write + post-`createProject` `known_facts.json` existence assertion); no production change; targeted test, 3 full Flutter suite runs, and `validate_all.py` passed; route next to post-audit. |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the test-only `project_creator_test.dart` flake fix: no scope drift; targeted test PASS (`7/7`); full Flutter suite repeated PASS (`5/5`); `validate_all.py` PASS; forbidden surfaces clean. |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed `PROJECT_CREATOR_TEST_FLAKE_FIX_PASS`, Claude Code post-audit `ACCEPT_AS_IS`, flake-NIT retirement, and route to `V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS`. |
-| V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Review V1.1 routing after test reliability hardening and choose the next safe governance/backlog step without starting V2 implementation. |
+| V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | accepted (`PASS`) | Audit-only route review after test reliability hardening; no repo modifications; recommended `V1_1_CURRENT_STATE_COMPACTION_PASS` because `CURRENT_STATE.md` had grown too long for a bounded handoff. |
+| V1_1_CURRENT_STATE_COMPACTION_PASS | DOCS_SYNC | completed | Compact `docs/CURRENT_STATE.md` into a bounded handoff after completed Reference Images UX, Board Canvas visual polish, and Project Creator flake-fix tracks; preserve boundaries and route next to post-compaction route review. |
+| V1_1_POST_CURRENT_STATE_COMPACTION_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Review V1.1 routing after current-state compaction and choose the next safe hygiene/backlog step without starting V2 implementation. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

@@ -4,6 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V1_1_CURRENT_STATE_COMPACTION_PASS | docs/audit/V1_1_CURRENT_STATE_COMPACTION_PASS.md | completed (docs-only bounded compaction: materially reduced `CURRENT_STATE.md`, preserved V1.1 accepted baseline and hard boundaries, recorded audit-only route-review input, and routed next to post-compaction route review) |
+| V1_1_POST_TEST_RELIABILITY_ROUTE_REVIEW_PASS | docs/audit/V1_1_CURRENT_STATE_COMPACTION_PASS.md | accepted from audit context (`PASS`; no repo modifications; recommended current-state compaction before further V1.1 routing because `CURRENT_STATE.md` had grown too long) |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS | docs/audit/PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed test-only flake fix, Claude Code / Opus post-audit `ACCEPT_AS_IS`, targeted test `7/7`, repeated full Flutter suite `5/5`, `validate_all.py` PASS, no forbidden surfaces, and route to test-reliability route review) |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_POST_AUDIT_PASS | docs/audit/PROJECT_CREATOR_TEST_FLAKE_FIX_CLOSEOUT_PASS.md | accepted from audit context (`ACCEPT_AS_IS`; no scope drift; targeted project creator test PASS `7/7`; full Flutter suite repeated PASS `5/5`; `validate_all.py` PASS; forbidden surfaces clean) |
 | PROJECT_CREATOR_TEST_FLAKE_FIX_PASS | docs/audit/PROJECT_CREATOR_TEST_FLAKE_FIX_PASS.md | completed (test-only implementation: synchronous fake materializer write for `known_facts.json`, deterministic post-create existence assertion, targeted test + 3 full Flutter suite runs + `validate_all.py` passed, no production change; routes to post-audit) |

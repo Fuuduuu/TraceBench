@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`
+`V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
@@ -67,8 +67,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit and re-audit accepted the memory/governance reconciliation after the small precedence/canonical-owner patch; no scope drift, validation green, and forbidden surfaces clean. |
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed memory reconciliation implementation and re-audit `ACCEPT_AS_IS`; routes next to `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`. |
 | V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed governance clean after memory reconciliation; found a `docs/AUDIT_INDEX.md` backtick-n table artifact; recommended the test/lint/docs hygiene pass. |
-| V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | in_progress | Docs-only lock of one behavior-preserving hygiene pass: AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, and mechanical analyzer cleanup (52 issues/0 errors); 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`. |
-| V1_1_TEST_AND_LINT_HYGIENE_PASS | FLUTTER_PASS | planned | Apply the locked behavior-preserving hygiene: repair AUDIT_INDEX table artifact, add measurement-write error-absence assertion, fix mechanical analyzer warnings in locked files + `path` dev-dependency; no logic/behavior/evidence change; deferred analyzer items untouched. |
+| V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of one behavior-preserving hygiene pass: AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, and mechanical analyzer cleanup (52 issues/0 errors); 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`. |
+| V1_1_TEST_AND_LINT_HYGIENE_PASS | FLUTTER_PASS | completed | Applied the locked behavior-preserving hygiene: repaired AUDIT_INDEX table artifact, added measurement-write error-absence assertion, fixed mechanical analyzer warnings in locked files + `path` dev-dependency; no logic/behavior/evidence change; deferred analyzer items untouched. |
+| V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS | AUDIT_ONLY | planned | Claude Code / Opus post-audit for the behavior-preserving hygiene implementation using `flutter analyze`, focused measurement test, full Flutter suite, and `validate_all.py`. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

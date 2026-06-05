@@ -127,7 +127,7 @@ void main() {
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter:
-                _StaticProjectExporter(ExportSuccess('C:/tmp/export.zip')),
+                _StaticProjectExporter(const ExportSuccess('C:/tmp/export.zip')),
           ),
         ),
       ),
@@ -175,7 +175,7 @@ void main() {
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
-              ExportMaterializerFailed(
+              const ExportMaterializerFailed(
                 sanitizedMessage:
                     'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
                 rawDetail:
@@ -217,7 +217,7 @@ void main() {
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
-              ExportExportFailed(
+              const ExportExportFailed(
                 sanitizedMessage: 'ZIP pakkimine ebaõnnestus.',
                 rawDetail:
                     'C:\\\\Users\\\\test\\\\tracebench\\\\export_project_zip.py',
@@ -324,7 +324,7 @@ void main() {
   testWidgets(
     'stale banner primary text is not injected into customer report content',
     (tester) async {
-      final expectedReport = 'Inline sample report (assert content)';
+      const expectedReport = 'Inline sample report (assert content)';
       final projectState = _inlineProjectState(
         isProjectionStale: true,
         customerReport: expectedReport,
@@ -336,7 +336,7 @@ void main() {
           child: MaterialApp(
             home: CustomerReportScreen(
               projectExporter: _StaticProjectExporter(
-                ExportSuccess('C:/tmp/inline_export.zip'),
+                const ExportSuccess('C:/tmp/inline_export.zip'),
               ),
             ),
           ),

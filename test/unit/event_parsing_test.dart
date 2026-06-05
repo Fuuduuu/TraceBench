@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 void main() {

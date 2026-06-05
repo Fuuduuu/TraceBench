@@ -163,13 +163,13 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
   Widget build(BuildContext context) {
     final projectState = ref.watch(projectStateProvider);
     final hasProject = projectState != null;
-    final hasLocalProjectDirectory =
-        hasProject && projectState!.projectDirectory != null;
+    final projectDirectory = projectState?.projectDirectory;
+    final hasLocalProjectDirectory = projectDirectory != null;
 
     final selected = _selectedRecord();
-    final selectedFile = hasLocalProjectDirectory && selected != null
+    final selectedFile = projectDirectory != null && selected != null
         ? _service.resolveStoredImageFile(
-            projectDirectory: projectState!.projectDirectory!,
+            projectDirectory: projectDirectory,
             record: selected,
           )
         : null;
@@ -201,7 +201,7 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                           child: const Text('Import from this computer'),
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Allowed: png, jpg, jpeg, webp · max '
                         '${ReferenceImageSidecarService.maxFileCount} files · max '
                         '${ReferenceImageSidecarService.maxFileSizeBytes ~/ (1024 * 1024)} MB each',
@@ -339,9 +339,9 @@ class _ReferenceOnlyWarningCard extends StatelessWidget {
           child: Semantics(
             container: true,
             label: 'Reference image safety boundary information',
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('Reference images (local sidecar)'),
                 SizedBox(height: 6),
                 Text('reference only'),

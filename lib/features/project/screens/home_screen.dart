@@ -123,7 +123,7 @@ class HomeScreen extends ConsumerWidget {
               Card(
                 margin: const EdgeInsets.only(top: 12),
                 child: ListTile(
-                  title: Text(projectState!.manifest.model),
+                  title: Text(projectState.manifest.model),
                   subtitle: Text(projectState.manifest.deviceType),
                   trailing:
                       projectState.manifest.projectId == 'prj_pelle_pv20_001'

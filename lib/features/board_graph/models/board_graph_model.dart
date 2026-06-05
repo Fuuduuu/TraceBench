@@ -460,7 +460,6 @@ class BoardGraphProjection {
           from.type == BoardGraphNodeType.pin &&
           to.type == BoardGraphNodeType.net) {
         final componentId = _componentIdFromReference(from.id);
-        final fromComp = _componentIdFromReference(from.id);
         final netData = to.data;
         final fromNet = netData['from']?.toString();
         final toNet = netData['to']?.toString();

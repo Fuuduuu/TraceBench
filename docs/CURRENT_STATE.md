@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`
-- Next recommended pass: `V1_1_TEST_AND_LINT_HYGIENE_PASS`
+- Current pass: `V1_1_TEST_AND_LINT_HYGIENE_PASS`
+- Next recommended pass: `V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; this file remains below the trigger.
 
 ## Compact handoff
@@ -54,7 +54,7 @@ Branch: `main`
 - `V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS`: accepted re-audit outcome `ACCEPT_AS_IS` after the small precedence/canonical-owner patch.
 - `V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS`: accepted/pushed docs-only closeout.
 - `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`: audit-only; confirmed governance clean, found a `docs/AUDIT_INDEX.md` backtick-n table artifact, and recommended the test/lint/docs hygiene pass.
-- `V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`: current docs-only lock; `flutter analyze` = 52 issues/0 errors; locks one behavior-preserving pass (AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, mechanical lint cleanup) with 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`.
+- `V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS`: accepted/pushed docs-only lock; `flutter analyze` = 52 issues/0 errors; locks one behavior-preserving pass (AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, mechanical lint cleanup) with 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`.
 
 ## Roadmap
 

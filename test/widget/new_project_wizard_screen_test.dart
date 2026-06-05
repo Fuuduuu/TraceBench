@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';

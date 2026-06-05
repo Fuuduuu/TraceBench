@@ -33,7 +33,7 @@ class ProjectionStaleBanner extends StatelessWidget {
       container: true,
       label: '$primaryText${contextLabel == null ? '' : ' · $contextLabel'}',
       child: Card(
-        color: theme.colorScheme.secondaryContainer.withOpacity(0.5),
+        color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.5),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         child: Padding(
           padding: EdgeInsets.all(compact ? 10 : 12),

@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trace_bench_viewer/features/board_graph/models/board_graph_model.dart';
 import 'package:trace_bench_viewer/features/board_graph/services/board_graph_projector.dart';
@@ -83,7 +81,7 @@ void main() {
       },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
-    final filtered = projection.filter(LayerFilter.beginner());
+    final filtered = projection.filter(const LayerFilter.beginner());
 
     expect(
       filtered.nodes
@@ -114,7 +112,7 @@ void main() {
       },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
-    final filtered = projection.filter(LayerFilter.beginner());
+    final filtered = projection.filter(const LayerFilter.beginner());
 
     expect(
       filtered.nodes
@@ -218,7 +216,7 @@ void main() {
     final focused = projection.focus(
       componentId: 'Q2',
       depth: 1,
-      filter: LayerFilter.fullAudit(),
+      filter: const LayerFilter.fullAudit(),
     );
 
     expect(
@@ -261,7 +259,7 @@ void main() {
     final focused = projection.focus(
       componentId: 'Q2',
       depth: 1,
-      filter: LayerFilter.fullAudit(),
+      filter: const LayerFilter.fullAudit(),
     );
 
     expect(focused.nodes.where((node) => node.id == 'Q2'), isNotEmpty);
@@ -294,7 +292,7 @@ void main() {
       },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
-    final filtered = projection.filter(LayerFilter.fullAudit());
+    final filtered = projection.filter(const LayerFilter.fullAudit());
 
     expect(filtered.nodes.where((node) => node.id == 'M001'), isNotEmpty);
   });
@@ -325,7 +323,7 @@ void main() {
       },
     });
     final projection = BoardGraphProjector.fromKnownFacts(knownFacts);
-    final filtered = projection.filter(LayerFilter.beginner());
+    final filtered = projection.filter(const LayerFilter.beginner());
 
     expect(filtered.nodes.where((node) => node.id == 'M001'), isEmpty);
   });
@@ -383,7 +381,7 @@ void main() {
   test('advanced_filter_shows_raw_event_ids', () {
     final projection =
         BoardGraphProjector.fromKnownFacts(_sampleKnownFacts()).filter(
-      LayerFilter.fullAudit(),
+      const LayerFilter.fullAudit(),
     );
 
     final measurementNode = projection.nodes

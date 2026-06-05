@@ -53,7 +53,7 @@ class ProjectState {
   int get notPopulatedCount => knownFacts.excludedFromFaultCandidates.length;
 
   String get summary =>
-      'components=${componentCount}, measurements=${measurementCount}';
+      'components=$componentCount, measurements=$measurementCount';
 
   String get debugJson => const JsonEncoder.withIndent('  ').convert({
         'manifest': manifest.toJson(),

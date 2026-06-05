@@ -30,7 +30,7 @@ class _FakeReferenceImageSidecarService extends ReferenceImageSidecarService {
     required String projectId,
     required String sourceFilePath,
   }) async {
-    return ImportReferenceImageResult.failure('Import failed.');
+    return const ImportReferenceImageResult.failure('Import failed.');
   }
 }
 
@@ -67,6 +67,7 @@ class _FakeReferenceImageSidecarServiceForMissingFile
   const _FakeReferenceImageSidecarServiceForMissingFile(this.ledger)
       : super(ledger);
 
+  @override
   final ReferenceImageLedger ledger;
 
   @override
@@ -91,6 +92,7 @@ class _FakeReferenceImageSidecarServiceWithResolvableFile
   const _FakeReferenceImageSidecarServiceWithResolvableFile(this.ledger)
       : super(ledger);
 
+  @override
   final ReferenceImageLedger ledger;
 
   @override

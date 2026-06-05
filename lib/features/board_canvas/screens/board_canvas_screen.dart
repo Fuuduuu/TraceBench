@@ -322,7 +322,7 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SectionHeader(
+              const _SectionHeader(
                 title: 'Photo alignment readiness — metadata only',
                 tag: 'READINESS',
               ),
@@ -339,7 +339,7 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
                   .map(
                     (alignment) => _PhotoAlignmentSummaryTile(alignment: alignment),
                   )
-                  .toList(growable: false),
+                  ,
             ],
           ),
         ),
@@ -500,10 +500,10 @@ class _BoardCanvasLegend extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Wrap(
+            const Wrap(
               spacing: 10,
               runSpacing: 6,
-              children: const [
+              children: [
                 _LegendItem(label: 'Body outline'),
                 _LegendItem(label: 'Pin pads'),
                 _LegendItem(label: 'Pin-1 marker'),
@@ -634,8 +634,8 @@ class _InspectorPanel extends StatelessWidget {
 
     if (selectedEntry == null) {
       children.add(
-        Card(
-          child: const Padding(
+        const Card(
+          child: Padding(
             padding: EdgeInsets.all(16),
             child: Align(
               alignment: Alignment.topLeft,
@@ -722,7 +722,7 @@ class _PlacementInspectorCard extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 6),
               child: Text('identity not confirmed in this projection'),
             ),
-            _InspectorField(
+            const _InspectorField(
               label: 'Electrical role',
               value: 'not confirmed',
             ),
@@ -811,7 +811,7 @@ class _MeasurementSummaryCard extends StatelessWidget {
                       measurement: measurement,
                     ),
                   )
-                  .toList(growable: false),
+                  ,
             ],
           ],
         ),
@@ -851,7 +851,7 @@ class _VisualTraceMetadataCard extends StatelessWidget {
                   .map(
                     (trace) => _VisualTraceSummaryTile(trace: trace),
                   )
-                  .toList(growable: false),
+                  ,
             ],
           ],
         ),
@@ -1242,7 +1242,7 @@ class _BoardPlacementPainter extends CustomPainter {
     final placement = entry.placement;
     if (placement.scale != null) {
       final scale = placement.scale!.toDouble();
-      final base = 28.0;
+      const base = 28.0;
       final scaled = (base * scale).clamp(8.0, 140.0);
       return Size(scaled, (scaled * 0.66).clamp(6.0, 120.0));
     }

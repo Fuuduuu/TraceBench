@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
@@ -201,7 +200,7 @@ class ProjectLoader {
       if (decoded is Map<String, dynamic>) {
         events.add(TraceBenchEvent.fromJson(decoded));
       } else {
-        throw ProjectLoadException('Event line is not a JSON object');
+        throw const ProjectLoadException('Event line is not a JSON object');
       }
     }
     return events;

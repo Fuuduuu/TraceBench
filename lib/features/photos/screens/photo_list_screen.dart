@@ -27,7 +27,7 @@ class PhotoListScreen extends ConsumerWidget {
               isStale: projectState.isProjectionStale,
               contextLabel: 'Photo evidence',
             ),
-            Expanded(child: const Center(child: Text('Fotosid ei leitud'))),
+            const Expanded(child: Center(child: Text('Fotosid ei leitud'))),
           ],
         ),
       );

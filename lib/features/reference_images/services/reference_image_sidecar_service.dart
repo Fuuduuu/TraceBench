@@ -168,7 +168,7 @@ class ReferenceImageSidecarService {
       );
     }
     if (sourceStat.size > maxFileSizeBytes) {
-      return ImportReferenceImageResult.failure(
+      return const ImportReferenceImageResult.failure(
         'File is too large. Max size is ${maxFileSizeBytes ~/ (1024 * 1024)} MB.',
       );
     }
@@ -178,7 +178,7 @@ class ReferenceImageSidecarService {
       projectId: projectId,
     );
     if (ledger.images.length >= maxFileCount) {
-      return ImportReferenceImageResult.failure(
+      return const ImportReferenceImageResult.failure(
         'Reference image limit reached ($maxFileCount).',
       );
     }

@@ -103,7 +103,7 @@ class _BoardGraphPainter extends CustomPainter {
       final position = nodePositions[node.id] ?? Offset.zero;
       nodePaint.color = _nodeColor(node);
       final rect = Rect.fromLTWH(position.dx, position.dy, 120, 36);
-      final radius = Radius.circular(8);
+      const radius = Radius.circular(8);
       canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), nodePaint);
 
       final textPainter = TextPainter(

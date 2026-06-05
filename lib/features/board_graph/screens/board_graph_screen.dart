@@ -133,7 +133,7 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
                               child: Text(component.componentId),
                             ),
                           )
-                          .toList(),
+                          ,
                     ],
                     onChanged: (value) => setState(() {
                       _focusComponent = value;

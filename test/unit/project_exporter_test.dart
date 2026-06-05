@@ -129,8 +129,8 @@ void main() {
       );
 
       final result = await exporter.exportProjectZip(
-        ProjectState(
-          manifest: const ProjectManifest(
+        const ProjectState(
+          manifest: ProjectManifest(
             projectId: 'inline_project',
             schemaVersion: '1.0',
             createdAt: '2026-05-22T00:00:00Z',
@@ -138,7 +138,7 @@ void main() {
             model: 'PV20',
             symptom: 'not_provided',
           ),
-          knownFacts: const KnownFacts(
+          knownFacts: KnownFacts(
             projectId: 'inline_project',
             components: [],
             pins: [],
@@ -151,7 +151,7 @@ void main() {
             excludedFromFaultCandidates: [],
             componentPinIndex: {},
           ),
-          events: const [],
+          events: [],
           customerReport: 'Inline report',
           projectDirectory: null,
         ),

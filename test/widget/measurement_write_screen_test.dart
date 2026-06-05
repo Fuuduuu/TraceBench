@@ -194,6 +194,7 @@ void main() {
       final errorFinder =
           find.byKey(const ValueKey('measurement-error-message'));
       expect(successFinder.evaluate().isNotEmpty, isTrue);
+      expect(errorFinder.evaluate().isEmpty, isTrue);
 
       expect(
         find.text(

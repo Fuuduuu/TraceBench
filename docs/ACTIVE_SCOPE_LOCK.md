@@ -2,23 +2,29 @@
 
 ## Current pass
 
-`V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`
+`GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_ROUTE_RECORD`
+`CODEX / DOCS_SYNC_QA_RUN`
 
 ## Next recommended pass
 
-`GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
+`V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`
 
 ## Scope
 
-Docs-only route-review record for the read-only `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS` result.
+Docs-only manual smoke record for the consolidated read-only technician-first Measure Sheet surface.
 
-Record the Claude Code / Opus route-review `PASS`, confirm the read-only technician-first Measure Sheet layer is complete enough for live smoke, and route to `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`.
+Record the user-performed Windows smoke result for:
 
-Do not route directly to V2, activity timeline implementation, measure momentum implementation, or polish unless a future smoke finds NITs.
+- read-only Measure Sheet shell,
+- Reference Values Panel,
+- Guided Measurement Helper.
+
+Smoke verdict: `PASS`.
+
+Do not route directly to V2 implementation, real Save/Add/Edit, Activity Timeline implementation, Measure Momentum implementation, or polish by default.
 
 ## Write allowlist
 
@@ -27,7 +33,7 @@ Do not route directly to V2, activity timeline implementation, measure momentum 
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS.md`
+- `docs/audit/GUIDED_MEASUREMENT_FLOW_SMOKE_PASS.md`
 
 ## Forbidden surfaces
 
@@ -38,32 +44,24 @@ Do not route directly to V2, activity timeline implementation, measure momentum 
 - No real Save Measurement, Add Component, Edit Component, Run AI, Detect, Upload, confirm, promote, apply, or source-search behavior.
 - No diagnosis, suspect ranking, probability/confidence claim, net inference, identity confirmation, or source/reference/candidate promotion to measured/canonical.
 
-## Route-review decision
+## Recorded smoke result
 
-- `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`: SELECT. Consolidated manual Windows smoke should verify the full read-only Measure Sheet surface before the high-risk V2 architecture decision.
-- `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: likely next big track after smoke; requires GPT Pro architecture-first plus Claude Code / Opus audit.
-- `ACTIVITY_TIMELINE_SCOPE_LOCK_PASS`: defer and pair with V2.
-- `MEASURE_MOMENTUM_SCOPE_LOCK_PASS`: defer until V2 unlocks real save.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_POLISH_SCOPE_LOCK_PASS`: only if smoke finds NITs.
-- Tiny docs hygiene: not needed.
-
-## Future smoke checklist
-
-- App launches.
-- Project Overview navigation works.
-- Measure Sheet route opens.
-- Read-only shell remains intact.
-- Disabled/non-writing `Salvesta` button remains disabled.
-- Reference Values Panel is visible and display-only.
-- Guided Measurement Helper card is visible.
-- Five neutral helper prompts are visible: next measurement, missing reading, gap/conflict re-check, source/reference boundary, and candidate boundary.
-- Forbidden diagnosis/probability/verified/confirmed/good/correct/AI-found/app-detected/net-confirmed/component-identified copy is absent.
-- No active Save/Add/Edit/Apply/Confirm or event-writing implication appears.
-- Copy says writes nothing and human technician measures and decides.
-- No green/success/verified styling appears for helper prompts.
-- Helper looks like guidance, not conclusion.
-- Narrow-window behavior remains usable.
-- Selected `Koht` / context remains visible.
+- App launched: PASS.
+- Project Overview navigation to Measure Sheet: PASS.
+- Measure Sheet route opens: PASS.
+- Read-only shell intact: PASS.
+- Disabled/non-writing `Salvesta` button remains disabled: PASS.
+- Reference Values Panel visible and display-only: PASS.
+- Guided Measurement Helper card visible: PASS.
+- Five neutral helper prompts visible: PASS.
+- Forbidden copy absent: PASS.
+- No write affordance: PASS.
+- No event-writing implication: PASS.
+- No green/success/verified styling: PASS.
+- Helper looks like guidance, not conclusion: PASS.
+- Narrow-window usable: PASS.
+- Selected `Koht` / context visible: PASS.
+- Blocking issues: none.
 
 ## Boundary preservation
 
@@ -76,6 +74,8 @@ Do not route directly to V2, activity timeline implementation, measure momentum 
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - Reference/source/candidate/note values remain non-canonical and must not look measured.
 - Guided Measurement remains read-only and must not diagnose, rank, infer, or probabilize.
+- Reference Values Panel remains display-only.
+- Measure Sheet shell remains read-only.
 - V2 event-writing remains deferred until explicitly scoped.
 
 ## Validation

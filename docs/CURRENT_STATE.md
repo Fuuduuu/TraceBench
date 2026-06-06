@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`
-- Next recommended pass: `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
+- Current pass: `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
+- Next recommended pass: `V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -59,7 +59,8 @@ Branch: `main`
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the helper scope lock and post-audit patch.
 - `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the read-only Guided Measurement helper implementation and post-audit `ACCEPT_AS_IS`.
 - `TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`: accepted/pushed docs-only product guardrail capture before post-helper route review; records activity-log separation, measure momentum, offline/prototype cautions, A-unit placement, Estonian labels, and compactness rules.
-- `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`: current read-only route-review record; Claude Code / Opus returned `PASS` and selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS` before any V2 architecture decision.
+- `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`: accepted/pushed read-only route-review record; Claude Code / Opus returned `PASS` and selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS` before any V2 architecture decision.
+- `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`: current docs-only manual smoke record; user reported `koik pass` for the consolidated read-only Measure Sheet surface.
 
 ## Future candidates
 
@@ -89,8 +90,9 @@ Branch: `main`
 - `GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`ACCEPT_AS_IS`; no blocker/high/medium/low findings; validation baseline green; trailing-newline style NIT only).
 - `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the accepted implementation and post-audit result.
 - `TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`: accepted/pushed docs-only product guardrail capture; no implementation routing.
-- `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`: current route-review record; read-only audit returned `PASS` and selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`.
-- `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`: next consolidated manual Windows smoke for the full read-only Measure Sheet surface before high-stakes V2 event-writing architecture.
+- `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`: accepted/pushed route-review record; read-only audit returned `PASS` and selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`.
+- `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`: current consolidated manual Windows smoke record; user reported all checks PASS for the full read-only Measure Sheet surface.
+- `V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`: next read-only route review after successful smoke; decide whether to open V2 event-writing architecture as GPT Pro architecture-first.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.
@@ -112,4 +114,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
+`V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`

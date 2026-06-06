@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TraceBench · BoardFact — Kiire mõõtmisleht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="measure.css" />
+</head>
+<body>
+<div class="app" data-screen-label="BoardFact · Measure">
+
+  <!-- ============================================ TOP CHROME -->
+  <header class="topbar">
+    <div class="brand">
+      <i class="dot"></i>
+      <b>TraceBench</b>
+      <span>BoardFact</span>
+    </div>
+    <div class="board-id">plaat: dev_board_a <em>·</em> pealmine pool</div>
+    <div class="spacer"></div>
+    <button class="reset" id="btnReset" type="button">Lähtesta näidis</button>
+    <span class="ro-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      ainult lugemiseks
+    </span>
+  </header>
+
+  <!-- ============================================ MAIN -->
+  <div class="main">
+
+    <!-- ---------------- Board canvas (read-only) -->
+    <section class="canvas-pane" aria-label="Plaadi vaade">
+      <div class="canvas-head">
+        <span class="title">Plaadi vaade · komponendid</span>
+        <span class="hint">vali komponent · mõõtmiseks</span>
+      </div>
+      <div class="canvas-wrap">
+        <svg id="board" class="board-svg" viewBox="0 0 700 480" preserveAspectRatio="xMidYMid meet" role="application" aria-label="Plaadi komponendid"></svg>
+      </div>
+      <div class="read-note">
+        <b>Plaat on ainult lugemiseks.</b> Komponente ei muudeta — sina lisad ainult mõõtmisi. Iga mõõtmine jääb tõendina jala juurde alles.
+      </div>
+    </section>
+
+    <!-- ---------------- Inspector + measure sheet -->
+    <aside class="inspector" aria-label="Komponendi ülevaade ja mõõtmisleht">
+
+      <div class="insp-head">
+        <div class="desig-row">
+          <span class="desig" id="desig">U12</span>
+          <span class="status"><i></i> paigutatud</span>
+        </div>
+        <div class="fam" id="fam">soic_8 · 8 jalga</div>
+      </div>
+
+      <!-- BIG measure button -->
+      <div class="measure-zone">
+        <button class="btn-measure" id="btnMeasure" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 14 10"/><path d="M12 8l4 4"/><path d="M15 5l4 4-3 3-4-4z"/><circle cx="4" cy="20" r="1.4" fill="currentColor"/></svg>
+          <span class="lbl">Mõõda</span>
+        </button>
+      </div>
+
+      <!-- QUICK MEASUREMENT SHEET -->
+      <div class="sheet" id="sheet">
+        <div class="sheet-head">
+          <span class="tag">kiire mõõtmisleht</span>
+          <span class="step" id="step">U12 · jalg 1</span>
+        </div>
+
+        <!-- Koht (auto) -->
+        <div class="field">
+          <div class="label">Koht <span class="auto">automaatne</span></div>
+          <div class="koht-val"><span id="kohtComp">U12</span> <span class="leg" id="kohtPin">jalg 1</span></div>
+          <div class="pin-row" id="pinRow"></div>
+        </div>
+
+        <!-- Väärtus (auto-focus) -->
+        <div class="field">
+          <div class="label">Väärtus</div>
+          <div id="valueWrap">
+            <div class="value-box">
+              <input class="value-input" id="valueInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Mõõdetud väärtus" />
+              <span class="suffix" id="suffix">V</span>
+              <span class="uf" id="ufTag" style="display:none">U_f</span>
+            </div>
+          </div>
+          <div id="beepWrap" style="display:none">
+            <div class="beep-row">
+              <button class="beep-btn" id="beepPass" type="button"><span class="ic">✓</span> Läbib</button>
+              <button class="beep-btn" id="beepFail" type="button"><span class="ic">✕</span> Ei läbi</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ühik chips -->
+        <div class="field">
+          <div class="label">Ühik</div>
+          <div class="unit-row" id="unitRow"></div>
+        </div>
+
+        <!-- Salvesta -->
+        <div class="sheet-foot">
+          <button class="btn-save" id="btnSave" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+            Salvesta mõõtmine
+          </button>
+        </div>
+      </div>
+
+      <!-- Measurements list -->
+      <div class="m-section">
+        <div class="m-head">
+          <h3>Mõõtmised</h3>
+          <span class="count" id="mCount">0</span>
+        </div>
+        <div class="m-empty" id="mEmpty">Selle komponendi kohta pole veel mõõtmisi. Vajuta «Mõõda», et alustada.</div>
+        <div class="m-list" id="mList"></div>
+      </div>
+
+      <!-- Collapsible: Lisainfo -->
+      <div class="collapse" id="infoCol">
+        <button class="col-head" id="infoHead" type="button">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="ct">Lisainfo</span>
+        </button>
+        <div class="col-body" id="infoBody"></div>
+      </div>
+
+      <!-- Collapsible: Tehnilised detailid (default off) -->
+      <div class="collapse" id="techCol">
+        <button class="col-head" id="techHead" type="button">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="ct">Tehnilised detailid</span>
+          <span class="switch" role="switch" aria-label="Näita tehnilisi detaile"><i></i></span>
+        </button>
+        <div class="col-body" id="techBody"></div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ============================================ BOTTOM CHROME -->
+  <footer class="botbar">
+    <span>vaade: dev_board_a · komponente 8 · mõõdetud jalgu jälgitakse tõendina</span>
+    <span class="spacer"></span>
+    <span class="writes">plaadile kirjeid ei tehta · ainult mõõtmised</span>
+  </footer>
+
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    <span class="tmsg">Salvestatud</span>
+  </div>
+</div>
+
+<script src="measure.js"></script>
+</body>
+</html>

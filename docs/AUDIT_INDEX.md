@@ -290,3 +290,5 @@ Lazy-loading index for pass audit documents.
 | REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS | docs/audit/REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS.md | completed |
 | V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS.md | accepted from route context (`PASS`; no repo modifications; selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`; V2 event-writing deferred) |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS.md | completed |
+| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS.md | accepted from audit context (`NEEDS_SMALL_PATCH`; missing `AUDIT_INDEX` route-review row patched before commit; validation PASS) |
+| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS.md | completed |

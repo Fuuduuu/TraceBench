@@ -20,4 +20,4 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - further reference values panel runtime behavior beyond the accepted display-only panel before separately scoped route review and implementation scope
 - further technician-first Measure Sheet behavior beyond the accepted read-only/display shell before separately scoped smoke, UX, and architecture passes
 - real Measure Sheet Save/Add/Edit/event-writing behavior before V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS
-- Guided Measurement implementation before accepted scope-lock post-audit; diagnosis, suspect ranking, probability/confidence claims, net inference, identity confirmation, and canonical fact creation remain out of scope
+- Guided Measurement behavior beyond the accepted read-only helper scope; diagnosis, suspect ranking, probability/confidence claims, net inference, identity confirmation, canonical fact creation, and event-writing remain out of scope

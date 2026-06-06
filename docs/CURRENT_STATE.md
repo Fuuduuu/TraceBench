@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`
-- Next recommended pass: `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -64,6 +64,7 @@ Branch: `main`
 - `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`: read-only route review returned `PASS` and selected `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS` as highest-value, lowest-risk, ready-now next pass.
 - `REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`: records accepted/pushed display-only Reference Values Panel implementation and post-audit `ACCEPT_AS_IS`.
 - `V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`: read-only Claude Code / Opus route review returned `PASS` from user-provided route context and selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`; V2 event-writing remains deferred.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: accepted/pushed docs-only helper scope lock; post-audit returned `NEEDS_SMALL_PATCH` and the required `AUDIT_INDEX` folded route-review row was patched before commit.
 
 ## Future candidates
 
@@ -75,8 +76,8 @@ Branch: `main`
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`: completed/pushed docs/source-prep; created the safe prototype source folder and README handoff restrictions.
 - `REFERENCE_VALUES_PANEL_IMPL_PASS`: accepted/pushed display-only implementation; added a Reference Values Panel inside the read-only Measure Sheet shell and writes no canonical facts.
 - `REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`ACCEPT_AS_IS`; no blocker/high/medium/low findings; validation baseline green).
-- `REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`: current docs-only closeout; records accepted implementation, post-audit acceptance, validation state, and preserved non-canonical boundaries.
-- `V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`: next route review after the display-only Reference Values Panel closeout; choose the next safe technician-first value track before implementation.
+- `REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; records accepted implementation, post-audit acceptance, validation state, and preserved non-canonical boundaries.
+- `V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`: accepted from folded route context in `docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS.md`; selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: accepted/pushed docs-only design review record; Claude Design returned `ACCEPT_WITH_NITS`, no prototype files were touched, and no implementation was produced.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock; locks the first implementation-safe read-only/display-only Measure Sheet shell scope from UX review findings without starting implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`NEEDS_SMALL_PATCH`; scope substance accepted; deferred-feature text artifact cleanup applied and validation passed).
@@ -86,8 +87,10 @@ Branch: `main`
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the read-only shell implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`: accepted/pushed manual Windows smoke; user launched the app and reported all read-only shell checks PASS.
 - `V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`: accepted/pushed route-review record; Claude Code / Opus returned PASS and selected `REFERENCE_VALUES_PANEL_IMPL_PASS`.
-- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: current docs-only scope lock for a future read-only helper that may suggest next measurements, show missing readings, and surface gaps/conflicts only; no diagnosis, probability, net inference, identity confirmation, or fact creation.
-- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`: next independent Claude Code / Opus audit before any implementation.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock for a future read-only helper that may suggest next measurements, show missing readings, and surface gaps/conflicts only; no diagnosis, probability, net inference, identity confirmation, or fact creation.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from audit context (`NEEDS_SMALL_PATCH`; missing `AUDIT_INDEX` route-review row patched and validation PASS).
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted scope lock, post-audit patch, validation state, and preserved helper boundaries.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: next implementation candidate; read-only Measure Sheet helper only under the accepted scope lock.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.
@@ -109,4 +112,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+`GUIDED_MEASUREMENT_FLOW_IMPL_PASS`

@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`
+`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_SCOPE_LOCK`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Next recommended pass
 
-`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+`GUIDED_MEASUREMENT_FLOW_IMPL_PASS`
 
 ## Scope
 
-Docs-only scope lock for a future Guided Measurement Flow helper.
+Docs-only closeout for the accepted/pushed `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS` and Claude Code / Opus post-audit result.
 
-Lock a read-only helper that may suggest next measurements, show missing readings, surface gaps/conflicts, and organize neutral next-step prompts for the technician. This pass does not implement UI, tests, runtime behavior, event-writing, AI/OCR/CV, source search, schemas, tools, materializer behavior, Project ZIP behavior, generated artifacts, assets, samples, platform folders, tags, or release objects.
+Record the scope lock as accepted, record post-audit `NEEDS_SMALL_PATCH` with the required `AUDIT_INDEX` row patch resolved, preserve read-only helper boundaries, and route to `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`.
 
 ## Write allowlist
 
@@ -26,11 +26,11 @@ Lock a read-only helper that may suggest next measurements, show missing reading
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
-- `docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS.md`
+- `docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
-- No implementation code or tests in this pass.
+- No implementation code or tests in this closeout.
 - No Flutter runtime, runtime UI, Save Measurement runtime, Add Component runtime, Edit Component runtime, event-writing, canonical fact creation, canonical field creation, provider/project-data mutation, persistence, or file writes.
 - No schemas, validators, tools, materializer behavior, Project ZIP logic/contract, Board Canvas runtime, Reference Images runtime or sidecar behavior.
 - No AI/OCR/CV, source search, URL import, datasheet parser, localStorage, generated artifacts, assets, samples, platform folders, tags, or release objects.
@@ -73,6 +73,10 @@ Any need to touch schemas, tools, materializer, Project ZIP, Board Canvas runtim
 - Forbidden inference copy remains absent.
 - Source-boundary negative guard rejects writer/storage/AI/probability/diagnosis tokens.
 - Analyzer baseline must not regress beyond the 5 documented deferred residuals.
+
+## Route constraint
+
+`GUIDED_MEASUREMENT_FLOW_IMPL_PASS` may implement only the accepted read-only helper. Do not route to V2 event-writing, real Save/Add/Edit behavior, AI/OCR/CV, source search, URL import, or datasheet parsing.
 
 ## Validation
 

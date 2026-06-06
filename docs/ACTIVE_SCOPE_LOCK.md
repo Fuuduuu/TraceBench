@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`
+`TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SYNC_PRODUCT_GUARDRAILS`
 
 ## Next recommended pass
 
@@ -14,9 +14,9 @@
 
 ## Scope
 
-Docs-only closeout for accepted/pushed `GUIDED_MEASUREMENT_FLOW_IMPL_PASS` and Claude Code / Opus post-audit `ACCEPT_AS_IS`.
+Docs-only product/governance capture for residual Ideelabor technician-first guardrails before the post-helper route review.
 
-Record the read-only Guided Measurement helper implementation as accepted, record validation, preserve helper/evidence boundaries, and route to read-only post-helper route review.
+Record guardrails only. Do not start implementation, V2 architecture, activity log work, save behavior, unit-chip behavior, source search, AI behavior, or runtime UI changes.
 
 ## Write allowlist
 
@@ -26,31 +26,31 @@ Record the read-only Guided Measurement helper implementation as accepted, recor
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
-- `docs/audit/GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/SOURCES_INDEX_CURRENT.md` only if pointer/source alignment is needed
+- `docs/audit/TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS.md`
 
 ## Forbidden surfaces
 
-- No runtime code, tests, schemas, validators, tools, materializer behavior, Project ZIP logic/contract, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, source search, URL import, datasheet parser, generated artifacts, assets, samples, platform folders, tags, or release objects.
+- No runtime code, Flutter runtime, tests, schemas, validators, tools, materializer behavior, Project ZIP logic/contract, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, source search, URL import, datasheet parser, generated artifacts, assets, samples, platform folders, tags, or release objects.
 - No event-writing, provider/project-data mutation, persistence, canonical field creation, or canonical fact creation.
 - No `events.jsonl`, `known_facts.json`, `board_graph.json`, or `view_state.json` mutation.
+- No activity log implementation.
 - No real Save Measurement, Add Component, Edit Component, Run AI, Detect, Upload, confirm, promote, or apply behavior.
 - No diagnosis, suspect ranking, probability/confidence claim, net inference, identity confirmation, or source/reference/candidate promotion to measured/canonical.
 
-## Boundary preservation
+## Guardrails to preserve
 
-- Human is the sensor. AI/helper is an organizer, not a fact creator.
-- Guided Measurement helper remains read-only and writes nothing.
-- The helper has no callbacks that mutate project data, no provider mutation, no persistence path, and no event-writing behavior.
-- The helper creates no canonical facts and does not mutate `known_facts.json`.
-- The helper does not change materializer output or Project ZIP contract.
-- The helper does not become Board Canvas evidence and does not use Reference Images sidecar as evidence/source.
-- The helper does not use AI/OCR/CV, source search, URL import, datasheet parser, or localStorage.
-- The helper does not diagnose faults, rank suspects, infer nets, confirm identity, or produce probability/likelihood/confidence/fault-probability claims.
-- The helper does not promote reference/source/candidate/note values to measured/canonical.
-- V2 event-writing architecture remains deferred.
+- Activity timeline, if later scoped, must be compact/toggleable, non-dominant, user-facing, non-canonical, separate from `events.jsonl`, and separate from debug logs.
+- Future post-save momentum may show confirmation, keep selected `Koht`, and suggest the next pin/point only as workflow aid after V2 event-writing architecture unlocks real save.
+- Production core UI must stay local/offline-capable and must not require mandatory external resources such as Google Fonts.
+- Prototype `localStorage` persistence is demo-only and must not be copied into production evidence workflow.
+- Primary quick units remain V / Ω / Diode / Beep; A/current measurement stays behind `Lisainfo` / `Tehnilised detailid` / advanced affordance by default unless separately scoped.
+- Estonian user-facing copy should stay technician-first and avoid schema/event/debug jargon.
+- `CURRENT_STATE.md` remains compact; full detail belongs in audit docs and durable product memory.
 
 ## Validation
 
-- `py -3 tools\validate_all.py`
+- `py -3 tools/validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

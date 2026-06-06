@@ -3,7 +3,7 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`
+- Current pass: `TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`
 - Next recommended pass: `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
@@ -43,15 +43,7 @@ Branch: `main`
 
 ## Ideelabor product anchor
 
-- Source: Ideelabor chat — technician-first workflow / BoardFact Measure Sheet prototype.
-- Prototype status: `BoardFact Measure Sheet example.html` is visual/product workflow input only, not Flutter implementation source.
-- Prototype bundle is present under `docs/sources/ideelabor/boardfact_measure_sheet/`; Claude Design reviewed it as visual + workflow direction only and returned `ACCEPT_WITH_NITS`.
-- Default workflow: select place/component/pin -> measure -> enter value -> choose unit -> save -> show status / next step.
-- Short form: `Koht -> Väärtus -> Ühik -> Salvesta`.
-- Target user: repair technician; normal use should not require canonical schema/event/projection/sidecar knowledge.
-- Default UI should stay measure-first and small; advanced/internal details belong behind progressive disclosure.
-- Human local measurements visually outrank research/reference/candidate values; reference/research/candidate values must not look measured.
-- AI/helper may suggest next measurements, organize accepted context, surface gaps/conflicts, and summarize confirmed facts only.
+- Compact direction: Ideelabor / BoardFact prototype remains visual and workflow input only; TraceBench stays technician-first with `Koht -> Väärtus -> Ühik -> Salvesta`, measure-first defaults, internals behind `Lisainfo` / `Tehnilised detailid`, human measurements above reference/research/candidate context, and helper guidance that may suggest or surface gaps without diagnosis or fact creation.
 
 ## Recent completed summary
 
@@ -65,7 +57,8 @@ Branch: `main`
 - `REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`: records accepted/pushed display-only Reference Values Panel implementation and post-audit `ACCEPT_AS_IS`.
 - `V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`: read-only Claude Code / Opus route review returned `PASS` from user-provided route context and selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`; V2 event-writing remains deferred.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the helper scope lock and post-audit patch.
-- `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: current docs-only closeout for accepted/pushed Guided Measurement helper implementation and post-audit `ACCEPT_AS_IS`.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the read-only Guided Measurement helper implementation and post-audit `ACCEPT_AS_IS`.
+- `TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`: current docs-only product guardrail capture before post-helper route review; records activity-log separation, measure momentum, offline/prototype cautions, A-unit placement, Estonian labels, and compactness rules.
 
 ## Future candidates
 
@@ -93,7 +86,8 @@ Branch: `main`
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; records accepted scope lock, post-audit patch, validation state, and preserved helper boundaries.
 - `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: accepted/pushed read-only Measure Sheet helper implementation; helper suggests neutral next checks, missing-reading prompts, and gap/conflict prompts while writing nothing.
 - `GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`ACCEPT_AS_IS`; no blocker/high/medium/low findings; validation baseline green; trailing-newline style NIT only).
-- `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: current docs-only closeout for the accepted implementation and post-audit result.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the accepted implementation and post-audit result.
+- `TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`: current docs-only product guardrail capture; no implementation routing.
 - `V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`: next read-only route review after Guided Measurement helper closeout.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.

@@ -21,3 +21,6 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - further technician-first Measure Sheet behavior beyond the accepted read-only/display shell before separately scoped smoke, UX, and architecture passes
 - real Measure Sheet Save/Add/Edit/event-writing behavior before V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS
 - Guided Measurement behavior beyond the accepted read-only helper scope; diagnosis, suspect ranking, probability/confidence claims, net inference, identity confirmation, canonical fact creation, and event-writing remain out of scope
+- activity log / timeline implementation; if later scoped it must be compact, toggleable, user-facing, non-canonical, separate from `events.jsonl`, and separate from debug logs
+- post-save measurement momentum behavior beyond read-only helper copy; confirmation, retained `Koht`, and next pin/point suggestions require V2 event-writing architecture before real save behavior
+- production unit-chip/copy refinements from Ideelabor residuals, including keeping A/current measurement behind `Lisainfo` / `Tehnilised detailid` by default and preserving technician-first Estonian labels

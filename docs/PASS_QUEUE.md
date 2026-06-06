@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`
+`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`
+`V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -84,8 +84,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS | ROUTE_REVIEW / DOCS_SYNC | completed | Choose the next value-track route after sourced-values sidecar scope lock closeout; consider technician-first UX design, reference values panel, guided measurement helper, and V2 event-writing architecture without starting implementation. |
 | QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
 | V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / ARCHITECTURE_SCOPE_LOCK | routed into record pass | Generic selected V2 architecture scope-lock route from post-smoke review; concrete current record pass is `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`. |
-| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current (`PASS`) | Capture full accepted GPT Pro patched V2 event-writing architecture after Claude Code / Opus re-audit `ACCEPT_READY_FOR_CODEX_SCOPE_LOCK`; no implementation. |
-| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | planned next | Audit the captured full architecture text, routing, implementation block, P1-P10 resolution, L1-L4 open items, and forbidden-surface preservation. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Captured full accepted GPT Pro patched V2 event-writing architecture after Claude Code / Opus re-audit `ACCEPT_READY_FOR_CODEX_SCOPE_LOCK`; no implementation. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the captured full architecture text, routing, implementation block, P1-P10 resolution, L1-L4 open items, and forbidden-surface preservation; NITs only. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

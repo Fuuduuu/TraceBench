@@ -2,14 +2,14 @@
 
 ## Active pass
 
-- Current pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`
-- Lane: `CODEX / DOCS_SYNC_SCOPE_LOCK`
-- Mode: docs-only architecture scope-lock capture
-- Next recommended pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`
+- Current pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout
+- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Capture the accepted V2 event-writing architecture as a durable repo governance/audit artifact after GPT Pro architecture-first review and Claude Code / Opus re-audit returned `ACCEPT_READY_FOR_CODEX_SCOPE_LOCK`.
+Close out the accepted and pushed `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
 
 ## Write allowlist
 
@@ -20,45 +20,45 @@ Capture the accepted V2 event-writing architecture as a durable repo governance/
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md`
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
+- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
 Do not modify runtime code, Flutter runtime, tests, schemas, validators, tools, materializer behavior, event writer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Accepted architecture record
+## Accepted closeout record
 
-- GPT Pro architecture-first: completed.
-- Claude Code / Opus re-audit: `ACCEPT_READY_FOR_CODEX_SCOPE_LOCK`.
-- Full patched architecture text is captured in `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`.
-- P1-P10 prior findings are recorded as resolved.
-- L1-L4 are recorded as open items for later schema/spec/materializer passes.
+- `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS` accepted/pushed.
+- Commit message: `docs: capture V2 event-writing architecture`.
+- Claude Code / Opus post-audit: `ACCEPT_AS_IS`.
+- `safe_to_commit`: `YES`.
+- No blocker/high/medium/low findings.
+- NITs only: `2.0-draft` schema label is acceptable and generic scope-lock row wording is acceptable.
+- Validation recorded: `py -3 tools/validate_all.py` PASS, 236 tests.
 - Implementation remains blocked.
 
-## Hard implementation block
+## Next route lock
 
-No implementation may start from this pass. This pass authorizes no code/schema/validator/materializer/writer/UI/ZIP changes.
+Next recommended pass is `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`.
 
-Next implementation-adjacent work must begin with schema/spec docs only, followed by separately scoped validator, materializer, writer, UI, ZIP, Activity Timeline, and Measure Momentum passes.
+It is docs/spec-only scope lock for V2 event schema/spec planning. It must not implement schemas or code and must not route directly to validator, materializer, writer service, UI write flows, Project ZIP, Activity Timeline, or Measure Momentum implementation.
 
 ## Evidence boundaries
 
 - Human is the sensor. AI is the graph engine.
 - AI must not create canonical facts.
-- AI/helper may suggest, organize, and surface gaps only.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection/cache.
-- Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `visual_trace` is not a net.
 - `template_id` / footprint family is not electrical identity.
-- Photo pixels are not facts.
-- Photo alignment is not identity, pin mapping, net confirmation, measurement, or fault proof.
+- Photo pixels and photo alignment are not facts or proof.
 - Damage/suspect/source/research/reference/candidate/note values are not proof or probability.
-- Reference Images remain local sidecar only and must not become evidence/canonical source.
+- Reference Images remain local sidecar and non-canonical.
 - Board Canvas remains read-only unless separately scoped.
 - Guided Measurement remains read-only and must not author events.
 - Activity Timeline remains distinct from `events.jsonl` and debug logs.
+- V2 implementation remains blocked until later individually scoped/audited passes.
 
 ## Validation
 

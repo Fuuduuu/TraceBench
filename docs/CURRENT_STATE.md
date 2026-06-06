@@ -2,18 +2,19 @@
 
 ## Current status
 
-- Current pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`
-- Next recommended pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`
+- Current pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS`
+- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this record: `bd38ff7 docs: record post-smoke V2 route review`
+- Latest accepted commit before this closeout: `80c4524 docs: capture V2 event-writing architecture`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- V2 event-writing architecture has completed GPT Pro architecture-first review and Claude Code / Opus re-audit.
-- This pass captures the full accepted patched architecture text in `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`.
-- Implementation remains blocked until the scope-lock record is post-audited and accepted.
+- V2 event-writing architecture scope-lock record is accepted and closed out.
+- Claude Code / Opus post-audit returned `ACCEPT_AS_IS` with no blocker/high/medium/low findings.
+- Full accepted patched architecture text remains in `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`.
+- Next pass is docs/spec-only scope lock for V2 event schema/spec planning.
 - Do not route directly to schema implementation, validator implementation, materializer implementation, writer service, Save/Add/Edit UI, Project ZIP changes, Activity Timeline, or Measure Momentum.
 
 ## Accepted V1.1 baseline
@@ -28,9 +29,10 @@
 ## V2 architecture state
 
 - Accepted scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
-- Next required review: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`.
-- Future work must be staged: schema/spec, schema audit, validator, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
-- Activity Timeline and Measure Momentum remain deferred until after accepted V2 write architecture guardrails and relevant implementation passes.
+- Accepted post-audit: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
+- Current closeout: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS`.
+- Next route: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`, docs/spec scope lock only.
+- Future work must remain staged: schema/spec, schema audit, validator, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -43,8 +45,7 @@
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
 - `visual_trace` is not a net.
 - `template_id` / footprint family is not electrical identity.
-- Photo pixels are not facts.
-- Photo alignment is not identity, pin mapping, net confirmation, measurement, or fault proof.
+- Photo pixels and photo alignment are not facts or proof.
 - Damage, suspect, source, research, reference, candidate, and note values are not proof or probability.
 - Guided Measurement remains read-only and must not author events.
 - Activity Timeline remains distinct from `events.jsonl` and debug logs.
@@ -52,8 +53,8 @@
 ## Maintenance note
 
 - `docs/MEMORY_MAINTENANCE.md` owns the compaction trigger: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
-- Keep full architecture text in the audit doc only; keep this handoff compact.
+- Keep this handoff compact; keep full architecture text in the audit doc only.
 
 ## Next recommended pass
 
-`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`
+`V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`

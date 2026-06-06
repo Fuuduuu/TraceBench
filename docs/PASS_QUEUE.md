@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS`
+`V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS`
+`GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -98,8 +98,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | GUIDED_MEASUREMENT_FLOW_IMPL_PASS | FLUTTER_PASS | completed | Accepted/pushed read-only Guided Measurement helper inside the Measure Sheet surface; neutral next-check, missing-reading, and gap/conflict prompts only; writes nothing. |
 | GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: no blocker/high/medium/low findings; validation baseline green; trailing-newline style NIT only. |
 | GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed Guided Measurement helper implementation and post-audit result; preserved helper boundaries and routed to post-helper route review. |
-| TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS | CODEX / DOCS_SYNC_PRODUCT_GUARDRAILS | current | Capture residual Ideelabor technician-first guardrails before route review: activity timeline separation, measure momentum, offline/prototype cautions, A-unit placement, Estonian labels, and CURRENT_STATE compactness; no implementation. |
-| V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Read-only route review after Guided Measurement helper closeout to choose the next safe value track; do not route directly to V2 implementation. |
+| TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS | CODEX / DOCS_SYNC_PRODUCT_GUARDRAILS | completed | Captured residual Ideelabor technician-first guardrails before route review: activity timeline separation, measure momentum, offline/prototype cautions, A-unit placement, Estonian labels, and CURRENT_STATE compactness; no implementation. |
+| V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | current from route context (`PASS`) | Read-only route review after Guided Measurement helper closeout selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`; V2 event-writing architecture remains likely next big track after smoke but must not be opened yet. |
+| GUIDED_MEASUREMENT_FLOW_SMOKE_PASS | DOCS_SYNC / QA_RUN | planned | Consolidated manual Windows smoke for the full read-only Measure Sheet surface: shell, disabled/non-writing save affordance, Reference Values Panel, Guided Measurement helper, neutral prompts, forbidden-copy absence, narrow-window usability, and selected `Koht` visibility. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus accepted the scope-lock substance; only follow-up patch removed a deferred-feature text artifact and validation passed. |

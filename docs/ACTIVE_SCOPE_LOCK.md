@@ -2,82 +2,56 @@
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`
 
 ## Lane
 
-`CODEX / FLUTTER_PASS`
-
-## Mode
-
-Scoped implementation only. Implement the first technician-first Measure Sheet read-only/display shell slice. Do not implement event-writing, real Save Measurement, Add Component, Edit Component, canonical mutation, schema changes, materializer changes, Project ZIP changes, Board Canvas write/edit behavior, AI/OCR/CV, source search, URL import, datasheet parser, or localStorage behavior.
-
-## Goal
-
-Add the smallest implementation-safe read-only Measure Sheet shell that demonstrates the technician-first flow `Koht -> Väärtus -> Ühik -> Salvesta` without writing or mutating project facts.
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
 
-Claude Code / Opus must audit this implementation before closeout or any follow-up scope.
+## Scope
+
+Docs-only closeout for the accepted and pushed `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`.
+
+Record that the read-only technician-first Measure Sheet shell was implemented, independently post-audited, patched, validated, committed, and pushed. Route next to manual/user-visible smoke before any guided-measurement or event-writing scope.
 
 ## Write allowlist
 
-- `lib/app/router.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
-- `test/widget/measure_sheet_screen_test.dart`
-- `test/widget/project_overview_screen_test.dart`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS.md`
-
-## Implemented slice
-
-- New read-only `MeasureSheetScreen` route at `/project/measure-sheet`.
-- Project overview action labeled `Measure Sheet`.
-- Technician-first flow labels: `Koht -> Väärtus -> Ühik -> Salvesta`.
-- Disabled/non-functional save-looking affordance that clearly says it does not write.
-- Neutral recorded-reading status copy.
-- Display hierarchy for `Mõõdetud`, `Viide / Allikas`, `Kandidaat`, and `Märkus`.
-- Narrow-width fallback that keeps selected `Koht` context visible.
-- Focused widget/navigation/source-boundary tests.
+- `docs/DEFERRED_FEATURES.md`
+- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
-- Real Save Measurement runtime
-- Add Component runtime
-- Edit Component runtime
-- Event-writing
-- Canonical fact creation
-- Schema changes
-- `known_facts.json` mutation
-- Materializer changes
-- Project ZIP behavior changes
-- Board Canvas write/edit behavior
-- Reference Images runtime changes
-- AI/OCR/CV
-- Source search
-- URL import
-- Datasheet parser
-- localStorage behavior
-- Copied prototype HTML/CSS/JS implementation patterns
-- Generated artifacts
-- Assets or samples
-- Platform folders
-- Tags or release objects
+- Runtime code and Flutter implementation files.
+- Tests.
+- Schemas, validators, tools, and materializer behavior.
+- Project ZIP logic or contract.
+- Board Canvas runtime or write/edit behavior.
+- Reference Images runtime.
+- AI/OCR/CV, source search, URL import, datasheet parser, or localStorage behavior.
+- `events.jsonl`, `known_facts.json`, generated artifacts, assets, samples, platform folders, tags, or release objects.
+- Real Measure Sheet Save Measurement, Add Component, Edit Component, event-writing, canonical fact creation, or persistence.
 
-## Core hard boundaries preserved
+## Boundary summary
 
-- Human is the sensor. AI is the graph engine.
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains materialized projection.
-- Renderer/view writes nothing unless explicitly scoped.
-- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Reference/source/candidate/note values remain non-canonical and cannot look measured.
-- Board Canvas remains read-only.
-- Real Measure Sheet Save/Add/Edit/event-writing behavior must wait for separately accepted V2 event-writing architecture.
+- Measure Sheet shell remains read-only/display-only.
+- Save-looking affordance remains disabled and non-writing.
+- Human remains the sensor; AI remains the graph engine.
+- App copy must not imply the app measured, inferred, verified, diagnosed, or confirmed facts.
+- Dot/chip/status copy means only that a reading exists or was recorded here.
+- Reference/source/candidate/note values remain non-canonical and must not look measured.
+- Narrow-window context fallback must preserve selected `Koht` context.
+
+## Validation
+
+- `py -3 tools\validate_all.py`
+- `git status --short --branch`
+- `git diff --name-only`

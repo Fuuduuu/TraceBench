@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
-- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`
+- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`
+- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -76,9 +76,10 @@ Branch: `main`
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock; locks the first implementation-safe read-only/display-only Measure Sheet shell scope from UX review findings without starting implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`NEEDS_SMALL_PATCH`; scope substance accepted; deferred-feature text artifact cleanup applied and validation passed).
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; records accepted scope lock, resolved post-audit patch, and route to read-only shell implementation.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`: current Codex implementation; adds a read-only/display Measure Sheet shell, overview navigation, focused tests, and no event-writing or canonical mutation.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`: next Claude Code / Opus audit before closeout or further implementation.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`: future docs-only closeout after accepted implementation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`: accepted/pushed implementation; added a read-only/display Measure Sheet shell, overview navigation, focused tests, and no event-writing or canonical mutation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`NEEDS_SMALL_PATCH`; LOW analyzer const regression patched; validation returned to baseline).
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`: current docs-only closeout for the accepted/pushed read-only shell implementation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`: next manual smoke of the new shell before any guided-measurement or event-writing route.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
@@ -101,4 +102,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`

@@ -9,7 +9,7 @@ Unplanned findings and ideas go here before PASS_QUEUE promotion.
 | WI-003 | Self-loop was detected: `PASS_QUEUE_REVIEW_03_PASS` could not recommend itself and is now routed as `USER_DECISION_PASS`. | queue-review fixup | routed |
 | WI-004 | Export-refresh and Flutter ZIP export direction selected after stale projection UI completion; queue review loop avoided. | queue-routing | routed |
 | WI-005 | AUI-02: exported report artifact absence test for stale banner is deferred to export/report artifact validation. | validation-deferral | routed |
-| WI-006 | Technician-first measure sheet: default bench flow should be Koht -> Väärtus -> Ühik -> Salvesta, with internals behind progressive disclosure; first safe read-only/display shell implementation is complete and awaits post-audit. | product-workflow | shell-implemented |
+| WI-006 | Technician-first measure sheet: default bench flow should be Koht -> Väärtus -> Ühik -> Salvesta, with internals behind progressive disclosure; first safe read-only/display shell is implemented, post-audited, patched, committed/pushed, and ready for manual smoke. | product-workflow | shell-closeout |
 
 | WI-007 | Sourced/reference/research values should be sidecar/non-canonical, visually below human measurements, and must not look measured; Reference Values Panel display/provenance scope is accepted/closed for measured/reference/candidate/note distinction. | evidence-boundary | panel-scope-closed |
 | WI-008 | Guided measurement helper may suggest next measurements and gaps/conflicts, but must not diagnose faults or create canonical facts. | helper-boundary | queued |

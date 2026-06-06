@@ -17,4 +17,4 @@ Unplanned findings and ideas go here before PASS_QUEUE promotion.
 | WI-011 | Post-smoke route review selected V2 event-writing architecture scope lock as the next route; no smoke fix pass required. | route-review | accepted |
 | WI-012 | V2 event-writing architecture scope lock was captured as full-text docs record and accepted/pushed; implementation remains blocked and staged follow-up passes are required. | architecture-scope | closed |
 | WI-013 | Post-audit accepted the captured V2 event-writing architecture scope-lock record as `ACCEPT_AS_IS`; closeout routes to schema/spec scope lock. | audit-routing | accepted |
-| WI-014 | V2 event schema/spec scope lock should plan schema/event-shape work only; no schema files, validators, materializers, writer service, UI writes, ZIP changes, Activity Timeline, or Measure Momentum implementation. | spec-scope | planned |
+| WI-014 | V2 event schema/spec scope lock plans schema/event-shape documentation only; no schema files, validators, materializers, writer service, UI writes, ZIP changes, Activity Timeline, or Measure Momentum implementation. | spec-scope | scope-locked |

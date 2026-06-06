@@ -24,3 +24,4 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - activity log / timeline implementation; if later scoped it must be compact, toggleable, user-facing, non-canonical, separate from `events.jsonl`, and separate from debug logs
 - post-save measurement momentum behavior beyond read-only helper copy; confirmation, retained `Koht`, and next pin/point suggestions require V2 event-writing architecture before real save behavior
 - production unit-chip/copy refinements from Ideelabor residuals, including keeping A/current measurement behind `Lisainfo` / `Tehnilised detailid` by default and preserving technician-first Estonian labels
+- Activity Timeline and Measure Momentum implementation remain deferred until with/after accepted V2 event-writing architecture; do not implement them as standalone post-smoke follow-up passes.

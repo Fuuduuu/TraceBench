@@ -1,30 +1,15 @@
 # ACTIVE_SCOPE_LOCK.md
 
-## Current pass
+## Active pass
 
-`GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`
+- Current pass: `V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`
+- Lane: `CODEX / DOCS_SYNC_ROUTE_RECORD`
+- Mode: docs-only route-review record and compact routing update
+- Next recommended pass: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`
 
-## Lane
+## Goal
 
-`CODEX / DOCS_SYNC_QA_RUN`
-
-## Next recommended pass
-
-`V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`
-
-## Scope
-
-Docs-only manual smoke record for the consolidated read-only technician-first Measure Sheet surface.
-
-Record the user-performed Windows smoke result for:
-
-- read-only Measure Sheet shell,
-- Reference Values Panel,
-- Guided Measurement Helper.
-
-Smoke verdict: `PASS`.
-
-Do not route directly to V2 implementation, real Save/Add/Edit, Activity Timeline implementation, Measure Momentum implementation, or polish by default.
+Record the accepted read-only route review after `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`, advance governance routing to V2 event-writing architecture scope lock, and fold in a small `CURRENT_STATE.md` compaction.
 
 ## Write allowlist
 
@@ -33,53 +18,75 @@ Do not route directly to V2 implementation, real Save/Add/Edit, Activity Timelin
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/GUIDED_MEASUREMENT_FLOW_SMOKE_PASS.md`
+- `docs/DEFERRED_FEATURES.md`
+- `docs/audit/V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS.md`
+
+## Read-only context
+
+- `docs/PROJECT_MEMORY.md`
+- `docs/TRUTH_INDEX.md`
+- `docs/PROTECTED_SURFACES.md`
+- `docs/MEMORY_PROTOCOL.md`
+- `docs/MEMORY_REGISTRY.yml`
+- `docs/MEMORY_MAINTENANCE.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/MODEL_ROUTING.md`
+- relevant accepted guided-measurement and Ideelabor audit docs
 
 ## Forbidden surfaces
 
-- No runtime code, Flutter runtime, tests, schemas, validators, tools, materializer behavior, Project ZIP logic/contract, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, source search, URL import, datasheet parser, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
-- No event-writing, provider/project-data mutation, persistence, canonical field creation, or canonical fact creation.
-- No `events.jsonl`, `known_facts.json`, `board_graph.json`, or `view_state.json` mutation.
-- No activity log implementation.
-- No real Save Measurement, Add Component, Edit Component, Run AI, Detect, Upload, confirm, promote, apply, or source-search behavior.
-- No diagnosis, suspect ranking, probability/confidence claim, net inference, identity confirmation, or source/reference/candidate promotion to measured/canonical.
+Do not modify runtime code, Flutter runtime, tests, schemas, validators, tools, materializer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Recorded smoke result
+## Accepted route-review decision
 
-- App launched: PASS.
-- Project Overview navigation to Measure Sheet: PASS.
-- Measure Sheet route opens: PASS.
-- Read-only shell intact: PASS.
-- Disabled/non-writing `Salvesta` button remains disabled: PASS.
-- Reference Values Panel visible and display-only: PASS.
-- Guided Measurement Helper card visible: PASS.
-- Five neutral helper prompts visible: PASS.
-- Forbidden copy absent: PASS.
-- No write affordance: PASS.
-- No event-writing implication: PASS.
-- No green/success/verified styling: PASS.
-- Helper looks like guidance, not conclusion: PASS.
-- Narrow-window usable: PASS.
-- Selected `Koht` / context visible: PASS.
-- Blocking issues: none.
+- `MODEL_ROUTING_CHECK`: PASS.
+- Startup state: clean tracked tree; expected local untracked paths only.
+- Governance route: self-loop-free.
+- Guided Measurement smoke: accepted PASS.
+- Read-only technician layer: complete enough to open V2 architecture scope lock.
+- `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: SELECT.
+- `ACTIVITY_TIMELINE_SCOPE_LOCK_PASS`: defer with/after V2.
+- `MEASURE_MOMENTUM_SCOPE_LOCK_PASS`: defer until V2 unlocks real save behavior.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_POLISH_SCOPE_LOCK_PASS`: skip unless future NITs appear.
+- Docs hygiene: fold light `CURRENT_STATE.md` compaction into this pass.
 
-## Boundary preservation
+## V2 architecture scope-lock notes
+
+The next architecture prompt should cover, at minimum:
+
+- event schema/shape for new event types,
+- append-only and immutable event semantics,
+- correction-by-new-event,
+- IDs and `origin_event_id` strategy,
+- idempotency and double-submit guard,
+- re-materialization / re-projection flow,
+- validator extension,
+- Project ZIP export/import implications,
+- v1.0/v1.1 back-compat,
+- human-authored events only,
+- AI never authors canonical events/facts,
+- `known_facts.json` remains projection,
+- no `board_graph.json`,
+- no `view_state.json`,
+- no auto-promotion from visual_trace/template/photo/damage/suspect/reference/candidate into canonical facts.
+
+## Evidence boundaries
 
 - Human is the sensor. AI is the graph engine.
-- AI/helper may suggest, organize, and surface gaps only.
 - AI must not create canonical facts.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection.
 - Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Reference/source/candidate/note values remain non-canonical and must not look measured.
-- Guided Measurement remains read-only and must not diagnose, rank, infer, or probabilize.
-- Reference Values Panel remains display-only.
-- Measure Sheet shell remains read-only.
-- V2 event-writing remains deferred until explicitly scoped.
+- `visual_trace` is not a net.
+- `template_id` / footprint family is not electrical identity.
+- Photo pixels are not facts.
+- Photo alignment is not identity, pin mapping, net confirmation, measurement, or fault proof.
+- Damage/suspect/source/research/reference/candidate/note values are not proof or probability.
+- Guided Measurement remains read-only and must not diagnose, rank, infer, probabilize, confirm identity, or create canonical facts.
 
 ## Validation
 
-- `py -3 tools/validate_all.py`
-- `git status --short --branch`
+- `py -3 tools\validate_all.py`
 - `git diff --name-only`
+- `git status --short --branch`

@@ -292,4 +292,6 @@ Lazy-loading index for pass audit documents.
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS.md | completed |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS.md | accepted from audit context (`NEEDS_SMALL_PATCH`; missing `AUDIT_INDEX` route-review row patched before commit; validation PASS) |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS.md | completed |
-| GUIDED_MEASUREMENT_FLOW_IMPL_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_IMPL_PASS.md | current implementation (read-only Measure Sheet helper: neutral next-check, missing-reading, and gap/conflict prompts; writes nothing; pending post-audit) |
+| GUIDED_MEASUREMENT_FLOW_IMPL_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_IMPL_PASS.md | completed (read-only Measure Sheet helper: neutral next-check, missing-reading, and gap/conflict prompts; writes nothing; accepted as-is by post-audit) |
+| GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS.md | accepted from audit context (`ACCEPT_AS_IS`; no blocker/high/medium/low findings; validation baseline green; trailing-newline style NIT only) |
+| GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS | docs/audit/GUIDED_MEASUREMENT_FLOW_IMPL_CLOSEOUT_PASS.md | current docs-only closeout |

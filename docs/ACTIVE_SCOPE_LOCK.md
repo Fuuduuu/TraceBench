@@ -2,97 +2,74 @@
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / FLUTTER_PASS`
 
 ## Mode
 
-Docs-only closeout. Do not modify runtime code, tests, schemas, validators, tools, materializer, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
+Scoped implementation only. Implement the first technician-first Measure Sheet read-only/display shell slice. Do not implement event-writing, real Save Measurement, Add Component, Edit Component, canonical mutation, schema changes, materializer changes, Project ZIP changes, Board Canvas write/edit behavior, AI/OCR/CV, source search, URL import, datasheet parser, or localStorage behavior.
 
 ## Goal
 
-Close out the accepted and pushed `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS` after Claude Code / Opus post-audit and the resolved small docs patch.
-
-## Accepted closeout input
-
-- `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS` is accepted/pushed as a docs-only scope lock.
-- Claude Code / Opus post-audit returned `NEEDS_SMALL_PATCH`; the scope-lock substance was accepted.
-- The only patch was removal of a literal trailing text artifact from two Measure Sheet deferral lines in `docs/DEFERRED_FEATURES.md`.
-- Validation passed after the patch.
-- No implementation, runtime, source, asset, sample, schema, tool, validator, materializer, generated artifact, tag, or release-object change is part of this closeout.
+Add the smallest implementation-safe read-only Measure Sheet shell that demonstrates the technician-first flow `Koht -> Väärtus -> Ühik -> Salvesta` without writing or mutating project facts.
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`
 
-Implementation may proceed only within the locked read-only/display-only shell scope. Do not route to V2, real Save/Add/Edit, Guided Measurement, AI/OCR/CV, source search, URL import, or canonical mutation from this closeout.
+Claude Code / Opus must audit this implementation before closeout or any follow-up scope.
 
 ## Write allowlist
 
+- `lib/app/router.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+- `test/widget/measure_sheet_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS.md`
+
+## Implemented slice
+
+- New read-only `MeasureSheetScreen` route at `/project/measure-sheet`.
+- Project overview action labeled `Measure Sheet`.
+- Technician-first flow labels: `Koht -> Väärtus -> Ühik -> Salvesta`.
+- Disabled/non-functional save-looking affordance that clearly says it does not write.
+- Neutral recorded-reading status copy.
+- Display hierarchy for `Mõõdetud`, `Viide / Allikas`, `Kandidaat`, and `Märkus`.
+- Narrow-width fallback that keeps selected `Koht` context visible.
+- Focused widget/navigation/source-boundary tests.
 
 ## Forbidden surfaces
 
-- Runtime code
-- Flutter runtime
-- Tests
-- Schemas or validators
-- Tools or materializer
-- Project ZIP logic or contract
-- Board Canvas runtime
-- Reference Images runtime
-- AI/OCR/CV
-- Source search, URL import, datasheet parser, or web scrape
+- Real Save Measurement runtime
+- Add Component runtime
+- Edit Component runtime
 - Event-writing
+- Canonical fact creation
+- Schema changes
+- `known_facts.json` mutation
+- Materializer changes
+- Project ZIP behavior changes
+- Board Canvas write/edit behavior
+- Reference Images runtime changes
+- AI/OCR/CV
+- Source search
+- URL import
+- Datasheet parser
+- localStorage behavior
+- Copied prototype HTML/CSS/JS implementation patterns
 - Generated artifacts
 - Assets or samples
 - Platform folders
 - Tags or release objects
-- Prototype HTML/CSS/JS/screenshots
-
-## Locked implementation boundary carried forward
-
-Future pass `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS` may implement only a read-only/display shell for the technician-first Measure Sheet concept.
-
-Allowed future slice:
-
-- technician-first layout structure,
-- safe copy and labels,
-- non-writing visual hierarchy,
-- disabled/non-functional save affordance only if needed for visual context,
-- neutral status-dot / recorded-reading semantics,
-- measured/reference/candidate/note visual hierarchy,
-- accessibility minimums,
-- narrow-window fallback behavior,
-- tests proving no writing/editing/canonical mutation affordance exists.
-
-Forbidden future slice:
-
-- real Save Measurement,
-- Add Component,
-- Edit Component,
-- event-writing,
-- canonical fact creation,
-- schema changes,
-- `known_facts.json` mutation,
-- materializer changes,
-- Project ZIP behavior changes,
-- Board Canvas write/edit behavior,
-- AI/OCR/CV,
-- source search,
-- URL import,
-- datasheet parser,
-- localStorage behavior,
-- copied prototype implementation patterns.
 
 ## Core hard boundaries preserved
 
@@ -101,7 +78,6 @@ Forbidden future slice:
 - `known_facts.json` remains materialized projection.
 - Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Reference/source/candidate/note values remain non-canonical.
-- Reference Images remain local sidecar only, non-canonical, outside Project ZIP/events/known_facts/materializer/Board Canvas/AI/OCR/CV/URL import.
+- Reference/source/candidate/note values remain non-canonical and cannot look measured.
 - Board Canvas remains read-only.
 - Real Measure Sheet Save/Add/Edit/event-writing behavior must wait for separately accepted V2 event-writing architecture.

@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
+- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
+- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -75,8 +75,9 @@ Branch: `main`
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: accepted/pushed docs-only design review record; Claude Design returned `ACCEPT_WITH_NITS`, no prototype files were touched, and no implementation was produced.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock; locks the first implementation-safe read-only/display-only Measure Sheet shell scope from UX review findings without starting implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`NEEDS_SMALL_PATCH`; scope substance accepted; deferred-feature text artifact cleanup applied and validation passed).
-- `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted scope lock, resolved post-audit patch, and route to read-only shell implementation.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`: next Codex implementation after closeout; read-only/display shell only, no event-writing or canonical mutation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; records accepted scope lock, resolved post-audit patch, and route to read-only shell implementation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`: current Codex implementation; adds a read-only/display Measure Sheet shell, overview navigation, focused tests, and no event-writing or canonical mutation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`: next Claude Code / Opus audit before closeout or further implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`: future docs-only closeout after accepted implementation.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
@@ -100,4 +101,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`

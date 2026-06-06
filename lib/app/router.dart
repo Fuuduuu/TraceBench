@@ -9,6 +9,7 @@ import '../features/known_facts/screens/known_facts_viewer_screen.dart';
 import '../features/known_facts/screens/measurement_list_screen.dart';
 import '../features/known_facts/screens/not_populated_screen.dart';
 import '../features/known_facts/screens/pin_list_screen.dart';
+import '../features/measure_sheet/screens/measure_sheet_screen.dart';
 import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
@@ -52,6 +53,11 @@ GoRouter buildTraceBenchRouter({
                 path: 'measurements/new',
                 name: 'measurement-new',
                 builder: (_, __) => const MeasurementRecordScreen(),
+              ),
+              GoRoute(
+                path: 'measure-sheet',
+                name: 'measure-sheet',
+                builder: (_, __) => const MeasureSheetScreen(),
               ),
               GoRoute(
                 path: 'not-populated',

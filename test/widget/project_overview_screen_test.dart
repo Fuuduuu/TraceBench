@@ -108,12 +108,17 @@ void main() {
     expect(find.text('Kõik komponendid'), findsOneWidget);
     expect(find.text('Board graph'), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
+    expect(find.text('Measure Sheet'), findsOneWidget);
     expect(find.text('Foto tõendid'), findsOneWidget);
     expect(find.text('Reference Images'), findsOneWidget);
     expect(
         find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
     expect(
       find.byKey(const ValueKey('overview-reference-images-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('overview-measure-sheet-button')),
       findsOneWidget,
     );
   });
@@ -205,5 +210,36 @@ void main() {
 
     expect(find.text('Reference Images'), findsAtLeastNWidgets(1));
     expect(find.text('reference only'), findsOneWidget);
+  });
+
+  testWidgets('overview has Measure Sheet action and navigates to read-only shell',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final measureSheetAction = find.byKey(
+      const ValueKey('overview-measure-sheet-button'),
+    );
+    expect(measureSheetAction, findsOneWidget);
+    await tester.ensureVisible(measureSheetAction);
+    await tester.pumpAndSettle();
+    await tester.tap(measureSheetAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
+    expect(find.text('Koht -> Väärtus -> Ühik -> Salvesta'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
   });
 }

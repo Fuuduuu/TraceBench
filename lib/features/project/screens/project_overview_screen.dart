@@ -90,6 +90,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 child: const Text('Lisa mõõtmine'),
               ),
               ElevatedButton(
+                key: const ValueKey('overview-measure-sheet-button'),
+                onPressed: () => context.go('/project/measure-sheet'),
+                child: const Text('Measure Sheet'),
+              ),
+              ElevatedButton(
                 onPressed: () => context.go('/project/not-populated'),
                 child: const Text('Not populated'),
               ),

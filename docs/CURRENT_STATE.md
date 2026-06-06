@@ -80,7 +80,8 @@ Branch: `main`
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`NEEDS_SMALL_PATCH`; LOW analyzer const regression patched; validation returned to baseline).
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the read-only shell implementation.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`: current docs-only smoke record; user manually launched the Windows app and reported all read-only shell checks PASS.
-- `V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`: next read-only route review after Measure Sheet smoke; choose the next safe value track before implementation.\n- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
+- V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS: next read-only route review after Measure Sheet smoke; choose the next safe value track before implementation.
+- GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -87,11 +87,14 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
-| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | planned | Prepare the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | completed | Prepared the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
 | REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | deferred | Future display-only Reference Values Panel implementation only after scope lock acceptance and post-audit; must not write events, canonical facts, Board Canvas evidence, or Project ZIP surfaces. |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
-| TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus accepted the scope-lock substance; only follow-up patch removed a deferred-feature text artifact and validation passed. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records accepted/pushed scope lock, resolved post-audit patch, preserved boundaries, and route to read-only shell implementation. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS | FLUTTER_PASS / READONLY_SHELL | planned | Future implementation of read-only/display-only Measure Sheet shell; no Save/Add/Edit/event-writing, canonical mutation, schema/tool/materializer/Project ZIP, AI/OCR/CV, or source-search behavior. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

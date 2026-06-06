@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 

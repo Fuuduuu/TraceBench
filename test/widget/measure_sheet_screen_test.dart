@@ -185,6 +185,77 @@ void main() {
     expect(find.textContaining('fault probability'), findsNothing);
   });
 
+  testWidgets('guided measurement helper renders read-only neutral prompts',
+      (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Guided Measurement Helper'), findsOneWidget);
+    expect(
+      find.text(
+        'Read-only helper: suggests neutral next checks and writes nothing.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Human technician measures and decides.'), findsOneWidget);
+    expect(
+      find.text('Mõõda järgmisena Q2 · Q2.1 seotud ots või testpunkt.'),
+      findsOneWidget,
+    );
+    expect(find.text('Lugem puudub? Mõõda enne järeldust.'), findsOneWidget);
+    expect(
+      find.text('Kaks lugemit erinevad? Kontrolli uuesti enne järeldust.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Viide / Allikas on kontekst, mitte mõõtmine.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Kandidaat on oletuslik kontekst, mitte tõend.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Helper does not create canonical facts or change project data.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('guided measurement helper avoids inference and write affordances',
+      (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('suggestion only; technician must measure'), findsOneWidget);
+    expect(find.text('prompt only; no conclusion'), findsOneWidget);
+    expect(find.text('surface the gap; technician decides'), findsOneWidget);
+    expect(find.text('context only; not a project fact'), findsOneWidget);
+
+    const forbiddenHelperCopy = [
+      'Rike on',
+      'Tõenäoline rike',
+      'Kahtlusalune komponent',
+      'Net on kinnitatud',
+      'Komponent tuvastatud',
+      'AI leidis',
+      'Süsteem kinnitas',
+      'Korras',
+      'Verified',
+      'Confirmed',
+      'Correct',
+      'Good',
+      'Fault probability',
+      'Confidence',
+      'likely fault',
+      'probable',
+      'diagnosis',
+    ];
+
+    for (final text in forbiddenHelperCopy) {
+      expect(find.textContaining(text), findsNothing, reason: 'Unexpected copy: $text');
+    }
+  });
+
   testWidgets('narrow layout keeps selected Koht context visible', (tester) async {
     await tester.binding.setSurfaceSize(const Size(390, 720));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -226,6 +297,11 @@ void main() {
     expect(source, isNot(contains('Run AI')));
     expect(source, isNot(contains('Detect')));
     expect(source, isNot(contains('Upload')));
+    expect(source, isNot(contains('fault probability')));
+    expect(source, isNot(contains('confidence')));
+    expect(source, isNot(contains('likely fault')));
+    expect(source, isNot(contains('probable')));
+    expect(source, isNot(contains('diagnosis')));
     expect(source, isNot(contains('Save Measurement')));
     expect(source, isNot(contains('event-writing')));
     expect(source, isNot(contains('persistence')));

@@ -55,6 +55,8 @@ class MeasureSheetScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   _ReferenceValuesPanel(selection: selection),
                   const SizedBox(height: 16),
+                  _GuidedMeasurementPanel(selection: selection),
+                  const SizedBox(height: 16),
                   const Text(
                     _forbiddenSurfaceCopy,
                     style: TextStyle(fontWeight: FontWeight.w600),
@@ -503,6 +505,111 @@ class _ReferenceValuesPanel extends StatelessWidget {
               'Reference/source, candidate, and note rows are context only and are not promoted to measured values.',
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GuidedMeasurementPanel extends StatelessWidget {
+  const _GuidedMeasurementPanel({required this.selection});
+
+  final _MeasureSheetSelection selection;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Guided Measurement Helper',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Read-only helper: suggests neutral next checks and writes nothing.',
+            ),
+            const SizedBox(height: 4),
+            const Text('Human technician measures and decides.'),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                _GuidedPromptTile(
+                  label: 'Next measurement',
+                  value:
+                      'Mõõda järgmisena ${selection.kohtLabel} seotud ots või testpunkt.',
+                  body: 'suggestion only; technician must measure',
+                ),
+                const _GuidedPromptTile(
+                  label: 'Missing reading',
+                  value: 'Lugem puudub? Mõõda enne järeldust.',
+                  body: 'prompt only; no conclusion',
+                ),
+                const _GuidedPromptTile(
+                  label: 'Gap / conflict',
+                  value: 'Kaks lugemit erinevad? Kontrolli uuesti enne järeldust.',
+                  body: 'surface the gap; technician decides',
+                ),
+                const _GuidedPromptTile(
+                  label: 'Source context',
+                  value: 'Viide / Allikas on kontekst, mitte mõõtmine.',
+                  body: 'context may guide a check but is not measured',
+                ),
+                const _GuidedPromptTile(
+                  label: 'Candidate context',
+                  value: 'Kandidaat on oletuslik kontekst, mitte tõend.',
+                  body: 'context only; not a project fact',
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Helper does not create canonical facts or change project data.',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GuidedPromptTile extends StatelessWidget {
+  const _GuidedPromptTile({
+    required this.label,
+    required this.value,
+    required this.body,
+  });
+
+  final String label;
+  final String value;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 260,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).dividerColor),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 6),
+              Text(value),
+              const SizedBox(height: 6),
+              Text(body),
+            ],
+          ),
         ),
       ),
     );

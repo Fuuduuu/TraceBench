@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`
+- Current pass: `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`
+- Next recommended pass: `GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -64,7 +64,8 @@ Branch: `main`
 - `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`: read-only route review returned `PASS` and selected `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS` as highest-value, lowest-risk, ready-now next pass.
 - `REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`: records accepted/pushed display-only Reference Values Panel implementation and post-audit `ACCEPT_AS_IS`.
 - `V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`: read-only Claude Code / Opus route review returned `PASS` from user-provided route context and selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`; V2 event-writing remains deferred.
-- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: accepted/pushed docs-only helper scope lock; post-audit returned `NEEDS_SMALL_PATCH` and the required `AUDIT_INDEX` folded route-review row was patched before commit.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout for the helper scope lock and post-audit patch.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: current read-only Measure Sheet helper implementation; helper suggests neutral next checks, missing-reading prompts, and gap/conflict prompts while writing nothing.
 
 ## Future candidates
 
@@ -89,8 +90,9 @@ Branch: `main`
 - `V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`: accepted/pushed route-review record; Claude Code / Opus returned PASS and selected `REFERENCE_VALUES_PANEL_IMPL_PASS`.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock for a future read-only helper that may suggest next measurements, show missing readings, and surface gaps/conflicts only; no diagnosis, probability, net inference, identity confirmation, or fact creation.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from audit context (`NEEDS_SMALL_PATCH`; missing `AUDIT_INDEX` route-review row patched and validation PASS).
-- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted scope lock, post-audit patch, validation state, and preserved helper boundaries.
-- `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: next implementation candidate; read-only Measure Sheet helper only under the accepted scope lock.
+- `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; records accepted scope lock, post-audit patch, validation state, and preserved helper boundaries.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_PASS`: current implementation candidate; read-only Measure Sheet helper only under the accepted scope lock.
+- `GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS`: next independent Claude Code / Opus audit after implementation validation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
 - Later: power-rail explorer lite, external research leads feasibility lab, commercial-readiness/GTM/licensing lane.
@@ -112,4 +114,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`GUIDED_MEASUREMENT_FLOW_IMPL_PASS`
+`GUIDED_MEASUREMENT_FLOW_IMPL_POST_AUDIT_PASS`

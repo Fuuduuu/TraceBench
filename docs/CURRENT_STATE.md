@@ -2,20 +2,20 @@
 
 ## Current status
 
-- Current pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`
-- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `9db4f50 docs: close out V2 event-writing architecture`
+- Latest accepted commit before this closeout: `d19f3ce docs: lock V2 event schema spec scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- V2 event-writing architecture scope-lock record and closeout are accepted/pushed.
-- Claude Code / Opus post-audit returned `ACCEPT_AS_IS` with no blocker/high/medium/low findings for the architecture record.
+- V2 event-writing architecture scope-lock record and schema/spec scope lock are accepted/pushed.
+- Claude Code / Opus post-audit returned `ACCEPT_AS_IS` for `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS` with no blocker/high/medium/low findings.
 - Full accepted patched architecture text remains in `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`.
-- Current pass locks the allowed scope for the future `V2_EVENT_SCHEMA_SPEC_PASS`.
-- Next route is `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_POST_AUDIT_PASS`; do not route directly to schema/spec, validator implementation, materializer implementation, writer service, Save/Add/Edit UI, Project ZIP changes, Activity Timeline, or Measure Momentum.
+- Current pass closes out the accepted schema/spec scope lock and post-audit.
+- Next route is `V2_EVENT_SCHEMA_SPEC_PASS`, docs/spec only under the accepted scope lock; do not route to validator implementation, materializer implementation, writer service, Save/Add/Edit UI, Project ZIP changes, Activity Timeline, or Measure Momentum.
 
 ## Accepted V1.1 baseline
 
@@ -31,8 +31,9 @@
 - Accepted scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
 - Accepted post-audit: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
 - Accepted closeout: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS`.
-- Current schema/spec scope lock: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`, docs/spec-only planning lock.
-- Future work must remain staged: schema/spec scope-lock post-audit, schema/spec docs, schema audit, validator, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
+- Accepted schema/spec scope lock: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`.
+- Current closeout: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS`.
+- Future work must remain staged: schema/spec docs, schema audit, validator, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -57,4 +58,4 @@
 
 ## Next recommended pass
 
-`V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_EVENT_SCHEMA_SPEC_PASS`

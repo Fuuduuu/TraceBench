@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
+`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_QA_RUN`
+`CODEX / DOCS_SYNC_ROUTE_RECORD`
 
 ## Next recommended pass
 
-`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_PASS`
 
 ## Scope
 
-Docs-only manual smoke record for the accepted/pushed read-only technician-first Measure Sheet shell.
+Docs-only route-review record for `V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`.
 
-Record the user-performed Windows app smoke result: all listed read-only shell checks passed, no blocking issue observed, and next routing should go to read-only route review before any further implementation.
+Record Claude Code / Opus route-review verdict `PASS`, preserve the accepted read-only Measure Sheet shell smoke result, and advance governance routing to `REFERENCE_VALUES_PANEL_IMPL_PASS` as the next selected display-only implementation track.
 
 ## Write allowlist
 
@@ -25,7 +25,7 @@ Record the user-performed Windows app smoke result: all listed read-only shell c
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS.md`
+- `docs/audit/V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS.md`
 
 ## Forbidden surfaces
 
@@ -39,14 +39,26 @@ Record the user-performed Windows app smoke result: all listed read-only shell c
 - `events.jsonl`, `known_facts.json`, generated artifacts, assets, samples, platform folders, tags, or release objects.
 - Real Measure Sheet Save Measurement, Add Component, Edit Component, event-writing, canonical fact creation, or persistence.
 
-## Boundary summary
+## Route decision
 
-- Measure Sheet shell remains read-only/display-only.
-- Save-looking affordance remains disabled and non-writing.
-- Human remains the sensor; AI remains the graph engine.
-- Status/dot means only that a reading exists or was recorded here.
-- Reference/source/candidate/note values remain non-canonical and must not look measured.
-- Do not route directly to implementation until route review selects and scope-locks it.
+Selected next pass: `REFERENCE_VALUES_PANEL_IMPL_PASS`.
+
+Reasons:
+
+- Reference Values Panel scope is already locked, post-audited, and closed out.
+- It is the highest-value, lowest-risk ready-now display-only implementation track.
+- Guided Measurement remains deferred until the display layer is solid.
+- V2 event-writing remains premature and protected-surface adjacent.
+
+## Boundary risks to carry forward
+
+- Future panel must be display-only and write nothing.
+- It must read existing known-facts projection only and derive display labels only.
+- It must not mutate `events.jsonl`, `known_facts.json`, `board_graph.json`, `view_state.json`, materializer output, Project ZIP contract, or Board Canvas evidence/write paths.
+- Measured values must remain visually dominant.
+- Reference/source, candidate, and note values must remain subordinate and labeled non-canonical.
+- No green/verified/confirmed/correct/diagnosed styling.
+- No AI fault diagnosis, fault probability, net inference, component identity confirmation, or probability-style claims.
 
 ## Validation
 

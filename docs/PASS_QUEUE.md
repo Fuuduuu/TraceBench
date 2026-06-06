@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
+`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -88,7 +88,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | completed | Prepared the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
-| REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | deferred | Future display-only Reference Values Panel implementation only after scope lock acceptance and post-audit; must not write events, canonical facts, Board Canvas evidence, or Project ZIP surfaces. |
+| REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | planned | Display-only Reference Values Panel implementation under accepted scope lock: measured values dominant; reference/source/candidate/note subordinate and non-canonical; writes nothing. |
+| REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS | AUDIT_ONLY | planned | Independent Claude Code / Opus post-audit after `REFERENCE_VALUES_PANEL_IMPL_PASS`; verify display-only boundaries, tests, and no canonical writes. |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
@@ -98,7 +99,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus audit accepted the read-only boundary; LOW analyzer `prefer_const_constructors` regression patched and validation returned to baseline. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout recording accepted/pushed implementation, post-audit patch, validation, and route to manual smoke. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Manual Windows smoke recorded: app launch, Project Overview navigation, route open, read-only copy, disabled save affordance, flow, hierarchy, and narrow fallback all PASS; no blocking issues. |
-| V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Read-only route review after Measure Sheet shell smoke to choose the next safe value track; candidates include guided measurement scope lock, reference values panel implementation, read-only polish, or deliberate V2 event-writing architecture scope lock. |
+| V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed (`PASS`) | Read-only route review after Measure Sheet shell smoke; governance aligned and self-loop-free; selected `REFERENCE_VALUES_PANEL_IMPL_PASS` as highest-value, lowest-risk ready-now display-only implementation track. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

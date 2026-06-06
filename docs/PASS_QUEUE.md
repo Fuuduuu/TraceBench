@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`
+`REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -85,7 +85,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
 | V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Required before real Save Measurement, Add Component, or Edit Component behavior; no shortcut from prototype save behavior to canonical event writing. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
-| REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | planned | Independent repo-local audit of the Reference Values Panel scope lock before any implementation route. |
+| REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
+| REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | planned | Prepare the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
 | REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | deferred | Future display-only Reference Values Panel implementation only after scope lock acceptance and post-audit; must not write events, canonical facts, Board Canvas evidence, or Project ZIP surfaces. |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DESIGN_REVIEW / UX_DESIGN | planned | Claude Design review of the measurement sheet UX; before starting, ask user for HTML, CSS, JS, screenshots/video if available, and whether prototype behavior should be preserved. |

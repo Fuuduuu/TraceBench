@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`
-- Next recommended pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -67,9 +67,11 @@ Branch: `main`
 
 - `TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_PASS`: completed/pushed docs-only scope lock; non-canonical sourced/reference/research/candidate values remain sidecar concepts below human measurements.
 - `TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS`: accepted read-only route review; selected `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS` because it builds on the just-locked sidecar boundary, clarifies measured/reference/candidate/note display before UX/helper work, avoids premature V2 event writing, and does not start implementation.
-- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: current docs-only scope lock; locks display/provenance rules only for measured, reference/source, candidate, and note values; no runtime panel implementation.
-- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`: next recommended Claude Code / Opus audit for the Reference Values Panel scope lock.
-- `REFERENCE_VALUES_PANEL_IMPL_PASS`: future display-only implementation only after this scope lock is accepted and post-audited; must not write events or canonical facts.
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock; locked display/provenance rules for measured, reference/source, candidate, and note values while preserving non-canonical boundaries.
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`ACCEPT_AS_IS`; no blocker/high/medium findings; LOW prior route-review status tidy applied; validation PASS).
+- `REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS`: current docs-only closeout; records accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, and preserved evidence boundaries.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`: next docs-only prep; record/request the full prototype bundle before the gated Claude Design UX pass without starting design or implementation.
+- `REFERENCE_VALUES_PANEL_IMPL_PASS`: future display-only implementation only after accepted scope lock and post-audit; must not write events or canonical facts.
 - `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: Claude Design UX review; requires full prototype bundle request first.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
@@ -93,4 +95,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`

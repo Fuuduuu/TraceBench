@@ -2,33 +2,31 @@
 
 ## Current pass
 
-`REFERENCE_VALUES_PANEL_IMPL_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`
 
 ## Lane
 
-`CODEX / FLUTTER_PASS`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Next recommended pass
 
-`REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS`
+`V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`
 
 ## Scope
 
-Scoped Flutter/docs/test implementation of the previously accepted display-only Reference Values Panel.
+Docs-only closeout for the accepted/pushed `REFERENCE_VALUES_PANEL_IMPL_PASS` and Claude Code / Opus post-audit result.
 
-Implement the panel inside or near the existing read-only Measure Sheet shell as the smallest safe integration point. The panel must distinguish measured, reference/source, candidate, and note values while reading only existing projection state and deriving display labels only.
+Record the implementation as accepted, record post-audit `ACCEPT_AS_IS`, preserve display-only/non-canonical boundaries, and route to the next safe value-track route review.
 
 ## Write allowlist
 
-- `lib/features/measure_sheet/**`
-- `test/widget/measure_sheet_screen_test.dart`
-- `test/widget/project_overview_screen_test.dart` only if changed behavior requires it
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/REFERENCE_VALUES_PANEL_IMPL_PASS.md`
+- `docs/DEFERRED_FEATURES.md`
+- `docs/audit/REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -51,9 +49,6 @@ Implement the panel inside or near the existing read-only Measure Sheet shell as
 
 ## Validation
 
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat analyze`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test\widget\measure_sheet_screen_test.dart --reporter expanded`
-- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

@@ -17,6 +17,6 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - reference/research/candidate value promotion into canonical facts without human measurement/confirmation
 - sourced/reference/research sidecar runtime implementation before accepted implementation scope
 - datasheet parser, URL downloader, web scraper, AI source search, public upload, resource-pack implementation, or licensing/commercial implementation without dedicated scope
-- reference values panel runtime before separately scoped `REFERENCE_VALUES_PANEL_IMPL_PASS`
+- further reference values panel runtime behavior beyond the accepted display-only panel before separately scoped route review and implementation scope
 - further technician-first Measure Sheet behavior beyond the accepted read-only/display shell before separately scoped smoke, UX, and architecture passes
 - real Measure Sheet Save/Add/Edit/event-writing behavior before V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS

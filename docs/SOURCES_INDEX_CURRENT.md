@@ -168,3 +168,6 @@ Archive files are never read by default.
 - `docs/PROTECTED_SURFACES.md`
 - `docs/MEMORY_REGISTRY.yml`
 
+## Design/prototype source folders
+
+- docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Not runtime app source, not production Flutter source, not Project ZIP content, and not evidence/canonical input.

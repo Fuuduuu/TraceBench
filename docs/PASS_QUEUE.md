@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -90,7 +90,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | planned | Prepare the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
 | REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | deferred | Future display-only Reference Values Panel implementation only after scope lock acceptance and post-audit; must not write events, canonical facts, Board Canvas evidence, or Project ZIP surfaces. |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
-| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DESIGN_REVIEW / UX_DESIGN | planned | Claude Design review of the measurement sheet UX; before starting, ask user for HTML, CSS, JS, screenshots/video if available, and whether prototype behavior should be preserved. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DESIGN_REVIEW / UX_DESIGN | blocked/gated | Claude Design review of the measurement sheet UX; requires HTML, CSS, JS, screenshots or screen recording if available, and behavior-vs-visual note before execution. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

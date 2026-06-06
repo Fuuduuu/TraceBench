@@ -4,6 +4,7 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS.md | completed (docs/source-prep: creates/registers `docs/sources/ideelabor/boardfact_measure_sheet/`, records README handoff restrictions, confirms no prototype files were found in allowed incoming folders, and routes to gated UX design pass) |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed Reference Values Panel scope lock, Claude Code / Opus ACCEPT_AS_IS, validation PASS, LOW prior route-review status tidy, preserved non-canonical display/provenance boundaries, and route to technician-first UX prep) |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | docs/audit/REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS.md | accepted from audit context (ACCEPT_AS_IS; no blocker/high/medium findings; LOW prior route-review status tidy applied before commit; validation PASS) |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | docs/audit/REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS.md | completed (docs-only scope lock: records route-review decision, locks display/provenance rules for measured/reference/source/candidate/note values, preserves non-canonical boundaries, and routes to post-audit before implementation) |

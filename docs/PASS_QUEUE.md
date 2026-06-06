@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS`
+`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`
 
 ## Next recommended pass
 
-`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`
+`V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -83,7 +83,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_SOURCED_VALUES_AND_RESEARCH_SIDECAR_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Records accepted/pushed sourced-values sidecar scope lock, post-audit `NEEDS_SMALL_PATCH`, small CURRENT_STATE route fix, validation PASS, preserved boundaries, and route to post-scope route review. |
 | TRACEBENCH_POST_SOURCED_VALUES_SCOPE_ROUTE_REVIEW_PASS | ROUTE_REVIEW / DOCS_SYNC | completed | Choose the next value-track route after sourced-values sidecar scope lock closeout; consider technician-first UX design, reference values panel, guided measurement helper, and V2 event-writing architecture without starting implementation. |
 | QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS | FLUTTER_PASS | deferred | Only after V2 event-writing architecture and UX design are accepted; requires full prototype bundle and final design spec. |
-| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / ARCHITECTURE_SCOPE_LOCK | planned next | GPT Pro architecture-first scope lock for human-authored append-only event writing, validation, projection refresh, ZIP/back-compat implications, and hard evidence boundaries; no implementation. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS | DOCS_SYNC / ARCHITECTURE_SCOPE_LOCK | routed into record pass | Generic selected V2 architecture scope-lock route from post-smoke review; concrete current record pass is `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current (`PASS`) | Capture full accepted GPT Pro patched V2 event-writing architecture after Claude Code / Opus re-audit `ACCEPT_READY_FOR_CODEX_SCOPE_LOCK`; no implementation. |
+| V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | planned next | Audit the captured full architecture text, routing, implementation block, P1-P10 resolution, L1-L4 open items, and forbidden-surface preservation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
@@ -101,7 +103,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_IDEALAB_RESIDUAL_PRODUCT_GUARDRAILS_PASS | CODEX / DOCS_SYNC_PRODUCT_GUARDRAILS | completed | Captured residual Ideelabor technician-first guardrails before route review: activity timeline separation, measure momentum, offline/prototype cautions, A-unit placement, Estonian labels, and CURRENT_STATE compactness; no implementation. |
 | V1_1_POST_GUIDED_MEASUREMENT_FLOW_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed from route context (`PASS`) | Read-only route review after Guided Measurement helper closeout selected `GUIDED_MEASUREMENT_FLOW_SMOKE_PASS`; V2 event-writing architecture remains likely next big track after smoke but must not be opened yet. |
 | GUIDED_MEASUREMENT_FLOW_SMOKE_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Consolidated manual Windows smoke for the accepted read-only Measure Sheet surface; user reported all checks PASS. |
-| V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | current (`PASS`) | Read-only route review after successful Guided Measurement smoke; selected `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`; activity timeline and measure momentum deferred with/after V2. |
+| V1_1_POST_GUIDED_MEASUREMENT_FLOW_SMOKE_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed (`PASS`) | Read-only route review after successful Guided Measurement smoke; selected V2 event-writing architecture; activity timeline and measure momentum deferred with/after V2. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus accepted the scope-lock substance; only follow-up patch removed a deferred-feature text artifact and validation passed. |

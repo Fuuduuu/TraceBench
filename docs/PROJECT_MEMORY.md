@@ -70,3 +70,4 @@ TraceBench should be a technician-first bench workflow, not an engineering sprea
 Current accepted snapshot lives in [docs/CURRENT_STATE.md](CURRENT_STATE.md).
 
 Full pass history and evidence live in [docs/PASS_QUEUE.md](PASS_QUEUE.md) and `docs/audit/**/*.md`.
+- V2 event-writing architecture is accepted as a docs-only scope-lock record only; implementation must remain split into separately scoped/audited schema, validator, materializer, writer, and UI passes, and canonical writes remain human-authored append-only events.

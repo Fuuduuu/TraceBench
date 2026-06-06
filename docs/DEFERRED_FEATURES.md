@@ -25,3 +25,4 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - post-save measurement momentum behavior beyond read-only helper copy; confirmation, retained `Koht`, and next pin/point suggestions require V2 event-writing architecture before real save behavior
 - production unit-chip/copy refinements from Ideelabor residuals, including keeping A/current measurement behind `Lisainfo` / `Tehnilised detailid` by default and preserving technician-first Estonian labels
 - Activity Timeline and Measure Momentum implementation remain deferred until with/after accepted V2 event-writing architecture; do not implement them as standalone post-smoke follow-up passes.
+- V2 schema, validator, materializer, writer service, Save Measurement, Add Component, Edit Component, Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until the captured V2 event-writing architecture scope-lock record is post-audited and each later pass is separately scoped.

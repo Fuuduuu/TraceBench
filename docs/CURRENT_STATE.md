@@ -3,8 +3,8 @@
 Project: TraceBench AI / BoardFact  
 Branch: `main`
 
-- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
-- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
+- Current pass: `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
+- Next recommended pass: `TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`
 - Current-state maintenance trigger pointer: `docs/MEMORY_MAINTENANCE.md` owns the rule; keep this file below the ~120-line trigger.
 
 ## Compact handoff
@@ -45,7 +45,7 @@ Branch: `main`
 
 - Source: Ideelabor chat — technician-first workflow / BoardFact Measure Sheet prototype.
 - Prototype status: `BoardFact Measure Sheet example.html` is visual/product workflow input only, not Flutter implementation source.
-- Before `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`, ask user for HTML, CSS, JS, screenshots or screen recording if available, and whether behavior should be preserved.
+- Prototype bundle is present under `docs/sources/ideelabor/boardfact_measure_sheet/`; Claude Design reviewed it as visual + workflow direction only and returned `ACCEPT_WITH_NITS`.
 - Default workflow: select place/component/pin -> measure -> enter value -> choose unit -> save -> show status / next step.
 - Short form: `Koht -> Väärtus -> Ühik -> Salvesta`.
 - Target user: repair technician; normal use should not require canonical schema/event/projection/sidecar knowledge.
@@ -70,9 +70,9 @@ Branch: `main`
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS`: accepted/pushed docs-only scope lock; locked display/provenance rules for measured, reference/source, candidate, and note values while preserving non-canonical boundaries.
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS`: accepted from Claude Code / Opus audit context (`ACCEPT_AS_IS`; no blocker/high/medium findings; LOW prior route-review status tidy applied; validation PASS).
 - `REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS`: accepted/pushed docs-only closeout; recorded scope lock acceptance, post-audit `ACCEPT_AS_IS`, validation PASS, and preserved evidence boundaries.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`: current docs/source-prep; creates/registers the safe prototype source folder under `docs/sources/ideelabor/boardfact_measure_sheet/` and records handoff restrictions without starting UX design or implementation.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`: completed/pushed docs/source-prep; created the safe prototype source folder and README handoff restrictions.
 - `REFERENCE_VALUES_PANEL_IMPL_PASS`: future display-only implementation only after accepted scope lock and post-audit; must not write events or canonical facts.
-- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: next recommended UX review; blocked/gated until the user provides HTML, CSS, JS, screenshots or screen recording if available, and a behavior-vs-visual note.
+- `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`: current docs-only design review record; Claude Design returned `ACCEPT_WITH_NITS`, no prototype files were touched, and no implementation was produced.
 - `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`: safe helper suggestions, missing measurements, and conflicts; no diagnosis or fact creation.
 - `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS`: required before real Save Measurement / Add Component / Edit Component behavior.
 - `QUICK_MEASUREMENT_SHEET_IMPLEMENTATION_PASS`: only after V2 event-writing architecture and UX design are accepted.
@@ -95,4 +95,4 @@ Branch: `main`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`

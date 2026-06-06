@@ -41,7 +41,7 @@ Do not:
 
 ## Behavior note
 
-Behavior note: TODO - user must specify whether the prototype behavior should be preserved or whether it is visual direction only.
+Behavior note: Use the prototype as visual + workflow direction only. Interactions may be reviewed as UX intent, but behavior must not be preserved as production logic. Do not copy localStorage, Save behavior, event-writing, schema assumptions, or runtime implementation patterns.
 
 ## Next pass
 

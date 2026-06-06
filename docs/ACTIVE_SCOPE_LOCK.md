@@ -2,25 +2,25 @@
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_PREP`
+`CODEX / DOCS_SYNC_DESIGN_RECORD`
 
 ## Mode
 
-Docs/source-prep only. Do not implement runtime code. Do not modify Flutter runtime, tests, schemas, validators, tools, materializer, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
+Docs-only design review recording. Do not implement runtime code. Do not modify Flutter runtime, tests, schemas, validators, tools, materializer, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
 ## Goal
 
-Prepare the safe docs-only source location for the BoardFact Measure Sheet prototype bundle and record handoff rules before `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`.
+Record the completed Claude Design / UX review of the BoardFact Measure Sheet prototype and route the next safe pass without starting implementation.
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS`
 
-This pass is blocked/gated until the user provides HTML, CSS, JS, screenshots or screen recording if available, and a behavior-vs-visual note. If the bundle is still missing, the next action is user bundle collection, not design or implementation.
+The next pass must be docs-only scope lock, not implementation. It should encode neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing.
 
 ## Write allowlist
 
@@ -31,11 +31,8 @@ This pass is blocked/gated until the user provides HTML, CSS, JS, screenshots or
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS.md`
+- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS.md`
 - `docs/sources/ideelabor/boardfact_measure_sheet/README.md`
-- `docs/sources/ideelabor/boardfact_measure_sheet/.gitkeep`
-- `docs/sources/ideelabor/boardfact_measure_sheet/screenshots/.gitkeep`
-- `docs/sources/ideelabor/boardfact_measure_sheet/recordings/.gitkeep`
 
 ## Forbidden surfaces
 
@@ -54,18 +51,27 @@ This pass is blocked/gated until the user provides HTML, CSS, JS, screenshots or
 - Assets or samples
 - Platform folders
 - Tags or release objects
+- Prototype HTML/CSS/JS source files
 
-## Prototype source boundary
+## Accepted design review result
 
-- `docs/sources/ideelabor/boardfact_measure_sheet/` is design/prototype source material only.
-- It is not production Flutter source.
-- It must not be treated as implementation input without `TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS` and a separate implementation scope.
-- Do not copy HTML/CSS/JS directly into Flutter.
-- Do not copy localStorage persistence behavior into the evidence workflow.
-- Do not treat prototype Save behavior as event-writing permission.
-- Do not infer schema changes from the prototype.
-- Do not add files to assets or samples.
-- Do not include this source bundle in Project ZIP behavior.
+- Claude Design / UX review returned `ACCEPT_WITH_NITS`.
+- Technician-first flow, hierarchy, and evidence posture are directionally right.
+- The prototype supports the bench workflow better than spreadsheet-style UI.
+- The prototype is visual + workflow direction only.
+- Interactions may be reviewed as UX intent, but behavior must not be preserved as production logic.
+- Do not copy localStorage, Save behavior, event-writing, schema assumptions, or runtime implementation patterns.
+
+## Key design nits to carry forward
+
+- Green `paigutatud` status dot can read as verified/good; future scope must neutralize it.
+- Evidence-dot meaning must be locked to `a reading was recorded here`, never `this pin is good`.
+- `automaatne` near Koht implies AI/app detection; future copy must avoid inference-tinted language.
+- `Mõõdan...` relocates the sensor from technician to app; future copy must keep human as sensor.
+- Pin chips around 34px are below 44px touch target minimum.
+- Faint small labels risk readability/AA failure.
+- Board drops entirely on narrow windows; future scope needs fallback.
+- Reference Values Panel ladder is design direction only: measured dominant amber, reference/source calm steel-blue, candidate tentative/dashed violet, note faint italic.
 
 ## Evidence boundaries preserved
 
@@ -75,5 +81,20 @@ This pass is blocked/gated until the user provides HTML, CSS, JS, screenshots or
 - `known_facts.json` remains materialized projection.
 - Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
-- Reference/source/candidate/note values are non-canonical and must not look measured.
 - Board Canvas remains read-only.
+- Reference/source/candidate/note values remain non-canonical unless separately human-confirmed.
+- Reference/candidate/note must never look measured.
+- Photo pixels are not facts.
+- Damage/suspect/source/research are not proof.
+- No AI diagnosis, net inference, component identity confirmation, or probability-style claims.
+
+## Must wait for V2 event-writing architecture
+
+- Real Save Measurement runtime
+- Add Component runtime
+- Edit Component runtime
+- Event-writing
+- Canonical fact creation
+- `known_facts.json` mutation
+- Schema changes driven by the prototype
+- Promotion of prototype Save behavior into actual evidence workflow

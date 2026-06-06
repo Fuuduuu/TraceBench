@@ -170,4 +170,4 @@ Archive files are never read by default.
 
 ## Design/prototype source folders
 
-- docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Not runtime app source, not production Flutter source, not Project ZIP content, and not evidence/canonical input.
+- docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Claude Design / UX review returned `ACCEPT_WITH_NITS`; source files remain non-runtime design input, not production Flutter source, not Project ZIP content, and not evidence/canonical input.

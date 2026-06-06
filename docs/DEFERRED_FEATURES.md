@@ -13,7 +13,7 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - cloud sync
 - ArUco/ChArUco automatic marker workflow
 - actual Save Measurement / Add Component / Edit Component implementation before accepted V2 event-writing architecture
-- prototype-to-production measurement sheet shortcut without UX design and full prototype bundle review
+- prototype-to-production measurement sheet shortcut without accepted scope lock and separate implementation pass; Save/Add/Edit/event-writing still require V2 event-writing architecture
 - reference/research/candidate value promotion into canonical facts without human measurement/confirmation
 - sourced/reference/research sidecar runtime implementation before accepted implementation scope
 - datasheet parser, URL downloader, web scraper, AI source search, public upload, resource-pack implementation, or licensing/commercial implementation without dedicated scope

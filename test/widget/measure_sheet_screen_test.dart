@@ -70,7 +70,7 @@ void main() {
     expect(find.text('Väärtus'), findsOneWidget);
     expect(find.text('Ühik'), findsOneWidget);
     expect(find.text('Q2 · Q2.1'), findsAtLeastNWidgets(1));
-    expect(find.text('1 ohm'), findsOneWidget);
+    expect(find.text('1 ohm'), findsAtLeastNWidgets(1));
     expect(find.text('Human is the sensor. AI is the graph engine.'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
@@ -97,6 +97,9 @@ void main() {
       'automaatne',
       'tuvastatud',
       'kinnitatud',
+      'confirmed',
+      'correct',
+      'diagnosed',
       'korras',
       'verified',
       'good',
@@ -104,7 +107,9 @@ void main() {
       'app detected',
       'pin is good',
       'net confirmed',
+      'component identified',
       'fault diagnosed',
+      'fault probability',
     ];
 
     for (final text in forbiddenCopy) {
@@ -125,19 +130,59 @@ void main() {
     expect(find.textContaining('good'), findsNothing);
   });
 
-  testWidgets('measured reference candidate and note hierarchy is explicit',
+  testWidgets('reference values panel renders display-only categories',
+      (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Reference Values Panel'), findsOneWidget);
+    expect(
+      find.text('Display only: reads the current projection and writes nothing.'),
+      findsOneWidget,
+    );
+    expect(find.text('Mõõdetud'), findsOneWidget);
+    expect(find.text('1 ohm'), findsAtLeastNWidgets(1));
+    expect(find.text('human reading, visually dominant'), findsOneWidget);
+    expect(find.text('Viide / Allikas'), findsOneWidget);
+    expect(find.text('viiteväärtus puudub'), findsOneWidget);
+    expect(
+      find.text('secondary context; not a measurement; non-canonical'),
+      findsOneWidget,
+    );
+    expect(find.text('Kandidaat'), findsOneWidget);
+    expect(find.text('kandidaati pole'), findsOneWidget);
+    expect(find.text('tentative context only; not proof'), findsOneWidget);
+    expect(find.text('Märkus'), findsOneWidget);
+    expect(find.text('märkus puudub'), findsOneWidget);
+    expect(find.text('context only; does not create facts'), findsOneWidget);
+    expect(
+      find.text(
+        'Reference/source, candidate, and note rows are context only and are not promoted to measured values.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('reference values panel keeps non-measured rows subordinate',
       (tester) async {
     await tester.pumpWidget(_harness(_inlineProjectState()));
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.text('Mõõdetud'), findsOneWidget);
     expect(find.text('human reading, visually dominant'), findsOneWidget);
-    expect(find.text('Viide / Allikas'), findsOneWidget);
-    expect(find.text('secondary context; not a measurement'), findsOneWidget);
-    expect(find.text('Kandidaat'), findsOneWidget);
-    expect(find.text('tentative value; not proof'), findsOneWidget);
-    expect(find.text('Märkus'), findsOneWidget);
+    expect(
+      find.text('secondary context; not a measurement; non-canonical'),
+      findsOneWidget,
+    );
+    expect(find.text('tentative context only; not proof'), findsOneWidget);
     expect(find.text('context only; does not create facts'), findsOneWidget);
+
+    expect(find.textContaining('not promoted to measured values'), findsOneWidget);
+    expect(find.textContaining('verified'), findsNothing);
+    expect(find.textContaining('confirmed'), findsNothing);
+    expect(find.textContaining('correct'), findsNothing);
+    expect(find.textContaining('diagnosed'), findsNothing);
+    expect(find.textContaining('fault probability'), findsNothing);
   });
 
   testWidgets('narrow layout keeps selected Koht context visible', (tester) async {
@@ -168,7 +213,7 @@ void main() {
     expect(source, isNot(contains('writeMeasurement')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));
-    expect(source, isNot(contains('jsonDecode(')));
+    expect(source, isNot(contains('jsonDecode')));
     expect(source, isNot(contains('writeAsString')));
     expect(source, isNot(contains('events.jsonl')));
     expect(source, isNot(contains('known_facts.json')));
@@ -181,5 +226,8 @@ void main() {
     expect(source, isNot(contains('Run AI')));
     expect(source, isNot(contains('Detect')));
     expect(source, isNot(contains('Upload')));
+    expect(source, isNot(contains('Save Measurement')));
+    expect(source, isNot(contains('event-writing')));
+    expect(source, isNot(contains('persistence')));
   });
 }

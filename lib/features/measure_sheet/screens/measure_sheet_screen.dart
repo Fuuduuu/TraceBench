@@ -53,7 +53,7 @@ class MeasureSheetScreen extends ConsumerWidget {
                       ],
                     ),
                   const SizedBox(height: 16),
-                  const _ValueHierarchyPanel(),
+                  _ReferenceValuesPanel(selection: selection),
                   const SizedBox(height: 16),
                   const Text(
                     _forbiddenSurfaceCopy,
@@ -310,11 +310,11 @@ class _MeasureSheetPanel extends StatelessWidget {
             ),
             const _UnitDisplay(),
             const SizedBox(height: 12),
-const ElevatedButton(
-  key: ValueKey('measure-sheet-disabled-save-button'),
-  onPressed: null,
-  child: Text('Salvesta (välja lülitatud — ei kirjuta)'),
-),
+            const ElevatedButton(
+              key: ValueKey('measure-sheet-disabled-save-button'),
+              onPressed: null,
+              child: Text('Salvesta (välja lülitatud — ei kirjuta)'),
+            ),
             const SizedBox(height: 8),
             const Text('Näidisnupp on mitteaktiivne ja ei muuda projekti.'),
             const Text('recorded reading marker means only that a reading exists.'),
@@ -447,8 +447,10 @@ class _UnitDisplay extends StatelessWidget {
   }
 }
 
-class _ValueHierarchyPanel extends StatelessWidget {
-  const _ValueHierarchyPanel();
+class _ReferenceValuesPanel extends StatelessWidget {
+  const _ReferenceValuesPanel({required this.selection});
+
+  final _MeasureSheetSelection selection;
 
   @override
   Widget build(BuildContext context) {
@@ -459,32 +461,46 @@ class _ValueHierarchyPanel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Value hierarchy',
+              'Reference Values Panel',
               style: Theme.of(context).textTheme.titleMedium,
             ),
+            const SizedBox(height: 6),
+            const Text(
+              'Display only: reads the current projection and writes nothing.',
+            ),
             const SizedBox(height: 12),
-            const Wrap(
+            Wrap(
               spacing: 12,
               runSpacing: 12,
               children: [
                 _HierarchyTile(
                   label: 'Mõõdetud',
+                  value: selection.hasRecordedReading
+                      ? selection.measurementLabel
+                      : 'mõõdetud väärtus puudub',
                   body: 'human reading, visually dominant',
                   emphasis: true,
                 ),
-                _HierarchyTile(
+                const _HierarchyTile(
                   label: 'Viide / Allikas',
-                  body: 'secondary context; not a measurement',
+                  value: 'viiteväärtus puudub',
+                  body: 'secondary context; not a measurement; non-canonical',
                 ),
-                _HierarchyTile(
+                const _HierarchyTile(
                   label: 'Kandidaat',
-                  body: 'tentative value; not proof',
+                  value: 'kandidaati pole',
+                  body: 'tentative context only; not proof',
                 ),
-                _HierarchyTile(
+                const _HierarchyTile(
                   label: 'Märkus',
+                  value: 'märkus puudub',
                   body: 'context only; does not create facts',
                 ),
               ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Reference/source, candidate, and note rows are context only and are not promoted to measured values.',
             ),
           ],
         ),
@@ -496,11 +512,13 @@ class _ValueHierarchyPanel extends StatelessWidget {
 class _HierarchyTile extends StatelessWidget {
   const _HierarchyTile({
     required this.label,
+    required this.value,
     required this.body,
     this.emphasis = false,
   });
 
   final String label;
+  final String value;
   final String body;
   final bool emphasis;
 
@@ -522,6 +540,13 @@ class _HierarchyTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 6),
+              Text(
+                value,
+                style: emphasis
+                    ? Theme.of(context).textTheme.titleMedium
+                    : Theme.of(context).textTheme.bodyMedium,
+              ),
               const SizedBox(height: 6),
               Text(body),
             ],

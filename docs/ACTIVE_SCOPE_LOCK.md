@@ -2,66 +2,58 @@
 
 ## Current pass
 
-`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_ROUTE_RECORD`
+`CODEX / FLUTTER_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_VALUES_PANEL_IMPL_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS`
 
 ## Scope
 
-Docs-only route-review record for `V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`.
+Scoped Flutter/docs/test implementation of the previously accepted display-only Reference Values Panel.
 
-Record Claude Code / Opus route-review verdict `PASS`, preserve the accepted read-only Measure Sheet shell smoke result, and advance governance routing to `REFERENCE_VALUES_PANEL_IMPL_PASS` as the next selected display-only implementation track.
+Implement the panel inside or near the existing read-only Measure Sheet shell as the smallest safe integration point. The panel must distinguish measured, reference/source, candidate, and note values while reading only existing projection state and deriving display labels only.
 
 ## Write allowlist
 
+- `lib/features/measure_sheet/**`
+- `test/widget/measure_sheet_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart` only if changed behavior requires it
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS.md`
+- `docs/audit/REFERENCE_VALUES_PANEL_IMPL_PASS.md`
 
 ## Forbidden surfaces
 
-- Runtime code and Flutter implementation files.
-- Tests.
-- Schemas, validators, tools, and materializer behavior.
-- Project ZIP logic or contract.
+- Schemas, validators, tools, materializer behavior, and Project ZIP logic/contract.
 - Board Canvas runtime or write/edit behavior.
-- Reference Images runtime.
+- Reference Images runtime or sidecar behavior.
 - AI/OCR/CV, source search, URL import, datasheet parser, or localStorage behavior.
-- `events.jsonl`, `known_facts.json`, generated artifacts, assets, samples, platform folders, tags, or release objects.
-- Real Measure Sheet Save Measurement, Add Component, Edit Component, event-writing, canonical fact creation, or persistence.
+- `events.jsonl`, `known_facts.json`, `board_graph.json`, `view_state.json`, generated artifacts, assets, samples, platform folders, tags, or release objects.
+- Real Save Measurement, Add Component, Edit Component, event-writing, canonical fact creation, canonical field creation, file writes, provider mutation, project-data mutation, or persistence.
 
-## Route decision
+## Implementation boundaries
 
-Selected next pass: `REFERENCE_VALUES_PANEL_IMPL_PASS`.
-
-Reasons:
-
-- Reference Values Panel scope is already locked, post-audited, and closed out.
-- It is the highest-value, lowest-risk ready-now display-only implementation track.
-- Guided Measurement remains deferred until the display layer is solid.
-- V2 event-writing remains premature and protected-surface adjacent.
-
-## Boundary risks to carry forward
-
-- Future panel must be display-only and write nothing.
-- It must read existing known-facts projection only and derive display labels only.
-- It must not mutate `events.jsonl`, `known_facts.json`, `board_graph.json`, `view_state.json`, materializer output, Project ZIP contract, or Board Canvas evidence/write paths.
-- Measured values must remain visually dominant.
-- Reference/source, candidate, and note values must remain subordinate and labeled non-canonical.
-- No green/verified/confirmed/correct/diagnosed styling.
-- No AI fault diagnosis, fault probability, net inference, component identity confirmation, or probability-style claims.
+- Panel is display-only and writes nothing.
+- Panel reads existing known-facts/projection state only.
+- Measured values remain visually dominant and human-reading oriented.
+- Reference/source, candidate, and note values are subordinate and clearly non-canonical/context/tentative.
+- No automatic promotion to measured/canonical.
+- No green/success styling that implies good/verified.
+- No copy implying verified, confirmed, correct, diagnosed, good, AI-found, app-detected, net-confirmed, component-identified, or fault-probability claims.
 
 ## Validation
 
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat analyze`
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test test\widget\measure_sheet_screen_test.dart --reporter expanded`
+- `C:\Users\Kasutaja\Desktop\flutter\flutter\bin\flutter.bat test --reporter expanded`
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

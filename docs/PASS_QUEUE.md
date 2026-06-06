@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_PASS`
 
 ## Next recommended pass
 
-`REFERENCE_VALUES_PANEL_IMPL_PASS`
+`REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -88,8 +88,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PREP_PASS | DOCS_SYNC / PREP | completed | Prepared the prototype-bundle handoff for the gated technician-first measure-sheet UX design pass; no design or implementation. |
-| REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | planned | Display-only Reference Values Panel implementation under accepted scope lock: measured values dominant; reference/source/candidate/note subordinate and non-canonical; writes nothing. |
-| REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS | AUDIT_ONLY | planned | Independent Claude Code / Opus post-audit after `REFERENCE_VALUES_PANEL_IMPL_PASS`; verify display-only boundaries, tests, and no canonical writes. |
+| REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | current | Display-only Reference Values Panel implementation inside the read-only Measure Sheet shell: measured values dominant; reference/source/candidate/note subordinate and non-canonical; writes nothing. |
+| REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS | AUDIT_ONLY | planned | Independent Claude Code / Opus post-audit after `REFERENCE_VALUES_PANEL_IMPL_PASS`; verify display-only boundaries, tests, analyzer baseline, and no canonical writes. |
 | GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |

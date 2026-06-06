@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS`
+`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS`
+`GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -91,8 +91,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | REFERENCE_VALUES_PANEL_IMPL_PASS | FLUTTER_PASS | completed | Display-only Reference Values Panel implementation inside the read-only Measure Sheet shell: measured values dominant; reference/source/candidate/note subordinate and non-canonical; writes nothing. |
 | REFERENCE_VALUES_PANEL_IMPL_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted `REFERENCE_VALUES_PANEL_IMPL_PASS`: no blocker/high/medium/low findings, analyzer baseline unchanged with 5 documented deferred residuals, focused Measure Sheet test PASS (`9/9`), full Flutter suite PASS (`205` tests), and `validate_all.py` PASS (`236` tests). |
 | REFERENCE_VALUES_PANEL_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed Reference Values Panel implementation and post-audit result; preserve display-only/non-canonical boundaries and route to post-panel route review. |
-| V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS | ROUTE_REVIEW / DOCS_SYNC | planned | Choose the next safe technician-first value-track pass after the display-only Reference Values Panel closeout; no implementation until separately scoped. |
-| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | planned | Lock safe helper behavior: suggest next measurements, show missing measurements, highlight conflicts; no AI diagnosis, no canonical fact creation. |
+| V1_1_POST_REFERENCE_VALUES_PANEL_ROUTE_REVIEW_PASS | ROUTE_REVIEW / DOCS_SYNC | completed from route context (`PASS`) | Claude Code / Opus read-only route review selected `GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS` as the next highest-value V1.x route after the accepted Measure Sheet shell and Reference Values Panel; V2 event-writing remains deferred. |
+| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current | Lock safe read-only helper behavior: suggest next measurements, show missing measurements, surface gaps/conflicts, and organize technician prompts; no AI diagnosis, probability, net inference, identity confirmation, event-writing, or canonical fact creation. |
+| GUIDED_MEASUREMENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | planned | Independent post-audit of the Guided Measurement Flow scope lock before any implementation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_UX_DESIGN_PASS | DOCS_SYNC_DESIGN_RECORD | completed | Record Claude Design / UX review result `ACCEPT_WITH_NITS`; prototype is visual + workflow direction only, no prototype files touched, no code or implementation produced. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Locked first implementation-safe read-only/display-only measurement-sheet scope from UX review; neutral status-dot language, human-as-sensor copy, measured/reference/candidate/note hierarchy, accessibility minimums, narrow-window expectations, and no Save/Add/Edit/event-writing. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus accepted the scope-lock substance; only follow-up patch removed a deferred-feature text artifact and validation passed. |

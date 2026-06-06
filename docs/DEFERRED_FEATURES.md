@@ -5,7 +5,7 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - OCR/CV automation
 - AI integration
 - fault probability engine
-- next-best-measurement engine
+- automated next-best-measurement engine beyond neutral read-only prompts
 - source search
 - KiCad export
 - boardview import
@@ -20,3 +20,4 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - further reference values panel runtime behavior beyond the accepted display-only panel before separately scoped route review and implementation scope
 - further technician-first Measure Sheet behavior beyond the accepted read-only/display shell before separately scoped smoke, UX, and architecture passes
 - real Measure Sheet Save/Add/Edit/event-writing behavior before V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_PASS
+- Guided Measurement implementation before accepted scope-lock post-audit; diagnosis, suspect ranking, probability/confidence claims, net inference, identity confirmation, and canonical fact creation remain out of scope

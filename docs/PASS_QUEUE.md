@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
+`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -96,8 +96,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records accepted/pushed scope lock, resolved post-audit patch, preserved boundaries, and route to read-only shell implementation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS | FLUTTER_PASS | completed | Accepted/pushed read-only/display Measure Sheet shell with overview navigation, focused tests, post-audit LOW const patch, and no event-writing/canonical mutation. |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Claude Code / Opus audit accepted the read-only boundary; LOW analyzer `prefer_const_constructors` regression patched and validation returned to baseline. |
-| TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | current | Docs-only closeout recording accepted/pushed implementation, post-audit patch, validation, and route to manual smoke. |
-| TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS | DOCS_SYNC / QA_RUN | planned | Manual/user-visible smoke check of Measure Sheet overview navigation, read-only shell, disabled save affordance, value hierarchy, and narrow-window Koht context. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout recording accepted/pushed implementation, post-audit patch, validation, and route to manual smoke. |
+| TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS | DOCS_SYNC / QA_RUN | completed (`PASS`) | Manual Windows smoke recorded: app launch, Project Overview navigation, route open, read-only copy, disabled save affordance, flow, hierarchy, and narrow fallback all PASS; no blocking issues. |
+| V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | planned | Read-only route review after Measure Sheet shell smoke to choose the next safe value track; candidates include guided measurement scope lock, reference values panel implementation, read-only polish, or deliberate V2 event-writing architecture scope lock. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock safe UX polish scope for local sidecar reference image viewer; no implementation yet. |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_ADDENDUM_PASS | DOCS_SYNC | completed | Add final Design-deepening acceptance package for UX polish (six fixed zones, required copy/state set, accessibility + forbidden wording constraints). |
 | REFERENCE_IMAGES_UX_POLISH_SCOPE_LOCK_CARD_SYNC_PASS | DOCS_SYNC | completed | Sync final Claude Design scope-lock card as accepted implementation input for `REFERENCE_IMAGES_UX_POLISH_IMPL_PASS` (six zones, required strings, metadata/state coverage, accessibility, track separation, test intent). |

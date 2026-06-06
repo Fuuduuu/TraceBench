@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS`
+`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SYNC_QA_RUN`
 
 ## Next recommended pass
 
-`TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS`
+`V1_1_POST_MEASURE_SHEET_READONLY_SHELL_ROUTE_REVIEW_PASS`
 
 ## Scope
 
-Docs-only closeout for the accepted and pushed `TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS`.
+Docs-only manual smoke record for the accepted/pushed read-only technician-first Measure Sheet shell.
 
-Record that the read-only technician-first Measure Sheet shell was implemented, independently post-audited, patched, validated, committed, and pushed. Route next to manual/user-visible smoke before any guided-measurement or event-writing scope.
+Record the user-performed Windows app smoke result: all listed read-only shell checks passed, no blocking issue observed, and next routing should go to read-only route review before any further implementation.
 
 ## Write allowlist
 
@@ -25,8 +25,7 @@ Record that the read-only technician-first Measure Sheet shell was implemented, 
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_CLOSEOUT_PASS.md`
+- `docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_SMOKE_PASS.md`
 
 ## Forbidden surfaces
 
@@ -45,10 +44,9 @@ Record that the read-only technician-first Measure Sheet shell was implemented, 
 - Measure Sheet shell remains read-only/display-only.
 - Save-looking affordance remains disabled and non-writing.
 - Human remains the sensor; AI remains the graph engine.
-- App copy must not imply the app measured, inferred, verified, diagnosed, or confirmed facts.
-- Dot/chip/status copy means only that a reading exists or was recorded here.
+- Status/dot means only that a reading exists or was recorded here.
 - Reference/source/candidate/note values remain non-canonical and must not look measured.
-- Narrow-window context fallback must preserve selected `Koht` context.
+- Do not route directly to implementation until route review selects and scope-locks it.
 
 ## Validation
 

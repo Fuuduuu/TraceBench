@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_VALIDATOR_EXTENSION_PASS`
+`V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`
+`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -67,7 +67,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit and re-audit accepted the memory/governance reconciliation after the small precedence/canonical-owner patch; no scope drift, validation green, and forbidden surfaces clean. |
 | V1_1_MEMORY_SYSTEM_RECONCILIATION_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed memory reconciliation implementation and re-audit `ACCEPT_AS_IS`; routes next to `V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS`. |
 | V1_1_POST_MEMORY_RECONCILIATION_ROUTE_REVIEW_PASS | AUDIT_ONLY / ROUTE_REVIEW | completed | Route review (no file changes): confirmed governance clean after memory reconciliation; found a `docs/AUDIT_INDEX.md` backtick-n table artifact; recommended the test/lint/docs hygiene pass. |
-| V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of one behavior-preserving hygiene pass: AUDIT_INDEX `` `n `` repair, measurement-write error-absence assertion, and mechanical analyzer cleanup (52 issues/0 errors); 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`. |
+| V1_1_TEST_AND_LINT_HYGIENE_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Docs-only lock of one behavior-preserving hygiene pass: AUDIT_INDEX newline-marker repair, measurement-write error-absence assertion, and mechanical analyzer cleanup (52 issues/0 errors); 4 judgment analyzer items + pumpAndSettle deferred; routes to `V1_1_TEST_AND_LINT_HYGIENE_PASS`. |
 | V1_1_TEST_AND_LINT_HYGIENE_PASS | FLUTTER_PASS | completed | Accepted/pushed behavior-preserving hygiene: repaired AUDIT_INDEX table artifact, added measurement-write error-absence assertion, fixed mechanical analyzer warnings in locked/authorized files, added direct `path` dev-dependency with `pubspec.lock` consistency, and preserved product/evidence boundaries. |
 | V1_1_TEST_AND_LINT_HYGIENE_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit initially returned `NEEDS_SMALL_PATCH`; re-audit accepted after `pubspec.lock` inclusion and the two explicitly authorized mechanical residual fixes in `board_graph_model.dart` and `home_screen.dart`; analyzer residuals are the 5 explicitly deferred items only. |
 | V1_1_TEST_AND_LINT_HYGIENE_CLOSEOUT_PASS | DOCS_SYNC | completed | Docs-only closeout recording accepted/pushed hygiene implementation, re-audit `ACCEPT_AS_IS`, validation state, deferred analyzer residuals, and authorized small-patch expansion reality. |
@@ -98,8 +98,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Records accepted/pushed validator scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved boundaries, and route to the first validator implementation pass. |
 | TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS | CODEX / DOCS_SYNC | completed | Tight docs-only cleanup recommended by Claude Code / Opus: reduced routing duplication, clarified external Source Guide pointer, harmonized forbidden artifact wording, and preserved route to validator implementation. |
 | TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | not required before current route | Cleanup was accepted/pushed before `V2_VALIDATOR_EXTENSION_PASS`; repository route proceeded to validator implementation. |
-| V2_VALIDATOR_EXTENSION_PASS | VALIDATOR_PASS | current (`PASS`) | First executable V2 validator implementation pass under the accepted scope lock; added V2 support to existing JSONL validator and focused validator tests only, with no materializer/writer/UI/ZIP/Activity Timeline/Measure Momentum drift. |
-| V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Audit V2 validator implementation for spec binding, fail-closed behavior, source/provenance guards, legacy compatibility, and forbidden-surface preservation. |
+| V2_VALIDATOR_EXTENSION_PASS | VALIDATOR_PASS | completed | Accepted/pushed first executable V2 validator implementation under the accepted scope lock; added V2 support to existing JSONL validator and focused validator tests only, with no materializer/writer/UI/ZIP/Activity Timeline/Measure Momentum drift. |
+| V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted V2 validator implementation with no blocker/high/medium findings; validation PASS: focused V2 validator tests 11/11, full validator tests 114/114, `validate_all.py` PASS 247 tests. |
+| V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Close out accepted/pushed V2 validator implementation and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to materializer projection scope lock. |
+| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Docs-only scope lock for the next executable V2 surface: materializer projection from V2 events into `known_facts.json`; do not implement materializer, writer service, UI writes, Project ZIP, Activity Timeline, or Measure Momentum in the scope-lock pass. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

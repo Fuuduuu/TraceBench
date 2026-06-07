@@ -2,21 +2,23 @@
 
 ## Current status
 
-- Current pass: `V2_VALIDATOR_EXTENSION_PASS`
-- Next recommended pass: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`
+- Current pass: `V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS`
+- Next recommended pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `01369d0 docs: align governance scope docs and source pointers`
+- Latest accepted commit before this pass: `7e7c84c feat: add V2 event validator support`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- V2 event-writing architecture scope-lock record, schema/spec scope lock, V2 event schema spec, spec closeout, validator scope lock, validator scope-lock closeout, and docs scope-alignment cleanup are accepted/pushed.
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for V2 validator, materializer, writer, and UI passes.
-- `V2_VALIDATOR_EXTENSION_PASS` implemented the first executable V2 validator support in `tools/validate_events_jsonl.py` with focused tests in `tests/test_validate_events_jsonl.py`.
-- The validator now recognizes supported V2 schema version `2.0-draft`, validates the accepted canonical V2 event envelope/types/payloads, rejects unsafe sources/promotions/aliases/prohibited fields, and keeps legacy V1/V1.1 no-per-event-schema events loadable as baseline.
-- Validation passed: focused V2 validator tests, full validator unittest file, and `py -3 tools\validate_all.py` with 247 tests.
-- Next route is Claude Code / Opus audit-only review: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`.
+- `V2_VALIDATOR_EXTENSION_PASS` is accepted/pushed.
+- User committed and pushed the validator implementation as `feat: add V2 event validator support`.
+- Claude Code / Opus post-audit accepted `V2_VALIDATOR_EXTENSION_PASS` as `ACCEPT_AS_IS`; `safe_to_commit: YES`; no blocker/high/medium findings.
+- The accepted implementation added V2 support in `tools/validate_events_jsonl.py` and focused tests in `tests/test_validate_events_jsonl.py`.
+- Validator support covers V2 schema version `2.0-draft`, accepted canonical event types, unsafe alias/source/provenance/prohibited-field rejection, detectable relation-cycle rejection, and V1/V1.1 legacy compatibility.
+- Validation passed: focused V2 validator tests 11/11, full `validate_events_jsonl` tests 114/114, and `py -3 tools\validate_all.py` PASS with 247 tests.
+- Next route is `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`, docs-only scope lock for materializer projection from V2 events into `known_facts.json`.
+- Do not route directly to materializer implementation, writer service, UI writes, Save/Add/Edit, Project ZIP changes, Activity Timeline, or Measure Momentum.
 
 ## Accepted V1.1 baseline
 
@@ -30,15 +32,11 @@
 ## V2 architecture state
 
 - Accepted architecture scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
-- Accepted architecture post-audit: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
 - Accepted schema/spec doc pass: `V2_EVENT_SCHEMA_SPEC_PASS`.
-- Accepted schema/spec doc post-audit: `V2_EVENT_SCHEMA_SPEC_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
-- Accepted schema/spec closeout: `V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS`.
-- Accepted validator scope lock: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`.
-- Accepted validator scope-lock post-audit: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
-- Accepted validator scope-lock closeout: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`.
-- Current validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
-- Future work must remain staged: validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
+- Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
+- Accepted validator implementation post-audit: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
+- Current validator closeout: `V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS`.
+- Future work must remain staged: materializer scope lock, materializer implementation, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -63,4 +61,4 @@
 
 ## Next recommended pass
 
-`V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`
+`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`

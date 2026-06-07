@@ -2,66 +2,55 @@
 
 ## Active pass
 
-- Current pass: `V2_VALIDATOR_EXTENSION_PASS`
-- Lane: `CODEX / VALIDATOR_PASS`
-- Mode: scoped validator implementation for accepted V2 event schema/spec requirements
-- Next recommended pass: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`
+- Current pass: `V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout for accepted V2 validator implementation
+- Next recommended pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Implement only the first executable V2 validator support required by `docs/spec/V2_EVENT_SCHEMA_SPEC.md` and the accepted validator scope lock.
+Close out the accepted and pushed `V2_VALIDATOR_EXTENSION_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
 
-This pass is limited to the existing event validator and focused validator tests. It does not create schema files or implement materializer, writer service, UI write behavior, Project ZIP changes, Activity Timeline, or Measure Momentum.
+This closeout records the accepted validator implementation, preserves boundaries, and routes only to a docs-only scope lock for the next executable V2 surface.
 
 ## Write allowlist
 
-- `tools/validate_events_jsonl.py`
-- `tests/test_validate_events_jsonl.py`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
-- `docs/audit/V2_VALIDATOR_EXTENSION_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
+- `docs/audit/V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS.md`
+
+`docs/PROJECT_MEMORY.md` was not needed for this closeout.
 
 ## Forbidden surfaces
 
-Do not modify Flutter UI, materializer, writer service, Project ZIP import/export logic beyond existing validator checks, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, generated artifacts, assets, samples, platform folders, tags, release objects, schema files, or JSON schema files.
+Do not modify validator code, tests, runtime code, Flutter UI, schemas, JSON schema files, materializer, writer service, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
 
-Do not implement Save Measurement, Add Component, Edit Component, Activity Timeline, or Measure Momentum.
+## Accepted input
 
-## Binding sources
+- `V2_VALIDATOR_EXTENSION_PASS` was produced by Codex.
+- User committed and pushed it as `feat: add V2 event validator support`.
+- Validator support was added in `tools/validate_events_jsonl.py`.
+- Focused validator tests were added in `tests/test_validate_events_jsonl.py`.
+- Claude Code / Opus post-audit verdict: `ACCEPT_AS_IS`.
+- `safe_to_commit`: `YES`.
+- No blocker/high/medium findings.
+- Validation passed:
+  - focused V2 validator tests: 11/11,
+  - full `validate_events_jsonl` tests: 114/114,
+  - `py -3 tools/validate_all.py`: PASS, 247 tests.
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
-- `docs/audit/V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS.md`
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_PASS.md`
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
-- `docs/PROTECTED_SURFACES.md`
+## Closeout summary
 
-Repo docs win over chat memory.
+The accepted validator implementation supports V2 schema version `2.0-draft` and accepted canonical event types from `docs/spec/V2_EVENT_SCHEMA_SPEC.md`.
 
-## Implemented validator scope
+It rejects unsafe aliases, canonical authors/sources, provenance violations, prohibited fields, and relation cycles where detectable. It preserves V1/V1.1 legacy baseline compatibility.
 
-`V2_VALIDATOR_EXTENSION_PASS` validates only the accepted V2 event schema/spec requirements in the existing JSONL validator:
-
-- common V2 event envelope fields,
-- supported validator schema version `2.0-draft`,
-- canonical event type allowlist and rejected aliases,
-- actor/source/confirmation rules,
-- fail-closed unsupported schema/event behavior,
-- V1/V1.1 no-per-event-schema legacy baseline,
-- `measurement_recorded` payload, reading mode/unit pairs, and value provenance,
-- target / `Koht` / pin composite shape including dotted and point-to-point labels,
-- `component_created`,
-- `component_updated`,
-- `event_invalidated`,
-- relation field existence and self-cycle rejection where detectable,
-- prohibited canonical fields/promotions,
-- Reference Images/local sidecar remaining non-canonical and not validator authority.
-
-Existing Project ZIP validator behavior continues to reject `board_graph.json` and `view_state.json`; this pass did not change ZIP logic.
+No materializer, writer service, UI writes, Project ZIP, Board Canvas, Reference Images runtime, AI/OCR/CV, URL/source search, schema, asset, sample, generated artifact, platform folder, tag, or release changes are authorized by this closeout.
 
 ## Evidence boundaries
 
@@ -82,16 +71,14 @@ Existing Project ZIP validator behavior continues to reject `board_graph.json` a
 
 ## Route lock
 
-Next recommended pass is `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`.
+Next recommended pass is `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
 
-Purpose: independent Claude Code / Opus audit-only review of this validator implementation.
+Purpose: docs-only scope lock for the next executable V2 surface, materializer projection from V2 events into `known_facts.json`.
 
-Do not route to materializer, writer service, UI writes, Save/Add/Edit, Project ZIP changes, Activity Timeline, or Measure Momentum from this pass.
+Do not route directly to materializer implementation. Do not route to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 
-- `py -3 -m unittest tests.test_validate_events_jsonl.ValidateV2EventsJsonlTests -v`
-- `py -3 -m unittest tests.test_validate_events_jsonl -v`
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

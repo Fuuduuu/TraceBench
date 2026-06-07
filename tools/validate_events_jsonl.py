@@ -130,6 +130,118 @@ REMOVE_COMPONENT_FORBIDDEN_KEYS = {
 }
 
 MEASUREMENT_EVENT = "measurement_recorded"
+V2_SCHEMA_VERSION = "2.0-draft"
+V2_EVENT_TYPES = {
+    "measurement_recorded",
+    "component_created",
+    "component_updated",
+    "event_invalidated",
+}
+V2_REJECTED_ALIASES = {
+    "measurement_saved",
+    "component_edited",
+    "event_superseded",
+    "measurement_updated",
+    "replaces_event",
+}
+V2_REQUIRED_KEYS = {
+    "schema_version",
+    "event_id",
+    "event_type",
+    "created_at",
+    "project_id",
+    "client_operation_id",
+    "actor",
+    "source",
+    "confirmation",
+    "payload",
+}
+V2_RELATION_FIELDS = {
+    "origin_event_id",
+    "corrects_event_id",
+    "supersedes_event_id",
+    "invalidates_event_id",
+}
+V2_SHAPE_MARKER_KEYS = {"client_operation_id", "source", "confirmation"}
+V2_ALLOWED_MODE_UNITS = {
+    "voltage": "V",
+    "resistance": "\u03a9",
+    "diode": "diode",
+    "continuity": "beep",
+    "current": "A",
+}
+V2_ALLOWED_READING_STATES = {"OL", "over_range", "under_range", "unstable", "not_measured"}
+V2_ALLOWED_TARGET_KINDS = {
+    "component",
+    "component_pin",
+    "board_point",
+    "point_to_point",
+    "unknown",
+}
+V2_ALLOWED_MEASURED_VALUE_SOURCES = {
+    "human_entered",
+    "human_confirmed_from_reference",
+    "human_confirmed_from_candidate",
+}
+V2_CONTEXT_VALUE_TYPES = {
+    "helper_suggestion",
+    "reference_value",
+    "candidate_value",
+    "note_value",
+    "source_research_value",
+}
+V2_ONE_TAP_PROMOTION_FIELDS = {
+    "one_tap_confirmed",
+    "one_tap_confirmation",
+    "auto_promoted",
+    "context_value_promoted",
+    "promoted_without_second_confirmation",
+    "promoted_without_confirmation",
+}
+V2_CHANGE_KINDS = {"set", "replace", "clear", "mark_unknown", "correct_typo"}
+V2_PROHIBITED_FIELDS = {
+    "ai_confidence",
+    "probability",
+    "diagnosis",
+    "fault_probability",
+    "auto_detected",
+    "ocr_text_as_fact",
+    "cv_component_match",
+    "photo_proof",
+    "visual_trace_net",
+    "template_identity",
+    "board_graph_ref",
+    "view_state_ref",
+    "reference_image_evidence",
+    "local_storage_source",
+    "damage_proves_fault",
+    "suspect_probability",
+}
+V2_COMPONENT_PROOF_FIELDS = {
+    "identity_proof",
+    "net_proof",
+    "fault_proof",
+    "probability_proof",
+    "confirmed_identity",
+    "confirmed_net",
+    "confirmed_fault",
+    "pin_map_proof",
+}
+V2_COMPONENT_CREATED_ALLOWED_FIELDS = {
+    "component_id",
+    "label",
+    "component_kind",
+    "created_context",
+    "reference_designator",
+    "pin_count",
+    "package_hint",
+    "footprint_hint",
+    "template_id_hint",
+    "side",
+    "rough_location",
+    "rotation_hint",
+    "human_note",
+}
 RESOLVABLE_CONFLICT_TYPES = {
     "measurement_contradiction",
     "net_topology_conflict",
@@ -247,10 +359,12 @@ def _validate_envelope(
         _error(errors, context, f"unexpected top-level field(s): {extra_keys}")
 
     missing = REQUIRED_KEYS - set(event)
+    if "schema_version" not in event:
+        missing.discard("schema_version")
     if missing:
         _error(errors, context, f"missing keys: {sorted(missing)}")
 
-    if event.get("schema_version") != "1.0":
+    if "schema_version" in event and event.get("schema_version") != "1.0":
         _error(errors, context, f"schema_version must be '1.0', got {event.get('schema_version')!r}")
 
     if not isinstance(event.get("project_id"), str) or not event["project_id"]:
@@ -285,6 +399,355 @@ def _validate_envelope(
     sequence = event.get("sequence")
     if not isinstance(sequence, int):
         _error(errors, context, "sequence must be integer")
+
+
+def _is_v2_shaped_event(event: dict) -> bool:
+    schema_version = event.get("schema_version")
+    if schema_version == V2_SCHEMA_VERSION:
+        return True
+    if isinstance(schema_version, str) and schema_version != "1.0":
+        return True
+    return bool(V2_SHAPE_MARKER_KEYS.intersection(event.keys()))
+
+
+def _iter_v2_prohibited_fields(value) -> list[str]:
+    found: list[str] = []
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            if key in V2_PROHIBITED_FIELDS:
+                found.append(key)
+            found.extend(_iter_v2_prohibited_fields(nested))
+    elif isinstance(value, list):
+        for item in value:
+            found.extend(_iter_v2_prohibited_fields(item))
+    return found
+
+
+def _validate_v2_string_field(event: dict, field: str, context: str, errors: list[str]) -> None:
+    value = event.get(field)
+    if not isinstance(value, str) or not value:
+        _error(errors, context, f"{field} must be non-empty string")
+
+
+def _validate_v2_relation_fields(
+    event: dict,
+    context: str,
+    errors: list[str],
+    prior_event_ids: set[str],
+) -> None:
+    event_id = event.get("event_id")
+    for field in sorted(V2_RELATION_FIELDS):
+        if field not in event:
+            continue
+        ref = event.get(field)
+        if not isinstance(ref, str) or not ref:
+            _error(errors, context, f"{field} must be non-empty string")
+            continue
+        if ref == event_id:
+            _error(errors, context, f"relation cycle detected for {field}")
+            continue
+        if ref not in prior_event_ids:
+            _error(errors, context, f"{field} references missing or future event {ref!r}")
+
+
+def _validate_v2_target(
+    target: dict,
+    context: str,
+    errors: list[str],
+    *,
+    nested: bool = False,
+) -> None:
+    if not isinstance(target, dict):
+        _error(errors, context, "target must be object")
+        return
+    target_kind = target.get("target_kind")
+    if target_kind not in V2_ALLOWED_TARGET_KINDS:
+        _error(errors, context, f"target_kind must be one of {sorted(V2_ALLOWED_TARGET_KINDS)!r}")
+    for field in ("target_key", "display_label"):
+        if not isinstance(target.get(field), str) or not target[field]:
+            _error(errors, context, f"{field} must be non-empty string")
+    if "pin_id" in target and (not isinstance(target.get("pin_id"), str) or not target["pin_id"]):
+        _error(errors, context, "pin_id must be non-empty string when present")
+    if "component_id" in target and (
+        not isinstance(target.get("component_id"), str) or not target["component_id"]
+    ):
+        _error(errors, context, "component_id must be non-empty string when present")
+
+    if target_kind == "point_to_point":
+        for endpoint in ("from_target", "to_target"):
+            if endpoint not in target:
+                _error(errors, context, f"point_to_point target requires {endpoint}")
+            else:
+                _validate_v2_target(
+                    target[endpoint],
+                    f"{context}.{endpoint}",
+                    errors,
+                    nested=True,
+                )
+    elif not nested:
+        for endpoint in ("from_target", "to_target"):
+            if endpoint in target:
+                _error(errors, context, f"{endpoint} is allowed only for point_to_point targets")
+
+
+def _validate_v2_reading(reading: dict, context: str, errors: list[str]) -> None:
+    if not isinstance(reading, dict):
+        _error(errors, context, "measurement_recorded requires reading object")
+        return
+    mode = reading.get("mode")
+    unit = reading.get("unit")
+    if mode not in V2_ALLOWED_MODE_UNITS:
+        _error(errors, context, f"reading.mode must be one of {sorted(V2_ALLOWED_MODE_UNITS)!r}")
+    elif unit != V2_ALLOWED_MODE_UNITS[mode]:
+        _error(errors, context, f"reading.unit must be {V2_ALLOWED_MODE_UNITS[mode]!r} for mode {mode!r}")
+    if "unit" not in reading:
+        _error(errors, context, "reading.unit required")
+    if not isinstance(reading.get("display_value"), str) or not reading["display_value"]:
+        _error(errors, context, "reading.display_value required")
+    state = reading.get("state")
+    if state is not None and state not in V2_ALLOWED_READING_STATES:
+        _error(errors, context, f"reading.state must be one of {sorted(V2_ALLOWED_READING_STATES)!r}")
+    if "value" not in reading and state not in V2_ALLOWED_READING_STATES:
+        _error(errors, context, "reading.value required")
+    elif "value" in reading and not isinstance(reading.get("value"), ALLOWED_READING_VALUE_TYPES):
+        _error(errors, context, f"reading.value invalid type {type(reading.get('value')).__name__}")
+
+
+def _validate_v2_value_provenance(
+    provenance: dict,
+    reading: dict,
+    context: str,
+    errors: list[str],
+) -> None:
+    if not isinstance(provenance, dict):
+        _error(errors, context, "measurement_recorded requires value_provenance")
+        return
+    measured_source = provenance.get("measured_value_source", provenance.get("source"))
+    if measured_source in V2_CONTEXT_VALUE_TYPES and "value" in reading:
+        _error(errors, context, "context value source cannot be reading.value")
+    elif measured_source not in V2_ALLOWED_MEASURED_VALUE_SOURCES:
+        _error(
+            errors,
+            context,
+            f"value_provenance.measured_value_source must be one of {sorted(V2_ALLOWED_MEASURED_VALUE_SOURCES)!r}",
+        )
+
+    if measured_source in {"human_confirmed_from_reference", "human_confirmed_from_candidate"}:
+        if provenance.get("human_verified_as_own_reading") is not True:
+            _error(errors, context, "human-confirmed context value requires human_verified_as_own_reading=true")
+
+    for field in V2_ONE_TAP_PROMOTION_FIELDS:
+        if provenance.get(field):
+            _error(errors, context, "one-tap context promotion is forbidden")
+
+    contexts = provenance.get("context_values_visible", [])
+    if contexts is None:
+        return
+    if not isinstance(contexts, list):
+        _error(errors, context, "context_values_visible must be array when present")
+        return
+    for index, item in enumerate(contexts, start=1):
+        if not isinstance(item, dict):
+            _error(errors, context, f"context_values_visible[{index}] must be object")
+            continue
+        context_type = item.get("context_type", item.get("type"))
+        if context_type not in V2_CONTEXT_VALUE_TYPES:
+            _error(errors, context, f"context_values_visible[{index}].context_type is not allowed")
+        if item.get("used_as_measured_value") is True and measured_source == "human_entered":
+            _error(errors, context, "context value source cannot be reading.value")
+
+
+def _validate_v2_measurement(payload: dict, context: str, errors: list[str]) -> None:
+    required = {"measurement_id", "measured_at", "target", "reading", "value_provenance"}
+    missing = required - set(payload)
+    if missing:
+        _error(errors, context, f"measurement_recorded missing payload fields: {sorted(missing)}")
+    if not isinstance(payload.get("measurement_id"), str) or not payload.get("measurement_id"):
+        _error(errors, context, "measurement_id must be non-empty string")
+    measured_at = payload.get("measured_at")
+    if not isinstance(measured_at, str) or not _is_iso_datetime(measured_at):
+        _error(errors, context, "measured_at must be ISO-like datetime")
+    _validate_v2_target(payload.get("target"), context, errors)
+    reading = payload.get("reading")
+    if isinstance(reading, dict):
+        _validate_v2_reading(reading, context, errors)
+    else:
+        _error(errors, context, "measurement_recorded requires reading object")
+        reading = {}
+    _validate_v2_value_provenance(payload.get("value_provenance"), reading, context, errors)
+
+
+def _validate_v2_component_created(
+    payload: dict,
+    context: str,
+    errors: list[str],
+    component_ids: set[str],
+) -> None:
+    required = {"component_id", "label", "component_kind", "created_context"}
+    missing = required - set(payload)
+    if missing:
+        _error(errors, context, f"component_created missing payload fields: {sorted(missing)}")
+    extra = sorted(set(payload) - V2_COMPONENT_CREATED_ALLOWED_FIELDS)
+    for field in extra:
+        _error(errors, context, f"component_created unexpected field: {field}")
+    for field in sorted(V2_COMPONENT_PROOF_FIELDS.intersection(payload.keys())):
+        _error(errors, context, f"component_created proof field is forbidden: {field}")
+    component_id = payload.get("component_id")
+    if not isinstance(component_id, str) or not component_id:
+        _error(errors, context, "component_created requires component_id")
+        return
+    if component_id in component_ids:
+        _error(errors, context, f"duplicate V2 component_id {component_id!r}")
+    component_ids.add(component_id)
+    for field in ("label", "component_kind", "created_context"):
+        if not isinstance(payload.get(field), str) or not payload[field]:
+            _error(errors, context, f"component_created {field} must be non-empty string")
+
+
+def _validate_v2_component_updated(
+    payload: dict,
+    context: str,
+    errors: list[str],
+    component_ids: set[str],
+) -> None:
+    required = {"component_id", "changes", "edit_reason"}
+    missing = required - set(payload)
+    if missing:
+        _error(errors, context, f"component_updated missing payload fields: {sorted(missing)}")
+    component_id = payload.get("component_id")
+    if not isinstance(component_id, str) or not component_id:
+        _error(errors, context, "component_updated requires component_id")
+    elif component_ids and component_id not in component_ids:
+        _error(errors, context, f"component_updated component_id {component_id!r} must reference prior component_created")
+    if not isinstance(payload.get("edit_reason"), str) or not payload.get("edit_reason"):
+        _error(errors, context, "component_updated edit_reason must be non-empty string")
+    changes = payload.get("changes")
+    if not isinstance(changes, list) or not changes:
+        _error(errors, context, "component_updated requires non-empty changes")
+        return
+    for index, change in enumerate(changes, start=1):
+        if not isinstance(change, dict):
+            _error(errors, context, f"component_updated changes[{index}] must be object")
+            continue
+        for field in ("field", "old_value_observed", "new_value", "change_kind"):
+            if field not in change:
+                _error(errors, context, f"component_updated changes[{index}] missing {field}")
+        if change.get("change_kind") not in V2_CHANGE_KINDS:
+            _error(
+                errors,
+                context,
+                f"component_updated changes[{index}].change_kind must be one of {sorted(V2_CHANGE_KINDS)!r}",
+            )
+
+
+def _validate_v2_event_invalidated(
+    payload: dict,
+    context: str,
+    errors: list[str],
+    prior_event_ids: set[str],
+) -> None:
+    required = {"invalidates_event_id", "target_entity_id", "reason"}
+    missing = required - set(payload)
+    if missing:
+        _error(errors, context, f"event_invalidated missing payload fields: {sorted(missing)}")
+    invalidates = payload.get("invalidates_event_id")
+    if not isinstance(invalidates, str) or not invalidates:
+        _error(errors, context, "event_invalidated invalidates_event_id must be non-empty string")
+    elif invalidates not in prior_event_ids:
+        _error(errors, context, f"event_invalidated invalidates_event_id {invalidates!r} must reference prior event")
+    for field in ("target_entity_id", "reason"):
+        if not isinstance(payload.get(field), str) or not payload[field]:
+            _error(errors, context, f"event_invalidated {field} must be non-empty string")
+    if "human_note" in payload and not isinstance(payload.get("human_note"), str):
+        _error(errors, context, "event_invalidated human_note must be string when present")
+
+
+def _validate_v2_event(
+    event: dict,
+    line: int,
+    errors: list[str],
+    seen_event_ids: set[str],
+    component_ids: set[str],
+) -> None:
+    context = f"line {line}"
+    prior_event_ids = set(seen_event_ids)
+
+    missing = V2_REQUIRED_KEYS - set(event)
+    if "schema_version" not in event:
+        _error(errors, context, "V2 canonical event requires schema_version")
+        missing.discard("schema_version")
+    if missing:
+        _error(errors, context, f"V2 event missing envelope fields: {sorted(missing)}")
+
+    schema_version = event.get("schema_version")
+    if schema_version is not None and schema_version != V2_SCHEMA_VERSION:
+        _error(errors, context, f"unsupported V2 schema_version {schema_version!r}")
+
+    event_id = event.get("event_id")
+    if not isinstance(event_id, str):
+        _error(errors, context, "event_id missing or not a string")
+    elif not _is_event_id(event_id):
+        _error(errors, context, f"event_id must match ^evt_[0-9]{{6}}$, got {event_id!r}")
+    else:
+        if event_id in prior_event_ids:
+            _error(errors, context, f"duplicate event_id {event_id!r}")
+        seen_event_ids.add(event_id)
+
+    allowed_top_level = V2_REQUIRED_KEYS | V2_RELATION_FIELDS
+    extra_keys = sorted(set(event) - allowed_top_level)
+    if extra_keys:
+        _error(errors, context, f"unexpected V2 top-level field(s): {extra_keys}")
+
+    for field in ("project_id", "client_operation_id"):
+        _validate_v2_string_field(event, field, context, errors)
+    created_at = event.get("created_at")
+    if not isinstance(created_at, str) or not created_at:
+        _error(errors, context, "created_at must be non-empty string")
+    elif not _is_iso_datetime(created_at):
+        _error(errors, context, f"created_at must be ISO-like datetime, got {created_at!r}")
+
+    event_type = event.get("event_type")
+    if event_type in V2_REJECTED_ALIASES:
+        _error(errors, context, f"rejected V2 event_type alias: {event_type!r}")
+    elif event_type not in V2_EVENT_TYPES:
+        _error(errors, context, f"unknown V2 event_type: {event_type!r}")
+
+    actor = event.get("actor")
+    if not isinstance(actor, dict):
+        _error(errors, context, "actor must be object")
+    elif actor.get("type") != "human":
+        _error(errors, context, "actor.type must be 'human'")
+
+    source = event.get("source")
+    if not isinstance(source, dict):
+        _error(errors, context, "source must be object")
+    elif source.get("type") != "explicit_user_confirmation":
+        _error(errors, context, "source.type must be 'explicit_user_confirmation'")
+
+    confirmation = event.get("confirmation")
+    if not isinstance(confirmation, dict):
+        _error(errors, context, "confirmation must be object")
+    elif confirmation.get("confirmed") is not True:
+        _error(errors, context, "confirmation.confirmed must be true")
+
+    payload = event.get("payload")
+    if not isinstance(payload, dict):
+        _error(errors, context, "payload must be object")
+        return
+
+    for field in sorted(set(_iter_v2_prohibited_fields(event))):
+        _error(errors, context, f"prohibited V2 canonical field present: {field}")
+
+    _validate_v2_relation_fields(event, context, errors, prior_event_ids)
+
+    if event_type == "measurement_recorded":
+        _validate_v2_measurement(payload, context, errors)
+    elif event_type == "component_created":
+        _validate_v2_component_created(payload, context, errors, component_ids)
+    elif event_type == "component_updated":
+        _validate_v2_component_updated(payload, context, errors, component_ids)
+    elif event_type == "event_invalidated":
+        _validate_v2_event_invalidated(payload, context, errors, prior_event_ids)
 
 
 def _validate_measurement(event: dict, line: int, errors: list[str]) -> None:
@@ -1107,6 +1570,7 @@ def main() -> None:
     conflict_id_counts: Counter[str] = Counter()
     conflict_type_by_id: dict[str, str] = {}
     claim_target_count: Counter[str] = Counter()
+    v2_component_ids: set[str] = set()
     for _, event in events:
         event_id = event.get("event_id")
         event_type = event.get("event_type")
@@ -1147,6 +1611,10 @@ def main() -> None:
     claim_payloads: list[tuple[dict, int]] = []
 
     for line_no, event in events:
+        if _is_v2_shaped_event(event):
+            _validate_v2_event(event, line_no, errors, seen_event_ids, v2_component_ids)
+            continue
+
         _validate_envelope(
             event,
             line_no,

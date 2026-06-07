@@ -2,20 +2,21 @@
 
 ## Current status
 
-- Current pass: `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`
-- Next recommended pass: `V2_VALIDATOR_EXTENSION_PASS`
+- Current pass: `V2_VALIDATOR_EXTENSION_PASS`
+- Next recommended pass: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `f5f62c0 docs: close out V2 validator extension scope`
+- Latest accepted commit before this pass: `01369d0 docs: align governance scope docs and source pointers`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- V2 event-writing architecture scope-lock record, schema/spec scope lock, V2 event schema spec, spec closeout, and validator scope lock are accepted/pushed.
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for later V2 schema, validator, materializer, writer, and UI passes.
-- Claude Code / Opus post-audit accepted `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS` as `ACCEPT_AS_IS` with no blocker/high/medium/low findings.
-- Current pass applies a narrow docs-only scope-alignment cleanup recommended by Claude Code / Opus; it does not implement validator code, create schema files, create tests, or touch runtime/tooling surfaces.
-- Next route is `V2_VALIDATOR_EXTENSION_PASS`, the first executable validator implementation pass under the accepted scope lock. Do not route to materializer implementation, writer service, Save/Add/Edit UI, Project ZIP changes, Activity Timeline, or Measure Momentum.
+- V2 event-writing architecture scope-lock record, schema/spec scope lock, V2 event schema spec, spec closeout, validator scope lock, validator scope-lock closeout, and docs scope-alignment cleanup are accepted/pushed.
+- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for V2 validator, materializer, writer, and UI passes.
+- `V2_VALIDATOR_EXTENSION_PASS` implemented the first executable V2 validator support in `tools/validate_events_jsonl.py` with focused tests in `tests/test_validate_events_jsonl.py`.
+- The validator now recognizes supported V2 schema version `2.0-draft`, validates the accepted canonical V2 event envelope/types/payloads, rejects unsafe sources/promotions/aliases/prohibited fields, and keeps legacy V1/V1.1 no-per-event-schema events loadable as baseline.
+- Validation passed: focused V2 validator tests, full validator unittest file, and `py -3 tools\validate_all.py` with 247 tests.
+- Next route is Claude Code / Opus audit-only review: `V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`.
 
 ## Accepted V1.1 baseline
 
@@ -36,8 +37,8 @@
 - Accepted validator scope lock: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`.
 - Accepted validator scope-lock post-audit: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
 - Accepted validator scope-lock closeout: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`.
-- Current docs alignment cleanup: `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`.
-- Future work must remain staged: validator implementation, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
+- Current validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
+- Future work must remain staged: validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -58,8 +59,8 @@
 ## Maintenance note
 
 - `docs/MEMORY_MAINTENANCE.md` owns the compaction trigger: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
-- Keep this handoff compact; keep full architecture/spec detail in audit/spec docs only.
+- Keep this handoff compact; keep full architecture/spec/detail in audit/spec docs only.
 
 ## Next recommended pass
 
-`V2_VALIDATOR_EXTENSION_PASS`
+`V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS`

@@ -21,6 +21,345 @@ def _events_to_temp_jsonl(events):
         return handle.name
 
 
+V2_SCHEMA_VERSION = "2.0-draft"
+
+
+def _v2_measurement_payload(**overrides):
+    payload = {
+        "measurement_id": "meas_000001",
+        "measured_at": "2026-06-06T10:00:00Z",
+        "target": {
+            "target_kind": "component_pin",
+            "target_key": "component:Q2:pin:1",
+            "display_label": "Q2.1",
+            "component_id": "Q2",
+            "pin_id": "Q2.1",
+        },
+        "reading": {
+            "mode": "voltage",
+            "value": 3.3,
+            "unit": "V",
+            "display_value": "3.3 V",
+        },
+        "value_provenance": {
+            "measured_value_source": "human_entered",
+            "entry_method": "typed",
+            "human_verified_as_own_reading": True,
+            "context_values_visible": [
+                {
+                    "context_type": "reference_value",
+                    "context_id": "ref_q2_pin1_voltage",
+                    "display_value": "3.3 V",
+                    "used_as_measured_value": False,
+                }
+            ],
+        },
+    }
+    payload.update(overrides)
+    return payload
+
+
+def _v2_component_created_payload(**overrides):
+    payload = {
+        "component_id": "Q2",
+        "label": "Q2",
+        "component_kind": "unknown",
+        "created_context": "human_added_from_measure_sheet",
+        "reference_designator": "Q2",
+        "template_id_hint": "sot23_hint",
+        "footprint_hint": "SOT-23",
+    }
+    payload.update(overrides)
+    return payload
+
+
+def _v2_event(
+    event_id="evt_200001",
+    event_type="measurement_recorded",
+    payload=None,
+    *,
+    schema_version=V2_SCHEMA_VERSION,
+    created_at="2026-06-06T10:00:01Z",
+    project_id="prj_v2_test",
+    client_operation_id="op_v2_000001",
+    actor_type="human",
+    source_type="explicit_user_confirmation",
+    confirmed=True,
+    **extra_fields,
+):
+    event = {
+        "schema_version": schema_version,
+        "event_id": event_id,
+        "event_type": event_type,
+        "created_at": created_at,
+        "project_id": project_id,
+        "client_operation_id": client_operation_id,
+        "actor": {"type": actor_type, "actor_id": "local_user"},
+        "source": {
+            "type": source_type,
+            "surface": "measure_sheet",
+            "action": "save_measurement",
+        },
+        "confirmation": {
+            "confirmed": confirmed,
+            "confirmed_at": created_at,
+            "label": "Salvesta mootmine",
+        },
+        "payload": payload if payload is not None else _v2_measurement_payload(),
+    }
+    if schema_version is None:
+        event.pop("schema_version")
+    event.update(extra_fields)
+    return event
+
+
+class ValidateV2EventsJsonlTests(unittest.TestCase):
+    def test_v2_valid_measurement_recorded_passes(self):
+        path = _events_to_temp_jsonl([_v2_event()])
+
+        result = _run_validator(path)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_valid_component_update_and_invalidation_passes(self):
+        events = [
+            _v2_event(
+                event_id="evt_200001",
+                event_type="component_created",
+                payload=_v2_component_created_payload(),
+                client_operation_id="op_v2_000001",
+            ),
+            _v2_event(
+                event_id="evt_200002",
+                event_type="component_updated",
+                payload={
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "label",
+                            "old_value_observed": "Q2",
+                            "new_value": "Q2 suspected area",
+                            "change_kind": "replace",
+                        }
+                    ],
+                    "edit_reason": "human_label_clarity",
+                },
+                client_operation_id="op_v2_000002",
+                created_at="2026-06-06T10:01:00Z",
+            ),
+            _v2_event(
+                event_id="evt_200003",
+                event_type="event_invalidated",
+                payload={
+                    "invalidates_event_id": "evt_200002",
+                    "target_entity_id": "Q2",
+                    "reason": "human_correction",
+                    "human_note": "Superseded by later component edit.",
+                },
+                client_operation_id="op_v2_000003",
+                created_at="2026-06-06T10:02:00Z",
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+
+        result = _run_validator(path)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_alias_event_types_rejected(self):
+        aliases = [
+            "measurement_saved",
+            "component_edited",
+            "event_superseded",
+            "measurement_updated",
+            "replaces_event",
+        ]
+        for alias in aliases:
+            with self.subTest(alias=alias):
+                path = _events_to_temp_jsonl([_v2_event(event_type=alias)])
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("rejected V2 event_type alias", result.stdout + result.stderr)
+
+    def test_v2_schema_version_fail_closed(self):
+        cases = [
+            (
+                "missing",
+                _v2_event(schema_version=None),
+                "V2 canonical event requires schema_version",
+            ),
+            (
+                "unsupported",
+                _v2_event(schema_version="2.1"),
+                "unsupported V2 schema_version",
+            ),
+            (
+                "unknown_event",
+                _v2_event(event_type="component_deleted"),
+                "unknown V2 event_type",
+            ),
+        ]
+        for name, event, expected in cases:
+            with self.subTest(name=name):
+                path = _events_to_temp_jsonl([event])
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_v2_forbidden_actor_or_source_rejected(self):
+        cases = [
+            ("ai_actor", {"actor_type": "ai"}),
+            ("helper_actor", {"actor_type": "helper"}),
+            ("renderer_source", {"source_type": "renderer"}),
+            ("reference_image_source", {"source_type": "reference_image"}),
+            ("visual_trace_source", {"source_type": "visual_trace"}),
+        ]
+        for name, kwargs in cases:
+            with self.subTest(name=name):
+                path = _events_to_temp_jsonl([_v2_event(**kwargs)])
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertTrue(
+                    "actor.type must be 'human'" in result.stdout + result.stderr
+                    or "source.type must be 'explicit_user_confirmation'" in result.stdout + result.stderr
+                )
+
+    def test_v2_measurement_value_provenance_guards(self):
+        missing_provenance = _v2_measurement_payload()
+        missing_provenance.pop("value_provenance")
+        context_promoted = _v2_measurement_payload(
+            value_provenance={
+                "measured_value_source": "reference_value",
+                "human_verified_as_own_reading": False,
+            }
+        )
+        one_tap_promoted = _v2_measurement_payload(
+            value_provenance={
+                "measured_value_source": "human_confirmed_from_reference",
+                "human_verified_as_own_reading": True,
+                "one_tap_confirmed": True,
+            }
+        )
+        cases = [
+            ("missing", missing_provenance, "measurement_recorded requires value_provenance"),
+            ("context_promoted", context_promoted, "context value source cannot be reading.value"),
+            ("one_tap", one_tap_promoted, "one-tap context promotion is forbidden"),
+        ]
+        for name, payload, expected in cases:
+            with self.subTest(name=name):
+                path = _events_to_temp_jsonl([_v2_event(payload=payload)])
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_v2_point_to_point_target_with_dotted_labels_passes(self):
+        payload = _v2_measurement_payload(
+            target={
+                "target_kind": "point_to_point",
+                "target_key": "ptp:Q2.1:R17.1",
+                "display_label": "Q2.1 -> R17.1",
+                "from_target": {
+                    "target_kind": "component_pin",
+                    "target_key": "component:Q2:pin:1",
+                    "display_label": "Q2.1",
+                    "component_id": "Q2",
+                    "pin_id": "Q2.1",
+                },
+                "to_target": {
+                    "target_kind": "component_pin",
+                    "target_key": "component:R17:pin:1",
+                    "display_label": "R17.1",
+                    "component_id": "R17",
+                    "pin_id": "R17.1",
+                },
+            },
+            reading={
+                "mode": "continuity",
+                "value": True,
+                "unit": "beep",
+                "display_value": "beep",
+            },
+        )
+        path = _events_to_temp_jsonl([_v2_event(payload=payload)])
+
+        result = _run_validator(path)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_prohibited_fields_rejected(self):
+        cases = [
+            ("ai_confidence", {"ai_confidence": 0.8}),
+            ("board_graph_ref", {"board_graph_ref": "board_graph.json"}),
+            ("view_state_ref", {"view_state_ref": "view_state.json"}),
+            ("reference_image_evidence", {"reference_image_evidence": "refimg_1"}),
+            ("visual_trace_net", {"visual_trace_net": "N1"}),
+        ]
+        for field, extra_payload in cases:
+            with self.subTest(field=field):
+                payload = _v2_measurement_payload(**extra_payload)
+                path = _events_to_temp_jsonl([_v2_event(payload=payload)])
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("prohibited V2 canonical field", result.stdout + result.stderr)
+
+    def test_v2_invalidation_source_boundary_rejected(self):
+        event = _v2_event(
+            event_id="evt_200002",
+            event_type="event_invalidated",
+            payload={
+                "invalidates_event_id": "evt_200001",
+                "target_entity_id": "meas_000001",
+                "reason": "helper_cleanup",
+            },
+            source_type="import_inference",
+            client_operation_id="op_v2_000002",
+        )
+        path = _events_to_temp_jsonl([_v2_event(), event])
+
+        result = _run_validator(path)
+
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("source.type must be 'explicit_user_confirmation'", result.stdout + result.stderr)
+
+    def test_v2_self_relation_cycle_rejected(self):
+        event = _v2_event(supersedes_event_id="evt_200001")
+        path = _events_to_temp_jsonl([event])
+
+        result = _run_validator(path)
+
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("relation cycle", result.stdout + result.stderr)
+
+    def test_legacy_v1_without_schema_version_remains_valid(self):
+        events = [
+            {
+                "event_id": "evt_000001",
+                "project_id": "prj_test",
+                "sequence": 1,
+                "created_at": "2026-01-01T00:00:00Z",
+                "actor": {"type": "user", "id": "u1"},
+                "event_type": "project_created",
+                "status": "accepted",
+                "payload": {"name": "legacy project"},
+            }
+        ]
+        path = _events_to_temp_jsonl(events)
+
+        result = _run_validator(path)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
 class ValidateEventsJsonlTests(unittest.TestCase):
     def test_pelle_sample_validates(self):
         result = subprocess.run(

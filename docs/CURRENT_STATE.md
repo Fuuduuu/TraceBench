@@ -2,23 +2,23 @@
 
 ## Current status
 
-- Current pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
-- Next recommended pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `V2_MATERIALIZER_PROJECTION_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `b473ce8 docs: close out V2 validator extension`
+- Latest accepted commit before this pass: `0cd4939 docs: lock V2 materializer projection scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- V2 event-writing architecture is accepted as a docs-only architecture record.
-- V2 event schema/spec is accepted as Markdown-only binding requirements in `docs/spec/V2_EVENT_SCHEMA_SPEC.md`.
-- V2 validator extension is implemented, audited, accepted, pushed, and closed out.
-- Accepted validator behavior supports `2.0-draft` V2 canonical events and V1/V1.1 legacy compatibility.
-- Current pass locks the future materializer projection implementation scope only.
-- No materializer code, validator code, tests, runtime, schema files, JSON schema files, writer service, Flutter UI, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects are authorized by this scope-lock pass.
-- Next route is Claude Code / Opus post-audit: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`.
-- Do not route directly to `V2_MATERIALIZER_PROJECTION_PASS` until this scope lock is post-audited.
+- `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS` was produced by Codex as a docs-only scope lock.
+- User committed and pushed it as `docs: lock V2 materializer projection scope`.
+- Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; `safe_to_commit: YES`; no blocker/high/medium/low findings.
+- Validation passed: `py -3 tools\validate_all.py` PASS with 247 tests.
+- No materializer code was implemented in the scope-lock pass.
+- Current pass closes out the accepted scope lock.
+- Materializer implementation remains blocked until this closeout is accepted.
+- Next recommended pass is `V2_MATERIALIZER_PROJECTION_PASS`, the first executable materializer implementation pass under the accepted scope lock.
 - Do not route to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Materializer scope-lock summary
@@ -28,7 +28,7 @@
 - `known_facts.json` remains materialized projection/cache and must never be treated as source of truth.
 - Future V2 projection scope is limited to validated `measurement_recorded`, `component_created`, `component_updated`, and `event_invalidated` events.
 - Projection may include measurement history/current summaries, target linkage, value provenance, component current display fields, component history pointers, invalidation/supersession history, and conflict markers.
-- Projection must not derive component health, fault diagnosis/probability, confirmed net identity, confirmed pin mapping, component identity, visual-trace connectivity, or template/footprint/photo proof.
+- Projection must not derive diagnosis, probability, confirmed net identity, confirmed pin mapping, component identity, visual-trace connectivity, or template/photo proof.
 - Unsuperseded divergent human measurements must surface conflicts; latest-timestamp-wins is forbidden.
 - L3 component-invalidation orphan handling must surface dependent measurements and must never silently cascade-drop them.
 - V1/V1.1 projection compatibility must not regress.
@@ -47,8 +47,10 @@
 - Accepted architecture scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
 - Accepted schema/spec doc pass: `V2_EVENT_SCHEMA_SPEC_PASS`.
 - Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
-- Current materializer scope lock: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
-- Future work must remain staged: materializer scope-lock post-audit, materializer implementation, materializer audit, writer service, writer audit, then UI write flows.
+- Accepted materializer projection scope lock: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
+- Accepted materializer projection scope-lock post-audit: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
+- Current materializer scope-lock closeout: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS`.
+- Future work must remain staged: materializer implementation, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -73,4 +75,4 @@
 
 ## Next recommended pass
 
-`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_MATERIALIZER_PROJECTION_PASS`

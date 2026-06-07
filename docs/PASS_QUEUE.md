@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
+`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_MATERIALIZER_PROJECTION_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -101,8 +101,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_VALIDATOR_EXTENSION_PASS | VALIDATOR_PASS | completed | Accepted/pushed first executable V2 validator implementation under the accepted scope lock; added V2 support to existing JSONL validator and focused validator tests only, with no materializer/writer/UI/ZIP/Activity Timeline/Measure Momentum drift. |
 | V2_VALIDATOR_EXTENSION_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted V2 validator implementation with no blocker/high/medium findings; validation PASS: focused V2 validator tests 11/11, full validator tests 114/114, `validate_all.py` PASS 247 tests. |
 | V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Close out accepted/pushed V2 validator implementation and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to materializer projection scope lock. |
-| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current (`PASS`) | Docs-only scope lock for the next executable V2 surface: materializer projection from V2 events into `known_facts.json`; do not implement materializer, writer service, UI writes, Project ZIP, Activity Timeline, or Measure Momentum in the scope-lock pass. |
-| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Post-audit the materializer projection scope lock before any route to `V2_MATERIALIZER_PROJECTION_PASS`; check architecture/spec binding, evidence boundaries, conflict/orphan handling, back-compat, and forbidden surfaces. |
+| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Docs-only scope lock for the next executable V2 surface: materializer projection from V2 events into `known_facts.json`; no materializer implementation, writer service, UI writes, Project ZIP, Activity Timeline, or Measure Momentum. |
+| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the materializer projection scope lock with no blocker/high/medium/low findings; validation PASS 247 tests. |
+| V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Close out accepted/pushed materializer projection scope lock and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to the first materializer implementation pass. |
+| V2_MATERIALIZER_PROJECTION_PASS | MATERIALIZER_PASS | recommended next | First executable materializer implementation pass under the accepted scope lock; do not route to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

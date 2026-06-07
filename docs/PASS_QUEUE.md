@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_EVENT_WRITER_SERVICE_PASS`
 
 ## Next recommended pass
 
-`V2_EVENT_WRITER_SERVICE_PASS`
+`V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -109,8 +109,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Close out accepted/pushed V2 materializer projection implementation and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to writer service scope lock. |
 | V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for the next executable V2 surface: event writer service; no implementation, tests, schema, validator, materializer, UI, ZIP, assets/samples, platform folders, tags, or releases. |
 | V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the writer-service scope lock with no blocker/high/medium/low findings; validation PASS 255 tests. |
-| V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Close out accepted/pushed writer-service scope lock and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to the first executable canonical writer service implementation pass. |
-| V2_EVENT_WRITER_SERVICE_PASS | WRITER_SERVICE_PASS | recommended next | First executable canonical writer service implementation under the accepted scope lock; do not route to UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum. |
+| V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Close out accepted/pushed writer-service scope lock and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to the first executable canonical writer service implementation pass. |
+| V2_EVENT_WRITER_SERVICE_PASS | WRITER_SERVICE_PASS | current (`PASS`) | First executable canonical writer service implementation under the accepted scope lock; appends validated human-confirmed V2 events to `events.jsonl` with idempotency, lock guard, durable append, and readback verification. |
+| V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent audit of writer service implementation safety, validator-before-append behavior, idempotency, locking, crash/readback behavior, and forbidden-surface preservation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

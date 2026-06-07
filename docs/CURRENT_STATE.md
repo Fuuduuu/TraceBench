@@ -2,10 +2,10 @@
 
 ## Current status
 
-- Current pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `V2_EVENT_WRITER_SERVICE_PASS`
+- Current pass: `V2_EVENT_WRITER_SERVICE_PASS`
+- Next recommended pass: `V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `286a765 docs: lock V2 event writer service scope`
+- Latest accepted commit before this pass: `f3669d9 docs: close out V2 event writer service scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
@@ -15,26 +15,27 @@
 - V2 event schema/spec is accepted.
 - V2 validator extension is implemented, audited, accepted, pushed, and closed out.
 - V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
-- V2 event writer service scope lock is accepted, pushed, post-audited, and in closeout.
-- Claude Code / Opus accepted the writer-service scope lock as `ACCEPT_AS_IS`; no blocker/high/medium/low findings.
-- No writer service code was implemented in the scope-lock pass or this closeout.
-- Current pass is docs-only closeout for the writer service scope lock.
-- Writer implementation remains blocked until this closeout is accepted.
-- Next recommended pass is `V2_EVENT_WRITER_SERVICE_PASS`, the first executable canonical writer service implementation under the accepted lock.
+- V2 event writer service scope lock is accepted, pushed, post-audited, and closed out.
+- Current pass implements the narrow writer service only.
+- No Flutter UI, Save/Add/Edit UI, Project ZIP, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, platform folders, generated artifacts, tags, or releases are authorized.
+- Validator and materializer behavior must remain unchanged.
+- Next recommended pass is independent Claude Code / Opus post-audit: `V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`.
 - Do not route to UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
-## Writer service closeout summary
+## Writer service implementation summary
 
-- Future writer service must bind to `docs/spec/V2_EVENT_SCHEMA_SPEC.md`, `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`, accepted validator behavior in `tools/validate_events_jsonl.py`, and accepted materializer behavior in `tools/materialize_known_facts.py`.
+- Writer service file: `tools/event_writer_service.py`.
+- Focused tests: `tests/test_event_writer_service.py`.
 - `events.jsonl` is the only canonical write target.
-- `known_facts.json` remains projection/cache and must not be directly edited as truth.
-- Writer must append only; it must not edit, delete, reorder, or rewrite existing events.
-- Writer must validate candidate V2 events with the existing validator before append.
-- Writer accepts only explicit human-confirmed events.
-- AI/helper/renderer/OCR/CV/reference image/activity timeline/debug log/localStorage must not author events.
-- `client_operation_id` remains the idempotency key.
-- Future writer pass must enforce a project write lock or single-writer guard before UI writes.
-- Writer must not generate `board_graph.json` or `view_state.json`.
+- `known_facts.json` remains projection/cache and is not edited by the writer.
+- Writer appends only; prior event lines are not edited, deleted, reordered, or rewritten.
+- Candidate streams are validated with existing `tools/validate_events_jsonl.py` before append and again under the writer lock.
+- `client_operation_id` is the idempotency key.
+- Equivalent retry returns the existing event and appends nothing.
+- Same operation ID with different operation payload rejects as conflict.
+- Writer uses an atomic `events.jsonl.lock` file as the project write lock.
+- Append uses durable binary append, `flush`, `fsync`, and readback verification.
+- Writer does not generate `board_graph.json`, `view_state.json`, or `known_facts.json`.
 
 ## Accepted V1.1 baseline
 
@@ -52,8 +53,8 @@
 - Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
 - Accepted materializer projection implementation: `V2_MATERIALIZER_PROJECTION_PASS`.
 - Accepted writer service scope lock: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`.
-- Current writer service scope-lock closeout: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS`.
-- Future work must remain staged: writer service implementation, writer audit, then separately scoped UI write flows.
+- Current writer service implementation: `V2_EVENT_WRITER_SERVICE_PASS`.
+- Future work must remain staged: writer post-audit, then separately scoped UI write flows.
 
 ## Hard boundaries
 
@@ -78,4 +79,4 @@
 
 ## Next recommended pass
 
-`V2_EVENT_WRITER_SERVICE_PASS`
+`V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`

@@ -2,7 +2,7 @@
 
 ## Current status
 
-- Current pass: `TRACEBENCH_MEMORY_SCOPE_DOCS_DEDUP_CLEANUP_PASS`
+- Current pass: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_RECOVERY_PASS`
 - Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
 - Branch: `main`
 - Latest accepted V2 backend commit before this pass: `a2e3787 feat: add V2 event writer service`
@@ -16,7 +16,7 @@
 - V2 validator extension is implemented, audited, accepted, pushed, and closed out.
 - V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
 - V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, and closed out in route state.
-- Current pass is docs-only memory/scope cleanup before the first V2 UI write-flow scope lock.
+- Current pass is docs-only recovery for the missing writer-service closeout audit artifact: `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`.
 - No runtime code, Flutter UI, tests, schema, validator, materializer, writer service, ZIP, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL/source search, asset/sample, generated, platform, tag, or release change is authorized.
 - Next recommended pass returns to docs-only Save Measurement scope lock: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
 - Do not route directly to Save Measurement implementation.

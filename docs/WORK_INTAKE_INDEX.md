@@ -18,4 +18,4 @@ Unplanned findings and ideas go here before PASS_QUEUE promotion.
 | WI-012 | V2 event-writing architecture scope lock was captured as full-text docs record and accepted/pushed; implementation remains blocked and staged follow-up passes are required. | architecture-scope | closed |
 | WI-013 | Post-audit accepted the captured V2 event-writing architecture scope-lock record as `ACCEPT_AS_IS`; closeout routes to schema/spec scope lock. | audit-routing | accepted |
 | WI-014 | V2 event schema/spec pass is accepted/pushed as Markdown-only binding requirements; no schema files, validators, materializers, writer service, UI writes, ZIP changes, Activity Timeline, or Measure Momentum implementation were created. | spec-scope | closeout |
-| WI-015 | Next V2 route is a docs-only validator extension scope lock; do not route directly to validator implementation or later materializer/writer/UI/ZIP surfaces. | validator-scope | queued |
+| WI-015 | V2 validator extension scope lock is active; do not route directly to validator implementation or later materializer/writer/UI/ZIP surfaces before post-audit. | validator-scope | scope-lock |

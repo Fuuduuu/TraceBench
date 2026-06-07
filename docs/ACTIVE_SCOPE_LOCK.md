@@ -2,14 +2,16 @@
 
 ## Active pass
 
-- Current pass: `V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS`
-- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
-- Mode: docs-only closeout
-- Next recommended pass: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`
+- Current pass: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`
+- Lane: `CODEX / DOCS_SYNC_SCOPE_LOCK`
+- Mode: docs-only scope lock
+- Next recommended pass: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Goal
 
-Close out accepted and pushed `V2_EVENT_SCHEMA_SPEC_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
+Lock the scope for future `V2_VALIDATOR_EXTENSION_PASS` without implementing validator code.
+
+This pass defines what the future validator extension may validate. It must not implement validation logic or touch executable validator/tooling/test/schema surfaces.
 
 ## Write allowlist
 
@@ -20,30 +22,60 @@ Close out accepted and pushed `V2_EVENT_SCHEMA_SPEC_PASS` after Claude Code / Op
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS.md`
+- `docs/audit/V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS.md`
 
 ## Forbidden surfaces
 
 Do not modify runtime code, Flutter runtime, tests, schema files, JSON schema files, validators, tools, materializer behavior, event writer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Accepted closeout record
+## Binding sources
 
-- `V2_EVENT_SCHEMA_SPEC_PASS` accepted/pushed.
-- Commit message: `docs: document V2 event schema spec`.
-- Claude Code / Opus post-audit: `ACCEPT_AS_IS`.
-- `safe_to_commit`: `YES`.
-- No blocker/high/medium/low findings.
-- Validation recorded: `py -3 tools\validate_all.py` PASS, 236 tests.
-- The spec is Markdown-only and non-executable.
-- The spec is the binding requirements source for later V2 schema, validator, materializer, writer, and UI passes.
+- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for validator requirements.
+- `docs/audit/V2_EVENT_SCHEMA_SPEC_PASS.md` records the accepted Markdown-only spec pass.
+- `docs/audit/V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS.md` records the accepted spec closeout and route to this pass.
+- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md` remains the accepted V2 event-writing architecture source.
 
-## Binding scope
+Do not reinterpret validator rules from chat memory.
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` remains the accepted V2 event schema/spec requirements source.
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_PASS.md` remains the accepted spec pass record.
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md` remains the accepted architecture source.
-- Future executable work must start with `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`, a docs-only validator scope lock.
-- Do not route directly to validator implementation.
+## Future pass locked
+
+- Future pass: `V2_VALIDATOR_EXTENSION_PASS`
+- Future lane: `VALIDATOR_PASS`
+- Future mode: implementation of validator support for V2 event schema/spec only
+
+The future implementation may touch only the minimal validator/tooling/test surfaces required to validate V2 events. Exact file names must be discovered during that future pass.
+
+## Future validator scope
+
+Future `V2_VALIDATOR_EXTENSION_PASS` may validate only requirements from `docs/spec/V2_EVENT_SCHEMA_SPEC.md`, including:
+
+- common event envelope fields,
+- canonical event type allowlist and rejected aliases,
+- actor/source/confirmation rules,
+- `schema_version` and fail-closed compatibility,
+- `measurement_recorded` payload, reading shape, modes/units, and value provenance,
+- target / `Koht` / pin composite shape,
+- `component_created`,
+- `component_updated`,
+- `event_invalidated`,
+- relation fields and circular/missing-reference checks,
+- correction/supersession/invalidation rules,
+- no latest-timestamp-wins conflict behavior encoded by validator,
+- legacy V1/V1.1 baseline and mixed-version stream handling,
+- prohibited fields/promotions,
+- forbidden artifact/reference rejection for `board_graph.json` and `view_state.json`,
+- Reference Images/local sidecar remaining non-canonical and not validator authority.
+
+## Future implementation allowlist
+
+Future `V2_VALIDATOR_EXTENSION_PASS` may likely touch:
+
+- existing validator/tooling files only as required,
+- validator tests only as required,
+- docs/governance/audit files,
+- fixture/sample test inputs only if already accepted by the validator test pattern.
+
+Any need to touch materializer, Project ZIP import/export, writer service, Flutter UI, Board Canvas, Reference Images runtime, AI/OCR/CV, URL/source search, platform folders, generated artifacts, tags, or releases must stop and require separate scope.
 
 ## Evidence boundaries
 
@@ -64,11 +96,11 @@ Do not modify runtime code, Flutter runtime, tests, schema files, JSON schema fi
 
 ## Route lock
 
-Next recommended pass is `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`.
+Next recommended pass is `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS`.
 
-Purpose: docs-only scope lock for the first executable V2 surface after the accepted spec: validator extension.
+Purpose: Claude Code / Opus audit-only review of the validator scope lock for scope drift, binding to `docs/spec/V2_EVENT_SCHEMA_SPEC.md`, future implementation allowlist safety, and preservation of evidence boundaries.
 
-Do not route directly to validator implementation, materializer implementation, writer service, UI write behavior, Save/Add/Edit, Project ZIP changes, Activity Timeline implementation, or Measure Momentum implementation from this pass.
+Do not route directly to `V2_VALIDATOR_EXTENSION_PASS` until this scope lock is post-audited. Do not route to materializer, writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 

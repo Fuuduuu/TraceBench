@@ -2,10 +2,11 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PASS`
 - Branch: `main`
-- Latest accepted V2 backend commit before this pass: `a2e3787 feat: add V2 event writer service`
+- Latest accepted route commit before this pass: `f2e8b88 docs: lock V2 save measurement scope`
+- Latest accepted V2 backend implementation commit: `a2e3787 feat: add V2 event writer service`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
@@ -16,10 +17,11 @@
 - V2 validator extension is implemented, audited, accepted, pushed, and closed out.
 - V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
 - V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, closed out, and its closeout artifact is recovered.
-- Current pass is docs-only scope lock for future `V2_SAVE_MEASUREMENT_PASS`.
-- No runtime code, Flutter UI, tests, schema, validator, materializer, writer service, ZIP, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL/source search, asset/sample, generated, platform, tag, or release change is authorized.
-- Next recommended pass is audit-only review: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`.
-- Do not route directly to Save Measurement implementation.
+- `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS` was accepted/pushed as `docs: lock V2 save measurement scope`.
+- Claude Code / Opus post-audit accepted the Save Measurement scope lock as `ACCEPT_AS_IS` with no blocker/high/medium/low findings.
+- Current pass is docs-only closeout for that accepted Save Measurement scope lock.
+- Future Save Measurement implementation remains blocked until this closeout is accepted.
+- Next recommended pass after closeout acceptance is `V2_SAVE_MEASUREMENT_PASS`.
 - Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## V2 backend accepted state
@@ -34,22 +36,33 @@
 - `known_facts.json` remains projection/cache.
 - Writer appends only and validates through the existing validator before append and again under lock.
 - Writer uses `client_operation_id` idempotency, atomic `events.jsonl.lock`, durable append, `fsync`, and readback verification.
-- UI write flows remain blocked until separately scoped and audited.
+
+## Save Measurement route lock
+
+- `V2_SAVE_MEASUREMENT_PASS` is the first UI write-flow implementation route using the accepted writer service.
+- Future implementation is scoped to Save Measurement UI flow only.
+- Future Save Measurement must create only `measurement_recorded`.
+- Future UI must use the accepted writer service and must never append directly to `events.jsonl`.
+- Future event construction must preserve `actor.type = human`, `source.type = explicit_user_confirmation`, `confirmation.confirmed = true`, and `value_provenance`.
+- Helper/reference/candidate values must not auto-fill the confirmable measured field.
+- One-tap promotion from helper/reference/candidate value to canonical measurement remains forbidden.
+- Error states must distinguish not-saved outcomes.
+- Successful save may keep selected `Koht`/context and show confirmation, but must not infer net identity, confirmed pin mapping, component identity, diagnosis, probability, confidence, or fault ranking.
+- Board Canvas, Reference Images, Guided Measurement Helper, Reference Values Panel, and Activity Timeline remain read-only/non-writing surfaces for this route.
 
 ## Accepted V1.1 baseline
 
 - V1.1 RC tag `v1.1.0-rc1` remains the protected release-candidate baseline.
 - The read-only technician layer is accepted through manual smoke.
-- Measure Sheet remains read-only in V1.1: Reference Values Panel and Guided Measurement Helper are display/helper surfaces only.
+- Measure Sheet read-only/history remains accepted baseline before V2 write-flow implementation.
 - Reference Images remain Model B local sidecar only: non-canonical, outside Project ZIP, outside `events.jsonl`, outside `known_facts.json`, outside materializer, outside Board Canvas evidence, outside AI/OCR/CV, and no URL import.
 - Board Canvas remains read-only: metadata and projection display only, `renderer writes: none`, no transform/photo overlay/event-writing behavior.
-- Sourced/reference/research/candidate/note values remain non-canonical and must not look measured.
 
 ## Hard boundaries
 
 - Human is the sensor. AI is the graph engine.
-- AI must not create canonical facts.
 - AI/helper may suggest, organize, and surface gaps only.
+- AI/helper must not create canonical facts or canonical events.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection/cache.
 - Renderer/view writes nothing unless explicitly scoped.
@@ -58,7 +71,6 @@
 - `template_id` / footprint family is not electrical identity.
 - Photo pixels and photo alignment are not facts or proof.
 - Damage, suspect, source, research, reference, candidate, and note values are not proof or probability.
-- Guided Measurement remains read-only and must not author events.
 - Activity Timeline remains distinct from `events.jsonl` and debug logs.
 
 ## Maintenance note
@@ -68,4 +80,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_PASS`

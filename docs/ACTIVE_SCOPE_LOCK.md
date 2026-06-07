@@ -2,23 +2,24 @@
 
 ## Active pass
 
-- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
-- Lane: `CODEX / DOCS_SYNC_SCOPE_LOCK`
-- Mode: docs-only scope lock for the future V2 Save Measurement implementation pass
-- Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout for the accepted V2 Save Measurement scope lock
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PASS`
 
 ## Goal
 
-Lock the scope for future `V2_SAVE_MEASUREMENT_PASS`.
+Close out the accepted and pushed `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
 
-This pass defines what the future Save Measurement implementation is allowed to do:
+Record that:
 
-- turn the read-only Measure Sheet save affordance into a real human-confirmed Save Measurement flow,
-- create a valid V2 `measurement_recorded` event,
-- submit it through the accepted V2 event writer service,
-- preserve the technician-first workflow and evidence boundaries.
+- `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS` was accepted/pushed as `docs: lock V2 save measurement scope`,
+- Claude Code / Opus post-audit returned `ACCEPT_AS_IS`,
+- no blocker/high/medium/low findings were reported,
+- validation passed with `py -3 tools\validate_all.py`, 268 tests,
+- future `V2_SAVE_MEASUREMENT_PASS` remains blocked until this closeout is accepted.
 
-This pass does not implement UI or event-writing behavior.
+This pass does not implement Save Measurement UI behavior or event-writing behavior.
 
 ## Write allowlist
 
@@ -29,15 +30,15 @@ This pass does not implement UI or event-writing behavior.
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md` only if a compact pointer is needed
-- `docs/audit/V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS.md`
 
 Do not write outside these files.
 
 ## Forbidden surfaces
 
-Do not modify Flutter UI, writer service, validator, materializer, schema files, JSON schema files, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, tests, assets, samples, generated artifacts, platform folders, tags, or release objects.
+Do not implement Flutter UI, Save Measurement, writer service changes, validator, materializer, schema files, JSON schema files, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, tests, assets, samples, generated artifacts, platform folders, tags, or release objects.
 
-Do not implement UI writes. Do not route directly to `V2_SAVE_MEASUREMENT_PASS` until this scope lock is post-audited. Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
+Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
 Do not reinterpret Save Measurement rules from chat memory.
 
@@ -50,6 +51,7 @@ Future Save Measurement implementation must bind to:
 - accepted validator behavior in `tools/validate_events_jsonl.py`
 - accepted materializer behavior in `tools/materialize_known_facts.py`
 - accepted V2 architecture record in `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
+- accepted scope lock in `docs/audit/V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS.md`
 
 ## Future implementation scope
 
@@ -77,52 +79,44 @@ Any need to touch validator, materializer, writer service behavior, schema files
 
 ## Save Measurement requirements
 
+- Future Save Measurement must produce only `measurement_recorded`.
+- Future UI must submit the candidate event through the accepted V2 writer service.
+- Future UI must never append directly to `events.jsonl`.
+- Future UI must not bypass validator-before-append and must respect `client_operation_id` idempotency.
 - Save Measurement creates a canonical event only after explicit human action.
-- The user must enter or explicitly verify the measured value.
+- Future event must use `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
+- Value provenance must distinguish `human_entered`, `human_confirmed_from_reference`, and `human_confirmed_from_candidate` from non-canonical context values.
 - Helper/reference/candidate values must not auto-populate the confirmable measured field.
 - One-tap confirmation of suggested/reference/candidate values is forbidden.
-- AI/helper must not author events.
-- Future Save Measurement must produce only `measurement_recorded`.
-- Future UI must submit the candidate event through the accepted V2 writer service and must not append directly to `events.jsonl`.
-- Future UI must not bypass validator-before-append and must respect `client_operation_id` idempotency.
-- Future UI must handle writer errors without pretending a failed save succeeded.
-- Future event construction must include the required common V2 envelope and `measurement_recorded` payload fields from the accepted spec.
-- Future event must use `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Primary units remain `V` / `Ω` / `Diode` / `Beep`; `A`/current remains advanced by default under `Lisainfo` / `Tehnilised detailid`.
 - Reading must include mode, value or state, unit, and `display_value`.
+- Primary units remain `V` / `Ω` / `Diode` / `Beep`; `A`/current remains advanced by default under `Lisainfo` / `Tehnilised detailid`.
 - Future UI must preserve selected `Koht` / target context while not implying net identity or confirmed pin mapping.
-- Value provenance must distinguish `human_entered`, `human_confirmed_from_reference`, and `human_confirmed_from_candidate` from non-canonical context values.
-- After writer success the UI may show confirmation, keep selected `Koht`/context, and optionally suggest a next point as workflow aid only.
+- Future UI must handle writer errors without pretending a failed save succeeded.
 - Error states must distinguish validation failure, writer append failure, lock conflict, idempotent duplicate retry, and any later projection-refresh failure.
+- After writer success the UI may show confirmation, keep selected `Koht`/context, and optionally suggest a next point as workflow aid only.
 - Save Measurement must not turn Board Canvas, Reference Images, Guided Measurement Helper, Reference Values Panel, or Activity Timeline into write surfaces.
 
-## Future tests to lock
+## Boundaries preserved
 
-Future implementation must include focused tests for:
-
-- Save button disabled until required human-entered/verified fields exist.
-- Valid Save Measurement calls writer once.
-- Generated event is `measurement_recorded`.
-- Actor/source/confirmation fields are correct.
-- `value_provenance` is preserved.
-- Helper/reference/candidate values do not auto-fill measured value.
-- One-tap suggested value promotion is forbidden.
-- Writer validation failure shows not saved.
-- Writer append failure shows not saved.
-- Lock conflict shows retryable/clear error.
-- Idempotent duplicate retry does not duplicate.
-- Selected `Koht`/context remains after successful save.
-- No diagnosis/probability/verified/good/correct wording.
-- No Board Canvas / Reference Images / Guided Helper write path.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- AI/helper never authors canonical events/facts.
+- No diagnosis/probability/confidence/fault ranking.
+- No net inference.
+- No component identity confirmation.
+- No automatic second event.
+- No Add/Edit Component.
 - No Project ZIP changes.
+- No Activity Timeline implementation.
+- No Measure Momentum implementation.
 
 ## Route lock
 
-Next recommended pass is `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`.
+Next recommended pass is `V2_SAVE_MEASUREMENT_PASS`.
 
-Purpose: independent audit-only review of this docs-only Save Measurement scope lock.
+Purpose: first UI write-flow implementation using the accepted V2 writer service.
 
-Do not route directly to `V2_SAVE_MEASUREMENT_PASS` until this scope lock is accepted by post-audit. Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
+Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 

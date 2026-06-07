@@ -2,14 +2,14 @@
 
 ## Active pass
 
-- Current pass: `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS`
-- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
-- Mode: docs-only closeout
-- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_PASS`
+- Current pass: `V2_EVENT_SCHEMA_SPEC_PASS`
+- Lane: `CODEX / DOCS_SPEC / EVENT_SCHEMA`
+- Mode: docs/spec only
+- Next recommended pass: `V2_EVENT_SCHEMA_SPEC_POST_AUDIT_PASS`
 
 ## Goal
 
-Close out accepted and pushed `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
+Write the V2 event schema/spec documentation under the accepted `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS`, binding future schema/validator/materializer/writer/UI work to the accepted V2 event-writing architecture record without creating executable schema, validator, runtime, or test artifacts.
 
 ## Write allowlist
 
@@ -20,29 +20,42 @@ Close out accepted and pushed `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS` after Claud
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
+- `docs/audit/V2_EVENT_SCHEMA_SPEC_PASS.md`
 
 ## Forbidden surfaces
 
-Do not modify runtime code, Flutter runtime, tests, schemas, JSON schema files, validators, tools, materializer behavior, event writer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, event-writing, generated artifacts, assets, samples, platform folders, tags, or release objects.
+Do not modify runtime code, Flutter runtime, tests, schema files, JSON schema files, validators, tools, materializer behavior, event writer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Accepted closeout record
+## Binding sources
 
-- `V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS` accepted/pushed.
-- Commit message: `docs: lock V2 event schema spec scope`.
-- Claude Code / Opus post-audit: `ACCEPT_AS_IS`.
-- `safe_to_commit`: `YES`.
-- No blocker/high/medium/low findings.
-- NIT only: conflict clause in the scope-lock doc is terser than the bound architecture record; the bound architecture remains source of truth.
-- Validation recorded: `py -3 tools\validate_all.py` PASS, 236 tests.
-- Artifact scan passed.
+- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md` remains the accepted V2 event-writing architecture source of truth.
+- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS.md` records the accepted architecture closeout.
+- `docs/audit/V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS.md` locks this pass as docs/spec only.
+- `docs/audit/V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS.md` records Claude Code / Opus `ACCEPT_AS_IS` for the scope lock and routes here.
 
-## Binding scope
+## Spec scope
 
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md` remains the accepted V2 architecture source.
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS.md` locks the future schema/spec documentation scope.
-- Future `V2_EVENT_SCHEMA_SPEC_PASS` must remain docs/spec only.
-- The future pass must not create schema files, JSON schema files, validator code, materializer code, writer service code, UI write behavior, tests, Project ZIP behavior, Activity Timeline implementation, or Measure Momentum implementation.
+This pass may document requirements for:
+
+- common event envelope fields,
+- canonical and rejected event names,
+- `schema_version` and fail-closed compatibility,
+- actor/source/confirmation rules,
+- `measurement_recorded`,
+- `component_created`,
+- `component_updated`,
+- `event_invalidated`,
+- value provenance,
+- target / `Koht` / pin handling,
+- relation fields,
+- correction/supersession/invalidation behavior,
+- conflict handling,
+- legacy/back-compat rules,
+- prohibited fields/promotions,
+- requirements for later validator, materializer, and test passes.
+
+This pass must not create schema files or implement any validator, materializer, writer, UI, ZIP, Activity Timeline, or Measure Momentum behavior.
 
 ## Evidence boundaries
 
@@ -55,13 +68,13 @@ Do not modify runtime code, Flutter runtime, tests, schemas, JSON schema files, 
 - Board Canvas remains read-only unless separately scoped.
 - Guided Measurement remains read-only and must not author events.
 - Activity Timeline remains distinct from `events.jsonl` and debug logs.
-- V2 implementation remains blocked until later individually scoped and audited passes.
+- Visual traces, photos, alignment, damage, suspect markers, source/research/reference/candidate/note values, template IDs, and footprint families are not proof of electrical facts, measurements, identity, pin maps, fault, or probability.
 
 ## Route lock
 
-Next recommended pass is `V2_EVENT_SCHEMA_SPEC_PASS`.
+Next recommended pass is `V2_EVENT_SCHEMA_SPEC_POST_AUDIT_PASS`.
 
-Purpose: docs/spec-only event schema/spec documentation under the accepted scope lock.
+Purpose: Claude Code / Opus audit-only review of the docs/spec event schema record for architecture binding, L1-L4 handling, fail-closed compatibility, value provenance, evidence boundaries, and scope drift.
 
 Do not route to validator implementation, materializer implementation, writer service, UI write behavior, Project ZIP changes, Activity Timeline implementation, or Measure Momentum implementation from this pass.
 

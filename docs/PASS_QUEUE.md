@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_EVENT_SCHEMA_SPEC_PASS`
 
 ## Next recommended pass
 
-`V2_EVENT_SCHEMA_SPEC_PASS`
+`V2_EVENT_SCHEMA_SPEC_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -89,8 +89,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed architecture record closeout; latest accepted commit `9db4f50 docs: close out V2 event-writing architecture`; routed to schema/spec scope lock. |
 | V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs/spec-only scope lock for future `V2_EVENT_SCHEMA_SPEC_PASS`; no schema files/code/tests/runtime. |
 | V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the schema/spec scope lock with no blocker/high/medium/low findings; NIT only that conflict wording is terser than the bound architecture record. |
-| V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Close out accepted/pushed schema/spec scope lock and post-audit result; preserve docs/spec-only boundary and route to `V2_EVENT_SCHEMA_SPEC_PASS`. |
-| V2_EVENT_SCHEMA_SPEC_PASS | DOCS_SPEC / EVENT_SCHEMA | recommended next | Document V2 event schema/spec under the accepted scope lock; no schema files, validator code, materializer code, writer service, UI write behavior, tests, Project ZIP changes, Activity Timeline, or Measure Momentum implementation. |
+| V2_EVENT_SCHEMA_SPEC_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed schema/spec scope lock closeout; preserved docs/spec-only boundary and routed to `V2_EVENT_SCHEMA_SPEC_PASS`. |
+| V2_EVENT_SCHEMA_SPEC_PASS | CODEX / DOCS_SPEC / EVENT_SCHEMA | current (`PASS`) | Document V2 event schema/spec requirements in Markdown under the accepted scope lock; no schema files, validator code, materializer code, writer service, UI write behavior, tests, Project ZIP changes, Activity Timeline, or Measure Momentum implementation. |
+| V2_EVENT_SCHEMA_SPEC_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Audit the docs/spec-only V2 event schema/spec record for architecture binding, L1-L4 handling, fail-closed compatibility, value provenance, evidence boundaries, and scope drift. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

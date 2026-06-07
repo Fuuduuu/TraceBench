@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EVENT_WRITER_SERVICE_CLOSEOUT_RECOVERY_PASS`
+`V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -115,8 +115,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Close out accepted/pushed V2 writer service implementation and post-audit `ACCEPT_AS_IS`; preserve docs-only closeout boundary and route to Save Measurement scope lock. |
 | TRACEBENCH_MEMORY_SCOPE_AND_DOCS_DEDUP_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`PASS_CLEANUP_RECOMMENDED_NON_BLOCKING`) | Claude Code / Opus accepted current backend route and recommended tight memory/scope cleanup before opening the first V2 UI write-flow scope lock. |
 | TRACEBENCH_MEMORY_SCOPE_DOCS_DEDUP_CLEANUP_PASS | CODEX / DOCS_SYNC | completed | Docs-only cleanup of memory/index owner drift: CURRENT_STATE compaction owner, V2 backend owner rows, compact memory/routing notes, and route back to Save Measurement scope lock. |
-| V2_EVENT_WRITER_SERVICE_CLOSEOUT_RECOVERY_PASS | CODEX / DOCS_SYNC_CLOSEOUT_RECOVERY | current (`PASS`) | Targeted docs-only recovery for missing `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`; preserves accepted writer-service state and routes back to Save Measurement scope lock. |
-| V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Docs-only scope lock for the first UI write flow using the accepted writer service. Do not route directly to Save Measurement implementation, Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum. |
+| V2_EVENT_WRITER_SERVICE_CLOSEOUT_RECOVERY_PASS | CODEX / DOCS_SYNC_CLOSEOUT_RECOVERY | completed | Targeted docs-only recovery for missing `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`; preserves accepted writer-service state and routes back to Save Measurement scope lock. |
+| V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current (`PASS`) | Docs-only scope lock for the first UI write flow using the accepted writer service. Do not route directly to Save Measurement implementation, Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum. |
+| V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Audit-only review of the Save Measurement scope lock before any `V2_SAVE_MEASUREMENT_PASS` implementation route opens. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

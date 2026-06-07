@@ -2,8 +2,8 @@
 
 ## Current status
 
-- Current pass: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_RECOVERY_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
 - Branch: `main`
 - Latest accepted V2 backend commit before this pass: `a2e3787 feat: add V2 event writer service`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
@@ -15,10 +15,10 @@
 - V2 event schema/spec is accepted.
 - V2 validator extension is implemented, audited, accepted, pushed, and closed out.
 - V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
-- V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, and closed out in route state.
-- Current pass is docs-only recovery for the missing writer-service closeout audit artifact: `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`.
+- V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, closed out, and its closeout artifact is recovered.
+- Current pass is docs-only scope lock for future `V2_SAVE_MEASUREMENT_PASS`.
 - No runtime code, Flutter UI, tests, schema, validator, materializer, writer service, ZIP, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL/source search, asset/sample, generated, platform, tag, or release change is authorized.
-- Next recommended pass returns to docs-only Save Measurement scope lock: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
+- Next recommended pass is audit-only review: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`.
 - Do not route directly to Save Measurement implementation.
 - Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
@@ -68,4 +68,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS`

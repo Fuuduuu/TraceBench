@@ -2,16 +2,16 @@
 
 ## Active pass
 
-- Current pass: `V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS`
-- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
-- Mode: docs-only closeout for accepted V2 validator implementation
-- Next recommended pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
+- Current pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`
+- Lane: `CODEX / DOCS_SYNC_SCOPE_LOCK`
+- Mode: docs-only scope lock for future V2 materializer projection
+- Next recommended pass: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Goal
 
-Close out the accepted and pushed `V2_VALIDATOR_EXTENSION_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
+Lock the scope for future `V2_MATERIALIZER_PROJECTION_PASS`.
 
-This closeout records the accepted validator implementation, preserves boundaries, and routes only to a docs-only scope lock for the next executable V2 surface.
+This pass defines what the later materializer implementation may project from validated V2 events into `known_facts.json`. It does not implement projection logic.
 
 ## Write allowlist
 
@@ -22,60 +22,207 @@ This closeout records the accepted validator implementation, preserves boundarie
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
-- `docs/audit/V2_VALIDATOR_EXTENSION_CLOSEOUT_PASS.md`
+- `docs/audit/V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS.md`
 
-`docs/PROJECT_MEMORY.md` was not needed for this closeout.
+`docs/PROJECT_MEMORY.md` is not required unless this pass discovers a new stable invariant without an existing owner.
 
 ## Forbidden surfaces
 
-Do not modify validator code, tests, runtime code, Flutter UI, schemas, JSON schema files, materializer, writer service, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
+Do not modify materializer code, validator code, schema files, JSON schema files, writer service, Flutter UI, tests, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Accepted input
+## Binding sources
 
-- `V2_VALIDATOR_EXTENSION_PASS` was produced by Codex.
-- User committed and pushed it as `feat: add V2 event validator support`.
-- Validator support was added in `tools/validate_events_jsonl.py`.
-- Focused validator tests were added in `tests/test_validate_events_jsonl.py`.
-- Claude Code / Opus post-audit verdict: `ACCEPT_AS_IS`.
-- `safe_to_commit`: `YES`.
-- No blocker/high/medium findings.
-- Validation passed:
-  - focused V2 validator tests: 11/11,
-  - full `validate_events_jsonl` tests: 114/114,
-  - `py -3 tools/validate_all.py`: PASS, 247 tests.
+Future materializer work must bind to:
 
-## Closeout summary
+- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
+- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
+- accepted validator behavior in `tools/validate_events_jsonl.py`
 
-The accepted validator implementation supports V2 schema version `2.0-draft` and accepted canonical event types from `docs/spec/V2_EVENT_SCHEMA_SPEC.md`.
+Do not reinterpret projection rules from chat memory.
 
-It rejects unsafe aliases, canonical authors/sources, provenance violations, prohibited fields, and relation cycles where detectable. It preserves V1/V1.1 legacy baseline compatibility.
+## Future implementation pass locked
 
-No materializer, writer service, UI writes, Project ZIP, Board Canvas, Reference Images runtime, AI/OCR/CV, URL/source search, schema, asset, sample, generated artifact, platform folder, tag, or release changes are authorized by this closeout.
+Future pass:
 
-## Evidence boundaries
+`V2_MATERIALIZER_PROJECTION_PASS`
 
-- Human is the sensor. AI is the graph engine.
-- AI/helper must not author canonical events or facts.
+Future lane:
+
+`MATERIALIZER_PASS`
+
+Future mode:
+
+Implementation of V2 materializer projection only.
+
+The future implementation pass may touch only minimal materializer/projection files, focused materializer tests, governance/audit docs, and accepted materializer fixture/test inputs if needed. Exact file names must be discovered in that future pass.
+
+Any need to touch validator, schema files, writer service, Flutter UI, Project ZIP import/export, Board Canvas, Reference Images runtime, AI/OCR/CV, URL/source search, platform folders, generated artifacts, tags, or releases must stop and require separate scope.
+
+## Projection source lock
+
 - `events.jsonl` remains canonical truth.
-- `known_facts.json` remains materialized projection/cache.
-- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- `visual_trace` is not a net.
-- `template_id` / footprint family is not electrical identity.
-- Photo pixels and photo alignment are not facts or proof.
-- Damage, suspect, source, research, reference, candidate, and note values are not proof or probability.
-- Reference Images remain local sidecar and non-canonical.
-- Board Canvas remains read-only unless separately scoped.
-- Guided Measurement remains read-only and must not author events.
-- Activity Timeline remains distinct from `events.jsonl` and debug logs.
-- Activity Timeline and Measure Momentum implementation remain deferred.
+- `known_facts.json` remains projection/cache.
+- The materializer reads validated events and derives projection.
+- The materializer must never treat `known_facts.json` as source of truth.
+
+## V2 event projection scope
+
+Future materializer projection may read and project from validated:
+
+- `measurement_recorded`
+- `component_created`
+- `component_updated`
+- `event_invalidated`
+
+## Measurement projection lock
+
+Future materializer may project:
+
+- measurement history
+- active measurement entries
+- target-linked measurement summaries
+- value provenance
+- `source_event_id`
+- `target_key`
+- `display_label`
+- `mode`
+- `value`
+- `unit`
+- `state` when present
+- `conditions` when needed
+
+Future materializer must not derive:
+
+- component health
+- fault diagnosis
+- fault probability
+- confirmed net identity
+- confirmed pin mapping
+- component identity
+- visual trace connectivity
+
+## Value provenance lock
+
+Projection must preserve:
+
+- `human_entered`
+- `human_confirmed_from_reference`
+- `human_confirmed_from_candidate`
+- visible context values as non-canonical context only
+
+Projection must not conflate:
+
+- reference value with measured value
+- candidate value with measured value
+- helper suggestion with measured value
+- note/source/research context with canonical measurement
+
+## Component projection lock
+
+Future materializer may project from `component_created` and `component_updated`:
+
+- `component_id`
+- current label / `reference_designator`
+- `component_kind`
+- `pin_count` when present
+- `template_id_hint` / `footprint_hint` as hints only
+- `side` / `rough_location` / `rotation_hint` as display/navigation hints only
+- component history pointers
+- `source_event_id` / `updated_by_event_ids`
+
+Future materializer must not derive:
+
+- electrical identity from `template_id_hint` or `footprint_hint`
+- net identity
+- pin map proof
+- physical placement proof from rough location or photo
+- fault status
+- probability
+
+`component_updated` applies field-level changes in event order for safe mutable fields. It must not mutate the original `component_created` event. Dangerous fields remain deferred unless explicitly allowed by the binding spec.
+
+## Invalidation and relation lock
+
+`event_invalidated` is human-authored and append-only.
+
+- The invalidated event remains in history.
+- The invalidated event is excluded from current projection only according to accepted invalidation rules.
+- Invalidation itself can be corrected or superseded by later events.
+- No deletion or mutation of the invalidated event is allowed.
+
+Future materializer must handle:
+
+- `origin_event_id`
+- `corrects_event_id`
+- `supersedes_event_id`
+- `invalidates_event_id`
+
+Carry forward the spec distinction: `supersedes_event_id` is projection-effective replacement/correction; `corrects_event_id` is audit intent unless a later audited spec update changes that. Measurement correction path remains `measurement_recorded` plus `supersedes_event_id`; there is no `measurement_updated`.
+
+## Conflict and orphan lock
+
+Explicit supersession/correction chains may resolve deterministically.
+
+Unsuperseded divergent human measurements for the same target/mode/context must surface conflict. The materializer must not use latest-timestamp-wins. `known_facts.json` must preserve conflicting `source_event_ids`. Human resolution requires a new correction, supersession, or invalidation event.
+
+L3 component-invalidation orphan handling must surface dependent measurements and must never silently cascade-drop dependent measurements. Exact projection shape is deferred to the materializer implementation pass, but this principle is locked.
+
+## Legacy and context separation lock
+
+- V1/V1.1 events without per-event `schema_version` remain V1 baseline.
+- Existing `known_facts.json` projection behavior must not regress.
+- V2 materializer behavior must not break existing V1/V1.1 fixtures.
+- Mixed-version stream projection must be safe.
+
+Projection must keep separate:
+
+- canonical facts
+- reference values
+- candidate values
+- notes
+- helper suggestions
+- activity status
+
+Only canonical event payload values confirmed through explicit human event-writing flow may become facts.
+
+## Forbidden artifacts and promotions
+
+Future materializer work must not introduce:
+
+- `board_graph.json`
+- `view_state.json`
+- Reference Images as evidence/source
+- AI/OCR/CV facts
+- URL/source-search facts
+- visual-trace-to-net promotion
+- template-id-to-identity promotion
+- photo/damage/suspect-to-proof promotion
+
+Future pass may propose or implement minimal `known_facts.json` projection fields needed for V2 events, but only within materializer scope. If projection shape changes are broad or affect Project ZIP/import-export, stop and require separate scope.
+
+## Future materializer test lock
+
+Future implementation must include focused materializer tests for:
+
+- V2 measurement projection
+- value provenance preservation
+- `component_created` projection
+- `component_updated` projection
+- `event_invalidated` excluding active projection but preserving history
+- superseded measurement resolution
+- unsuperseded divergent measurements surfaced as conflict
+- conflicting `source_event_ids` preserved
+- no latest-timestamp-wins
+- L3 orphan handling: dependent measurements surfaced, not cascade-dropped
+- V1/V1.1 fixture compatibility
+- no forbidden artifact generation
+- no reference/candidate/helper context promoted to facts
 
 ## Route lock
 
-Next recommended pass is `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
+Next recommended pass is `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS`.
 
-Purpose: docs-only scope lock for the next executable V2 surface, materializer projection from V2 events into `known_facts.json`.
-
-Do not route directly to materializer implementation. Do not route to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
+Do not route directly to `V2_MATERIALIZER_PROJECTION_PASS` until this scope lock is post-audited. Do not route to writer service, UI writes, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 

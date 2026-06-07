@@ -33,7 +33,7 @@ flowchart TD
   - current/next: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`
   - history: `docs/AUDIT_INDEX.md`, `docs/audit/*.md`
   - durable boundaries: `docs/PROJECT_MEMORY.md`, `docs/PROTECTED_SURFACES.md`
-- V2 executable surfaces remain staged: validator -> materializer -> writer service -> UI write flows, each scope-locked and audited.
+- V2 backend is implemented through validator -> materializer -> writer service; UI write flows remain separately scoped/audited and not yet implemented.
 - `events.jsonl` is canonical truth.
 - `known_facts.json` is a materialized projection, not a writer.
 - Renderer/UI are read-only and cannot write canonical facts.

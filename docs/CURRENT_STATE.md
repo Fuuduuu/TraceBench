@@ -2,10 +2,10 @@
 
 ## Current status
 
-- Current pass: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS`
+- Current pass: `TRACEBENCH_MEMORY_SCOPE_DOCS_DEDUP_CLEANUP_PASS`
 - Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `999a766 feat: add V2 event writer service`
+- Latest accepted V2 backend commit before this pass: `a2e3787 feat: add V2 event writer service`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
@@ -15,29 +15,26 @@
 - V2 event schema/spec is accepted.
 - V2 validator extension is implemented, audited, accepted, pushed, and closed out.
 - V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
-- V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, and is being closed out by the current docs-only pass.
-- Current pass is docs-only closeout; no writer code, tests, runtime, schema, UI, ZIP, asset/sample, generated, platform, tag, or release change is authorized.
-- Next recommended pass is a docs-only Save Measurement scope lock: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
+- V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, and closed out in route state.
+- Current pass is docs-only memory/scope cleanup before the first V2 UI write-flow scope lock.
+- No runtime code, Flutter UI, tests, schema, validator, materializer, writer service, ZIP, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL/source search, asset/sample, generated, platform, tag, or release change is authorized.
+- Next recommended pass returns to docs-only Save Measurement scope lock: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
 - Do not route directly to Save Measurement implementation.
 - Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
-## Writer service accepted state
+## V2 backend accepted state
 
-- Writer service file: `tools/event_writer_service.py`.
-- Focused tests: `tests/test_event_writer_service.py`.
+- Schema/spec requirements: `docs/spec/V2_EVENT_SCHEMA_SPEC.md`.
+- Validator V2 path: `tools/validate_events_jsonl.py`.
+- Materializer V2 projection: `tools/materialize_known_facts.py`.
+- Writer service append path: `tools/event_writer_service.py`.
 - Writer tests passed: 13/13.
-- Full validation passed: `py -3 tools\validate_all.py`, 268 tests.
+- Full validation passed for writer implementation context: `py -3 tools\validate_all.py`, 268 tests.
 - `events.jsonl` is the only canonical write target.
-- `known_facts.json` remains projection/cache and is not edited by the writer.
-- Writer appends only; prior event lines are not edited, deleted, reordered, or rewritten.
-- Candidate streams are validated with existing `tools/validate_events_jsonl.py` before append and again under the writer lock.
-- `client_operation_id` is the idempotency key.
-- Equivalent retry returns the existing event and appends nothing.
-- Same operation ID with different operation payload rejects as conflict.
-- Writer uses an atomic `events.jsonl.lock` file as the project write lock.
-- Append uses durable binary append, `flush`, `fsync`, and readback verification.
-- Writer does not generate `board_graph.json`, `view_state.json`, or `known_facts.json`.
-- Non-blocking NITs: stale-lock recovery deferred; crash-mid-append partial-line recovery fails closed and is deferred hardening; idempotency fingerprint ignores `event_id`, `created_at`, and `confirmation.confirmed_at` for retry tolerance.
+- `known_facts.json` remains projection/cache.
+- Writer appends only and validates through the existing validator before append and again under lock.
+- Writer uses `client_operation_id` idempotency, atomic `events.jsonl.lock`, durable append, `fsync`, and readback verification.
+- UI write flows remain blocked until separately scoped and audited.
 
 ## Accepted V1.1 baseline
 
@@ -47,16 +44,6 @@
 - Reference Images remain Model B local sidecar only: non-canonical, outside Project ZIP, outside `events.jsonl`, outside `known_facts.json`, outside materializer, outside Board Canvas evidence, outside AI/OCR/CV, and no URL import.
 - Board Canvas remains read-only: metadata and projection display only, `renderer writes: none`, no transform/photo overlay/event-writing behavior.
 - Sourced/reference/research/candidate/note values remain non-canonical and must not look measured.
-
-## V2 architecture state
-
-- Accepted architecture scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
-- Accepted schema/spec doc pass: `V2_EVENT_SCHEMA_SPEC_PASS`.
-- Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
-- Accepted materializer projection implementation: `V2_MATERIALIZER_PROJECTION_PASS`.
-- Accepted writer service implementation: `V2_EVENT_WRITER_SERVICE_PASS`.
-- Current writer service closeout: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS`.
-- Future work must remain staged: Save Measurement scope lock, then separately audited implementation if accepted.
 
 ## Hard boundaries
 

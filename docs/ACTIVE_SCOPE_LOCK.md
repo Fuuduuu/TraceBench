@@ -2,69 +2,54 @@
 
 ## Active pass
 
-- Current pass: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS`
-- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
-- Mode: docs-only closeout
+- Current pass: `TRACEBENCH_MEMORY_SCOPE_DOCS_DEDUP_CLEANUP_PASS`
+- Lane: `CODEX / DOCS_SYNC`
+- Mode: docs-only memory/scope cleanup
 - Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Close out the accepted and pushed `V2_EVENT_WRITER_SERVICE_PASS`.
+Apply the tight memory/scope cleanup recommended by Claude Code / Opus in `TRACEBENCH_MEMORY_SCOPE_AND_DOCS_DEDUP_AUDIT_PASS` before opening the first V2 UI write-flow scope lock.
 
-Record that the writer service implementation was accepted, pushed, and post-audited as `ACCEPT_AS_IS`, then route only to a docs-only Save Measurement scope lock.
+This pass fixes memory/index owner drift only. It does not create new V2 architecture decisions and does not implement Save Measurement or any UI write behavior.
 
 ## Write allowlist
 
+- `docs/TRUTH_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/ARCHITECTURE_BOUNDARIES.md`
+- `docs/MODEL_ROUTING.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/PROJECT_MEMORY.md` only if needed for a compact pointer
-- `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`
+- `docs/audit/TRACEBENCH_MEMORY_SCOPE_DOCS_DEDUP_CLEANUP_PASS.md`
 
-`docs/PROJECT_MEMORY.md` is not required for this closeout because stable writer/evidence invariants already have canonical owners and the accepted implementation evidence belongs in the audit record.
+Do not write outside these files.
 
 ## Forbidden surfaces
 
-Do not modify writer service code, tests, validator, materializer, schemas, JSON schemas, Flutter UI, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
+Do not modify runtime code, Flutter UI, tests, schemas, validators, tools, materializer, writer service, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
 
 Do not implement Save Measurement. Do not route directly to Save Measurement implementation. Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
-## Closeout facts to preserve
+Do not prune audit history, delete accepted audit docs, rewrite commit history, or introduce new V2 architecture decisions.
 
-- `V2_EVENT_WRITER_SERVICE_PASS` was produced by Codex.
-- User committed and pushed it with commit message `feat: add V2 event writer service`.
-- Claude Code / Opus post-audit verdict: `ACCEPT_AS_IS`.
-- `safe_to_commit`: `YES`.
-- No blocker/high/medium/low findings.
-- Validation recorded by audit context:
-  - writer tests: 13/13,
-  - `py -3 tools\validate_all.py`: PASS, 268 tests.
-- Writer service was added in `tools/event_writer_service.py`.
-- Focused tests were added in `tests/test_event_writer_service.py`.
+## Cleanup requirements
 
-## Writer implementation boundaries
-
-- Writer appends only to `events.jsonl`.
-- Existing validator is used before append and again under lock.
-- `known_facts.json` remains projection/cache and is not edited by the writer.
-- `board_graph.json` and `view_state.json` are not generated.
-- `client_operation_id` idempotency is implemented.
-- Atomic `events.jsonl.lock` single-writer guard is implemented.
-- Durable append uses `fsync` and readback verification.
-- No UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum were opened.
-
-## Non-blocking NITs
-
-- Stale-lock recovery is deferred.
-- Crash-mid-append partial-line recovery fails closed and is deferred hardening.
-- Idempotency fingerprint ignores `event_id`, `created_at`, and `confirmation.confirmed_at` for retry tolerance.
+- Replace the stale `TRUTH_INDEX.md` drift-countdown owner row with the live `CURRENT_STATE.md` compaction trigger owner: `docs/MEMORY_MAINTENANCE.md`.
+- Add compact V2 owner rows in `TRUTH_INDEX.md` for:
+  - V2 event schema requirements: `docs/spec/V2_EVENT_SCHEMA_SPEC.md`,
+  - V2 event validation / validator V2 path: `tools/validate_events_jsonl.py`,
+  - V2 materializer projection / `known_facts.json` V2 projection: `tools/materialize_known_facts.py`,
+  - V2 canonical event writer / append service: `tools/event_writer_service.py`.
+- Refresh compact memory/routing notes only if needed so accepted validator, materializer, and writer backend implementations are not described as architecture-only future work.
+- Preserve that UI write flows remain separately scoped and not yet implemented.
 
 ## Route lock
 
-Next recommended pass is `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
+Next recommended pass returns to `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
 
 Purpose: docs-only scope lock for the first UI write flow using the accepted writer service.
 

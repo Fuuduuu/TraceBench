@@ -2,37 +2,38 @@
 
 ## Current status
 
-- Current pass: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`
-- Next recommended pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`
+- Current pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`
+- Next recommended pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `85c476b feat: add V2 materializer projection`
+- Latest accepted commit before this pass: `18867c3 docs: close out V2 materializer projection`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- `V2_MATERIALIZER_PROJECTION_PASS` was produced by Codex, committed, and pushed as `feat: add V2 materializer projection`.
-- Claude Code / Opus post-audit accepted the materializer implementation as `ACCEPT_AS_IS`; `safe_to_commit: YES`; no blocker/high/medium findings.
-- Validation passed: focused materializer tests 86/86 and `py -3 tools\validate_all.py` PASS with 255 tests.
-- Materializer support was added in `tools/materialize_known_facts.py`.
-- Focused tests were added in `tests/test_materialize_known_facts.py`.
-- Current pass closes out the accepted implementation without modifying code/tests/runtime.
-- Next recommended pass is `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`, a docs-only scope lock for the event writer service.
+- V2 event-writing architecture is accepted.
+- V2 event schema/spec is accepted.
+- V2 validator extension is implemented, audited, accepted, pushed, and closed out.
+- V2 materializer projection is implemented, audited, accepted, pushed, and closed out.
+- Current pass is a docs-only scope lock for the future event writer service.
+- No writer service code, append/write logic, tests, schema, validator, materializer, UI, ZIP, runtime, assets, samples, platform folders, tags, or releases are authorized by this pass.
+- Future implementation pass is `V2_EVENT_WRITER_SERVICE_PASS`, but it remains blocked until this scope lock is post-audited.
+- Next recommended pass is independent Claude Code / Opus post-audit: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_POST_AUDIT_PASS`.
 - Do not route directly to writer implementation, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
-## Materializer accepted behavior
+## Writer service scope-lock summary
 
-- V2 projection supports `measurement_recorded`, `component_created`, `component_updated`, and `event_invalidated`.
-- Projection preserves value provenance.
-- Component updates preserve history.
-- Invalidation preserves history and marks affected projected entries instead of deleting history.
-- Supersession marks superseded measurements and keeps the replacement active.
-- Divergent unsuperseded measurements surface `measurement_conflicts`; latest-timestamp-wins remains forbidden.
-- Component invalidation surfaces `orphaned_measurements`; silent L3 cascade-drop remains forbidden.
-- `board_graph.json` and `view_state.json` are not generated.
-- V1/V1.1 materialization compatibility is preserved.
-- `known_facts.schema.json` was not changed.
-- Forward note: before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, a separate known_facts-schema / Project ZIP scope is required.
+- Future writer service must bind to `docs/spec/V2_EVENT_SCHEMA_SPEC.md`, `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`, accepted validator behavior in `tools/validate_events_jsonl.py`, and accepted materializer behavior in `tools/materialize_known_facts.py`.
+- `events.jsonl` is the only canonical write target.
+- `known_facts.json` remains projection/cache and must not be directly edited as truth.
+- Writer must append only; it must not edit, delete, reorder, or rewrite existing events.
+- Writer must validate candidate V2 events with the existing validator before append.
+- Writer accepts only explicit human-confirmed events: `actor.type == human`, `source.type == explicit_user_confirmation`, and `confirmation.confirmed == true`.
+- AI/helper/renderer/OCR/CV/reference image/activity timeline/debug log/localStorage must not author events.
+- `client_operation_id` is the idempotency key; duplicate equivalent operations must not duplicate events, and same key with different payload must reject as conflict.
+- Future writer pass must enforce a project write lock or single-writer guard before any UI write ships.
+- Crash-safety must cover validate, lock, durable append, readback verification, release, and projection refresh only if explicitly scoped.
+- Writer must not generate `board_graph.json` or `view_state.json`.
 
 ## Accepted V1.1 baseline
 
@@ -48,11 +49,10 @@
 - Accepted architecture scope-lock record: `V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS`.
 - Accepted schema/spec doc pass: `V2_EVENT_SCHEMA_SPEC_PASS`.
 - Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
-- Accepted materializer projection scope lock: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
 - Accepted materializer projection implementation: `V2_MATERIALIZER_PROJECTION_PASS`.
-- Accepted materializer projection post-audit: `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
-- Current materializer implementation closeout: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`.
-- Future work must remain staged: writer service scope lock, writer service implementation, writer audit, then UI write flows.
+- Accepted materializer projection closeout: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`.
+- Current writer service scope lock: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`.
+- Future work must remain staged: writer service scope-lock audit, writer service implementation, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -77,4 +77,4 @@
 
 ## Next recommended pass
 
-`V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`
+`V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_POST_AUDIT_PASS`

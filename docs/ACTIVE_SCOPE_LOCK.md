@@ -2,81 +2,76 @@
 
 ## Active pass
 
-- Current pass: `V2_EVENT_WRITER_SERVICE_PASS`
-- Lane: `CODEX / WRITER_SERVICE_PASS`
-- Mode: scoped writer service implementation
-- Next recommended pass: `V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`
+- Current pass: `V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout
+- Next recommended pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Implement a narrow V2 canonical event writer service that appends validated human-confirmed canonical events to `events.jsonl` safely.
+Close out the accepted and pushed `V2_EVENT_WRITER_SERVICE_PASS`.
 
-This pass opens only the writer-service tooling surface and focused writer-service tests under the accepted writer-service scope lock.
+Record that the writer service implementation was accepted, pushed, and post-audited as `ACCEPT_AS_IS`, then route only to a docs-only Save Measurement scope lock.
 
 ## Write allowlist
 
-- `tools/event_writer_service.py`
-- focused writer-service tests
-- accepted writer fixture/test inputs if needed
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
-- `docs/audit/V2_EVENT_WRITER_SERVICE_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if needed for a compact pointer
+- `docs/audit/V2_EVENT_WRITER_SERVICE_CLOSEOUT_PASS.md`
 
-`docs/PROJECT_MEMORY.md` is not required for this pass because stable writer/evidence invariants already have canonical owners and this pass records implementation evidence in its audit doc.
+`docs/PROJECT_MEMORY.md` is not required for this closeout because stable writer/evidence invariants already have canonical owners and the accepted implementation evidence belongs in the audit record.
 
 ## Forbidden surfaces
 
-Do not modify Flutter UI, Save/Add/Edit UI, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, platform folders, generated artifacts, tags, or release objects.
+Do not modify writer service code, tests, validator, materializer, schemas, JSON schemas, Flutter UI, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
 
-Do not modify validator or materializer behavior. If validator/materializer changes are needed, stop and report.
+Do not implement Save Measurement. Do not route directly to Save Measurement implementation. Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
-Do not create schema files or JSON schema files. Do not implement UI write behavior. Do not change Project ZIP behavior.
+## Closeout facts to preserve
 
-## Binding sources
+- `V2_EVENT_WRITER_SERVICE_PASS` was produced by Codex.
+- User committed and pushed it with commit message `feat: add V2 event writer service`.
+- Claude Code / Opus post-audit verdict: `ACCEPT_AS_IS`.
+- `safe_to_commit`: `YES`.
+- No blocker/high/medium/low findings.
+- Validation recorded by audit context:
+  - writer tests: 13/13,
+  - `py -3 tools\validate_all.py`: PASS, 268 tests.
+- Writer service was added in `tools/event_writer_service.py`.
+- Focused tests were added in `tests/test_event_writer_service.py`.
 
-The writer service implementation binds to:
+## Writer implementation boundaries
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
-- `docs/audit/V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_CLOSEOUT_PASS.md`
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
-- accepted validator behavior in `tools/validate_events_jsonl.py`
-- accepted materializer behavior in `tools/materialize_known_facts.py`
+- Writer appends only to `events.jsonl`.
+- Existing validator is used before append and again under lock.
+- `known_facts.json` remains projection/cache and is not edited by the writer.
+- `board_graph.json` and `view_state.json` are not generated.
+- `client_operation_id` idempotency is implemented.
+- Atomic `events.jsonl.lock` single-writer guard is implemented.
+- Durable append uses `fsync` and readback verification.
+- No UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum were opened.
 
-Do not reinterpret writer rules from chat memory.
+## Non-blocking NITs
 
-## Writer requirements
-
-- `events.jsonl` is the only canonical write target.
-- `known_facts.json` remains projection/cache and must not be directly edited as truth.
-- Writer appends line-delimited JSON events only.
-- Writer must not edit, delete, reorder, or rewrite existing event lines.
-- Writer validates the candidate stream with the existing V2 validator before append.
-- Invalid events, unsupported schema versions, unknown event types, prohibited fields, and unsafe promotions are not appended.
-- Writer accepts only explicit human-confirmed events that pass validator rules.
-- AI/helper/renderer/OCR/CV/reference image/activity timeline/debug log/localStorage-authored events must not append.
-- `client_operation_id` is the idempotency key.
-- Same `client_operation_id` plus equivalent operation payload returns the existing event without appending.
-- Same `client_operation_id` plus different operation payload rejects as conflict.
-- Writer must use a project write lock or single-writer guard.
-- Append must be durable and followed by readback verification.
-- No `board_graph.json` or `view_state.json` generation.
+- Stale-lock recovery is deferred.
+- Crash-mid-append partial-line recovery fails closed and is deferred hardening.
+- Idempotency fingerprint ignores `event_id`, `created_at`, and `confirmation.confirmed_at` for retry tolerance.
 
 ## Route lock
 
-Next recommended pass is `V2_EVENT_WRITER_SERVICE_POST_AUDIT_PASS`.
+Next recommended pass is `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS`.
 
-Purpose: independent Claude Code / Opus audit of the writer service implementation.
+Purpose: docs-only scope lock for the first UI write flow using the accepted writer service.
 
-Do not route to UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
+Do not route directly to Save Measurement implementation. Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 
-- focused writer service tests
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

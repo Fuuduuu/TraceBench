@@ -33,6 +33,7 @@ flowchart TD
   - current/next: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`
   - history: `docs/AUDIT_INDEX.md`, `docs/audit/*.md`
   - durable boundaries: `docs/PROJECT_MEMORY.md`, `docs/PROTECTED_SURFACES.md`
+- V2 executable surfaces remain staged: validator -> materializer -> writer service -> UI write flows, each scope-locked and audited.
 - `events.jsonl` is canonical truth.
 - `known_facts.json` is a materialized projection, not a writer.
 - Renderer/UI are read-only and cannot write canonical facts.
@@ -40,5 +41,5 @@ flowchart TD
 - `visual_trace` cannot promote to electrical truth.
 - `template_id / footprint family` is not electrical identity.
 - `photo alignment` is not component identity, pin mapping, net confirmation, measurement, or fault proof.
-- `board_graph.json` and `view_state.json` stay forbidden in V1/V1.1 governance surfaces.
+- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
 - AI suggestions and reference images are non-factual unless a separately scoped canonical event path approves them.

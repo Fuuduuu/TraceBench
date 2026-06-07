@@ -2,10 +2,10 @@
 
 ## Current status
 
-- Current pass: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`
+- Current pass: `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`
 - Next recommended pass: `V2_VALIDATOR_EXTENSION_PASS`
 - Branch: `main`
-- Latest accepted commit before this closeout: `94802e3 docs: lock V2 validator extension scope`
+- Latest accepted commit before this pass: `f5f62c0 docs: close out V2 validator extension scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
@@ -14,7 +14,7 @@
 - V2 event-writing architecture scope-lock record, schema/spec scope lock, V2 event schema spec, spec closeout, and validator scope lock are accepted/pushed.
 - `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for later V2 schema, validator, materializer, writer, and UI passes.
 - Claude Code / Opus post-audit accepted `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS` as `ACCEPT_AS_IS` with no blocker/high/medium/low findings.
-- Current pass closes out the accepted validator scope lock; it does not implement validator code, create schema files, create tests, or touch runtime/tooling surfaces.
+- Current pass applies a narrow docs-only scope-alignment cleanup recommended by Claude Code / Opus; it does not implement validator code, create schema files, create tests, or touch runtime/tooling surfaces.
 - Next route is `V2_VALIDATOR_EXTENSION_PASS`, the first executable validator implementation pass under the accepted scope lock. Do not route to materializer implementation, writer service, Save/Add/Edit UI, Project ZIP changes, Activity Timeline, or Measure Momentum.
 
 ## Accepted V1.1 baseline
@@ -35,7 +35,8 @@
 - Accepted schema/spec closeout: `V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS`.
 - Accepted validator scope lock: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS`.
 - Accepted validator scope-lock post-audit: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
-- Current validator scope-lock closeout: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`.
+- Accepted validator scope-lock closeout: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`.
+- Current docs alignment cleanup: `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`.
 - Future work must remain staged: validator implementation, validator audit, materializer, materializer audit, writer service, writer audit, then UI write flows.
 
 ## Hard boundaries
@@ -46,7 +47,7 @@
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection/cache.
 - Renderer/view writes nothing unless explicitly scoped.
-- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
 - `visual_trace` is not a net.
 - `template_id` / footprint family is not electrical identity.
 - Photo pixels and photo alignment are not facts or proof.

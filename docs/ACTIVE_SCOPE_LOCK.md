@@ -2,16 +2,16 @@
 
 ## Active pass
 
-- Current pass: `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`
-- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
-- Mode: docs-only closeout
+- Current pass: `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`
+- Lane: `CODEX / DOCS_SYNC`
+- Mode: docs-only cleanup and scope alignment
 - Next recommended pass: `V2_VALIDATOR_EXTENSION_PASS`
 
 ## Goal
 
-Close out accepted and pushed `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS` after Claude Code / Opus post-audit returned `ACCEPT_AS_IS`.
+Apply the tight docs cleanup recommended by Claude Code / Opus in `TRACEBENCH_DOCS_SCOPE_ALIGNMENT_AND_SOURCE_GUIDE_REFRESH_AUDIT_PASS`.
 
-This closeout records the accepted scope lock only. It does not implement validator logic or touch executable validator/tooling/test/schema surfaces.
+This pass reduces duplicated routing logic, clarifies the external Source Guide pointer, harmonizes `board_graph.json` / `view_state.json` forbidden wording, keeps `CURRENT_STATE.md` compact, and returns routing to `V2_VALIDATOR_EXTENSION_PASS`.
 
 ## Write allowlist
 
@@ -20,33 +20,32 @@ This closeout records the accepted scope lock only. It does not implement valida
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
-- `docs/audit/V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/ARCHITECTURE_BOUNDARIES.md`
+- `docs/MODEL_ROUTING.md`
+- `docs/audit/TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS.md`
 
 ## Forbidden surfaces
 
 Do not modify runtime code, Flutter runtime, tests, schema files, JSON schema files, validators, tools, materializer behavior, event writer behavior, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, datasheet parsing, generated artifacts, assets, samples, platform folders, tags, or release objects.
 
-## Accepted closeout record
+## Accepted input
 
-- `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS` accepted/pushed.
-- Commit message: `docs: lock V2 validator extension scope`.
-- Claude Code / Opus post-audit: `ACCEPT_AS_IS`.
-- `safe_to_commit`: `YES`.
-- No blocker/high/medium/low findings.
-- NIT only: the scope-lock doc binds validator directly to `docs/spec/V2_EVENT_SCHEMA_SPEC.md`; the architecture record is reached transitively through the spec.
-- Validation recorded: `py -3 tools\validate_all.py` PASS, 236 tests.
+- `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS` accepted/pushed and closed out.
+- Current accepted route before this cleanup: current `V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`, next `V2_VALIDATOR_EXTENSION_PASS`.
+- Claude Code / Opus audit result for this cleanup input: `PASS_CLEANUP_RECOMMENDED`.
+- Cleanup is non-blocking but recommended before executable validator work.
 
-## Binding sources
+## Cleanup scope
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md` is the binding requirements source for validator requirements.
-- `docs/audit/V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS.md` records the accepted validator scope lock.
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_PASS.md` records the accepted Markdown-only spec pass.
-- `docs/audit/V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS.md` records the accepted spec closeout.
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md` remains the accepted V2 event-writing architecture source, reached through the accepted spec.
+- Reduce duplicated routing logic in `docs/SOURCES_INDEX_CURRENT.md` by pointing to canonical owner `docs/MODEL_ROUTING.md`.
+- Clarify `TraceBench_Project_Source_Guide.md` is external/non-repo orientation-only material and not canonical governance.
+- Harmonize `board_graph.json` / `view_state.json` wording in allowed docs without weakening the boundary.
+- Optionally add one-line V2 staged-order notes without redrawing Mermaid flows.
+- Keep `docs/CURRENT_STATE.md` compact.
 
-## Future pass locked
+## Next pass lock
 
 - Next implementation pass: `V2_VALIDATOR_EXTENSION_PASS`
 - Lane: `VALIDATOR_PASS`
@@ -92,7 +91,7 @@ Any need to touch materializer, Project ZIP import/export, writer service, Flutt
 - AI/helper must not author canonical events or facts.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection/cache.
-- `board_graph.json` and `view_state.json` remain forbidden V1 artifacts.
+- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
 - `visual_trace` is not a net.
 - `template_id` / footprint family is not electrical identity.
 - Photo pixels and photo alignment are not facts or proof.
@@ -109,7 +108,7 @@ Next recommended pass is `V2_VALIDATOR_EXTENSION_PASS`.
 
 Purpose: first executable V2 validator implementation pass under the accepted validator scope lock.
 
-Do not route to materializer, writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum from this closeout.
+Do not route to materializer, writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum from this cleanup.
 
 ## Validation
 

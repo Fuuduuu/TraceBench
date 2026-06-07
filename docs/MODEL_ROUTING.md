@@ -43,6 +43,7 @@ Choose the right helper/model for each pass type and risk profile.
 - If protected surfaces are implicated, route to GPT Pro or explicit user decision before implementation.
 - If a docs-only pass requires non-doc edits, stop and escalate.
 - High-risk Codex implementation must receive non-Codex review before acceptance (typically Claude Code, and GPT Pro when evidence/architecture boundaries are at risk).
+- V2 executable surfaces remain staged: validator -> materializer -> writer service -> UI write flows, each scope-locked and audited.
 
 ## Practical handoff pattern
 

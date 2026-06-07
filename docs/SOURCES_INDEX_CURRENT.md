@@ -14,8 +14,8 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
   - `docs/PASS_LIFECYCLE.md`
   - `docs/ARCHITECTURE_BOUNDARIES.md`
   - `docs/MODEL_ROUTING.md`
-- External orientation file:
-  - `TraceBench_Project_Source_Guide.md` remains non-governance orientation material only.
+- External/non-repo orientation pointer:
+  - `TraceBench_Project_Source_Guide.md` is orientation-only material outside the canonical repo docs. Do not assume it exists in this repository, and do not treat it as canonical governance.
 
 ## CURRENT_STATE size/archive discipline
 
@@ -36,54 +36,15 @@ Canonical read order lives in `docs/MEMORY_PROTOCOL.md` §5. Do not duplicate th
 
 ## Tool / AI routing logic
 
-1. Choose helper by risk class and authority boundary, not convenience.
-2. ChatGPT continuation assistant:
-   - orchestration,
-   - scope review,
-   - pass verdicts,
-   - prompt writing,
-   - commit/push command review.
-3. Codex:
-   - tightly scoped repo-local execution,
-   - docs sync,
-   - small implementation passes after scope lock,
-   - targeted tests,
-   - validator/materializer edits after scope lock,
-   - must not self-approve high-risk implementation.
-4. Claude Code / Opus:
-   - repo-local audit,
-   - scope-drift review,
-   - implementation-risk review,
-   - post-pass forensic checks,
-   - test/surface inspection.
-5. GPT Pro:
-   - architecture decisions,
-   - evidence-boundary decisions,
-   - V2 direction,
-   - canonical truth model,
-   - AI proposal model,
-   - risky photo/reference/overlay decisions.
-6. Claude Design / Claude Chat:
-   - UX/design polish,
-   - visual hierarchy,
-   - accessibility,
-   - Board Canvas read-only layout review.
-7. User manual action:
-   - tag creation,
-   - tag push,
-   - release-object actions,
-   - final accept/push decisions.
+Canonical owner: `docs/MODEL_ROUTING.md`.
+
+This file only points to the routing owner. Do not duplicate the full tool/model routing matrix here.
 
 ## Risk routing quick map
 
-- Low docs-only: Codex, ChatGPT review.
-- Low closeout: Codex, ChatGPT review.
-- Medium repo-local audit: Claude Code, ChatGPT review.
-- Medium scoped implementation: Codex, Claude Code post-audit if protected surfaces are touched.
-- Medium UX polish: Claude Design first if visual, Codex implementation after scope lock.
-- High architecture: GPT Pro first, Claude Code feasibility/audit second.
-- High implementation: GPT Pro + Claude Code gate before Codex.
-- Release/tag: user manual action; AI verifies only.
+Canonical owner: `docs/MODEL_ROUTING.md`.
+
+Use this source index to find the routing document, then follow the canonical routing matrix there.
 
 ## Pre-pass checklist
 
@@ -116,16 +77,15 @@ Canonical read order lives in `docs/MEMORY_PROTOCOL.md` §5. Do not duplicate th
 - No damage to fault-proof promotion.
 - No suspect to probability promotion.
 - No template_id / footprint family to electrical identity promotion.
-- No `board_graph.json`.
-- No `view_state.json`.
+- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
 - No Project ZIP contract expansion unless explicitly scoped.
 - No tag/release-object mutation unless manually performed by user and separately verified.
 
 ## No self-approval rule (high risk)
 
-High-risk Codex implementation must receive non-Codex review before acceptance:
+Canonical owner: `docs/MODEL_ROUTING.md`.
 
-`GPT Pro decision -> Claude Code repo/scope audit -> Codex implementation -> Claude Code post-audit -> ChatGPT pass verdict -> User commit/push`
+High-risk Codex implementation must receive the non-Codex review path defined there before acceptance.
 
 ## Active governance docs
 

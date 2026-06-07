@@ -46,7 +46,7 @@ TraceBench should be a technician-first bench workflow, not an engineering sprea
 - `known_facts.json` may include top-level `component_visual_placements` as visual/documentation projection only.
 - AI proposal objects (`unconfirmed_ai_proposal`) are non-canonical until explicit human confirmation through accepted event paths.
 - `graph_layout` is non-canonical render state.
-- `board_graph.json` and `view_state.json` are forbidden in V1.
+- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
 - Board-canvas renderer is read-only and implemented with shell, `board_normalized` component placement rendering, read-only inspector, measurement summary metadata, visual_trace metadata summary, and photo-alignment readiness metadata panel. Visual/evidence canvas geometry overlay rendering remains deferred.
 - Visual evidence is visual-only; `visual_trace` is never measured electrical evidence.
 - `component_removed` event type is not in V1.

@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS`
+`TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS`
 
 ## Next recommended pass
 
@@ -95,7 +95,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_EVENT_SCHEMA_SPEC_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed V2 event schema/spec closeout; preserved Markdown-only/non-executable boundary and routed to validator scope lock. |
 | V2_VALIDATOR_EXTENSION_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs-only validator scope lock for the first executable V2 surface after the accepted spec; no validator code/tests/schema files/runtime. |
 | V2_VALIDATOR_EXTENSION_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the validator scope lock with no blocker/high/medium/low findings; NIT only that the scope-lock doc binds directly to the spec while architecture is reached transitively through the spec. |
-| V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Records accepted/pushed validator scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved boundaries, and route to the first validator implementation pass. |
+| V2_VALIDATOR_EXTENSION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Records accepted/pushed validator scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved boundaries, and route to the first validator implementation pass. |
+| TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_PASS | CODEX / DOCS_SYNC | current (`PASS`) | Tight docs-only cleanup recommended by Claude Code / Opus: reduce routing duplication, clarify external Source Guide pointer, harmonize forbidden artifact wording, and keep route pointed to validator implementation. |
+| TRACEBENCH_DOCS_SCOPE_ALIGNMENT_CLEANUP_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | expected audit handoff | Audit the docs-only cleanup for scope drift before executable validator work; repository next route remains `V2_VALIDATOR_EXTENSION_PASS` after acceptance. |
 | V2_VALIDATOR_EXTENSION_PASS | VALIDATOR_PASS | recommended next | First executable V2 validator implementation pass under the accepted scope lock; exact validator/tooling/test files must be discovered in that pass; no materializer/writer/UI/ZIP/Activity Timeline/Measure Momentum drift. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |

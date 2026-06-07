@@ -2,27 +2,19 @@
 
 ## Active pass
 
-- Current pass: `V2_MATERIALIZER_PROJECTION_PASS`
-- Lane: `CODEX / MATERIALIZER_PASS`
-- Mode: scoped materializer implementation only
-- Next recommended pass: `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS`
+- Current pass: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout for accepted V2 materializer projection implementation
+- Next recommended pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Implement the first V2 projection path from validated V2 events into `known_facts.json` under the accepted materializer projection scope lock.
+Close out accepted and pushed `V2_MATERIALIZER_PROJECTION_PASS`.
 
-This pass is limited to V2 projection for:
-
-- `measurement_recorded`
-- `component_created`
-- `component_updated`
-- `event_invalidated`
+This closeout records Claude Code / Opus post-audit acceptance, preserves the materializer projection boundaries, records the forward known_facts schema/ZIP note, and routes only to a docs-only event writer service scope lock.
 
 ## Write allowlist
 
-- Existing materializer/projection files
-- Focused materializer tests
-- Accepted materializer fixture/test inputs if required
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
@@ -30,71 +22,57 @@ This pass is limited to V2 projection for:
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PROJECT_MEMORY.md` only if a compact stable pointer is needed
-- `docs/audit/V2_MATERIALIZER_PROJECTION_PASS.md`
+- `docs/audit/V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS.md`
 
-`docs/PROJECT_MEMORY.md` is not required for this pass because stable evidence/projection invariants already have canonical owners.
+`docs/PROJECT_MEMORY.md` is not required for this closeout because no new stable product invariant is introduced beyond already-owned event/projection boundaries.
 
 ## Forbidden surfaces
 
-Do not modify validator code except on a hard blocker that requires stopping first. Do not modify schemas, JSON schema files, writer service, Flutter UI, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples outside accepted materializer fixtures, generated artifacts, platform folders, tags, or release objects.
+Do not modify materializer code, tests, runtime code, Flutter UI, schema files, JSON schema files, validator code, writer service, Project ZIP logic, Board Canvas runtime, Reference Images runtime, AI/OCR/CV, URL import, source search, assets, samples, generated artifacts, platform folders, tags, or release objects.
 
-## Binding sources
+## Accepted input
 
-Implementation remains bound to:
+- `V2_MATERIALIZER_PROJECTION_PASS` was produced by Codex.
+- User committed and pushed it as `feat: add V2 materializer projection`.
+- Claude Code / Opus post-audit verdict: `ACCEPT_AS_IS`.
+- `safe_to_commit`: `YES`.
+- No blocker/high/medium findings.
+- Validation passed:
+  - focused materializer tests: 86/86,
+  - `py -3 tools\validate_all.py`: PASS, 255 tests.
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
-- `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`
-- accepted validator behavior in `tools/validate_events_jsonl.py`
-- `docs/audit/V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS.md`
+## Closeout boundary
 
-Do not reinterpret projection rules from chat memory.
+This pass is docs-only. It records the accepted implementation and post-audit result. It does not alter the materializer, tests, schemas, runtime, writer service, UI, ZIP logic, assets, samples, generated artifacts, platform folders, tags, or releases.
 
-## Implemented projection boundary
+Known forward note: before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, a separate known_facts-schema / Project ZIP scope is required.
 
-The materializer may project from V2 events with `schema_version: 2.0-draft` and accepted canonical V2 event types only within this pass scope.
-
-Projected materializer state remains a cache/projection:
+## Projection boundaries preserved
 
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
-- V2 measurement projection preserves `source_event_id`, target linkage, reading values, conditions, validity fields, and value provenance.
-- V2 component projection preserves current display fields, hints as hints only, source/update event pointers, and component history.
-- V2 invalidation preserves history and marks affected projected entries invalidated or orphaned instead of deleting dependent measurements.
-- Supersession resolves explicit `supersedes_event_id` chains.
-- Unsuperseded divergent measurements for the same target/mode/context surface conflict markers with source event IDs.
-
-## Boundaries preserved
-
-- No schema files.
-- No JSON schema files.
+- AI/helper never authors canonical facts.
+- No diagnosis, probability, confirmed net identity, confirmed pin mapping, component identity, visual-trace connectivity, or template/photo proof.
+- No latest-timestamp-wins.
+- No silent L3 cascade-drop.
+- `board_graph.json` and `view_state.json` remain forbidden.
 - No writer service.
-- No Flutter UI writes.
-- No Save/Add/Edit behavior.
-- No Project ZIP changes.
-- No Board Canvas runtime changes.
-- No Reference Images runtime changes.
-- No AI/OCR/CV.
-- No URL import or source search.
+- No UI writes.
+- No Save/Add/Edit.
+- No Project ZIP.
 - No Activity Timeline.
 - No Measure Momentum.
-- No generated artifacts, platform folders, tags, or release objects.
-- No diagnosis, probability, confirmed net identity, confirmed pin mapping, component identity, visual-trace connectivity, or template/photo proof is derived.
-- `board_graph.json` and `view_state.json` remain forbidden.
-- AI/helper never authors canonical events or facts.
-- Reference Images remain local sidecar and non-canonical.
 
 ## Route lock
 
-Next recommended pass is `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS`.
+Next recommended pass is `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`.
 
-Purpose: independent Claude Code / Opus post-audit of the scoped materializer implementation.
+Purpose: docs-only scope lock for the next executable V2 surface, the event writer service.
 
-Do not route next to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
+Do not route directly to writer implementation. Do not route to UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## Validation
 
-- `py -3 -m unittest tests.test_materialize_known_facts.MaterializeKnownFactsTests -v`
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`

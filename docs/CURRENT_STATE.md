@@ -2,35 +2,37 @@
 
 ## Current status
 
-- Current pass: `V2_MATERIALIZER_PROJECTION_PASS`
-- Next recommended pass: `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS`
+- Current pass: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`
+- Next recommended pass: `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this pass: `f38e944 docs: close out V2 materializer projection scope`
+- Latest accepted commit before this pass: `85c476b feat: add V2 materializer projection`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS` and closeout are accepted, pushed, and post-audited.
-- This pass implements the first scoped V2 projection path in `tools/materialize_known_facts.py`.
-- The materializer now projects validated V2 `measurement_recorded`, `component_created`, `component_updated`, and `event_invalidated` events into `known_facts.json`.
-- Focused materializer tests were added in `tests/test_materialize_known_facts.py`.
-- Focused materializer validation passed: `py -3 -m unittest tests.test_materialize_known_facts.MaterializeKnownFactsTests -v` PASS, 86 tests.
-- Full validation passed: `py -3 tools\validate_all.py` PASS, 255 tests.
-- Next recommended pass is independent Claude Code / Opus post-audit as `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS`.
-- Do not route to writer service, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
+- `V2_MATERIALIZER_PROJECTION_PASS` was produced by Codex, committed, and pushed as `feat: add V2 materializer projection`.
+- Claude Code / Opus post-audit accepted the materializer implementation as `ACCEPT_AS_IS`; `safe_to_commit: YES`; no blocker/high/medium findings.
+- Validation passed: focused materializer tests 86/86 and `py -3 tools\validate_all.py` PASS with 255 tests.
+- Materializer support was added in `tools/materialize_known_facts.py`.
+- Focused tests were added in `tests/test_materialize_known_facts.py`.
+- Current pass closes out the accepted implementation without modifying code/tests/runtime.
+- Next recommended pass is `V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`, a docs-only scope lock for the event writer service.
+- Do not route directly to writer implementation, UI writes, Save/Add/Edit, Project ZIP, Activity Timeline, or Measure Momentum.
 
-## Materializer implementation summary
+## Materializer accepted behavior
 
-- V2 events use `schema_version: 2.0-draft`; V1/V1.1 events stay on the existing legacy materializer path.
-- `measurement_recorded` projection preserves target, reading, value provenance, conditions, source event, origin event, and validity fields.
-- `component_created` projection preserves display/navigation fields and hint fields as hints only.
-- `component_updated` applies safe field-level changes to the projection and preserves update history.
-- `event_invalidated` preserves invalidation history and marks affected projected entries instead of deleting history.
-- Explicit `supersedes_event_id` marks superseded measurements and keeps the replacement active.
-- Unsuperseded divergent measurements for the same target/mode/context surface `measurement_conflicts`; latest-timestamp-wins remains forbidden.
-- Component invalidation surfaces dependent measurements in `orphaned_measurements`; dependent measurements are not cascade-dropped.
+- V2 projection supports `measurement_recorded`, `component_created`, `component_updated`, and `event_invalidated`.
+- Projection preserves value provenance.
+- Component updates preserve history.
+- Invalidation preserves history and marks affected projected entries instead of deleting history.
+- Supersession marks superseded measurements and keeps the replacement active.
+- Divergent unsuperseded measurements surface `measurement_conflicts`; latest-timestamp-wins remains forbidden.
+- Component invalidation surfaces `orphaned_measurements`; silent L3 cascade-drop remains forbidden.
 - `board_graph.json` and `view_state.json` are not generated.
+- V1/V1.1 materialization compatibility is preserved.
+- `known_facts.schema.json` was not changed.
+- Forward note: before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, a separate known_facts-schema / Project ZIP scope is required.
 
 ## Accepted V1.1 baseline
 
@@ -47,10 +49,10 @@
 - Accepted schema/spec doc pass: `V2_EVENT_SCHEMA_SPEC_PASS`.
 - Accepted validator implementation: `V2_VALIDATOR_EXTENSION_PASS`.
 - Accepted materializer projection scope lock: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_PASS`.
-- Accepted materializer projection scope-lock post-audit: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
-- Accepted materializer projection scope-lock closeout: `V2_MATERIALIZER_PROJECTION_SCOPE_LOCK_CLOSEOUT_PASS`.
-- Current materializer implementation pass: `V2_MATERIALIZER_PROJECTION_PASS`.
-- Future work must remain staged: materializer audit, writer service, writer audit, then UI write flows.
+- Accepted materializer projection implementation: `V2_MATERIALIZER_PROJECTION_PASS`.
+- Accepted materializer projection post-audit: `V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS` (`ACCEPT_AS_IS`).
+- Current materializer implementation closeout: `V2_MATERIALIZER_PROJECTION_CLOSEOUT_PASS`.
+- Future work must remain staged: writer service scope lock, writer service implementation, writer audit, then UI write flows.
 
 ## Hard boundaries
 
@@ -75,4 +77,4 @@
 
 ## Next recommended pass
 
-`V2_MATERIALIZER_PROJECTION_POST_AUDIT_PASS`
+`V2_EVENT_WRITER_SERVICE_SCOPE_LOCK_PASS`

@@ -7,6 +7,32 @@ import json
 import sys
 from pathlib import Path
 
+V2_SCHEMA_VERSION = "2.0-draft"
+V2_RELATION_FIELDS = (
+    "origin_event_id",
+    "corrects_event_id",
+    "supersedes_event_id",
+    "invalidates_event_id",
+)
+V2_COMPONENT_FIELDS = (
+    "component_id",
+    "label",
+    "component_kind",
+    "created_context",
+    "reference_designator",
+    "pin_count",
+    "template_id_hint",
+    "footprint_hint",
+    "side",
+    "rough_location",
+    "rotation_hint",
+)
+
+
+def _is_v2_event(event: dict) -> bool:
+    return event.get("schema_version") == V2_SCHEMA_VERSION
+
+
 def _manifest_project_id(events_path: Path) -> str:
     manifest_path = events_path.parent / "manifest.json"
     if not manifest_path.exists():
@@ -65,6 +91,124 @@ def _load_events(events_path: Path) -> list[dict]:
     return events
 
 
+def _v2_copy_relation_fields(event: dict, target: dict) -> None:
+    for field in V2_RELATION_FIELDS:
+        value = event.get(field)
+        if isinstance(value, str) and value:
+            target[field] = value
+
+
+def _v2_component_from_payload(payload: dict, event_id: str) -> dict:
+    component = {
+        key: copy.deepcopy(payload[key])
+        for key in V2_COMPONENT_FIELDS
+        if key in payload
+    }
+    component["source_event_id"] = event_id
+    component["valid_from_event_id"] = event_id
+    component["valid_until_event_id"] = None
+    component["validity_status"] = "active"
+    component["updated_by_event_ids"] = []
+    component["component_history"] = [
+        {
+            "source_event_id": event_id,
+            "event_type": "component_created",
+            "payload": copy.deepcopy(payload),
+        }
+    ]
+    return component
+
+
+def _v2_apply_component_update(component: dict, payload: dict, event_id: str) -> None:
+    changes = payload.get("changes")
+    if not isinstance(changes, list):
+        return
+
+    for change in changes:
+        if not isinstance(change, dict):
+            continue
+        field = change.get("field")
+        if field not in V2_COMPONENT_FIELDS or field == "component_id":
+            continue
+        component[field] = copy.deepcopy(change.get("new_value"))
+
+    component.setdefault("updated_by_event_ids", []).append(event_id)
+    component.setdefault("component_history", []).append(
+        {
+            "source_event_id": event_id,
+            "event_type": "component_updated",
+            "edit_reason": payload.get("edit_reason"),
+            "changes": copy.deepcopy(changes),
+        }
+    )
+
+
+def _v2_measurement_from_payload(payload: dict, event: dict) -> dict:
+    event_id = event.get("event_id")
+    target = payload.get("target", {})
+    reading = payload.get("reading", {})
+    materialized = {
+        "measurement_id": payload.get("measurement_id"),
+        "target": copy.deepcopy(target),
+        "reading": copy.deepcopy(reading),
+        "value_provenance": copy.deepcopy(payload.get("value_provenance", {})),
+        "source_event_id": event_id,
+        "origin_event_id": event.get("origin_event_id") or event_id,
+        "valid_from_event_id": event_id,
+        "valid_until_event_id": None,
+        "validity_status": "active",
+    }
+    if isinstance(target, dict):
+        for key in ("target_kind", "target_key", "display_label", "component_id", "pin_id"):
+            if key in target:
+                materialized[key] = copy.deepcopy(target[key])
+    if isinstance(reading, dict):
+        for key in ("mode", "value", "unit", "display_value", "state"):
+            if key in reading:
+                materialized[key] = copy.deepcopy(reading[key])
+    for key in ("measured_at", "conditions", "operator_note"):
+        if key in payload:
+            materialized[key] = copy.deepcopy(payload[key])
+    _v2_copy_relation_fields(event, materialized)
+    return materialized
+
+
+def _v2_target_references_component(target: object, component_id: str) -> bool:
+    if isinstance(target, dict):
+        if target.get("component_id") == component_id:
+            return True
+        target_key = target.get("target_key")
+        if isinstance(target_key, str) and target_key.startswith(f"component:{component_id}:"):
+            return True
+        for key in ("target", "from_target", "to_target"):
+            if _v2_target_references_component(target.get(key), component_id):
+                return True
+    if isinstance(target, list):
+        return any(_v2_target_references_component(item, component_id) for item in target)
+    return False
+
+
+def _v2_stable_signature(value: object) -> str:
+    return json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def _v2_measurement_conflict_key(measurement: dict) -> tuple[object, object, str]:
+    return (
+        measurement.get("target_key"),
+        measurement.get("mode"),
+        _v2_stable_signature(measurement.get("conditions", {})),
+    )
+
+
+def _v2_measurement_value_signature(measurement: dict) -> tuple[object, object, object, object]:
+    return (
+        measurement.get("value"),
+        measurement.get("unit"),
+        measurement.get("display_value"),
+        measurement.get("state"),
+    )
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         print("usage: materialize_known_facts.py <events.jsonl> <output.json>")
@@ -113,10 +257,121 @@ def main() -> int:
     accepted_project_id_locked = project_id != "unknown"
     event_sequence_by_id: dict[str, int] = {}
     measurement_by_event: dict[str, dict] = {}
+    v2_component_by_id: dict[str, dict] = {}
+    v2_component_create_event_by_id: dict[str, str] = {}
+    v2_measurement_by_event: dict[str, dict] = {}
+    event_invalidations: list[dict] = []
+    orphaned_measurements: list[dict] = []
 
     for event in raw_events:
         event_id = event.get("event_id")
         sequence = event.get("sequence")
+
+        if _is_v2_event(event):
+            if not isinstance(event_id, str):
+                continue
+
+            if not accepted_project_id_locked:
+                event_project_id = event.get("project_id")
+                if isinstance(event_project_id, str) and event_project_id.strip():
+                    project_id = event_project_id.strip()
+                    accepted_project_id_locked = True
+
+            payload = event.get("payload", {})
+            if not isinstance(payload, dict):
+                continue
+            event_type = event.get("event_type")
+
+            if event_type == "component_created":
+                component_id = payload.get("component_id")
+                if not isinstance(component_id, str) or not component_id:
+                    continue
+                component = _v2_component_from_payload(payload, event_id)
+                components.append(component)
+                v2_component_by_id[component_id] = component
+                v2_component_create_event_by_id[event_id] = component_id
+                continue
+
+            if event_type == "component_updated":
+                component_id = payload.get("component_id")
+                if not isinstance(component_id, str):
+                    continue
+                component = v2_component_by_id.get(component_id)
+                if component is None:
+                    component = next(
+                        (
+                            item
+                            for item in components
+                            if isinstance(item, dict) and item.get("component_id") == component_id
+                        ),
+                        None,
+                    )
+                if component is not None:
+                    _v2_apply_component_update(component, payload, event_id)
+                continue
+
+            if event_type == "measurement_recorded":
+                measurement = _v2_measurement_from_payload(payload, event)
+                measurements.append(measurement)
+                v2_measurement_by_event[event_id] = measurement
+
+                supersedes_event_id = event.get("supersedes_event_id")
+                if isinstance(supersedes_event_id, str):
+                    superseded = v2_measurement_by_event.get(supersedes_event_id)
+                    if superseded is not None:
+                        superseded["validity_status"] = "superseded"
+                        superseded["valid_until_event_id"] = event_id
+                continue
+
+            if event_type == "event_invalidated":
+                invalidates_event_id = payload.get("invalidates_event_id") or event.get("invalidates_event_id")
+                invalidation = {
+                    "source_event_id": event_id,
+                    "invalidates_event_id": invalidates_event_id,
+                    "target_entity_id": payload.get("target_entity_id"),
+                    "reason": payload.get("reason"),
+                }
+                if "human_note" in payload:
+                    invalidation["human_note"] = payload.get("human_note")
+                _v2_copy_relation_fields(event, invalidation)
+                event_invalidations.append(invalidation)
+
+                if isinstance(invalidates_event_id, str):
+                    measurement = v2_measurement_by_event.get(invalidates_event_id)
+                    if measurement is not None:
+                        measurement["validity_status"] = "invalidated"
+                        measurement["valid_until_event_id"] = event_id
+
+                    component_id = v2_component_create_event_by_id.get(invalidates_event_id)
+                    if component_id is None:
+                        target_entity_id = payload.get("target_entity_id")
+                        if isinstance(target_entity_id, str):
+                            component_id = target_entity_id
+
+                    if isinstance(component_id, str):
+                        component = v2_component_by_id.get(component_id)
+                        if component is not None:
+                            component["validity_status"] = "invalidated"
+                            component["valid_until_event_id"] = event_id
+                        for candidate in v2_measurement_by_event.values():
+                            if not _v2_target_references_component(candidate.get("target"), component_id):
+                                continue
+                            candidate["orphan_status"] = "component_invalidated"
+                            candidate["affected_by_event_id"] = event_id
+                            orphaned_measurements.append(
+                                {
+                                    "measurement_source_event_id": candidate.get("source_event_id"),
+                                    "measurement_id": candidate.get("measurement_id"),
+                                    "invalidated_component_event_id": invalidates_event_id,
+                                    "invalidated_component_id": component_id,
+                                    "invalidation_event_id": event_id,
+                                    "reason": payload.get("reason"),
+                                }
+                            )
+                continue
+
+            continue
+
         if event.get("status") != "accepted":
             continue
 
@@ -408,6 +663,38 @@ def main() -> int:
             key=lambda item: str(item[1].get("alignment_id", "")),
         )
     ]
+    measurement_conflicts: list[dict] = []
+    active_v2_by_conflict_key: dict[tuple[object, object, str], list[dict]] = {}
+    for measurement in v2_measurement_by_event.values():
+        if measurement.get("validity_status") != "active":
+            continue
+        active_v2_by_conflict_key.setdefault(
+            _v2_measurement_conflict_key(measurement),
+            [],
+        ).append(measurement)
+
+    for grouped_measurements in active_v2_by_conflict_key.values():
+        value_signatures = {
+            _v2_measurement_value_signature(measurement)
+            for measurement in grouped_measurements
+        }
+        if len(grouped_measurements) <= 1 or len(value_signatures) <= 1:
+            continue
+        for measurement in grouped_measurements:
+            measurement["validity_status"] = "active_conflict"
+        measurement_conflicts.append(
+            {
+                "conflict_type": "measurement_divergence",
+                "target_key": grouped_measurements[0].get("target_key"),
+                "display_label": grouped_measurements[0].get("display_label"),
+                "mode": grouped_measurements[0].get("mode"),
+                "source_event_ids": [
+                    measurement.get("source_event_id")
+                    for measurement in grouped_measurements
+                    if isinstance(measurement.get("source_event_id"), str)
+                ],
+            }
+        )
 
     known = {
         "project_id": project_id,
@@ -425,6 +712,12 @@ def main() -> int:
         known["component_visual_placements"] = component_visual_placements
     if photo_to_board_alignments:
         known["photo_to_board_alignments"] = photo_to_board_alignments
+    if event_invalidations:
+        known["event_invalidations"] = event_invalidations
+    if measurement_conflicts:
+        known["measurement_conflicts"] = measurement_conflicts
+    if orphaned_measurements:
+        known["orphaned_measurements"] = orphaned_measurements
     component_pin_index = {}
     for pin in pins:
         component_id = pin.get("component_id")

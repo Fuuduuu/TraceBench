@@ -129,7 +129,363 @@ def make_event(
     }
 
 
+V2_SCHEMA_VERSION = "2.0-draft"
+
+
+def make_v2_event(
+    event_id,
+    event_type,
+    payload,
+    *,
+    project_id="prj_v2_test",
+    client_operation_id=None,
+    created_at="2026-06-06T10:00:00Z",
+    **relations,
+):
+    return {
+        "schema_version": V2_SCHEMA_VERSION,
+        "event_id": event_id,
+        "event_type": event_type,
+        "created_at": created_at,
+        "project_id": project_id,
+        "client_operation_id": client_operation_id or f"op_{event_id}",
+        "actor": {"type": "human", "actor_id": "local_user"},
+        "source": {
+            "type": "explicit_user_confirmation",
+            "surface": "measure_sheet",
+            "action": event_type,
+        },
+        "confirmation": {
+            "confirmed": True,
+            "confirmed_at": created_at,
+            "label": "confirmed",
+        },
+        "payload": payload,
+        **relations,
+    }
+
+
+def make_v2_measurement_payload(
+    measurement_id,
+    *,
+    target_key="component:Q2:pin:1",
+    display_label="Q2.1",
+    component_id="Q2",
+    pin_id="Q2.1",
+    mode="voltage",
+    value=3.3,
+    unit="V",
+    display_value="3.3 V",
+    measured_source="human_entered",
+    context_values=None,
+):
+    return {
+        "measurement_id": measurement_id,
+        "measured_at": "2026-06-06T10:00:00Z",
+        "target": {
+            "target_kind": "component_pin",
+            "target_key": target_key,
+            "display_label": display_label,
+            "component_id": component_id,
+            "pin_id": pin_id,
+        },
+        "reading": {
+            "mode": mode,
+            "value": value,
+            "unit": unit,
+            "display_value": display_value,
+        },
+        "value_provenance": {
+            "measured_value_source": measured_source,
+            "entry_method": "typed",
+            "human_verified_as_own_reading": True,
+            "context_values_visible": context_values
+            if context_values is not None
+            else [
+                {
+                    "context_type": "reference_value",
+                    "context_id": "ref_q2_pin1_voltage",
+                    "display_value": "3.3 V",
+                    "used_as_measured_value": False,
+                }
+            ],
+        },
+        "conditions": {"power_state": "on"},
+    }
+
+
+def make_v2_component_payload(**overrides):
+    payload = {
+        "component_id": "Q2",
+        "label": "Q2",
+        "component_kind": "unknown",
+        "created_context": "human_added_from_measure_sheet",
+        "reference_designator": "Q2",
+        "pin_count": 3,
+        "template_id_hint": "sot23_hint",
+        "footprint_hint": "SOT-23",
+        "side": "top",
+        "rough_location": "near connector",
+        "rotation_hint": "unknown",
+    }
+    payload.update(overrides)
+    return payload
+
+
 class MaterializeKnownFactsTests(unittest.TestCase):
+    def test_v2_measurement_projection_preserves_provenance_and_context(self):
+        context_values = [
+            {
+                "context_type": "reference_value",
+                "context_id": "ref_q2_pin1_voltage",
+                "display_value": "5.0 V",
+                "used_as_measured_value": False,
+            },
+            {
+                "context_type": "helper_suggestion",
+                "context_id": "helper_next_check",
+                "display_value": "Check Q2.2 next",
+                "used_as_measured_value": False,
+            },
+        ]
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "measurement_recorded",
+                    make_v2_measurement_payload(
+                        "meas_001",
+                        value=3.3,
+                        display_value="3.3 V",
+                        context_values=context_values,
+                    ),
+                )
+            ]
+        )
+
+        measurement = next(item for item in data["measurements"] if item["measurement_id"] == "meas_001")
+        self.assertEqual(measurement["source_event_id"], "evt_200001")
+        self.assertEqual(measurement["target_key"], "component:Q2:pin:1")
+        self.assertEqual(measurement["display_label"], "Q2.1")
+        self.assertEqual(measurement["mode"], "voltage")
+        self.assertEqual(measurement["value"], 3.3)
+        self.assertEqual(measurement["unit"], "V")
+        self.assertEqual(measurement["value_provenance"]["measured_value_source"], "human_entered")
+        self.assertEqual(measurement["value_provenance"]["context_values_visible"], context_values)
+        self.assertEqual(measurement["validity_status"], "active")
+        self.assertNotEqual(measurement["value"], "5.0 V")
+        self.assertNotIn("diagnosis", measurement)
+        self.assertNotIn("fault_probability", measurement)
+        self.assertNotIn("confirmed_net", measurement)
+
+    def test_v2_component_created_and_updated_projection_preserves_history_and_hints(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "component_created",
+                    make_v2_component_payload(),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "component_updated",
+                    {
+                        "component_id": "Q2",
+                        "edit_reason": "marking read from board",
+                        "changes": [
+                            {
+                                "field": "label",
+                                "old_value_observed": "Q2",
+                                "new_value": "Q2 transistor",
+                                "change_kind": "replace",
+                            },
+                            {
+                                "field": "reference_designator",
+                                "old_value_observed": "Q2",
+                                "new_value": "Q2A",
+                                "change_kind": "replace",
+                            },
+                        ],
+                    },
+                ),
+            ]
+        )
+
+        component = next(item for item in data["components"] if item["component_id"] == "Q2")
+        self.assertEqual(component["source_event_id"], "evt_200001")
+        self.assertEqual(component["label"], "Q2 transistor")
+        self.assertEqual(component["reference_designator"], "Q2A")
+        self.assertEqual(component["component_kind"], "unknown")
+        self.assertEqual(component["template_id_hint"], "sot23_hint")
+        self.assertEqual(component["footprint_hint"], "SOT-23")
+        self.assertEqual(component["updated_by_event_ids"], ["evt_200002"])
+        self.assertEqual(
+            [entry["source_event_id"] for entry in component["component_history"]],
+            ["evt_200001", "evt_200002"],
+        )
+        self.assertNotIn("electrical_identity", component)
+        self.assertNotIn("net_id", component)
+        self.assertNotIn("fault_status", component)
+
+    def test_v2_event_invalidated_excludes_active_projection_but_preserves_history(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_001"),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "meas_001",
+                        "reason": "mistyped_value",
+                        "human_note": "wrong range",
+                    },
+                ),
+            ]
+        )
+
+        measurement = next(item for item in data["measurements"] if item["measurement_id"] == "meas_001")
+        self.assertEqual(measurement["validity_status"], "invalidated")
+        self.assertEqual(measurement["valid_until_event_id"], "evt_200002")
+        self.assertEqual(data["event_invalidations"][0]["invalidates_event_id"], "evt_200001")
+        self.assertEqual(data["event_invalidations"][0]["source_event_id"], "evt_200002")
+
+    def test_v2_superseded_measurement_resolution_preserves_history(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_old", value=3.1, display_value="3.1 V"),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_new", value=3.3, display_value="3.3 V"),
+                    supersedes_event_id="evt_200001",
+                    corrects_event_id="evt_200001",
+                ),
+            ]
+        )
+
+        measurements = {item["source_event_id"]: item for item in data["measurements"]}
+        self.assertEqual(measurements["evt_200001"]["validity_status"], "superseded")
+        self.assertEqual(measurements["evt_200001"]["valid_until_event_id"], "evt_200002")
+        self.assertEqual(measurements["evt_200002"]["validity_status"], "active")
+        self.assertEqual(measurements["evt_200002"]["supersedes_event_id"], "evt_200001")
+        self.assertEqual(measurements["evt_200002"]["corrects_event_id"], "evt_200001")
+
+    def test_v2_divergent_measurements_surface_conflict_without_latest_wins(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_001", value=3.1, display_value="3.1 V"),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_002", value=3.4, display_value="3.4 V"),
+                ),
+            ]
+        )
+
+        conflict = data["measurement_conflicts"][0]
+        self.assertEqual(conflict["target_key"], "component:Q2:pin:1")
+        self.assertEqual(conflict["mode"], "voltage")
+        self.assertEqual(conflict["source_event_ids"], ["evt_200001", "evt_200002"])
+        statuses = {item["source_event_id"]: item["validity_status"] for item in data["measurements"]}
+        self.assertEqual(statuses["evt_200001"], "active_conflict")
+        self.assertEqual(statuses["evt_200002"], "active_conflict")
+
+    def test_v2_component_invalidation_surfaces_dependent_measurement_orphan(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "component_created",
+                    make_v2_component_payload(),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_001"),
+                ),
+                make_v2_event(
+                    "evt_200003",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "Q2",
+                        "reason": "wrong_component",
+                    },
+                ),
+            ]
+        )
+
+        measurement = next(item for item in data["measurements"] if item["measurement_id"] == "meas_001")
+        self.assertEqual(measurement["orphan_status"], "component_invalidated")
+        self.assertEqual(measurement["affected_by_event_id"], "evt_200003")
+        self.assertEqual(data["orphaned_measurements"][0]["measurement_source_event_id"], "evt_200002")
+        self.assertEqual(data["orphaned_measurements"][0]["invalidated_component_id"], "Q2")
+
+    def test_v2_mixed_version_projection_preserves_v1_fixture_behavior(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "measurement_recorded",
+                    {
+                        "measurement_id": "M1",
+                        "mode": "continuity",
+                        "from": "Q2.1",
+                        "to": "R1.1",
+                        "reading": {"kind": "numeric", "value": 0.2, "unit": "ohm"},
+                        "power_state": "off",
+                    },
+                ),
+                make_v2_event(
+                    "evt_200001",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_001"),
+                ),
+            ]
+        )
+
+        self.assertTrue(any(item.get("measurement_id") == "M1" for item in data["measurements"]))
+        self.assertTrue(any(item.get("measurement_id") == "meas_001" for item in data["measurements"]))
+
+    def test_v2_projection_does_not_generate_forbidden_artifacts(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            out_path = Path(tmpdir) / "known_facts.json"
+            event = make_v2_event(
+                "evt_200001",
+                "measurement_recorded",
+                make_v2_measurement_payload("meas_001"),
+            )
+            events_path.write_text(json.dumps(event) + "\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [sys.executable, "tools/materialize_known_facts.py", str(events_path), str(out_path)],
+                text=True,
+                capture_output=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            data = json.loads(out_path.read_text(encoding="utf-8"))
+            self.assertFalse((Path(tmpdir) / "board_graph.json").exists())
+            self.assertFalse((Path(tmpdir) / "view_state.json").exists())
+            self.assertNotIn("board_graph", data)
+            self.assertNotIn("view_state", data)
+            self.assertNotIn("reference_image_evidence", json.dumps(data))
+
     def test_empty_events_produces_valid_known_facts(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             project_dir = Path(tmpdir) / "project"

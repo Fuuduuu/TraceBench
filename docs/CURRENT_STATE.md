@@ -2,10 +2,10 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted route commit before this pass: `f2e8b88 docs: lock V2 save measurement scope`
+- Latest accepted route commit before this pass: `d37f12c docs: close out V2 save measurement scope`
 - Latest accepted V2 backend implementation commit: `a2e3787 feat: add V2 event writer service`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
@@ -19,9 +19,9 @@
 - V2 event writer service is implemented, pushed, post-audited `ACCEPT_AS_IS`, closed out, and its closeout artifact is recovered.
 - `V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS` was accepted/pushed as `docs: lock V2 save measurement scope`.
 - Claude Code / Opus post-audit accepted the Save Measurement scope lock as `ACCEPT_AS_IS` with no blocker/high/medium/low findings.
-- Current pass is docs-only closeout for that accepted Save Measurement scope lock.
-- Future Save Measurement implementation remains blocked until this closeout is accepted.
-- Next recommended pass after closeout acceptance is `V2_SAVE_MEASUREMENT_PASS`.
+- Current pass implements the first V2 Save Measurement UI write flow under the accepted scope lock.
+- Save Measurement writes only `measurement_recorded` through the accepted writer service.
+- Next recommended pass is audit-only review: `V2_SAVE_MEASUREMENT_POST_AUDIT_PASS`.
 - Do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum.
 
 ## V2 backend accepted state
@@ -37,13 +37,12 @@
 - Writer appends only and validates through the existing validator before append and again under lock.
 - Writer uses `client_operation_id` idempotency, atomic `events.jsonl.lock`, durable append, `fsync`, and readback verification.
 
-## Save Measurement route lock
+## Save Measurement implementation state
 
-- `V2_SAVE_MEASUREMENT_PASS` is the first UI write-flow implementation route using the accepted writer service.
-- Future implementation is scoped to Save Measurement UI flow only.
-- Future Save Measurement must create only `measurement_recorded`.
-- Future UI must use the accepted writer service and must never append directly to `events.jsonl`.
-- Future event construction must preserve `actor.type = human`, `source.type = explicit_user_confirmation`, `confirmation.confirmed = true`, and `value_provenance`.
+- `V2_SAVE_MEASUREMENT_PASS` is scoped to Save Measurement UI flow only.
+- Save Measurement creates only `measurement_recorded`.
+- UI uses the accepted writer service adapter and never appends directly to `events.jsonl`.
+- Event construction preserves `schema_version = 2.0-draft`, `actor.type = human`, `source.type = explicit_user_confirmation`, `confirmation.confirmed = true`, and `value_provenance`.
 - Helper/reference/candidate values must not auto-fill the confirmable measured field.
 - One-tap promotion from helper/reference/candidate value to canonical measurement remains forbidden.
 - Error states must distinguish not-saved outcomes.
@@ -80,4 +79,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PASS`
+`V2_SAVE_MEASUREMENT_POST_AUDIT_PASS`

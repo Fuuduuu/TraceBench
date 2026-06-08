@@ -12,19 +12,19 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - BLE multimeter
 - cloud sync
 - ArUco/ChArUco automatic marker workflow
-- actual Save Measurement / Add Component / Edit Component implementation before accepted V2 event-writing architecture
-- prototype-to-production measurement sheet shortcut without accepted scope lock and separate implementation pass; Save/Add/Edit/event-writing still require V2 event-writing architecture
+- Add Component / Edit Component implementation before their own accepted V2 scope locks and implementation passes
+- prototype-to-production measurement sheet shortcut without accepted scope lock and separate implementation pass; Add/Edit/event-writing expansions still require separate V2 scopes
 - reference/research/candidate value promotion into canonical facts without human measurement/confirmation
 - sourced/reference/research sidecar runtime implementation before accepted implementation scope
 - datasheet parser, URL downloader, web scraper, AI source search, public upload, resource-pack implementation, or licensing/commercial implementation without dedicated scope
 - further reference values panel runtime behavior beyond the accepted display-only panel before separately scoped route review and implementation scope
 - further technician-first Measure Sheet behavior beyond the accepted read-only/display shell before separately scoped smoke, UX, and architecture passes
-- real Measure Sheet Save/Add/Edit/event-writing behavior before accepted, separately scoped V2 write-flow passes
+- real Measure Sheet Add/Edit/event-writing behavior beyond Save Measurement before accepted, separately scoped V2 write-flow passes
 - Guided Measurement behavior beyond the accepted read-only helper scope; diagnosis, suspect ranking, probability/confidence claims, net inference, identity confirmation, canonical fact creation, and event-writing remain out of scope
 - activity log / timeline implementation; if later scoped it must be compact, toggleable, user-facing, non-canonical, separate from `events.jsonl`, and separate from debug logs
 - post-save measurement momentum behavior beyond read-only helper copy; confirmation, retained `Koht`, and next pin/point suggestions require V2 event-writing architecture before real save behavior
 - production unit-chip/copy refinements from Ideelabor residuals, including keeping A/current measurement behind `Lisainfo` / `Tehnilised detailid` by default and preserving technician-first Estonian labels
 - Activity Timeline and Measure Momentum implementation remain deferred until with/after accepted V2 event-writing architecture; do not implement them as standalone post-smoke follow-up passes.
-- V2 Save Measurement, Add Component, Edit Component, Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until each later pass is separately scoped and audited.
-- V2 event schema/spec documentation, validator implementation, materializer projection implementation, event writer service implementation, and Save Measurement scope lock are accepted/pushed through their scoped routes. Save Measurement implementation is routed only through `V2_SAVE_MEASUREMENT_PASS` after accepted closeout; Add/Edit Component, Project ZIP changes, Activity Timeline, and Measure Momentum implementation remain deferred to later individually scoped and audited passes.
+- V2 Add Component, Edit Component, Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until each later pass is separately scoped and audited.
+- V2 event schema/spec documentation, validator implementation, materializer projection implementation, event writer service implementation, Save Measurement scope lock, and Save Measurement implementation are routed through their scoped paths. Add/Edit Component, Project ZIP changes, Activity Timeline, and Measure Momentum implementation remain deferred to later individually scoped and audited passes.
 - Before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, separate known_facts-schema / Project ZIP scope is required.

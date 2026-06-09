@@ -2,8 +2,8 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS`
-- Next recommended pass: `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+- Current pass: `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+- Next recommended pass: `V2_ADD_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
 - Branch: `main`
 - Latest accepted implementation commit: `16eca52 fix: harden save measurement project path handling`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
@@ -11,16 +11,12 @@
 
 ## Live handoff
 
-- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, pushed, and closed out.
-- `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS` is implemented, audited, accepted, pushed, and ready to close out.
-- Post-audit result: `ACCEPT_AS_IS` with `safe_to_commit: YES`.
-- Commit message: `fix: harden save measurement project path handling`.
-- Validation recorded for hardening: focused tests `30/30` PASS, full Flutter suite `226` PASS, `py -3 tools\validate_all.py` `268` PASS, and `flutter analyze` baseline-only.
-- Path hardening fails closed for unsafe/non-canonical project paths, prevents `events.jsonl` escape outside the selected local project directory, and does not call the Python writer on invalid paths.
-- Invalid project paths map to a not-saved UI outcome.
-- Save Measurement still uses the accepted writer service adapter, still creates only `measurement_recorded`, and leaves deterministic `clientOperationId` unchanged.
-- Next route is `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`; Add Component is protected and must begin with scope lock, not implementation.
-
+- Save Measurement implementation and path/project-directory hardening are accepted, pushed, and closed out.
+- Current pass is a docs-only scope lock for future Add Component; no implementation starts here.
+- Future Add Component implementation must create only `component_created` through the accepted writer-service adapter; UI must never append directly to `events.jsonl`.
+- Future events must preserve `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
+- AI/helper/reference/photo/vector/template/candidate context must not auto-confirm component identity; `template_id` / footprint / package family remains geometry or visual hint only.
+- Save Measurement accepted behavior remains unchanged; Edit Component, Project ZIP, Activity Timeline, Measure Momentum, Board Canvas writes, Reference Images runtime, AI/OCR/CV, Photo Markup, Repair Map, and Visual Trace Shape Assist stay out of scope.
 ## Accepted Save Measurement state
 
 - Event construction preserves `schema_version = 2.0-draft`, `actor.type = human`, `source.type = explicit_user_confirmation`, `confirmation.confirmed = true`, and `value_provenance`.
@@ -48,4 +44,4 @@
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+`V2_ADD_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`

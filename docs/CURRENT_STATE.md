@@ -2,10 +2,10 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_CLOSEOUT_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted commit before this closeout: `48feb8a docs: lock save measurement path canonicalization hardening scope`
+- Latest accepted commit before this implementation: `37cc386 docs: close out save measurement path canonicalization scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
@@ -15,8 +15,8 @@
 - `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS` is accepted, pushed, and post-audited `ACCEPT_AS_IS` with `safe_to_commit: YES`.
 - Save Measurement remains the first accepted V2 UI write-flow and creates only `measurement_recorded` through the accepted writer service adapter.
 - Gemini TRC-01 is accepted as MEDIUM hardening input around `V2SaveMeasurementService` / `_joinPath`.
-- Next pass may implement only Save Measurement path/project-directory canonicalization hardening under the accepted scope lock.
-- Future implementation must fail closed for unsafe or non-canonical project paths, prevent `events.jsonl` escape outside the selected local project, and preserve accepted writer-service boundaries.
+- Current pass implements only Save Measurement path/project-directory canonicalization hardening under the accepted scope lock.
+- The implementation must fail closed for unsafe or non-canonical project paths, prevent `events.jsonl` escape outside the selected local project, and preserve accepted writer-service boundaries.
 - TRC-03 remains excluded: deterministic `clientOperationId` is tied to idempotent retry / duplicate prevention semantics and must not be blindly changed to UUID/ULID/random IDs in this route.
 - Add Component remains deferred until after Save Measurement path-canonicalization hardening is implemented, audited, and closed out.
 
@@ -47,4 +47,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`

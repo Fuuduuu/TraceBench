@@ -327,6 +327,28 @@ void main() {
     expect(find.text('Saved to events.jsonl'), findsNothing);
   });
 
+  testWidgets('invalid project directory failure shows not saved',
+      (tester) async {
+    final writer = _FakeSaveMeasurementWriter(
+      failure: const V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path must be an absolute local path.',
+      ),
+    );
+    await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _enterSaveMeasurement(tester);
+    await _tapSaveMeasurement(tester);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.textContaining('Not saved: project path is invalid'),
+      findsOneWidget,
+    );
+    expect(find.text('Saved to events.jsonl'), findsNothing);
+  });
+
   testWidgets('lock conflict shows retryable not-saved error', (tester) async {
     final writer = _FakeSaveMeasurementWriter(
       failure: const V2SaveMeasurementException(

@@ -54,7 +54,7 @@ ProcessResult _success([String stdout = 'ok']) =>
 
 ProcessResult _failure(String stderr) => ProcessResult(0, 1, '', stderr);
 
-ProjectState _projectState(Directory directory) {
+ProjectState _projectState(Directory directory, {String? projectDirectory}) {
   return ProjectState(
     manifest: const ProjectManifest(
       projectId: 'measure_sheet_project',
@@ -91,7 +91,28 @@ ProjectState _projectState(Directory directory) {
       ),
     ],
     customerReport: 'Inline report',
-    projectDirectory: directory.path,
+    projectDirectory: projectDirectory ?? directory.path,
+  );
+}
+
+String _joinPathForTest(String base, String child) {
+  if (base.endsWith('/') || base.endsWith('\\')) {
+    return '$base$child';
+  }
+  return '$base${Platform.pathSeparator}$child';
+}
+
+List<String> _writerCommand(_FakeProcessRunner runner) {
+  return runner.calls.map((call) => call.command).firstWhere(
+        (command) =>
+            command.any((part) => part.contains('event_writer_service.py')),
+      );
+}
+
+bool _writerWasCalled(_FakeProcessRunner runner) {
+  return runner.calls.any(
+    (call) =>
+        call.command.any((part) => part.contains('event_writer_service.py')),
   );
 }
 
@@ -211,6 +232,200 @@ void main() {
       );
     });
 
+    test('canonicalizes project directory before writer invocation', () async {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-v2-save-test-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final canonicalDirectory = directory.resolveSymbolicLinksSync();
+      File(_joinPathForTest(canonicalDirectory, 'events.jsonl'))
+          .writeAsStringSync('');
+
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2SaveMeasurementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+        now: () => DateTime.utc(2026, 6, 8, 10),
+        eventIdGenerator: () => 'evt_000002',
+        measurementIdGenerator: () => 'M10',
+      );
+
+      await service.saveMeasurement(
+        projectState: _projectState(
+          directory,
+          projectDirectory: directory.path,
+        ),
+        request: _request(),
+      );
+
+      expect(
+        _writerCommand(runner),
+        contains(_joinPathForTest(canonicalDirectory, 'events.jsonl')),
+      );
+    });
+
+    test('rejects missing project directory before writer invocation',
+        () async {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-v2-save-test-');
+      final missingDirectory =
+          Directory(_joinPathForTest(directory.path, 'missing'));
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2SaveMeasurementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+
+      await expectLater(
+        service.saveMeasurement(
+          projectState: _projectState(
+            directory,
+            projectDirectory: missingDirectory.path,
+          ),
+          request: _request(),
+        ),
+        throwsA(
+          isA<V2SaveMeasurementException>().having(
+            (error) => error.kind,
+            'kind',
+            V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          ),
+        ),
+      );
+      expect(runner.calls, isEmpty);
+      expect(_writerWasCalled(runner), isFalse);
+    });
+
+    test('rejects relative project directory before writer invocation',
+        () async {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-v2-save-test-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2SaveMeasurementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+
+      await expectLater(
+        service.saveMeasurement(
+          projectState: _projectState(
+            directory,
+            projectDirectory: 'relative_project',
+          ),
+          request: _request(),
+        ),
+        throwsA(
+          isA<V2SaveMeasurementException>().having(
+            (error) => error.kind,
+            'kind',
+            V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          ),
+        ),
+      );
+      expect(runner.calls, isEmpty);
+      expect(_writerWasCalled(runner), isFalse);
+    });
+
+    test(
+        'rejects traversal-like project directory so events.jsonl cannot escape',
+        () async {
+      final parent =
+          Directory.systemTemp.createTempSync('tracebench-v2-save-test-');
+      final selected = Directory(_joinPathForTest(parent.path, 'selected'))
+        ..createSync();
+      final escaped = Directory(_joinPathForTest(parent.path, 'escaped'))
+        ..createSync();
+      File(_joinPathForTest(selected.path, 'events.jsonl'))
+          .writeAsStringSync('');
+      addTearDown(() => parent.deleteSync(recursive: true));
+      final escapedName = escaped.path.split(RegExp(r'[\\/]+')).last;
+      final traversalPath = [
+        selected.path,
+        '..',
+        escapedName,
+      ].join(Platform.pathSeparator);
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2SaveMeasurementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+
+      await expectLater(
+        service.saveMeasurement(
+          projectState: _projectState(
+            selected,
+            projectDirectory: traversalPath,
+          ),
+          request: _request(),
+        ),
+        throwsA(
+          isA<V2SaveMeasurementException>().having(
+            (error) => error.kind,
+            'kind',
+            V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          ),
+        ),
+      );
+      expect(runner.calls, isEmpty);
+      expect(_writerWasCalled(runner), isFalse);
+    });
+
+    test('rejects non-canonical project directory before writer invocation',
+        () async {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-v2-save-test-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2SaveMeasurementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+
+      await expectLater(
+        service.saveMeasurement(
+          projectState: _projectState(
+            directory,
+            projectDirectory: _joinPathForTest(directory.path, '.'),
+          ),
+          request: _request(),
+        ),
+        throwsA(
+          isA<V2SaveMeasurementException>().having(
+            (error) => error.kind,
+            'kind',
+            V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          ),
+        ),
+      );
+      expect(runner.calls, isEmpty);
+      expect(_writerWasCalled(runner), isFalse);
+    });
     test('event type override still writes measurement_recorded only',
         () async {
       final directory =

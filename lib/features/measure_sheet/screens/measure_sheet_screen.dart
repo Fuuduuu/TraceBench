@@ -176,6 +176,8 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
         return 'Not saved: writer service is unavailable.';
       case V2SaveMeasurementFailureKind.noProjectDirectory:
         return 'Not saved: project must be opened from a local folder.';
+      case V2SaveMeasurementFailureKind.invalidProjectDirectory:
+        return 'Not saved: project path is invalid.';
     }
   }
 

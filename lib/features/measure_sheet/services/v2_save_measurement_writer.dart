@@ -27,6 +27,7 @@ enum V2SaveMeasurementFailureKind {
   lockConflict,
   pythonUnavailable,
   noProjectDirectory,
+  invalidProjectDirectory,
 }
 
 class V2SaveMeasurementException implements Exception {
@@ -142,6 +143,7 @@ class V2SaveMeasurementService implements V2SaveMeasurementWriter {
       );
     }
 
+    final eventsPath = _resolveEventsPath(projectDirectory);
     final python = await _discoverPython();
     if (python == null) {
       throw const V2SaveMeasurementException(
@@ -151,7 +153,6 @@ class V2SaveMeasurementService implements V2SaveMeasurementWriter {
     }
 
     final timestamp = _now().toUtc().toIso8601String();
-    final eventsPath = _joinPath(projectDirectory, _eventsFileName);
     final candidate = _buildCandidateEvent(
       projectState: projectState,
       request: request,
@@ -378,6 +379,127 @@ class V2SaveMeasurementService implements V2SaveMeasurementWriter {
   String _combinedOutput(ProcessResult result) {
     final combined = '${result.stdout}\n${result.stderr}'.trim();
     return combined.isEmpty ? 'event writer service failed' : combined;
+  }
+
+  String _resolveEventsPath(String projectDirectory) {
+    final trimmedProjectDirectory = projectDirectory.trim();
+    if (!_isAbsoluteLocalPath(trimmedProjectDirectory)) {
+      throw const V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path must be an absolute local path.',
+      );
+    }
+    if (_containsNavigationSegment(trimmedProjectDirectory)) {
+      throw const V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path must not contain navigation segments.',
+      );
+    }
+
+    final canonicalProjectDirectory =
+        _canonicalProjectDirectory(trimmedProjectDirectory);
+    if (!_sameCanonicalPath(
+      Directory(trimmedProjectDirectory).absolute.path,
+      canonicalProjectDirectory,
+    )) {
+      throw const V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path must already be canonical.',
+      );
+    }
+    final eventsFile =
+        File(_joinPath(canonicalProjectDirectory, _eventsFileName));
+    final eventsType = FileSystemEntity.typeSync(
+      eventsFile.path,
+      followLinks: false,
+    );
+    if (eventsType == FileSystemEntityType.link ||
+        eventsType == FileSystemEntityType.directory) {
+      throw const V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'events.jsonl must be a regular file inside the selected project.',
+      );
+    }
+
+    try {
+      final eventsParentDirectory =
+          eventsFile.parent.resolveSymbolicLinksSync();
+      if (!_sameCanonicalPath(
+        eventsParentDirectory,
+        canonicalProjectDirectory,
+      )) {
+        throw const V2SaveMeasurementException(
+          V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          'events.jsonl must stay inside the selected project directory.',
+        );
+      }
+    } on V2SaveMeasurementException {
+      rethrow;
+    } on FileSystemException catch (error) {
+      throw V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path could not be resolved: ${error.message}',
+      );
+    }
+
+    return eventsFile.path;
+  }
+
+  String _canonicalProjectDirectory(String projectDirectory) {
+    try {
+      final type = FileSystemEntity.typeSync(
+        projectDirectory,
+        followLinks: true,
+      );
+      if (type != FileSystemEntityType.directory) {
+        throw const V2SaveMeasurementException(
+          V2SaveMeasurementFailureKind.invalidProjectDirectory,
+          'Project directory path must resolve to an existing directory.',
+        );
+      }
+      return Directory(projectDirectory).resolveSymbolicLinksSync();
+    } on V2SaveMeasurementException {
+      rethrow;
+    } on FileSystemException catch (error) {
+      throw V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path could not be resolved: ${error.message}',
+      );
+    } on ArgumentError catch (error) {
+      throw V2SaveMeasurementException(
+        V2SaveMeasurementFailureKind.invalidProjectDirectory,
+        'Project directory path is malformed: $error',
+      );
+    }
+  }
+
+  bool _isAbsoluteLocalPath(String path) {
+    if (Platform.isWindows) {
+      return RegExp(r'^[A-Za-z]:[\\/]').hasMatch(path);
+    }
+    return path.startsWith('/');
+  }
+
+  bool _containsNavigationSegment(String path) {
+    return path
+        .split(RegExp(r'[\\/]+'))
+        .any((part) => part == '..' || part == '.');
+  }
+
+  bool _sameCanonicalPath(String first, String second) {
+    return _normalizedCanonicalPath(first) == _normalizedCanonicalPath(second);
+  }
+
+  String _normalizedCanonicalPath(String path) {
+    var normalized = path
+        .replaceAll('/', Platform.pathSeparator)
+        .replaceAll('\\', Platform.pathSeparator);
+    final minimumLength = Platform.isWindows ? 3 : 1;
+    while (normalized.length > minimumLength &&
+        normalized.endsWith(Platform.pathSeparator)) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    return Platform.isWindows ? normalized.toLowerCase() : normalized;
   }
 
   String _joinPath(String base, String child) {

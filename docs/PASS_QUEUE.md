@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_PASS`
+`V2_SAVE_MEASUREMENT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -119,8 +119,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for the first UI write flow using the accepted writer service; no UI, writer, validator, materializer, schema, ZIP, asset/sample, platform, tag, or release changes. |
 | V2_SAVE_MEASUREMENT_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Claude Code / Opus post-audit accepted the Save Measurement scope lock with no blocker/high/medium/low findings; validation PASS 268 tests. |
 | V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed Save Measurement scope lock and post-audit `ACCEPT_AS_IS`; preserved docs-only closeout boundary and routed to `V2_SAVE_MEASUREMENT_PASS`. |
-| V2_SAVE_MEASUREMENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | current (`PASS`) | First UI write-flow implementation using the accepted V2 writer service. Scope is Save Measurement only: create `measurement_recorded` through writer service; do not route to Add/Edit Component, Project ZIP, Activity Timeline, or Measure Momentum. |
-| V2_SAVE_MEASUREMENT_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent audit-only review of the Save Measurement UI write-flow implementation before any follow-up route opens. |
+| V2_SAVE_MEASUREMENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | completed | Accepted/pushed first V2 UI write-flow implementation using the accepted writer service; creates only `measurement_recorded`, hard-enforces event type, avoids idempotent local duplicate events, and preserves non-writing surfaces. |
+| V2_SAVE_MEASUREMENT_POST_AUDIT_PASS | GPT_PRO_SUBSTITUTE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit recheck accepted Save Measurement after the small patch for hard-coded `measurement_recorded` event type and idempotent local-event duplicate prevention; validation PASS. |
+| V2_SAVE_MEASUREMENT_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Docs-only closeout for accepted/pushed Save Measurement implementation and post-audit `ACCEPT_AS_IS`; routes next to Add Component scope lock. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Scope-lock only for the next V2 canonical-write surface; Add Component is protected and must not begin with implementation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
@@ -161,5 +163,3 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the low-staleness Mermaid diagram set for governance orientation before implementation: pass lifecycle, evidence boundaries, and tool/model routing. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | DOCS_SYNC | completed | Implemented locked governance diagram docs: `docs/PASS_LIFECYCLE.md`, `docs/ARCHITECTURE_BOUNDARIES.md`, and routing section in `docs/MODEL_ROUTING.md`. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out the pass by recording accepted closeout outcomes, NITs, and routing to docs drift cleanup. |
-
-

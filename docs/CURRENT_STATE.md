@@ -2,24 +2,25 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_CLOSEOUT_PASS`
-- Next recommended pass: `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this closeout: `f0cba24 feat: add V2 save measurement flow`
+- Latest accepted commit before this triage: `e9afa94 docs: close out V2 save measurement flow`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, committed, and pushed.
-- GPT Pro substitute post-audit recheck returned `ACCEPT_AS_IS` with `safe_to_commit: YES` after the small patch.
-- The small patch fixed both prior HIGH findings: Save Measurement hard-codes `event_type = measurement_recorded`, and existing idempotent writer results no longer duplicate local `ProjectState.events`.
+- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, committed, pushed, and closed out.
 - Save Measurement is the first accepted V2 UI write-flow.
 - Save Measurement creates only `measurement_recorded` through the accepted writer service adapter.
 - UI never appends directly to `events.jsonl`.
-- Writer service remains responsible for validation-before-append, lock handling, idempotency, durable append, and readback.
-- Final validation recorded for implementation context: focused Flutter tests PASS (`24`), full Flutter suite PASS (`220`), `py -3 tools\validate_all.py` PASS (`268`), changed-file Dart analyze PASS, and full analyzer residuals only in known pre-existing baseline issues outside changed files.
-- Next recommended pass is `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`; Add Component is a protected write surface and must start with scope lock, not implementation.
+- GPT Pro substitute post-audit recheck accepted Save Measurement as `ACCEPT_AS_IS` after the small patch for hard event-type enforcement and idempotent local-event duplicate prevention.
+- Gemini external advisory audit returned `SAFE_TO_CONTINUE` and does not invalidate the accepted Save Measurement pass.
+- Gemini TRC-01 is recorded as MEDIUM candidate hardening for project-directory/path canonicalization around `V2SaveMeasurementService` / `_joinPath`.
+- Gemini TRC-03 is design-sensitive: do not blindly replace deterministic `clientOperationId` with random UUID/ULID until idempotency/retry semantics are reviewed.
+- TRC-02 and TRC-04 are recorded as low/info hardening notes, not active vulnerabilities on current evidence.
+- Add Component remains the intended next V2 write surface, but it is temporarily behind the Save Measurement path-canonicalization hardening scope lock.
 
 ## Accepted Save Measurement state
 
@@ -50,14 +51,13 @@
 - `known_facts.json` remains materialized projection/cache.
 - Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- No Add/Edit Component opened in this closeout.
-- No Project ZIP changes, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, diagnosis/probability/confidence/fault ranking, net inference, component identity confirmation, or automatic second event.
+- No Add/Edit Component implementation, Project ZIP change, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, diagnosis/probability/confidence/fault ranking, net inference, component identity confirmation, or automatic second event.
 
 ## Maintenance note
 
 - `docs/MEMORY_MAINTENANCE.md` owns the compaction trigger: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
-- Keep this handoff compact; keep full implementation/audit detail in audit/spec docs only.
+- Keep this handoff compact; keep full implementation/audit/security-triage detail in audit/spec docs only.
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`

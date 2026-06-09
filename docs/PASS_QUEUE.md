@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_CLOSEOUT_PASS`
+`V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS`
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -121,8 +121,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed Save Measurement scope lock and post-audit `ACCEPT_AS_IS`; preserved docs-only closeout boundary and routed to `V2_SAVE_MEASUREMENT_PASS`. |
 | V2_SAVE_MEASUREMENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | completed | Accepted/pushed first V2 UI write-flow implementation using the accepted writer service; creates only `measurement_recorded`, hard-enforces event type, avoids idempotent local duplicate events, and preserves non-writing surfaces. |
 | V2_SAVE_MEASUREMENT_POST_AUDIT_PASS | GPT_PRO_SUBSTITUTE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit recheck accepted Save Measurement after the small patch for hard-coded `measurement_recorded` event type and idempotent local-event duplicate prevention; validation PASS. |
-| V2_SAVE_MEASUREMENT_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Docs-only closeout for accepted/pushed Save Measurement implementation and post-audit `ACCEPT_AS_IS`; routes next to Add Component scope lock. |
-| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Scope-lock only for the next V2 canonical-write surface; Add Component is protected and must not begin with implementation. |
+| V2_SAVE_MEASUREMENT_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed Save Measurement implementation and post-audit `ACCEPT_AS_IS`; originally routed next to Add Component scope lock. |
+| V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS | CODEX / DOCS_TRIAGE | current (`PASS`) | Capture external Gemini security advisory findings after accepted Save Measurement; does not invalidate implementation; routes TRC-01 to path-canonicalization hardening scope lock. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Scope-lock only for Save Measurement path/project-directory canonicalization hardening before Add Component opens; do not implement code in triage. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | deferred next after hardening | Scope-lock only for the next V2 canonical-write surface after Save Measurement path hardening is routed; Add Component is protected and must not begin with implementation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

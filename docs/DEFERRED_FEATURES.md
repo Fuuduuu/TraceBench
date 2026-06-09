@@ -28,3 +28,5 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - V2 Add Component, Edit Component, Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until each later pass is separately scoped and audited.
 - V2 event schema/spec documentation, validator implementation, materializer projection implementation, event writer service implementation, Save Measurement scope lock, and Save Measurement implementation are accepted through their scoped paths. Add/Edit Component, Project ZIP changes, Activity Timeline, and Measure Momentum implementation remain deferred to later individually scoped and audited passes.
 - Before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, separate known_facts-schema / Project ZIP scope is required.
+- Save Measurement deterministic `clientOperationId` changes remain deferred until idempotency/retry semantics are explicitly reviewed; do not blindly replace with random UUID/ULID.
+- Add Component scope/implementation remains deferred until Save Measurement path/project-directory canonicalization hardening is scoped from Gemini TRC-01.

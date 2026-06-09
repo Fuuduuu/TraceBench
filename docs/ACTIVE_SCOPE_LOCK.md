@@ -2,27 +2,18 @@
 
 ## Active pass
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
-- Lane: `CODEX / SMALL_HARDENING_IMPL`
-- Mode: narrow Save Measurement path/project-directory canonicalization hardening
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS`
+- Lane: `CODEX / DOCS_SYNC_CLOSEOUT`
+- Mode: docs-only closeout
+- Next recommended pass: `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
 
 ## Goal
 
-Implement the accepted Save Measurement path/project-directory canonicalization hardening scope lock.
+Close out the accepted and pushed `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`.
 
-This pass hardens only `V2SaveMeasurementService` / Save Measurement project-directory path handling so derived `events.jsonl` cannot escape the selected local project directory and unsafe project-directory inputs fail closed before writer invocation.
+This pass records post-audit `ACCEPT_AS_IS`, `safe_to_commit: YES`, validation state, accepted implementation behavior, and the route to Add Component scope lock only.
 
-## Write allowlist for this implementation pass
-
-Implementation and tests:
-
-- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
-- `lib/features/measure_sheet/screens/measure_sheet_screen.dart` only for not-saved error mapping
-- `test/unit/v2_save_measurement_writer_test.dart`
-- `test/widget/measure_sheet_screen_test.dart`
-
-Governance/audit:
+## Write allowlist for this closeout pass
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
@@ -30,38 +21,38 @@ Governance/audit:
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PASS_QUEUE.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if needed as compact pointer
+- `docs/audit/V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS.md`
 
 Do not write outside these surfaces.
 
-## Required implementation behavior
+## Accepted closeout facts
 
-- Normalize/canonicalize project directory before deriving `events.jsonl`.
-- Ensure derived `events.jsonl` stays inside the selected local project directory.
-- Reject missing, relative, malformed, traversal-like, or non-canonical project-directory inputs before writer invocation.
-- Do not call the Python writer when path validation fails.
-- Map path validation failure to a clear not-saved UI outcome if UI mapping is needed.
-- Preserve accepted writer-service validation-before-append, lock, idempotency, durable append, and readback guarantees.
-- Preserve Save Measurement event construction as `measurement_recorded` only.
-- Preserve deterministic `clientOperationId`; TRC-03 remains explicitly out of scope.
+- `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS` is implemented, audited, accepted, and pushed.
+- Commit message: `fix: harden save measurement project path handling`.
+- Post-audit result: `ACCEPT_AS_IS`.
+- `safe_to_commit: YES`.
+- Validation recorded:
+  - `flutter analyze`: baseline only.
+  - Focused tests: `30/30` PASS.
+  - Full Flutter suite: `226` PASS.
+  - `py -3 tools\validate_all.py`: `268` PASS.
 
-## Required tests
+## Accepted implementation behavior
 
-- Normal local project directory still saves.
-- Missing project directory remains not-saved.
-- Traversal-like `projectDirectory` is rejected.
-- `events.jsonl` cannot escape the selected project directory.
-- Canonicalized path is used for writer invocation.
-- Writer is not called when path validation fails.
-- Error maps to not-saved outcome.
-- Save Measurement still emits only `measurement_recorded`.
-- Existing idempotent writer result still does not duplicate local `ProjectState.events`.
+- Save Measurement path/project-directory canonicalization hardening is implemented.
+- Unsafe or non-canonical project paths fail closed.
+- Derived `events.jsonl` cannot escape the selected project directory.
+- Python writer is not called on invalid project paths.
+- Invalid path maps to a clear not-saved UI outcome.
+- Accepted writer-service boundary is preserved.
+- Save Measurement remains `measurement_recorded` only.
+- Deterministic `clientOperationId` is unchanged; TRC-03 remains excluded.
 
 ## Forbidden surfaces
 
 - No Add/Edit Component implementation.
 - No deterministic `clientOperationId` UUID/ULID/random change.
-- No writer service contract change beyond Save Measurement path validation before invocation.
 - No validator behavior change.
 - No materializer behavior change.
 - No schema files or JSON schema change.
@@ -92,17 +83,14 @@ Do not write outside these surfaces.
 
 ## Route lock
 
-Next recommended pass is `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`.
+Next recommended pass is `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`.
 
-Do not route to Add Component yet. Do not include TRC-03 ID-generation changes in this route.
+Do not route directly to Add Component implementation. Add Component is a protected canonical-write surface and must begin with a scope lock.
 
 ## Validation
 
-- dart format on changed Dart files
-- dart analyze changed Dart files
-- `flutter test test\widget\measure_sheet_screen_test.dart test\unit\v2_save_measurement_writer_test.dart --reporter expanded`
-- `flutter test --reporter expanded`
 - `py -3 tools\validate_all.py`
 - `git diff --check`
 - `git status --short --branch`
 - `git diff --name-only`
+- artifact scan

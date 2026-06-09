@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -126,9 +126,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for future Save Measurement path/project-directory canonicalization hardening; implementation remained blocked until post-audit acceptance. |
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the path-canonicalization hardening scope lock as-is; `safe_to_commit: YES`. |
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed scope lock and post-audit `ACCEPT_AS_IS`; routes next to implementation. |
-| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS | FLUTTER_PASS / HARDENING_PASS | current | Implement only Save Measurement path/project-directory canonicalization hardening from accepted scope; preserve TRC-03 exclusion and do not route to Add Component yet. |
-| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Audit the Save Measurement path/project-directory canonicalization hardening implementation before any Add Component scope opens. |
-| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | deferred next after hardening | Scope-lock only for the next V2 canonical-write surface after Save Measurement path hardening is routed; Add Component is protected and must not begin with implementation. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS | FLUTTER_PASS / HARDENING_PASS | completed | Implemented Save Measurement path/project-directory canonicalization hardening from accepted scope; fails closed for unsafe/non-canonical project paths, prevents `events.jsonl` escape, preserves TRC-03 exclusion, and is accepted/pushed. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the Save Measurement path/project-directory canonicalization hardening implementation; `safe_to_commit: YES`; validation recorded as focused tests `30/30`, full Flutter suite `226`, and `validate_all.py` `268` PASS. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed path-canonicalization hardening implementation and post-audit `ACCEPT_AS_IS`; route next to Add Component scope lock only. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Scope-lock only for the next V2 canonical-write surface after Save Measurement path hardening closeout; Add Component is protected and must not begin with implementation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

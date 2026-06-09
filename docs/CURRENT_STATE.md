@@ -2,23 +2,24 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS`
+- Next recommended pass: `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
 - Branch: `main`
-- Latest accepted commit before this implementation: `37cc386 docs: close out save measurement path canonicalization scope`
+- Latest accepted implementation commit: `16eca52 fix: harden save measurement project path handling`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
 - `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, pushed, and closed out.
-- `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS` is accepted, pushed, and post-audited `ACCEPT_AS_IS` with `safe_to_commit: YES`.
-- Save Measurement remains the first accepted V2 UI write-flow and creates only `measurement_recorded` through the accepted writer service adapter.
-- Gemini TRC-01 is accepted as MEDIUM hardening input around `V2SaveMeasurementService` / `_joinPath`.
-- Current pass implements only Save Measurement path/project-directory canonicalization hardening under the accepted scope lock.
-- The implementation must fail closed for unsafe or non-canonical project paths, prevent `events.jsonl` escape outside the selected local project, and preserve accepted writer-service boundaries.
-- TRC-03 remains excluded: deterministic `clientOperationId` is tied to idempotent retry / duplicate prevention semantics and must not be blindly changed to UUID/ULID/random IDs in this route.
-- Add Component remains deferred until after Save Measurement path-canonicalization hardening is implemented, audited, and closed out.
+- `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS` is implemented, audited, accepted, pushed, and ready to close out.
+- Post-audit result: `ACCEPT_AS_IS` with `safe_to_commit: YES`.
+- Commit message: `fix: harden save measurement project path handling`.
+- Validation recorded for hardening: focused tests `30/30` PASS, full Flutter suite `226` PASS, `py -3 tools\validate_all.py` `268` PASS, and `flutter analyze` baseline-only.
+- Path hardening fails closed for unsafe/non-canonical project paths, prevents `events.jsonl` escape outside the selected local project directory, and does not call the Python writer on invalid paths.
+- Invalid project paths map to a not-saved UI outcome.
+- Save Measurement still uses the accepted writer service adapter, still creates only `measurement_recorded`, and leaves deterministic `clientOperationId` unchanged.
+- Next route is `V2_ADD_COMPONENT_SCOPE_LOCK_PASS`; Add Component is protected and must begin with scope lock, not implementation.
 
 ## Accepted Save Measurement state
 
@@ -47,4 +48,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`

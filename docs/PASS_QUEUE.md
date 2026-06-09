@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -123,8 +123,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_POST_AUDIT_PASS | GPT_PRO_SUBSTITUTE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit recheck accepted Save Measurement after the small patch for hard-coded `measurement_recorded` event type and idempotent local-event duplicate prevention; validation PASS. |
 | V2_SAVE_MEASUREMENT_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed Save Measurement implementation and post-audit `ACCEPT_AS_IS`; originally routed next to Add Component scope lock. |
 | V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS | CODEX / DOCS_TRIAGE | completed | Captured external Gemini security advisory findings after accepted Save Measurement; did not invalidate implementation; routed TRC-01 to path-canonicalization hardening scope lock. |
-| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current (`PASS`) | Docs-only scope lock for future Save Measurement path/project-directory canonicalization hardening; implementation blocked until post-audit accepts this scope. |
-| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Audit this scope lock before implementation; verify TRC-01 boundary, TRC-03 exclusion, future allowlist, forbidden surfaces, and test requirements. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for future Save Measurement path/project-directory canonicalization hardening; implementation remained blocked until post-audit acceptance. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the path-canonicalization hardening scope lock as-is; `safe_to_commit: YES`. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current (`PASS`) | Docs-only closeout for accepted/pushed scope lock and post-audit `ACCEPT_AS_IS`; routes next to implementation. |
+| V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS | FLUTTER_PASS / HARDENING_PASS | recommended next | Implement only Save Measurement path/project-directory canonicalization hardening from accepted scope; preserve TRC-03 exclusion and do not route to Add Component yet. |
 | V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | deferred next after hardening | Scope-lock only for the next V2 canonical-write surface after Save Measurement path hardening is routed; Add Component is protected and must not begin with implementation. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |

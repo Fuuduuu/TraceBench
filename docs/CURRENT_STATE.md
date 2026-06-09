@@ -2,25 +2,23 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_CLOSEOUT_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`
 - Branch: `main`
-- Latest accepted commit before this scope lock: `331125f docs: triage Gemini save measurement security findings`
+- Latest accepted commit before this closeout: `48feb8a docs: lock save measurement path canonicalization hardening scope`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
 - `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, pushed, and closed out.
-- Save Measurement is the first accepted V2 UI write-flow.
-- Save Measurement creates only `measurement_recorded` through the accepted writer service adapter.
-- UI never appends directly to `events.jsonl`.
-- Gemini external advisory audit returned `SAFE_TO_CONTINUE` and does not invalidate the accepted Save Measurement pass.
-- `V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS` recorded TRC-01 as MEDIUM candidate hardening around `V2SaveMeasurementService` / `_joinPath`.
-- Current pass locks a future Save Measurement path/project-directory canonicalization hardening pass.
+- `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS` is accepted, pushed, and post-audited `ACCEPT_AS_IS` with `safe_to_commit: YES`.
+- Save Measurement remains the first accepted V2 UI write-flow and creates only `measurement_recorded` through the accepted writer service adapter.
+- Gemini TRC-01 is accepted as MEDIUM hardening input around `V2SaveMeasurementService` / `_joinPath`.
+- Next pass may implement only Save Measurement path/project-directory canonicalization hardening under the accepted scope lock.
 - Future implementation must fail closed for unsafe or non-canonical project paths, prevent `events.jsonl` escape outside the selected local project, and preserve accepted writer-service boundaries.
-- TRC-03 is excluded from this scope: deterministic `clientOperationId` is tied to idempotent retry / duplicate prevention semantics and must not be blindly changed to UUID/ULID.
-- Add Component remains deferred until after this hardening scope lock is post-audited and accepted.
+- TRC-03 remains excluded: deterministic `clientOperationId` is tied to idempotent retry / duplicate prevention semantics and must not be blindly changed to UUID/ULID/random IDs in this route.
+- Add Component remains deferred until after Save Measurement path-canonicalization hardening is implemented, audited, and closed out.
 
 ## Accepted Save Measurement state
 
@@ -49,4 +47,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS`

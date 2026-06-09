@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_ADD_COMPONENT_SCOPE_LOCK_PASS`
+`V2_ADD_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -129,8 +129,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_PASS | FLUTTER_PASS / HARDENING_PASS | completed | Implemented Save Measurement path/project-directory canonicalization hardening from accepted scope; fails closed for unsafe/non-canonical project paths, prevents `events.jsonl` escape, preserves TRC-03 exclusion, and is accepted/pushed. |
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the Save Measurement path/project-directory canonicalization hardening implementation; `safe_to_commit: YES`; validation recorded as focused tests `30/30`, full Flutter suite `226`, and `validate_all.py` `268` PASS. |
 | V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed path-canonicalization hardening implementation and post-audit `ACCEPT_AS_IS`; route next to Add Component scope lock only. |
-| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | current | Docs-only scope lock for the next V2 canonical-write surface after Save Measurement path hardening closeout; future implementation must create only `component_created` through the accepted writer adapter and must not begin before post-audit. |
-| V2_ADD_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Post-audit the Add Component scope lock before any V2_ADD_COMPONENT_PASS implementation route is opened. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | completed | Docs-only scope lock for the next V2 canonical-write surface after Save Measurement path hardening closeout; future implementation must create only `component_created` through the accepted writer adapter and must not begin before post-audit. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the Add Component scope lock; `safe_to_commit: YES`; no implementation started. |
+| V2_ADD_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed Add Component scope lock and post-audit ACCEPT_AS_IS; route next to V2_ADD_COMPONENT_PASS. |
+| V2_ADD_COMPONENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | recommended next | Implement the accepted Add Component write-flow only under the closed scope: creates only component_created, uses accepted writer adapter, and preserves identity/hint boundaries. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

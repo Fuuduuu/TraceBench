@@ -2,25 +2,25 @@
 
 ## Current status
 
-- Current pass: `V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS`
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
+- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
+- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`
 - Branch: `main`
-- Latest accepted commit before this triage: `e9afa94 docs: close out V2 save measurement flow`
+- Latest accepted commit before this scope lock: `331125f docs: triage Gemini save measurement security findings`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, committed, pushed, and closed out.
+- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, pushed, and closed out.
 - Save Measurement is the first accepted V2 UI write-flow.
 - Save Measurement creates only `measurement_recorded` through the accepted writer service adapter.
 - UI never appends directly to `events.jsonl`.
-- GPT Pro substitute post-audit recheck accepted Save Measurement as `ACCEPT_AS_IS` after the small patch for hard event-type enforcement and idempotent local-event duplicate prevention.
 - Gemini external advisory audit returned `SAFE_TO_CONTINUE` and does not invalidate the accepted Save Measurement pass.
-- Gemini TRC-01 is recorded as MEDIUM candidate hardening for project-directory/path canonicalization around `V2SaveMeasurementService` / `_joinPath`.
-- Gemini TRC-03 is design-sensitive: do not blindly replace deterministic `clientOperationId` with random UUID/ULID until idempotency/retry semantics are reviewed.
-- TRC-02 and TRC-04 are recorded as low/info hardening notes, not active vulnerabilities on current evidence.
-- Add Component remains the intended next V2 write surface, but it is temporarily behind the Save Measurement path-canonicalization hardening scope lock.
+- `V2_SAVE_MEASUREMENT_GEMINI_SECURITY_TRIAGE_PASS` recorded TRC-01 as MEDIUM candidate hardening around `V2SaveMeasurementService` / `_joinPath`.
+- Current pass locks a future Save Measurement path/project-directory canonicalization hardening pass.
+- Future implementation must fail closed for unsafe or non-canonical project paths, prevent `events.jsonl` escape outside the selected local project, and preserve accepted writer-service boundaries.
+- TRC-03 is excluded from this scope: deterministic `clientOperationId` is tied to idempotent retry / duplicate prevention semantics and must not be blindly changed to UUID/ULID.
+- Add Component remains deferred until after this hardening scope lock is post-audited and accepted.
 
 ## Accepted Save Measurement state
 
@@ -31,17 +31,6 @@
 - Existing idempotent writer results do not duplicate local `ProjectState.events`.
 - Board Canvas, Reference Images, Guided Measurement Helper, Reference Values Panel, and Activity Timeline remain read-only/non-writing surfaces.
 
-## V2 backend accepted state
-
-- Schema/spec requirements: `docs/spec/V2_EVENT_SCHEMA_SPEC.md`.
-- Validator V2 path: `tools/validate_events_jsonl.py`.
-- Materializer V2 projection: `tools/materialize_known_facts.py`.
-- Writer service append path: `tools/event_writer_service.py`.
-- `events.jsonl` is the only canonical write target.
-- `known_facts.json` remains projection/cache.
-- Writer appends only and validates through the existing validator before append and again under lock.
-- Writer uses `client_operation_id` idempotency, atomic `events.jsonl.lock`, durable append, `fsync`, and readback verification.
-
 ## Hard boundaries
 
 - Human is the sensor. AI is the graph engine.
@@ -51,7 +40,7 @@
 - `known_facts.json` remains materialized projection/cache.
 - Renderer/view writes nothing unless explicitly scoped.
 - `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- No Add/Edit Component implementation, Project ZIP change, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, diagnosis/probability/confidence/fault ranking, net inference, component identity confirmation, or automatic second event.
+- No Add/Edit Component implementation, Project ZIP change, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, diagnosis/probability/confidence/fault ranking, net inference, component identity confirmation, automatic second event, or deterministic `clientOperationId` change.
 
 ## Maintenance note
 
@@ -60,4 +49,4 @@
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`

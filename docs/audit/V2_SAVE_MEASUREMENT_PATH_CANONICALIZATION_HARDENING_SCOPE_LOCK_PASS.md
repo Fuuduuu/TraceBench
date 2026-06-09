@@ -1,32 +1,34 @@
-# ACTIVE_SCOPE_LOCK.md
+# V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS
 
-## Active pass
+## MODEL_ROUTING_CHECK
 
-- Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`
-- Lane: `CODEX / DOCS_SCOPE_LOCK`
-- Mode: docs-only scope lock
-- Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`
+PASS. Codex is the correct tool for this repo-local docs-only scope lock. No implementation, schema, validator, materializer, writer-service, Flutter runtime, test, Project ZIP, tag, or release work is required.
 
-## Goal
+## Startup state
 
-Create a narrow scope lock for a future Save Measurement path/project-directory canonicalization hardening pass addressing Gemini TRC-01.
+- Branch: `main`.
+- Remote: `origin https://github.com/Fuuduuu/TraceBench.git`.
+- HEAD at startup: `331125f docs: triage Gemini save measurement security findings`.
+- Tracked working tree before scope-lock edits: clean.
+- Existing untracked local artifacts were present and left untouched.
 
-This pass does not implement code. It defines the future implementation boundary and routes to post-audit before any implementation begins.
+## Scope drift check
 
-## Write allowlist for this scope-lock pass
+PASS. This pass creates a docs-only scope lock. It does not modify Flutter runtime, tests, writer service, validator, materializer, schema files, Project ZIP logic, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, Add/Edit Component, assets, samples, platform folders, generated artifacts, tags, or releases.
 
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/PROJECT_MEMORY.md` only if needed for compact durable pointer
-- `docs/audit/V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS.md`
+## Verdict
 
-Do not write outside these surfaces.
+PASS. Future Save Measurement path/project-directory canonicalization hardening scope is locked, pending post-audit.
 
-## Future implementation scope to lock
+## Background
+
+- `V2_SAVE_MEASUREMENT_PASS` is implemented, audited, accepted, pushed, and closed out.
+- Gemini advisory triage is accepted/pushed.
+- Gemini TRC-01 is recorded as MEDIUM candidate hardening around `V2SaveMeasurementService` / `_joinPath`.
+- Gemini TRC-03 is design-sensitive and must not be blindly changed in this pass.
+- Add Component remains deferred until after this hardening route.
+
+## Locked future implementation scope
 
 Future implementation pass may address only Save Measurement project-directory/path canonicalization around the Dart writer adapter.
 
@@ -41,7 +43,7 @@ Future implementation may:
 
 ## Future implementation candidate allowlist
 
-Exact future allowlist must be re-locked by the implementation pass, but this scope lock permits considering only:
+Exact future allowlist must be re-locked in the implementation pass, but this scope lock permits considering only:
 
 - `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
 - `lib/features/measure_sheet/screens/measure_sheet_screen.dart` only if required for clear not-saved error mapping
@@ -72,7 +74,7 @@ Future implementation must not:
 
 ## TRC-01 handling
 
-TRC-01 is accepted as MEDIUM candidate hardening around `V2SaveMeasurementService` / `_joinPath`.
+TRC-01 is accepted as MEDIUM candidate hardening.
 
 Future implementation must:
 
@@ -119,13 +121,15 @@ Future implementation must add focused tests proving:
 - No component identity confirmation.
 - No automatic second event.
 
-## Route lock
+## Route decision
 
-Next recommended pass is `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`.
+Current pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_PASS`.
+
+Next recommended pass: `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS`.
 
 Do not route directly to implementation before post-audit accepts this scope lock. Do not route to Add Component yet.
 
-## Validation
+## Validation required
 
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`

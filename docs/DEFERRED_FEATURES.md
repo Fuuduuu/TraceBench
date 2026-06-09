@@ -30,3 +30,4 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - Before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, separate known_facts-schema / Project ZIP scope is required.
 - Save Measurement deterministic `clientOperationId` changes remain deferred until idempotency/retry semantics are explicitly reviewed; do not blindly replace with random UUID/ULID.
 - Add Component scope/implementation remains deferred until Save Measurement path/project-directory canonicalization hardening is scoped from Gemini TRC-01.
+- Save Measurement path/project-directory canonicalization implementation remains deferred until `V2_SAVE_MEASUREMENT_PATH_CANONICALIZATION_HARDENING_SCOPE_LOCK_POST_AUDIT_PASS` accepts the scope lock.

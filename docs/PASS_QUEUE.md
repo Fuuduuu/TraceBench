@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS`
+`V2_ADD_COMPONENT_PASS`
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_PASS`
+`V2_ADD_COMPONENT_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -134,8 +134,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_ADD_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed Add Component scope lock and post-audit ACCEPT_AS_IS; route next to V2_ADD_COMPONENT_PASS. |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS | CODEX / DOCS_SYNC | completed | Docs-only capture of archived BenchBeep / Ideelabor future-work ideas before Add Component implementation; no runtime behavior. |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the backlog capture; `safe_to_commit: YES`; after closeout, route back to V2_ADD_COMPONENT_PASS. |
-| BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed BenchBeep ideation backlog capture and post-audit `ACCEPT_AS_IS`; route next back to V2_ADD_COMPONENT_PASS. |
-| V2_ADD_COMPONENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | recommended next | Implement the accepted Add Component write-flow only under the closed scope: creates only `component_created`, uses accepted writer adapter, and preserves identity/hint boundaries. |
+| BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed BenchBeep ideation backlog capture and post-audit `ACCEPT_AS_IS`; route next back to V2_ADD_COMPONENT_PASS. |
+| V2_ADD_COMPONENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | current | Implement the accepted Add Component write-flow only under the closed scope: creates only `component_created`, uses accepted writer adapter, and preserves identity/hint boundaries. |
+| V2_ADD_COMPONENT_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the V2 Add Component implementation for scope compliance, writer-boundary preservation, validation state, and forbidden-surface drift. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |

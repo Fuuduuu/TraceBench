@@ -2,22 +2,20 @@
 
 ## Current status
 
-- Current pass: `BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS`
-- Next recommended pass: `BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_POST_AUDIT_PASS`
+- Current pass: `BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS`
+- Next recommended pass: `V2_ADD_COMPONENT_PASS`
 - Branch: `main`
-- Latest accepted closeout commit: `4e648ec docs: close out V2 add component scope`
+- Latest accepted capture commit: `77a782b docs: capture BenchBeep ideation backlog`
 - Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
 - Validation baseline: `py -3 tools\validate_all.py`
 
 ## Live handoff
 
-- This is a docs-only backlog capture before `V2_ADD_COMPONENT_PASS` implementation starts.
-- Captured future-work ideas: Photo Markup / Repair Map Builder, Capture Guide / Photo Capture Protocol, Manual Markup Wizard, Editable Vector Overlay, Visual Trace Shape Assist, real-world photo test plan, candidate/forbidden wording, and BenchBeep branding as later non-technical marketing input.
-- Current capture does not change V2 implementation architecture and does not implement UI/runtime behavior.
-- After this capture is post-audited, committed, pushed, and closed out, route back to `V2_ADD_COMPONENT_PASS`.
-- Photo/AI/vector/template/candidate/helper output remains hint/context only: not component identity, not net proof, not measurement, not fault proof.
-- Visual Trace Shape Assist principle: “The user confirms the connection. AI shapes the route.” / “Kasutaja kinnitab ühenduse. AI annab rajale kuju.”
-- Repair Map principle: “Repair Map is non-canonical. The user confirms electrical truth. AI may assist with visual shape and candidates only.”
+- `BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS` is accepted, post-audited, committed, and pushed.
+- Post-audit verdict: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
+- Captured future-work ideas remain backlog only: Photo Markup / Repair Map Builder, Capture Guide / Photo Capture Protocol, Manual Markup Wizard, Editable Vector Overlay, Visual Trace Shape Assist, real-world photo test plan, candidate/forbidden wording, and BenchBeep branding as later non-technical marketing input.
+- This closeout does not change V2 implementation architecture and does not implement UI/runtime behavior.
+- Route next returns to `V2_ADD_COMPONENT_PASS`.
 
 ## Accepted Add Component scope state
 
@@ -25,6 +23,16 @@
 - Future Add Component implementation must create only `component_created` through the accepted writer-service adapter.
 - Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
 - Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only and must not auto-confirm component identity.
+
+## Backlog boundary summary
+
+- Repair Map remains non-canonical.
+- Photo, AI, vector, template, candidate, and helper outputs remain hint/context only.
+- They are not component identity.
+- They are not net proof.
+- They are not measurement proof.
+- They are not fault proof.
+- `visual_trace` is not a net.
 
 ## Hard boundaries
 
@@ -43,4 +51,4 @@
 
 ## Next recommended pass
 
-`BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_PASS`

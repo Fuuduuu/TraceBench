@@ -106,6 +106,7 @@ void main() {
     );
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
     expect(find.text('Kõik komponendid'), findsOneWidget);
+    expect(find.text('Add Component'), findsOneWidget);
     expect(find.text('Board graph'), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('Measure Sheet'), findsOneWidget);
@@ -119,6 +120,49 @@ void main() {
     );
     expect(
       find.byKey(const ValueKey('overview-measure-sheet-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('overview-add-component-button')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'overview has Add Component action and navigates to Add Component screen',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final addComponentAction = find.byKey(
+      const ValueKey('overview-add-component-button'),
+    );
+    expect(addComponentAction, findsOneWidget);
+    expect(find.text('Add Component'), findsOneWidget);
+    await tester.ensureVisible(addComponentAction);
+    await tester.pumpAndSettle();
+    await tester.tap(addComponentAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add Component'), findsAtLeastNWidgets(1));
+    expect(
+      find.text('Creates component_created only after explicit human action.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Human is the sensor. AI is the graph engine.'),
       findsOneWidget,
     );
   });
@@ -167,7 +211,8 @@ void main() {
       'Run AI',
     ];
     for (final action in forbiddenActions) {
-      expect(find.text(action), findsNothing, reason: 'Unexpected label: $action');
+      expect(find.text(action), findsNothing,
+          reason: 'Unexpected label: $action');
     }
 
     final boardCanvasAction = find.byKey(
@@ -212,7 +257,8 @@ void main() {
     expect(find.text('reference only'), findsOneWidget);
   });
 
-  testWidgets('overview has Measure Sheet action and navigates to read-only shell',
+  testWidgets(
+      'overview has Measure Sheet action and navigates to read-only shell',
       (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
 

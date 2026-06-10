@@ -2,53 +2,43 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_EDIT_COMPONENT_PASS`
 
-## Purpose
+## Latest accepted scope lock
 
-Docs-only scope lock for the future V2 Edit Component UI write-flow.
+`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` was accepted, post-audited, committed, and pushed as `7220cf3 docs: lock V2 edit component scope`.
 
-Future Edit Component implementation must create only `component_updated`, use the accepted writer-service adapter pattern, and never append directly to `events.jsonl`.
+Accepted post-audit result: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
 
 ## Locked Edit Component boundary
 
-- Editing patches or updates an existing component only; it must not create a new component.
+- Future implementation creates only `component_updated`.
+- Editing updates an existing component only; it must not create a new component.
+- Future UI uses the accepted writer-service adapter pattern.
+- Future UI and Dart service never append directly to `events.jsonl`.
 - Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hint/context only.
-- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability.
+- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints only.
+- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability claims.
 - Save Measurement and Add Component accepted behavior must remain unchanged.
 
 ## Route decision
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` routes next to `V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`.
-
-Do not route directly to `V2_EDIT_COMPONENT_PASS` before the scope lock is post-audited and closed out.
+`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS` closes out the accepted/pushed scope lock and routes next to `V2_EDIT_COMPONENT_PASS`.
 
 ## Boundaries
 
-- Docs-only scope lock.
+- Docs-only closeout.
 - No Flutter runtime, tests, tools, validator, materializer, schema, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
-- No Add Component or Save Measurement behavior changes.
+- No Save Measurement or Add Component behavior changes.
 - No completed pass history reopened or pruned.
-
-## Binding sources
-
-- `docs/AUDIT_CONTRACT.md`
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
-- `docs/audit/V2_ADD_COMPONENT_PASS.md`
-- `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_PASS.md`
-- `tools/event_writer_service.py`
-- `tools/validate_events_jsonl.py`
-- `tools/materialize_known_facts.py`
 
 ## Pointers
 
 - Active scope: `docs/ACTIVE_SCOPE_LOCK.md`
 - Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
-- Scope-lock audit: `docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_PASS.md`
+- Closeout audit: `docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS.md`

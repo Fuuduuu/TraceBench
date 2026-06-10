@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_EDIT_COMPONENT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -180,5 +180,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | LEAN_AUDIT_PROMPT_PROTOCOL_PASS | CODEX / DOCS_SYNC | completed | Accepted/pushed governance pass adding `docs/AUDIT_CONTRACT.md`, lean prompt format, lean-read rules, and full-prompt exceptions. |
 | LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the lean audit prompt protocol; `safe_to_commit: YES after exact targeted staging`. |
 | LEAN_AUDIT_PROMPT_PROTOCOL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed docs-only closeout for lean audit prompt protocol; route returned to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`. |
-| V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock for future Edit Component UI write-flow; future implementation creates only `component_updated`; no direct `events.jsonl` append; no implementation before post-audit. |
-| V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the Edit Component scope lock under docs/AUDIT_CONTRACT.md scope-lock-post-audit; verify future allowlist, forbidden surfaces, tests, and route. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for future Edit Component UI write-flow; future implementation creates only `component_updated`; no direct `events.jsonl` append. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the Edit Component scope lock; `safe_to_commit: YES`. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed Edit Component scope lock; route next to V2_EDIT_COMPONENT_PASS. |
+| V2_EDIT_COMPONENT_PASS | CODEX / FLUTTER_PASS / UI_WRITE_FLOW | recommended next | Implement Edit Component under the accepted scope lock; create only component_updated; edit existing components only; preserve writer-adapter and identity/hint boundaries. |

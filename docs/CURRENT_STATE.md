@@ -2,53 +2,43 @@
 
 ## Current pass
 
-`V2_ADD_COMPONENT_CLOSEOUT_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS`
 
-## Latest accepted implementation
+## Purpose
 
-`V2_ADD_COMPONENT_PASS` was implemented, post-audited, accepted, committed, and pushed as `ce58b91 feat: add V2 component creation flow`.
+This docs-only governance pass adds a reusable lean audit contract so future audit prompts can be shorter while preserving TraceBench strictness.
 
-Add Component is the second accepted V2 UI write-flow after Save Measurement. It creates only `component_created`, uses the accepted writer-service adapter pattern, and never appends directly to `events.jsonl`.
+`docs/AUDIT_CONTRACT.md` now owns standard audit contracts for scope-lock post-audit, implementation post-audit, docs closeout, route review, and recovery/evidence recheck.
 
-Accepted post-audit result: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
+`docs/PROMPTING_PROTOCOL.md` points auditors to the audit contract and lean prompt shape when repo-local docs are sufficient.
 
-## Accepted Add Component boundaries
+## Route context
 
-- Add Component preserves `actor.type=human`, `source.type=explicit_user_confirmation`, and `confirmation.confirmed=true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only.
-- Add Component does not auto-confirm component identity, pins, nets, measurements, or faults.
-- Save Measurement behavior remains unchanged.
-- Board Canvas, Reference Images, Guided Measurement Helper, Project ZIP, Activity Timeline, Measure Momentum, AI/OCR/CV, and event schema/tooling surfaces remain outside this closeout.
+The previous route before this pass was:
 
-## Validation state recorded for accepted implementation
+- Current: `V2_ADD_COMPONENT_CLOSEOUT_PASS`
+- Next: `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
 
-- Focused Add Component / overview tests: PASS, 23 tests.
-- Full Flutter suite: PASS, 244 tests.
-- `py -3 tools\validate_all.py`: PASS, 268 tests.
-- `flutter analyze`: baseline only.
+This pass temporarily routes next to `LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS`.
 
-## Route decision
+After accepted post-audit and closeout, route back to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
 
-`V2_ADD_COMPONENT_CLOSEOUT_PASS` records the accepted/pushed implementation and routes next to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
+## Boundaries
 
-Edit Component is a protected write surface and must start with scope lock. Do not route directly to implementation.
-
-## Hard boundaries
-
-- Human is the sensor. AI is the graph engine.
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains materialized projection/cache.
-- AI/helper output never authors canonical events/facts.
-- `board_graph.json` and `view_state.json` remain forbidden V1/V1.1 artifacts.
-- No Project ZIP, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, Board Canvas write/edit, Reference Images runtime, AI/OCR/CV, or V2 Edit Component implementation is opened in this closeout.
+- Docs-only governance change.
+- No Flutter runtime, tests, tools, validator, materializer, schema, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Add/Edit implementation, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
+- Repo docs remain canonical; old chat memory and old uploads do not override repo docs.
+- Protected-surface audits still require strict evidence and cannot rely on summary-only evidence.
 
 ## Pointers
 
-- Queue: `docs/PASS_QUEUE.md`
+- Audit contract: `docs/AUDIT_CONTRACT.md`
+- Prompting protocol: `docs/PROMPTING_PROTOCOL.md`
 - Active scope: `docs/ACTIVE_SCOPE_LOCK.md`
+- Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
-- Closeout audit: `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`
+- Pass audit: `docs/audit/LEAN_AUDIT_PROMPT_PROTOCOL_PASS.md`

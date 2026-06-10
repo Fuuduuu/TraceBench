@@ -300,3 +300,20 @@ Every implementation/audit prompt should state:
 - why that helper is chosen;
 - whether Claude Code / GPT Pro / Claude Design review is required and why;
 - exact validation sequence.
+
+## Lean audit prompts
+
+Future audits may use `docs/AUDIT_CONTRACT.md` and lean prompts instead of repeating full boundary lists, as long as repo docs remain canonical and protected-surface boundaries are still enforced.
+
+Lean audit prompts should use:
+
+```text
+PASS_ID: <id>
+TYPE: <scope-lock | implementation | docs-closeout | route-review | recovery | evidence-recheck>
+LANE: <model/helper lane>
+CODEX: <short summary: verdict, changed files, validation, route>
+FOCUS: <1-3 pass-specific risks>
+APPLY STANDARD AUDIT CONTRACT: <contract name>
+```
+
+Use full prompts instead of lean prompts when new protected architecture, canonical event types, validator/materializer/writer/schema/Project ZIP behavior, AI/OCR/CV, Photo Markup, or Repair Map architecture is introduced, or when exact blocker patch instructions are required.

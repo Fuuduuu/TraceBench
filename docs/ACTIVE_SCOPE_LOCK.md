@@ -2,74 +2,65 @@
 
 ## Current pass
 
-`V2_ADD_COMPONENT_CLOSEOUT_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SYNC`
 
 ## Mode
 
-Docs-only closeout. Do not implement code. Do not modify Flutter runtime behavior, tests, writer service, validator, materializer, schema files, Project ZIP logic, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, assets, samples, platform folders, generated artifacts, tags, or releases.
+Docs-only governance pass. Do not implement code or modify runtime, tests, tools, validator, materializer, schemas, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Add/Edit Component implementation, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS`
+
+After accepted post-audit and closeout, route back to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
 
 ## Write allowlist
 
+- `docs/AUDIT_CONTRACT.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/MODEL_ROUTING.md` only if a compact pointer is needed
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/CURRENT_STATE.md`
-- `docs/DEFERRED_FEATURES.md`
 - `docs/PASS_QUEUE.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/PROJECT_MEMORY.md` only if a compact durable pointer is needed
-- `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`
+- `docs/DEFERRED_FEATURES.md` only if needed
+- `docs/audit/LEAN_AUDIT_PROMPT_PROTOCOL_PASS.md`
 
-## Closeout facts to record
+## Required content
 
-- `V2_ADD_COMPONENT_PASS` was implemented, audited, accepted, committed, and pushed.
-- Commit message: `feat: add V2 component creation flow`.
-- Accepted post-audit: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
-- Add Component is the second accepted V2 UI write-flow after Save Measurement.
-- Add Component creates only `component_created`.
-- Add Component uses the accepted writer-service adapter pattern.
-- Add Component never appends directly to `events.jsonl`.
-- Add Component preserves `actor.type=human`, `source.type=explicit_user_confirmation`, and `confirmation.confirmed=true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only.
-- Add Component does not auto-confirm component identity, pins, nets, measurements, or faults.
-
-## Validation state to record
-
-- Focused Add Component / overview tests: PASS, 23 tests.
-- Full Flutter suite: PASS, 244 tests.
-- `py -3 tools\validate_all.py`: PASS, 268 tests.
-- `flutter analyze`: baseline only.
+- Add reusable standard audit contracts for `scope-lock-post-audit`, `implementation-post-audit`, `docs-closeout`, `route-review`, and `recovery / evidence-recheck`.
+- Preserve scope-lock discipline, post-audit gates, route consistency checks, protected-surface boundaries, validation requirements, and safe-to-commit gates.
+- Document the lean prompt format: `PASS_ID`, `TYPE`, `LANE`, `CODEX`, `FOCUS`, and `APPLY STANDARD AUDIT CONTRACT`.
+- Document lean-read rules for auditors.
+- Document cases where full prompts remain required.
+- Add short examples for scope-lock post-audit, implementation post-audit, docs closeout, and evidence recheck.
+- Add a compact pointer in `docs/PROMPTING_PROTOCOL.md`.
 
 ## Forbidden surfaces
 
-- No code changes.
-- No test changes.
-- No tool, validator, materializer, writer-service, schema, or Project ZIP changes.
-- No Board Canvas write/edit behavior.
-- No Reference Images runtime behavior.
+- No Flutter runtime changes.
+- No tests.
+- No tools, validator, materializer, writer service, schema, or Project ZIP changes.
+- No Board Canvas or Reference Images runtime changes.
 - No AI/OCR/CV implementation.
+- No Add/Edit Component implementation.
 - No Activity Timeline or Measure Momentum implementation.
-- No Edit Component implementation in this closeout.
-- No Photo Markup, Repair Map, or Visual Trace Shape Assist implementation.
-- No generated artifacts, platform folders, samples/assets, tags, or releases.
-- No `board_graph.json` or `view_state.json`.
-
-## Route lock
-
-Current route is `V2_ADD_COMPONENT_CLOSEOUT_PASS`.
-Next route is `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
-Do not route directly to `V2_EDIT_COMPONENT_PASS`.
+- No assets, samples, generated artifacts, platform folders, tags, or releases.
 
 ## Validation
 
 - `py -3 tools\validate_all.py`
-- `git diff --check`
-- `git diff --name-only`
 - `git status --short --branch`
+- `git diff --name-only`
+- `git diff --check`
+
+## Route lock
+
+Current: `LEAN_AUDIT_PROMPT_PROTOCOL_PASS`.
+Next: `LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS`.
+Return route after accepted post-audit and closeout: `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.

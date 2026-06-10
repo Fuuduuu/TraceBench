@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_ADD_COMPONENT_CLOSEOUT_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -177,3 +177,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_SCOPE_LOCK_PASS | DOCS_SYNC | completed | Lock the low-staleness Mermaid diagram set for governance orientation before implementation: pass lifecycle, evidence boundaries, and tool/model routing. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_PASS | DOCS_SYNC | completed | Implemented locked governance diagram docs: `docs/PASS_LIFECYCLE.md`, `docs/ARCHITECTURE_BOUNDARIES.md`, and routing section in `docs/MODEL_ROUTING.md`. |
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out the pass by recording accepted closeout outcomes, NITs, and routing to docs drift cleanup. |
+| LEAN_AUDIT_PROMPT_PROTOCOL_PASS | CODEX / DOCS_SYNC | current | Add reusable docs/AUDIT_CONTRACT.md and lean audit prompt rules; temporary governance pass before returning to V2_EDIT_COMPONENT_SCOPE_LOCK_PASS. |
+| LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the lean audit contract and prompting protocol pointer; after accepted closeout, return route to V2_EDIT_COMPONENT_SCOPE_LOCK_PASS. |

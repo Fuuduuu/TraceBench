@@ -352,3 +352,4 @@ Lazy-loading index for pass audit documents.
 | V2_ADD_COMPONENT_PASS | docs/audit/V2_ADD_COMPONENT_PASS.md | accepted/pushed implementation (`feat: add V2 component creation flow`; creates only `component_created`; writer adapter boundary preserved) |
 | V2_ADD_COMPONENT_POST_AUDIT_PASS | docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md | accepted from post-audit context (`ACCEPT_AS_IS`; `safe_to_commit: YES`; validation accepted) |
 | V2_ADD_COMPONENT_CLOSEOUT_PASS | docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md | docs-only closeout; Add Component recorded as second accepted V2 UI write-flow; next route `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` |
+| LEAN_AUDIT_PROMPT_PROTOCOL_PASS | docs/audit/LEAN_AUDIT_PROMPT_PROTOCOL_PASS.md | docs-governance pass adding reusable docs/AUDIT_CONTRACT.md, lean prompt format, lean-read rules, full-prompt exceptions, and route to post-audit |

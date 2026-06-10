@@ -12,7 +12,7 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - BLE multimeter
 - cloud sync
 - ArUco/ChArUco automatic marker workflow
-- Edit Component implementation outside `V2_EDIT_COMPONENT_PASS` or beyond its accepted scope lock
+- Further Edit Component behavior outside the accepted `V2_EDIT_COMPONENT_PASS` implementation or beyond its accepted scope lock
 - prototype-to-production measurement sheet shortcut without accepted scope lock and separate implementation pass; Add/Edit/event-writing expansions still require separate V2 scopes
 - reference/research/candidate value promotion into canonical facts without human measurement/confirmation
 - sourced/reference/research sidecar runtime implementation before accepted implementation scope
@@ -25,10 +25,10 @@ V1.0-out-of-scope ideas. Do not implement these during Sprint 0.
 - post-save measurement momentum behavior beyond accepted Save Measurement confirmation/error handling remains deferred to a separate scoped pass; retained `Koht` and next pin/point suggestions must not create automatic events or facts
 - production unit-chip/copy refinements from Ideelabor residuals, including keeping A/current measurement behind `Lisainfo` / `Tehnilised detailid` by default and preserving technician-first Estonian labels
 - Activity Timeline and Measure Momentum implementation remain deferred to separately scoped/audited passes after accepted Save Measurement; do not implement them as standalone follow-up patches.
-- V2 Add Component is accepted as the second V2 UI write-flow after Save Measurement. Edit Component is opened only through `V2_EDIT_COMPONENT_PASS` under its accepted scope lock. Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until each later pass is separately scoped and audited.
-- V2 event schema/spec documentation, validator implementation, materializer projection implementation, event writer service implementation, Save Measurement scope lock, Save Measurement implementation, Add Component implementation, and Edit Component scope lock are accepted through their scoped paths. Edit Component implementation is limited to `V2_EDIT_COMPONENT_PASS`; Project ZIP changes, Activity Timeline, and Measure Momentum implementation remain deferred to later individually scoped and audited passes.
+- V2 Add Component and Edit Component are accepted as the second and third V2 UI write-flows after Save Measurement. Project ZIP, Activity Timeline, and Measure Momentum implementation remain blocked until each later pass is separately scoped and audited.
+- V2 event schema/spec documentation, validator implementation, materializer projection implementation, event writer service implementation, Save Measurement, Add Component, and Edit Component implementations are accepted through their scoped paths. Project ZIP changes, Activity Timeline, and Measure Momentum implementation remain deferred to later individually scoped and audited passes.
 - Before V2 `known_facts.json` projection is schema-contracted or exported through Project ZIP, separate known_facts-schema / Project ZIP scope is required.
 - Save Measurement deterministic `clientOperationId` changes remain deferred until idempotency/retry semantics are explicitly reviewed; do not blindly replace with random UUID/ULID.
-- Add Component implementation is closed and accepted under `V2_ADD_COMPONENT_PASS`; it creates only `component_created` while preserving identity/hint boundaries. Edit Component implementation is open only under `V2_EDIT_COMPONENT_PASS`; broader write surfaces remain deferred until their own scope locks.
+- Add Component and Edit Component implementations are closed and accepted under their scoped passes; Add creates only `component_created`, Edit creates only `component_updated`, and broader write surfaces remain deferred until their own scope locks.
 - Save Measurement path/project-directory canonicalization hardening is accepted/pushed and post-audited; TRC-03 deterministic `clientOperationId` changes remain excluded until separately scoped.
 - Accepted BenchBeep / Ideelabor backlog capture items remain future work only: Photo Markup / Repair Map Builder, Capture Guide / Photo Capture Protocol, Manual Markup Wizard, Editable Vector Overlay, Visual Trace Shape Assist, real-world photo test plan, and branding; all require separate architecture scope-lock before implementation and must remain non-canonical hint/context unless human-confirmed events are separately scoped.

@@ -358,3 +358,4 @@ Lazy-loading index for pass audit documents.
 | V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_PASS.md | accepted/pushed docs-only scope lock (`docs: lock V2 edit component scope`; locks `component_updated` only, writer-adapter boundary, existing-component target, identity/hint separation) |
 | V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS.md | accepted from post-audit context (ACCEPT_AS_IS; safe_to_commit: YES) |
 | V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS.md | docs-only closeout; records accepted/pushed Edit Component scope lock and routes next to V2_EDIT_COMPONENT_PASS |
+| V2_EDIT_COMPONENT_PASS | docs/audit/V2_EDIT_COMPONENT_PASS.md | implementation in progress; scoped V2 Edit Component UI write-flow creates only component_updated and routes next to post-audit |

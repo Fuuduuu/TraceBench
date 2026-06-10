@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_PASS`
+`V2_EDIT_COMPONENT_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -182,5 +182,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | LEAN_AUDIT_PROMPT_PROTOCOL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed docs-only closeout for lean audit prompt protocol; route returned to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`. |
 | V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for future Edit Component UI write-flow; future implementation creates only `component_updated`; no direct `events.jsonl` append. |
 | V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the Edit Component scope lock; `safe_to_commit: YES`. |
-| V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed Edit Component scope lock; route next to V2_EDIT_COMPONENT_PASS. |
-| V2_EDIT_COMPONENT_PASS | CODEX / FLUTTER_PASS / UI_WRITE_FLOW | recommended next | Implement Edit Component under the accepted scope lock; create only component_updated; edit existing components only; preserve writer-adapter and identity/hint boundaries. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed Edit Component scope lock; route next to V2_EDIT_COMPONENT_PASS. |
+| V2_EDIT_COMPONENT_PASS | CODEX / FLUTTER_PASS / UI_WRITE_FLOW | current | Implement Edit Component under the accepted scope lock; create only component_updated; edit existing components only; preserve writer-adapter and identity/hint boundaries. |
+| V2_EDIT_COMPONENT_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the scoped Edit Component implementation under the implementation-post-audit contract. |

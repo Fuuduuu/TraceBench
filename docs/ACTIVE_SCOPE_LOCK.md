@@ -2,75 +2,88 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_PASS`
 
 ## Type
 
-`docs-closeout`
+`implementation`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / FLUTTER_PASS / UI_WRITE_FLOW`
 
 ## Mode
 
-Docs-only closeout for accepted/pushed V2 Edit Component scope lock. Do not implement code or modify runtime, tests, tools, validator, materializer, schemas, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Add/Edit Component implementation, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
+Implement only the accepted V2 Edit Component UI write-flow. Do not broaden into Edit-adjacent surfaces or other canonical write flows.
 
 ## Audit contract
 
-Apply `docs/AUDIT_CONTRACT.md` contract: `docs-closeout`.
+Apply `docs/AUDIT_CONTRACT.md` contract: `implementation-post-audit`.
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_PASS`
+`V2_EDIT_COMPONENT_POST_AUDIT_PASS`
 
-## Write allowlist for this closeout pass
+## Write allowlist for this pass
 
+- Minimal Edit Component UI/service/provider files required for human-confirmed `component_updated`.
+- Minimal writer-adapter integration if needed.
+- Focused Edit Component widget/unit tests.
+- Focused Project Overview navigation tests if route/discoverability is added.
+- Focused Add Component tests only if shared code is touched.
+- Focused Save Measurement tests only if shared writer/path code is touched.
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
-- `docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V2_EDIT_COMPONENT_PASS.md`
 
-## Closeout facts
+## Required behavior
 
-- `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` is accepted, post-audited, committed, and pushed.
-- Commit message: `docs: lock V2 edit component scope`.
-- Accepted post-audit: `ACCEPT_AS_IS`.
-- Safety gate: `safe_to_commit: YES`.
-
-## Locked Edit Component boundary to preserve
-
-- Future implementation creates only `component_updated`.
-- Editing updates an existing component only; it must not create a new component.
-- Future UI uses the accepted writer-service adapter pattern.
-- Future UI and Dart service never append directly to `events.jsonl`.
-- Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints only.
-- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability claims.
-- Save Measurement and Add Component accepted behavior must remain unchanged.
+- Edit Component creates only `component_updated`.
+- Edit targets an existing component only and must not create a new component.
+- UI/service uses the accepted writer-service adapter pattern.
+- UI/service never appends directly to `events.jsonl`.
+- `actor.type = human`.
+- `source.type = explicit_user_confirmation`.
+- `confirmation.confirmed = true`.
+- Template, footprint, package, photo, helper, candidate, vector, and AI context remains hint/context only.
+- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability.
+- Save Measurement and Add Component accepted behavior remains unchanged.
 
 ## Forbidden surfaces
 
-- No code changes.
-- No tests.
-- No tools, validator, materializer, writer service, schema, or Project ZIP changes.
-- No Board Canvas or Reference Images runtime changes.
-- No AI/OCR/CV implementation.
-- No Add/Edit Component implementation in this closeout.
-- No Activity Timeline or Measure Momentum implementation.
-- No assets, samples, generated artifacts, platform folders, tags, or releases.
+- Save Measurement behavior changes.
+- Add Component behavior changes unless shared safe integration is explicitly needed and documented.
+- Project ZIP.
+- Activity Timeline.
+- Measure Momentum.
+- Board Canvas write/edit.
+- Reference Images runtime.
+- AI/OCR/CV.
+- Photo Markup / Repair Map / Visual Trace Shape Assist.
+- Validator behavior.
+- Materializer behavior.
+- Schema / JSON schema files.
+- `tools/event_writer_service.py` behavior.
+- Platform/generated/assets/samples/tags/releases.
 
 ## Validation
 
-- `py -3 tools\validate_all.py`
-- `git diff --check`
-- `git diff --name-only`
-- `git status --short --branch`
+- `dart format` on changed Dart files.
+- `dart analyze` changed Dart files.
+- Focused Edit Component tests.
+- Focused Add Component tests if shared code touched.
+- Focused Save Measurement tests if shared writer/path code touched.
+- `flutter test --reporter expanded`.
+- `py -3 tools\validate_all.py`.
+- `git diff --check`.
+- `git status --short --branch`.
+- `git diff --name-only`.
 
 ## Route lock
 
-Current: `V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`.
-Next: `V2_EDIT_COMPONENT_PASS`.
+Current: `V2_EDIT_COMPONENT_PASS`.
+Next: `V2_EDIT_COMPONENT_POST_AUDIT_PASS`.

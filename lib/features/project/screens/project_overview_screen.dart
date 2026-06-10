@@ -87,6 +87,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 child: const Text('Add Component'),
               ),
               ElevatedButton(
+                key: const ValueKey('overview-edit-component-button'),
+                onPressed: () => context.go('/project/components/edit'),
+                child: const Text('Edit Component'),
+              ),
+              ElevatedButton(
                 onPressed: () => context.go('/project/measurements'),
                 child: const Text('Mõõtmised'),
               ),

@@ -107,6 +107,7 @@ void main() {
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
     expect(find.text('Kõik komponendid'), findsOneWidget);
     expect(find.text('Add Component'), findsOneWidget);
+    expect(find.text('Edit Component'), findsOneWidget);
     expect(find.text('Board graph'), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('Measure Sheet'), findsOneWidget);
@@ -124,6 +125,10 @@ void main() {
     );
     expect(
       find.byKey(const ValueKey('overview-add-component-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('overview-edit-component-button')),
       findsOneWidget,
     );
   });
@@ -151,6 +156,7 @@ void main() {
     );
     expect(addComponentAction, findsOneWidget);
     expect(find.text('Add Component'), findsOneWidget);
+    expect(find.text('Edit Component'), findsOneWidget);
     await tester.ensureVisible(addComponentAction);
     await tester.pumpAndSettle();
     await tester.tap(addComponentAction);
@@ -167,6 +173,46 @@ void main() {
     );
   });
 
+  testWidgets(
+      'overview has Edit Component action and navigates to Edit Component screen',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final editComponentAction = find.byKey(
+      const ValueKey('overview-edit-component-button'),
+    );
+    expect(editComponentAction, findsOneWidget);
+    expect(find.text('Add Component'), findsOneWidget);
+    expect(find.text('Edit Component'), findsOneWidget);
+    await tester.ensureVisible(editComponentAction);
+    await tester.pumpAndSettle();
+    await tester.tap(editComponentAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edit Component'), findsAtLeastNWidgets(1));
+    expect(
+      find.text(
+          'Creates component_updated only after explicit human confirmation.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Edits existing components only; no new component is created.'),
+      findsOneWidget,
+    );
+  });
   testWidgets(
       'overview has Board Canvas action and navigates to Board Canvas screen',
       (tester) async {

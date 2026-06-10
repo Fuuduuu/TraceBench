@@ -2,43 +2,42 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_PASS`
+`V2_EDIT_COMPONENT_POST_AUDIT_PASS`
 
-## Latest accepted scope lock
+## Latest accepted route
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` was accepted, post-audited, committed, and pushed as `7220cf3 docs: lock V2 edit component scope`.
+`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS` closed out the accepted/pushed Edit Component scope lock and routed implementation to `V2_EDIT_COMPONENT_PASS`.
 
-Accepted post-audit result: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
+## Current implementation summary
 
-## Locked Edit Component boundary
+`V2_EDIT_COMPONENT_PASS` implements the scoped V2 Edit Component UI write-flow:
 
-- Future implementation creates only `component_updated`.
-- Editing updates an existing component only; it must not create a new component.
-- Future UI uses the accepted writer-service adapter pattern.
-- Future UI and Dart service never append directly to `events.jsonl`.
-- Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints only.
-- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability claims.
-- Save Measurement and Add Component accepted behavior must remain unchanged.
-
-## Route decision
-
-`V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS` closes out the accepted/pushed scope lock and routes next to `V2_EDIT_COMPONENT_PASS`.
+- creates only `component_updated`;
+- targets an existing component only and does not create a new component;
+- uses the accepted writer-service adapter pattern;
+- never appends directly to `events.jsonl` from Flutter UI/service code;
+- preserves `actor.type = human`;
+- preserves `source.type = explicit_user_confirmation`;
+- preserves `confirmation.confirmed = true`;
+- keeps template, footprint, package, photo, helper, candidate, vector, and AI context as hints only;
+- makes no automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability claims;
+- leaves Save Measurement and Add Component accepted behavior unchanged.
 
 ## Boundaries
 
-- Docs-only closeout.
-- No Flutter runtime, tests, tools, validator, materializer, schema, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
-- No Save Measurement or Add Component behavior changes.
-- No completed pass history reopened or pruned.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- AI/helper output never authors canonical events/facts.
+- No Save Measurement or Add Component behavior change.
+- No Project ZIP, Activity Timeline, Measure Momentum, Board Canvas write/edit, Reference Images runtime, AI/OCR/CV, Photo Markup, Repair Map, Visual Trace Shape Assist, validator, materializer, schema, asset/sample, generated artifact, platform, tag, or release work.
 
 ## Pointers
 
 - Active scope: `docs/ACTIVE_SCOPE_LOCK.md`
 - Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
-- Closeout audit: `docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- Implementation audit: `docs/audit/V2_EDIT_COMPONENT_PASS.md`

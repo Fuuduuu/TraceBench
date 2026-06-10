@@ -1,56 +1,54 @@
-# CURRENT_STATE.md
+# Current State
 
-## Current status
+## Current pass
 
-- Current pass: `V2_ADD_COMPONENT_PASS`
-- Next recommended pass: `V2_ADD_COMPONENT_POST_AUDIT_PASS`
-- Branch: `main`
-- Latest accepted closeout commit: `c4dc1af docs: close out BenchBeep ideation backlog capture`
-- Release tags present: `v1.0.0-rc1`, `v1.1.0-rc1`
-- Validation baseline: `py -3 tools\validate_all.py`
+`V2_ADD_COMPONENT_CLOSEOUT_PASS`
 
-## Live handoff
+## Next recommended pass
 
-- `BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS` is accepted, committed, and pushed.
-- `V2_ADD_COMPONENT_SCOPE_LOCK_PASS` and closeout are accepted and pushed.
-- `V2_ADD_COMPONENT_PASS` is the current implementation pass.
-- Scope is limited to Add Component creating only `component_created` through the accepted writer-service adapter.
-- UI/service must never append directly to `events.jsonl`.
-- Human confirmation remains required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only and must not auto-confirm component identity, pins, nets, measurements, or faults.
-- Save Measurement accepted behavior remains unchanged.
+`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
 
-## Current implementation surface
+## Latest accepted implementation
 
-- Add a minimal Add Component screen reachable from Project Overview.
-- Add a scoped Add Component writer adapter that delegates to `tools/event_writer_service.py`.
-- Add focused unit/widget coverage for event construction, writer invocation, UI gating, not-saved outcomes, idempotent existing results, and forbidden-surface guards.
-- No Edit Component, Project ZIP, Activity Timeline, Measure Momentum, Board Canvas write/edit, Reference Images runtime, AI/OCR/CV, Photo Markup, Repair Map, or Visual Trace Shape Assist work is in scope.
+`V2_ADD_COMPONENT_PASS` was implemented, post-audited, accepted, committed, and pushed as `ce58b91 feat: add V2 component creation flow`.
 
-## Backlog boundary summary
+Add Component is the second accepted V2 UI write-flow after Save Measurement. It creates only `component_created`, uses the accepted writer-service adapter pattern, and never appends directly to `events.jsonl`.
 
-- Repair Map remains non-canonical.
-- Photo, AI, vector, template, candidate, and helper outputs remain hint/context only.
-- They are not component identity.
-- They are not net proof.
-- They are not measurement proof.
-- They are not fault proof.
-- `visual_trace` is not a net.
+Accepted post-audit result: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
+
+## Accepted Add Component boundaries
+
+- Add Component preserves `actor.type=human`, `source.type=explicit_user_confirmation`, and `confirmation.confirmed=true`.
+- Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only.
+- Add Component does not auto-confirm component identity, pins, nets, measurements, or faults.
+- Save Measurement behavior remains unchanged.
+- Board Canvas, Reference Images, Guided Measurement Helper, Project ZIP, Activity Timeline, Measure Momentum, AI/OCR/CV, and event schema/tooling surfaces remain outside this closeout.
+
+## Validation state recorded for accepted implementation
+
+- Focused Add Component / overview tests: PASS, 23 tests.
+- Full Flutter suite: PASS, 244 tests.
+- `py -3 tools\validate_all.py`: PASS, 268 tests.
+- `flutter analyze`: baseline only.
+
+## Route decision
+
+`V2_ADD_COMPONENT_CLOSEOUT_PASS` records the accepted/pushed implementation and routes next to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
+
+Edit Component is a protected write surface and must start with scope lock. Do not route directly to implementation.
 
 ## Hard boundaries
 
 - Human is the sensor. AI is the graph engine.
-- AI/helper must not create canonical facts or canonical events.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains materialized projection/cache.
-- Renderer/view writes nothing unless explicitly scoped.
-- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- Add Component is the only open V2 write surface in this pass; all broader V2 write surfaces require separate accepted scope locks.
+- AI/helper output never authors canonical events/facts.
+- `board_graph.json` and `view_state.json` remain forbidden V1/V1.1 artifacts.
+- No Project ZIP, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist, Board Canvas write/edit, Reference Images runtime, AI/OCR/CV, or V2 Edit Component implementation is opened in this closeout.
 
-## Maintenance note
+## Pointers
 
-- `docs/MEMORY_MAINTENANCE.md` owns the compaction trigger: compact `docs/CURRENT_STATE.md` when it exceeds approximately 120 lines.
-
-## Next recommended pass
-
-`V2_ADD_COMPONENT_POST_AUDIT_PASS`
+- Queue: `docs/PASS_QUEUE.md`
+- Active scope: `docs/ACTIVE_SCOPE_LOCK.md`
+- Audit ledger: `docs/AUDIT_INDEX.md`
+- Closeout audit: `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`

@@ -349,4 +349,6 @@ Lazy-loading index for pass audit documents.
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS | docs/audit/BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS.md | completed docs-only capture (PASS; archives BenchBeep / Ideelabor future-work ideas and preserves non-canonical hint boundaries) |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_POST_AUDIT_PASS | docs/audit/BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS.md | accepted from audit context (`ACCEPT_AS_IS`; safe_to_commit: YES; docs-only capture accepted as-is) |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS | docs/audit/BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS.md | completed docs-only closeout (PASS; records accepted/pushed BenchBeep ideation backlog capture and routes to V2_ADD_COMPONENT_PASS) |
-| V2_ADD_COMPONENT_PASS | docs/audit/V2_ADD_COMPONENT_PASS.md | current implementation pass (component_created-only Add Component UI write-flow using accepted writer adapter; preserves identity/hint boundaries) |
+| V2_ADD_COMPONENT_PASS | docs/audit/V2_ADD_COMPONENT_PASS.md | accepted/pushed implementation (`feat: add V2 component creation flow`; creates only `component_created`; writer adapter boundary preserved) |
+| V2_ADD_COMPONENT_POST_AUDIT_PASS | docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md | accepted from post-audit context (`ACCEPT_AS_IS`; `safe_to_commit: YES`; validation accepted) |
+| V2_ADD_COMPONENT_CLOSEOUT_PASS | docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md | docs-only closeout; Add Component recorded as second accepted V2 UI write-flow; next route `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS` |

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_ADD_COMPONENT_PASS`
+`V2_ADD_COMPONENT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_ADD_COMPONENT_POST_AUDIT_PASS`
+`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 

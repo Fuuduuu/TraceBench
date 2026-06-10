@@ -1,98 +1,75 @@
-# ACTIVE_SCOPE_LOCK.md
+# Active Scope Lock
 
-## Active pass
+## Current pass
 
-- Current pass: `V2_ADD_COMPONENT_PASS`
-- Lane: `CODEX / FLUTTER_PASS / UI_WRITE_FLOW`
-- Mode: narrow V2 Add Component implementation
-- Next recommended pass: `V2_ADD_COMPONENT_POST_AUDIT_PASS`
+`V2_ADD_COMPONENT_CLOSEOUT_PASS`
 
-## Goal
+## Lane
 
-Implement the accepted V2 Add Component UI write-flow only.
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
-The pass may create only `component_created` events through the accepted writer-service adapter. The UI/service must never append directly to `events.jsonl`.
+## Mode
 
-## Write allowlist for this pass
+Docs-only closeout. Do not implement code. Do not modify Flutter runtime behavior, tests, writer service, validator, materializer, schema files, Project ZIP logic, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, assets, samples, platform folders, generated artifacts, tags, or releases.
 
-- `lib/features/components/screens/add_component_screen.dart`
-- `lib/features/components/services/v2_add_component_writer.dart`
-- `lib/app/router.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/add_component_screen_test.dart`
-- `test/unit/v2_add_component_writer_test.dart`
-- `test/widget/project_overview_screen_test.dart`
+## Next recommended pass
+
+`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+
+## Write allowlist
+
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/CURRENT_STATE.md`
 - `docs/DEFERRED_FEATURES.md`
 - `docs/PASS_QUEUE.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_ADD_COMPONENT_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if a compact durable pointer is needed
+- `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`
 
-Do not write outside these surfaces.
+## Closeout facts to record
 
-## Required implementation boundaries
-
-- Future/current event type is hard-limited to `component_created`.
-- Event construction must preserve `actor.type = human`.
-- Event construction must preserve `source.type = explicit_user_confirmation`.
-- Event construction must preserve `confirmation.confirmed = true`.
-- UI/service must call the accepted writer-service adapter boundary.
-- UI/service must never directly append to `events.jsonl`.
-- Idempotent existing writer results must not duplicate local `ProjectState.events`.
+- `V2_ADD_COMPONENT_PASS` was implemented, audited, accepted, committed, and pushed.
+- Commit message: `feat: add V2 component creation flow`.
+- Accepted post-audit: `ACCEPT_AS_IS`; `safe_to_commit: YES`.
+- Add Component is the second accepted V2 UI write-flow after Save Measurement.
+- Add Component creates only `component_created`.
+- Add Component uses the accepted writer-service adapter pattern.
+- Add Component never appends directly to `events.jsonl`.
+- Add Component preserves `actor.type=human`, `source.type=explicit_user_confirmation`, and `confirmation.confirmed=true`.
 - Template, footprint, package, photo, helper, candidate, vector, and AI context remain hints/context only.
-- Hints must not auto-confirm component identity, pins, nets, measurements, or faults.
-- Save Measurement behavior remains unchanged.
+- Add Component does not auto-confirm component identity, pins, nets, measurements, or faults.
+
+## Validation state to record
+
+- Focused Add Component / overview tests: PASS, 23 tests.
+- Full Flutter suite: PASS, 244 tests.
+- `py -3 tools\validate_all.py`: PASS, 268 tests.
+- `flutter analyze`: baseline only.
 
 ## Forbidden surfaces
 
-Do not modify or implement:
-
-- Save Measurement behavior except shared safe integration if explicitly required.
-- Edit Component.
-- Project ZIP.
-- Activity Timeline.
-- Measure Momentum.
-- Board Canvas write/edit behavior.
-- Reference Images runtime.
-- AI/OCR/CV.
-- Photo Markup / Repair Map / Visual Trace Shape Assist.
-- Validator behavior.
-- Materializer behavior.
-- Schema / JSON schema files.
-- `tools/event_writer_service.py` behavior.
-- Platform/generated/assets/samples/tags/releases.
-- Deterministic idempotency semantics outside the Add Component request itself.
-
-## Test requirements
-
-- Add button disabled until required human-entered/confirmed component fields exist.
-- Valid Add Component calls the writer once.
-- Generated event is only `component_created`.
-- Actor/source/confirmation are correct.
-- Candidate/template/photo/helper values do not auto-confirm identity.
-- Package/footprint/template hints remain hints only.
-- Writer validation failure shows not saved.
-- Writer append/path/lock failure shows not saved.
-- Idempotent existing result does not duplicate local UI state.
-- No diagnosis/probability/verified/good/correct wording.
-- No Board Canvas / Reference Images / Guided Helper write path.
-- No Project ZIP changes.
+- No code changes.
+- No test changes.
+- No tool, validator, materializer, writer-service, schema, or Project ZIP changes.
+- No Board Canvas write/edit behavior.
+- No Reference Images runtime behavior.
+- No AI/OCR/CV implementation.
+- No Activity Timeline or Measure Momentum implementation.
+- No Edit Component implementation in this closeout.
+- No Photo Markup, Repair Map, or Visual Trace Shape Assist implementation.
+- No generated artifacts, platform folders, samples/assets, tags, or releases.
+- No `board_graph.json` or `view_state.json`.
 
 ## Route lock
 
-- Current pass: `V2_ADD_COMPONENT_PASS`
-- Next recommended pass: `V2_ADD_COMPONENT_POST_AUDIT_PASS`
+Current route is `V2_ADD_COMPONENT_CLOSEOUT_PASS`.
+Next route is `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
+Do not route directly to `V2_EDIT_COMPONENT_PASS`.
 
 ## Validation
 
-- `dart format` on changed Dart files.
-- `dart analyze` changed Dart files.
-- Focused Add Component tests.
-- Focused Save Measurement tests only if shared Save Measurement code is touched.
-- `flutter test --reporter expanded`.
-- `py -3 tools\validate_all.py`.
-- `git diff --check`.
-- `git status --short --branch`.
-- `git diff --name-only`.
+- `py -3 tools\validate_all.py`
+- `git diff --check`
+- `git diff --name-only`
+- `git status --short --branch`

@@ -1,41 +1,31 @@
-# Active Scope Lock
+# V2_EDIT_COMPONENT_SCOPE_LOCK_PASS
 
-## Current pass
+## Verdict
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+PASS pending post-audit.
 
 ## Type
 
-`scope-lock`
-
-## Lane
-
-`CODEX / DOCS_SCOPE_LOCK`
-
-## Mode
-
-Docs-only scope lock for future V2 Edit Component implementation. Do not implement code or modify runtime, tests, tools, validator, materializer, schemas, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Add/Edit Component implementation, Activity Timeline, Measure Momentum, assets, samples, generated artifacts, platform folders, tags, or releases.
+Scope lock.
 
 ## Audit contract
 
-Apply `docs/AUDIT_CONTRACT.md` contract: `scope-lock-post-audit`.
+Applies `docs/AUDIT_CONTRACT.md` contract: `scope-lock-post-audit`.
 
-## Next recommended pass
+## Goal
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
+Lock the future V2 Edit Component UI write-flow as the next canonical write surface after accepted Save Measurement and Add Component.
 
-Do not route directly to `V2_EDIT_COMPONENT_PASS` before post-audit and closeout.
+## Locked behavior for future implementation
 
-## Write allowlist for this scope-lock pass
-
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/CURRENT_STATE.md`
-- `docs/DEFERRED_FEATURES.md` only if needed
-- `docs/PASS_QUEUE.md`
-- `docs/WORK_INTAKE_INDEX.md`
-- `docs/PROJECT_MEMORY.md` only if a compact durable pointer is needed
-- `docs/audit/V2_EDIT_COMPONENT_SCOPE_LOCK_PASS.md`
+- Future implementation must create only `component_updated`.
+- Future UI must use the accepted writer-service adapter pattern.
+- Future UI and Dart service must never append directly to `events.jsonl`.
+- Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
+- Editing must patch or update an existing component only; it must not create a new component.
+- Template, footprint, package, photo, helper, candidate, vector, and AI context remains hint/context only.
+- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability.
+- Save Measurement and Add Component accepted behavior must remain unchanged.
 
 ## Binding sources
 
@@ -50,18 +40,6 @@ Do not route directly to `V2_EDIT_COMPONENT_PASS` before post-audit and closeout
 - `tools/event_writer_service.py`
 - `tools/validate_events_jsonl.py`
 - `tools/materialize_known_facts.py`
-
-## Future implementation scope to lock
-
-- Future Edit Component is the next V2 canonical write surface after Add Component.
-- Future implementation must create only `component_updated`.
-- Future UI must use the accepted writer-service adapter pattern.
-- Future UI and Dart service must never append directly to `events.jsonl`.
-- Editing must patch or update an existing component only; it must not create a new component.
-- Human confirmation is required: `actor.type = human`, `source.type = explicit_user_confirmation`, and `confirmation.confirmed = true`.
-- Template, footprint, package, photo, helper, candidate, vector, and AI context remains hint/context only.
-- No automatic identity confirmation, pin mapping, net, measurement, fault proof, diagnosis, or probability.
-- Save Measurement and Add Component accepted behavior must remain unchanged.
 
 ## Future implementation allowlist
 
@@ -103,14 +81,25 @@ Do not route directly to `V2_EDIT_COMPONENT_PASS` before post-audit and closeout
 - No Project ZIP changes.
 - Save Measurement and Add Component tests remain green.
 
+## Boundaries preserved by this pass
+
+- Docs-only scope lock.
+- No code, tests, tools, validator, materializer, schema, Project ZIP, Board Canvas, Reference Images, AI/OCR/CV, Activity Timeline, Measure Momentum, samples/assets, generated artifacts, platform folders, tags, or releases changed.
+- No completed pass history reopened or pruned.
+
+## Route decision
+
+Current pass: `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
+
+Next recommended pass: `V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`.
+
+Do not route directly to `V2_EDIT_COMPONENT_PASS`.
+
 ## Validation
+
+Required by pass:
 
 - `py -3 tools\validate_all.py`
 - `git status --short --branch`
 - `git diff --name-only`
 - `git diff --check`
-
-## Route lock
-
-Current: `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`.
-Next: `V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`.

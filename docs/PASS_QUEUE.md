@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`LEAN_AUDIT_PROMPT_PROTOCOL_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`
+`V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -179,5 +179,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | TRACEBENCH_GOVERNANCE_DIAGRAMS_CLOSEOUT_PASS | DOCS_SYNC | completed | Close out the pass by recording accepted closeout outcomes, NITs, and routing to docs drift cleanup. |
 | LEAN_AUDIT_PROMPT_PROTOCOL_PASS | CODEX / DOCS_SYNC | completed | Accepted/pushed governance pass adding `docs/AUDIT_CONTRACT.md`, lean prompt format, lean-read rules, and full-prompt exceptions. |
 | LEAN_AUDIT_PROMPT_PROTOCOL_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the lean audit prompt protocol; `safe_to_commit: YES after exact targeted staging`. |
-| LEAN_AUDIT_PROMPT_PROTOCOL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout for accepted/pushed lean audit prompt protocol; route next back to V2_EDIT_COMPONENT_SCOPE_LOCK_PASS. |
-| V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC_SCOPE_LOCK | recommended next | Scope-lock the future Edit Component write-flow before implementation; preserve Save Measurement and Add Component boundaries. |
+| LEAN_AUDIT_PROMPT_PROTOCOL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Accepted/pushed docs-only closeout for lean audit prompt protocol; route returned to `V2_EDIT_COMPONENT_SCOPE_LOCK_PASS`. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock for future Edit Component UI write-flow; future implementation creates only `component_updated`; no direct `events.jsonl` append; no implementation before post-audit. |
+| V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the Edit Component scope lock under docs/AUDIT_CONTRACT.md scope-lock-post-audit; verify future allowlist, forbidden surfaces, tests, and route. |

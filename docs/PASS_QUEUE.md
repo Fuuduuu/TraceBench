@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -191,5 +191,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS | CODEX / DOCS_SYNC | completed | Accepted/pushed docs strategy capture (`docs: capture V2 measure sheet UX strategy`) after accepted Save Measurement, Add Component, and Edit Component flows; no UI implementation. |
 | V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the docs-only UX strategy capture; `safe_to_commit: YES`. |
 | V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed Measure Sheet UX strategy capture and routed to technician workflow UI consolidation scope lock. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Lock the future UI consolidation scope for Save/Add/Edit visual workflow, states, responsiveness, accessibility, and contrast without changing canonical event-writing behavior. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the technician workflow UI consolidation scope lock before implementation opens. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Accepted/pushed docs-only scope lock for Save/Add/Edit visual workflow, states, responsiveness, accessibility, and contrast without changing canonical event-writing behavior. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the technician workflow UI consolidation scope lock; `safe_to_commit: YES`; LOW findings carried into implementation handoff. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed scope lock, preserve canonical-write boundaries, carry LOW implementation-handoff findings, and route to implementation. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS | FLUTTER_PASS / UI_CONSOLIDATION | recommended next | Implement accepted technician-first UI consolidation only; must list binding sources/specs/files and pin validation sequence while preserving Save/Add/Edit event semantics. |

@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Type
 
-`scope-lock`
+`docs-closeout`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Docs-only scope lock for future technician-first UI consolidation after accepted V2 Save Measurement, Add Component, and Edit Component flows. Do not implement UI changes in this pass.
+Docs-only closeout for the accepted/pushed technician-first UI consolidation scope lock. Do not implement UI changes in this pass.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`
 
 ## Write allowlist for this pass
 
@@ -28,27 +28,24 @@ Docs-only scope lock for future technician-first UI consolidation after accepted
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
-- `docs/PROJECT_MEMORY.md` only if needed as a compact product pointer
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS.md`
 
-## Scope to lock
+## Closeout scope
 
-- Future implementation may polish and unify the user-facing workflow for Save Measurement, Add Component, and Edit Component.
-- Canonical event-writing behavior must remain unchanged.
-- Technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Default UI remains simple and fast.
-- Technical, provenance, schema, and event details belong behind progressive disclosure.
-- Hints, candidates, templates, photos, and AI context remain visually subordinate and non-canonical.
-- Not-saved, success, stale-projection, empty-state, and narrow-layout behavior should be consistent.
+- Record `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS` as accepted, post-audited, committed, and pushed.
+- Record post-audit verdict `ACCEPT_AS_IS` and `safe_to_commit: YES`.
+- Preserve locked future implementation scope for Save/Add/Edit UI consolidation only.
+- Carry post-audit LOW findings into the implementation handoff.
+- Route next to `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`.
 
-## Future implementation may touch
+## Locked future implementation may touch
 
 - Minimal Measure Sheet / component flow UI files required for visual/workflow consolidation.
 - Shared UI widgets/components if already in the project or minimally introduced.
 - Focused widget tests for Save/Add/Edit UI behavior and layout states.
 - Governance/audit docs.
 
-## Future implementation must not touch
+## Locked future implementation must not touch
 
 - Event writer service behavior.
 - Save Measurement / Add Component / Edit Component event construction semantics.
@@ -61,6 +58,11 @@ Docs-only scope lock for future technician-first UI consolidation after accepted
 - AI/OCR/CV.
 - Photo Markup / Repair Map / Visual Trace Shape Assist.
 - Assets/samples/platform/generated/tags/releases.
+
+## Post-audit LOW findings carried forward
+
+- `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS` should explicitly list binding sources/specs/files.
+- `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS` should pin the validation command sequence.
 
 ## Test requirements to lock
 
@@ -103,5 +105,5 @@ Docs-only scope lock for future technician-first UI consolidation after accepted
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`.

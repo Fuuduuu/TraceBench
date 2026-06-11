@@ -191,8 +191,10 @@ void main() {
       find.text('Creates component_created only after explicit human action.'),
       findsOneWidget,
     );
-    await tester.drag(find.byType(ListView), const Offset(0, -600));
+    expect(find.text('Koht → Väärtus → Ühik → Lisa'), findsAtLeastNWidgets(1));
+    await tester.drag(find.byType(ListView), const Offset(0, -1000));
     await tester.pump();
+    expect(find.text('Vihjed on kontekst, mitte tõend.'), findsOneWidget);
     expect(find.textContaining('hint/context only'), findsOneWidget);
     expect(
       find.textContaining('do not confirm component identity'),
@@ -271,7 +273,25 @@ void main() {
     expect(updatedState?.events, hasLength(1));
     expect(updatedState?.events.single.eventType, 'component_created');
     expect(updatedState?.isProjectionStale, isTrue);
-    expect(find.text('Added to events.jsonl'), findsOneWidget);
+    expect(find.text('Lisatud.'), findsOneWidget);
+    expect(find.text('Projection stale until refresh.'), findsOneWidget);
+  });
+
+  testWidgets('technical details disclose writer and component_created type',
+      (tester) async {
+    await _pumpAddComponentScreen(tester);
+
+    expect(find.text('Tehnilised detailid'), findsOneWidget);
+    await tester.ensureVisible(find.text('Tehnilised detailid'));
+    await tester.pump();
+    await tester.tap(find.text('Tehnilised detailid'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Add Component uses the accepted V2 writer service.'),
+      findsOneWidget,
+    );
+    expect(find.text('Event type: component_created'), findsOneWidget);
   });
 
   testWidgets('writer validation failure shows not-saved outcome',
@@ -364,7 +384,7 @@ void main() {
     final updatedState = container.read(projectStateProvider);
     expect(updatedState?.events, hasLength(1));
     expect(
-      find.text('Added to events.jsonl (existing idempotent retry).'),
+      find.text('Lisatud (idempotentne kordus).'),
       findsOneWidget,
     );
   });

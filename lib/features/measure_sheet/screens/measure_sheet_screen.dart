@@ -106,8 +106,8 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
       setState(() {
         _lastSuccessfulFormKey = formKey;
         _successMessage = result.status == V2SaveMeasurementWriteStatus.existing
-            ? 'Saved to events.jsonl (existing idempotent retry).'
-            : 'Saved to events.jsonl';
+            ? 'Salvestatud (idempotentne kordus).'
+            : 'Salvestatud.';
       });
     } on V2SaveMeasurementException catch (error) {
       setState(() {
@@ -558,7 +558,7 @@ class _MeasureSheetPanel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Koht -> Väärtus -> Ühik -> Salvesta',
+              'Koht → Väärtus → Ühik → Salvesta',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
@@ -617,6 +617,11 @@ class _MeasureSheetPanel extends StatelessWidget {
                 successMessage!,
                 key: const ValueKey('measure-sheet-success-message'),
               ),
+              const SizedBox(height: 4),
+              const Text(
+                'Projection stale until refresh.',
+                key: ValueKey('measure-sheet-stale-projection-message'),
+              ),
             ],
             if (errorMessage != null) ...[
               const SizedBox(height: 8),
@@ -626,12 +631,44 @@ class _MeasureSheetPanel extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 8),
-            const Text('Save uses the accepted V2 writer service.'),
             const Text(
                 'recorded reading marker means only that a reading exists.'),
+            const _TechnicalDetailsTile(
+              eventType: 'measurement_recorded',
+              writerCopy: 'Save uses the accepted V2 writer service.',
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TechnicalDetailsTile extends StatelessWidget {
+  const _TechnicalDetailsTile({
+    required this.eventType,
+    required this.writerCopy,
+  });
+
+  final String eventType;
+  final String writerCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: const Text('Tehnilised detailid'),
+      childrenPadding: const EdgeInsets.only(bottom: 8),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(writerCopy),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Event type: $eventType'),
+        ),
+      ],
     );
   }
 }

@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS`
 
 ## Latest accepted route
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS` is accepted, post-audited, committed, and pushed as `docs: lock V2 technician workflow UI consolidation scope`. The post-audit verdict was `ACCEPT_AS_IS` with `safe_to_commit: YES`.
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS` is accepted, post-audited, committed, and pushed. The current pass implements the accepted technician-first UI consolidation slice for Save/Add/Edit presentation only.
 
 The three core V2 UI write flows remain accepted and pushed:
 
@@ -18,21 +18,21 @@ The three core V2 UI write flows remain accepted and pushed:
 - Add Component -> `component_created`;
 - Edit Component -> `component_updated`.
 
-## Closeout summary
+## Implementation summary
 
-This closeout records the accepted scope lock and routes to the implementation pass:
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS` is scoped to UI presentation and workflow consolidation only:
 
-- future implementation is UI consolidation only for Save/Add/Edit;
+- Save Measurement, Add Component, and Edit Component writer adapters remain unchanged;
 - technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`;
-- default UI stays simple and fast, with technical details behind progressive disclosure;
+- default UI stays simple and fast;
+- technical writer/event details move behind progressive disclosure where practical;
 - hints, candidates, templates, photos, and AI context remain visually subordinate and non-canonical;
 - not-saved, success, stale-projection, empty-state, and narrow-layout states should be consistent;
 - canonical event-writing behavior must remain unchanged.
 
-Post-audit LOW findings carried into `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`:
+Binding sources/specs/files for this implementation are listed in `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS.md`.
 
-- implementation pass should explicitly list binding sources/specs/files;
-- implementation pass should pin the validation command sequence.
+Pinned validation sequence is also recorded in that audit doc.
 
 ## Boundaries
 
@@ -53,3 +53,4 @@ Post-audit LOW findings carried into `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IM
 - Closeout audit: `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md`
 - Scope lock audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS.md`
 - Scope lock closeout audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- Implementation audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS.md`

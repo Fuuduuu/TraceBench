@@ -119,8 +119,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
       setState(() {
         _lastSuccessfulFormKey = formKey;
         _successMessage = result.status == V2EditComponentWriteStatus.existing
-            ? 'Edited component saved to events.jsonl (existing idempotent retry).'
-            : 'Edited component saved to events.jsonl';
+            ? 'Muudetud (idempotentne kordus).'
+            : 'Muudetud.';
       });
     } on V2EditComponentException catch (error) {
       setState(() {
@@ -275,7 +275,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Human-confirmed component edit',
+                    'Koht → Väärtus → Ühik → Muuda',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
@@ -283,8 +283,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     key: const ValueKey('edit-component-select-dropdown'),
                     initialValue: _selectedComponentId,
                     decoration: const InputDecoration(
-                      labelText: 'Existing component',
-                      helperText: 'Edit targets an existing component only.',
+                      labelText: 'Koht / olemasolev komponent',
+                      helperText: 'Muuda ainult olemasolevat komponenti.',
                     ),
                     items: components
                         .map(
@@ -308,8 +308,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     key: const ValueKey('edit-component-label-field'),
                     controller: _labelController,
                     decoration: const InputDecoration(
-                      labelText: 'New display label',
-                      helperText: 'Human-entered label update only.',
+                      labelText: 'Väärtus / uus nimi',
+                      helperText: 'Ainult inimese sisestatud nimemuudatus.',
                     ),
                     onChanged: (_) => _clearMessages(),
                   ),
@@ -318,7 +318,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     key: const ValueKey('edit-component-reference-field'),
                     controller: _referenceDesignatorController,
                     decoration: const InputDecoration(
-                      labelText: 'Reference designator hint update',
+                      labelText: 'Reference designator hint',
                       helperText: 'Optional label context only.',
                     ),
                     onChanged: (_) => _clearMessages(),
@@ -328,7 +328,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     key: const ValueKey('edit-component-package-field'),
                     controller: _packageHintController,
                     decoration: const InputDecoration(
-                      labelText: 'Package hint update',
+                      labelText: 'Package hint',
                       helperText: 'Optional package context only.',
                     ),
                     onChanged: (_) => _clearMessages(),
@@ -338,7 +338,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     key: const ValueKey('edit-component-reason-field'),
                     controller: _reasonController,
                     decoration: const InputDecoration(
-                      labelText: 'Edit reason',
+                      labelText: 'Muutmise põhjus',
                       helperText: 'Defaults to human_component_edit if blank.',
                     ),
                     onChanged: (_) => _clearMessages(),
@@ -354,9 +354,9 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                               _successMessage = null;
                               _errorMessage = null;
                             }),
-                    title: const Text('I confirm this component edit'),
+                    title: const Text('Kinnitan komponendi muudatuse'),
                     subtitle: const Text(
-                      'This records a human-confirmed component_updated event.',
+                      'This records component_updated after explicit human action.',
                     ),
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
@@ -364,14 +364,18 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                   ElevatedButton(
                     key: const ValueKey('edit-component-button'),
                     onPressed: _canEdit ? _editComponent : null,
-                    child: Text(
-                        _isSaving ? 'Saving edit...' : 'Save Component Edit'),
+                    child: Text(_isSaving ? 'Muudan...' : 'Muuda komponenti'),
                   ),
                   if (_successMessage != null) ...[
                     const SizedBox(height: 8),
                     Text(
                       _successMessage!,
                       key: const ValueKey('edit-component-success-message'),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Projection stale until refresh.',
+                      key: ValueKey('edit-component-stale-projection-message'),
                     ),
                   ],
                   if (_errorMessage != null) ...[
@@ -382,8 +386,11 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     ),
                   ],
                   const SizedBox(height: 12),
-                  const Text(
-                      'Edit Component uses the accepted V2 writer service.'),
+                  const _TechnicalDetailsTile(
+                    eventType: 'component_updated',
+                    writerCopy:
+                        'Edit Component uses the accepted V2 writer service.',
+                  ),
                 ],
               ),
             ),
@@ -417,8 +424,9 @@ class _SafetyCard extends StatelessWidget {
             Text('Project: ${projectState.manifest.projectId}'),
             const SizedBox(height: 8),
             const Text('Human is the sensor. AI is the graph engine.'),
+            const Text('Koht → Väärtus → Ühik → Muuda'),
             const Text(
-              'Creates component_updated only after explicit human confirmation.',
+              'Creates component_updated only after explicit human action.',
             ),
             const Text(
               'Edits existing components only; no new component is created.',
@@ -452,6 +460,35 @@ class _HintBoundaryCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TechnicalDetailsTile extends StatelessWidget {
+  const _TechnicalDetailsTile({
+    required this.eventType,
+    required this.writerCopy,
+  });
+
+  final String eventType;
+  final String writerCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: const Text('Tehnilised detailid'),
+      childrenPadding: const EdgeInsets.only(bottom: 8),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(writerCopy),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Event type: $eventType'),
+        ),
+      ],
     );
   }
 }

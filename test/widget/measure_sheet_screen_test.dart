@@ -160,7 +160,7 @@ void main() {
 
     expect(find.text('Measure Sheet'), findsOneWidget);
     expect(find.text('Technician-first Measure Sheet'), findsOneWidget);
-    expect(find.text('Koht -> Väärtus -> Ühik -> Salvesta'), findsOneWidget);
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
     expect(find.text('Koht'), findsOneWidget);
     expect(find.text('Väärtus'), findsOneWidget);
     expect(find.text('Ühik'), findsAtLeastNWidgets(1));
@@ -173,6 +173,7 @@ void main() {
       find.text('Save Measurement writes only after explicit human action.'),
       findsOneWidget,
     );
+    expect(find.text('Tehnilised detailid'), findsOneWidget);
   });
 
   testWidgets('save affordance starts disabled before human entry',
@@ -269,7 +270,8 @@ void main() {
     expect(writer.requests.single.displayLabel, 'Q2 · Q2.1');
     expect(writer.requests.single.componentId, 'Q2');
     expect(writer.requests.single.pinId, 'Q2.1');
-    expect(find.text('Saved to events.jsonl'), findsOneWidget);
+    expect(find.text('Salvestatud.'), findsOneWidget);
+    expect(find.text('Projection stale until refresh.'), findsOneWidget);
     expect(find.text('Q2 · Q2.1'), findsAtLeastNWidgets(1));
   });
 
@@ -436,9 +438,26 @@ void main() {
     expect(updatedState?.events, hasLength(1));
     expect(updatedState?.events.single.eventId, 'evt_000010');
     expect(
-      find.text('Saved to events.jsonl (existing idempotent retry).'),
+      find.text('Salvestatud (idempotentne kordus).'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('technical details disclose writer and event type',
+      (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await tester.ensureVisible(find.text('Tehnilised detailid'));
+    await tester.pump();
+    await tester.tap(find.text('Tehnilised detailid'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Save uses the accepted V2 writer service.'),
+      findsOneWidget,
+    );
+    expect(find.text('Event type: measurement_recorded'), findsOneWidget);
   });
 
   testWidgets('forbidden inference copy and write actions are absent',
@@ -627,7 +646,7 @@ void main() {
 
     expect(find.text('Board context hidden on narrow width'), findsOneWidget);
     expect(find.text('Selected Koht: Q2 · Q2.1'), findsOneWidget);
-    expect(find.text('Koht -> Väärtus -> Ühik -> Salvesta'), findsOneWidget);
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
   });
 
   testWidgets('shows no-project state when project is missing', (tester) async {

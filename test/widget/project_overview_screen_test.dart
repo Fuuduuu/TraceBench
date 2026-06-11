@@ -204,8 +204,7 @@ void main() {
 
     expect(find.text('Edit Component'), findsAtLeastNWidgets(1));
     expect(
-      find.text(
-          'Creates component_updated only after explicit human confirmation.'),
+      find.text('Creates component_updated only after explicit human action.'),
       findsOneWidget,
     );
     expect(
@@ -331,7 +330,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
-    expect(find.text('Koht -> Väärtus -> Ühik -> Salvesta'), findsOneWidget);
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 }

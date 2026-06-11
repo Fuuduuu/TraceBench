@@ -120,8 +120,8 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
       setState(() {
         _lastSuccessfulFormKey = formKey;
         _successMessage = result.status == V2AddComponentWriteStatus.existing
-            ? 'Added to events.jsonl (existing idempotent retry).'
-            : 'Added to events.jsonl';
+            ? 'Lisatud (idempotentne kordus).'
+            : 'Lisatud.';
       });
     } on V2AddComponentException catch (error) {
       setState(() {
@@ -231,7 +231,7 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Human-created component',
+                    'Koht → Väärtus → Ühik → Lisa',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
@@ -239,8 +239,9 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                     key: const ValueKey('add-component-id-field'),
                     controller: _componentIdController,
                     decoration: const InputDecoration(
-                      labelText: 'Component ID',
-                      helperText: 'Stable project ID, for example U10 or Q2.',
+                      labelText: 'Koht / komponent',
+                      helperText:
+                          'Inimese sisestatud projekti ID, näiteks U10 või Q2.',
                     ),
                     onChanged: (_) => _clearMessages(),
                   ),
@@ -249,8 +250,8 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                     key: const ValueKey('add-component-label-field'),
                     controller: _labelController,
                     decoration: const InputDecoration(
-                      labelText: 'Display label',
-                      helperText: 'Human-facing label shown in the project.',
+                      labelText: 'Väärtus / nimi',
+                      helperText: 'Tehniku kuvatav nimi projektis.',
                     ),
                     onChanged: (_) => _clearMessages(),
                   ),
@@ -259,8 +260,8 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                     key: const ValueKey('add-component-kind-dropdown'),
                     initialValue: _selectedKind,
                     decoration: const InputDecoration(
-                      labelText: 'Component kind',
-                      helperText: 'Broad human-entered category or unknown.',
+                      labelText: 'Ühik / liik',
+                      helperText: 'Lai inimese sisestatud liik või unknown.',
                     ),
                     items: _componentKinds
                         .map(
@@ -328,17 +329,24 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                     ),
                     onChanged: (_) => _clearMessages(),
                   ),
+                  const SizedBox(height: 8),
+                  const Text('Vihjed on kontekst, mitte tõend.'),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     key: const ValueKey('add-component-button'),
                     onPressed: _canAdd ? _addComponent : null,
-                    child: Text(_isSaving ? 'Adding...' : 'Add Component'),
+                    child: Text(_isSaving ? 'Lisan...' : 'Lisa komponent'),
                   ),
                   if (_successMessage != null) ...[
                     const SizedBox(height: 8),
                     Text(
                       _successMessage!,
                       key: const ValueKey('add-component-success-message'),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Projection stale until refresh.',
+                      key: ValueKey('add-component-stale-projection-message'),
                     ),
                   ],
                   if (_errorMessage != null) ...[
@@ -349,8 +357,11 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                     ),
                   ],
                   const SizedBox(height: 12),
-                  const Text(
-                      'Add Component uses the accepted V2 writer service.'),
+                  const _TechnicalDetailsTile(
+                    eventType: 'component_created',
+                    writerCopy:
+                        'Add Component uses the accepted V2 writer service.',
+                  ),
                 ],
               ),
             ),
@@ -391,6 +402,7 @@ class _SafetyCard extends StatelessWidget {
             Text('Project: ${projectState.manifest.projectId}'),
             const SizedBox(height: 8),
             const Text('Human is the sensor. AI is the graph engine.'),
+            const Text('Koht → Väärtus → Ühik → Lisa'),
             const Text(
                 'Creates component_created only after explicit human action.'),
           ],
@@ -422,6 +434,35 @@ class _HintBoundaryCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TechnicalDetailsTile extends StatelessWidget {
+  const _TechnicalDetailsTile({
+    required this.eventType,
+    required this.writerCopy,
+  });
+
+  final String eventType;
+  final String writerCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      title: const Text('Tehnilised detailid'),
+      childrenPadding: const EdgeInsets.only(bottom: 8),
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(writerCopy),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Event type: $eventType'),
+        ),
+      ],
     );
   }
 }

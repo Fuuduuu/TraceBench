@@ -183,12 +183,16 @@ void main() {
         findsOneWidget);
     expect(
         find.text(
-            'Creates component_updated only after explicit human confirmation.'),
+            'Creates component_updated only after explicit human action.'),
         findsOneWidget);
     expect(
         find.text(
             'Edits existing components only; no new component is created.'),
         findsOneWidget);
+    expect(
+      find.text('Koht → Väärtus → Ühik → Muuda'),
+      findsAtLeastNWidgets(1),
+    );
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pump();
     expect(find.textContaining('hint/context only'), findsOneWidget);
@@ -245,7 +249,25 @@ void main() {
     expect(updatedState?.events, hasLength(1));
     expect(updatedState?.events.single.eventType, 'component_updated');
     expect(updatedState?.isProjectionStale, isTrue);
-    expect(find.text('Edited component saved to events.jsonl'), findsOneWidget);
+    expect(find.text('Muudetud.'), findsOneWidget);
+    expect(find.text('Projection stale until refresh.'), findsOneWidget);
+  });
+
+  testWidgets('technical details disclose writer and component_updated type',
+      (tester) async {
+    await _pumpEditComponentScreen(tester);
+
+    expect(find.text('Tehnilised detailid'), findsOneWidget);
+    await tester.ensureVisible(find.text('Tehnilised detailid'));
+    await tester.pump();
+    await tester.tap(find.text('Tehnilised detailid'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Edit Component uses the accepted V2 writer service.'),
+      findsOneWidget,
+    );
+    expect(find.text('Event type: component_updated'), findsOneWidget);
   });
 
   testWidgets('writer validation failure shows not-saved outcome',
@@ -312,10 +334,7 @@ void main() {
 
     final updatedState = container.read(projectStateProvider);
     expect(updatedState?.events, hasLength(1));
-    expect(
-        find.text(
-            'Edited component saved to events.jsonl (existing idempotent retry).'),
-        findsOneWidget);
+    expect(find.text('Muudetud (idempotentne kordus).'), findsOneWidget);
   });
 
   testWidgets('forbidden wording and unrelated write paths are absent',

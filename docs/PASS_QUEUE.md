@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_CLOSEOUT_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
 
 ## Next recommended pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -187,3 +187,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_EDIT_COMPONENT_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`NEEDS_SMALL_PATCH` resolved) | Post-audit accepted runtime substance, required a small docs-hygiene patch, and routed to evidence recheck. |
 | V2_EDIT_COMPONENT_SMALL_DOCS_PATCH_PASS | CODEX / DOCS_HYGIENE_PATCH | completed | Fixed audit-doc EOF, table-contiguity, and work-intake row hygiene; runtime code unchanged. |
 | V2_EDIT_COMPONENT_POST_AUDIT_PASS_RECHECK | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Evidence recheck accepted the small docs patch; `safe_to_commit: YES`. |
+| V2_EDIT_COMPONENT_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout recorded accepted/pushed Edit Component implementation as the third V2 UI write-flow and released the active scope lock. |
+| V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS | CODEX / DOCS_SYNC | current | Capture technician-first UX/UI strategy after accepted Save Measurement, Add Component, and Edit Component flows; no UI implementation. |
+| V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the docs-only UX strategy capture for scope compliance, route alignment, and boundary preservation. |

@@ -2,29 +2,32 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_CLOSEOUT_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
 
 ## Next recommended pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS`
 
 ## Latest accepted route
 
-`V2_EDIT_COMPONENT_PASS` is accepted, post-audited/rechecked as `ACCEPT_AS_IS`, committed, and pushed as `ea99ed4 feat: add V2 component editing flow`.
+The three core V2 UI write flows are accepted and pushed:
 
-## Closeout summary
+- Save Measurement -> `measurement_recorded`;
+- Add Component -> `component_created`;
+- Edit Component -> `component_updated`.
 
-`V2_EDIT_COMPONENT_CLOSEOUT_PASS` records Edit Component as the third accepted V2 canonical UI write-flow after Save Measurement and Add Component:
+## Strategy capture summary
 
-- creates only `component_updated`;
-- edits existing components only and does not create components;
-- uses the accepted writer-service adapter pattern;
-- never appends directly to `events.jsonl` from Flutter UI/service code;
-- preserves `actor.type = human`;
-- preserves `source.type = explicit_user_confirmation`;
-- preserves `confirmation.confirmed = true`;
-- keeps template, footprint, package, photo, helper, candidate, vector, and AI context as hints only;
-- leaves Save Measurement and Add Component accepted behavior unchanged.
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` captures the next UI direction before more feature expansion:
+
+- technician-first workbench, not spreadsheet-first;
+- core flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`;
+- default UI stays simple and fast, with technical details behind progressive disclosure;
+- evidence, provenance, schema, and event IDs should not dominate the technician view;
+- hints, candidates, templates, photos, and AI context remain visually subordinate;
+- not-saved, success, and stale-projection states should be consistent across Save/Add/Edit;
+- empty states, narrow layout, tablet/desktop responsiveness, accessibility, and contrast remain part of future UI consolidation;
+- UI polish must not change canonical event-writing behavior.
 
 ## Boundaries
 
@@ -38,4 +41,4 @@
 - Active scope: `docs/ACTIVE_SCOPE_LOCK.md`
 - Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
-- Closeout audit: `docs/audit/V2_EDIT_COMPONENT_CLOSEOUT_PASS.md`
+- Strategy capture audit: `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS.md`

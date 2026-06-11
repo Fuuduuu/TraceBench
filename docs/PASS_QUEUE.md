@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -198,5 +198,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Implementation post-audit accepted the UI consolidation as-is; chat label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_POST_AUDIT_PASS` is reconciled as the same logical audit step. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed UI consolidation implementation, record validation and carried NIT, and route to post-UI-consolidation route review. |
 | V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS | ROUTE_REVIEW | completed | Route review selected a manual Windows smoke-test plan before cleanup or any new feature track. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Create manual Windows smoke-test plan for accepted Save/Add/Edit technician workflow UI consolidation; do not execute the smoke test. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the manual smoke-test plan before routing to a run pass. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Accepted/pushed manual Windows smoke-test plan for accepted Save/Add/Edit technician workflow UI consolidation; smoke test not executed. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the smoke-test plan as-is; `safe_to_commit: YES`. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed smoke-test plan and route to the manual Windows smoke run. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | recommended next | Run the accepted manual Windows smoke plan against the real local app, Python writer, disposable project folder, and real `events.jsonl`. |

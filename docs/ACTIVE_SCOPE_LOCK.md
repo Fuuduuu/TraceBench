@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`
 
 ## Type
 
-`DOCS_SYNC / QA_PLAN`
+`docs-closeout`
 
 ## Lane
 
-`CODEX / DOCS_SYNC`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Create a docs-only manual Windows smoke-test plan for the accepted V2 technician workflow UI consolidation. Do not execute the smoke test in this pass.
+Close out the accepted and pushed V2 technician workflow UI consolidation smoke-test plan. Docs-only; do not execute the smoke test.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,29 +27,39 @@ Create a docs-only manual Windows smoke-test plan for the accepted V2 technician
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS.md`
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS.md`
 
-## Plan scope
+## Closeout scope
 
-- Create a manual Windows smoke-test plan for Save Measurement, Add Component, and Edit Component.
-- Use the real local app, real Python writer, real project folder, and real `events.jsonl` during the later run pass.
-- Cover success, failure, idempotent resubmit, stale-projection, technical details, forbidden wording, narrow layout, and boundary checks.
-- Record expected evidence to paste into the later smoke run pass.
-- Keep the run blocked until the plan is post-audited and committed.
+- Record `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS` as planned, post-audited, accepted, committed, and pushed.
+- Record post-audit `ACCEPT_AS_IS` and `safe_to_commit: YES`.
+- Record that the plan is docs-only and did not execute the smoke test.
+- Record that the future RUN pass must use the real local app, real Python writer, real disposable project folder, and real `events.jsonl`.
+- Route next to `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.
 
-## Accepted UI consolidation baseline
+## Accepted smoke-plan coverage
 
-- Save Measurement, Add Component, and Edit Component visible workflows were consolidated.
-- Technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Success messages are shorter and clearer: `Salvestatud.`, `Lisatud.`, `Muudetud.`.
-- Stale-projection messages are more consistent.
-- Writer/event technical details are behind progressive disclosure.
-- Hints/candidates/templates/photos/AI context remain visually subordinate and non-canonical.
+- Save Measurement.
+- Add Component.
+- Edit Component.
+- Project Overview navigation.
+- Technician-first copy: `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
+- Disabled action states.
+- Success copy: `Salvestatud.`, `Lisatud.`, `Muudetud.`.
+- Idempotent resubmit behavior.
+- `Tehnilised detailid` collapsed/expanded behavior.
+- Stale-projection message.
+- Failure path / not-saved behavior.
+- Narrow layout.
+- Forbidden wording scan.
+- Boundary checks.
 
 ## Boundary preservation
 
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
 - Writer adapters unchanged.
-- Event construction semantics unchanged.
+- Save/Add/Edit event construction semantics unchanged.
 - Event types remain `measurement_recorded`, `component_created`, and `component_updated`.
 - No direct Flutter append to `events.jsonl`.
 - No validator/materializer/schema changes.
@@ -79,5 +89,5 @@ Create a docs-only manual Windows smoke-test plan for the accepted V2 technician
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.

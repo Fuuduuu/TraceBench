@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
 
 ## Type
 
-`docs-closeout`
+`scope-lock`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout for the accepted and pushed V2 Measure Sheet UX strategy capture. Do not implement UI changes or broaden feature scope.
+Docs-only scope lock for future technician-first UI consolidation after accepted V2 Save Measurement, Add Component, and Edit Component flows. Do not implement UI changes in this pass.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
@@ -28,19 +28,52 @@ Docs-only closeout for the accepted and pushed V2 Measure Sheet UX strategy capt
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
-- `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md`
+- `docs/PROJECT_MEMORY.md` only if needed as a compact product pointer
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS.md`
 
-## Closeout acceptance to record
+## Scope to lock
 
-- `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` accepted/pushed.
-- Post-audit verdict: `ACCEPT_AS_IS`.
-- `safe_to_commit: YES`.
-- Accepted commit: `ddc9690 docs: capture V2 measure sheet UX strategy`.
-- Accepted strategy: technician-first workbench, not spreadsheet-first.
-- Core flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Default UI remains simple and fast, with technical details behind progressive disclosure.
+- Future implementation may polish and unify the user-facing workflow for Save Measurement, Add Component, and Edit Component.
+- Canonical event-writing behavior must remain unchanged.
+- Technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
+- Default UI remains simple and fast.
+- Technical, provenance, schema, and event details belong behind progressive disclosure.
 - Hints, candidates, templates, photos, and AI context remain visually subordinate and non-canonical.
-- UI polish must not change canonical event-writing behavior.
+- Not-saved, success, stale-projection, empty-state, and narrow-layout behavior should be consistent.
+
+## Future implementation may touch
+
+- Minimal Measure Sheet / component flow UI files required for visual/workflow consolidation.
+- Shared UI widgets/components if already in the project or minimally introduced.
+- Focused widget tests for Save/Add/Edit UI behavior and layout states.
+- Governance/audit docs.
+
+## Future implementation must not touch
+
+- Event writer service behavior.
+- Save Measurement / Add Component / Edit Component event construction semantics.
+- Validator/materializer/schema.
+- Project ZIP.
+- Activity Timeline.
+- Measure Momentum.
+- Board Canvas write/edit.
+- Reference Images runtime.
+- AI/OCR/CV.
+- Photo Markup / Repair Map / Visual Trace Shape Assist.
+- Assets/samples/platform/generated/tags/releases.
+
+## Test requirements to lock
+
+- Save/Add/Edit still call the writer exactly as before.
+- Event types remain `measurement_recorded`, `component_created`, and `component_updated`.
+- Not-saved messages remain clear and consistent.
+- Success states remain clear and non-diagnostic.
+- Stale-projection state remains visible where relevant.
+- Hints remain visually subordinate.
+- No forbidden wording: verified/good/correct/detected/probability/diagnosis/fault ranking.
+- Empty states guide the user without creating facts.
+- Narrow layout remains usable.
+- No Project ZIP / Board Canvas / Reference Images / AI write path appears.
 
 ## Forbidden surfaces
 
@@ -55,18 +88,20 @@ Docs-only closeout for the accepted and pushed V2 Measure Sheet UX strategy capt
 - Project ZIP behavior
 - Board Canvas runtime
 - Reference Images runtime
-- writer service
+- writer service behavior
 - validator
 - materializer
+- schema / JSON schema
 - AI/OCR/CV
 - URL/source search
 - Activity Timeline implementation
-- Add/Edit/Save implementation changes
+- Save/Add/Edit event construction semantic changes
 - Measure Momentum implementation
+- Photo Markup / Repair Map / Visual Trace Shape Assist
 - platform/generated files
 - tags/releases
 
 ## Route lock
 
-Current: `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_POST_AUDIT_PASS`.

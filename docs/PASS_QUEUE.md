@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`
 
 ## Next recommended pass
 
-`V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -197,4 +197,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS | FLUTTER_PASS / UI_CONSOLIDATION | completed | Accepted/pushed implementation of technician-first Save/Add/Edit UI consolidation; writer adapters and event semantics unchanged. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Implementation post-audit accepted the UI consolidation as-is; chat label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_POST_AUDIT_PASS` is reconciled as the same logical audit step. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed UI consolidation implementation, record validation and carried NIT, and route to post-UI-consolidation route review. |
-| V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS | ROUTE_REVIEW | recommended next | Choose the next safe route after accepted Save/Add/Edit technician workflow UI consolidation; do not start implementation directly. |
+| V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS | ROUTE_REVIEW | completed | Route review selected a manual Windows smoke-test plan before cleanup or any new feature track. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | current | Create manual Windows smoke-test plan for accepted Save/Add/Edit technician workflow UI consolidation; do not execute the smoke test. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the manual smoke-test plan before routing to a run pass. |

@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`
 
 ## Type
 
-`docs-closeout`
+`DOCS_SYNC / QA_PLAN`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SYNC`
 
 ## Mode
 
-Close out the accepted and pushed V2 technician workflow UI consolidation implementation. Docs-only; record accepted post-audit, validation, route-label reconciliation, carried NIT, and next route review.
+Create a docs-only manual Windows smoke-test plan for the accepted V2 technician workflow UI consolidation. Do not execute the smoke test in this pass.
 
 ## Next recommended pass
 
-`V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,18 +27,17 @@ Close out the accepted and pushed V2 technician workflow UI consolidation implem
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/DEFERRED_FEATURES.md`
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS.md`
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS.md`
 
-## Closeout scope
+## Plan scope
 
-- Record `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS` as implemented, post-audited, accepted, committed, and pushed.
-- Reconcile the route label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS` with the chat label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_POST_AUDIT_PASS` as one logical accepted implementation post-audit.
-- Record accepted UI consolidation changes and validation.
-- Carry forward the non-blocking duplicated `_TechnicalDetailsTile` extraction NIT.
-- Route next to `V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`.
+- Create a manual Windows smoke-test plan for Save Measurement, Add Component, and Edit Component.
+- Use the real local app, real Python writer, real project folder, and real `events.jsonl` during the later run pass.
+- Cover success, failure, idempotent resubmit, stale-projection, technical details, forbidden wording, narrow layout, and boundary checks.
+- Record expected evidence to paste into the later smoke run pass.
+- Keep the run blocked until the plan is post-audited and committed.
 
-## Accepted implementation summary
+## Accepted UI consolidation baseline
 
 - Save Measurement, Add Component, and Edit Component visible workflows were consolidated.
 - Technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
@@ -63,25 +62,22 @@ Close out the accepted and pushed V2 technician workflow UI consolidation implem
 - `schemas/**`
 - `samples/**`
 - `assets/**`
-- `events.jsonl`
-- `known_facts.json`
-- Project ZIP behavior
-- Board Canvas runtime
-- Reference Images runtime
-- writer service behavior
-- validator
-- materializer
-- schema / JSON schema
-- AI/OCR/CV
-- URL/source search
-- Activity Timeline implementation
-- Save/Add/Edit event construction semantic changes
-- Measure Momentum implementation
-- Photo Markup / Repair Map / Visual Trace Shape Assist
-- platform/generated files
+- generated files
+- platform files
 - tags/releases
+- Project ZIP
+- Activity Timeline
+- Measure Momentum
+- Board Canvas write/edit
+- Reference Images runtime
+- AI/OCR/CV
+- Photo Markup
+- Repair Map
+- Visual Trace Shape Assist
+- writer service
+- validator/materializer/schema
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`.
-Next: `V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS`.

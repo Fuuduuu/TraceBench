@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
 
 ## Type
 
-`docs-closeout`
+`DOCS_SYNC / QA_RUN`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / QA_RUN`
 
 ## Mode
 
-Close out the accepted and pushed V2 technician workflow UI consolidation smoke-test plan. Docs-only; do not execute the smoke test.
+Record the user-observed manual Windows smoke-test result for the accepted V2 technician workflow UI consolidation. Do not implement fixes.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,48 +27,36 @@ Close out the accepted and pushed V2 technician workflow UI consolidation smoke-
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS.md`
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS.md`
 
-## Closeout scope
+## Run-record scope
 
-- Record `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS` as planned, post-audited, accepted, committed, and pushed.
-- Record post-audit `ACCEPT_AS_IS` and `safe_to_commit: YES`.
-- Record that the plan is docs-only and did not execute the smoke test.
-- Record that the future RUN pass must use the real local app, real Python writer, real disposable project folder, and real `events.jsonl`.
-- Route next to `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.
+- Record user-observed GUI smoke evidence as `FAIL / PARTIAL`.
+- Record that screenshots were provided in chat context.
+- Record no successful all-flow smoke evidence was obtained.
+- Do not claim writer/event boundary PASS, exact append count PASS, idempotency PASS, or artifact boundary PASS.
+- Route next to triage.
 
-## Accepted smoke-plan coverage
+## Observed smoke findings
 
-- Save Measurement.
-- Add Component.
-- Edit Component.
-- Project Overview navigation.
-- Technician-first copy: `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Disabled action states.
-- Success copy: `Salvestatud.`, `Lisatud.`, `Muudetud.`.
-- Idempotent resubmit behavior.
-- `Tehnilised detailid` collapsed/expanded behavior.
-- Stale-projection message.
-- Failure path / not-saved behavior.
-- Narrow layout.
-- Forbidden wording scan.
-- Boundary checks.
+- Add Component form semantics are confusing and over-apply generic `Koht → Väärtus → Ühik` labels to component creation.
+- Edit Component is blocked because no existing component can be selected or the dropdown appears unusable; Project Overview showed component count `0`.
+- Save Measurement fails with `MeasurementWriteException: Existing events contain missing or non-integer sequence`.
+- Measure Sheet unit selection appears duplicated and save remains disabled or does not work as expected.
 
-## Boundary preservation
+## Triage scope to open next
 
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- Writer adapters unchanged.
-- Save/Add/Edit event construction semantics unchanged.
-- Event types remain `measurement_recorded`, `component_created`, and `component_updated`.
-- No direct Flutter append to `events.jsonl`.
-- No validator/materializer/schema changes.
+- Add Component form semantics.
+- Edit Component empty-state and selection behavior.
+- Save Measurement sequence failure and smoke project `events.jsonl` validity.
+- Save Measurement unit UI duplication.
+- Boundary preservation while investigating.
 
-## Forbidden surfaces
+## Forbidden surfaces for this run-record pass
 
 - `lib/**`
 - `test/**`
-- `tools/**`
+- `tools/**` except running existing validation commands
 - `schemas/**`
 - `samples/**`
 - `assets/**`
@@ -89,5 +77,5 @@ Close out the accepted and pushed V2 technician workflow UI consolidation smoke-
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`.

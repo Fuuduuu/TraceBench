@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -200,5 +200,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS | ROUTE_REVIEW | completed | Route review selected a manual Windows smoke-test plan before cleanup or any new feature track. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Accepted/pushed manual Windows smoke-test plan for accepted Save/Add/Edit technician workflow UI consolidation; smoke test not executed. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the smoke-test plan as-is; `safe_to_commit: YES`. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed smoke-test plan and route to the manual Windows smoke run. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | recommended next | Run the accepted manual Windows smoke plan against the real local app, Python writer, disposable project folder, and real `events.jsonl`. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed smoke-test plan and routed to the manual Windows smoke run. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | current | Manual Windows smoke run recorded as FAIL / PARTIAL from user-observed GUI evidence; no fixes implemented. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS | TRIAGE / DOCS_OR_SCOPE_LOCK | recommended next | Triage Add Component form semantics, Edit Component empty state/selection, Save Measurement sequence failure, and duplicated unit UI before fixes. |

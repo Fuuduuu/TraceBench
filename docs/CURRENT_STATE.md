@@ -2,41 +2,44 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`
 
 ## Latest accepted route
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS` is planned, post-audited, accepted, committed, and pushed.
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS` is planned, post-audited, accepted, committed, pushed, and closed out.
 
-Post-audit: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS` returned `ACCEPT_AS_IS` with `safe_to_commit: YES`.
+The manual Windows smoke run was observed by the user and is recorded as `FAIL / PARTIAL`; screenshots were provided in chat context. The correct next route is triage, not closeout.
 
-Accepted plan commit: `docs: plan V2 technician workflow UI smoke test`.
+## Smoke evidence summary
 
-## Smoke-test plan summary
+Observed issues:
 
-The accepted plan is docs-only and did not execute the smoke test.
+- Add Component form labels are semantically confusing and over-apply `Koht → Väärtus → Ühik` to component creation.
+- Edit Component screen opens, but the existing component dropdown cannot be used; Project Overview showed component counts as `0`; no edit could be saved.
+- Save Measurement accepts entered values but save fails with `MeasurementWriteException: Existing events contain missing or non-integer sequence`.
+- Measure Sheet shows duplicated unit selection affordances and save remains disabled or does not work as expected.
 
-The future RUN pass must exercise:
+Do not claim PASS for writer/event boundary, exact append count, idempotency, or artifact boundary checks from this run.
 
-- real local app;
-- real Python writer;
-- real disposable project folder;
-- real `events.jsonl`.
+## Triage targets
 
-The plan covers Save Measurement, Add Component, Edit Component, Project Overview navigation, technician-first copy, disabled action states, success copy, idempotent resubmit behavior, `Tehnilised detailid` collapsed/expanded behavior, stale-projection message, failure/not-saved behavior, narrow layout, forbidden wording scan, and boundary checks.
+- Add Component form semantics: component type, numeric value, unit, marking text, rail/function/belongs-to, and comment distinctions.
+- Edit Component empty-state/selection: distinguish no existing components from broken dropdown; preserve existing-component-only boundary.
+- Save Measurement sequence failure: inspect smoke project `events.jsonl` and determine setup/data versus app/project-init/writer compatibility issue.
+- Save Measurement unit UI: decide whether dropdown, unit buttons, or both should exist.
+- Preserve canonical write boundaries while triaging.
 
 ## Boundaries
 
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
-- Writer adapters remain unchanged.
-- Save/Add/Edit event construction semantics remain unchanged.
+- Writer adapters remain unchanged in this run-record pass.
+- Save/Add/Edit event construction semantics remain unchanged in this run-record pass.
 - Event types remain `measurement_recorded`, `component_created`, and `component_updated`.
-- Flutter does not append directly to `events.jsonl`; the accepted writer service remains the write boundary.
 - No runtime, test, tool, validator, materializer, schema, Project ZIP, Activity Timeline, Measure Momentum, Board Canvas write/edit, Reference Images runtime, AI/OCR/CV, Photo Markup, Repair Map, Visual Trace Shape Assist, asset/sample, generated artifact, platform, tag, or release work.
 
 ## Pointers
@@ -45,4 +48,4 @@ The plan covers Save Measurement, Add Component, Edit Component, Project Overvie
 - Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
 - Smoke-test plan audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS.md`
-- Smoke-test plan closeout audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS.md`
+- Smoke-test run audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS.md`

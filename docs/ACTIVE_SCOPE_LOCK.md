@@ -2,92 +2,58 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_PASS / UI_CONSOLIDATION`
+`docs-closeout`
 
 ## Lane
 
-`CODEX / IMPLEMENTATION`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Implement the accepted technician-first UI consolidation for existing Save Measurement, Add Component, and Edit Component presentation only. Preserve writer-service behavior and event construction semantics unchanged.
+Close out the accepted and pushed V2 technician workflow UI consolidation implementation. Docs-only; record accepted post-audit, validation, route-label reconciliation, carried NIT, and next route review.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS`
+`V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`
 
 ## Write allowlist for this pass
 
-- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
-- `lib/features/components/screens/add_component_screen.dart`
-- `lib/features/components/screens/edit_component_screen.dart`
-- `test/widget/measure_sheet_screen_test.dart`
-- `test/widget/add_component_screen_test.dart`
-- `test/widget/edit_component_screen_test.dart`
-- `test/widget/project_overview_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS.md`
+- `docs/DEFERRED_FEATURES.md`
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS.md`
 
-## Implementation scope
+## Closeout scope
 
-- Consolidate user-facing Save/Add/Edit presentation only.
-- Preserve technician-first flow `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Keep default UI simple and fast.
-- Put technical writer/event details behind progressive disclosure where practical.
-- Keep hints/candidates/templates/photos/AI context visually subordinate and non-canonical.
-- Make success, not-saved, stale-projection, empty, and narrow-layout states more consistent.
-- Preserve canonical event-writing behavior unchanged.
+- Record `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS` as implemented, post-audited, accepted, committed, and pushed.
+- Reconcile the route label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS` with the chat label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_POST_AUDIT_PASS` as one logical accepted implementation post-audit.
+- Record accepted UI consolidation changes and validation.
+- Carry forward the non-blocking duplicated `_TechnicalDetailsTile` extraction NIT.
+- Route next to `V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`.
 
-## Binding sources/specs/files inspected
+## Accepted implementation summary
 
-- `docs/spec/V2_EVENT_SCHEMA_SPEC.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_PASS.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_CLOSEOUT_PASS.md`
-- `docs/audit/V2_ADD_COMPONENT_PASS.md`
-- `docs/audit/V2_ADD_COMPONENT_CLOSEOUT_PASS.md`
-- `docs/audit/V2_EDIT_COMPONENT_PASS.md`
-- `docs/audit/V2_EDIT_COMPONENT_CLOSEOUT_PASS.md`
-- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
-- `lib/features/components/services/v2_add_component_writer.dart`
-- `lib/features/components/services/v2_edit_component_writer.dart`
-- Save/Add/Edit screen and focused widget/unit test files.
+- Save Measurement, Add Component, and Edit Component visible workflows were consolidated.
+- Technician-first flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
+- Success messages are shorter and clearer: `Salvestatud.`, `Lisatud.`, `Muudetud.`.
+- Stale-projection messages are more consistent.
+- Writer/event technical details are behind progressive disclosure.
+- Hints/candidates/templates/photos/AI context remain visually subordinate and non-canonical.
 
-## Locked future implementation must not touch
+## Boundary preservation
 
-- Event writer service behavior.
-- Save Measurement / Add Component / Edit Component event construction semantics.
-- Validator/materializer/schema.
-- Project ZIP.
-- Activity Timeline.
-- Measure Momentum.
-- Board Canvas write/edit.
-- Reference Images runtime.
-- AI/OCR/CV.
-- Photo Markup / Repair Map / Visual Trace Shape Assist.
-- Assets/samples/platform/generated/tags/releases.
-- New event types.
-- Direct Flutter append to `events.jsonl`.
-
-## Test requirements to lock
-
-- Save/Add/Edit still call the writer exactly as before.
+- Writer adapters unchanged.
+- Event construction semantics unchanged.
 - Event types remain `measurement_recorded`, `component_created`, and `component_updated`.
-- Not-saved messages remain clear and consistent.
-- Success states remain clear and non-diagnostic.
-- Stale-projection state remains visible where relevant.
-- Hints remain visually subordinate.
-- No forbidden wording: verified/good/correct/detected/probability/diagnosis/fault ranking.
-- Empty states guide the user without creating facts.
-- Narrow layout remains usable.
-- No Project ZIP / Board Canvas / Reference Images / AI write path appears.
+- No direct Flutter append to `events.jsonl`.
+- No validator/materializer/schema changes.
 
 ## Forbidden surfaces
 
@@ -117,5 +83,5 @@ Implement the accepted technician-first UI consolidation for existing Save Measu
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`.
+Next: `V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS`.

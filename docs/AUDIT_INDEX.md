@@ -364,3 +364,5 @@ Lazy-loading index for pass audit documents.
 | V2_EDIT_COMPONENT_POST_AUDIT_PASS_RECHECK | docs/audit/V2_EDIT_COMPONENT_CLOSEOUT_PASS.md | accepted from recheck context (`ACCEPT_AS_IS`; `safe_to_commit: YES`) |
 | V2_EDIT_COMPONENT_CLOSEOUT_PASS | docs/audit/V2_EDIT_COMPONENT_CLOSEOUT_PASS.md | docs-only closeout; records accepted/pushed Edit Component implementation as third V2 UI write-flow and routes to `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` |
 | V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS | docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS.md | docs-only strategy capture; records accepted Save/Add/Edit write flows, technician-first consolidation direction, and route to post-audit |
+| V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS | docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md | accepted from post-audit context (`ACCEPT_AS_IS`; `safe_to_commit: YES`) |
+| V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS | docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md | docs-only closeout; records accepted/pushed UX strategy capture and routes to `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS` |

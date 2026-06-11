@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS`
 
 ## Type
 
-`docs-strategy-capture`
+`docs-closeout`
 
 ## Lane
 
-`CODEX / DOCS_SYNC`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Docs-only UX/UI strategy capture after accepted V2 Save Measurement, Add Component, and Edit Component write flows. Do not implement UI changes or broaden feature scope.
+Docs-only closeout for the accepted and pushed V2 Measure Sheet UX strategy capture. Do not implement UI changes or broaden feature scope.
 
 ## Next recommended pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
 
 ## Write allowlist for this pass
 
@@ -28,16 +28,17 @@ Docs-only UX/UI strategy capture after accepted V2 Save Measurement, Add Compone
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
-- `docs/PROJECT_MEMORY.md` only if needed as a compact durable product pointer
-- `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS.md`
+- `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md`
 
-## Strategy capture to record
+## Closeout acceptance to record
 
-- The three core V2 UI write flows are accepted: Save Measurement, Add Component, and Edit Component.
-- Main workbench is partially shaped, but the flow needs technician-first consolidation before further feature expansion.
-- The preferred core flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
-- Default UI should be simple and fast; technical details stay behind progressive disclosure.
-- Evidence, provenance, schema, and event IDs should not dominate normal technician use.
+- `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` accepted/pushed.
+- Post-audit verdict: `ACCEPT_AS_IS`.
+- `safe_to_commit: YES`.
+- Accepted commit: `ddc9690 docs: capture V2 measure sheet UX strategy`.
+- Accepted strategy: technician-first workbench, not spreadsheet-first.
+- Core flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`.
+- Default UI remains simple and fast, with technical details behind progressive disclosure.
 - Hints, candidates, templates, photos, and AI context remain visually subordinate and non-canonical.
 - UI polish must not change canonical event-writing behavior.
 
@@ -67,5 +68,5 @@ Docs-only UX/UI strategy capture after accepted V2 Save Measurement, Add Compone
 
 ## Route lock
 
-Current: `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`.
-Next: `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS`.
+Current: `V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS`.
+Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`.

@@ -2,23 +2,25 @@
 
 ## Current pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS`
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_POST_AUDIT_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`
 
 ## Latest accepted route
 
-The three core V2 UI write flows are accepted and pushed:
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` is accepted, post-audited as `ACCEPT_AS_IS`, committed, and pushed as `ddc9690 docs: capture V2 measure sheet UX strategy`.
+
+The three core V2 UI write flows remain accepted and pushed:
 
 - Save Measurement -> `measurement_recorded`;
 - Add Component -> `component_created`;
 - Edit Component -> `component_updated`.
 
-## Strategy capture summary
+## Closeout summary
 
-`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS` captures the next UI direction before more feature expansion:
+`V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS` records the accepted UX strategy before further UI feature expansion:
 
 - technician-first workbench, not spreadsheet-first;
 - core flow remains `Koht → Väärtus → Ühik → Salvesta / Lisa / Muuda`;
@@ -28,6 +30,7 @@ The three core V2 UI write flows are accepted and pushed:
 - not-saved, success, and stale-projection states should be consistent across Save/Add/Edit;
 - empty states, narrow layout, tablet/desktop responsiveness, accessibility, and contrast remain part of future UI consolidation;
 - UI polish must not change canonical event-writing behavior.
+- next route is scope lock only: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_PASS`.
 
 ## Boundaries
 
@@ -42,3 +45,4 @@ The three core V2 UI write flows are accepted and pushed:
 - Queue: `docs/PASS_QUEUE.md`
 - Audit ledger: `docs/AUDIT_INDEX.md`
 - Strategy capture audit: `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_PASS.md`
+- Closeout audit: `docs/audit/V2_MEASURE_SHEET_UX_STRATEGY_CAPTURE_CLOSEOUT_PASS.md`

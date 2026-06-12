@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
 
 ## Latest accepted route
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS` recorded as `ACCEPT_AS_IS`.
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS` recorded as `ACCEPT_AS_IS` with recheck `safe_to_commit: YES`.
 
-Observed failures for context (no fixes in this pass):
+Observed failures remaining for context:
 
 - Save Measurement can still fail through the legacy `/project/measurements/new` flow.
 - Root cause remains that stale legacy route path can still hit legacy `MeasurementEventWriter` in V2 projects.
 - WI-060 sequence-integrity diagnosis is complete; fix scope is routed to legacy write-path retirement.
 - Add Component framing and Save Measurement unit duplication remain out-of-scope of this pass.
-- Boundary checks for this pass are lock-scoping checks only.
+- Boundary checks for this pass are closeout-scoping checks only.
 
 ## Visual design capture status
 

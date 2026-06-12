@@ -2,23 +2,24 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`
+`V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS`
 
 ## Type
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`DOCS_SYNC / DIAGNOSIS_CAPTURE`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_SYNC`
 
 ## Mode
 
-Doc-sync closeout for visual redesign capture. Record the accepted visual capture evidence, route decision, preserved boundaries, and deferred items without changing runtime/write/validator/materializer/surface behavior. No implementation or source mutation in this pass.
+Docs-only read-only capture of a high-confidence Save Measurement sequence root-cause diagnosis from smoke evidence.
+No runtime change.
 
 ## Next recommended pass
 
-`V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,17 +28,16 @@ Doc-sync closeout for visual redesign capture. Record the accepted visual captur
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS.md`
+- `docs/audit/V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
 
 ## Direction captured in this pass
 
-- PCB-first Overview with one status card and ≤4 primary actions.
-- Add Component shell removed measurement-triplet framing.
-- Edit Component has list-backed selector and explicit empty state.
-- Save Measurement uses a single unit control (chips + `Muu ühik`).
-- Candidate/reference/hint data is subordinate and non-canonical.
-- Honest empty/error/sequence-failure states and technical detail disclosure are preserved as display behavior.
+- Root cause captured: `/project/measurements/new` still routes to legacy `MeasurementRecordScreen`
+  and legacy `MeasurementEventWriter` for existing V2 events.
+- Existing `events.jsonl` V2 shape remains sequence-less and valid by validator contract.
+- Sequence remediation stays out-of-scope in this pass.
+- WI-060 marked diagnosis-complete and routed to legacy path retirement scope lock.
 
 ## Forbidden surfaces
 
@@ -64,5 +64,5 @@ Doc-sync closeout for visual redesign capture. Record the accepted visual captur
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`.
-Next: `V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`.
+Current: `V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS`.
+Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`.

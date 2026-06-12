@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Latest accepted route
 
@@ -14,11 +14,11 @@
 
 Observed failures for context (no fixes in this pass):
 
-- Add Component used the generic `Koht -> Väärtus -> Ühik` framing.
-- Edit Component empty/no-component state was dead and non-actionable.
-- Save Measurement hit non-integer sequence exception.
-- Save Measurement unit controls were duplicated.
-- Boundary checks could not be marked PASS from this run.
+- Save Measurement can still fail through the legacy `/project/measurements/new` flow.
+- Root cause remains that stale legacy route path can still hit legacy `MeasurementEventWriter` in V2 projects.
+- WI-060 sequence-integrity diagnosis is complete; fix scope is routed to legacy write-path retirement.
+- Add Component framing and Save Measurement unit duplication remain out-of-scope of this pass.
+- Boundary checks for this pass are lock-scoping checks only.
 
 ## Visual design capture status
 
@@ -59,3 +59,4 @@ Directional points recorded:
 - Smoke-test run audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS.md`
 - Smoke-test triage audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS.md`
 - Visual capture audit: `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS.md`
+- Legacy write-path retirement scope lock: `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS.md`

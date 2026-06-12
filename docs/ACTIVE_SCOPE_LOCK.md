@@ -2,24 +2,24 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_SYNC / DIAGNOSIS_CAPTURE`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_SYNC`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only read-only capture of a high-confidence Save Measurement sequence root-cause diagnosis from smoke evidence.
-No runtime change.
+Docs-only scope lock for retiring stale legacy measurement write-path compatibility gaps.
+No runtime or schema/validator/materializer/write changes in this pass.
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
@@ -28,16 +28,17 @@ No runtime change.
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS.md`
-- `docs/DEFERRED_FEATURES.md` only if needed
+- `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS.md`
 
 ## Direction captured in this pass
 
-- Root cause captured: `/project/measurements/new` still routes to legacy `MeasurementRecordScreen`
-  and legacy `MeasurementEventWriter` for existing V2 events.
-- Existing `events.jsonl` V2 shape remains sequence-less and valid by validator contract.
-- Sequence remediation stays out-of-scope in this pass.
-- WI-060 marked diagnosis-complete and routed to legacy path retirement scope lock.
+- Root cause locked: stale legacy write route still exists:
+  `/project/measurements/new` -> `MeasurementRecordScreen` -> `MeasurementEventWriter`.
+- V2 write path remains accepted:
+  `/project/measure-sheet` -> `MeasureSheetScreen` -> `V2SaveMeasurementWriter`.
+- Scope lock is restricted to legacy V1 write-path retirement (routing/retirement isolation) only.
+- Adding `sequence` to V2 events is explicitly out of scope; V2 event shape remains accepted.
+- WI-060 stays diagnosis-complete until implementation lands and pass closes.
 
 ## Forbidden surfaces
 
@@ -61,8 +62,22 @@ No runtime change.
 - Photo Markup
 - Repair Map
 - Visual Trace Shape Assist
+- event envelope semantics
+- evidence status lifecycle
+- `valid_from_event_id` / `valid_until_event_id`
+- repair action semantics
+- `stale_after_repair`
+- conflict workflow
+- `not_populated`
+- `forbidden_ai_actions`
+- project ZIP self-contained contract
+- add component flow redesign
+- unit selector redesign
+- PCB-first Project Overview redesign
+- Add Component domain-form rewrite
+- Save Measurement unit interaction redesign
 
 ## Route lock
 
-Current: `V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS`.
-Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`.
+Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`.
+Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_PASS`.

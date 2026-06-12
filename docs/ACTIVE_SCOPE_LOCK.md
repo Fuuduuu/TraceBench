@@ -2,58 +2,53 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_PASS`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Lane
 
-`CODEX / IMPLEMENTATION`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Runtime route-remediation implementation for legacy measurement write-path retirement.
-No sequence semantics, event-service, schema, validator, materializer, Project ZIP,
-Board Canvas write/edit, Reference Images runtime, Activity Timeline, Measure
-Momentum, AI/OCR/CV, or other protected-surface changes.
+Docs-only confirmation pass that records accepted and pushed route-remediation
+runtime implementation, verifies post-audit closure, and releases the active
+implementation scope lock.
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Write allowlist for this pass
 
+- `docs/AUDIT_INDEX.md`
+- `docs/WORK_INTAKE_INDEX.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS.md`
-- `lib/app/router.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
+- `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS.md`
 
 ## Closeout direction
 
-- `/project/measurements/new` is a compatibility route and must hard-redirect to `/project/measure-sheet`.
-- Project Overview `Lisa mõõtmine` action must navigate to `/project/measure-sheet`.
-- V2 normal write path must remain:
-  - `/project/measure-sheet -> MeasureSheetScreen -> V2SaveMeasurementWriter`.
-- Legacy route reachability through normal Overview flow must be retired.
+Confirm and lock the accepted runtime behavior of:
+
+- `/project/measurements/new` compatibility redirect to `/project/measure-sheet`.
+- Project Overview `Lisa mõõtmine` route to `/project/measure-sheet`.
+- Legacy `MeasurementRecordScreen` is not part of normal Overview measurement flow.
 
 ## Forbidden surfaces
 
-- `lib/**` and `test/**` changes are forbidden outside the explicit allowlist above.
-- Do not add `sequence` to V2 events to satisfy legacy writer expectations.
-- Do not change V2 event model semantics to satisfy `MeasurementEventWriter`.
-- Do not change `tools/event_writer_service.py` behavior.
-- Do not change schema/validator/materializer/Project ZIP.
-- Do not modify Activity Timeline, Measure Momentum, Photo Markup, Repair Map, or Visual Trace Shape Assist runtime.
-- No broad redesigns to Add Component, PCB-first Project Overview, or Save Measurement unit-selection flow.
+- `docs/AUDIT_INDEX.md` / `docs/WORK_INTAKE_INDEX.md` / `docs/CURRENT_STATE.md` / `docs/PASS_QUEUE.md` updates must match runtime-accepted and routed implementation.
+- No additional runtime, test, schema, validator, materializer, writer-service,
+  Project ZIP, Board Canvas write/edit, Reference Images runtime, Activity
+  Timeline, Measure Momentum, AI/OCR/CV, or dead-code cleanup changes are part
+  of this pass.
 
 ## Route lock
 
-Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
-Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
+Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`

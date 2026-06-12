@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Latest accepted route
 
@@ -14,9 +14,16 @@
 
 Observed implementation context:
 
-- `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS` routes stale legacy write-path entrypoints to accepted V2 `measure-sheet` flow.
-- `/project/measurements/new` is now a compatibility route that redirects to `/project/measure-sheet`.
+- `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS` is implemented and routed as:
+  - `/project/measurements/new` compatibility redirect → `/project/measure-sheet`.
+  - Project Overview legacy CTA to accepted V2 `measure-sheet` flow.
 - No sequence changes are made to V2 events in this pass.
+- `MeasurementRecordScreen` is no longer part of normal Overview measurement flow.
+- `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS` accepted commit:
+  `f49bd63 fix: retire legacy measurement write path`.
+- Post-audit/recheck result:
+  `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_RECHECK_PASS`
+  accepted as `ACCEPT_AS_IS`, `safe_to_commit: YES`.
 - Add Component framing and Save Measurement unit duplication remain out-of-scope.
 
 ## Visual design capture status

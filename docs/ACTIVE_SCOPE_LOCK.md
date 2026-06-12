@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`
+`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`
 
 ## Type
 
-`DOCS_SYNC / VISUAL_DESIGN_CAPTURE`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Lane
 
-`CODEX / DOCS_SYNC`
+`CODEX / DOCS_SYNC_CLOSEOUT`
 
 ## Mode
 
-Capture technician-first visual redesign direction from the standalone artifact and record the visual slices (Overview/Add/Edit/Save shells) as implementation guidance while keeping runtime boundaries untouched. No implementation or runtime change in this pass.
+Doc-sync closeout for visual redesign capture. Record the accepted visual capture evidence, route decision, preserved boundaries, and deferred items without changing runtime/write/validator/materializer/surface behavior. No implementation or source mutation in this pass.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS`
+`V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,7 +27,7 @@ Capture technician-first visual redesign direction from the standalone artifact 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS.md`
+- `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS.md`
 - `docs/DEFERRED_FEATURES.md` only if needed
 
 ## Direction captured in this pass
@@ -64,5 +64,5 @@ Capture technician-first visual redesign direction from the standalone artifact 
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`.
-Next: `V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS`.
+Current: `V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`.
+Next: `V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`.

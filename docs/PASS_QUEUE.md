@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`
+`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS`
+`V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -203,4 +203,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed smoke-test plan and routed to the manual Windows smoke run. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Manual Windows smoke run recorded as FAIL / PARTIAL from user-observed GUI evidence; no fixes implemented. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS | DOCS_TRIAGE / ROUTE_DECISION | completed | Records failed/partial smoke triage, user technician-first redesign direction, visual artifact capture status, and intentionally routes away from immediate fixes. |
-| V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS | DOCS_SYNC / DESIGN_CAPTURE | current | Capture/review the standalone technician-first visual UI redesign artifact before any further Flutter bugfix or feature implementation. |
+| V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS | DOCS_SYNC / DESIGN_CAPTURE | completed | Standalone technician-first visual redesign artifact captured, accepted as directional evidence, and routed to post-audit before closeout. |
+| V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted visual capture pass as `ACCEPT_AS_IS`; `safe_to_commit: YES`; capture remains direction-only. |
+| V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout records accepted/pushed visual capture outcome, raw artifact non-committed policy, deferred architecture ideas, and route decision to `V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`. |

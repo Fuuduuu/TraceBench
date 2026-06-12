@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`
+`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS`
+`V2_POST_VISUAL_REDESIGN_ROUTE_REVIEW_PASS`
 
 ## Latest accepted route
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS` recorded manual Windows smoke as `FAIL / PARTIAL`.
+`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_POST_AUDIT_PASS` recorded as `ACCEPT_AS_IS`.
 
 Observed failures for context (no fixes in this pass):
 
@@ -30,6 +30,7 @@ Capture status:
 
 - source available locally
 - content captured as markdown in `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS.md`
+- raw standalone HTML artifact is not committed as runtime/source code or source-of-truth data asset.
 
 Directional points recorded:
 

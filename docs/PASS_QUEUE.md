@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -209,5 +209,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_SEQUENCE_INTEGRITY_DIAGNOSIS_PASS | DOCS_SYNC / DIAGNOSIS_CAPTURE | completed | Read-only diagnosis of Save Measurement sequence failure root cause; WI-060 preserved as out-of-flow sequencing item; no runtime changes. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Scope lock to retire/stabilize stale legacy measurement write path (`/project/measurements/new -> MeasurementRecordScreen -> MeasurementEventWriter`) for V2 flows; V2 `sequence` behavior unchanged. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_RECHECK_PASS | CLAUDE_CODE / AUDIT_ONLY / AUDIT_RECHECK | completed | Accepted-rechecked scope-lock post-audit as `ACCEPT_AS_IS`; re-opened from docs-only small patch status to complete closeout readiness; `safe_to_commit: YES`; legacy route-remediation guardrails preserved. |
-| V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Docs-only closeout recorded `ACCEPT_AS_IS` scope-lock outcome, preserved no-sequence/legacy-route semantics, preserved WI-060 as open diagnosis-to-implementation item, and routed to `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`. |
-| V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS | FLUTTER_PASS / UI_WRITE_PATH_REMEDIATION | planned | Implement route-remediation for stale legacy V2 measurement write path; retire or isolate `/project/measurements/new`, route Overview measure action to measure-sheet, and add route regression tests. |
+| V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout recorded `ACCEPT_AS_IS` scope-lock outcome, preserved no-sequence/legacy-route semantics, preserved WI-060 as open diagnosis-to-implementation item, and routed to `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`. |
+| V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS | FLUTTER_PASS / UI_WRITE_PATH_REMEDIATION | in_progress | Implement route-remediation for stale legacy V2 measurement write path; `/project/measurements/new` compatibility redirect + V2 Overview action routing are the primary runtime changes. |

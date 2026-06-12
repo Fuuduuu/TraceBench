@@ -2,23 +2,22 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
 
 ## Latest accepted route
 
 `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS` recorded as `ACCEPT_AS_IS` with recheck `safe_to_commit: YES`.
 
-Observed failures remaining for context:
+Observed implementation context:
 
-- Save Measurement can still fail through the legacy `/project/measurements/new` flow.
-- Root cause remains that stale legacy route path can still hit legacy `MeasurementEventWriter` in V2 projects.
-- WI-060 sequence-integrity diagnosis is complete; fix scope is routed to legacy write-path retirement.
-- Add Component framing and Save Measurement unit duplication remain out-of-scope of this pass.
-- Boundary checks for this pass are closeout-scoping checks only.
+- `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS` routes stale legacy write-path entrypoints to accepted V2 `measure-sheet` flow.
+- `/project/measurements/new` is now a compatibility route that redirects to `/project/measure-sheet`.
+- No sequence changes are made to V2 events in this pass.
+- Add Component framing and Save Measurement unit duplication remain out-of-scope.
 
 ## Visual design capture status
 

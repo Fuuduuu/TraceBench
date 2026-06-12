@@ -96,7 +96,8 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 child: const Text('Mõõtmised'),
               ),
               ElevatedButton(
-                onPressed: () => context.go('/project/measurements/new'),
+                key: const ValueKey('overview-measurement-record-button'),
+                onPressed: () => context.go('/project/measure-sheet'),
                 child: const Text('Lisa mõõtmine'),
               ),
               ElevatedButton(

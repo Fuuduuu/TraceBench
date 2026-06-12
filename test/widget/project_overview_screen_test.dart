@@ -333,4 +333,70 @@ void main() {
     expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
+
+  testWidgets('legacy "Lisa mõõtmine" action navigates to Measure Sheet path',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final legacyMeasurementAction = find.byKey(
+      const ValueKey('overview-measurement-record-button'),
+    );
+    expect(legacyMeasurementAction, findsOneWidget);
+    await tester.ensureVisible(legacyMeasurementAction);
+    await tester.pumpAndSettle();
+    await tester.tap(legacyMeasurementAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
+    expect(
+      find.text('Koht → Väärtus → Ühik → Salvesta'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('measurement-from-field')), findsNothing);
+    expect(find.byKey(const ValueKey('measurement-to-field')), findsNothing);
+  });
+
+  testWidgets(
+      'legacy route /project/measurements/new redirects to Measure Sheet',
+      (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => false),
+        ],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(
+              initialLocation: '/project/measurements/new'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsOneWidget);
+    expect(
+      find.text('Koht → Väärtus → Ühik → Salvesta'),
+      findsAtLeastNWidgets(1),
+    );
+    expect(
+      find.byKey(const ValueKey('measurement-submit-button')),
+      findsNothing,
+    );
+    expect(find.text('Salvesta sündmus'), findsNothing);
+  });
 }

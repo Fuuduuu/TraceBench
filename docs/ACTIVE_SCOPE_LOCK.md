@@ -2,24 +2,26 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
 
 ## Type
 
-`DOCS_SYNC_CLOSEOUT`
+`FLUTTER_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / IMPLEMENTATION`
 
 ## Mode
 
-Docs-only closeout for the accepted legacy measurement write-path retirement scope-lock.
-No runtime, schema, validator, materializer, writer service, Project ZIP, or other protected-surface changes in this pass.
+Runtime route-remediation implementation for legacy measurement write-path retirement.
+No sequence semantics, event-service, schema, validator, materializer, Project ZIP,
+Board Canvas write/edit, Reference Images runtime, Activity Timeline, Measure
+Momentum, AI/OCR/CV, or other protected-surface changes.
 
 ## Next recommended pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
@@ -28,24 +30,30 @@ No runtime, schema, validator, materializer, writer service, Project ZIP, or oth
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS.md`
+- `lib/app/router.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
 
-## Closeout direction captured
+## Closeout direction
 
-- Scope lock pass is accepted as `ACCEPT_AS_IS` and this pass records closeout.
-- legacy-measurement route-remediation implementation is now the next implementation-targeted pass.
-- protected runtime/surface constraints remain unchanged until runtime implementation begins.
+- `/project/measurements/new` is a compatibility route and must hard-redirect to `/project/measure-sheet`.
+- Project Overview `Lisa mõõtmine` action must navigate to `/project/measure-sheet`.
+- V2 normal write path must remain:
+  - `/project/measure-sheet -> MeasureSheetScreen -> V2SaveMeasurementWriter`.
+- Legacy route reachability through normal Overview flow must be retired.
 
 ## Forbidden surfaces
 
-- Scope lock intent is preserved for implementation transition.
-- Event model/sequence semantics were not changed in this scope lock.
-- `forbidden` and `allowlist` semantics remain from the locked scope-lock artifact:
-  - `lib/**` and `test/**` changes remain forbidden except explicit future route-remediation allowlist.
-  - no runtime behavior surface in `lib/`, `test/`, or protected runtime families is changed in this closeout.
-- `do not add sequence to V2 events` and `do not change V2 event model` to satisfy legacy writer expectations.
+- `lib/**` and `test/**` changes are forbidden outside the explicit allowlist above.
+- Do not add `sequence` to V2 events to satisfy legacy writer expectations.
+- Do not change V2 event model semantics to satisfy `MeasurementEventWriter`.
+- Do not change `tools/event_writer_service.py` behavior.
+- Do not change schema/validator/materializer/Project ZIP.
+- Do not modify Activity Timeline, Measure Momentum, Photo Markup, Repair Map, or Visual Trace Shape Assist runtime.
+- No broad redesigns to Add Component, PCB-first Project Overview, or Save Measurement unit-selection flow.
 
 ## Route lock
 
-Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS`.
-Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_POST_AUDIT_PASS`.
+Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_PASS`
+Next: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_PASS`

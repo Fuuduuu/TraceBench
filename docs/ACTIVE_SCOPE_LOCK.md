@@ -2,23 +2,25 @@
 
 ## Current pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`
+`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`
 
 ## Type
 
-`DOCS_SYNC / QA_RUN`
+`DOCS_TRIAGE / ROUTE_DECISION`
 
 ## Lane
 
-`CODEX / QA_RUN`
+`CODEX / DOCS_TRIAGE`
 
 ## Mode
 
-Record the user-observed manual Windows smoke-test result for the accepted V2 technician workflow UI consolidation. Do not implement fixes.
+Record triage for the failed/partial V2 Technician Workflow UI Consolidation smoke run and route away from immediate fixes toward technician-first visual UI redesign capture/review.
+
+Do not implement fixes in this pass.
 
 ## Next recommended pass
 
-`V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`
+`V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`
 
 ## Write allowlist for this pass
 
@@ -27,32 +29,43 @@ Record the user-observed manual Windows smoke-test result for the accepted V2 te
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS.md`
+- `docs/DEFERRED_FEATURES.md` only if needed
+- `docs/PROJECT_MEMORY.md` only if needed as a compact durable product pointer
+- `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS.md`
 
-## Run-record scope
+## Triage scope
 
-- Record user-observed GUI smoke evidence as `FAIL / PARTIAL`.
-- Record that screenshots were provided in chat context.
-- Record no successful all-flow smoke evidence was obtained.
-- Do not claim writer/event boundary PASS, exact append count PASS, idempotency PASS, or artifact boundary PASS.
-- Route next to triage.
+- Record the manual smoke result as `FAIL / PARTIAL`.
+- Record the known smoke issues without claiming boundary PASS.
+- Record the user's broader technician-first UI redesign direction as product/design input, not implementation permission.
+- Record that the standalone visual design HTML artifact exists outside the repo and should be captured from user-provided content in the next route.
+- Route to visual redesign capture/review before any small bugfix implementation.
 
-## Observed smoke findings
+## Failed smoke issues to preserve
 
-- Add Component form semantics are confusing and over-apply generic `Koht → Väärtus → Ühik` labels to component creation.
-- Edit Component is blocked because no existing component can be selected or the dropdown appears unusable; Project Overview showed component count `0`.
+- Add Component labels are semantically confusing and over-apply generic `Koht -> Väärtus -> Ühik` labels to component creation.
+- Edit Component opens but cannot be used when no components exist; the selector appears dead instead of showing a clear empty state.
 - Save Measurement fails with `MeasurementWriteException: Existing events contain missing or non-integer sequence`.
-- Measure Sheet unit selection appears duplicated and save remains disabled or does not work as expected.
+- Measure Sheet unit selection is duplicated/confusing.
+- Boundary checks cannot be claimed PASS for this run.
 
-## Triage scope to open next
+## User design direction to preserve
 
-- Add Component form semantics.
-- Edit Component empty-state and selection behavior.
-- Save Measurement sequence failure and smoke project `events.jsonl` validity.
-- Save Measurement unit UI duplication.
-- Boundary preservation while investigating.
+- Project Overview should be PCB-first and visually clean, with components as main anchors rather than a long global action list.
+- Component click/tap should open local actions; measurement should be contextual and not permanently noisy.
+- Component map defaults sparse; confirmed labels/markings and filters reveal more detail when useful.
+- Future manual component drawing/design may include shape, pins/legs, footprint, and optional height.
+- Future onboarding may include outline/body contour setup from phone photo plus marker/reference scale, with manual drawing available.
+- Future photo-grid decomposition may combine overview and close-up images by board/item grid cell.
+- Future AI may assemble drafts and unconfirmed markers only; humans must confirm or deny before anything becomes canonical.
 
-## Forbidden surfaces for this run-record pass
+## Visual design artifact status
+
+A standalone visual design artifact exists in chat context: `TraceBench UI Redesign - Visual Design Pass (standalone).html`.
+
+If Codex cannot access the artifact directly, the next pass should capture it from user-provided content. If capture is not possible, route to a fresh visual design pass.
+
+## Forbidden surfaces
 
 - `lib/**`
 - `test/**`
@@ -63,6 +76,8 @@ Record the user-observed manual Windows smoke-test result for the accepted V2 te
 - generated files
 - platform files
 - tags/releases
+- writer service
+- validator/materializer/schema
 - Project ZIP
 - Activity Timeline
 - Measure Momentum
@@ -72,10 +87,8 @@ Record the user-observed manual Windows smoke-test result for the accepted V2 te
 - Photo Markup
 - Repair Map
 - Visual Trace Shape Assist
-- writer service
-- validator/materializer/schema
 
 ## Route lock
 
-Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS`.
-Next: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`.
+Current: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS`.
+Next: `V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS`.

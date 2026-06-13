@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
 
-- Save Measurement unit-control UX clarity is now scope-locked as
-  `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`.
-- Implementation remains docs-only for this pass; runtime is not changed.
+- Save Measurement unit-control UX clarity is now in implementation as
+  `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`.
+- Implementation removes the inert `_UnitDisplay` unit panel/chips so
+  `measure-sheet-unit-dropdown` is the single active unit affordance.
 - Existing accepted explicit target behavior from
   `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` remains preserved:
   no implicit target auto-selection, explicit `Koht` choice required, and no
   sequence added to V2 payloads.
-- Runtime scope remains unchanged while we assess a misleading inert unit display panel and lock
-  one clear technician-first model for `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`.
+- Existing `measure-sheet-unit-dropdown` + `_selectedUnit` interaction and explicit-target gating remain preserved during this unit-control implementation.
 
 ## Tooling baseline milestone
 

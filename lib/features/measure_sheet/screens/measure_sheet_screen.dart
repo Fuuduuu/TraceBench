@@ -815,8 +815,6 @@ class _MeasureSheetPanel extends StatelessWidget {
               onChanged: isSaving ? null : onUnitChanged,
             ),
             const SizedBox(height: 12),
-            const _UnitDisplay(),
-            const SizedBox(height: 12),
             ElevatedButton(
               key: const ValueKey('measure-sheet-save-button'),
               onPressed: canSave ? onSave : null,
@@ -965,43 +963,6 @@ class _RecordedReadingDot extends StatelessWidget {
           const SizedBox(width: 6),
           Text(label),
         ],
-      ),
-    );
-  }
-}
-
-class _UnitDisplay extends StatelessWidget {
-  const _UnitDisplay();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).dividerColor),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Ühik', style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 8),
-              const Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _ContextChip(label: 'V'),
-                  _ContextChip(label: 'Ω'),
-                  _ContextChip(label: 'Diode'),
-                  _ContextChip(label: 'Beep'),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

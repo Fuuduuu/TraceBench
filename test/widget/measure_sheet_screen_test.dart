@@ -229,6 +229,42 @@ void main() {
     expect(find.text('Tehnilised detailid'), findsOneWidget);
   });
 
+  testWidgets('shows measure-sheet-unit-dropdown as the only unit UI affordance',
+      (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final unitDropdown = find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
+    expect(unitDropdown, findsOneWidget);
+    expect(find.text('Ühik'), findsOneWidget);
+
+    expect(find.widgetWithText(Chip, 'V'), findsNothing);
+    expect(find.widgetWithText(Chip, 'Ω'), findsNothing);
+    expect(find.widgetWithText(Chip, 'Diode'), findsNothing);
+    expect(find.widgetWithText(Chip, 'Beep'), findsNothing);
+  });
+
+  testWidgets('selected unit is shown in dropdown before save', (tester) async {
+    await tester.pumpWidget(_harness(_inlineProjectState()));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _enterSaveMeasurement(tester, unit: 'Diode');
+
+    final unitDropdown = find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
+    expect(
+      find.descendant(
+        of: unitDropdown,
+        matching: find.text('Diode'),
+      ),
+      findsOneWidget,
+    );
+
+    final saveButton = tester.widget<ElevatedButton>(
+      find.byKey(const ValueKey('measure-sheet-save-button')),
+    );
+    expect(saveButton.onPressed, isNull);
+  });
+
   testWidgets('save affordance starts disabled before human entry',
       (tester) async {
     await tester.pumpWidget(_harness(_inlineProjectState()));

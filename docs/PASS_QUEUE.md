@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -34,7 +34,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Lock the V2 Edit Component event payload / projection field alignment before implementation; preserve all existing runtime boundaries and route to post-audit scope alignment pass. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Close out accepted/pushed implementation as docs-only closeout and route to `NEEDS_USER_DECISION`. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | completed | Implemented explicit Save Measurement target selection gating and payload binding, preserving existing V2 event and runtime boundary behavior. |
-| V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Scope-lock future Save Measurement unit-control implementation; preserve explicit target-selection behavior and route to `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`. |
+| V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Scope-lock completed for future Save Measurement unit-control implementation; preserve explicit target-selection behavior and route to `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`. |
+| V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | current | Removes static `_UnitDisplay` unit chips so `measure-sheet-unit-dropdown` remains the single unit affordance while preserving explicit target-selection semantics and no-sequence contract. |
 | TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | CODEX / DOCS_AND_AGENT_SKILLS_PASS | completed | Added repo-local Codex guidance layer (`AGENTS.md`, TraceBench skills, and tooling policy), no runtime/tool/plugin install in this pass. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Created manual Windows smoke plan for sidecar viewer, ZIP/sidecar behavior, and navigation/route checkpoints. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Ran manual smoke and confirmed project overview entry, local sidecar import/persistence, and route/ZIP boundary invariants. |

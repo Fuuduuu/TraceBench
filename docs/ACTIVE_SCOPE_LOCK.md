@@ -2,56 +2,52 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`FLUTTER_IMPLEMENTATION_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_IMPLEMENTATION_PASS`
 
 ## Mode
 
-Docs-only scope-lock pass before implementation. This lock defines the next narrow Save
-Measurement unit-control UX scope and captures the exact current risk and allowed
-future behavior.
+Implementation pass for a narrow Save Measurement unit-control UX refinement. The scope is
+to remove the misleading static unit-display panel while preserving all existing
+V2 boundaries.
 
 Current goal:
 
-- define a single, unambiguous technician-first unit-control model for Save Measurement;
-- preserve existing explicit target requirement from `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`;
-- preserve all accepted V2 measurement runtime boundaries and no-sequence contract;
-- keep implementation blocked in this pass.
+- remove/hide the non-interactive unit chip panel (`_UnitDisplay`) so the existing
+  `measure-sheet-unit-dropdown` is the single active unit affordance;
+- preserve explicit target-selection behavior from
+  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`;
+- preserve all accepted V2 measurement runtime boundaries and no-sequence contract.
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
 
-## Current scope lock decision
+## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: governance docs-only lock only; no runtime/test/schema/tool changes.
+- scope type: `FLUTTER_IMPLEMENTATION_PASS`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
+- mode: implementation + focused docs alignment.
 
-## Write allowlist for this pass
+## File allowlist for this pass
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS.md`
-
-## Allowed future implementation files (pass scope)
-
-If/when this lock is implemented in a future implementation pass:
-
+- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS.md`
 - `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
 - `test/widget/measure_sheet_screen_test.dart`
 
-## Forbidden future touches
+## Forbidden touches
 
 - `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
 - `tools/event_writer_service.py`
@@ -65,23 +61,12 @@ If/when this lock is implemented in a future implementation pass:
 - `Reference Images` runtime
 - `AI/OCR/CV`
 - Add/Edit Component runtime
-- `Muu ühik` / custom unit implementation
+- `Muu ühik`/custom unit implementation
 - `Save Measurement` event-model changes
 - `pubspec.yaml`, `pubspec.lock`, dependency/config files
 - generated files, samples, platform folders, and toolchain/package files
 
-## Forbidden surfaces
-
-Runtime/code changes outside the allowlist are forbidden until a separate
-implementation lane opens.
-
-- No `sequence` is added to V2 events.
-- No event-type/projection contract changes.
-- Do not rework route architecture in this lock.
-- No `MeasurementEventWriter` reintroduction or legacy route fallback in scope.
-- Do not touch tests in this docs-only lock pass.
-
 ## Route lock
 
-Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
-Next: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
+Next: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`

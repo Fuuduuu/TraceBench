@@ -2,39 +2,36 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION_PASS`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION_PASS`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Implementation pass for a narrow Save Measurement unit-control UX refinement. The scope is
-to remove the misleading static unit-display panel while preserving all existing
-V2 boundaries.
+Docs-closeout mode for the accepted/pushed `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
+implementation. No runtime/test changes are allowed in this pass.
 
 Current goal:
 
-- remove/hide the non-interactive unit chip panel (`_UnitDisplay`) so the existing
-  `measure-sheet-unit-dropdown` is the single active unit affordance;
-- preserve explicit target-selection behavior from
-  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`;
-- preserve all accepted V2 measurement runtime boundaries and no-sequence contract.
+- confirm closeout ledger records for `fix(measure-sheet): remove inert unit display`;
+- preserve route/docs continuity and existing protected-surface boundaries while setting
+  next state to `NEEDS_USER_DECISION`.
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION_PASS`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
-- mode: implementation + focused docs alignment.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout + governance alignment.
 
 ## File allowlist for this pass
 
@@ -44,8 +41,7 @@ Current goal:
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS.md`
-- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
-- `test/widget/measure_sheet_screen_test.dart`
+- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -68,5 +64,5 @@ Current goal:
 
 ## Route lock
 
-Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
-Next: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
+Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`

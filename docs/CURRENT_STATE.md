@@ -2,21 +2,25 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
-- Save Measurement unit-control UX clarity is now in implementation as
-  `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`.
-- Implementation removes the inert `_UnitDisplay` unit panel/chips so
-  `measure-sheet-unit-dropdown` is the single active unit affordance.
-- Existing accepted explicit target behavior from
-  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` remains preserved:
-  no implicit target auto-selection, explicit `Koht` choice required, and no
-  sequence added to V2 payloads.
-- Existing `measure-sheet-unit-dropdown` + `_selectedUnit` interaction and explicit-target gating remain preserved during this unit-control implementation.
+- Save Measurement unit-control UX implementation is accepted and pushed in commit
+  `8e93f46` (`fix(measure-sheet): remove inert unit display`).
+- Accepted behavior: inert `_UnitDisplay` unit chip panel removed; `measure-sheet-unit-dropdown`
+  remains the sole unit affordance; selected unit remains visibly reflected in the dropdown.
+- Existing explicit target-selection behavior remains unchanged:
+  no implicit target auto-selection, explicit `Koht` choice required, and Save remains
+  disabled without value + selected unit + explicit target.
+- Existing runtime boundaries remain preserved:
+  - writer/request shape unchanged
+  - no writer-service or event-model/schema/materializer/validator change
+  - no `sequence`
+  - no `Muu ühik` or custom-unit behavior
+  - no AI/photo/context unit inference.
 
 ## Tooling baseline milestone
 

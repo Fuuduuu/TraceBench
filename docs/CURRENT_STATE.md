@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Tooling baseline milestone
 
@@ -40,6 +40,9 @@ Observed implementation context:
   - Save result was: `Not saved: project must be opened from a local folder.`
   - No legacy-sequence exception evidence was observed in this smoke run.
   - Full `events.jsonl` append/`known_facts.json` persistence evidence was not proven due the environment restriction.
+- Current docs-only lock in progress:
+  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` records the read-only evidence and explicitly forbids implicit target inference (`components.first` / first pin auto-selection) in normal Save Measurement flow before write.
+- The implementation-safe next guard is: Save Measurement requires explicit technician target selection before writer call.
 
 ## Visual design capture status
 

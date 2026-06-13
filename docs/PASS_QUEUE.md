@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,7 +25,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | CODEX / DOCS_AND_AGENT_SKILLS_PASS | current | Added repo-local Codex guidance layer (`AGENTS.md`, TraceBench skills, and tooling policy), no runtime/tool/plugin install in this pass. |
+| TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | CODEX / DOCS_AND_AGENT_SKILLS_PASS | completed | Added repo-local Codex guidance layer (`AGENTS.md`, TraceBench skills, and tooling policy), no runtime/tool/plugin install in this pass. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Created manual Windows smoke plan for sidecar viewer, ZIP/sidecar behavior, and navigation/route checkpoints. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Ran manual smoke and confirmed project overview entry, local sidecar import/persistence, and route/ZIP boundary invariants. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_CLOSEOUT_PASS | DOCS_SYNC / QA_CLOSEOUT | completed | Recorded PASS smoke run outcomes and the non-blocking duplicate `device_profiles/default.json` ZIP observation as note. |
@@ -215,3 +215,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation, preserved V2 no-sequence contract, and routes to `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_PASS`. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_PASS | DOCS_SYNC / QA_RUN | completed | Manual Windows smoke run observed by user: `Lisa mõõtmine` opens V2 measure sheet; `/project/measurements/new` redirects to `/project/measure-sheet`; save blocked by local-folder requirement; legacy sequence path did not appear. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records manual smoke result as `PASS_WITH_ENVIRONMENT_LIMITATION`, preserves implementation and no-sequence contract, and routes to `NEEDS_USER_DECISION`. |
+| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock: Save Measurement must require explicit user-selected target before save; current auto-target behavior on first component/pin is in-scope risk to resolve before implementation. |
+| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit and recheck pass for `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` (`safe_for_reaudit` decision). |

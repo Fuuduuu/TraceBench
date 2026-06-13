@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/models/known_facts.dart';
@@ -268,136 +269,176 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
         children: [
           _SafetyCard(projectState: projectState),
           const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Koht → Väärtus → Ühik → Muuda',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    key: const ValueKey('edit-component-select-dropdown'),
-                    initialValue: _selectedComponentId,
-                    decoration: const InputDecoration(
-                      labelText: 'Koht / olemasolev komponent',
-                      helperText: 'Muuda ainult olemasolevat komponenti.',
-                    ),
-                    items: components
-                        .map(
-                          (component) => DropdownMenuItem<String>(
-                            value: component.componentId,
-                            child: Text(component.componentId),
-                          ),
-                        )
-                        .toList(growable: false),
-                    onChanged: _isSaving
-                        ? null
-                        : (value) => setState(() {
-                              _selectedComponentId = value;
-                              _humanConfirmed = false;
-                              _successMessage = null;
-                              _errorMessage = null;
-                            }),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    key: const ValueKey('edit-component-label-field'),
-                    controller: _labelController,
-                    decoration: const InputDecoration(
-                      labelText: 'Väärtus / uus nimi',
-                      helperText: 'Ainult inimese sisestatud nimemuudatus.',
-                    ),
-                    onChanged: (_) => _clearMessages(),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    key: const ValueKey('edit-component-reference-field'),
-                    controller: _referenceDesignatorController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reference designator hint',
-                      helperText: 'Optional label context only.',
-                    ),
-                    onChanged: (_) => _clearMessages(),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    key: const ValueKey('edit-component-package-field'),
-                    controller: _packageHintController,
-                    decoration: const InputDecoration(
-                      labelText: 'Package hint',
-                      helperText: 'Optional package context only.',
-                    ),
-                    onChanged: (_) => _clearMessages(),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    key: const ValueKey('edit-component-reason-field'),
-                    controller: _reasonController,
-                    decoration: const InputDecoration(
-                      labelText: 'Muutmise põhjus',
-                      helperText: 'Defaults to human_component_edit if blank.',
-                    ),
-                    onChanged: (_) => _clearMessages(),
-                  ),
-                  const SizedBox(height: 12),
-                  CheckboxListTile(
-                    key: const ValueKey('edit-component-confirm-checkbox'),
-                    value: _humanConfirmed,
-                    onChanged: _isSaving
-                        ? null
-                        : (value) => setState(() {
-                              _humanConfirmed = value ?? false;
-                              _successMessage = null;
-                              _errorMessage = null;
-                            }),
-                    title: const Text('Kinnitan komponendi muudatuse'),
-                    subtitle: const Text(
-                      'This records component_updated after explicit human action.',
-                    ),
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    key: const ValueKey('edit-component-button'),
-                    onPressed: _canEdit ? _editComponent : null,
-                    child: Text(_isSaving ? 'Muudan...' : 'Muuda komponenti'),
-                  ),
-                  if (_successMessage != null) ...[
-                    const SizedBox(height: 8),
+          if (components.isEmpty)
+            _EmptyComponentStateCard(
+              onAddComponent: () => context.go('/project/components/add'),
+            )
+          else
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                     Text(
-                      _successMessage!,
-                      key: const ValueKey('edit-component-success-message'),
+                      'Koht → Väärtus → Ühik → Muuda',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Projection stale until refresh.',
-                      key: ValueKey('edit-component-stale-projection-message'),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<String>(
+                      key: const ValueKey('edit-component-select-dropdown'),
+                      initialValue: _selectedComponentId,
+                      decoration: const InputDecoration(
+                        labelText: 'Koht / olemasolev komponent',
+                        helperText: 'Muuda ainult olemasolevat komponenti.',
+                      ),
+                      items: components
+                          .map(
+                            (component) => DropdownMenuItem<String>(
+                              value: component.componentId,
+                              child: Text(component.componentId),
+                            ),
+                          )
+                          .toList(growable: false),
+                      onChanged: _isSaving
+                          ? null
+                          : (value) => setState(() {
+                                _selectedComponentId = value;
+                                _humanConfirmed = false;
+                                _successMessage = null;
+                                _errorMessage = null;
+                              }),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      key: const ValueKey('edit-component-label-field'),
+                      controller: _labelController,
+                      decoration: const InputDecoration(
+                        labelText: 'Väärtus / uus nimi',
+                        helperText: 'Ainult inimese sisestatud nimemuudatus.',
+                      ),
+                      onChanged: (_) => _clearMessages(),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      key: const ValueKey('edit-component-reference-field'),
+                      controller: _referenceDesignatorController,
+                      decoration: const InputDecoration(
+                        labelText: 'Reference designator hint',
+                        helperText: 'Optional label context only.',
+                      ),
+                      onChanged: (_) => _clearMessages(),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      key: const ValueKey('edit-component-package-field'),
+                      controller: _packageHintController,
+                      decoration: const InputDecoration(
+                        labelText: 'Package hint',
+                        helperText: 'Optional package context only.',
+                      ),
+                      onChanged: (_) => _clearMessages(),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      key: const ValueKey('edit-component-reason-field'),
+                      controller: _reasonController,
+                      decoration: const InputDecoration(
+                        labelText: 'Muutmise põhjus',
+                        helperText: 'Defaults to human_component_edit if blank.',
+                      ),
+                      onChanged: (_) => _clearMessages(),
+                    ),
+                    const SizedBox(height: 12),
+                    CheckboxListTile(
+                      key: const ValueKey('edit-component-confirm-checkbox'),
+                      value: _humanConfirmed,
+                      onChanged: _isSaving
+                          ? null
+                          : (value) => setState(() {
+                                _humanConfirmed = value ?? false;
+                                _successMessage = null;
+                                _errorMessage = null;
+                              }),
+                      title: const Text('Kinnitan komponendi muudatuse'),
+                      subtitle: const Text(
+                        'This records component_updated after explicit human action.',
+                      ),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      key: const ValueKey('edit-component-button'),
+                      onPressed: _canEdit ? _editComponent : null,
+                      child: Text(_isSaving ? 'Muudan...' : 'Muuda komponenti'),
+                    ),
+                    if (_successMessage != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        _successMessage!,
+                        key: const ValueKey('edit-component-success-message'),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Projection stale until refresh.',
+                        key: ValueKey(
+                            'edit-component-stale-projection-message'),
+                      ),
+                    ],
+                    if (_errorMessage != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        _errorMessage!,
+                        key: const ValueKey('edit-component-error-message'),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    const _TechnicalDetailsTile(
+                      eventType: 'component_updated',
+                      writerCopy:
+                          'Edit Component uses the accepted V2 writer service.',
                     ),
                   ],
-                  if (_errorMessage != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      _errorMessage!,
-                      key: const ValueKey('edit-component-error-message'),
-                    ),
-                  ],
-                  const SizedBox(height: 12),
-                  const _TechnicalDetailsTile(
-                    eventType: 'component_updated',
-                    writerCopy:
-                        'Edit Component uses the accepted V2 writer service.',
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
           const SizedBox(height: 16),
           const _HintBoundaryCard(),
         ],
+      ),
+    );
+  }
+}
+
+class _EmptyComponentStateCard extends StatelessWidget {
+  const _EmptyComponentStateCard({required this.onAddComponent});
+
+  final VoidCallback onAddComponent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Komponente pole veel',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.',
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              key: const ValueKey('edit-component-add-component-button'),
+              onPressed: onAddComponent,
+              child: const Text('Lisa komponent'),
+            ),
+          ],
+        ),
       ),
     );
   }

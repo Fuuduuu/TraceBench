@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/components/screens/edit_component_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -135,6 +136,35 @@ Future<ProviderContainer> _pumpEditComponentScreen(
   return container;
 }
 
+Future<ProviderContainer> _pumpEditComponentScreenRouter(
+  WidgetTester tester, {
+  ProjectState? projectState,
+  _FakeEditComponentWriter? writer,
+}) async {
+  final container = ProviderContainer(
+    overrides: [
+      projectStateProvider
+          .overrideWith((_) => projectState ?? _inlineProjectState()),
+      v2EditComponentWriterProvider
+          .overrideWithValue(writer ?? _FakeEditComponentWriter()),
+    ],
+  );
+  addTearDown(container.dispose);
+
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp.router(
+        routerConfig: buildTraceBenchRouter(
+          initialLocation: '/project/components/edit',
+        ),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return container;
+}
+
 ElevatedButton _editButton(WidgetTester tester) {
   return tester.widget<ElevatedButton>(
       find.byKey(const ValueKey('edit-component-button')));
@@ -199,6 +229,54 @@ void main() {
     expect(find.textContaining('do not confirm component identity'),
         findsOneWidget);
     expect(_editButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('empty-state guidance is shown when no components exist', (tester) async {
+    await _pumpEditComponentScreen(
+      tester,
+      projectState: _inlineProjectState(includeComponents: false),
+    );
+
+    expect(find.text('Komponente pole veel'), findsOneWidget);
+    expect(
+      find.text(
+          'Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.'),
+      findsOneWidget);
+    expect(find.byKey(const ValueKey('edit-component-select-dropdown')),
+        findsNothing);
+    expect(
+        find.byKey(const ValueKey('edit-component-label-field')), findsNothing);
+    expect(find.byKey(const ValueKey('edit-component-button')), findsNothing);
+    expect(
+        find.byKey(const ValueKey('edit-component-add-component-button')),
+        findsOneWidget);
+  });
+
+  testWidgets(
+      'empty-state does not call edit writer even when Add Component navigation is used',
+      (tester) async {
+    final writer = _FakeEditComponentWriter();
+    await _pumpEditComponentScreenRouter(
+      tester,
+      projectState: _inlineProjectState(includeComponents: false),
+      writer: writer,
+    );
+
+    final addButton = find.byKey(
+      const ValueKey('edit-component-add-component-button'),
+    );
+    expect(addButton, findsOneWidget);
+    await tester.tap(addButton);
+    await tester.pumpAndSettle();
+
+    expect(writer.requests, isEmpty);
+    expect(
+      find.byKey(const ValueKey('add-component-button')),
+      findsOneWidget,
+      reason: 'Navigation should go to existing Add Component flow.',
+    );
+    expect(find.text('Creates component_created only after explicit human action.'),
+        findsOneWidget);
   });
 
   testWidgets(

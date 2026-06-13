@@ -2,19 +2,17 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_POST_AUDIT_PASS`
 
-- Docs-only scope-lock in force: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS` is active to define a narrow future Edit Component empty-state UX path.
-- Existing accepted Edit Component implementation remains unchanged (`V2_EDIT_COMPONENT_PASS`, commit `ea99ed4`), with no sequence addition and current writer/surface boundaries preserved.
-- Current implementation focus result:
-  - validator/materializer component field policy alignment (no runtime expansion),
-  - explicit allow/deny for `component_updated` change fields,
-  - `package_hint` included in create+update projection parity,
-  - `human_note` included for accepted component metadata projection, no sequence introduced.
+- Edit Component empty-state implementation is active in `V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
+- Empty-project UX now explicitly guards against edit without existing target and shows:
+  - heading: `Komponente pole veel`
+  - body: `Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.`
+- Existing accepted Edit Component runtime contract remains unchanged: `component_updated` only, existing-component targeting, explicit human confirmation, no sequence, and no schema/validator/materializer/writer-service changes.
 
 ## Tooling baseline milestone
 

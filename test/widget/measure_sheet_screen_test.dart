@@ -12,7 +12,34 @@ import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 
-ProjectState _inlineProjectState({String? projectDirectory}) {
+ProjectState _inlineProjectState({
+  String? projectDirectory,
+  List<Map<String, dynamic>>? components,
+  List<Map<String, dynamic>>? pins,
+  List<Map<String, dynamic>>? measurements,
+}) {
+  final componentsJson = components ??
+      const [
+        {'component_id': 'Q2', 'status': 'identified', 'designator': 'Q2'},
+      ];
+  final pinsJson = pins ??
+      const [
+        {'component_id': 'Q2', 'pin_id': 'Q2.1'},
+      ];
+  final measurementsJson = measurements ??
+      const [
+        {
+          'measurement_id': 'M001',
+          'mode': 'continuity',
+          'from': 'Q2.1',
+          'to': 'R17.1',
+          'reading': {'kind': 'numeric', 'value': 1, 'unit': 'ohm'},
+          'power_state': 'off',
+          'origin_event_id': 'evt_000001',
+          'validity_status': 'active',
+        },
+      ];
+
   return ProjectState(
     manifest: ProjectManifest.fromJson({
       'project_id': 'measure_sheet_project',
@@ -24,32 +51,45 @@ ProjectState _inlineProjectState({String? projectDirectory}) {
     }),
     knownFacts: KnownFacts.fromJson({
       'project_id': 'measure_sheet_project',
-      'components': [
-        {'component_id': 'Q2', 'status': 'identified', 'designator': 'Q2'},
-      ],
-      'pins': [
-        {'component_id': 'Q2', 'pin_id': 'Q2.1'},
-      ],
-      'measurements': [
-        {
-          'measurement_id': 'M001',
-          'mode': 'continuity',
-          'from': 'Q2.1',
-          'to': 'R17.1',
-          'reading': {'kind': 'numeric', 'value': 1, 'unit': 'ohm'},
-          'power_state': 'off',
-          'origin_event_id': 'evt_000001',
-          'validity_status': 'active',
-        },
-      ],
-      'component_pin_index': {
-        'Q2': ['Q2.1'],
-      },
+      'components': componentsJson,
+      'pins': pinsJson,
+      'measurements': measurementsJson,
+      'component_pin_index': _buildComponentPinIndex(
+        componentsJson: componentsJson,
+        pinsJson: pinsJson,
+      ),
     }),
     events: const [],
     customerReport: 'Inline sample report',
     projectDirectory: projectDirectory,
   );
+}
+
+Map<String, List<String>> _buildComponentPinIndex({
+  required List<Map<String, dynamic>> componentsJson,
+  required List<Map<String, dynamic>> pinsJson,
+}) {
+  final index = <String, Set<String>>{};
+  final componentIds = {
+    for (final component in componentsJson)
+      component['component_id']?.toString() ?? '',
+  };
+  for (final pin in pinsJson) {
+    final componentId = pin['component_id']?.toString();
+    final pinId = pin['pin_id']?.toString();
+    if (componentId == null ||
+        componentId.isEmpty ||
+        pinId == null ||
+        pinId.isEmpty ||
+        !componentIds.contains(componentId)) {
+      continue;
+    }
+    (index[componentId] ??= <String>{}).add(pinId);
+  }
+  return {
+    for (final entry in index.entries)
+      entry.key: entry.value.toList(growable: false),
+  };
 }
 
 class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
@@ -144,6 +184,19 @@ Future<void> _enterSaveMeasurement(
   await tester.pump();
 }
 
+Future<void> _selectMeasurementTarget(
+  WidgetTester tester,
+  String menuLabel, {
+  bool warnIfMissed = true,
+}) async {
+  final dropdown = find.byKey(const ValueKey('measure-sheet-target-dropdown'));
+  await tester.ensureVisible(dropdown);
+  await tester.tap(dropdown, warnIfMissed: warnIfMissed);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(menuLabel).last);
+  await tester.pumpAndSettle();
+}
+
 Future<void> _tapSaveMeasurement(
   WidgetTester tester, {
   bool warnIfMissed = true,
@@ -164,7 +217,7 @@ void main() {
     expect(find.text('Koht'), findsOneWidget);
     expect(find.text('Väärtus'), findsOneWidget);
     expect(find.text('Ühik'), findsAtLeastNWidgets(1));
-    expect(find.text('Q2 · Q2.1'), findsAtLeastNWidgets(1));
+    expect(find.text('Vali mõõtmise koht'), findsAtLeastNWidgets(1));
     expect(find.text('1 ohm'), findsAtLeastNWidgets(1));
     expect(find.text('Human is the sensor. AI is the graph engine.'),
         findsOneWidget);
@@ -189,7 +242,7 @@ void main() {
   });
 
   testWidgets(
-    'save button is disabled until a human-entered value and unit exist',
+    'save button remains disabled without explicit target, even with value and unit',
     (tester) async {
       final writer = _FakeSaveMeasurementWriter();
       await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
@@ -223,7 +276,102 @@ void main() {
       final enabledButton = tester.widget<ElevatedButton>(
         find.byKey(const ValueKey('measure-sheet-save-button')),
       );
-      expect(enabledButton.onPressed, isNotNull);
+      expect(enabledButton.onPressed, isNull);
+
+      await _selectMeasurementTarget(tester, 'Komponent: Q2');
+      await tester.pump();
+
+      final enabledAfterTarget = tester.widget<ElevatedButton>(
+        find.byKey(const ValueKey('measure-sheet-save-button')),
+      );
+      expect(enabledAfterTarget.onPressed, isNotNull);
+    },
+  );
+
+  testWidgets(
+    'save target must be explicitly selected before writer call',
+    (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
+      await tester.pump(const Duration(milliseconds: 16));
+
+      await _enterSaveMeasurement(tester);
+      await _tapSaveMeasurement(tester, warnIfMissed: false);
+      await tester.pump();
+
+      expect(writer.calls, 0);
+
+      await _selectMeasurementTarget(tester, 'Komponent: Q2');
+      await _tapSaveMeasurement(tester);
+      await tester.pumpAndSettle();
+
+      expect(writer.calls, 1);
+      expect(writer.requests.single.targetKey, 'Q2');
+      expect(writer.requests.single.displayLabel, 'Q2');
+      expect(writer.requests.single.componentId, 'Q2');
+      expect(writer.requests.single.pinId, isNull);
+    },
+  );
+
+  testWidgets(
+    'selecting a pin target saves selected pin metadata in the writer request',
+    (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
+      await tester.pump(const Duration(milliseconds: 16));
+
+      await _enterSaveMeasurement(tester);
+      await _selectMeasurementTarget(tester, 'Piin: Q2 · Q2.1');
+      await _tapSaveMeasurement(tester);
+      await tester.pumpAndSettle();
+
+      expect(writer.calls, 1);
+      expect(writer.requests.single.targetKey, 'Q2.1');
+      expect(writer.requests.single.displayLabel, 'Q2 · Q2.1');
+      expect(writer.requests.single.componentId, 'Q2');
+      expect(writer.requests.single.pinId, 'Q2.1');
+    },
+  );
+
+  testWidgets(
+    'no components/pins shows explicit no-target guidance and keeps save disabled',
+    (tester) async {
+      await tester.pumpWidget(
+        _harness(
+          _inlineProjectState(
+            components: const [],
+            pins: const [],
+            measurements: const [],
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+
+      expect(
+        find.text(
+          'Komponente või jalgusid pole saadaval. Vali mõõtmise koht enne salvestamist.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Vali mõõtmise koht'), findsAtLeastNWidgets(1));
+      expect(find.byKey(const ValueKey('measure-sheet-target-dropdown')),
+          findsNothing);
+
+      await tester.enterText(
+        find.byKey(const ValueKey('measure-sheet-value-field')),
+        '1.23',
+      );
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
+      await tester.tap(find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('V').last);
+      await tester.pump();
+
+      final disabledButton = tester.widget<ElevatedButton>(
+        find.byKey(const ValueKey('measure-sheet-save-button')),
+      );
+      expect(disabledButton.onPressed, isNull);
     },
   );
 
@@ -250,12 +398,13 @@ void main() {
     },
   );
 
-  testWidgets('valid Save Measurement calls writer once and keeps Koht',
+testWidgets('valid Save Measurement calls writer once and keeps Koht',
       (tester) async {
     final writer = _FakeSaveMeasurementWriter();
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Komponent: Q2');
     await _enterSaveMeasurement(tester);
 
     await _tapSaveMeasurement(tester);
@@ -267,20 +416,21 @@ void main() {
     expect(writer.requests.single.sourceType, 'explicit_user_confirmation');
     expect(writer.requests.single.confirmed, isTrue);
     expect(writer.requests.single.valueProvenance, 'human_entered');
-    expect(writer.requests.single.displayLabel, 'Q2 · Q2.1');
+    expect(writer.requests.single.displayLabel, 'Q2');
     expect(writer.requests.single.componentId, 'Q2');
-    expect(writer.requests.single.pinId, 'Q2.1');
+    expect(writer.requests.single.pinId, isNull);
     expect(find.text('Salvestatud.'), findsOneWidget);
     expect(find.text('Projection stale until refresh.'), findsOneWidget);
-    expect(find.text('Q2 · Q2.1'), findsAtLeastNWidgets(1));
+    expect(find.text('Q2'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('rapid double tap does not duplicate writer calls',
+testWidgets('rapid double tap does not duplicate writer calls',
       (tester) async {
     final writer = _FakeSaveMeasurementWriter();
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Piin: Q2 · Q2.1');
     await _enterSaveMeasurement(tester);
 
     await _tapSaveMeasurement(tester);
@@ -300,6 +450,7 @@ void main() {
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Piin: Q2 · Q2.1');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
@@ -320,6 +471,7 @@ void main() {
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Piin: Q2 · Q2.1');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
@@ -340,6 +492,7 @@ void main() {
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Piin: Q2 · Q2.1');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
@@ -361,6 +514,7 @@ void main() {
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Komponent: Q2');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
@@ -376,6 +530,7 @@ void main() {
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Komponent: Q2');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
@@ -393,7 +548,7 @@ void main() {
 
   testWidgets('existing writer result does not duplicate local events',
       (tester) async {
-    const clientOperationId = 'measure_sheet_Q2_1_voltage_V_1_23_human_entered';
+    const clientOperationId = 'measure_sheet_Q2_voltage_V_1_23_human_entered';
     const existingEvent = TraceBenchEvent(
       schemaVersion: '2.0-draft',
       eventId: 'evt_000010',
@@ -430,11 +585,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
+    await _selectMeasurementTarget(tester, 'Komponent: Q2');
     await _enterSaveMeasurement(tester);
     await _tapSaveMeasurement(tester);
     await tester.pumpAndSettle();
 
     final updatedState = container.read(projectStateProvider);
+    expect(writer.requests.single.clientOperationId, clientOperationId);
     expect(updatedState?.events, hasLength(1));
     expect(updatedState?.events.single.eventId, 'evt_000010');
     expect(
@@ -645,7 +802,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.text('Board context hidden on narrow width'), findsOneWidget);
-    expect(find.text('Selected Koht: Q2 · Q2.1'), findsOneWidget);
+    expect(find.text('Selected Koht: Vali mõõtmise koht'), findsOneWidget);
     expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
   });
 
@@ -683,6 +840,7 @@ void main() {
     expect(source, isNot(contains('likely fault')));
     expect(source, isNot(contains('probable')));
     expect(source, isNot(contains('diagnosis')));
+    expect(source, isNot(contains('\"sequence\"')));
     expect(source, isNot(contains('event-writing')));
     expect(source, isNot(contains('persistence')));
   });

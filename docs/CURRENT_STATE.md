@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_POST_AUDIT_PASS`
 
 ## Tooling baseline milestone
 
@@ -40,9 +40,13 @@ Observed implementation context:
   - Save result was: `Not saved: project must be opened from a local folder.`
   - No legacy-sequence exception evidence was observed in this smoke run.
   - Full `events.jsonl` append/`known_facts.json` persistence evidence was not proven due the environment restriction.
-- Current docs-only lock in progress:
-  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` records the read-only evidence and explicitly forbids implicit target inference (`components.first` / first pin auto-selection) in normal Save Measurement flow before write.
-- The implementation-safe next guard is: Save Measurement requires explicit technician target selection before writer call.
+- Current implementation pass in progress:
+  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` removes implicit save target
+  inference (`components.first` / first pin auto-selection) and requires explicit user
+  target choice before writer call.
+- In-pass implementation updates currently in flight:
+  - `lib/features/measure_sheet/screens/measure_sheet_screen.dart` requires explicit component/pin target selection and keeps Save disabled until unit + value + explicit target are present.
+  - `test/widget/measure_sheet_screen_test.dart` verifies explicit target requirement, explicit component/pin metadata writes, and no-target guidance behavior.
 
 ## Visual design capture status
 

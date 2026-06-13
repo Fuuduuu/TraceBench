@@ -17,8 +17,13 @@ class MeasureSheetScreen extends ConsumerStatefulWidget {
 }
 
 class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
+  static const _noTargetLabel = 'Vali mõõtmise koht';
+  static const _noTargetHint =
+      'Komponente või jalgusid pole saadaval. Vali mõõtmise koht enne salvestamist.';
+
   final TextEditingController _valueController = TextEditingController();
   _UnitOption? _selectedUnit;
+  String? _selectedTargetKey;
   bool _isSaving = false;
   String? _lastSuccessfulFormKey;
   String? _successMessage;
@@ -28,11 +33,12 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
 
   String? _formKey(_MeasureSheetSelection selection) {
     final option = _selectedUnit;
-    if (_valueText.isEmpty || option == null || !selection.hasSaveTarget) {
+    final selectedTarget = _selectedTarget(selection);
+    if (_valueText.isEmpty || option == null || selectedTarget == null) {
       return null;
     }
     return [
-      selection.targetKey,
+      selectedTarget.targetKey,
       option.mode,
       option.schemaUnit,
       _valueText,
@@ -51,8 +57,10 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
     }
     final formKey = _formKey(selection);
     final option = _selectedUnit;
+    final selectedTarget = _selectedTarget(selection);
     if (formKey == null ||
         option == null ||
+        selectedTarget == null ||
         formKey == _lastSuccessfulFormKey) {
       return;
     }
@@ -83,10 +91,10 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
                   unitLabel: option.label,
                   schemaUnit: option.schemaUnit,
                   mode: option.mode,
-                  targetKey: selection.targetKey,
-                  displayLabel: selection.kohtLabel,
-                  componentId: selection.componentId,
-                  pinId: selection.pinId,
+                  targetKey: selectedTarget.targetKey,
+                  displayLabel: selectedTarget.displayLabel,
+                  componentId: selectedTarget.componentId,
+                  pinId: selectedTarget.pinId,
                   valueProvenance: 'human_entered',
                   clientOperationId: _clientOperationId(formKey),
                 ),
@@ -181,6 +189,18 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
     }
   }
 
+  _TargetChoice? _selectedTarget(_MeasureSheetSelection selection) {
+    if (_selectedTargetKey == null) {
+      return null;
+    }
+    for (final target in selection.targetOptions) {
+      if (target.key == _selectedTargetKey) {
+        return target;
+      }
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _valueController.dispose();
@@ -197,6 +217,9 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
     }
 
     final selection = _MeasureSheetSelection.fromProject(projectState);
+    final selectedTarget = _selectedTarget(selection);
+    final selectedTargetLabel =
+        selectedTarget?.displayLabel ?? _MeasureSheetScreenState._noTargetLabel;
 
     return Scaffold(
       appBar: AppBar(
@@ -214,10 +237,17 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
                   _SafetyBanner(selection: selection),
                   const SizedBox(height: 16),
                   if (isNarrow) ...[
-                    _NarrowBoardContext(selection: selection),
+                    _NarrowBoardContext(
+                      selection: selection,
+                      selectedKohtLabel: selectedTargetLabel,
+                    ),
                     const SizedBox(height: 16),
                     _MeasureSheetPanel(
                       selection: selection,
+                      targetOptions: selection.targetOptions,
+                      selectedTargetKey: selectedTarget?.key,
+                      noTargetCopy: _MeasureSheetScreenState._noTargetHint,
+                      noTargetHint: _MeasureSheetScreenState._noTargetLabel,
                       valueController: _valueController,
                       selectedUnit: _selectedUnit,
                       isSaving: _isSaving,
@@ -225,6 +255,11 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
                       errorMessage: _errorMessage,
                       canSave: _canSave(selection),
                       onValueChanged: () => setState(() {
+                        _successMessage = null;
+                        _errorMessage = null;
+                      }),
+                      onTargetChanged: (value) => setState(() {
+                        _selectedTargetKey = value;
                         _successMessage = null;
                         _errorMessage = null;
                       }),
@@ -240,12 +275,19 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                            child: _BoardContextPanel(selection: selection)),
+                            child: _BoardContextPanel(
+                              selection: selection,
+                              selectedKohtLabel: selectedTargetLabel,
+                            )),
                         const SizedBox(width: 16),
                         SizedBox(
                           width: 430,
                           child: _MeasureSheetPanel(
                             selection: selection,
+                            targetOptions: selection.targetOptions,
+                            selectedTargetKey: selectedTarget?.key,
+                            noTargetCopy: _MeasureSheetScreenState._noTargetHint,
+                            noTargetHint: _MeasureSheetScreenState._noTargetLabel,
                             valueController: _valueController,
                             selectedUnit: _selectedUnit,
                             isSaving: _isSaving,
@@ -253,6 +295,11 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
                             errorMessage: _errorMessage,
                             canSave: _canSave(selection),
                             onValueChanged: () => setState(() {
+                              _successMessage = null;
+                              _errorMessage = null;
+                            }),
+                            onTargetChanged: (value) => setState(() {
+                              _selectedTargetKey = value;
                               _successMessage = null;
                               _errorMessage = null;
                             }),
@@ -295,6 +342,7 @@ class _MeasureSheetSelection {
     required this.measurementKind,
     required this.hasRecordedReading,
     required this.projectLabel,
+    required this.targetOptions,
   });
 
   final String? componentId;
@@ -305,10 +353,9 @@ class _MeasureSheetSelection {
   final String measurementKind;
   final bool hasRecordedReading;
   final String projectLabel;
+  final List<_TargetChoice> targetOptions;
 
   String get kohtLabel => '$componentLabel · $pinLabel';
-  String get targetKey => pinId ?? componentId ?? 'unknown_target';
-  bool get hasSaveTarget => componentId != null || pinId != null;
 
   factory _MeasureSheetSelection.fromProject(ProjectState projectState) {
     final components = projectState.knownFacts.components;
@@ -335,7 +382,118 @@ class _MeasureSheetSelection {
       hasRecordedReading: measurement != null,
       projectLabel:
           '${projectState.manifest.deviceType} · ${projectState.manifest.model}',
+      targetOptions: _buildTargetOptions(
+        projectState.knownFacts,
+        projectState.knownFacts.components,
+      ),
     );
+  }
+
+  static List<_TargetChoice> _buildTargetOptions(
+    KnownFacts knownFacts,
+    List<ComponentFact> components,
+  ) {
+    final options = <_TargetChoice>[];
+    final knownComponentIds = components
+        .map((component) => component.componentId)
+        .toSet();
+
+    for (final component in components) {
+      if (component.componentId.isEmpty) {
+        continue;
+      }
+      final componentLabel = component.designator?.isNotEmpty == true
+          ? component.designator!
+          : component.componentId;
+      options.add(
+        _TargetChoice(
+          key: 'component:${component.componentId}',
+          targetKey: component.componentId,
+          displayLabel: componentLabel,
+          menuLabel: 'Komponent: $componentLabel',
+          componentId: component.componentId,
+        ),
+      );
+
+      final seenPins = <String>{};
+      final indexedPins = knownFacts.componentPinIndex[component.componentId];
+      if (indexedPins != null && indexedPins.isNotEmpty) {
+        for (final pin in indexedPins) {
+          if (pin.isEmpty || !seenPins.add(pin)) {
+            continue;
+          }
+          options.add(
+            _TargetChoice(
+              key: 'pin:${component.componentId}:$pin',
+              targetKey: pin,
+              displayLabel: '$componentLabel · $pin',
+              menuLabel: 'Piin: $componentLabel · $pin',
+              componentId: component.componentId,
+              pinId: pin,
+            ),
+          );
+        }
+      }
+
+      for (final pin in knownFacts.pins) {
+        if (pin.componentId != component.componentId || pin.pinId.isEmpty) {
+          continue;
+        }
+        final pinId = pin.pinId;
+        if (!seenPins.add(pinId)) {
+          continue;
+        }
+        options.add(
+          _TargetChoice(
+            key: 'pin:${component.componentId}:$pinId',
+            targetKey: pinId,
+            displayLabel: '$componentLabel · $pinId',
+            menuLabel: 'Piin: $componentLabel · $pinId',
+            componentId: component.componentId,
+            pinId: pinId,
+          ),
+        );
+      }
+    }
+
+    final unknownPins = <String, Set<String>>{};
+    for (final pin in knownFacts.pins) {
+      if (pin.componentId.isEmpty || pin.pinId.isEmpty) {
+        continue;
+      }
+      if (knownComponentIds.contains(pin.componentId)) {
+        continue;
+      }
+      unknownPins.putIfAbsent(pin.componentId, () => <String>{}).add(pin.pinId);
+    }
+
+    for (final entry in unknownPins.entries) {
+      final component = entry.key;
+      final componentLabel = component;
+      options.add(
+        _TargetChoice(
+          key: 'component:$component',
+          targetKey: component,
+          displayLabel: componentLabel,
+          menuLabel: 'Komponent: $component',
+          componentId: component,
+        ),
+      );
+      for (final pinId in entry.value) {
+        options.add(
+          _TargetChoice(
+            key: 'pin:$component:$pinId',
+            targetKey: pinId,
+            displayLabel: '$component · $pinId',
+            menuLabel: 'Piin: $component · $pinId',
+            componentId: component,
+            pinId: pinId,
+          ),
+        );
+      }
+    }
+
+    return options;
   }
 
   static String _firstPinLabel(
@@ -440,10 +598,32 @@ class _UnitOption {
   final String schemaUnit;
 }
 
+class _TargetChoice {
+  const _TargetChoice({
+    required this.key,
+    required this.targetKey,
+    required this.displayLabel,
+    required this.menuLabel,
+    required this.componentId,
+    this.pinId,
+  });
+
+  final String key;
+  final String targetKey;
+  final String displayLabel;
+  final String menuLabel;
+  final String componentId;
+  final String? pinId;
+}
+
 class _BoardContextPanel extends StatelessWidget {
-  const _BoardContextPanel({required this.selection});
+  const _BoardContextPanel({
+    required this.selection,
+    required this.selectedKohtLabel,
+  });
 
   final _MeasureSheetSelection selection;
+  final String selectedKohtLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -468,14 +648,13 @@ class _BoardContextPanel extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('valitud Koht: ${selection.kohtLabel}'),
+                    Text('valitud Koht: $selectedKohtLabel'),
                     const SizedBox(height: 12),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        _ContextChip(label: selection.componentLabel),
-                        _ContextChip(label: selection.pinLabel),
+                        _ContextChip(label: selectedKohtLabel),
                         const _ContextChip(label: 'kasutaja valik'),
                       ],
                     ),
@@ -495,9 +674,13 @@ class _BoardContextPanel extends StatelessWidget {
 }
 
 class _NarrowBoardContext extends StatelessWidget {
-  const _NarrowBoardContext({required this.selection});
+  const _NarrowBoardContext({
+    required this.selection,
+    required this.selectedKohtLabel,
+  });
 
   final _MeasureSheetSelection selection;
+  final String selectedKohtLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +692,7 @@ class _NarrowBoardContext extends StatelessWidget {
           children: [
             const Text('Board context hidden on narrow width'),
             const SizedBox(height: 8),
-            Text('Selected Koht: ${selection.kohtLabel}'),
+            Text('Selected Koht: $selectedKohtLabel'),
           ],
         ),
       ),
@@ -520,6 +703,10 @@ class _NarrowBoardContext extends StatelessWidget {
 class _MeasureSheetPanel extends StatelessWidget {
   const _MeasureSheetPanel({
     required this.selection,
+    required this.targetOptions,
+    required this.selectedTargetKey,
+    required this.noTargetCopy,
+    required this.noTargetHint,
     required this.valueController,
     required this.selectedUnit,
     required this.isSaving,
@@ -527,10 +714,15 @@ class _MeasureSheetPanel extends StatelessWidget {
     required this.errorMessage,
     required this.canSave,
     required this.onValueChanged,
+    required this.onTargetChanged,
     required this.onUnitChanged,
     required this.onSave,
   });
 
+  final List<_TargetChoice> targetOptions;
+  final String? selectedTargetKey;
+  final String noTargetCopy;
+  final String noTargetHint;
   static const List<_UnitOption> _unitOptions = <_UnitOption>[
     _UnitOption(label: 'V', mode: 'voltage', schemaUnit: 'V'),
     _UnitOption(label: 'Ω', mode: 'resistance', schemaUnit: 'Ω'),
@@ -546,6 +738,7 @@ class _MeasureSheetPanel extends StatelessWidget {
   final String? errorMessage;
   final bool canSave;
   final VoidCallback onValueChanged;
+  final ValueChanged<String?> onTargetChanged;
   final ValueChanged<_UnitOption?> onUnitChanged;
   final VoidCallback onSave;
 
@@ -562,11 +755,29 @@ class _MeasureSheetPanel extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            _FlowField(
-              label: 'Koht',
-              helper: 'kasutaja valik',
-              value: selection.kohtLabel,
-            ),
+            if (targetOptions.isEmpty) ...[
+              _FlowField(
+                label: 'Koht',
+                helper: noTargetCopy,
+                value: noTargetHint,
+              ),
+            ] else
+              DropdownButtonFormField<String>(
+                key: const ValueKey('measure-sheet-target-dropdown'),
+                value: selectedTargetKey,
+                decoration: const InputDecoration(labelText: 'Koht'),
+                isExpanded: true,
+                hint: const Text('Vali mõõtmise koht'),
+                items: targetOptions
+                    .map(
+                      (target) => DropdownMenuItem<String>(
+                        value: target.key,
+                        child: Text(target.menuLabel),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: isSaving ? null : onTargetChanged,
+              ),
             _FlowField(
               label: 'Väärtus',
               helper: selection.measurementKind,

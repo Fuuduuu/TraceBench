@@ -4,7 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS.md | current (implementation of aligned component_updated/materializer contract; package_hint contract/parity and no-sequence preservation) |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS.md | completed (implementation of aligned component_updated/materializer contract; package_hint contract/parity and no-sequence preservation) |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS.md | current (docs-only closeout for accepted implementation; boundaries preserved; route to `NEEDS_USER_DECISION`) |
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS.md | completed (docs-only scope lock: validator/materializer alignment for V2 component_update field contract) |
 | TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | docs/audit/TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS.md | completed (docs-only, no runtime/tooling install, no protected-surface changes) |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS | docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS.md | completed (Flutter implementation: adds read-only Measure Sheet shell route, project overview action, technician-first flow labels, disabled non-writing save context, value hierarchy, narrow layout fallback, and focused widget/source-boundary tests; no event-writing or canonical mutation) |

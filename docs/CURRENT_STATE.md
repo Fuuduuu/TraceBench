@@ -2,16 +2,19 @@
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
-- Current implementation focus is `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`:
+- Current implementation accepted in `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS` and committed as:
+  - `4c9615f fix(component-events): align update field projection contract`
+- Current implementation focus result:
   - validator/materializer component field policy alignment (no runtime expansion),
   - explicit allow/deny for `component_updated` change fields,
-  - `package_hint` included in create+update projection parity.
+  - `package_hint` included in create+update projection parity,
+  - `human_note` included for accepted component metadata projection, no sequence introduced.
 
 ## Tooling baseline milestone
 

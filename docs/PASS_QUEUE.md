@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,8 +25,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS | CODEX / VALIDATOR_MATERIALIZER_IMPLEMENTATION_PASS | in-progress | Implement shared component field policy for `component_updated` and materializer projection alignment for known-facts; `package_hint` included as allowed hint field. |
-| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit/recheck after `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`; route drift and boundary preservation evidence only. |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout for accepted `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`, preserving non-sequence and cross-surface boundaries; routed to `NEEDS_USER_DECISION`. |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS | CODEX / VALIDATOR_MATERIALIZER_IMPLEMENTATION_PASS | completed | Implemented shared component field policy for `component_updated` and materializer projection alignment for known-facts; `package_hint` included as allowed hint field. |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted shared contract alignment implementation and preserved boundaries; closeout records accepted state. |
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Lock the V2 Edit Component event payload / projection field alignment before implementation; preserve all existing runtime boundaries and route to post-audit scope alignment pass. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Close out accepted/pushed implementation as docs-only closeout and route to `NEEDS_USER_DECISION`. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | completed | Implemented explicit Save Measurement target selection gating and payload binding, preserving existing V2 event and runtime boundary behavior. |

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -36,7 +36,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | completed | Implemented explicit Save Measurement target selection gating and payload binding, preserving existing V2 event and runtime boundary behavior. |
 | V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Scope-lock completed for future Save Measurement unit-control implementation; preserve explicit target-selection behavior and route to `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`. |
 | V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Removes static `_UnitDisplay` unit chips so `measure-sheet-unit-dropdown` remains the single unit affordance while preserving explicit target-selection semantics and no-sequence contract. |
-| V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout records accepted implementation, boundary-preserving validation status, and route to `NEEDS_USER_DECISION`. |
+| V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted implementation, boundary-preserving validation status, and route to `NEEDS_USER_DECISION`. |
 | TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | CODEX / DOCS_AND_AGENT_SKILLS_PASS | completed | Added repo-local Codex guidance layer (`AGENTS.md`, TraceBench skills, and tooling policy), no runtime/tool/plugin install in this pass. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Created manual Windows smoke plan for sidecar viewer, ZIP/sidecar behavior, and navigation/route checkpoints. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_RUN_PASS | DOCS_SYNC / QA_RUN | completed | Ran manual smoke and confirmed project overview entry, local sidecar import/persistence, and route/ZIP boundary invariants. |
@@ -227,5 +227,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation, preserved V2 no-sequence contract, and routes to `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_PASS`. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_PASS | DOCS_SYNC / QA_RUN | completed | Manual Windows smoke run observed by user: `Lisa mõõtmine` opens V2 measure sheet; `/project/measurements/new` redirects to `/project/measure-sheet`; save blocked by local-folder requirement; legacy sequence path did not appear. |
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records manual smoke result as `PASS_WITH_ENVIRONMENT_LIMITATION`, preserves implementation and no-sequence contract, and routes to `NEEDS_USER_DECISION`. |
-| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock: Save Measurement must require explicit user-selected target before save; current auto-target behavior on first component/pin is in-scope risk to resolve before implementation. |
-| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit and recheck pass for `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` (`safe_for_reaudit` decision). |
+| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock: Save Measurement must require explicit user-selected target before save; current auto-target behavior on first component/pin was in-scope risk and is now closed by accepted implementation. |
+| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit and recheck pass for `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` (`safe_for_reaudit: YES` at time). |
+| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and future implementation is limited to shell composition. |
+| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit consistency and route-drift check pass for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`; no runtime/filesystem scope start. |

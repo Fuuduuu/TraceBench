@@ -2,36 +2,38 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-closeout mode for the accepted/pushed `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`
-implementation. No runtime/test changes are allowed in this pass.
+Docs-only scope lock for the first narrow implementation slice only. No runtime/test
+schema/tool changes are allowed in this pass.
 
 Current goal:
 
-- confirm closeout ledger records for `fix(measure-sheet): remove inert unit display`;
-- preserve route/docs continuity and existing protected-surface boundaries while setting
-  next state to `NEEDS_USER_DECISION`.
+- lock `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS` as a narrow, safe future implementation slice:
+  presentation-only PCB-first Project Overview shell centered on board/PCB context;
+- preserve all V2 save/add/edit writer, event, sequence, and projection boundaries;
+- preserve all existing route behavior outside this shell plan;
+- keep Board Canvas in read-only mode.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout + governance alignment.
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only scope-lock + governance alignment.
 
 ## File allowlist for this pass
 
@@ -40,12 +42,17 @@ Current goal:
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS.md`
-- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS.md`
+- `docs/audit/V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS.md`
+
+## Allowed future implementation surfaces
+
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/project_overview_screen_test.dart` (or closest existing overview test file)
+- route tests only for unchanged route reachability and existing flow assertions
+- existing governance/doc updates
 
 ## Forbidden touches
 
-- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
 - `tools/event_writer_service.py`
 - `tools/validate_events_jsonl.py`
 - `tools/materialize_known_facts.py`
@@ -59,10 +66,12 @@ Current goal:
 - Add/Edit Component runtime
 - `Muu ühik`/custom unit implementation
 - `Save Measurement` event-model changes
+- route redesign outside Project Overview shell
+- analyzer/lint cleanup
 - `pubspec.yaml`, `pubspec.lock`, dependency/config files
 - generated files, samples, platform folders, and toolchain/package files
 
 ## Route lock
 
-Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
+Next: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`

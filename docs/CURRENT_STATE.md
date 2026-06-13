@@ -2,11 +2,15 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_CLOSEOUT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+
+- New docs-only scope lock opened: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`.
+  The next slice is a PCB-first Project Overview shell implementation direction only,
+  with all save/add/edit/write/event/projection behavior preserved.
 
 - Save Measurement unit-control UX implementation is accepted and pushed in commit
   `8e93f46` (`fix(measure-sheet): remove inert unit display`).

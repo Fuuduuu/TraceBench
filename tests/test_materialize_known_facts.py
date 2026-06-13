@@ -224,6 +224,7 @@ def make_v2_component_payload(**overrides):
         "pin_count": 3,
         "template_id_hint": "sot23_hint",
         "footprint_hint": "SOT-23",
+        "package_hint": "SOT-23 package",
         "side": "top",
         "rough_location": "near connector",
         "rotation_hint": "unknown",
@@ -318,6 +319,7 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertEqual(component["component_kind"], "unknown")
         self.assertEqual(component["template_id_hint"], "sot23_hint")
         self.assertEqual(component["footprint_hint"], "SOT-23")
+        self.assertEqual(component["package_hint"], "SOT-23 package")
         self.assertEqual(component["updated_by_event_ids"], ["evt_200002"])
         self.assertEqual(
             [entry["source_event_id"] for entry in component["component_history"]],
@@ -326,6 +328,41 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertNotIn("electrical_identity", component)
         self.assertNotIn("net_id", component)
         self.assertNotIn("fault_status", component)
+
+    def test_v2_component_updated_package_hint_projection(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "component_created",
+                    make_v2_component_payload(
+                        package_hint="SOT-23 package",
+                    ),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "component_updated",
+                    {
+                        "component_id": "Q2",
+                        "edit_reason": "normalized package hint",
+                        "changes": [
+                            {
+                                "field": "package_hint",
+                                "old_value_observed": "SOT-23 package",
+                                "new_value": "SOT23-6 package",
+                                "change_kind": "replace",
+                            }
+                        ],
+                    },
+                ),
+            ]
+        )
+
+        component = next(item for item in data["components"] if item["component_id"] == "Q2")
+        self.assertEqual(component["package_hint"], "SOT23-6 package")
+        self.assertNotIn("confirmed_identity", component)
+        self.assertNotIn("net_proof", component)
+        self.assertNotIn("ai_proposal_id", component)
 
     def test_v2_event_invalidated_excludes_active_projection_but_preserves_history(self):
         data = run_materialize_events(

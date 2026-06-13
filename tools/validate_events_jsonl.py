@@ -242,6 +242,9 @@ V2_COMPONENT_CREATED_ALLOWED_FIELDS = {
     "rotation_hint",
     "human_note",
 }
+V2_COMPONENT_UPDATED_ALLOWED_FIELDS = frozenset(
+    V2_COMPONENT_CREATED_ALLOWED_FIELDS - {"component_id"},
+)
 RESOLVABLE_CONFLICT_TYPES = {
     "measurement_contradiction",
     "net_topology_conflict",
@@ -632,6 +635,29 @@ def _validate_v2_component_updated(
         for field in ("field", "old_value_observed", "new_value", "change_kind"):
             if field not in change:
                 _error(errors, context, f"component_updated changes[{index}] missing {field}")
+        field = change.get("field")
+        if not isinstance(field, str) or not field:
+            _error(errors, context, f"component_updated changes[{index}].field must be non-empty string")
+        else:
+            if field not in V2_COMPONENT_UPDATED_ALLOWED_FIELDS:
+                _error(
+                    errors,
+                    context,
+                    f"component_updated changes[{index}].field must be one of "
+                    f"{sorted(V2_COMPONENT_UPDATED_ALLOWED_FIELDS)!r}",
+                )
+            if field in V2_COMPONENT_PROOF_FIELDS:
+                _error(
+                    errors,
+                    context,
+                    f"component_updated changes[{index}].field is forbidden proof field: {field}",
+                )
+            if field in V2_PROHIBITED_FIELDS:
+                _error(
+                    errors,
+                    context,
+                    f"component_updated changes[{index}].field is forbidden: {field}",
+                )
         if change.get("change_kind") not in V2_CHANGE_KINDS:
             _error(
                 errors,

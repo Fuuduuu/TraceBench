@@ -183,6 +183,236 @@ class ValidateV2EventsJsonlTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn("rejected V2 event_type alias", result.stdout + result.stderr)
 
+    def test_v2_component_updated_allows_package_hint_and_rejects_unknown_field(self):
+        valid_update = _events_to_temp_jsonl(
+            [
+                _v2_event(
+                    event_id="evt_200001",
+                    event_type="component_created",
+                    payload=_v2_component_created_payload(),
+                    client_operation_id="op_v2_000001",
+                ),
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="component_updated",
+                    payload={
+                        "component_id": "Q2",
+                        "changes": [
+                            {
+                                "field": "package_hint",
+                                "old_value_observed": "old package",
+                                "new_value": "SOT23",
+                                "change_kind": "replace",
+                            }
+                        ],
+                        "edit_reason": "package_hint_normalization",
+                    },
+                    client_operation_id="op_v2_000002",
+                    created_at="2026-06-06T10:01:00Z",
+                ),
+            ]
+        )
+
+        result = _run_validator(valid_update)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+        invalid_update = _events_to_temp_jsonl(
+            [
+                _v2_event(
+                    event_id="evt_200001",
+                    event_type="component_created",
+                    payload=_v2_component_created_payload(),
+                    client_operation_id="op_v2_000001",
+                ),
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="component_updated",
+                    payload={
+                        "component_id": "Q2",
+                        "changes": [
+                            {
+                                "field": "mystery_package_hint",
+                                "old_value_observed": "old",
+                                "new_value": "new",
+                                "change_kind": "replace",
+                            }
+                        ],
+                        "edit_reason": "unknown_field_probe",
+                    },
+                    client_operation_id="op_v2_000002",
+                    created_at="2026-06-06T10:01:00Z",
+                ),
+            ]
+        )
+        invalid_result = _run_validator(invalid_update)
+
+        self.assertNotEqual(invalid_result.returncode, 0, invalid_result.stdout + invalid_result.stderr)
+        self.assertIn("must be one of", invalid_result.stdout + invalid_result.stderr)
+
+    def test_v2_component_updated_rejects_proof_like_and_prohibited_fields(self):
+        cases = [
+            ("identity_proof", "forbidden proof field"),
+            ("ai_confidence", "is forbidden"),
+        ]
+        for field, expected in cases:
+            with self.subTest(field=field):
+                path = _events_to_temp_jsonl(
+                    [
+                        _v2_event(
+                            event_id="evt_200001",
+                            event_type="component_created",
+                            payload=_v2_component_created_payload(),
+                            client_operation_id="op_v2_000001",
+                        ),
+                        _v2_event(
+                            event_id="evt_200002",
+                            event_type="component_updated",
+                            payload={
+                                "component_id": "Q2",
+                                "changes": [
+                                    {
+                                        "field": field,
+                                        "old_value_observed": "old",
+                                        "new_value": "new",
+                                        "change_kind": "replace",
+                                    }
+                                ],
+                                "edit_reason": f"{field}_attempt",
+                            },
+                            client_operation_id="op_v2_000002",
+                        ),
+                    ]
+                )
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_v2_component_updated_still_requires_change_contract_fields(self):
+        base_payload = {
+            "event_id": "evt_200001",
+            "event_type": "component_created",
+            "payload": _v2_component_created_payload(),
+            "client_operation_id": "op_v2_000001",
+        }
+        cases = [
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "old_value_observed": "Q2",
+                            "new_value": "Q2B",
+                            "change_kind": "replace",
+                        }
+                    ],
+                    "edit_reason": "missing_field",
+                },
+                "missing field",
+            ),
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "",
+                            "old_value_observed": "Q2",
+                            "new_value": "Q2B",
+                            "change_kind": "replace",
+                        }
+                    ],
+                    "edit_reason": "empty_field",
+                },
+                "field must be non-empty string",
+            ),
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "label",
+                            "new_value": "Q2B",
+                            "change_kind": "replace",
+                        }
+                    ],
+                    "edit_reason": "missing_old_value",
+                },
+                "missing old_value_observed",
+            ),
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "label",
+                            "old_value_observed": "Q2",
+                            "change_kind": "replace",
+                        }
+                    ],
+                    "edit_reason": "missing_new_value",
+                },
+                "missing new_value",
+            ),
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "label",
+                            "old_value_observed": "Q2",
+                            "new_value": "Q2B",
+                        }
+                    ],
+                    "edit_reason": "missing_change_kind",
+                },
+                "missing change_kind",
+            ),
+            (
+                {
+                    "component_id": "Q2",
+                    "changes": [
+                        {
+                            "field": "label",
+                            "old_value_observed": "Q2",
+                            "new_value": "Q2B",
+                            "change_kind": "invalid",
+                        }
+                    ],
+                    "edit_reason": "invalid_change_kind",
+                },
+                "must be one of",
+            ),
+        ]
+        for index, (change_payload, expected) in enumerate(cases):
+            with self.subTest(index=index, expected=expected):
+                path = _events_to_temp_jsonl(
+                    [
+                        _v2_event(**base_payload),
+                        _v2_event(
+                            event_id="evt_200002",
+                            event_type="component_updated",
+                            payload=change_payload,
+                            client_operation_id="op_v2_000002",
+                        ),
+                    ]
+                )
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_v2_component_updated_field_allowlist_matches_materializer_projection(self):
+        from tools import materialize_known_facts
+        from tools import validate_events_jsonl
+
+        self.assertEqual(
+            validate_events_jsonl.V2_COMPONENT_UPDATED_ALLOWED_FIELDS,
+            set(materialize_known_facts.V2_COMPONENT_FIELDS) - {"component_id"},
+        )
+
     def test_v2_schema_version_fail_closed(self):
         cases = [
             (

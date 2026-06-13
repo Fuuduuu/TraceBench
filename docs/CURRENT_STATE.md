@@ -2,11 +2,16 @@
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`
 
 ## Next recommended pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS`
+
+- Current implementation focus is `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`:
+  - validator/materializer component field policy alignment (no runtime expansion),
+  - explicit allow/deny for `component_updated` change fields,
+  - `package_hint` included in create+update projection parity.
 
 ## Tooling baseline milestone
 

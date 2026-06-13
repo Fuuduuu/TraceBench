@@ -2,25 +2,27 @@
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`VALIDATOR_MATERIALIZER_IMPLEMENTATION_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / VALIDATOR_MATERIALIZER_IMPLEMENTATION_PASS`
 
 ## Mode
 
-Docs-only scope lock for V2 component field contract alignment.
-No runtime, schema, writer, test, or model-surface edits are part of this pass.
-Validator/materializer contract repair is the future implementation seam, not UI-only enforcement.
+Align validator acceptance and materializer projection for V2 component field contracts.
+No writer-service, schema, event envelope, platform, ZIP, Board Canvas, AI/OCR/CV,
+or unrelated runtime surface changes.
+`component_updated`/projected-component fields must stay shared-contract constrained, with
+`package_hint` treated as user-visible hint context.
 
 ## Next recommended pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
@@ -30,14 +32,22 @@ Validator/materializer contract repair is the future implementation seam, not UI
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS.md`
+- `tools/validate_events_jsonl.py`
+- `tools/materialize_known_facts.py`
+- `tests/test_validate_events_jsonl.py`
+- `tests/test_materialize_known_facts.py`
 
 ## Forbidden surfaces
 
-- Runtime changes outside the above allowlist are forbidden in this pass.
+- Runtime/Writer/Schema changes outside the above allowlist are forbidden in this pass.
 - `schemas/`, `tools/event_writer_service.py`.
 - `lib/features/components/services/v2_edit_component_writer.dart`
-  (unless the validator/materializer contract is already in place and UI tests
-  prove emitted field claims).
+  (unless a narrow allowlist-backed field contract guard is explicitly
+  justified by UI alignment checks and this implementation remains primary to
+  validator/materializer contract repair).
+- `lib/features/components/screens/edit_component_screen.dart` unless only
+  narrow emitted-field assertions are required by this pass.
 - Project ZIP contract/runtime, Board Canvas write/edit, Reference Images runtime.
 - AI/OCR/CV, Activity Timeline, Measure Momentum, Photo Markup, Repair Map,
   Visual Trace Shape Assist.
@@ -49,5 +59,5 @@ Validator/materializer contract repair is the future implementation seam, not UI
 
 ## Route lock
 
-Current: `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS`
-Next: `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_POST_AUDIT_PASS`
+Current: `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`
+Next: `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_POST_AUDIT_PASS`

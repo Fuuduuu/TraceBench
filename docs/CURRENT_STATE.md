@@ -2,16 +2,30 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
-- New implementation pass opened: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`.
-  The first implementation slice is a PCB-first Project Overview shell in presentation-only layout:
-  `Lisa mõõtmine` is primary, Add/Edit are secondary, and board/status context remains read-only and projection-backed.
-  Save/Add/Edit/event/projection runtime behavior remains unchanged in this pass.
+Accepted implementation recorded for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
+via commit `fcaf402` (`feat(project-overview): add pcb-first shell`).
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS` is implemented as a presentation-only,
+board-first shell with preserved behavior:
+
+- `Lisa mõõtmine` is the dominant primary action.
+- Board/status context remains first-class and read-only.
+- Add/Edit are visible secondary actions.
+- Existing routes remained unchanged, including `/project/measurements/new` compatibility redirect.
+- Zero-event rendering and stale-state presentation behavior were preserved.
+
+Boundary snapshot for the accepted implementation:
+
+- No writer/event/schema/materializer/validator behavior changes.
+- No V2 `sequence` field introduced.
+- No `Muu ühik`/custom unit implementation.
+- No analyzer/lint cleanup in this pass.
+- No redesign.css / HTML mockup copied into production runtime.
 
 - Save Measurement unit-control UX implementation is accepted and pushed in commit
   `8e93f46` (`fix(measure-sheet): remove inert unit display`).

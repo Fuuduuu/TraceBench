@@ -2,39 +2,38 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION_PASS`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow Flutter implementation pass for presentation-only shell composition. No writer,
+Docs-only closeout of an accepted/pushed presentation-only PCB-first shell implementation. No writer,
 validator/materializer/schema/tool/runtime-surface changes are allowed in this pass.
 
 Current goal:
 
-- implement `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS` as a presentation-only
-  PCB-first Project Overview shell with `Lisa mõõtmine` dominant.
+- close out `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS` as docs-only closeout updates.
+- preserve the accepted implementation outcome and regression-history context in governance docs.
 - preserve all V2 save/add/edit writer, event, sequence, and projection boundaries;
-- preserve all existing route behavior outside this shell plan;
 - keep Board Canvas and Reference Images availability, but in read-only modes;
-- ensure Board/PCB status and stale projection messaging remain visible and read-only.
+- keep existing routes and redirect behavior unchanged.
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
-- mode: narrow widget/UI implementation + scoped route-preserving tests.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only governance closeout + route-consistency verification.
 
 ## File allowlist for this pass
 
@@ -74,5 +73,5 @@ Current goal:
 
 ## Route lock
 
-Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
-Next: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
+Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`

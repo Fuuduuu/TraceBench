@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,7 +25,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | in-progress | Close out accepted/pushed implementation as docs-only closeout and route to `NEEDS_USER_DECISION`. |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | in-progress | Lock the V2 Edit Component event payload / projection field alignment before implementation; preserve all existing runtime boundaries and route to post-audit scope alignment pass. |
+| V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Close out accepted/pushed implementation as docs-only closeout and route to `NEEDS_USER_DECISION`. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | completed | Implemented explicit Save Measurement target selection gating and payload binding, preserving existing V2 event and runtime boundary behavior. |
 | TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | CODEX / DOCS_AND_AGENT_SKILLS_PASS | completed | Added repo-local Codex guidance layer (`AGENTS.md`, TraceBench skills, and tooling policy), no runtime/tool/plugin install in this pass. |
 | REFERENCE_IMAGE_LOCAL_SIDECAR_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Created manual Windows smoke plan for sidecar viewer, ZIP/sidecar behavior, and navigation/route checkpoints. |

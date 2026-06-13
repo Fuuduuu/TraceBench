@@ -4,7 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | docs/audit/TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS.md | current (docs-only, no runtime/tooling install, no protected-surface changes) |
+| V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS.md | current (docs-only scope lock: validator/materializer alignment for V2 component_update field contract) |
+| TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS | docs/audit/TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS.md | completed (docs-only, no runtime/tooling install, no protected-surface changes) |
 | TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS | docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_READONLY_SHELL_IMPL_PASS.md | completed (Flutter implementation: adds read-only Measure Sheet shell route, project overview action, technician-first flow labels, disabled non-writing save context, value hierarchy, narrow layout fallback, and focused widget/source-boundary tests; no event-writing or canonical mutation) |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS | docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS.md | completed (docs-only closeout: records accepted/pushed technician-first Measure Sheet scope lock, Claude Code / Opus `NEEDS_SMALL_PATCH`, resolved deferred-feature text artifact cleanup, validation PASS, preserved boundaries, and route to read-only shell implementation) |
 | TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_POST_AUDIT_PASS | docs/audit/TECHNICIAN_FIRST_MEASURE_SHEET_SCOPE_LOCK_CLOSEOUT_PASS.md | accepted from audit context (`NEEDS_SMALL_PATCH`; scope-lock substance accepted; deferred-feature text artifact cleanup applied and validation PASS) |

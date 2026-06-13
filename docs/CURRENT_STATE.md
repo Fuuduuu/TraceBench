@@ -2,14 +2,14 @@
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_POST_AUDIT_PASS`
 
-- Current implementation accepted in `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS` and committed as:
-  - `4c9615f fix(component-events): align update field projection contract`
+- Docs-only scope-lock in force: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS` is active to define a narrow future Edit Component empty-state UX path.
+- Existing accepted Edit Component implementation remains unchanged (`V2_EDIT_COMPONENT_PASS`, commit `ea99ed4`), with no sequence addition and current writer/surface boundaries preserved.
 - Current implementation focus result:
   - validator/materializer component field policy alignment (no runtime expansion),
   - explicit allow/deny for `component_updated` change fields,

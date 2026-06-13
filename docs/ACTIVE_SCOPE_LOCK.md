@@ -2,26 +2,35 @@
 
 ## Current pass
 
-`V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout of already accepted/pushed `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS`.
-No runtime/test/schema/materializer/validator/sequence or feature surfaces are changed in this pass.
-Closeout preserves the accepted boundary that component projection contract alignment is complete:
-`component_updated` is shared-policy constrained, and only allowed hint/context fields (`package_hint`, `human_note`) project as metadata.
+Docs-only narrow lock for a future implementation slice for the Edit Component no-components UX state.
+No runtime/test/schema/validator/materializer/Project ZIP/Board Canvas/runtime AI changes are made in this pass.
+
+Current goal:
+
+- lock a future UX behavior when Edit Component is opened with zero known components;
+- preserve accepted V2 Edit Component runtime boundaries unchanged (`component_updated` only, existing-component writes, explicit human confirmation).
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_POST_AUDIT_PASS`
+
+## Current scope lock decision
+
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only scope lock, implementation is not started
 
 ## Write allowlist for this pass
 
@@ -30,27 +39,43 @@ Closeout preserves the accepted boundary that component projection contract alig
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS.md`
-- `docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS.md`
+- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS.md`
+
+## Allowed implementation files (future pass)
+
+- `lib/features/components/screens/edit_component_screen.dart`
+- `test/widget/edit_component_screen_test.dart`
+- optional narrow route/overview tests only if needed for an existing Add Component action assertion
+
+## Forbidden future surfaces
+
+- `lib/features/components/services/v2_edit_component_writer.dart`
+- `test/widget` beyond the allowlisted Edit Component widget test file
+- `schemas/`
+- `tools/`
+- writer service, validator, materializer semantic changes
+- `Project ZIP`, Board Canvas runtime/write/edit, Reference Images runtime
+- AI/OCR/CV
+- Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist
+- `pubspec.yaml`, `pubspec.lock`, package/dependency files
+- `samples/`, generated files, platform folders, tags/releases
+- Add Component domain model/copy/design changes
+- canonical event/sequence changes to V2
+- `MeasurementEventWriter` reintroduction or legacy route fallback
+- no runtime implementation in this scope-lock pass
 
 ## Forbidden surfaces
 
-Runtime/schema/validator/materializer/tools/event_writer_service/surface changes outside the docs
-allowlist are forbidden in this pass.
+Runtime/code changes outside the allowlist are forbidden until a separate implementation lane opens.
 
-- `lib/` runtime
-- `test/` (runtime test edits)
-- `schemas/`
-- `tools/event_writer_service.py`
-- `tools/*.py` semantic edits
-- `tools/event_writer_service.py` implementation changes
-- `pubspec.yaml`, `pubspec.lock`, package/dependency files
-- `samples/`, generated artifacts, platform folders, tags/releases
-- Dependency/plugin/tool installs, plugin enablement, MCP/package/dependency config changes
-- `Project ZIP`, Board Canvas runtime/write/edit, `Reference Images` runtime, AI/OCR/CV, Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist
-- No `sequence` is added in V2 component payloads.
+- No `sequence` is added to V2 events in this lock.
+- No event type/model changes are allowed.
+- Do not change `tools/event_writer_service.py` behavior or route.
+- Preserve: `Edit Component` remains existing-component-only with no component auto-creation.
+- Preserve existing Add Component and Save Measurement accepted behavior.
+- Preserve the existing `/project/components/edit` route contract unless a separate route-review pass allows changes.
 
 ## Route lock
 
-Current: `V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS`
+Next: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_POST_AUDIT_PASS`

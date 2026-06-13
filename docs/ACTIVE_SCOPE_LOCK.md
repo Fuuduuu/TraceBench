@@ -2,37 +2,36 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION_PASS`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION_PASS`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow implementation pass for the Edit Component no-components empty-state UX.
-Runtime behavior remains constrained to `lib/features/components/screens/edit_component_screen.dart`
-and `test/widget/edit_component_screen_test.dart`.
+Docs-only closeout pass. This pass records accepted implementation closure for
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
 
 Current goal:
 
-- lock a future UX behavior when Edit Component is opened with zero known components;
-- preserve accepted V2 Edit Component runtime boundaries unchanged (`component_updated` only, existing-component writes, explicit human confirmation).
-- keep `Edit Component` behavior unchanged when components exist.
+- preserve accepted no-components empty-state behavior and route to existing Add Component flow.
+- preserve accepted V2 Edit Component runtime boundaries unchanged (`component_updated` only, existing-component targeting, explicit human confirmation).
+- keep next pass decision at `NEEDS_USER_DECISION`.
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current scope lock decision
 
-- scope type: `FLUTTER_IMPLEMENTATION_PASS`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
-- mode: implementation begins; runtime edit-screen and widget tests only.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: governance docs-only closeout only; no runtime/test/schema/tool changes.
 
 ## Write allowlist for this pass
 
@@ -42,20 +41,22 @@ Current goal:
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS.md`
-- `lib/features/components/screens/edit_component_screen.dart`
-- `test/widget/edit_component_screen_test.dart`
 - `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS.md`
+- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS.md`
 
 ## Allowed implementation files (pass scope)
 
-- `lib/features/components/screens/edit_component_screen.dart`
-- `test/widget/edit_component_screen_test.dart`
-- optional narrow route/overview tests only if needed for an existing Add Component action assertion
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS.md`
 
 ## Forbidden future surfaces
 
 - `lib/features/components/services/v2_edit_component_writer.dart`
-- `test/widget` beyond the allowlisted Edit Component widget test file
+- `test/widget` (closed out in docs-only pass)
 - `schemas/`
 - `tools/`
 - writer service, validator, materializer semantic changes
@@ -67,7 +68,7 @@ Current goal:
 - Add Component domain model/copy/design changes
 - canonical event/sequence changes to V2
 - `MeasurementEventWriter` reintroduction or legacy route fallback
-- no runtime implementation beyond this targeted screen and test pass
+- no runtime/testing implementation in this closeout lane
 
 ## Forbidden surfaces
 
@@ -82,5 +83,5 @@ Runtime/code changes outside the allowlist are forbidden until a separate implem
 
 ## Route lock
 
-Current: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`
-Next: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_POST_AUDIT_PASS`
+Current: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`

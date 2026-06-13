@@ -2,17 +2,21 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`
+`V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
-- Edit Component empty-state implementation is active in `V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
+- Edit Component empty-state implementation was accepted and pushed in `V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
+- Implementation commit: `9426217b1fa6479be2695cbfdce885e26a4c4bbf`
+  (`fix(edit-component): add no-components empty state`).
 - Empty-project UX now explicitly guards against edit without existing target and shows:
   - heading: `Komponente pole veel`
   - body: `Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.`
 - Existing accepted Edit Component runtime contract remains unchanged: `component_updated` only, existing-component targeting, explicit human confirmation, no sequence, and no schema/validator/materializer/writer-service changes.
+- Normal flow still uses `/project/components/edit` and requires an existing component target.
+- Empty-state path has no edit form/dropdown/save controls and routes `Lisa komponent` to `/project/components/add`.
 
 ## Tooling baseline milestone
 

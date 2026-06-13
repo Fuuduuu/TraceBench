@@ -2,53 +2,57 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS`
+`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS`
 
 ## Type
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_AND_AGENT_SKILLS_PASS`
 
 ## Lane
 
-`CODEX / DOCS_SYNC_CLOSEOUT`
+`CODEX / DOCS_AND_AGENT_SKILLS_PASS`
 
 ## Mode
 
-Docs-only closeout pass that records `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS`
-smoke evidence and preserves accepted legacy measurement route-remediation behavior.
+Repo-local docs/agent-skills pass that writes:
+
+- `AGENTS.md`
+- `.agents/skills/tracebench-*`
+- `docs/CODEX_TOOLING_POLICY.md`
+
+No runtime/tooling install or dependency changes are allowed in this pass.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_POST_AUDIT_PASS`
 
 ## Write allowlist for this pass
 
-- `docs/AUDIT_INDEX.md`
-- `docs/WORK_INTAKE_INDEX.md`
+- `AGENTS.md`
+- `.agents/skills/tracebench-scope-lock/SKILL.md`
+- `.agents/skills/tracebench-docs-closeout/SKILL.md`
+- `.agents/skills/tracebench-safe-staging/SKILL.md`
+- `.agents/skills/tracebench-flutter-widget-pass/SKILL.md`
+- `.agents/skills/tracebench-v2-event-boundary/SKILL.md`
+- `docs/CODEX_TOOLING_POLICY.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS.md`
-
-## Closeout direction
-
-Confirm and lock the accepted runtime behavior of:
-
-- `/project/measurements/new` compatibility redirect to `/project/measure-sheet`.
-- Project Overview `Lisa mõõtmine` route to `/project/measure-sheet`.
-- Legacy `MeasurementRecordScreen` is not part of normal Overview measurement flow.
-- Smoke environment limitation is preserved (`Not saved: project must be opened from a local folder`).
-- `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_PASS = PASS_WITH_ENVIRONMENT_LIMITATION` is recorded.
+- `docs/AUDIT_INDEX.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/audit/TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS.md`
 
 ## Forbidden surfaces
 
-- `docs/AUDIT_INDEX.md` / `docs/WORK_INTAKE_INDEX.md` / `docs/CURRENT_STATE.md` / `docs/PASS_QUEUE.md` updates must match runtime-accepted and routed implementation.
-- No additional runtime, test, schema, validator, materializer, writer-service,
-  Project ZIP, Board Canvas write/edit, Reference Images runtime, Activity
-  Timeline, Measure Momentum, AI/OCR/CV, or dead-code cleanup changes are part
-  of this pass.
+- `lib/**`, `test/**`, and runtime implementation paths.
+- `schemas/`, `validator/`, `materializer/`, writer-service runtime files.
+- `Project ZIP`, `Board Canvas` write/edit runtime, `Reference Images` runtime.
+- `AI/OCR/CV`, `Activity Timeline`, `Measure Momentum`.
+- `Photo Markup`, `Repair Map`, `Visual Trace Shape Assist`.
+- `samples/`, generated artifacts, platform folders, tags/releases.
+- plugin dependency updates, MCP/plugin enablement, or external installs in this pass.
 
 ## Route lock
 
-Current: `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS`
+Next: `TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_POST_AUDIT_PASS`

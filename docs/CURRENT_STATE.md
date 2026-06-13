@@ -2,11 +2,18 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS`
+`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_CODEX_SKILLS_AND_MCP_POLICY_POST_AUDIT_PASS`
+
+## Tooling baseline milestone
+
+- Added `AGENTS.md` project-level Codex instructions.
+- Added repo-local TraceBench guidance skills in `.agents/skills/`.
+- Added `docs/CODEX_TOOLING_POLICY.md`.
+- This pass is docs/agent-skills only: no runtime installs, dependency/tool changes, MCP/plugin enablement, or implementation surface changes.
 
 ## Latest accepted route
 

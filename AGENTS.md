@@ -1,4 +1,10 @@
-# AGENTS.md — TraceBench AI / BoardFact
+# AGENTS.md — TraceBench AI / BoardFact / BenchBeep
+
+## Repo identity
+
+- Repository path: `C:\Users\Kasutaja\Desktop\TraceBench`
+- Repository owner: `Fuuduuu/TraceBench`
+- Branch: `main`
 
 ## Role
 
@@ -10,128 +16,113 @@ Human is the sensor. AI is the graph engine.
 
 AI must never invent measurements, hidden-layer connections, component identities, or confirmed facts.
 
-## Prompting discipline
+## Repo-docs-first rule
 
-Future prompts must follow `docs/PROMPTING_PROTOCOL.md`.
+`docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` are the first-read route sources.
 
-Preferred sniper prompt format:
+Canonical read-order also includes:
 
-`PASS_ID / Lane / Gate / Read / Write only / Never / Do / Validate / Output / Stop if`
+`docs/TRUTH_INDEX.md`, `docs/PROMPTING_PROTOCOL.md`, `docs/PROTECTED_SURFACES.md`, and `docs/PROJECT_MEMORY.md` when available.
 
-Do not paste long project history when canonical docs already contain it.
-Keep pass goals narrow, verifiable, and auditable.
+## Workflow model
 
-Run `docs/SCOPE_DRIFT_CHECK.md` before implementation prompts and before accepting Codex results.
+- Codex: implementation and scoped docs/code edits inside active lock.
+- Claude Code: repo-local audit and independent checks.
+- GPT Pro: strategy/scope/risk review.
+- Gemini: research/source discovery and external-source discovery.
+
+## Pass discipline
+
+- One narrow pass at a time.
+- Every change must have a PASS_ID in `docs/PASS_QUEUE.md`.
+- Respect exact allowlist per pass and required verify commands.
+
+## Never do
+
+- `git add .`
+- `git add -A`
+- `git commit -am`
+
+## Always do
+
+- explicit `git add` commands only for allowed files in the current pass.
+- stop if local state is inconsistent.
+
+## Protected surfaces
+
+Any protected surface change requires dedicated protected-surface scope-lock and post-audit before proceeding:
+
+- event envelope semantics
+- evidence status lifecycle
+- Visual/Layout Graph vs Electrical Net Graph boundary
+- `valid_from_event_id` / `valid_until_event_id`
+- repair semantics
+- `stale_after_repair`
+- conflict workflow
+- `not_populated`
+- `forbidden_ai_actions`
+- generic device profile fallback
+- Project ZIP contract
+
+## Core invariants
+
+- `events.jsonl` is canonical truth.
+- `known_facts.json` is projection/cache.
+- AI/helper may not author canonical events or canonical facts.
+- Photo pixels are not facts.
+- `visual_trace` is not a net.
+- Candidate/reference/context fields are visual hints, not canonical evidence.
+- Board Canvas remains read-only unless separately scoped.
+- Reference Images remain sidecar / non-canonical unless separately scoped.
+- Do not add `sequence` to V2 events.
 
 ## Read order
 
 1. `docs/CURRENT_STATE.md`
 2. `docs/PASS_QUEUE.md`
 3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `docs/TRUTH_INDEX.md`
-5. `docs/MEMORY_PROTOCOL.md`
-6. relevant spec/audit files only
-
-## Subconscious / implicit memory rule
-
-TraceBench has no hidden project memory.
-The effective project memory is the first-read path:
-
-1. `docs/CURRENT_STATE.md`
-2. `docs/PASS_QUEUE.md`
-3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `docs/TRUTH_INDEX.md`
-5. `docs/MEMORY_PROTOCOL.md`
-6. relevant spec/audit files only
-
-Do not rely on old chat history as implicit memory.
-Do not assume facts not present in these canonical files.
-If a fact matters for future work, place it in its canonical owner file.
+4. `docs/MEMORY_PROTOCOL.md`
+5. `docs/TRUTH_INDEX.md`
+6. relevant spec/audit files
 
 ## New fact intake check
 
-Do not add a new project fact without answering:
+Any new fact must answer:
 
 - Where does this fact belong?
 - What old fact does this replace?
-- Is the old fact still useful as audit evidence?
-- Should the old fact be deleted, compressed, or archived?
+- Is the old fact still useful as evidence?
+- Delete/compress/archive old fact as needed.
+
+## Scratch artifacts
+
+Known scratch/untracked artifacts must not be staged unless explicitly scoped:
+
+- `.idea/`
+- `.metadata`
+- `_incoming/`
+- `audit_tmp/`
+- `audit_tmp_small_patch/`
+- `windows/`
+- `assets/samples/pelle_pv20_minimal/metadata/`
+- `TraceBench*.txt`
+- `missing_untracked.diff`
+- `status_after_addN.txt`
+- `trace_bench_viewer.iml`
+
+## Stop if
+
+- scope expands beyond current PASS_ID
+- requested file is outside allowlist
+- protected surface needs semantic change
+- validation fails outside allowed scope
+- runtime/code changes are requested outside pass constraints
+- Flutter implementation is requested without PASS_ID update
 
 ## Canonical ownership
 
-- Current pass and next recommended pass live in:
-  - `docs/CURRENT_STATE.md`
-  - `docs/PASS_QUEUE.md`.
-- Allowed/forbidden surfaces live in:
-  - `docs/ACTIVE_SCOPE_LOCK.md`.
-- Stable product truth lives in:
-  - `docs/PROJECT_MEMORY.md`.
-- Memory ownership rules live in:
-  - `docs/MEMORY_PROTOCOL.md`
-  - `docs/TRUTH_INDEX.md`.
-- Prompt format rules live in:
-  - `docs/PROMPTING_PROTOCOL.md`.
-
-## Pass discipline
-
-Every change requires a PASS_ID listed in `docs/PASS_QUEUE.md`.
-Each pass must have:
-- one narrow goal
-- exact write allowlist
-- forbidden surfaces
-- verify commands
-- stop conditions
-
-## Protected surfaces
-
-Do not change without dedicated protected-surface pass:
-- event envelope semantics
-- evidence status lifecycle
-- Visual Graph vs Electrical Graph boundary
-- `valid_from_event_id` / `valid_until_event_id`
-- repair event semantics
-- stale-after-repair logic
-- conflict workflow
-- not_populated semantics
-- forbidden_ai_actions
-- device_profile_generic fallback
-- Project ZIP contract
-
-## Evidence floor rule
-
-`ai_hint` may not become `measured`.
-`visual_trace` may not become `electrical_net` without measurement or accepted source.
-Hidden-layer links require continuity measurement or source-imported evidence.
-
-## Cleanup rule
-
-After every pass:
-- update `docs/PASS_QUEUE.md` if status changed
-- update `docs/AUDIT_INDEX.md` if audit file added
-- check one-fact-one-home
-- put out-of-scope ideas in `docs/DEFERRED_FEATURES.md` or `docs/WORK_INTAKE_INDEX.md`
-- decrement docs drift countdown if applicable
-
-## Verify commands
-
-Run as applicable:
-
-```bash
-py -3 tools\validate_all.py
-python tools\validate_all.py
-git diff --name-only
-git status --short --branch
-```
-
-`make` is optional and not required for this pass unless specifically requested.
-
-## Stop conditions
-
-Stop and report if:
-- scope expands beyond current PASS_ID
-- requested file is outside write allowlist
-- a protected surface needs semantic change
-- validation fails outside allowed fix scope
-- secrets/API keys are requested
-- runtime/UI/AI implementation is requested outside the approved pass scope
-- Flutter implementation is requested without PASS_ID update
+- Current pass / next recommended pass: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`
+- Allowed/forbidden surface map: `docs/ACTIVE_SCOPE_LOCK.md`
+- Stable architecture truth: `docs/PROJECT_MEMORY.md`
+- Memory policy: `docs/MEMORY_PROTOCOL.md`, `docs/TRUTH_INDEX.md`
+- Prompt contract: `docs/PROMPTING_PROTOCOL.md`

@@ -2,36 +2,35 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION_PASS`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow implementation pass that removes implicit target auto-selection and requires
-an explicit user target selection (component or pin) before Save Measurement can
-write.
+Docs-only closeout for the accepted
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` implementation. No runtime,
+schema, writer, test, or model-surface edits are part of this pass.
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Write allowlist for this pass
 
-- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
-- `test/widget/measure_sheet_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS.md`
+- `docs/audit/V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS.md`
 
 ## Forbidden surfaces
 
@@ -50,5 +49,5 @@ write.
 
 ## Route lock
 
-Current: `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`
-Next: `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_POST_AUDIT_PASS`
+Current: `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`

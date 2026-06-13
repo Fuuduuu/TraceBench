@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`
+`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Tooling baseline milestone
 
@@ -40,13 +40,20 @@ Observed implementation context:
   - Save result was: `Not saved: project must be opened from a local folder.`
   - No legacy-sequence exception evidence was observed in this smoke run.
   - Full `events.jsonl` append/`known_facts.json` persistence evidence was not proven due the environment restriction.
-- Current implementation pass in progress:
-  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` removes implicit save target
-  inference (`components.first` / first pin auto-selection) and requires explicit user
-  target choice before writer call.
-- In-pass implementation updates currently in flight:
-  - `lib/features/measure_sheet/screens/measure_sheet_screen.dart` requires explicit component/pin target selection and keeps Save disabled until unit + value + explicit target are present.
-  - `test/widget/measure_sheet_screen_test.dart` verifies explicit target requirement, explicit component/pin metadata writes, and no-target guidance behavior.
+- Accepted implementation recorded in:
+  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` (commit `9a61cd0`)
+- Behavior now enforced:
+  - Measure Sheet does not auto-select `components.first` / first pin for Save target.
+  - `_selectedTargetKey` defaults to `null` and requires explicit user selection.
+  - `measure-sheet-target-dropdown` is required before Save can proceed.
+  - Save remains disabled until value + unit + explicit target are present.
+  - No-options/no-target state remains explicit and keeps Save disabled.
+  - Writer request uses the explicitly selected target metadata.
+- Guardrails preserved:
+  - V2SaveMeasurementWriter semantics unchanged.
+  - No sequence field was added to V2 event payload paths.
+  - No event schema, validator/materializer, or writer-service behavioral changes.
+  - Board Canvas / Reference Images runtime unchanged.
 
 ## Visual design capture status
 

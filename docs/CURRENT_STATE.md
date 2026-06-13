@@ -2,15 +2,16 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
 
-- New docs-only scope lock opened: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`.
-  The next slice is a PCB-first Project Overview shell implementation direction only,
-  with all save/add/edit/write/event/projection behavior preserved.
+- New implementation pass opened: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`.
+  The first implementation slice is a PCB-first Project Overview shell in presentation-only layout:
+  `Lisa mõõtmine` is primary, Add/Edit are secondary, and board/status context remains read-only and projection-backed.
+  Save/Add/Edit/event/projection runtime behavior remains unchanged in this pass.
 
 - Save Measurement unit-control UX implementation is accepted and pushed in commit
   `8e93f46` (`fix(measure-sheet): remove inert unit display`).

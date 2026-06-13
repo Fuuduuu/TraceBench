@@ -2,38 +2,39 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`FLUTTER_IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_IMPLEMENTATION_PASS`
 
 ## Mode
 
-Docs-only scope lock for the first narrow implementation slice only. No runtime/test
-schema/tool changes are allowed in this pass.
+Narrow Flutter implementation pass for presentation-only shell composition. No writer,
+validator/materializer/schema/tool/runtime-surface changes are allowed in this pass.
 
 Current goal:
 
-- lock `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS` as a narrow, safe future implementation slice:
-  presentation-only PCB-first Project Overview shell centered on board/PCB context;
+- implement `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS` as a presentation-only
+  PCB-first Project Overview shell with `Lisa mõõtmine` dominant.
 - preserve all V2 save/add/edit writer, event, sequence, and projection boundaries;
 - preserve all existing route behavior outside this shell plan;
-- keep Board Canvas in read-only mode.
+- keep Board Canvas and Reference Images availability, but in read-only modes;
+- ensure Board/PCB status and stale projection messaging remain visible and read-only.
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: docs-only scope-lock + governance alignment.
+- scope type: `FLUTTER_IMPLEMENTATION`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
+- mode: narrow widget/UI implementation + scoped route-preserving tests.
 
 ## File allowlist for this pass
 
@@ -49,7 +50,7 @@ Current goal:
 - `lib/features/project/screens/project_overview_screen.dart`
 - `test/widget/project_overview_screen_test.dart` (or closest existing overview test file)
 - route tests only for unchanged route reachability and existing flow assertions
-- existing governance/doc updates
+- governance updates required for current/pass routing
 
 ## Forbidden touches
 
@@ -73,5 +74,5 @@ Current goal:
 
 ## Route lock
 
-Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
-Next: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
+Next: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`

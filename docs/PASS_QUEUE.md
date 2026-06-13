@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -229,5 +229,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout records manual smoke result as `PASS_WITH_ENVIRONMENT_LIMITATION`, preserves implementation and no-sequence contract, and routes to `NEEDS_USER_DECISION`. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock: Save Measurement must require explicit user-selected target before save; current auto-target behavior on first component/pin was in-scope risk and is now closed by accepted implementation. |
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit and recheck pass for `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` (`safe_for_reaudit: YES` at time). |
-| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and future implementation is limited to shell composition. |
-| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit consistency and route-drift check pass for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS`; no runtime/filesystem scope start. |
+| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and implementation scope was limited to composition. |
+| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | current | Implement presentation-only PCB-first shell in `ProjectOverviewScreen` with `Lisa mõõtmine` dominant and route-preserving behavior for Save/Add/Edit/Board Canvas/Reference Images. |
+| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS | AUDIT_ONLY | next | Post-audit route-drift and boundary check for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`; no runtime scope changes outside current route. |

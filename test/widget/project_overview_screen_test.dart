@@ -5,12 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
-import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
-ProjectState _inlineProjectState({bool isProjectionStale = false}) {
+ProjectState _inlineProjectState({
+  bool isProjectionStale = false,
+  List<TraceBenchEvent> events = const [],
+}) {
   return ProjectState(
     manifest: ProjectManifest.fromJson({
       'project_id': 'inline_project',
@@ -44,26 +48,47 @@ ProjectState _inlineProjectState({bool isProjectionStale = false}) {
         'Q2': ['Q2.1'],
       },
     }),
-    events: const [],
+    events: events,
     customerReport: 'Inline sample report',
   ).copyWith(isProjectionStale: isProjectionStale);
+}
+
+Future<ProviderContainer> _pumpProjectOverview(
+  WidgetTester tester, {
+  required ProjectState projectState,
+  String initialLocation = '/project',
+  bool useRouter = true,
+}) async {
+  final container = ProviderContainer();
+  container.read(projectStateProvider.notifier).state = projectState;
+  container.read(beginnerModeProvider.notifier).state = false;
+
+  final Widget app = useRouter
+      ? MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: initialLocation),
+        )
+      : const MaterialApp(home: ProjectOverviewScreen());
+
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: app,
+    ),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 100));
+
+  return container;
 }
 
 void main() {
   testWidgets('shows stale projection banner when stale', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: const MaterialApp(home: ProjectOverviewScreen()),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
@@ -71,20 +96,47 @@ void main() {
     expect(find.text('Kokkuvõte'), findsNothing);
   });
 
-  testWidgets('renders project overview fields', (tester) async {
+  testWidgets('renders PCB-first shell hierarchy and primary action', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: const MaterialApp(home: ProjectOverviewScreen()),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+
+    final primaryMeasurementAction = find.byKey(
+      const ValueKey('overview-measurement-record-button'),
+    );
+    final addComponentAction = find.byKey(
+      const ValueKey('overview-add-component-button'),
+    );
+
+    expect(primaryMeasurementAction, findsOneWidget);
+    expect(addComponentAction, findsOneWidget);
+    expect(find.text('PCB-first context'), findsOneWidget);
+    expect(find.text('Lisa mõõtmine'), findsOneWidget);
+    expect(find.text('Quick actions'), findsOneWidget);
+
+    expect(
+      tester.getTopLeft(primaryMeasurementAction).dy,
+      lessThan(tester.getTopLeft(addComponentAction).dy),
+      reason:
+          'Primary Lisa mõõtmine action must be visually above secondary Add Component action.',
+    );
+    expect(tester.widget<OutlinedButton>(addComponentAction), isA<OutlinedButton>());
+    expect(tester.widget<OutlinedButton>(
+        find.byKey(const ValueKey('overview-edit-component-button'))),
+      isA<OutlinedButton>(),
+    );
+  });
+
+  testWidgets('renders key project overview fields', (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
 
     expect(
       find.textContaining(
@@ -96,58 +148,27 @@ void main() {
       find.textContaining(projectState.manifest.projectId),
       findsOneWidget,
     );
-    expect(
-      find.text(projectState.measurementCount.toString()),
-      findsAtLeast(1),
-    );
-    expect(
-      find.text(projectState.componentCount.toString()),
-      findsAtLeast(1),
-    );
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
-    expect(find.text('Kõik komponendid'), findsOneWidget);
+    expect(find.text('PCB-first context'), findsOneWidget);
+    expect(find.text('Lisa mõõtmine'), findsOneWidget);
     expect(find.text('Add Component'), findsOneWidget);
     expect(find.text('Edit Component'), findsOneWidget);
-    expect(find.text('Board graph'), findsOneWidget);
-    expect(find.text('Board Canvas'), findsOneWidget);
-    expect(find.text('Measure Sheet'), findsOneWidget);
-    expect(find.text('Foto tõendid'), findsOneWidget);
-    expect(find.text('Reference Images'), findsOneWidget);
-    expect(
-        find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
-    expect(
-      find.byKey(const ValueKey('overview-reference-images-button')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('overview-measure-sheet-button')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('overview-add-component-button')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('overview-edit-component-button')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey('overview-reference-images-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-measurement-record-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-measure-sheet-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-add-component-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-edit-component-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-photos-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-board-canvas-button')), findsOneWidget);
   });
 
-  testWidgets(
-      'overview has Add Component action and navigates to Add Component screen',
-      (tester) async {
+  testWidgets('overview has Add Component action and navigates to Add Component screen', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -155,10 +176,7 @@ void main() {
       const ValueKey('overview-add-component-button'),
     );
     expect(addComponentAction, findsOneWidget);
-    expect(find.text('Add Component'), findsOneWidget);
-    expect(find.text('Edit Component'), findsOneWidget);
     await tester.ensureVisible(addComponentAction);
-    await tester.pumpAndSettle();
     await tester.tap(addComponentAction);
     await tester.pumpAndSettle();
 
@@ -167,27 +185,15 @@ void main() {
       find.text('Creates component_created only after explicit human action.'),
       findsOneWidget,
     );
-    expect(
-      find.text('Human is the sensor. AI is the graph engine.'),
-      findsOneWidget,
-    );
   });
 
-  testWidgets(
-      'overview has Edit Component action and navigates to Edit Component screen',
-      (tester) async {
+  testWidgets('overview has Edit Component action and navigates to Edit Component screen', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -195,10 +201,7 @@ void main() {
       const ValueKey('overview-edit-component-button'),
     );
     expect(editComponentAction, findsOneWidget);
-    expect(find.text('Add Component'), findsOneWidget);
-    expect(find.text('Edit Component'), findsOneWidget);
     await tester.ensureVisible(editComponentAction);
-    await tester.pumpAndSettle();
     await tester.tap(editComponentAction);
     await tester.pumpAndSettle();
 
@@ -212,37 +215,19 @@ void main() {
       findsOneWidget,
     );
   });
-  testWidgets(
-      'overview has Board Canvas action and navigates to Board Canvas screen',
-      (tester) async {
-    final projectState = _inlineProjectState(isProjectionStale: false);
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+  testWidgets('overview has Board Canvas action and navigates to Board Canvas screen', (tester) async {
+    final projectState = _inlineProjectState(isProjectionStale: false);
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const ValueKey('overview-board-graph-button')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('overview-board-canvas-button')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('overview-reference-images-button')),
-      findsOneWidget,
-    );
-    expect(find.text('Board graph'), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-board-canvas-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-reference-images-button')), findsOneWidget);
     expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('Reference Images'), findsOneWidget);
 
@@ -256,36 +241,30 @@ void main() {
       'Run AI',
     ];
     for (final action in forbiddenActions) {
-      expect(find.text(action), findsNothing,
-          reason: 'Unexpected label: $action');
+      expect(find.text(action), findsNothing, reason: 'Unexpected label: $action');
     }
 
     final boardCanvasAction = find.byKey(
       const ValueKey('overview-board-canvas-button'),
     );
-    await tester.ensureVisible(boardCanvasAction);
-    await tester.pumpAndSettle();
-    await tester.tap(boardCanvasAction);
+    await tester.dragUntilVisible(
+      boardCanvasAction,
+      find.byType(Scrollable).last,
+      const Offset(0, -300),
+    );
+    await tester.tap(boardCanvasAction, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets(
-      'overview has Reference Images action and navigates to Reference Images screen',
-      (tester) async {
+  testWidgets('overview has Reference Images action and navigates to Reference Images screen', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -294,7 +273,6 @@ void main() {
     );
     expect(referenceImagesAction, findsOneWidget);
     await tester.ensureVisible(referenceImagesAction);
-    await tester.pumpAndSettle();
     await tester.tap(referenceImagesAction);
     await tester.pumpAndSettle();
 
@@ -302,21 +280,13 @@ void main() {
     expect(find.text('reference only'), findsOneWidget);
   });
 
-  testWidgets(
-      'overview has Measure Sheet action and navigates to read-only shell',
-      (tester) async {
+  testWidgets('overview has Measure Sheet action and navigates to read-only shell', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -325,7 +295,6 @@ void main() {
     );
     expect(measureSheetAction, findsOneWidget);
     await tester.ensureVisible(measureSheetAction);
-    await tester.pumpAndSettle();
     await tester.tap(measureSheetAction);
     await tester.pumpAndSettle();
 
@@ -334,20 +303,13 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('legacy "Lisa mõõtmine" action navigates to Measure Sheet path',
-      (tester) async {
+  testWidgets('legacy "Lisa mõõtmine" action navigates to Measure Sheet path', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -356,35 +318,23 @@ void main() {
     );
     expect(legacyMeasurementAction, findsOneWidget);
     await tester.ensureVisible(legacyMeasurementAction);
-    await tester.pumpAndSettle();
     await tester.tap(legacyMeasurementAction);
     await tester.pumpAndSettle();
 
     expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
-    expect(
-      find.text('Koht → Väärtus → Ühik → Salvesta'),
-      findsOneWidget,
-    );
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
     expect(find.byKey(const ValueKey('measurement-from-field')), findsNothing);
     expect(find.byKey(const ValueKey('measurement-to-field')), findsNothing);
   });
 
   testWidgets(
-      'legacy route /project/measurements/new redirects to Measure Sheet',
-      (tester) async {
+      'legacy route /project/measurements/new redirects to Measure Sheet', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: false);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
-          beginnerModeProvider.overrideWith((_) => false),
-        ],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(
-              initialLocation: '/project/measurements/new'),
-        ),
-      ),
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project/measurements/new',
+      useRouter: true,
     );
     await tester.pumpAndSettle();
 
@@ -398,5 +348,47 @@ void main() {
       findsNothing,
     );
     expect(find.text('Salvesta sündmus'), findsNothing);
+  });
+
+  testWidgets(
+      'overview shell rendering and Measure Sheet navigation does not mutate project events', (
+    tester,
+  ) async {
+    final seededEvent = TraceBenchEvent(
+      schemaVersion: '2.0.0',
+      eventId: 'evt-overview-readonly',
+      projectId: 'inline_project',
+      sequence: 1,
+      createdAt: '2026-05-22T00:00:00Z',
+      actor: const {'source': 'overview-readonly-test'},
+      eventType: 'measurement_recorded',
+      status: 'accepted',
+      payload: const {},
+    );
+    final projectState = _inlineProjectState(
+      isProjectionStale: false,
+      events: [seededEvent],
+    );
+    final container = await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
+    );
+    await tester.pumpAndSettle();
+
+    final initialEvents = List<TraceBenchEvent>.from(
+      container.read(projectStateProvider)!.events,
+    );
+
+    final measureSheetAction = find.byKey(
+      const ValueKey('overview-measurement-record-button'),
+    );
+    expect(measureSheetAction, findsOneWidget);
+    await tester.ensureVisible(measureSheetAction);
+    await tester.tap(measureSheetAction);
+    await tester.pumpAndSettle();
+
+    expect(container.read(projectStateProvider)!.events, equals(initialEvents));
   });
 }

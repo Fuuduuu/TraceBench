@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
 
-- Edit Component empty-state implementation was accepted and pushed in `V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
-- Implementation commit: `9426217b1fa6479be2695cbfdce885e26a4c4bbf`
-  (`fix(edit-component): add no-components empty state`).
-- Empty-project UX now explicitly guards against edit without existing target and shows:
-  - heading: `Komponente pole veel`
-  - body: `Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.`
-- Existing accepted Edit Component runtime contract remains unchanged: `component_updated` only, existing-component targeting, explicit human confirmation, no sequence, and no schema/validator/materializer/writer-service changes.
-- Normal flow still uses `/project/components/edit` and requires an existing component target.
-- Empty-state path has no edit form/dropdown/save controls and routes `Lisa komponent` to `/project/components/add`.
+- Save Measurement unit-control UX clarity is now scope-locked as
+  `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`.
+- Implementation remains docs-only for this pass; runtime is not changed.
+- Existing accepted explicit target behavior from
+  `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS` remains preserved:
+  no implicit target auto-selection, explicit `Koht` choice required, and no
+  sequence added to V2 payloads.
+- Runtime scope remains unchanged while we assess a misleading inert unit display panel and lock
+  one clear technician-first model for `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_PASS`.
 
 ## Tooling baseline milestone
 

@@ -2,36 +2,38 @@
 
 ## Current pass
 
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout pass. This pass records accepted implementation closure for
-`V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS`.
+Docs-only scope-lock pass before implementation. This lock defines the next narrow Save
+Measurement unit-control UX scope and captures the exact current risk and allowed
+future behavior.
 
 Current goal:
 
-- preserve accepted no-components empty-state behavior and route to existing Add Component flow.
-- preserve accepted V2 Edit Component runtime boundaries unchanged (`component_updated` only, existing-component targeting, explicit human confirmation).
-- keep next pass decision at `NEEDS_USER_DECISION`.
+- define a single, unambiguous technician-first unit-control model for Save Measurement;
+- preserve existing explicit target requirement from `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_PASS`;
+- preserve all accepted V2 measurement runtime boundaries and no-sequence contract;
+- keep implementation blocked in this pass.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current scope lock decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: governance docs-only closeout only; no runtime/test/schema/tool changes.
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: governance docs-only lock only; no runtime/test/schema/tool changes.
 
 ## Write allowlist for this pass
 
@@ -40,48 +42,46 @@ Current goal:
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_PASS.md`
-- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS.md`
+- `docs/audit/V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS.md`
 
-## Allowed implementation files (pass scope)
+## Allowed future implementation files (pass scope)
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS.md`
+If/when this lock is implemented in a future implementation pass:
 
-## Forbidden future surfaces
+- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+- `test/widget/measure_sheet_screen_test.dart`
 
-- `lib/features/components/services/v2_edit_component_writer.dart`
-- `test/widget` (closed out in docs-only pass)
+## Forbidden future touches
+
+- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
+- `tools/event_writer_service.py`
+- `tools/validate_events_jsonl.py`
+- `tools/materialize_known_facts.py`
 - `schemas/`
-- `tools/`
-- writer service, validator, materializer semantic changes
-- `Project ZIP`, Board Canvas runtime/write/edit, Reference Images runtime
-- AI/OCR/CV
-- Activity Timeline, Measure Momentum, Photo Markup, Repair Map, Visual Trace Shape Assist
-- `pubspec.yaml`, `pubspec.lock`, package/dependency files
-- `samples/`, generated files, platform folders, tags/releases
-- Add Component domain model/copy/design changes
-- canonical event/sequence changes to V2
-- `MeasurementEventWriter` reintroduction or legacy route fallback
-- no runtime/testing implementation in this closeout lane
+- Writer/validator/materializer semantic changes
+- Event schema/model changes
+- `Project ZIP`
+- `Board Canvas` runtime/write/edit
+- `Reference Images` runtime
+- `AI/OCR/CV`
+- Add/Edit Component runtime
+- `Muu ühik` / custom unit implementation
+- `Save Measurement` event-model changes
+- `pubspec.yaml`, `pubspec.lock`, dependency/config files
+- generated files, samples, platform folders, and toolchain/package files
 
 ## Forbidden surfaces
 
-Runtime/code changes outside the allowlist are forbidden until a separate implementation lane opens.
+Runtime/code changes outside the allowlist are forbidden until a separate
+implementation lane opens.
 
-- No `sequence` is added to V2 events in this lock.
-- No event type/model changes are allowed.
-- Do not change `tools/event_writer_service.py` behavior or route.
-- Preserve: `Edit Component` remains existing-component-only with no component auto-creation.
-- Preserve existing Add Component and Save Measurement accepted behavior.
-- Preserve the existing `/project/components/edit` route contract unless a separate route-review pass allows changes.
+- No `sequence` is added to V2 events.
+- No event-type/projection contract changes.
+- Do not rework route architecture in this lock.
+- No `MeasurementEventWriter` reintroduction or legacy route fallback in scope.
+- Do not touch tests in this docs-only lock pass.
 
 ## Route lock
 
-Current: `V2_EDIT_COMPONENT_EMPTY_STATE_UX_CLOSEOUT_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_PASS`
+Next: `V2_SAVE_MEASUREMENT_UNIT_CONTROL_UX_SCOPE_LOCK_POST_AUDIT_PASS`

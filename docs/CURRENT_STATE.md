@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_CLOSEOUT_PASS`
+`V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
@@ -25,6 +25,14 @@ Observed implementation context:
   `V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_IMPL_POST_AUDIT_RECHECK_PASS`
   accepted as `ACCEPT_AS_IS`, `safe_to_commit: YES`.
 - Add Component framing and Save Measurement unit duplication remain out-of-scope.
+- Manual smoke acceptance recorded:
+  - Status: `PASS_WITH_ENVIRONMENT_LIMITATION`.
+  - `Overview -> Lisa mõõtmine` opens V2 `measure-sheet`.
+  - `/project/measurements/new` redirects to `/project/measure-sheet` via compatibility route.
+  - `MeasurementRecordScreen` did not appear in normal Overview flow.
+  - Save result was: `Not saved: project must be opened from a local folder.`
+  - No legacy-sequence exception evidence was observed in this smoke run.
+  - Full `events.jsonl` append/`known_facts.json` persistence evidence was not proven due the environment restriction.
 
 ## Visual design capture status
 
@@ -64,5 +72,6 @@ Directional points recorded:
 - Audit ledger: `docs/AUDIT_INDEX.md`
 - Smoke-test run audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_RUN_PASS.md`
 - Smoke-test triage audit: `docs/audit/V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_TRIAGE_PASS.md`
+- Legacy write-path retirement smoke closeout: `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SMOKE_CLOSEOUT_PASS.md`
 - Visual capture audit: `docs/audit/V2_TECHNICIAN_FIRST_UI_REDESIGN_VISUAL_CAPTURE_PASS.md`
 - Legacy write-path retirement scope lock: `docs/audit/V2_LEGACY_MEASUREMENT_WRITE_PATH_RETIREMENT_SCOPE_LOCK_PASS.md`

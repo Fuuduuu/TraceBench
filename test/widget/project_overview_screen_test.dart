@@ -358,6 +358,49 @@ void main() {
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
   });
 
+  testWidgets(
+      'Board Canvas action does not mutate project events', (tester) async {
+    final seededEvent = TraceBenchEvent(
+      schemaVersion: '2.0.0',
+      eventId: 'evt-overview-canvas-readonly',
+      projectId: 'inline_project',
+      sequence: 1,
+      createdAt: '2026-05-22T00:00:00Z',
+      actor: const {'source': 'overview-canvas-readonly-test'},
+      eventType: 'measurement_recorded',
+      status: 'accepted',
+      payload: const {},
+    );
+    final projectState = _inlineProjectState(
+      isProjectionStale: false,
+      events: [seededEvent],
+    );
+    final container = await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
+    );
+    await tester.pumpAndSettle();
+
+    final initialEvents = List<String>.from(
+      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+    );
+
+    final boardCanvasAction = find.byKey(const ValueKey('overview-board-canvas-button'));
+    expect(boardCanvasAction, findsOneWidget);
+    await tester.ensureVisible(boardCanvasAction);
+    await tester.tap(boardCanvasAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
+
+    final resultingEvents = List<String>.from(
+      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+    );
+    expect(resultingEvents, equals(initialEvents));
+  });
+
   testWidgets('Reference Images action navigates to reference image screen', (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(

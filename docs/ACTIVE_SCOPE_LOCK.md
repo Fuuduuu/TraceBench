@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`FLUTTER_IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / FLUTTER_IMPLEMENTATION`
 
 ## Mode
 
-Docs-only closeout for the `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` scope lock before implementation.
+Implementation pass for the first read-only Board Canvas renderer slice from accepted projection data only.
 
 ## Current goal
-- Lock the first implementation slice to render a read-only Board Canvas surface
-  inside Workbench Home from accepted projection/known-facts data only.
-- Keep this pass docs-only and preserve all protected boundaries.
+- Implement the first read-only Board Canvas renderer slice in Workbench Home.
+- Render from accepted projection/cached data only.
+- Keep interactions presentation-only with explicit zero-write boundaries.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout.
+- scope type: `FLUTTER_IMPLEMENTATION`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION`
+- mode: runtime implementation under strict read-only boundaries.
 - latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -39,7 +39,13 @@ Docs-only closeout for the `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` s
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_PASS.md`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/projection_stale_banner_end_to_end_test.dart`
 
 ## Forbidden touches
 
@@ -54,9 +60,9 @@ Docs-only closeout for the `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` s
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
-Next: `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+Next: `V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
@@ -75,4 +81,4 @@ Next: `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_PASS.md`

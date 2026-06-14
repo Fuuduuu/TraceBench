@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
 
 ## Current product state
 
@@ -15,6 +15,7 @@
 - `/project/measurements/new` remains the compatibility redirect to `/project/measure-sheet`.
 - No runtime/event/model/validator/materializer/writer/schema changes are introduced in this compaction pass.
 - Board Canvas Renderer V2 is now scoped into the first V2 read-only Workbench Home board-surface slice (renderer-first, non-mutating implementation boundary).
+- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is in progress implementing the read-only renderer shell.
 
 ## Accepted recent governance state
 
@@ -26,9 +27,9 @@
 
 ## Deferred work
 
-- `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is the closeout pass for the scope-lock.
-- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is the selected next implementation target.
-- No write/event/model/schema/renderer behavior changes are started in this docs-only lock pass.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is closed out.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is currently active.
+- No write/event/model/schema/renderer behavior changes have been started outside this pass scope.
 
 ## Core boundaries
 

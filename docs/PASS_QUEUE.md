@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -148,8 +148,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_PASS | CODEX / DOCS_SYNC | completed | Docs-only capture of archived BenchBeep / Ideelabor future-work ideas before Add Component implementation; no runtime behavior. |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the backlog capture; `safe_to_commit: YES`; after closeout, route back to V2_ADD_COMPONENT_PASS. |
 | BENCHBEEP_IDEALAB_BACKLOG_CAPTURE_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Docs-only closeout for accepted/pushed BenchBeep ideation backlog capture and post-audit `ACCEPT_AS_IS`; route next back to V2_ADD_COMPONENT_PASS. |
-| V2_ADD_COMPONENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | current | Implement the accepted Add Component write-flow only under the closed scope: creates only `component_created`, uses accepted writer adapter, and preserves identity/hint boundaries. |
-| V2_ADD_COMPONENT_POST_AUDIT_PASS | AUDIT_ONLY | recommended next | Post-audit the V2 Add Component implementation for scope compliance, writer-boundary preservation, validation state, and forbidden-surface drift. |
+| V2_ADD_COMPONENT_PASS | FLUTTER_PASS / UI_WRITE_FLOW | completed | Implement the accepted Add Component write-flow only under the closed scope: creates only `component_created`, uses accepted writer adapter, and preserves identity/hint boundaries. |
+| V2_ADD_COMPONENT_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit the V2 Add Component implementation for scope compliance, writer-boundary preservation, validation state, and forbidden-surface drift. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_PASS | DOCS_SYNC / SCOPE_LOCK | completed | Lock display/provenance rules for measured vs reference/source vs candidate vs note values; display-only future panel, no runtime implementation, no canonical mutation, and route to post-audit. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted | Claude Code / Opus post-audit accepted the scope lock as `ACCEPT_AS_IS`; no blocker/high/medium findings, LOW prior route-review status tidy applied, validation PASS. |
 | REFERENCE_VALUES_PANEL_SCOPE_LOCK_CLOSEOUT_PASS | DOCS_SYNC_CLOSEOUT | completed | Record accepted/pushed scope lock, post-audit `ACCEPT_AS_IS`, validation PASS, preserved reference-values boundaries, and route to prototype-bundle prep. |
@@ -209,7 +209,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Closed out accepted/pushed scope lock, preserved canonical-write boundaries, carried LOW implementation-handoff findings, and routed to implementation. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_PASS | FLUTTER_PASS / UI_CONSOLIDATION | completed | Accepted/pushed implementation of technician-first Save/Add/Edit UI consolidation; writer adapters and event semantics unchanged. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Implementation post-audit accepted the UI consolidation as-is; chat label `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_POST_AUDIT_PASS` is reconciled as the same logical audit step. |
-| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | current | Close out accepted/pushed UI consolidation implementation, record validation and carried NIT, and route to post-UI-consolidation route review. |
+| V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS | CODEX / DOCS_SYNC_CLOSEOUT | completed | Close out accepted/pushed UI consolidation implementation, record validation and carried NIT, and route to post-UI-consolidation route review. |
 | V2_POST_UI_CONSOLIDATION_ROUTE_REVIEW_PASS | ROUTE_REVIEW | completed | Route review selected a manual Windows smoke-test plan before cleanup or any new feature track. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_PASS | DOCS_SYNC / QA_PLAN | completed | Accepted/pushed manual Windows smoke-test plan for accepted Save/Add/Edit technician workflow UI consolidation; smoke test not executed. |
 | V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_SMOKE_TEST_PLAN_POST_AUDIT_PASS | AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Post-audit accepted the smoke-test plan as-is; `safe_to_commit: YES`. |
@@ -231,7 +231,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit and recheck pass for `V2_SAVE_MEASUREMENT_EXPLICIT_TARGET_SELECTION_SCOPE_LOCK_PASS` (`safe_for_reaudit: YES` at time). |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and implementation scope was limited to composition. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Implemented presentation-only PCB-first shell in `ProjectOverviewScreen` with `Lisa mõõtmine` dominant and route-preserving behavior for Save/Add/Edit/Board Canvas/Reference Images. |
-| V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | recommended | Post-audit validation gate for Workbench Home shell Option C scope lock; requires pass evidence docs-only consistency and route lock checks before implementation. |
 | V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for the first Workbench Home presentation pass (Option C / Hybrid): board-centered home frame with `Lisa mõõtmine` as primary action, grouped secondary actions, read-only workbench center, graceful sparse-placements placeholder, and no runtime/surface changes. |
 | V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit accepted the Workbench Home scope lock (`ACCEPT_AS_IS`), confirming closeout-ready route-drift consistency before implementation. |
 | V2_WORKBENCH_HOME_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Implemented first board-centered Workbench Home shell (`overview-workbench-zone`) with dominant `Lisa mõõtmine`, inert future tools, preserved routes, and zero-event shell interactions. |
@@ -239,8 +238,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS | CODEX / FLUTTER_UI_LAYOUT_POLISH | accepted/pushed | Workbench Home balance polish to enlarge the central board/workbench zone, compact action rail/cards/stats, and preserve route/key zero-event/read-only contracts. |
 | V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout of accepted `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`; preserved boundaries and route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Narrow Workbench Home polish pass for compact status strip/chip-row and button visual refinement while preserving routes/boundaries; routes to `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`. |
-| V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout records accepted/pushed status-strip/button polish implementation from `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` and returns route to `NEEDS_USER_DECISION`. |
-| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and implementation scope was limited to composition. |
-| V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Implemented presentation-only PCB-first shell in `ProjectOverviewScreen` with `Lisa mõõtmine` dominant and route-preserving behavior for Save/Add/Edit/Board Canvas/Reference Images. |
+| V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed status-strip/button polish implementation from `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` and returns route to `NEEDS_USER_DECISION`. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation outcome from `fcaf402`, records regression history and preserved non-sequence runtime boundaries. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit route-drift and boundary check for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`; closed out after docs-only closeout. |
+| GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS | CODEX / DOCS_HYGIENE | current | Docs-only governance-ledger hygiene pass for status marker cleanup, stale WORK_INTAKE reconciliation, and dangling AUDIT_INDEX pointer repair before Board Canvas Renderer V2. |

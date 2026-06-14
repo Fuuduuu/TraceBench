@@ -2,38 +2,35 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_HYGIENE`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_HYGIENE`
 
 ## Mode
 
-Docs-only closeout pass.
+Docs-only governance-ledger hygiene pass.
 
 ## Current goal
-
-- Record the accepted `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` implementation
-  as closed out docs-only.
-- Preserve route/key contracts and zero-event/read-only Workbench Home behavior.
-- Preserve all protected boundaries and keep closeout strictly docs-only.
+- Record governance ledger status hygiene and route-marker reconciliation in docs-only mode.
+- Keep governance-ledger updates strictly docs-only and preserve protected boundaries.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout.
-- latest accepted/pushed implementation: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
-- accepted implementation commit: `60bc600 fix(project-overview): compact workbench status and actions`
+- scope type: `DOCS_HYGIENE`
+- lane: `CODEX / DOCS_HYGIENE`
+- mode: docs-only hygiene.
+- latest pass handled: `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
+- accepted implementation commit: `N/A` (docs-only governance cleanup)
 
 ## File allowlist for this pass
 
@@ -41,7 +38,7 @@ Docs-only closeout pass.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS.md`
+- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS.md`
 
 ## Forbidden touches
 
@@ -56,9 +53,9 @@ Docs-only closeout pass.
 
 ## Current route lock
 
-Current: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
+Current: `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
@@ -79,4 +76,4 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS.md`
+- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS.md`

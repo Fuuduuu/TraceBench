@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -250,3 +250,4 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed verification outcome (`68f7985`), records `NEEDS_SMALL_PATCH` to docs-accuracy correction and recheck `ACCEPT_AS_IS`, and routes to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for the first read-only Board Canvas pan/zoom/fit navigation slice; implementation target is `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` and default allowed runtime file is `lib/features/board_canvas/screens/board_canvas_screen.dart`. |
 | V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records `ACCEPT_AS_IS` post-audit scope-lock outcome; future implementation target is `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`. |
+| V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS | CODEX / FLUTTER_IMPLEMENTATION | in-progress | Runtime implementation of read-only pan/zoom/fit view-transform for Board Canvas over board-normalized placements. |

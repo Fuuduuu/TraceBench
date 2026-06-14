@@ -256,6 +256,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+      'board canvas supports pan/zoom affordances with fit reset and stays read-only',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('board_canvas_interactive_viewer')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_fit_view_button')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(const Key('board_canvas_interactive_viewer')),
+      const Offset(40, 24),
+    );
+    await tester.pump();
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('board_canvas_fit_view_button')));
+    await tester.pump();
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('renders scale-mode placement without error', (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -1436,6 +1469,10 @@ void main() {
     expect(source, isNot(contains('drawMeasurementOverlay')));
     expect(source, isNot(contains('drawPhotoLocal')));
     expect(source, isNot(contains('drawPhotoOverlay')));
+    expect(source, contains('InteractiveViewer('));
+    expect(source, contains('transformationController: _transformationController'));
+    expect(source, contains('minScale: _kMinZoom'));
+    expect(source, contains('maxScale: _kMaxZoom'));
     expect(source, isNot(contains('Confirm net')));
     expect(source, isNot(contains('Show photo')));
     expect(source, isNot(contains('Render overlay')));

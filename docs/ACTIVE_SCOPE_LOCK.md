@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`FLUTTER_IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_IMPLEMENTATION`
 
 ## Mode
 
-Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit pass.
+Runtime implementation scope for the first read-only Board Canvas pan/zoom/fit pass.
 
 ## Current goal
-- Scope and document `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
+- Implement `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
 - Restrict implementation to view-transform-only pan/zoom/fit over projected board placements.
 - Preserve strict zero-event/read-only behavior and no canonical fact creation.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: docs-only lock for the next narrow implementation (`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`) before any runtime work.
+- scope type: `FLUTTER_IMPLEMENTATION`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION`
+- mode: runtime implementation constrained to the exact allowed files and zero-event surfaces.
 - latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -71,9 +71,9 @@ Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit 
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 
-Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
+Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
@@ -94,3 +94,4 @@ Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS.md`

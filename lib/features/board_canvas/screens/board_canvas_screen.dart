@@ -399,11 +399,72 @@ class _PlacementSelector extends StatelessWidget {
   }
 }
 
-class _CanvasPanel extends StatelessWidget {
+class _CanvasPanel extends StatefulWidget {
   const _CanvasPanel({required this.entries, required this.selectedKey});
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+
+  @override
+  State<_CanvasPanel> createState() => _CanvasPanelState();
+}
+
+class _CanvasPanelState extends State<_CanvasPanel> {
+  static const double _kMinZoom = 0.5;
+  static const double _kMaxZoom = 4.0;
+
+  final TransformationController _transformationController =
+      TransformationController();
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
+
+  void _fitCanvasView() {
+    _transformationController.value = Matrix4.identity();
+  }
+
+  Widget _buildCanvas(BuildContext context, {required Size size}) {
+    final theme = Theme.of(context);
+    return InteractiveViewer(
+      key: const Key('board_canvas_interactive_viewer'),
+      transformationController: _transformationController,
+      minScale: _kMinZoom,
+      maxScale: _kMaxZoom,
+      panEnabled: true,
+      scaleEnabled: true,
+      constrained: false,
+      child: CustomPaint(
+        key: const Key('board_canvas_painter'),
+        painter: _BoardPlacementPainter(
+          entries: widget.entries,
+          selectedKey: widget.selectedKey,
+          colorScheme: theme.colorScheme,
+        ),
+        child: SizedBox(
+          width: math.max(240, size.width),
+          height: math.max(96, size.height),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFitButton(BuildContext context) {
+    final theme = Theme.of(context);
+    return Positioned(
+      top: 8,
+      right: 8,
+      child: IconButton(
+        key: const Key('board_canvas_fit_view_button'),
+        tooltip: 'Fit board view',
+        icon: const Icon(Icons.center_focus_strong),
+        color: theme.colorScheme.onSurface,
+        onPressed: _fitCanvasView,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -425,17 +486,21 @@ class _CanvasPanel extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: CustomPaint(
-                      key: const Key('board_canvas_painter'),
-                      painter: _BoardPlacementPainter(
-                        entries: entries,
-                        selectedKey: selectedKey,
-                        colorScheme: Theme.of(context).colorScheme,
-                      ),
-                      child: SizedBox(
-                        width: math.max(240, constraints.maxWidth),
-                        height: math.max(96, constraints.maxHeight - 28),
-                      ),
+                    child: Stack(
+                      children: [
+                        LayoutBuilder(
+                          builder: (context, canvasConstraints) {
+                            return _buildCanvas(
+                              context,
+                              size: Size(
+                                math.max(240, canvasConstraints.maxWidth),
+                                math.max(96, constraints.maxHeight - 28),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildFitButton(context),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -459,17 +524,21 @@ class _CanvasPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Expanded(
-                  child: CustomPaint(
-                    key: const Key('board_canvas_painter'),
-                    painter: _BoardPlacementPainter(
-                      entries: entries,
-                      selectedKey: selectedKey,
-                      colorScheme: Theme.of(context).colorScheme,
-                    ),
-                    child: SizedBox(
-                      width: math.max(240, constraints.maxWidth),
-                      height: math.max(180, constraints.maxHeight - 96),
-                    ),
+                  child: Stack(
+                    children: [
+                      LayoutBuilder(
+                        builder: (context, canvasConstraints) {
+                          return _buildCanvas(
+                            context,
+                            size: Size(
+                              math.max(240, constraints.maxWidth),
+                              math.max(180, canvasConstraints.maxHeight - 96),
+                            ),
+                          );
+                        },
+                      ),
+                      _buildFitButton(context),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 8),

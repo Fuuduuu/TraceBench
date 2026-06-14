@@ -2,35 +2,35 @@
 
 ## Current pass
 
-`CURRENT_STATE_COMPACTION_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_HYGIENE`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_HYGIENE`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only current-state compaction.
+Docs-only scope-lock for the first Board Canvas V2 read-only renderer implementation slice.
 
 ## Current goal
-- Compact `docs/CURRENT_STATE.md` into a bounded live-state handoff while preserving
-  required route and boundary pointers.
+- Lock the first implementation slice to render a read-only Board Canvas surface
+  inside Workbench Home from accepted projection/known-facts data only.
 - Keep this pass docs-only and preserve all protected boundaries.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_HYGIENE`
-- lane: `CODEX / DOCS_HYGIENE`
-- mode: docs-only hygiene.
-- latest pass handled: `CURRENT_STATE_COMPACTION_PASS`
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only scope lock.
+- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -39,7 +39,7 @@ Docs-only current-state compaction.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/CURRENT_STATE_COMPACTION_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS.md`
 
 ## Forbidden touches
 
@@ -54,22 +54,20 @@ Docs-only current-state compaction.
 
 ## Current route lock
 
-Current: `CURRENT_STATE_COMPACTION_PASS`
+Current: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
-- Governance-ledger hygiene pass `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS` is
-  finalized and closed out.
-- Keep future shell tool polish as deferred candidates:
-  - board renderer upgrades,
-  - board markers,
-  - pan/zoom/fit,
+- Governance-ledger hygiene is accepted and closed out.
+- Keep first V2 Board Canvas pass scoped to read-only presentation-only behavior only; the following are explicitly deferred:
+  - event writer / schema / materializer / validator / tool changes,
+  - background photo layer,
   - contour/photo/layers/AI tooling,
-  - trace colors,
-  - custom unit / `Muu ühik` behavior,
-  - any writer/event/schema/materializer changes.
+  - pan/zoom/fit features,
+  - measurement markers and map tools,
+  - trace color editing.
 
 ## Exact allowed focus
 
@@ -77,4 +75,4 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/CURRENT_STATE_COMPACTION_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS.md`

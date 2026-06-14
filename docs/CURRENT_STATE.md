@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`CURRENT_STATE_COMPACTION_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current product state
 
@@ -14,7 +14,7 @@
 - `Lisa mõõtmine` and overview flow still route through V2 measure-sheet path.
 - `/project/measurements/new` remains the compatibility redirect to `/project/measure-sheet`.
 - No runtime/event/model/validator/materializer/writer/schema changes are introduced in this compaction pass.
-- Board Canvas Renderer V2 remains deferred until intentionally selected by a future user-decided route.
+- Board Canvas Renderer V2 is now scoped into the first V2 read-only Workbench Home board-surface slice (renderer-first, non-mutating implementation boundary).
 
 ## Accepted recent governance state
 
@@ -26,8 +26,8 @@
 
 ## Deferred work
 
-- `NEEDS_USER_DECISION` remains the post-compaction decision state.
-- No new feature implementation is started by this compaction pass.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS` is the explicit routing target.
+- No write/event/model/schema/renderer behavior changes are started in this docs-only lock pass.
 
 ## Core boundaries
 

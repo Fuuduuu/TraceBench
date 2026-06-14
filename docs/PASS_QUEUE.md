@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -246,4 +246,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | CURRENT_STATE_COMPACTION_PASS | CODEX / DOCS_HYGIENE | completed | Docs-only compaction pass to turn `docs/CURRENT_STATE.md` into a bounded live-state handoff and preserve compact route/boundary guidance. |
 | V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for the first Board Canvas read-only renderer slice in Workbench Home: projection-backed visual board surface, empty-state-safe rendering, and strict read-only/no-write boundaries before implementation. |
 | V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed scope-lock outcome: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` post-audit `ACCEPT_AS_IS`, path-typo fix, preserved boundaries, and route to `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`. |
-| V2_BOARD_CANVAS_READONLY_RENDERER_PASS | CODEX / FLUTTER_IMPLEMENTATION | in-progress | Implementing read-only Board Canvas renderer shell (projection-backed, no event/materializer/schema/writer/ZIP/known-facts persistence writes, no measurement/measurement-marker tools). |
+| V2_BOARD_CANVAS_READONLY_RENDERER_PASS | CODEX / FLUTTER_IMPLEMENTATION | completed | Verification/zero-event regression pass that pinned the existing read-only Board Canvas renderer shell; no runtime files changed. |
+| V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed verification outcome (`68f7985`), records `NEEDS_SMALL_PATCH` to docs-accuracy correction and recheck `ACCEPT_AS_IS`, and routes to `NEEDS_USER_DECISION`. |

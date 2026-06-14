@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -14,8 +14,8 @@
 - `Lisa mõõtmine` and overview flow still route through V2 measure-sheet path.
 - `/project/measurements/new` remains the compatibility redirect to `/project/measure-sheet`.
 - No runtime/event/model/validator/materializer/writer/schema changes are introduced in this compaction pass.
-- Board Canvas Renderer V2 is now scoped into the first V2 read-only Workbench Home board-surface slice (renderer-first, non-mutating implementation boundary).
-- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is in progress implementing the read-only renderer shell.
+- `test(board-canvas): verify read-only renderer shell` (`68f7985`) closed out the verification of the read-only Board Canvas renderer and confirmed that the renderer shell already existed from `87eae78 feat(board-canvas): polish read-only visual rendering`.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is now closed out as a no-runtime-change verification pass with zero-event regression coverage.
 
 ## Accepted recent governance state
 
@@ -28,7 +28,7 @@
 ## Deferred work
 
 - `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is closed out.
-- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is currently active.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS` is now active.
 - No write/event/model/schema/renderer behavior changes have been started outside this pass scope.
 
 ## Core boundaries

@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Implementation pass for the first read-only Board Canvas renderer slice from accepted projection data only.
+Docs-only closeout for `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`.
 
 ## Current goal
 - Implement the first read-only Board Canvas renderer slice in Workbench Home.
@@ -23,13 +23,13 @@ Implementation pass for the first read-only Board Canvas renderer slice from acc
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION`
-- mode: runtime implementation under strict read-only boundaries.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout of `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` with preserved implementation-boundary rules.
 - latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -60,9 +60,9 @@ Implementation pass for the first read-only Board Canvas renderer slice from acc
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
+Current: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_READONLY_RENDERER_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Closeout boundary carry-forward
 

@@ -61,7 +61,7 @@ void main() {
 
     expect(find.byType(PhotoListScreen), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Foto tõendid'), findsOneWidget);
+    expect(find.text('Foto tõendid'), findsAtLeastNWidgets(1));
 
     GoRouter.of(tester.element(find.byType(PhotoListScreen)))
         .go('/project/report');

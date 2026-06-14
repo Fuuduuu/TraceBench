@@ -2,15 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_HOME_SHELL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
 
 Current objective:
 
-- Scope-lock the first hybrid Workbench Home shell implementation under Option C with board-centered, technician-first, presentation-only behavior and no runtime/event/writer/schema changes.
+- Implement the first hybrid Workbench Home implementation slice under Option C:
+  - board-centered Workbench Home presentation shell,
+  - dominant `Lisa mõõtmine` technician-first action,
+  - grouped secondary actions,
+  - read-only workbench center with sparse-placement placeholder,
+  - zero-event rendering and unchanged route behavior.
 
 Accepted implementation recorded for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 via commit `fcaf402` (`feat(project-overview): add pcb-first shell`).

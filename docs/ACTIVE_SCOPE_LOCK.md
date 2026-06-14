@@ -2,43 +2,44 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_HOME_SHELL_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`FLUTTER_IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_IMPLEMENTATION_PASS`
 
 ## Mode
 
-Docs-only scope lock. No runtime, tests, writer/service, schema/materializer/validator, tool, sample, platform, dependency, or generated-file edits in this pass.
+Narrow Flutter implementation pass. Render-focused Workbench Home slice only; no runtime event/writer/model/schema/test surface changes.
 
 ## Current goal
 
-- lock the first Workbench Home implementation slice after Opus strategy direction:
-  - accept `MODIFY_PROMPT_FIRST` + Option C / Hybrid,
-  - create a board-centered Workbench Home frame,
-  - keep the first slice presentation-only,
-  - preserve existing route/contracts and zero-event guarantees.
+- implement the first Workbench Home presentation slice from Option C / Hybrid:
+  - board-centered workbench frame as the dominant context,
+  - `Lisa mõõtmine` as the primary technician action,
+  - grouped secondary actions for Add/Edit/Board/Reference,
+  - read-only board center with sparse-placement placeholder and no write affordance,
+  - unchanged route semantics and zero-event behavior at shell level.
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: read-only governance lock pass.
+- scope type: `FLUTTER_IMPLEMENTATION`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
+- mode: narrow runtime shell composition implementation.
 
 ## Current status from requested baseline
 
-- latest accepted/pushed implementation: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
-- option state to lock: `V2_WORKBENCH_HOME_UI_ROLLOUT_STRATEGY_REVIEW_PASS`
-- route drift to lock on: Option C / Hybrid Workbench Home shell.
+- latest accepted/pushed implementation: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`
+- latest implementation milestone to adapt: first Workbench Home slice in `ProjectOverviewScreen`.
+- route drift to implement: Option C / Hybrid Workbench Home shell with no runtime semantics changes.
 
 ## File allowlist for this pass
 
@@ -47,45 +48,49 @@ Docs-only scope lock. No runtime, tests, writer/service, schema/materializer/val
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md`
-
-## Allowed future implementation surfaces
-
+- `docs/audit/V2_WORKBENCH_HOME_SHELL_PASS.md`
 - `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/project_overview_screen_test.dart` (or closest existing overview test file)
-- route tests only for unchanged route/keys and read-only assertions
-- governance/docs files listed in allowlist
-- optional tiny presentation-only child widget files if aligned to project conventions.
+- `test/widget/project_overview_screen_test.dart`
 
 ## Forbidden touches
 
-- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart` and other writer runtime
+- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
 - `tools/event_writer_service.py`
 - `tools/validate_events_jsonl.py`
 - `tools/materialize_known_facts.py`
 - schemas
 - event model/schema changes
-- writer/service/validator/materializer runtime semantic changes
+- writer/service/validator/materializer semantic changes
 - `Project ZIP`
-- Board Canvas authoring/write/edit behavior
-- Board Canvas renderer richness that changes behavior (pan/zoom/markers/contour/photo/layers/AI candidate tools)
-- Reference Images runtime changes
-- AI/OCR/CV
-- Visual Trace Shape Assist
-- Photo Markup / Repair Map
-- Save Measurement target/unit semantics
-- Add/Edit Component write/event semantics
-- `Muu ühik` / custom unit
-- `sequence` addition to V2 events
-- router behavior changes
 - `pubspec.yaml`, `pubspec.lock`, dependency/config files
 - generated files, platform folders, samples
+- tests outside this overview focus
 - analyzer/lint cleanup
-- broad docs hygiene unrelated to this lock
-- production copying of design mockups/CSS (`workbench.css`, `redesign.css`, html mockups)
+- `sequence` addition to V2 events
+- runtime changes to writer/service/surfaces listed in `docs/PROTECTED_SURFACES.md`
+
+## Forbidden future touches for this pass
+
+- no Board Canvas authoring/write/edit
+- no Reference Images runtime change
+- no AI/OCR/CV
+- no Visual Trace Shape Assist
+- no Photo Markup / Repair Map
+- no Save Measurement target/unit semantics
+- no Add/Edit Component writer/event semantics
+- no `Muu ühik` / custom unit behavior
+- no router behavior changes outside existing compatibility
+- no broad docs hygiene unrelated to this pass
 
 ## Route lock
 
-Current: `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
+Current: `V2_WORKBENCH_HOME_SHELL_PASS`
 
-Next: `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+Next: `V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
+
+## Exact allowed focus
+
+- `ProjectOverviewScreen` shell layout/labels/keys
+- event-free behavior and projection-summary rendering for sparse placement scenarios
+- action-group visibility and preserved existing routes
+- inertia of future tools (no navigation, no onPressed handlers)

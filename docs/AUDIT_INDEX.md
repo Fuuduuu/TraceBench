@@ -4,7 +4,8 @@ Lazy-loading index for pass audit documents.
 
 | PASS_ID | File | Status |
 |---|---|---|
-| V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md | current (docs-only scope lock for first Workbench Home implementation slice; Option C / Hybrid; preserved route/action invariants; next `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`) |
+| V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md | completed (docs-only scope lock for first Workbench Home implementation slice; Option C / Hybrid; preserved route/action invariants; next `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`) |
+| V2_WORKBENCH_HOME_SHELL_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_PASS.md | current (implementation slice for board-centered Workbench Home (`overview-workbench-zone`), dominant `Lisa mõõtmine`, inert future tools, preserved routes, and zero-event shell interactions) |
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_PASS.md | completed (implementation of aligned component_updated/materializer contract; package_hint contract/parity and no-sequence preservation) |
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_CLOSEOUT_PASS.md | current (docs-only closeout for accepted implementation; boundaries preserved; route to `NEEDS_USER_DECISION`) |
 | V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS | docs/audit/V2_COMPONENT_UPDATE_FIELD_PROJECTION_ALIGNMENT_SCOPE_LOCK_PASS.md | completed (docs-only scope lock: validator/materializer alignment for V2 component_update field contract) |

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_HOME_SHELL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 

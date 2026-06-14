@@ -2,52 +2,55 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / FLUTTER_UI_LAYOUT_POLISH`
 
 ## Mode
 
-Docs-only closeout pass for `V2_WORKBENCH_HOME_SHELL_PASS`. No implementation/runtime changes.
+Narrow implementation pass for Workbench Home layout proportion balance. Only proportional/layout polish in existing screen code, no router or runtime semantic changes.
 
 ## Current goal
 
-- close out `V2_WORKBENCH_HOME_SHELL_PASS` after implementation acceptance:
-  - record pushed implementation commit and validation summary,
-  - preserve all implementation boundaries,
-  - route docs to `NEEDS_USER_DECISION`,
-  - keep Workbench Home deferred-future tool states inert for a future separate scope.
+- Tune `ProjectOverviewScreen` proportions so the central board/workbench zone is dominant.
+- Keep the top context/title band compact.
+- Reduce right action-rail and grouped card footprint.
+- Reduce stats/chips visual weight below the board.
+- Preserve `Lisa mõõtmine`, secondary action reachability, and route/key contracts.
+- Preserve zero-event/render behavior, read-only board/workbench, and future-tool inertness.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout and governance record update only.
+- scope type: `FLUTTER_UI_LAYOUT_POLISH`
+- lane: `CODEX / FLUTTER_UI_LAYOUT_POLISH`
+- mode: implementation polish in existing overview widgets only.
 
 ## Current status from requested baseline
 
 - latest accepted/pushed implementation: `V2_WORKBENCH_HOME_SHELL_PASS`
-- latest implementation milestone completed: Workbench Home presentation slice in `ProjectOverviewScreen`.
-- route drift to closeout: `V2_WORKBENCH_HOME_SHELL_PASS` -> `V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`.
+- latest implementation milestone completed: Workbench Home presentation slice in `ProjectOverviewScreen` via commit `3f133a5` (`feat(project-overview): add workbench home shell`).
+- route drift target: `V2_WORKBENCH_HOME_SHELL_PASS` -> layout polish (`V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`).
 
 ## File allowlist for this pass
 
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS.md`
+- `docs/audit/V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS.md`
 
 ## Forbidden touches
 
@@ -94,15 +97,17 @@ Closeout boundary carry-forward:
 
 ## Route lock
 
-Current: `V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
+Current: `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_WORKBENCH_HOME_LAYOUT_BALANCE_POST_AUDIT_PASS`
 
 ## Exact allowed focus
 
-- closeout governance updates in:
-  - `docs/CURRENT_STATE.md`
-  - `docs/PASS_QUEUE.md`
-  - `docs/AUDIT_INDEX.md`
-  - `docs/WORK_INTAKE_INDEX.md`
-  - `docs/audit/V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS.md`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/audit/V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS.md`

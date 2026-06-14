@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_POST_AUDIT_PASS`
 
 Current objective:
 
-- Close out the accepted Workbench Home implementation and record the pushed implementation state:
-  - board-centered Workbench Home presentation shell,
-  - dominant `Lisa mõõtmine` technician-first action,
-  - grouped secondary actions,
-  - read-only workbench center with sparse-placement placeholder,
-  - zero-event rendering and unchanged route behavior.
-  - no runtime/test/tool/schema/validator/materializer/writer-service changes in this closeout.
+- Tune the accepted Workbench Home presentation shell toward a stronger layout balance:
+  - compact the top project/context header area;
+  - make the central workbench/read-only board zone visually dominant;
+  - reduce the right-side action rail and grouped-card footprint;
+  - reduce stats/chip visual weight below the board;
+  - preserve `Lisa mõõtmine` priority and existing route/key contracts;
+  - preserve zero-event/read-only behavior in the shell.
 
 Accepted implementation recorded for `V2_WORKBENCH_HOME_SHELL_PASS`
 via commit `3f133a5` (`feat(project-overview): add workbench home shell`).

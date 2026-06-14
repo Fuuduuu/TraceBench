@@ -52,7 +52,7 @@ class ProjectOverviewScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 14),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1320),
@@ -60,7 +60,7 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ProjectionStaleBanner(isStale: projectState.isProjectionStale),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   _WorkbenchShellLayout(
                     boardContextDetails: boardContextDetails,
                     boardPlacements: boardPlacements,
@@ -118,7 +118,7 @@ class _WorkbenchShellLayout extends StatelessWidget {
 
         final actionRail = SizedBox(
           key: const ValueKey('overview-actions-panel'),
-          width: isWide ? 360 : double.infinity,
+          width: isWide ? 300 : double.infinity,
           child: _ActionRailCard(projectState: projectState),
         );
 
@@ -127,10 +127,10 @@ class _WorkbenchShellLayout extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 7,
+                flex: 8,
                 child: workbenchZone,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               actionRail,
             ],
           );
@@ -180,7 +180,7 @@ class _WorkbenchZoneCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -188,7 +188,7 @@ class _WorkbenchZoneCard extends StatelessWidget {
               children: [
                 Text(
                   'Töölaud / PCB board',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Spacer(),
                 if (isProjectionStale)
@@ -198,13 +198,16 @@ class _WorkbenchZoneCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 6),
-            Text(humanReadableTitle, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(boardSummary),
+            const SizedBox(height: 4),
+            Text(humanReadableTitle, style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              boardSummary,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             const SizedBox(height: 6),
             Text(subtitle),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             if (projectState.knownFacts.componentVisualPlacements.isEmpty)
               const _WorkbenchPlaceholder()
             else
@@ -213,12 +216,15 @@ class _WorkbenchZoneCard extends StatelessWidget {
                 boardPlacements: boardPlacements,
                 componentFacts: projectState.knownFacts.components,
               ),
-            const SizedBox(height: 12),
-            Text('Toimingute mõju ja mõõtmised on kontekstis allpool.'),
             const SizedBox(height: 8),
+            Text(
+              'Toimingute mõju ja mõõtmised on kontekstis allpool.',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            const SizedBox(height: 4),
             Wrap(
-              spacing: 10,
-              runSpacing: 8,
+              spacing: 8,
+              runSpacing: 6,
               alignment: WrapAlignment.spaceBetween,
               children: [
                 _OverviewChip(label: 'Kõik komponendid', value: projectState.componentCount),
@@ -265,9 +271,9 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
               'Board workspace (read-only)',
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             SizedBox(
-              height: 240,
+              height: 300,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) {
@@ -325,7 +331,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text('Placement summary is read-only and local only.'),
+            const Text(
+              'Placement summary is read-only and local only.',
+              style: TextStyle(fontSize: 11.5),
+            ),
           ],
         ),
       ),
@@ -425,7 +434,7 @@ class _WorkbenchPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 240,
+      height: 300,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
@@ -443,6 +452,7 @@ class _WorkbenchPlaceholder extends StatelessWidget {
               const Text(
                 'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
                 textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12),
               ),
               const SizedBox(height: 6),
               const Text('Context and route behavior are preserved.'),
@@ -468,26 +478,26 @@ class _ActionRailCard extends StatelessWidget {
           key: const ValueKey('overview-measurement-record-button'),
           onPressed: () => context.go('/project/measure-sheet'),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 18),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             textStyle: const TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),
           child: const Text('Lisa mõõtmine'),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Võtted', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
+                Text('Võtted', style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 6),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
                     OutlinedButton(
                       key: const ValueKey('overview-measure-sheet-button'),
@@ -510,18 +520,18 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Navigatsioon', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
+                Text('Navigatsioon', style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 6),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
                     OutlinedButton(
                       key: const ValueKey('overview-board-graph-button'),
@@ -549,15 +559,15 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         ExpansionTile(
           title: const Text('Muud tegevused'),
           tilePadding: EdgeInsets.zero,
           childrenPadding: const EdgeInsets.only(bottom: 10, left: 8, right: 8),
           children: [
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 6,
+              runSpacing: 6,
               children: [
                 OutlinedButton(
                   key: const ValueKey('overview-measurements-button'),
@@ -593,19 +603,19 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Card(
           color: Theme.of(context).colorScheme.surfaceContainerLow,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Future tools (tulekul)', style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 6,
+                  runSpacing: 6,
                   children: [
                     OutlinedButton(
                       key: const ValueKey('overview-future-contour-button'),
@@ -633,7 +643,7 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           projectState.manifest.projectId,
           key: const ValueKey('overview-project-id'),
@@ -684,16 +694,30 @@ class _OverviewChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: SizedBox(
-        width: 160,
-        child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.grey.shade300),
+        width: 130,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade300),
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
           ),
-          title: Text(label),
-          trailing: Text(
-            value.toString(),
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Text(
+                  value.toString(),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
           ),
         ),
       ),

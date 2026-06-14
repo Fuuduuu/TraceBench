@@ -151,6 +151,25 @@ void main() {
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')), findsNothing);
   });
 
+  testWidgets('wide layout makes the workbench zone visually dominant', (tester) async {
+    final projectState = _inlineProjectState(
+      componentVisualPlacements: _normalizedPlacementFacts(),
+    );
+    await tester.binding.setSurfaceSize(const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    final workbenchZoneRect = tester.getRect(find.byKey(const ValueKey('overview-workbench-zone')));
+    final actionsPanelRect = tester.getRect(find.byKey(const ValueKey('overview-actions-panel')));
+
+    expect(workbenchZoneRect.width, greaterThan(actionsPanelRect.width * 2.0));
+  });
+
   testWidgets('renders sparse-placement workbench placeholder state', (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(

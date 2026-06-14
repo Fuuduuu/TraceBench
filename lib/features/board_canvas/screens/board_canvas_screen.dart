@@ -9,6 +9,46 @@ import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 
+bool measurementEndpointMatchesComponent(
+  String endpoint,
+  String componentId,
+) {
+  return endpoint == componentId || endpoint.startsWith('$componentId.');
+}
+
+Map<String, int> measurementCountsByComponents({
+  required List<MeasurementFact> measurements,
+  required Set<String> componentIds,
+}) {
+  final counts = <String, int>{};
+  for (final componentId in componentIds) {
+    final measurementCount = measurements
+        .where(
+          (measurement) =>
+              measurementEndpointMatchesComponent(measurement.from, componentId) ||
+              measurementEndpointMatchesComponent(measurement.to, componentId),
+        )
+        .length;
+    if (measurementCount > 0) {
+      counts[componentId] = measurementCount;
+    }
+  }
+  return counts;
+}
+
+int measurementCountForComponent({
+  required List<MeasurementFact> measurements,
+  required String componentId,
+}) {
+  return measurements
+      .where(
+        (measurement) =>
+            measurementEndpointMatchesComponent(measurement.from, componentId) ||
+            measurementEndpointMatchesComponent(measurement.to, componentId),
+      )
+      .length;
+}
+
 class BoardCanvasScreen extends ConsumerStatefulWidget {
   const BoardCanvasScreen({super.key});
 
@@ -108,6 +148,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             knownFacts.visualTraces,
             selectedEntry.placement.componentId,
           );
+    final measurementCountByComponent = measurementCountsByComponents(
+      measurements: knownFacts.measurements,
+      componentIds: entries
+          .map((entry) => entry.placement.componentId)
+          .toSet(),
+    );
+    final selectedMeasurementCount = selectedEntry == null
+        ? 0
+        : measurementCountByComponent[selectedEntry.placement.componentId] ?? 0;
 
     return _buildScaffold(
       context,
@@ -127,9 +176,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             final canvas = _CanvasPanel(
               entries: entries,
               selectedKey: selectedKey,
+              measurementCountsByComponentId: measurementCountByComponent,
             );
             final metadata = _InspectorPanel(
               selectedEntry: selectedEntry,
+              selectedMeasurementCount: selectedMeasurementCount,
               relatedMeasurements: relatedMeasurements,
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
@@ -190,14 +241,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   ) {
     return measurements
         .where((measurement) {
-          return _measurementEndpointMatchesComponent(measurement.from, componentId) ||
-              _measurementEndpointMatchesComponent(measurement.to, componentId);
+          return measurementEndpointMatchesComponent(
+                measurement.from,
+                componentId,
+              ) ||
+              measurementEndpointMatchesComponent(measurement.to, componentId);
         })
         .toList(growable: false);
   }
 
   bool _measurementEndpointMatchesComponent(String endpoint, String componentId) {
-    return endpoint == componentId || endpoint.startsWith('$componentId.');
+    return measurementEndpointMatchesComponent(endpoint, componentId);
   }
 
   List<VisualTraceFact> _visualTracesForComponent(
@@ -400,10 +454,15 @@ class _PlacementSelector extends StatelessWidget {
 }
 
 class _CanvasPanel extends StatefulWidget {
-  const _CanvasPanel({required this.entries, required this.selectedKey});
+  const _CanvasPanel({
+    required this.entries,
+    required this.selectedKey,
+    required this.measurementCountsByComponentId,
+  });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+  final Map<String, int> measurementCountsByComponentId;
 
   @override
   State<_CanvasPanel> createState() => _CanvasPanelState();
@@ -436,13 +495,14 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       panEnabled: true,
       scaleEnabled: true,
       constrained: false,
-      child: CustomPaint(
-        key: const Key('board_canvas_painter'),
-        painter: _BoardPlacementPainter(
-          entries: widget.entries,
-          selectedKey: widget.selectedKey,
-          colorScheme: theme.colorScheme,
-        ),
+        child: CustomPaint(
+          key: const Key('board_canvas_painter'),
+          painter: _BoardPlacementPainter(
+            entries: widget.entries,
+            selectedKey: widget.selectedKey,
+            measurementCountsByComponentId: widget.measurementCountsByComponentId,
+            colorScheme: theme.colorScheme,
+          ),
         child: SizedBox(
           width: math.max(240, size.width),
           height: math.max(96, size.height),
@@ -577,6 +637,7 @@ class _BoardCanvasLegend extends StatelessWidget {
                 _LegendItem(label: 'Pin pads'),
                 _LegendItem(label: 'Pin-1 marker'),
                 _LegendItem(label: 'Designator'),
+                _LegendItem(label: 'Measurement badge'),
               ],
             ),
             const SizedBox(height: 6),
@@ -586,6 +647,23 @@ class _BoardCanvasLegend extends StatelessWidget {
             ),
             Text(
               'Template family is not electrical identity; visual metadata does not establish a net.',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Measurement badge: component has related measurement(s).',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              'Component-level only.',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              'No measurement board coordinate is available.',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              'Does not create or confirm a net.',
               style: theme.textTheme.bodySmall,
             ),
           ],
@@ -687,12 +765,14 @@ class _PhotoAlignmentSummaryTile extends StatelessWidget {
 class _InspectorPanel extends StatelessWidget {
   const _InspectorPanel({
     required this.selectedEntry,
+    required this.selectedMeasurementCount,
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
     required this.photoToBoardAlignments,
   });
 
   final _PlacementEntry? selectedEntry;
+  final int selectedMeasurementCount;
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
   final List<PhotoToBoardAlignmentFact> photoToBoardAlignments;
@@ -714,7 +794,12 @@ class _InspectorPanel extends StatelessWidget {
         ),
       );
     } else {
-      children.add(_PlacementInspectorCard(entry: selectedEntry!));
+      children.add(
+        _PlacementInspectorCard(
+          entry: selectedEntry!,
+          selectedMeasurementCount: selectedMeasurementCount,
+        ),
+      );
       children.add(
         _MeasurementSummaryCard(relatedMeasurements: relatedMeasurements),
       );
@@ -744,9 +829,13 @@ class _InspectorPanel extends StatelessWidget {
 }
 
 class _PlacementInspectorCard extends StatelessWidget {
-  const _PlacementInspectorCard({required this.entry});
+  const _PlacementInspectorCard({
+    required this.entry,
+    required this.selectedMeasurementCount,
+  });
 
   final _PlacementEntry entry;
+  final int selectedMeasurementCount;
 
   @override
   Widget build(BuildContext context) {
@@ -768,6 +857,20 @@ class _PlacementInspectorCard extends StatelessWidget {
               subtitle: 'read-only · projection view',
             ),
             const SizedBox(height: 12),
+            if (selectedMeasurementCount > 0) ...[
+              const _SectionHeader(
+                title: 'Measurement badge',
+                tag: 'MARKER',
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Measurement badge: component has related measurement(s).',
+              ),
+              const Text('Component-level only.'),
+              const Text('No measurement board coordinate is available.'),
+              const Text('Does not create or confirm a net.'),
+              const SizedBox(height: 8),
+            ],
             _InspectorField(label: 'Component ID', value: placement.componentId),
             if ((component?.designator ?? '').isNotEmpty)
               _InspectorField(
@@ -1174,11 +1277,13 @@ class _BoardPlacementPainter extends CustomPainter {
   _BoardPlacementPainter({
     required this.entries,
     required this.selectedKey,
+    required this.measurementCountsByComponentId,
     required this.colorScheme,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+  final Map<String, int> measurementCountsByComponentId;
   final ColorScheme colorScheme;
 
   @override
@@ -1281,6 +1386,8 @@ class _BoardPlacementPainter extends CustomPainter {
       }
 
       canvas.restore();
+      final measurementCount =
+          measurementCountsByComponentId[placement.componentId] ?? 0;
 
       final designator = entry.component?.designator;
       if (designator != null && designator.trim().isNotEmpty) {
@@ -1302,6 +1409,17 @@ class _BoardPlacementPainter extends CustomPainter {
             (center.dy + 6)
                 .clamp(0.0, math.max(0.0, size.height - textPainter.height)),
           ),
+        );
+      }
+
+      if (measurementCount > 0) {
+        _paintMeasurementPresenceBadge(
+          canvas: canvas,
+          center: center,
+          bodySize: bodySize,
+          measurementCount: measurementCount,
+          colorScheme: colorScheme,
+          size: size,
         );
       }
     }
@@ -1405,6 +1523,76 @@ class _BoardPlacementPainter extends CustomPainter {
     canvas.drawCircle(markerCenter, markerRadius, markerPaint);
   }
 
+  void _paintMeasurementPresenceBadge({
+    required Canvas canvas,
+    required Offset center,
+    required Size bodySize,
+    required int measurementCount,
+    required ColorScheme colorScheme,
+    required Size size,
+  }) {
+    if (measurementCount < 1) {
+      return;
+    }
+
+    final badgeText = measurementCount == 1 ? 'M' : 'M$measurementCount';
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      text: TextSpan(
+        text: badgeText,
+        style: TextStyle(
+          color: colorScheme.onPrimary,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    )..layout();
+
+    final minBadgeDimension = 18.0;
+    final badgeHeight = 16.0;
+    final badgeWidth =
+        math.max(minBadgeDimension, textPainter.width + 6.0).clamp(16.0, 34.0);
+    final badgeCenter = Offset(
+      (center.dx + bodySize.width / 2 + badgeWidth / 2 + 2)
+          .clamp(0.0, size.width),
+      (center.dy - bodySize.height / 2 - badgeHeight / 2 - 4)
+          .clamp(0.0, size.height),
+    );
+    final badgeRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: badgeCenter,
+        width: badgeWidth,
+        height: badgeHeight,
+      ),
+      Radius.circular(badgeHeight / 2),
+    );
+
+    final badgePaint = Paint()
+      ..color = colorScheme.primary.withValues(alpha: 0.95)
+      ..style = PaintingStyle.fill;
+    final badgeBorderPaint = Paint()
+      ..color = colorScheme.onPrimary.withValues(alpha: 0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    canvas.drawRRect(badgeRect, badgePaint);
+    canvas.drawRRect(badgeRect, badgeBorderPaint);
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        (badgeCenter.dx - textPainter.width / 2).clamp(
+          0.0,
+          math.max(0.0, size.width - textPainter.width),
+        ),
+        (badgeCenter.dy - textPainter.height / 2).clamp(
+          0.0,
+          math.max(0.0, size.height - textPainter.height),
+        ),
+      ),
+    );
+  }
+
   Size _pinSize(
     FootprintPinAnchor pin,
     FootprintTemplate template,
@@ -1454,7 +1642,31 @@ class _BoardPlacementPainter extends CustomPainter {
     if (oldDelegate.colorScheme != colorScheme) {
       return true;
     }
+    if (!_measurementCountsEquivalent(
+      oldDelegate.measurementCountsByComponentId,
+      measurementCountsByComponentId,
+    )) {
+      return true;
+    }
     return !_entriesEquivalent(oldDelegate.entries, entries);
+  }
+
+  static bool _measurementCountsEquivalent(
+    Map<String, int> left,
+    Map<String, int> right,
+  ) {
+    if (identical(left, right)) {
+      return true;
+    }
+    if (left.length != right.length) {
+      return false;
+    }
+    for (final entry in left.entries) {
+      if (right[entry.key] != entry.value) {
+        return false;
+      }
+    }
+    return true;
   }
 
   static bool _entriesEquivalent(

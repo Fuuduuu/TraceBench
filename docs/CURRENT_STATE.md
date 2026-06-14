@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current product state
 
@@ -15,7 +15,8 @@
 - `/project/measurements/new` remains the compatibility redirect to `/project/measure-sheet`.
 - No runtime/event/model/validator/materializer/writer/schema changes are introduced in this compaction pass.
 - `test(board-canvas): verify read-only renderer shell` (`68f7985`) closed out the verification of the read-only Board Canvas renderer and confirmed that the renderer shell already existed from `87eae78 feat(board-canvas): polish read-only visual rendering`.
-- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is now closed out as a no-runtime-change verification pass with zero-event regression coverage.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is closed out as a no-runtime-change verification pass with zero-event regression coverage.
+- `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS` is now active to scope the first read-only pan/zoom/fit navigation slice.
 
 ## Accepted recent governance state
 
@@ -28,7 +29,7 @@
 ## Deferred work
 
 - `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is closed out.
-- `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS` is now active.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS` is now closed out.
 - No write/event/model/schema/renderer behavior changes have been started outside this pass scope.
 
 ## Core boundaries
@@ -39,6 +40,7 @@
 - `sequence` must not be added to V2 events.
 - No protected surface changes are made by this pass.
 - Audit routing is controlled via route docs and the active scope lock.
+- `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS` is docs-only and does not permit runtime mutation.
 
 ## Pointers
 

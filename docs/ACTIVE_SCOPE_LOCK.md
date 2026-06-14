@@ -2,35 +2,35 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout for `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`.
+Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit pass.
 
 ## Current goal
-- Implement the first read-only Board Canvas renderer slice in Workbench Home.
-- Render from accepted projection/cached data only.
-- Keep interactions presentation-only with explicit zero-write boundaries.
+- Scope and document `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
+- Restrict implementation to view-transform-only pan/zoom/fit over projected board placements.
+- Preserve strict zero-event/read-only behavior and no canonical fact creation.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout of `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` with preserved implementation-boundary rules.
-- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only lock for the next narrow implementation (`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`) before any runtime work.
+- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -39,39 +39,48 @@ Docs-only closeout for `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `test/integration/board_graph_end_to_end_test.dart`
-- `test/integration/projection_stale_banner_end_to_end_test.dart`
 
 ## Forbidden touches
 
-- Any runtime, route, model, schema, materializer, validator, tool, or non-pass-scope test file changes.
-- route/model event changes.
-- dependency/toolchain lockfile edits.
-- Project ZIP edits.
-- Board Canvas runtime writes or major renderer rewrites.
-- Reference Images runtime edits.
-- AI/OCR/CV, Photo Markup, Repair Map, Visual Trace Shape Assist edits.
-- `sequence` addition to any V2 event.
+- tools/event_writer_service.py
+- writer/service layers
+- event schema/model files
+- validator/
+- materializer/
+- schemas/
+- Project ZIP import/export
+- `lib/features/component_editor` component create/edit/update/edit flows
+- Add/Edit Component behavior
+- Save Measurement paths
+- measurement marker placement/editor
+- background photo rendering/alignment
+- contour/layer stack
+- AI/OCR/CV candidates
+- photo markup / probe tooling
+- Repair Map
+- Visual Trace Shape Assist runtime behavior
+- any `sequence` field addition
+- dependency/toolchain lockfile or package updates
+- platform/sample/assets (`assets/samples/pelle_pv20_minimal/metadata/`)
+- `_incoming/`
+- non-authorized runtime test suites outside the explicit allowlist
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
 - Governance-ledger hygiene is accepted and closed out.
-- Keep first V2 Board Canvas pass scoped to read-only presentation-only behavior only; the following are explicitly deferred:
+- Keep Board Canvas pan/zoom/fit scope explicit and narrow; the following are explicitly deferred:
   - event writer / schema / materializer / validator / tool changes,
   - background photo layer,
   - contour/photo/layers/AI tooling,
-  - pan/zoom/fit features,
   - measurement markers and map tools,
   - trace color editing.
 
@@ -81,4 +90,4 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`

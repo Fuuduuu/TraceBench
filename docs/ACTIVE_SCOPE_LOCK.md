@@ -2,24 +2,24 @@
 
 ## Current pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
+`CURRENT_STATE_COMPACTION_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_HYGIENE`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_HYGIENE`
 
 ## Mode
 
-Docs-only governance-ledger hygiene closeout.
+Docs-only current-state compaction.
 
 ## Current goal
-- Record governance ledger closeout and finalize docs-only hygiene marker cleanup for the
-  governance docs set.
-- Keep closeout updates strictly docs-only and preserve all protected boundaries.
+- Compact `docs/CURRENT_STATE.md` into a bounded live-state handoff while preserving
+  required route and boundary pointers.
+- Keep this pass docs-only and preserve all protected boundaries.
 
 ## Next recommended pass
 
@@ -27,11 +27,11 @@ Docs-only governance-ledger hygiene closeout.
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
+- scope type: `DOCS_HYGIENE`
+- lane: `CODEX / DOCS_HYGIENE`
 - mode: docs-only hygiene.
-- latest pass handled: `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
-- accepted implementation commit: `20e80d3` (`docs: clean governance ledger statuses`)
+- latest pass handled: `CURRENT_STATE_COMPACTION_PASS`
+- prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
 
@@ -39,7 +39,7 @@ Docs-only governance-ledger hygiene closeout.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS.md`
+- `docs/audit/CURRENT_STATE_COMPACTION_PASS.md`
 
 ## Forbidden touches
 
@@ -54,14 +54,14 @@ Docs-only governance-ledger hygiene closeout.
 
 ## Current route lock
 
-Current: `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
+Current: `CURRENT_STATE_COMPACTION_PASS`
 
 Next: `NEEDS_USER_DECISION`
 
 ## Closeout boundary carry-forward
 
-- Governance-ledger hygiene pass `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS` is finalized and
-  closed out.
+- Governance-ledger hygiene pass `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS` is
+  finalized and closed out.
 - Keep future shell tool polish as deferred candidates:
   - board renderer upgrades,
   - board markers,
@@ -77,4 +77,4 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS.md`
+- `docs/audit/CURRENT_STATE_COMPACTION_PASS.md`

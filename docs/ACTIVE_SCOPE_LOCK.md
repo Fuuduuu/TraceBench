@@ -2,44 +2,43 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_PASS`
+`V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION_PASS`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow Flutter implementation pass. Render-focused Workbench Home slice only; no runtime event/writer/model/schema/test surface changes.
+Docs-only closeout pass for `V2_WORKBENCH_HOME_SHELL_PASS`. No implementation/runtime changes.
 
 ## Current goal
 
-- implement the first Workbench Home presentation slice from Option C / Hybrid:
-  - board-centered workbench frame as the dominant context,
-  - `Lisa mõõtmine` as the primary technician action,
-  - grouped secondary actions for Add/Edit/Board/Reference,
-  - read-only board center with sparse-placement placeholder and no write affordance,
-  - unchanged route semantics and zero-event behavior at shell level.
+- close out `V2_WORKBENCH_HOME_SHELL_PASS` after implementation acceptance:
+  - record pushed implementation commit and validation summary,
+  - preserve all implementation boundaries,
+  - route docs to `NEEDS_USER_DECISION`,
+  - keep Workbench Home deferred-future tool states inert for a future separate scope.
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION_PASS`
-- mode: narrow runtime shell composition implementation.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout and governance record update only.
 
 ## Current status from requested baseline
 
-- latest accepted/pushed implementation: `V2_TECHNICIAN_WORKFLOW_UI_CONSOLIDATION_IMPL_CLOSEOUT_PASS`
-- latest implementation milestone to adapt: first Workbench Home slice in `ProjectOverviewScreen`.
-- route drift to implement: Option C / Hybrid Workbench Home shell with no runtime semantics changes.
+- latest accepted/pushed implementation: `V2_WORKBENCH_HOME_SHELL_PASS`
+- latest implementation milestone completed: Workbench Home presentation slice in `ProjectOverviewScreen`.
+- route drift to closeout: `V2_WORKBENCH_HOME_SHELL_PASS` -> `V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`.
 
 ## File allowlist for this pass
 
@@ -48,9 +47,7 @@ Narrow Flutter implementation pass. Render-focused Workbench Home slice only; no
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_SHELL_PASS.md`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
+- `docs/audit/V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -68,6 +65,10 @@ Narrow Flutter implementation pass. Render-focused Workbench Home slice only; no
 - analyzer/lint cleanup
 - `sequence` addition to V2 events
 - runtime changes to writer/service/surfaces listed in `docs/PROTECTED_SURFACES.md`
+- Add Component / Edit Component / Save Measurement writer/service schema/validator/materializer changes
+- writer/event/schema/materializer/projection/validator changes
+- Project ZIP / reference image runtime changes
+- AI/OCR/CV/photo/members/repair-map changes
 
 ## Forbidden future touches for this pass
 
@@ -82,15 +83,26 @@ Narrow Flutter implementation pass. Render-focused Workbench Home slice only; no
 - no router behavior changes outside existing compatibility
 - no broad docs hygiene unrelated to this pass
 
+Closeout boundary carry-forward:
+
+- Workbench Home shell completed in implementation pass.
+- Board Canvas remains read-only unless separately scoped.
+- no writer/event/schema/projection/materializer/validator runtime changes.
+- no runtime changes to Project ZIP/Reference Images/AI/OCR/CV.
+- future tool modules remain inert in this closeout.
+- no `sequence` addition to V2 events.
+
 ## Route lock
 
-Current: `V2_WORKBENCH_HOME_SHELL_PASS`
+Current: `V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
 
-Next: `V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Exact allowed focus
 
-- `ProjectOverviewScreen` shell layout/labels/keys
-- event-free behavior and projection-summary rendering for sparse placement scenarios
-- action-group visibility and preserved existing routes
-- inertia of future tools (no navigation, no onPressed handlers)
+- closeout governance updates in:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/WORK_INTAKE_INDEX.md`
+  - `docs/audit/V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS.md`

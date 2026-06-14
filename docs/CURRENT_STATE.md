@@ -2,20 +2,40 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_SHELL_PASS`
+`V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_SHELL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 Current objective:
 
-- Implement the first hybrid Workbench Home implementation slice under Option C:
+- Close out the accepted Workbench Home implementation and record the pushed implementation state:
   - board-centered Workbench Home presentation shell,
   - dominant `Lisa mõõtmine` technician-first action,
   - grouped secondary actions,
   - read-only workbench center with sparse-placement placeholder,
   - zero-event rendering and unchanged route behavior.
+  - no runtime/test/tool/schema/validator/materializer/writer-service changes in this closeout.
+
+Accepted implementation recorded for `V2_WORKBENCH_HOME_SHELL_PASS`
+via commit `3f133a5` (`feat(project-overview): add workbench home shell`).
+
+Accepted implementation behavior recorded:
+
+- `Lisa mõõtmine` remains dominant technician action and routes to `/project/measure-sheet`.
+- Board/workbench center is now the primary context in Project Overview shell.
+- Secondary actions remain grouped (Add/Edit/Board/Reference) with preserved keys.
+- `overview-future-*` tool controls remain inert in this pass and no route/writer/model
+  behavior changed.
+
+Observed closeout checks confirmed:
+
+- full `flutter test` passed (`274/274` at the acceptance point),
+- `py -3 tools\\validate_all.py` passed,
+- existing compatibility route was preserved:
+  `/project/measurements/new` → `/project/measure-sheet`.
+- `board_graph_end_to_end_test.dart` verified green and unchanged.
 
 Accepted implementation recorded for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 via commit `fcaf402` (`feat(project-overview): add pcb-first shell`).

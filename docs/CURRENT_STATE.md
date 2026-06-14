@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
 ## Current product state
 
@@ -21,8 +21,9 @@
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` added read-only pan/zoom/fit view-transform to the existing Board Canvas projection renderer and is now closed out.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS` is now closed out.
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now closed out and routed to this implementation pass.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation has been accepted, audited, and committed locally and pushed.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS` is now active and records the accepted docs-only closeout.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation is accepted, audited, committed, and pushed.
+- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS` is active to harden test-only regression checks on top of accepted measurement markers.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS` is now accepted/pushed and recorded as docs-only closeout; this pass continues with QA regression hardening.
 
 ## Accepted recent governance state
 
@@ -37,7 +38,7 @@
 - `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is closed out.
 - `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS` is now closed out.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` is now closed out, and route moved to `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now closed out and routes to this implementation.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is closed out and routed to `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`.
 - No write/event/model/schema/renderer behavior changes are being introduced outside this pass scope.
 
 ## Core boundaries

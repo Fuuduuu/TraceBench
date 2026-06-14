@@ -268,6 +268,98 @@ void main() {
   });
 
   testWidgets(
+      'multi-measurement badge scenarios stay component-level in legend and inspector',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+            ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+          ],
+          placements: const [boardPlacement, boardPlacementWidthHeight],
+          measurements: const [
+            MeasurementFact(
+              measurementId: 'M101',
+              mode: 'continuity',
+              from: 'cmp_r101',
+              to: 'GND',
+              reading: 'beep',
+              validityStatus: 'active',
+              powerState: 'on',
+            ),
+            MeasurementFact(
+              measurementId: 'M102',
+              mode: 'continuity',
+              from: 'cmp_r101.1',
+              to: 'cmp_u1.3',
+              reading: 'beep',
+              validityStatus: 'active',
+              powerState: 'on',
+            ),
+            MeasurementFact(
+              measurementId: 'M103',
+              mode: 'dc_voltage',
+              from: 'Q2',
+              to: 'cmp_u1',
+              reading: 'numeric',
+              validityStatus: 'active',
+              powerState: 'off',
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Measurement badge'), findsOneWidget);
+    expect(
+      find.text('Measurement badge: component has related measurement(s).'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Does not create or confirm a net.'),
+      findsOneWidget,
+    );
+
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    final finderR101Summary = find.text('Measurement — read-only summary');
+    expect(finderR101Summary, findsOneWidget);
+    expect(find.textContaining('Measurement ID: M101'), findsOneWidget);
+    expect(find.textContaining('Measurement ID: M102'), findsOneWidget);
+    expect(
+      find.textContaining('No related measurements for selected component.'),
+      findsNothing,
+    );
+    expect(find.text('No board coordinate available'), findsOneWidget);
+    expect(
+      find.text('Does not create or confirm a net.'),
+      findsAtLeastNWidgets(1),
+    );
+
+    await _selectPlacement(tester, 'U1 (cmp_u1)');
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.textContaining('Measurement ID: M103'), findsOneWidget);
+    expect(
+      find.textContaining('No related measurements for selected component.'),
+      findsNothing,
+    );
+    expect(find.text('No board coordinate available'), findsOneWidget);
+    expect(
+      find.text('Does not create or confirm a net.'),
+      findsAtLeastNWidgets(1),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
       'board canvas supports pan/zoom affordances with fit reset and stays read-only',
       (tester) async {
     await tester.pumpWidget(
@@ -1297,6 +1389,48 @@ void main() {
     expect(counts, isEmpty);
   });
 
+  test('measurement badge count supports multi-measurement aggregation (M3)', () {
+    const measurements = [
+      MeasurementFact(
+        measurementId: 'M201',
+        mode: 'continuity',
+        from: 'cmp_r101',
+        to: 'GND',
+        reading: 'beep',
+        validityStatus: 'active',
+        powerState: 'on',
+      ),
+      MeasurementFact(
+        measurementId: 'M202',
+        mode: 'continuity',
+        from: 'cmp_r101.1',
+        to: 'CMP_U1',
+        reading: 'beep',
+        validityStatus: 'active',
+        powerState: 'on',
+      ),
+      MeasurementFact(
+        measurementId: 'M203',
+        mode: 'dc_voltage',
+        from: 'V1',
+        to: 'cmp_r101.3',
+        reading: 'numeric',
+        value: 1.2,
+        unit: 'V',
+        validityStatus: 'active',
+        powerState: 'off',
+      ),
+    ];
+
+    final counts = measurementCountsByComponents(
+      measurements: measurements,
+      componentIds: const {'cmp_r101'},
+    );
+
+    expect(counts['cmp_r101'], equals(3));
+    expect(counts.length, equals(1));
+  });
+
   test(
     'two-component measurement contributes badge count to both endpoints safely',
     () {
@@ -1657,6 +1791,7 @@ void main() {
     expect(source, isNot(contains('measurementOverlay')));
     expect(source, isNot(contains('measurementAnchor')));
     expect(source, isNot(contains('measurementCoordinate')));
+    expect(source, isNot(contains('drawMeasurementBadge')));
     expect(source, isNot(contains('visualTracePath')));
     expect(source, isNot(contains('damagePath')));
     expect(source, isNot(contains('suspectPath')));

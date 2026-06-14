@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`FLUTTER_TEST`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / FLUTTER_TEST`
 
 ## Mode
 
-Docs closeout for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` (runtime behavior already implemented, validated, and committed/pushed).
+QA regression-hardening test pass for accepted `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`.
 
 ## Current goal
+- Strengthen regression tests for marker presence, inspector summary, pan/zoom behavior, and source-boundary guarantees.
 - Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized with actual status.
-- Keep route docs synchronized with post-audit closeout status.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout scoped to governance and route documentation.
-- latest pass handled: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
+- scope type: `FLUTTER_TEST`
+- lane: `CODEX / FLUTTER_TEST`
+- mode: test-only regression hardening; runtime behavior remains unchanged.
+- latest pass handled: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -38,9 +38,11 @@ Docs closeout for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` (runtime behavior a
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
+- `test/widget/board_canvas_screen_test.dart`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
 
 ## Forbidden touches
 
@@ -70,11 +72,11 @@ Docs closeout for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` (runtime behavior a
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
-## Exact closeout focus
+## Exact focus
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
@@ -83,6 +85,7 @@ Next: `NEEDS_USER_DECISION`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
 
 ## Scope-lock carry-forward
 

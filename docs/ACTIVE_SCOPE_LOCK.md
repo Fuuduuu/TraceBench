@@ -2,40 +2,38 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_UI_POLISH`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_UI_POLISH`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow Flutter UI polish implementation pass.
+Docs-only closeout pass.
 
 ## Current goal
 
-- Polish the accepted Workbench Home layout with a compact status strip/chip row and button visual refinement in `ProjectOverviewScreen`.
-- Preserve route/key contracts, compatibility redirect, and zero-event/read-only behavior.
-- Keep the pass implementation bounded to:
-  - `lib/features/project/screens/project_overview_screen.dart`,
-  - `test/widget/project_overview_screen_test.dart`,
-  - optional local helper widget under `lib/features/project/` if required by implementation.
+- Record the accepted `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` implementation
+  as closed out docs-only.
+- Preserve route/key contracts and zero-event/read-only Workbench Home behavior.
+- Preserve all protected boundaries and keep closeout strictly docs-only.
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_UI_POLISH`
-- lane: `CODEX / FLUTTER_UI_POLISH`
-- mode: narrow polish implementation.
-- latest accepted/pushed implementation: `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
-- accepted implementation commit: `51de966 fix(project-overview): rebalance workbench layout`
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout.
+- latest accepted/pushed implementation: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
+- accepted implementation commit: `60bc600 fix(project-overview): compact workbench status and actions`
 
 ## File allowlist for this pass
 
@@ -43,7 +41,7 @@ Narrow Flutter UI polish implementation pass.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS.md`
+- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -58,13 +56,14 @@ Narrow Flutter UI polish implementation pass.
 
 ## Current route lock
 
-Current: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
+Current: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
 
-Next: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Closeout boundary carry-forward
 
 - Workbench Home balance implementation is accepted/pushed.
+- `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` implementation is accepted/pushed.
 - Keep future shell tool polish as deferred candidates:
   - board renderer upgrades,
   - board markers,
@@ -80,6 +79,4 @@ Next: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS.md`
+- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS.md`

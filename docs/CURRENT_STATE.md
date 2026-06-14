@@ -2,26 +2,40 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 Current objective:
 
-- Polish `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` implementation with a compact
-  status strip/chip row and visual button polish in `ProjectOverviewScreen`.
-- Preserve Workbench Home action rails and routes:
-  - `Lisa mõõtmine` remains the primary action routing to `/project/measure-sheet`,
-  - legacy compatibility redirect remains (`/project/measurements/new` → `/project/measure-sheet`),
-  - all secondary `Overview` action routes remain unchanged,
-  - `Overview` remains zero-event/read-only shell behavior.
+- Workbench Home status-strip/action polish is implemented and accepted/pushed.
+- Current Workbench Home state:
+  - shell + layout balance + compact status/action polish completed,
+  - compact status strip keeps existing metrics with no semantic changes:
+    - `Kõik komponendid`
+    - `Mõõtmised`
+    - `Aktiivne`
+    - `Aegunud`
+    - `Pole paigaldatud`
+  - primary and secondary action/button affordances are polished visually while preserving
+    zero-event/read-only shell behavior and key contracts.
 - Preserve accepted non-sequence/writer/runtime boundaries:
   - no event-model/schema/validator/materializer/writer-service edits,
   - no `Project ZIP` changes,
   - no `Board Canvas` write/edit,
   - no `sequence` addition in V2 events.
+
+Accepted implementation recorded for `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
+via commit `60bc600` (`fix(project-overview): compact workbench status and actions`).
+
+Closeout validation recorded in `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS`:
+
+- `flutter test test/widget/project_overview_screen_test.dart`
+- `flutter test`
+- `py -3 tools\validate_all.py` (passed with non-blocking optional sample-photo WARNs)
+- `git diff --check`
 
 Accepted implementation recorded for `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 via commit `51de966` (`fix(project-overview): rebalance workbench layout`).

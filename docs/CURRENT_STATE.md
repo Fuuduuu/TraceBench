@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 Current objective:
 
@@ -26,6 +26,19 @@ Current objective:
   - no `Project ZIP` changes,
   - no `Board Canvas` write/edit,
   - no `sequence` addition in V2 events.
+- Governance ledger hygiene was accepted and closed out in commit
+  `20e80d3` (`docs: clean governance ledger statuses`).
+- Closeout preserved docs-only scope:
+  - stale `Current`/`recommended`/contradictory row-level markers in
+    `docs/PASS_QUEUE.md` are resolved,
+  - dangling `BOARD_CANVAS_READONLY_INSPECTOR_AUDIT_PASS` pointer in
+    `docs/AUDIT_INDEX.md` is repaired,
+  - stale `WORK_INTAKE_INDEX.md` statuses (`WI-064`, `WI-052`, `WI-040`, `WI-042`)
+    are reconciled.
+- No runtime/test/tool/schema files were changed in this closeout.
+- Board Canvas Renderer V2 remains deferred until a future intentionally selected
+  docs-health pass.
+- Next docs-health recommendation remains `CURRENT_STATE_COMPACTION_PASS`.
 
 Accepted implementation recorded for `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
 via commit `60bc600` (`fix(project-overview): compact workbench status and actions`).

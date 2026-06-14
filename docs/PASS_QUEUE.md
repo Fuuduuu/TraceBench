@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -241,4 +241,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed status-strip/button polish implementation from `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` and returns route to `NEEDS_USER_DECISION`. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation outcome from `fcaf402`, records regression history and preserved non-sequence runtime boundaries. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit route-drift and boundary check for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`; closed out after docs-only closeout. |
-| GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS | CODEX / DOCS_HYGIENE | current | Docs-only governance-ledger hygiene pass for status marker cleanup, stale WORK_INTAKE reconciliation, and dangling AUDIT_INDEX pointer repair before Board Canvas Renderer V2. |
+| GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS | CODEX / DOCS_HYGIENE | completed | Docs-only governance-ledger hygiene pass for status marker cleanup, stale WORK_INTAKE reconciliation, and dangling AUDIT_INDEX pointer repair before Board Canvas Renderer V2. |
+| GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout recording `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS` acceptance in commit `20e80d3` (`docs: clean governance ledger statuses`), finalizing ledger hygiene and leaving `NEEDS_USER_DECISION` route. |

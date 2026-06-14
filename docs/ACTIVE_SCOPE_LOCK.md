@@ -2,35 +2,36 @@
 
 ## Current pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
+`GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
 
 ## Type
 
-`DOCS_HYGIENE`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / DOCS_HYGIENE`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Docs-only governance-ledger hygiene pass.
+Docs-only governance-ledger hygiene closeout.
 
 ## Current goal
-- Record governance ledger status hygiene and route-marker reconciliation in docs-only mode.
-- Keep governance-ledger updates strictly docs-only and preserve protected boundaries.
+- Record governance ledger closeout and finalize docs-only hygiene marker cleanup for the
+  governance docs set.
+- Keep closeout updates strictly docs-only and preserve all protected boundaries.
 
 ## Next recommended pass
 
-`GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `DOCS_HYGIENE`
-- lane: `CODEX / DOCS_HYGIENE`
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
 - mode: docs-only hygiene.
-- latest pass handled: `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
-- accepted implementation commit: `N/A` (docs-only governance cleanup)
+- latest pass handled: `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
+- accepted implementation commit: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
 
@@ -38,7 +39,7 @@ Docs-only governance-ledger hygiene pass.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS.md`
+- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -53,14 +54,14 @@ Docs-only governance-ledger hygiene pass.
 
 ## Current route lock
 
-Current: `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS`
+Current: `GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS`
 
-Next: `GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Closeout boundary carry-forward
 
-- Workbench Home balance implementation is accepted/pushed.
-- `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS` implementation is accepted/pushed.
+- Governance-ledger hygiene pass `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS` is finalized and
+  closed out.
 - Keep future shell tool polish as deferred candidates:
   - board renderer upgrades,
   - board markers,
@@ -76,4 +77,4 @@ Next: `GOVERNANCE_LEDGER_STATUS_HYGIENE_POST_AUDIT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS.md`
+- `docs/audit/GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS.md`

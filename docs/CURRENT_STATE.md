@@ -2,21 +2,34 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 Current objective:
 
-- Tune the accepted Workbench Home presentation shell toward a stronger layout balance:
-  - compact the top project/context header area;
-  - make the central workbench/read-only board zone visually dominant;
-  - reduce the right-side action rail and grouped-card footprint;
-  - reduce stats/chip visual weight below the board;
-  - preserve `Lisa mõõtmine` priority and existing route/key contracts;
-  - preserve zero-event/read-only behavior in the shell.
+- Close out `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` and preserve a stable
+  Workbench Home visual balance with routes, key contracts, and zero-event/read-only
+  behavior intact.
+- Keep `Lisa mõõtmine` priority and existing route/key contracts.
+- Preserve `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` accepted implementation while
+  routing to `NEEDS_USER_DECISION`.
+- Keep boundary behavior unchanged:
+  - no event-model/schema/validator/materializer/writer-service edits,
+  - no `Project ZIP` changes,
+  - no `Board Canvas` write/edit,
+  - no `sequence` introduction in V2 events.
+
+Accepted implementation recorded for `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
+via commit `51de966` (`fix(project-overview): rebalance workbench layout`).
+
+- closeout acceptance context recorded as docs-only closeout for balance polish:
+  - full Flutter suite passed at implementation acceptance point,
+  - `py -3 tools\\validate_all.py` passed,
+  - `/project/measurements/new` preserved as compatibility redirect to
+    `/project/measure-sheet`.
 
 Accepted implementation recorded for `V2_WORKBENCH_HOME_SHELL_PASS`
 via commit `3f133a5` (`feat(project-overview): add workbench home shell`).

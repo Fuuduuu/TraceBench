@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
+`V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -236,7 +236,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS | AUDIT_ONLY | completed | Post-audit accepted the Workbench Home scope lock (`ACCEPT_AS_IS`), confirming closeout-ready route-drift consistency before implementation. |
 | V2_WORKBENCH_HOME_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Implemented first board-centered Workbench Home shell (`overview-workbench-zone`) with dominant `Lisa mõõtmine`, inert future tools, preserved routes, and zero-event shell interactions. |
 | V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation, preserved boundaries, corrected integration-audit test-change wording, and routes back to layout polish. |
-| V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS | CODEX / FLUTTER_UI_LAYOUT_POLISH | current | Workbench Home balance polish to enlarge the central board/workbench zone, compact action rail/cards/stats, and preserve route/key zero-event/read-only contracts. |
+| V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS | CODEX / FLUTTER_UI_LAYOUT_POLISH | accepted/pushed | Workbench Home balance polish to enlarge the central board/workbench zone, compact action rail/cards/stats, and preserve route/key zero-event/read-only contracts. |
+| V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout of accepted `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`; preserved boundaries and route to `NEEDS_USER_DECISION`. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for a presentation-only PCB-first Project Overview shell: `Lisa mõõtmine` remains primary, board/PCB read-only context is first-class, and implementation scope was limited to composition. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS | CODEX / FLUTTER_IMPLEMENTATION_PASS | accepted/pushed | Implemented presentation-only PCB-first shell in `ProjectOverviewScreen` with `Lisa mõõtmine` dominant and route-preserving behavior for Save/Add/Edit/Board Canvas/Reference Images. |
 | V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout records accepted/pushed implementation outcome from `fcaf402`, records regression history and preserved non-sequence runtime boundaries. |

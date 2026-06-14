@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Runtime implementation scope for the first read-only Board Canvas pan/zoom/fit pass.
+Docs-only closeout of `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` audit and route-documented state updates.
 
 ## Current goal
-- Implement `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
-- Restrict implementation to view-transform-only pan/zoom/fit over projected board placements.
-- Preserve strict zero-event/read-only behavior and no canonical fact creation.
+- Close out `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` as an accepted/pushed runtime implementation pass.
+- Record truthful implementation audit chain and enforced boundaries.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) aligned after closeout.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION`
-- mode: runtime implementation constrained to the exact allowed files and zero-event surfaces.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only route-doc and audit closeout constrained to this pass’s governance surface.
 - latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -41,8 +41,8 @@ Runtime implementation scope for the first read-only Board Canvas pan/zoom/fit p
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -71,9 +71,9 @@ Runtime implementation scope for the first read-only Board Canvas pan/zoom/fit p
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
+Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Closeout boundary carry-forward
 
@@ -84,7 +84,8 @@ Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
 - contour/photo/layers/AI tooling,
 - measurement markers and map tools,
 - trace color editing.
-- The post-lock implementation target is `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
+- The implementation was completed in `e27fbdb` (`feat(board-canvas): add read-only pan zoom fit`) and closed out by this pass.
+- The next recommendation is `NEEDS_USER_DECISION`.
 
 ## Exact allowed focus
 
@@ -95,3 +96,4 @@ Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_POST_AUDIT_PASS`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS.md`

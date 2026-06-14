@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Docs-only scope-lock for the first Board Canvas V2 read-only renderer implementation slice.
+Docs-only closeout for the `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` scope lock before implementation.
 
 ## Current goal
 - Lock the first implementation slice to render a read-only Board Canvas surface
@@ -23,14 +23,14 @@ Docs-only scope-lock for the first Board Canvas V2 read-only renderer implementa
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: docs-only scope lock.
-- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout.
+- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -39,7 +39,7 @@ Docs-only scope-lock for the first Board Canvas V2 read-only renderer implementa
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -54,9 +54,9 @@ Docs-only scope-lock for the first Board Canvas V2 read-only renderer implementa
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+Current: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
+Next: `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Closeout boundary carry-forward
 
@@ -75,4 +75,4 @@ Next: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS.md`

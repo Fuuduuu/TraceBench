@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -244,4 +244,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS | CODEX / DOCS_HYGIENE | completed | Docs-only governance-ledger hygiene pass for status marker cleanup, stale WORK_INTAKE reconciliation, and dangling AUDIT_INDEX pointer repair before Board Canvas Renderer V2. |
 | GOVERNANCE_LEDGER_STATUS_HYGIENE_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | completed | Docs-only closeout recording `GOVERNANCE_LEDGER_STATUS_HYGIENE_PASS` acceptance in commit `20e80d3` (`docs: clean governance ledger statuses`), finalizing ledger hygiene and leaving `NEEDS_USER_DECISION` route. |
 | CURRENT_STATE_COMPACTION_PASS | CODEX / DOCS_HYGIENE | completed | Docs-only compaction pass to turn `docs/CURRENT_STATE.md` into a bounded live-state handoff and preserve compact route/boundary guidance. |
-| V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current | Docs-only scope lock for the first Board Canvas read-only renderer slice in Workbench Home: projection-backed visual board surface, empty-state-safe rendering, and strict read-only/no-write boundaries before implementation. |
+| V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for the first Board Canvas read-only renderer slice in Workbench Home: projection-backed visual board surface, empty-state-safe rendering, and strict read-only/no-write boundaries before implementation. |
+| V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout records accepted/pushed scope-lock outcome: `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS` post-audit `ACCEPT_AS_IS`, path-typo fix, preserved boundaries, and route to `V2_BOARD_CANVAS_READONLY_RENDERER_PASS`. |

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_READONLY_RENDERER_PASS`
 
 ## Current product state
 
@@ -26,7 +26,8 @@
 
 ## Deferred work
 
-- `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_POST_AUDIT_PASS` is the explicit routing target.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is the closeout pass for the scope-lock.
+- `V2_BOARD_CANVAS_READONLY_RENDERER_PASS` is the selected next implementation target.
 - No write/event/model/schema/renderer behavior changes are started in this docs-only lock pass.
 
 ## Core boundaries

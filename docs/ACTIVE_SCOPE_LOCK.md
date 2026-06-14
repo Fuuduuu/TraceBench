@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS`
 
 ## Type
 
@@ -23,7 +23,7 @@ Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit 
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 
 ## Scope decision
 
@@ -40,6 +40,7 @@ Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
@@ -70,19 +71,20 @@ Docs-only scope-lock drafting for the first read-only Board Canvas pan/zoom/fit 
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS`
+Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
+Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`
 
 ## Closeout boundary carry-forward
 
 - Governance-ledger hygiene is accepted and closed out.
 - Keep Board Canvas pan/zoom/fit scope explicit and narrow; the following are explicitly deferred:
-  - event writer / schema / materializer / validator / tool changes,
-  - background photo layer,
-  - contour/photo/layers/AI tooling,
-  - measurement markers and map tools,
-  - trace color editing.
+- event writer / schema / materializer / validator / tool changes,
+- background photo layer,
+- contour/photo/layers/AI tooling,
+- measurement markers and map tools,
+- trace color editing.
+- The post-lock implementation target is `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
 
 ## Exact allowed focus
 
@@ -91,3 +93,4 @@ Next: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_POST_AUDIT_PASS`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`

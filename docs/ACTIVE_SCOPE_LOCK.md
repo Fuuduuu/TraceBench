@@ -2,35 +2,35 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout of `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` audit and route-documented state updates.
+Docs-only scope lock of `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` before implementation.
 
 ## Current goal
-- Close out `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` as an accepted/pushed runtime implementation pass.
-- Record truthful implementation audit chain and enforced boundaries.
-- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) aligned after closeout.
+- Define the next narrow Board Canvas measurement-marker rendering slice as a component-level presence badge/highlight.
+- Preserve all read-only / zero-event / non-coordinate semantics from existing Board Canvas passes.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) aligned for implementation handoff.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only route-doc and audit closeout constrained to this pass’s governance surface.
-- latest pass handled: `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS`
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only route lock constrained to this pass’s governance surface.
+- latest pass handled: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -39,14 +39,11 @@ Docs-only closeout of `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` audit and route-docume
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`
 
 ## Forbidden touches
 
-- tools/event_writer_service.py
+- `tools/event_writer_service.py`
 - writer/service layers
 - event schema/model files
 - validator/
@@ -56,7 +53,8 @@ Docs-only closeout of `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` audit and route-docume
 - `lib/features/component_editor` component create/edit/update/edit flows
 - Add/Edit Component behavior
 - Save Measurement paths
-- measurement marker placement/editor
+- measurement board-coordinate modeling, point capture, or anchors
+- measurement marker editor, placement authoring, marker dragging, or marker persistence
 - background photo rendering/alignment
 - contour/layer stack
 - AI/OCR/CV candidates
@@ -71,29 +69,30 @@ Docs-only closeout of `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` audit and route-docume
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
 
-## Closeout boundary carry-forward
+## Exact allowed future implementation focus
 
-- Governance-ledger hygiene is accepted and closed out.
-- Keep Board Canvas pan/zoom/fit scope explicit and narrow; the following are explicitly deferred:
-- event writer / schema / materializer / validator / tool changes,
-- background photo layer,
-- contour/photo/layers/AI tooling,
-- measurement markers and map tools,
-- trace color editing.
-- The implementation was completed in `e27fbdb` (`feat(board-canvas): add read-only pan zoom fit`) and closed out by this pass.
-- The next recommendation is `NEEDS_USER_DECISION`.
+- Default implementation file: `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- Default implementation tests: `test/widget/board_canvas_screen_test.dart`
+- Measurement badge rendering is read-only and component-level only.
+- Render badges/highlights only on already rendered component placements in existing board-normalized coordinates.
 
-## Exact allowed focus
+## Scope-lock carry-forward
+
+- Pan/zoom/fit remains part of prior closed-out Board Canvas navigation scope.
+- Event writer/schema/materializer/validator changes remain out of scope.
+- Photo/AI/probe/contour/background layers remain deferred.
+- `Project ZIP`, known-facts write-path, and events persistence are deferred.
+- No `sequence` field changes.
+- No direct runtime behavior should start in this lock pass; scope lock is docs-only.
+
+## Exact future focus
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`

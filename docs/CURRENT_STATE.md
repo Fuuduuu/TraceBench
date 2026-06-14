@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
 
 ## Current product state
 
@@ -19,6 +19,8 @@
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS` is closed out as docs-only scope-lock.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_CLOSEOUT_PASS` is closed out and handed off to `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS`.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` added read-only pan/zoom/fit view-transform to the existing Board Canvas projection renderer and is now closed out.
+- `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS` is now closed out.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now current and defines the next narrow Board Canvas marker scope: component-level measurement presence badges only, no coordinate inference.
 
 ## Accepted recent governance state
 
@@ -33,6 +35,7 @@
 - `V2_BOARD_CANVAS_READONLY_RENDERER_SCOPE_LOCK_CLOSEOUT_PASS` is closed out.
 - `V2_BOARD_CANVAS_READONLY_RENDERER_CLOSEOUT_PASS` is now closed out.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` is now closed out, and route moved to `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now active and routes to `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`.
 - No write/event/model/schema/renderer behavior changes have been started outside this pass scope.
 
 ## Core boundaries
@@ -43,7 +46,8 @@
 - `sequence` must not be added to V2 events.
 - No protected surface changes are made by this pass.
 - Audit routing is controlled via route docs and the active scope lock.
-- `V2_BOARD_CANVAS_PAN_ZOOM_FIT_SCOPE_LOCK_PASS` is docs-only and does not permit runtime mutation.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is docs-only and does not permit runtime mutation.
+- Component-level measurement badges mean “component has related measurement(s)” only.
 
 ## Pointers
 

@@ -2,35 +2,38 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`FLUTTER_UI_POLISH`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Mode
 
-Docs-only closeout pass.
+Narrow Flutter UI polish implementation pass.
 
 ## Current goal
 
-- Record the accepted closeout for `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`.
-- Preserve route/key contracts, compatibility redirect, and zero-event/read-only workbench-shell behavior.
-- Keep implementation boundaries unchanged until the next pass is selected.
+- Polish the accepted Workbench Home layout with a compact status strip/chip row and button visual refinement in `ProjectOverviewScreen`.
+- Preserve route/key contracts, compatibility redirect, and zero-event/read-only behavior.
+- Keep the pass implementation bounded to:
+  - `lib/features/project/screens/project_overview_screen.dart`,
+  - `test/widget/project_overview_screen_test.dart`,
+  - optional local helper widget under `lib/features/project/` if required by implementation.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout.
+- scope type: `FLUTTER_UI_POLISH`
+- lane: `CODEX / FLUTTER_UI_POLISH`
+- mode: narrow polish implementation.
 - latest accepted/pushed implementation: `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 - accepted implementation commit: `51de966 fix(project-overview): rebalance workbench layout`
 
@@ -40,12 +43,12 @@ Docs-only closeout pass.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS.md`
+- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS.md`
 
 ## Forbidden touches
 
-- Any runtime, route, model, writer, schema, materializer, validator, tool, or test file changes.
-- event/sequencing/projection/validator/materializer model changes.
+- Any runtime, route, model, schema, materializer, validator, tool, or non-pass-scope test file changes.
+- route/model event changes.
 - dependency/toolchain lockfile edits.
 - Project ZIP edits.
 - Board Canvas runtime writes or major renderer rewrites.
@@ -55,16 +58,14 @@ Docs-only closeout pass.
 
 ## Current route lock
 
-Current: `V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS`
+Current: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
 
 ## Closeout boundary carry-forward
 
 - Workbench Home balance implementation is accepted/pushed.
-- Preserve layout compactness changes from implementation.
-- Keep future shell tool/button polish as deferred candidates:
-  - status-strip/chip-row and button visual polish,
+- Keep future shell tool polish as deferred candidates:
   - board renderer upgrades,
   - board markers,
   - pan/zoom/fit,
@@ -79,4 +80,6 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS.md`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `docs/audit/V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS.md`

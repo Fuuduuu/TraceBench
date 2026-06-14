@@ -151,6 +151,24 @@ void main() {
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')), findsNothing);
   });
 
+  testWidgets('renders compact status strip for board statistics', (tester) async {
+    final projectState = _inlineProjectState(
+      componentVisualPlacements: _normalizedPlacementFacts(),
+    );
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    expect(find.byKey(const ValueKey('overview-status-strip')), findsOneWidget);
+    expect(find.text('Kõik komponendid'), findsOneWidget);
+    expect(find.text('Mõõtmised'), findsOneWidget);
+    expect(find.text('Aktiivne'), findsOneWidget);
+    expect(find.text('Aegunud'), findsOneWidget);
+    expect(find.text('Pole paigaldatud'), findsOneWidget);
+  });
+
   testWidgets('wide layout makes the workbench zone visually dominant', (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),

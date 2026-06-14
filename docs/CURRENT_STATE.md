@@ -2,25 +2,26 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_LAYOUT_BALANCE_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_STATUS_STRIP_AND_BUTTON_POLISH_POST_AUDIT_PASS`
 
 Current objective:
 
-- Close out `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` and preserve a stable
-  Workbench Home visual balance with routes, key contracts, and zero-event/read-only
-  behavior intact.
-- Keep `Lisa mõõtmine` priority and existing route/key contracts.
-- Preserve `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` accepted implementation while
-  routing to `NEEDS_USER_DECISION`.
-- Keep boundary behavior unchanged:
+- Polish `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS` implementation with a compact
+  status strip/chip row and visual button polish in `ProjectOverviewScreen`.
+- Preserve Workbench Home action rails and routes:
+  - `Lisa mõõtmine` remains the primary action routing to `/project/measure-sheet`,
+  - legacy compatibility redirect remains (`/project/measurements/new` → `/project/measure-sheet`),
+  - all secondary `Overview` action routes remain unchanged,
+  - `Overview` remains zero-event/read-only shell behavior.
+- Preserve accepted non-sequence/writer/runtime boundaries:
   - no event-model/schema/validator/materializer/writer-service edits,
   - no `Project ZIP` changes,
   - no `Board Canvas` write/edit,
-  - no `sequence` introduction in V2 events.
+  - no `sequence` addition in V2 events.
 
 Accepted implementation recorded for `V2_WORKBENCH_HOME_LAYOUT_BALANCE_PASS`
 via commit `51de966` (`fix(project-overview): rebalance workbench layout`).

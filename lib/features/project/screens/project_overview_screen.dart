@@ -217,22 +217,34 @@ class _WorkbenchZoneCard extends StatelessWidget {
                 componentFacts: projectState.knownFacts.components,
               ),
             const SizedBox(height: 8),
+            const SizedBox(height: 4),
+            SizedBox(
+              key: const ValueKey('overview-status-strip'),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _OverviewChip(label: 'Kõik komponendid', value: projectState.componentCount),
+                    const SizedBox(width: 6),
+                    _OverviewChip(label: 'Mõõtmised', value: projectState.measurementCount),
+                    const SizedBox(width: 6),
+                    _OverviewChip(label: 'Aktiivne', value: projectState.activeMeasurementCount),
+                    const SizedBox(width: 6),
+                    _OverviewChip(label: 'Aegunud', value: projectState.staleMeasurementCount),
+                    const SizedBox(width: 6),
+                    _OverviewChip(
+                      label: 'Pole paigaldatud',
+                      value: projectState.notPopulatedCount,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
             Text(
               'Toimingute mõju ja mõõtmised on kontekstis allpool.',
               style: Theme.of(context).textTheme.labelSmall,
-            ),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              alignment: WrapAlignment.spaceBetween,
-              children: [
-                _OverviewChip(label: 'Kõik komponendid', value: projectState.componentCount),
-                _OverviewChip(label: 'Mõõtmised', value: projectState.measurementCount),
-                _OverviewChip(label: 'Aktiivne', value: projectState.activeMeasurementCount),
-                _OverviewChip(label: 'Aegunud', value: projectState.staleMeasurementCount),
-                _OverviewChip(label: 'Pole paigaldatud', value: projectState.notPopulatedCount),
-              ],
             ),
             const SizedBox(height: 8),
             if (projectState.manifest.projectId == 'prj_pelle_pv20_001')
@@ -471,20 +483,30 @@ class _ActionRailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final outlinedButtonStyle = OutlinedButton.styleFrom(
+      visualDensity: VisualDensity.compact,
+      minimumSize: const Size(0, 34),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton(
+        ElevatedButton.icon(
           key: const ValueKey('overview-measurement-record-button'),
           onPressed: () => context.go('/project/measure-sheet'),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             textStyle: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          child: const Text('Lisa mõõtmine'),
+          icon: const Icon(Icons.science_outlined, size: 18),
+          label: const Text('Lisa mõõtmine'),
         ),
         const SizedBox(height: 8),
         Card(
@@ -502,16 +524,19 @@ class _ActionRailCard extends StatelessWidget {
                     OutlinedButton(
                       key: const ValueKey('overview-measure-sheet-button'),
                       onPressed: () => context.go('/project/measure-sheet'),
+                      style: outlinedButtonStyle,
                       child: const Text('Measure Sheet'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-add-component-button'),
                       onPressed: () => context.go('/project/components/add'),
+                      style: outlinedButtonStyle,
                       child: const Text('Add Component'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-edit-component-button'),
                       onPressed: () => context.go('/project/components/edit'),
+                      style: outlinedButtonStyle,
                       child: const Text('Edit Component'),
                     ),
                   ],
@@ -536,21 +561,25 @@ class _ActionRailCard extends StatelessWidget {
                     OutlinedButton(
                       key: const ValueKey('overview-board-graph-button'),
                       onPressed: () => context.go('/project/graph'),
+                      style: outlinedButtonStyle,
                       child: const Text('Board graph view'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-board-canvas-button'),
                       onPressed: () => context.go('/project/board-canvas'),
+                      style: outlinedButtonStyle,
                       child: const Text('Board Canvas'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-reference-images-button'),
                       onPressed: () => context.go('/project/reference-images'),
+                      style: outlinedButtonStyle,
                       child: const Text('Reference Images'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-photos-button'),
                       onPressed: () => context.go('/project/photos'),
+                      style: outlinedButtonStyle,
                       child: const Text('Foto tõendid'),
                     ),
                   ],
@@ -572,31 +601,38 @@ class _ActionRailCard extends StatelessWidget {
                 OutlinedButton(
                   key: const ValueKey('overview-measurements-button'),
                   onPressed: () => context.go('/project/measurements'),
+                  style: outlinedButtonStyle,
                   child: const Text('Mõõtmised'),
                 ),
                 OutlinedButton(
                   onPressed: () => context.go('/project/known-facts'),
+                  style: outlinedButtonStyle,
                   child: const Text('Known facts'),
                 ),
                 OutlinedButton(
                   key: const ValueKey('overview-components-button'),
                   onPressed: () => context.go('/project/components'),
+                  style: outlinedButtonStyle,
                   child: const Text('Komponendid'),
                 ),
                 OutlinedButton(
                   onPressed: () => context.go('/project/pins'),
+                  style: outlinedButtonStyle,
                   child: const Text('Pinnid'),
                 ),
                 OutlinedButton(
                   onPressed: () => context.go('/project/events'),
+                  style: outlinedButtonStyle,
                   child: const Text('Sündmused'),
                 ),
                 OutlinedButton(
                   onPressed: () => context.go('/project/not-populated'),
+                  style: outlinedButtonStyle,
                   child: const Text('Not populated'),
                 ),
                 OutlinedButton(
                   onPressed: () => context.go('/project/report'),
+                  style: outlinedButtonStyle,
                   child: const Text('Raport'),
                 ),
               ],
@@ -620,21 +656,25 @@ class _ActionRailCard extends StatelessWidget {
                     OutlinedButton(
                       key: const ValueKey('overview-future-contour-button'),
                       onPressed: null,
+                      style: outlinedButtonStyle,
                       child: const Text('Lisa kontuur'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-future-photo-button'),
                       onPressed: null,
+                      style: outlinedButtonStyle,
                       child: const Text('Tuvasta foto abil'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-future-layers-button'),
                       onPressed: null,
+                      style: outlinedButtonStyle,
                       child: const Text('Layers'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-future-trace-colors-button'),
                       onPressed: null,
+                      style: outlinedButtonStyle,
                       child: const Text('Trace colors'),
                     ),
                   ],
@@ -692,29 +732,30 @@ class _OverviewChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: SizedBox(
-        width: 130,
+        width: 118,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey.shade300),
-            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+            color: Theme.of(context).colorScheme.surfaceContainerLowest,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     label,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.labelSmall,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                const SizedBox(width: 8),
                 Text(
                   value.toString(),
-                  style: Theme.of(context).textTheme.titleSmall,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),

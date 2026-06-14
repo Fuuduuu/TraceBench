@@ -2,34 +2,33 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Runtime implementation and validation for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`.
+Docs closeout for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` (runtime behavior already implemented, validated, and committed/pushed).
 
 ## Current goal
-- Implement runtime marker presence behavior in `board_canvas_screen.dart` and update validator-facing widget tests in `board_canvas_screen_test.dart`.
-- Keep source-boundary protections aligned (`board canvas source keeps read-only data-path boundaries`).
 - Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized with actual status.
+- Keep route docs synchronized with post-audit closeout status.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION`
-- mode: runtime+widget-test implementation scoped to `board_canvas_screen.dart` and board canvas marker tests.
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout scoped to governance and route documentation.
 - latest pass handled: `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -71,11 +70,11 @@ Runtime implementation and validation for `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_P
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
+Current: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Exact implementation focus
+## Exact closeout focus
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`
+`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -21,8 +21,8 @@
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_PASS` added read-only pan/zoom/fit view-transform to the existing Board Canvas projection renderer and is now closed out.
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS` is now closed out.
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now closed out and routed to this implementation pass.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation is currently in progress and validation is running before any closeout handoff.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS` is not active yet; closeout will start once focused tests and source-boundary validation pass.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation has been accepted, audited, and committed locally and pushed.
+- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS` is now active and records the accepted docs-only closeout.
 
 ## Accepted recent governance state
 

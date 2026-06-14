@@ -2,11 +2,15 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
+
+Current objective:
+
+- Scope-lock the first hybrid Workbench Home shell implementation under Option C with board-centered, technician-first, presentation-only behavior and no runtime/event/writer/schema changes.
 
 Accepted implementation recorded for `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS`
 via commit `fcaf402` (`feat(project-overview): add pcb-first shell`).

@@ -2,38 +2,43 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
+`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout of an accepted/pushed presentation-only PCB-first shell implementation. No writer,
-validator/materializer/schema/tool/runtime-surface changes are allowed in this pass.
+Docs-only scope lock. No runtime, tests, writer/service, schema/materializer/validator, tool, sample, platform, dependency, or generated-file edits in this pass.
 
-Current goal:
+## Current goal
 
-- close out `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_PASS` as docs-only closeout updates.
-- preserve the accepted implementation outcome and regression-history context in governance docs.
-- preserve all V2 save/add/edit writer, event, sequence, and projection boundaries;
-- keep Board Canvas and Reference Images availability, but in read-only modes;
-- keep existing routes and redirect behavior unchanged.
+- lock the first Workbench Home implementation slice after Opus strategy direction:
+  - accept `MODIFY_PROMPT_FIRST` + Option C / Hybrid,
+  - create a board-centered Workbench Home frame,
+  - keep the first slice presentation-only,
+  - preserve existing route/contracts and zero-event guarantees.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only governance closeout + route-consistency verification.
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: read-only governance lock pass.
+
+## Current status from requested baseline
+
+- latest accepted/pushed implementation: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
+- option state to lock: `V2_WORKBENCH_HOME_UI_ROLLOUT_STRATEGY_REVIEW_PASS`
+- route drift to lock on: Option C / Hybrid Workbench Home shell.
 
 ## File allowlist for this pass
 
@@ -42,36 +47,45 @@ Current goal:
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md`
 
 ## Allowed future implementation surfaces
 
 - `lib/features/project/screens/project_overview_screen.dart`
 - `test/widget/project_overview_screen_test.dart` (or closest existing overview test file)
-- route tests only for unchanged route reachability and existing flow assertions
-- governance updates required for current/pass routing
+- route tests only for unchanged route/keys and read-only assertions
+- governance/docs files listed in allowlist
+- optional tiny presentation-only child widget files if aligned to project conventions.
 
 ## Forbidden touches
 
+- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart` and other writer runtime
 - `tools/event_writer_service.py`
 - `tools/validate_events_jsonl.py`
 - `tools/materialize_known_facts.py`
-- `schemas/`
-- Writer/validator/materializer semantic changes
-- Event schema/model changes
+- schemas
+- event model/schema changes
+- writer/service/validator/materializer runtime semantic changes
 - `Project ZIP`
-- `Board Canvas` runtime/write/edit
-- `Reference Images` runtime
-- `AI/OCR/CV`
-- Add/Edit Component runtime
-- `Muu ühik`/custom unit implementation
-- `Save Measurement` event-model changes
-- route redesign outside Project Overview shell
-- analyzer/lint cleanup
+- Board Canvas authoring/write/edit behavior
+- Board Canvas renderer richness that changes behavior (pan/zoom/markers/contour/photo/layers/AI candidate tools)
+- Reference Images runtime changes
+- AI/OCR/CV
+- Visual Trace Shape Assist
+- Photo Markup / Repair Map
+- Save Measurement target/unit semantics
+- Add/Edit Component write/event semantics
+- `Muu ühik` / custom unit
+- `sequence` addition to V2 events
+- router behavior changes
 - `pubspec.yaml`, `pubspec.lock`, dependency/config files
-- generated files, samples, platform folders, and toolchain/package files
+- generated files, platform folders, samples
+- analyzer/lint cleanup
+- broad docs hygiene unrelated to this lock
+- production copying of design mockups/CSS (`workbench.css`, `redesign.css`, html mockups)
 
 ## Route lock
 
-Current: `V2_PROJECT_OVERVIEW_PCB_FIRST_SHELL_CLOSEOUT_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS`
+
+Next: `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -22,8 +22,8 @@
 - `V2_BOARD_CANVAS_PAN_ZOOM_FIT_CLOSEOUT_PASS` is now closed out.
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now closed out and routed to this implementation pass.
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation is accepted, audited, committed, and pushed.
-- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS` is active to harden test-only regression checks on top of accepted measurement markers.
-- `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS` is now accepted/pushed and recorded as docs-only closeout; this pass continues with QA regression hardening.
+- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS` is completed (test-only, runtime-untouched regression hardening, accepted/pushed and post-audit `ACCEPT_AS_IS`).
+- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS` is now active and records closeout for that regression hardening.
 
 ## Accepted recent governance state
 

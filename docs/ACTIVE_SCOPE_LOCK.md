@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
+`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_TEST`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_TEST`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-QA regression-hardening test pass for accepted `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS`.
+Docs-only closeout pass for runtime-untouched `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`.
 
 ## Current goal
-- Strengthen regression tests for marker presence, inspector summary, pan/zoom behavior, and source-boundary guarantees.
-- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized with actual status.
+- Finalize docs-only closeout for `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized with final closeout status.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_TEST`
-- lane: `CODEX / FLUTTER_TEST`
-- mode: test-only regression hardening; runtime behavior remains unchanged.
-- latest pass handled: `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS`
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout; runtime behavior and tests remain untouched in this pass.
+- latest pass handled: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -38,11 +38,8 @@ QA regression-hardening test pass for accepted `V2_BOARD_CANVAS_MEASUREMENT_MARK
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `test/widget/board_canvas_screen_test.dart`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -72,9 +69,9 @@ QA regression-hardening test pass for accepted `V2_BOARD_CANVAS_MEASUREMENT_MARK
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
+Current: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Exact focus
 
@@ -82,10 +79,8 @@ Next: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_MEASUREMENT_MARKERS_CLOSEOUT_PASS.md`
 - `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS.md`
 
 ## Scope-lock carry-forward
 

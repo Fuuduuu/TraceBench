@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -261,5 +261,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | Board Canvas inspector-only measurement visibility polish accepted and pushed as `67e877f`: component identity first, then read-only component-level related measurement count and safety context for selected placements; measurement values/details remain in summary. |
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted selection inspector polish implementation; recorded validation/audit evidence and routed to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock for Board Canvas tap/click selection shortcut over already-rendered board-normalized placements; implementation target is `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`. |
-| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | in progress | UI-only tap/click selection for existing rendered placements; preserves chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
-| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended | Independent implementation post-audit before staging/commit; inspect runtime/test/docs diff, validation, gesture boundaries, and read-only canonical-data boundaries. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | UI-only tap/click selection for existing rendered placements accepted and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); preserves chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit accepted tap-to-select as-is with no required fixes. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | in progress | Docs-only closeout for accepted/pushed tap-to-select implementation; records validation/audit evidence and returns route to `NEEDS_USER_DECISION`. |

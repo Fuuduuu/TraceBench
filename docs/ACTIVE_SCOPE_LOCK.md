@@ -2,123 +2,69 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow UI-only Board Canvas tap/click selection shortcut implementation.
+Documentation closeout only for the accepted Board Canvas tap-to-select implementation.
 
 ## Current goal
 
-- Implement selection of an already-rendered board-normalized component placement by tapping/clicking its rendered footprint.
-- Preserve current Board Canvas read-only behavior, chip selector behavior, pan/zoom/fit behavior, and zero-event boundaries.
-- Keep the exact runtime/test touch set and forbid coordinate, measurement, event, fact, net, trace, writer, schema, materializer, validator, and Project ZIP expansion.
+- Record `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS` as implemented, audited, accepted, committed, and pushed.
+- Preserve the accepted UI-only behavior summary and validation evidence.
+- Return route docs to `NEEDS_USER_DECISION`.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION`
-- mode: UI-only runtime/test implementation; no staging, commit, or push in this pass.
-- latest pass handled: `V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS`
-- accepted baseline: `bbc51c1` (`docs: lock board canvas tap to select`)
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only route/evidence closeout; no runtime, test, tooling, staging, commit, or push changes in this pass.
+- latest pass handled: `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
+- accepted baseline: `3e61d48` (`feat(board-canvas): add tap to select`)
 
 ## File allowlist for this pass
 
-Runtime:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-
-Tests:
-
-- `test/widget/board_canvas_screen_test.dart`
-
-Governance docs:
-
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS.md`
 
-## Current Board Canvas selection state
+## Accepted implementation outcome
 
-- Selection remains driven by volatile UI state (`_selectedPlacementKey`) only.
-- `_PlacementSelector` chips remain available and must keep existing behavior.
-- The canvas is rendered through `InteractiveViewer`, a UI-only tap layer, and `CustomPaint`.
-- Direct tap-to-select may select only an already-rendered placement and must reuse the existing inspector flow.
-- The existing inspector, measurement summary, measurement badge count, and source-boundary guards remain read-only.
-
-## Locked implementation scope
-
-This implementation may:
-
-- Add tap/click selection for already-rendered board-normalized component placements.
-- Update only volatile UI selection state.
-- Reuse existing `_PlacementEntry`, `selectedKey`, and inspector flow.
-- Keep existing chip selector behavior intact.
-- Preserve `InteractiveViewer` pan/zoom/fit behavior.
-- Preserve read-only / zero-event behavior.
-- Add focused tests for tap-to-select behavior and boundary guards.
-
-## Implementation touch set
-
-Runtime:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-
-Tests:
-
-- `test/widget/board_canvas_screen_test.dart`
-
-Governance docs:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS.md`
-
-No other runtime files are allowed unless implementation audit explicitly justifies the expansion.
-
-## Tap / hit-test boundary
-
-- Tap-to-select means only: select this existing rendered placement in the UI.
-- A transient hit-test against already-rendered placement geometry may be used only for UI selection.
-- The hit-test result must not be stored as an event, fact, coordinate, measurement, placement, marker, trace, net, view-state file, or Project ZIP content.
-
-## Pan / zoom boundary
-
-Implementation must preserve:
-
-- tap selects a rendered component when not panning,
-- pan/zoom gestures still work,
-- fit/reset still works,
-- tap selection remains aligned under transformed canvas coordinates,
-- tap handling does not regress `InteractiveViewer` gesture behavior.
-
-If safe tap gesture handling is not straightforward, implementation must stop and report rather than weakening pan/zoom behavior.
+- Tap/click on an already-rendered board-normalized placement selects it.
+- Selection updates only volatile UI state.
+- Existing `_PlacementEntry`, `selectedKey`, and inspector flow are reused.
+- Existing chip selector behavior remains intact.
+- Pan/zoom/fit behavior remains intact.
+- Read-only / zero-event behavior remains intact.
+- Hit testing remains transient and UI-only.
+- Hit-test results are not stored as events, facts, coordinates, measurements, placements, markers, traces, nets, view-state files, or Project ZIP content.
 
 ## Forbidden touches
 
+- runtime files
+- test files
+- tooling files
 - component creation
 - placement creation/editing
 - marker editing/dragging/authoring
 - measurement creation/editing
 - probe/pin/pad authoring
 - board coordinate authoring
-- new fact/event semantics
+- new fact/event/measurement semantics
 - new association rule
 - net/path/trace inference
 - visual_trace geometry
@@ -148,9 +94,9 @@ If safe tap gesture handling is not straightforward, implementation must stop an
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
+Current: `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Exact focus
 
@@ -158,12 +104,12 @@ Next: `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS.md`
 
 ## Scope-lock carry-forward
 
 - Board Canvas remains read-only unless separately scoped.
-- `events.jsonl` remains canonical truth; this pass and tap selection must not write it.
-- `known_facts.json` remains projection/cache; tap selection must not mutate it.
+- `events.jsonl` remains canonical truth and tap selection does not write it.
+- `known_facts.json` remains projection/cache and tap selection does not mutate it.
 - Project ZIP import/export remains out of scope.
 - Measurement badges and inspector counts remain component-level evidence summaries only.

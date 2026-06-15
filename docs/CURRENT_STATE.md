@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
 ## Current product state
 
@@ -23,7 +23,8 @@
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_SCOPE_LOCK_PASS` is now closed out and routed to this implementation pass.
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation is accepted, audited, committed, and pushed.
 - `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS` is completed (test-only, runtime-untouched regression hardening, accepted/pushed and post-audit `ACCEPT_AS_IS`).
-- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS` is now active and records closeout for that regression hardening.
+- `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS` is accepted/pushed and moved to stable status.
+- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS` is now the active scope lock for a narrow inspector-only future polish pass (count/presence clarity, no semantic expansion).
 
 ## Accepted recent governance state
 

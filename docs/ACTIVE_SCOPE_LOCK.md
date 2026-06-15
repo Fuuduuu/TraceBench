@@ -2,34 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Docs-only closeout pass for runtime-untouched `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`.
+Docs-only scope-lock pass for a narrow inspector-only Board Canvas polish before implementation. Runtime behavior and tests remain untouched.
 
 ## Current goal
-- Finalize docs-only closeout for `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`.
-- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized with final closeout status.
+- Lock the next narrow inspector-only implementation scope for Board Canvas.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized for the new scope.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only closeout; runtime behavior and tests remain untouched in this pass.
-- latest pass handled: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS`
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SCOPE_LOCK`
+- mode: docs-only; runtime behavior and tests remain untouched in this pass.
+- latest pass handled: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -38,8 +38,7 @@ Docs-only closeout pass for runtime-untouched `V2_BOARD_CANVAS_QA_REGRESSION_POL
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS.md`
 
 ## Forbidden touches
 
@@ -69,9 +68,9 @@ Docs-only closeout pass for runtime-untouched `V2_BOARD_CANVAS_QA_REGRESSION_POL
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
 ## Exact focus
 
@@ -79,10 +78,10 @@ Next: `NEEDS_USER_DECISION`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS.md`
-- `docs/audit/V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS.md`
 
 ## Scope-lock carry-forward
 
 - Pan/zoom/fit remains part of prior closed-out Board Canvas navigation scope.
+- Selection remains chip-driven (`_PlacementSelector`) for this scoped route; no canvas tap/hit-testing addition is in scope.
 - Event writer/schema/materializer/validator changes remain out of scope.

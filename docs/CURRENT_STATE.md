@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
 
 ## Current product state
 
@@ -26,7 +26,8 @@
 - `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS` is accepted/pushed and moved to stable status.
 - `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS` completed the narrow docs-only scope lock for the inspector-only count visibility polish.
 - `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `67e877f` (`feat(board-canvas): polish selection inspector measurement count`). The accepted inspector-only polish shows selected component related-measurement count and safety context while keeping measurement values/details in the measurement summary card.
-- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS` is now the docs-only closeout route and returns the next route to `NEEDS_USER_DECISION`.
+- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS` is accepted/pushed as `3d66879` (`docs: close out board canvas selection inspector polish`) and returned the route to `NEEDS_USER_DECISION`.
+- `V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS` is the active docs-only scope lock for a future Board Canvas UI selection shortcut: tap/click an already-rendered board-normalized placement to update volatile selection state, equivalent to choosing the existing placement selector chip.
 
 ## Accepted recent governance state
 

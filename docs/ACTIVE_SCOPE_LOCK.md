@@ -2,35 +2,35 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_CLOSEOUT`
 
 ## Lane
 
-`CODEX / FLUTTER_IMPLEMENTATION`
+`CODEX / DOCS_CLOSEOUT`
 
 ## Mode
 
-Narrow implementation pass for a single inspector-only Board Canvas polish:
-selected placement inspection copy now includes component-level related measurement count and safety context.
+Documentation closeout only for the accepted Board Canvas selection inspector polish implementation.
 
 ## Current goal
-- Implement the selected-placement inspector measurement count copy in Board Canvas without changing any write, schema, materializer, validator, or geometry semantics.
-- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized and preserve previous pan/zoom and read-only geometry behavior.
+- Record `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS` as implemented, audited, accepted, committed, and pushed.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized.
+- Preserve docs-only scope: no runtime, tests, tooling, schema, writer, materializer, validator, or Project ZIP changes.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Scope decision
 
-- scope type: `FLUTTER_IMPLEMENTATION`
-- lane: `CODEX / FLUTTER_IMPLEMENTATION`
-- mode: runtime+test implementation; semantics unchanged outside approved read-only inspector copy.
-- latest pass handled: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
+- scope type: `DOCS_CLOSEOUT`
+- lane: `CODEX / DOCS_CLOSEOUT`
+- mode: docs-only closeout; runtime/test implementation already accepted and pushed.
+- latest pass handled: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
 ## File allowlist for this pass
@@ -39,10 +39,7 @@ selected placement inspection copy now includes component-level related measurem
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS.md`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS.md`
 
 ## Forbidden touches
 
@@ -64,6 +61,9 @@ selected placement inspection copy now includes component-level related measurem
 - photo markup / probe tooling
 - Repair Map
 - Visual Trace Shape assist runtime behavior
+- any runtime/test file, including:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
 - any `sequence` field addition
 - dependency/toolchain lockfile or package updates
 - platform/sample/assets (`assets/samples/pelle_pv20_minimal/metadata/`)
@@ -72,9 +72,9 @@ selected placement inspection copy now includes component-level related measurem
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+Current: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
-Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Exact focus
 
@@ -82,12 +82,12 @@ Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS.md`
 
 ## Scope-lock carry-forward
 
+- Accepted implementation commit: `67e877f` (`feat(board-canvas): polish selection inspector measurement count`).
+- Inspector measurement count remains component-level only and preserves the delimiter-safe association rule.
 - Pan/zoom/fit remains part of prior closed-out Board Canvas navigation scope.
-- Selection remains chip-driven (`_PlacementSelector`) for this scoped route; no canvas tap/hit-testing addition is in scope.
+- Selection remains chip-driven (`_PlacementSelector`); no canvas tap/hit-testing addition is included.
 - Event writer/schema/materializer/validator changes remain out of scope.

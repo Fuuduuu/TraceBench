@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -258,4 +258,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS | CODEX / FLUTTER_TEST | accepted/pushed | Regression hardening of Board Canvas measurement badge/summary/inspector/pan-zoom behavior with unchanged runtime; source-boundary checks and safety copy remained stable; closeout now records acceptance and route handoff. |
 | V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for runtime-untouched QA regression hardening; records implementation/audit evidence from `b4b3990` and route transfer to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for inspector-side measurement clarity in Board Canvas selection inspector; surface existing component-related measurement count and safety semantics only, then route to `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`. |
-| V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | in progress | Board Canvas inspector-only measurement visibility polish: component identity first, then read-only measurement badge count and safety context for selected placements. |
+| V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | Board Canvas inspector-only measurement visibility polish accepted and pushed as `67e877f`: component identity first, then read-only component-level related measurement count and safety context for selected placements; measurement values/details remain in summary. |
+| V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | in progress | Docs-only closeout for accepted selection inspector polish implementation; records validation/audit evidence and routes to `NEEDS_USER_DECISION`. |

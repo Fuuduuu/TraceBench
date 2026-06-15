@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`NEEDS_USER_ACTION`
 
 ## Current-state maintenance trigger pointer
 
@@ -263,4 +263,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock for Board Canvas tap/click selection shortcut over already-rendered board-normalized placements; implementation target is `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | UI-only tap/click selection for existing rendered placements accepted and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); preserves chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit accepted tap-to-select as-is with no required fixes. |
-| V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | in progress | Docs-only closeout for accepted/pushed tap-to-select implementation; records validation/audit evidence and returns route to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted/pushed tap-to-select implementation; recorded validation/audit evidence and returned route to `NEEDS_USER_DECISION` as `5a34980` (`docs: add tap to select closeout audit`). |
+| V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS | CODEX / DOCS_SYNC / QA_RUN | in progress (`PARTIAL / BLOCKED_NO_PLACEMENTS`) | Manual Windows/desktop smoke reached Board Canvas empty state and confirmed `renderer writes: none`; tap-to-select, placement switching, chip selector, pan/zoom/tap alignment, and measurement badge/count steps remain blocked until a project/sample with confirmed board-normalized placements is opened or seeded. |

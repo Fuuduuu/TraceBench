@@ -2,37 +2,37 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
 
 ## Type
 
-`DOCS_CLOSEOUT`
+`DOCS_SYNC / QA_RUN`
 
 ## Lane
 
-`CODEX / DOCS_CLOSEOUT`
+`CODEX / DOCS_SYNC / QA_RUN`
 
 ## Mode
 
-Documentation closeout only for the accepted Board Canvas tap-to-select implementation.
+Documentation and QA evidence only for manual Windows/desktop Board Canvas interaction smoke after tap-to-select.
 
 ## Current goal
 
-- Record `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS` as implemented, audited, accepted, committed, and pushed.
-- Preserve the accepted UI-only behavior summary and validation evidence.
-- Return route docs to `NEEDS_USER_DECISION`.
+- Create a docs-only manual smoke QA record for the combined Board Canvas interaction surface.
+- Record the smoke checklist and actual manual result status without inventing observations.
+- Preserve runtime, test, tooling, schema, writer, materializer, validator, projection, and Project ZIP boundaries.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`NEEDS_USER_ACTION`
 
 ## Scope decision
 
-- scope type: `DOCS_CLOSEOUT`
-- lane: `CODEX / DOCS_CLOSEOUT`
-- mode: docs-only route/evidence closeout; no runtime, test, tooling, staging, commit, or push changes in this pass.
-- latest pass handled: `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
-- accepted baseline: `3e61d48` (`feat(board-canvas): add tap to select`)
+- scope type: `DOCS_SYNC / QA_RUN`
+- lane: `CODEX / DOCS_SYNC / QA_RUN`
+- mode: docs-only QA evidence; no runtime, test, tooling, staging, commit, or push changes in this pass.
+- latest accepted baseline: `5a34980` (`docs: add tap to select closeout audit`)
+- manual smoke status: `PARTIAL / BLOCKED_NO_PLACEMENTS`
 
 ## File allowlist for this pass
 
@@ -40,18 +40,33 @@ Documentation closeout only for the accepted Board Canvas tap-to-select implemen
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS.md`
 
-## Accepted implementation outcome
+## Smoke target
 
-- Tap/click on an already-rendered board-normalized placement selects it.
-- Selection updates only volatile UI state.
-- Existing `_PlacementEntry`, `selectedKey`, and inspector flow are reused.
-- Existing chip selector behavior remains intact.
-- Pan/zoom/fit behavior remains intact.
-- Read-only / zero-event behavior remains intact.
-- Hit testing remains transient and UI-only.
-- Hit-test results are not stored as events, facts, coordinates, measurements, placements, markers, traces, nets, view-state files, or Project ZIP content.
+Manual Windows/desktop smoke attempted on the opened project verified only the empty-state path because no confirmed board-normalized placements were present.
+
+Observed:
+
+- Board Canvas route/screen opens.
+- Empty state displays `No confirmed visual placements yet.`
+- Secondary copy displays `Board canvas is read-only in V1. Placement workflow is a future step.`
+- Footer displays `renderer writes: none`.
+- No placement chips or canvas placements are available.
+
+Still blocked until a project/sample with confirmed board-normalized placements is opened or seeded:
+
+- existing board placements render;
+- tapping/clicking rendered placements updates the inspector;
+- tapping/clicking another placement switches the inspector;
+- chip selector still changes selection;
+- pan does not accidentally select;
+- zoom and fit/reset preserve aligned tap selection;
+- measurement badges/counts still display safely;
+- `renderer writes: none` remains visible;
+- no Save/Add/Edit/authoring controls appear;
+- no coordinate/probe/pin/net/trace/fact wording appears;
+- no project, event, known-facts, or ZIP write behavior is triggered.
 
 ## Forbidden touches
 
@@ -94,22 +109,15 @@ Documentation closeout only for the accepted Board Canvas tap-to-select implemen
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
+Current: `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
 
-Next: `NEEDS_USER_DECISION`
-
-## Exact focus
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS.md`
+Next: `NEEDS_USER_ACTION`
 
 ## Scope-lock carry-forward
 
 - Board Canvas remains read-only unless separately scoped.
-- `events.jsonl` remains canonical truth and tap selection does not write it.
-- `known_facts.json` remains projection/cache and tap selection does not mutate it.
+- `events.jsonl` remains canonical truth and this QA pass must not write it.
+- `known_facts.json` remains projection/cache and this QA pass must not mutate it.
 - Project ZIP import/export remains out of scope.
 - Measurement badges and inspector counts remain component-level evidence summaries only.
+- Manual smoke remains blocked at `PARTIAL / BLOCKED_NO_PLACEMENTS` until a user/operator reruns the checklist with confirmed board-normalized placements.

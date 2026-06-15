@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`NEEDS_USER_ACTION`
 
 ## Current product state
 
@@ -29,7 +29,8 @@
 - `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS` is accepted/pushed as `3d66879` (`docs: close out board canvas selection inspector polish`) and returned the route to `NEEDS_USER_DECISION`.
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS` is accepted/pushed in `bbc51c1` (`docs: lock board canvas tap to select`).
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); tapping/clicking an already-rendered board-normalized placement updates only volatile Board Canvas selection state, equivalent to choosing the existing placement selector chip.
-- `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS` is the current docs-only closeout route and returns the queue to `NEEDS_USER_DECISION`.
+- `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS` is accepted/pushed as `5a34980` (`docs: add tap to select closeout audit`) and returned the queue to `NEEDS_USER_DECISION`.
+- `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is the current docs-only QA route for manual Windows/desktop Board Canvas interaction smoke after tap-to-select. Manual smoke was attempted, but the opened project had no confirmed board-normalized visual placements; current result is `PARTIAL / BLOCKED_NO_PLACEMENTS`.
 
 ## Accepted recent governance state
 

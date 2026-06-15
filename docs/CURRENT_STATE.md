@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
 ## Current product state
 
@@ -24,7 +24,8 @@
 - `V2_BOARD_CANVAS_MEASUREMENT_MARKERS_PASS` implementation is accepted, audited, committed, and pushed.
 - `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_PASS` is completed (test-only, runtime-untouched regression hardening, accepted/pushed and post-audit `ACCEPT_AS_IS`).
 - `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS` is accepted/pushed and moved to stable status.
-- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS` is now the active scope lock for a narrow inspector-only future polish pass (count/presence clarity, no semantic expansion).
+- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS` completed the narrow docs-only scope lock for the inspector-only count visibility polish; implementation is now in progress in `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`.
+- `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS` is now implementing the same inspector-only polish in a read-only-safe manner: selected placement inspector shows related measurement count and safety context, while keeping measurement values in summary.
 
 ## Accepted recent governance state
 

@@ -2,33 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
 ## Type
 
-`DOCS_SCOPE_LOCK`
+`FLUTTER_IMPLEMENTATION`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_IMPLEMENTATION`
 
 ## Mode
 
-Docs-only scope-lock pass for a narrow inspector-only Board Canvas polish before implementation. Runtime behavior and tests remain untouched.
+Narrow implementation pass for a single inspector-only Board Canvas polish:
+selected placement inspection copy now includes component-level related measurement count and safety context.
 
 ## Current goal
-- Lock the next narrow inspector-only implementation scope for Board Canvas.
-- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized for the new scope.
+- Implement the selected-placement inspector measurement count copy in Board Canvas without changing any write, schema, materializer, validator, or geometry semantics.
+- Keep route docs (`CURRENT_STATE`, `PASS_QUEUE`, `AUDIT_INDEX`) synchronized and preserve previous pan/zoom and read-only geometry behavior.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SCOPE_LOCK`
-- lane: `CODEX / DOCS_SCOPE_LOCK`
-- mode: docs-only; runtime behavior and tests remain untouched in this pass.
+- scope type: `FLUTTER_IMPLEMENTATION`
+- lane: `CODEX / FLUTTER_IMPLEMENTATION`
+- mode: runtime+test implementation; semantics unchanged outside approved read-only inspector copy.
 - latest pass handled: `V2_BOARD_CANVAS_QA_REGRESSION_POLISH_CLOSEOUT_PASS`
 - prior governance-hygiene base: `20e80d3` (`docs: clean governance ledger statuses`)
 
@@ -39,6 +40,9 @@ Docs-only scope-lock pass for a narrow inspector-only Board Canvas polish before
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS.md`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS.md`
 
 ## Forbidden touches
 
@@ -68,9 +72,9 @@ Docs-only scope-lock pass for a narrow inspector-only Board Canvas polish before
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS`
+Current: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 
-Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
+Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS`
 
 ## Exact focus
 
@@ -78,7 +82,9 @@ Next: `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS.md`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- `docs/audit/V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS.md`
 
 ## Scope-lock carry-forward
 

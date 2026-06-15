@@ -844,6 +844,9 @@ class _PlacementInspectorCard extends StatelessWidget {
     final packageLabel = entry.template?.displayName ?? 'Unknown package geometry';
     final templateId = placement.templateId ?? 'not provided';
     final identityStatus = _identityStatus(component);
+    final badgeCountLabel = selectedMeasurementCount == 1
+        ? 'Related measurement: 1'
+        : 'Related measurements: $selectedMeasurementCount';
 
     return Card(
       child: Padding(
@@ -857,20 +860,6 @@ class _PlacementInspectorCard extends StatelessWidget {
               subtitle: 'read-only · projection view',
             ),
             const SizedBox(height: 12),
-            if (selectedMeasurementCount > 0) ...[
-              const _SectionHeader(
-                title: 'Measurement badge',
-                tag: 'MARKER',
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Measurement badge: component has related measurement(s).',
-              ),
-              const Text('Component-level only.'),
-              const Text('No measurement board coordinate is available.'),
-              const Text('Does not create or confirm a net.'),
-              const SizedBox(height: 8),
-            ],
             _InspectorField(label: 'Component ID', value: placement.componentId),
             if ((component?.designator ?? '').isNotEmpty)
               _InspectorField(
@@ -933,6 +922,20 @@ class _PlacementInspectorCard extends StatelessWidget {
               value: placement.sourceEventId,
             ),
             _InspectorField(label: 'Status', value: placement.status),
+            if (selectedMeasurementCount > 0) ...[
+              const SizedBox(height: 12),
+              const _SectionHeader(
+                title: 'Measurement badge',
+                tag: 'MARKER',
+              ),
+              const SizedBox(height: 6),
+              Text(badgeCountLabel),
+              const Text('Component-level presence only.'),
+              const Text('No board-coordinate interpretation is claimed.'),
+              const Text('No probe, pin/anchor, or endpoint line semantics are shown.'),
+              const Text('Does not create or confirm a net.'),
+              const SizedBox(height: 8),
+            ],
             if (component?.installationStatus != null)
               _InspectorField(
                 label: 'Installation status',

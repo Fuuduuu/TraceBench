@@ -330,6 +330,7 @@ void main() {
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
     final finderR101Summary = find.text('Measurement — read-only summary');
     expect(finderR101Summary, findsOneWidget);
+    expect(find.text('Related measurements: 2'), findsOneWidget);
     expect(find.textContaining('Measurement ID: M101'), findsOneWidget);
     expect(find.textContaining('Measurement ID: M102'), findsOneWidget);
     expect(
@@ -346,6 +347,7 @@ void main() {
 
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
     expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.text('Related measurements: 2'), findsOneWidget);
     expect(find.textContaining('Measurement ID: M103'), findsOneWidget);
     expect(
       find.textContaining('No related measurements for selected component.'),
@@ -1140,7 +1142,10 @@ void main() {
 
     await _selectPlacement(tester, 'cmp_r101');
 
+    expect(find.text('Related measurement: 1'), findsOneWidget);
     expect(find.textContaining('Measurement ID: M001'), findsOneWidget);
+    expect(find.text('Measurement — read-only summary'), findsOneWidget);
+    expect(find.text('Value shown verbatim'), findsOneWidget);
   });
 
   testWidgets('measurement summary includes measurement when to equals componentId',
@@ -1258,7 +1263,32 @@ void main() {
     await _selectPlacement(tester, 'Q2');
 
     expect(find.textContaining('Measurement ID: M005'), findsNothing);
+    expect(find.text('Related measurements:'), findsNothing);
     expect(find.text('No related measurements for selected component.'), findsOneWidget);
+  });
+
+  testWidgets('canvas tap does not auto-select a placement', (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+
+    expect(
+      find.text('Select a placement to view read-only details.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const Key('board_canvas_painter')));
+    await tester.pump();
+
+    expect(
+      find.text('Select a placement to view read-only details.'),
+      findsOneWidget,
+    );
+    expect(find.text('Placement inspector (read-only)'), findsNothing);
   });
 
   test(

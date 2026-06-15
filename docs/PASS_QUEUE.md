@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`
+`V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -260,5 +260,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Docs-only scope lock for inspector-side measurement clarity in Board Canvas selection inspector; surface existing component-related measurement count and safety semantics only, then route to `V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS`. |
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | Board Canvas inspector-only measurement visibility polish accepted and pushed as `67e877f`: component identity first, then read-only component-level related measurement count and safety context for selected placements; measurement values/details remain in summary. |
 | V2_BOARD_CANVAS_SELECTION_INSPECTOR_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted selection inspector polish implementation; recorded validation/audit evidence and routed to `NEEDS_USER_DECISION`. |
-| V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | in progress | Docs-only scope lock for a future Board Canvas tap/click selection shortcut over already-rendered board-normalized placements; implementation target is `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`. |
-| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | planned | Future narrow implementation may add UI-only tap/click selection for existing rendered placements, preserving chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock for Board Canvas tap/click selection shortcut over already-rendered board-normalized placements; implementation target is `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS`. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | in progress | UI-only tap/click selection for existing rendered placements; preserves chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
+| V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended | Independent implementation post-audit before staging/commit; inspect runtime/test/docs diff, validation, gesture boundaries, and read-only canonical-data boundaries. |

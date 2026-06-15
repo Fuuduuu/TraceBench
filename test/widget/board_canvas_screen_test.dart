@@ -59,6 +59,20 @@ Future<void> _selectPlacement(WidgetTester tester, String label) async {
   await tester.pump(const Duration(milliseconds: 16));
 }
 
+Future<void> _tapCanvasAtNormalized(
+  WidgetTester tester, {
+  required double x,
+  required double y,
+}) async {
+  final painterFinder = find.byKey(const Key('board_canvas_painter'));
+  final painterTopLeft = tester.getTopLeft(painterFinder);
+  final painterSize = tester.getSize(painterFinder);
+  await tester.tapAt(
+    painterTopLeft + Offset(painterSize.width * x, painterSize.height * y),
+  );
+  await tester.pump(const Duration(milliseconds: 16));
+}
+
 void main() {
   const boardPlacement = ComponentVisualPlacementFact(
     componentId: 'cmp_r101',
@@ -163,7 +177,8 @@ void main() {
       (tester) async {
     await tester.pumpWidget(
       _harness(
-        projectState: _inlineProjectState(components: const [], placements: const []),
+        projectState:
+            _inlineProjectState(components: const [], placements: const []),
       ),
     );
 
@@ -173,7 +188,8 @@ void main() {
     );
   });
 
-  testWidgets('shows no-placements state when project has components but no placements',
+  testWidgets(
+      'shows no-placements state when project has components but no placements',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -195,7 +211,8 @@ void main() {
     );
   });
 
-  testWidgets('renders board-normalized placement path and keeps read-only chrome',
+  testWidgets(
+      'renders board-normalized placement path and keeps read-only chrome',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -237,7 +254,8 @@ void main() {
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
     expect(find.text('Board projection canvas'), findsOneWidget);
-    expect(find.text('Existing board-normalized placements only'), findsOneWidget);
+    expect(
+        find.text('Existing board-normalized placements only'), findsOneWidget);
     expect(find.text('Body outline'), findsOneWidget);
     expect(find.text('Pin pads'), findsOneWidget);
     expect(find.text('Pin-1 marker'), findsOneWidget);
@@ -376,16 +394,27 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('board_canvas_interactive_viewer')), findsOneWidget);
-    expect(find.byKey(const Key('board_canvas_fit_view_button')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_interactive_viewer')),
+        findsOneWidget);
+    expect(
+        find.byKey(const Key('board_canvas_fit_view_button')), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
 
+    expect(
+      find.text('Select a placement to view read-only details.'),
+      findsOneWidget,
+    );
     await tester.drag(
       find.byKey(const Key('board_canvas_interactive_viewer')),
       const Offset(40, 24),
     );
     await tester.pump();
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(
+      find.text('Select a placement to view read-only details.'),
+      findsOneWidget,
+    );
+    expect(find.text('Placement inspector (read-only)'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('board_canvas_fit_view_button')));
@@ -447,7 +476,8 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('renders width-height mode placement without error', (tester) async {
+  testWidgets('renders width-height mode placement without error',
+      (tester) async {
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
@@ -485,7 +515,8 @@ void main() {
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
   });
 
-  testWidgets('missing template_id fallback renders without crash', (tester) async {
+  testWidgets('missing template_id fallback renders without crash',
+      (tester) async {
     const missingTemplate = ComponentVisualPlacementFact(
       componentId: 'cmp_missing_template_render',
       coordinateSpace: 'board_normalized',
@@ -511,7 +542,8 @@ void main() {
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
   });
 
-  testWidgets('unknown template_id fallback renders without crash', (tester) async {
+  testWidgets('unknown template_id fallback renders without crash',
+      (tester) async {
     const unknownTemplate = ComponentVisualPlacementFact(
       componentId: 'cmp_unknown_template_render',
       coordinateSpace: 'board_normalized',
@@ -576,7 +608,8 @@ void main() {
     );
   });
 
-  testWidgets('inspector shows non-identity template and identity-copy safeguards',
+  testWidgets(
+      'inspector shows non-identity template and identity-copy safeguards',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -590,10 +623,12 @@ void main() {
     await _selectPlacement(tester, 'cmp_r101');
 
     expect(find.text('template family — not a part identity'), findsOneWidget);
-    expect(find.text('identity not confirmed in this projection'), findsOneWidget);
+    expect(
+        find.text('identity not confirmed in this projection'), findsOneWidget);
   });
 
-  testWidgets('readiness panel appears when photoToBoardAlignments is non-empty',
+  testWidgets(
+      'readiness panel appears when photoToBoardAlignments is non-empty',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -606,9 +641,11 @@ void main() {
     );
     expect(tester.takeException(), isNull);
 
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
     expect(find.text('READINESS'), findsOneWidget);
-    expect(find.text('Stores alignment reference points only.'), findsOneWidget);
+    expect(
+        find.text('Stores alignment reference points only.'), findsOneWidget);
     expect(
       find.text('Does not confirm identity, nets, measurements, or faults.'),
       findsOneWidget,
@@ -633,10 +670,12 @@ void main() {
       ),
     );
 
-    expect(find.text('Photo alignment readiness — metadata only'), findsNothing);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsNothing);
   });
 
-  testWidgets('readiness panel shows allowed metadata and reference pair count only',
+  testWidgets(
+      'readiness panel shows allowed metadata and reference pair count only',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -650,9 +689,11 @@ void main() {
     expect(tester.takeException(), isNull);
 
     expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
-    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(
+        find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
     expect(find.textContaining('Board side: top'), findsOneWidget);
-    expect(find.textContaining('Coordinate space from: photo_local'), findsOneWidget);
+    expect(find.textContaining('Coordinate space from: photo_local'),
+        findsOneWidget);
     expect(
       find.textContaining('Coordinate space to: board_normalized'),
       findsOneWidget,
@@ -690,7 +731,10 @@ void main() {
         projectState: _inlineProjectState(
           components: const [ComponentFact(componentId: 'cmp_r101')],
           placements: const [boardPlacement],
-          photoToBoardAlignments: const [readinessAlignment, readinessAlignmentTwo],
+          photoToBoardAlignments: const [
+            readinessAlignment,
+            readinessAlignmentTwo
+          ],
         ),
       ),
     );
@@ -698,8 +742,10 @@ void main() {
 
     expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
     expect(find.textContaining('Alignment ID: ALN1002'), findsOneWidget);
-    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
-    expect(find.textContaining('Source photo ID: photo_bottom_002'), findsOneWidget);
+    expect(
+        find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(find.textContaining('Source photo ID: photo_bottom_002'),
+        findsOneWidget);
     expect(find.textContaining('Reference pairs: 2'), findsOneWidget);
     expect(find.textContaining('Reference pairs: 3'), findsOneWidget);
     expect(
@@ -710,8 +756,10 @@ void main() {
       find.textContaining('declared type — not computed: affine'),
       findsOneWidget,
     );
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
-    expect(find.text('Stores alignment reference points only.'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Stores alignment reference points only.'), findsOneWidget);
     expect(
       find.text('No photo-local evidence is rendered on board canvas.'),
       findsOneWidget,
@@ -731,15 +779,14 @@ void main() {
       'Save',
     ];
     for (final action in forbiddenActions) {
-      expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
+      expect(find.text(action), findsNothing,
+          reason: 'Unexpected action label: $action');
     }
 
-    final firstAlignmentDy = tester
-        .getTopLeft(find.textContaining('Alignment ID: ALN1001'))
-        .dy;
-    final secondAlignmentDy = tester
-        .getTopLeft(find.textContaining('Alignment ID: ALN1002'))
-        .dy;
+    final firstAlignmentDy =
+        tester.getTopLeft(find.textContaining('Alignment ID: ALN1001')).dy;
+    final secondAlignmentDy =
+        tester.getTopLeft(find.textContaining('Alignment ID: ALN1002')).dy;
     expect(firstAlignmentDy < secondAlignmentDy, isTrue);
   });
 
@@ -787,9 +834,11 @@ void main() {
     );
     expect(tester.takeException(), isNull);
 
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
     expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
-    expect(find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
+    expect(
+        find.textContaining('Source photo ID: photo_top_001'), findsOneWidget);
     expect(find.textContaining('Reference pairs: 2'), findsOneWidget);
     expect(
       find.textContaining('declared type — not computed: similarity'),
@@ -805,15 +854,18 @@ void main() {
     expect(find.textContaining('Measurement ID: M900'), findsOneWidget);
     expect(find.text('Visual trace — read-only metadata'), findsOneWidget);
     expect(find.textContaining('Trace ID: tr_900'), findsOneWidget);
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
     expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
 
     await _selectPlacement(tester, 'cmp_u1');
 
     expect(find.textContaining('Component ID: cmp_u1'), findsOneWidget);
-    expect(find.text('No related measurements for selected component.'), findsOneWidget);
+    expect(find.text('No related measurements for selected component.'),
+        findsOneWidget);
     expect(find.textContaining('Trace ID: tr_900'), findsOneWidget);
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
     expect(find.textContaining('Alignment ID: ALN1001'), findsOneWidget);
     expect(find.textContaining('123.456'), findsNothing);
     expect(find.textContaining('789.123'), findsNothing);
@@ -828,7 +880,8 @@ void main() {
       'Save',
     ];
     for (final action in forbiddenActions) {
-      expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
+      expect(find.text(action), findsNothing,
+          reason: 'Unexpected action label: $action');
     }
   });
 
@@ -849,10 +902,12 @@ void main() {
     await tester.pump();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Photo alignment readiness — metadata only'), findsOneWidget);
+    expect(
+        find.text('Photo alignment readiness — metadata only'), findsOneWidget);
   });
 
-  testWidgets('selecting placement from dropdown shows read-only inspector details',
+  testWidgets(
+      'selecting placement from dropdown shows read-only inspector details',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -870,7 +925,8 @@ void main() {
     expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
     expect(find.textContaining('Designator: R101'), findsOneWidget);
     expect(find.textContaining('Source event ID: evt_000101'), findsOneWidget);
-    expect(find.textContaining('Coordinate space: board_normalized'), findsOneWidget);
+    expect(find.textContaining('Coordinate space: board_normalized'),
+        findsOneWidget);
     expect(find.textContaining('Board side: top'), findsOneWidget);
     expect(find.textContaining('Center X: 0.25'), findsOneWidget);
     expect(find.textContaining('Center Y: 0.45'), findsOneWidget);
@@ -883,7 +939,8 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('inspector preserves width-height mode when placement uses width and height',
+  testWidgets(
+      'inspector preserves width-height mode when placement uses width and height',
       (tester) async {
     await tester.pumpWidget(
       _harness(
@@ -935,7 +992,9 @@ void main() {
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
-          components: const [ComponentFact(componentId: 'cmp_missing_template')],
+          components: const [
+            ComponentFact(componentId: 'cmp_missing_template')
+          ],
           placements: const [missingTemplate],
         ),
       ),
@@ -944,7 +1003,8 @@ void main() {
     await _selectPlacement(tester, 'cmp_missing_template');
 
     expect(find.textContaining('Template ID: not provided'), findsOneWidget);
-    expect(find.textContaining('Package: Unknown package geometry'), findsOneWidget);
+    expect(find.textContaining('Package: Unknown package geometry'),
+        findsOneWidget);
   });
 
   testWidgets('inspector handles unknown template_id safely', (tester) async {
@@ -963,7 +1023,9 @@ void main() {
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
-          components: const [ComponentFact(componentId: 'cmp_unknown_template')],
+          components: const [
+            ComponentFact(componentId: 'cmp_unknown_template')
+          ],
           placements: const [unknownTemplate],
         ),
       ),
@@ -971,11 +1033,14 @@ void main() {
 
     await _selectPlacement(tester, 'cmp_unknown_template');
 
-    expect(find.textContaining('Template ID: unknown_not_in_registry'), findsOneWidget);
-    expect(find.textContaining('Package: Unknown package geometry'), findsOneWidget);
+    expect(find.textContaining('Template ID: unknown_not_in_registry'),
+        findsOneWidget);
+    expect(find.textContaining('Package: Unknown package geometry'),
+        findsOneWidget);
   });
 
-  testWidgets('unknown fallback templates render without crash', (tester) async {
+  testWidgets('unknown fallback templates render without crash',
+      (tester) async {
     const placements = [
       ComponentVisualPlacementFact(
         componentId: 'cmp_u_rect',
@@ -1040,7 +1105,8 @@ void main() {
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
   });
 
-  testWidgets('designator appears only when present in known facts', (tester) async {
+  testWidgets('designator appears only when present in known facts',
+      (tester) async {
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
@@ -1111,11 +1177,13 @@ void main() {
     ];
 
     for (final action in forbiddenActions) {
-      expect(find.text(action), findsNothing, reason: 'Unexpected action label: $action');
+      expect(find.text(action), findsNothing,
+          reason: 'Unexpected action label: $action');
     }
   });
 
-  testWidgets('measurement summary includes measurement when from equals componentId',
+  testWidgets(
+      'measurement summary includes measurement when from equals componentId',
       (tester) async {
     const measurement = MeasurementFact(
       measurementId: 'M001',
@@ -1148,7 +1216,8 @@ void main() {
     expect(find.text('Value shown verbatim'), findsOneWidget);
   });
 
-  testWidgets('measurement summary includes measurement when to equals componentId',
+  testWidgets(
+      'measurement summary includes measurement when to equals componentId',
       (tester) async {
     const measurement = MeasurementFact(
       measurementId: 'M002',
@@ -1236,7 +1305,8 @@ void main() {
     expect(find.textContaining('Measurement ID: M004'), findsOneWidget);
   });
 
-  testWidgets('Q2 does not match Q20 in measurement association', (tester) async {
+  testWidgets('Q2 does not match Q20 in measurement association',
+      (tester) async {
     const measurement = MeasurementFact(
       measurementId: 'M005',
       mode: 'dc_voltage',
@@ -1264,10 +1334,12 @@ void main() {
 
     expect(find.textContaining('Measurement ID: M005'), findsNothing);
     expect(find.text('Related measurements:'), findsNothing);
-    expect(find.text('No related measurements for selected component.'), findsOneWidget);
+    expect(find.text('No related measurements for selected component.'),
+        findsOneWidget);
   });
 
-  testWidgets('canvas tap does not auto-select a placement', (tester) async {
+  testWidgets('tapping a rendered placement selects it in the inspector',
+      (tester) async {
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
@@ -1281,14 +1353,111 @@ void main() {
       find.text('Select a placement to view read-only details.'),
       findsOneWidget,
     );
-    await tester.tap(find.byKey(const Key('board_canvas_painter')));
+    await _tapCanvasAtNormalized(tester, x: 0.25, y: 0.45);
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('tapping one rendered placement then another updates inspector',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+            ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+          ],
+          placements: const [boardPlacement, boardPlacementWidthHeight],
+        ),
+      ),
+    );
+
+    await _tapCanvasAtNormalized(tester, x: 0.25, y: 0.45);
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_u1'), findsNothing);
+
+    await _tapCanvasAtNormalized(tester, x: 0.52, y: 0.61);
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_u1'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsNothing);
+  });
+
+  testWidgets('chip selector still changes selection after canvas tap',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+            ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+          ],
+          placements: const [boardPlacement, boardPlacementWidthHeight],
+        ),
+      ),
+    );
+
+    await _tapCanvasAtNormalized(tester, x: 0.25, y: 0.45);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+
+    await _selectPlacement(tester, 'U1 (cmp_u1)');
+
+    expect(find.textContaining('Component ID: cmp_u1'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsNothing);
+  });
+
+  testWidgets('tap selection stays aligned after canvas transform',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final viewer = tester.widget<InteractiveViewer>(
+      find.byKey(const Key('board_canvas_interactive_viewer')),
+    );
+    viewer.transformationController!.value = Matrix4.identity()
+      ..translate(32.0, 20.0);
     await tester.pump();
 
-    expect(
-      find.text('Select a placement to view read-only details.'),
-      findsOneWidget,
+    await _tapCanvasAtNormalized(
+      tester,
+      x: 0.25,
+      y: 0.45,
     );
-    expect(find.text('Placement inspector (read-only)'), findsNothing);
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('board_canvas_fit_view_button')));
+    await tester.pump();
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+  });
+
+  testWidgets('tap-to-select leaves project state canonical data unchanged',
+      (tester) async {
+    final state = _inlineProjectState(
+      components: const [ComponentFact(componentId: 'cmp_r101')],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await _tapCanvasAtNormalized(tester, x: 0.25, y: 0.45);
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(state.events, isEmpty);
+    expect(state.knownFacts.componentVisualPlacements, const [boardPlacement]);
+    expect(state.knownFacts.measurements, isEmpty);
+    expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
   test(
@@ -1354,7 +1523,8 @@ void main() {
       );
 
       expect(counts, equals(1));
-      expect(measurementEndpointMatchesComponent('cmp_r101.1', 'cmp_r101'), isTrue);
+      expect(measurementEndpointMatchesComponent('cmp_r101.1', 'cmp_r101'),
+          isTrue);
     },
   );
 
@@ -1400,7 +1570,9 @@ void main() {
     },
   );
 
-  test('component with placement but no matching measurement shows no badge count', () {
+  test(
+      'component with placement but no matching measurement shows no badge count',
+      () {
     const measurement = MeasurementFact(
       measurementId: 'M007',
       mode: 'dc_voltage',
@@ -1419,7 +1591,8 @@ void main() {
     expect(counts, isEmpty);
   });
 
-  test('measurement badge count supports multi-measurement aggregation (M3)', () {
+  test('measurement badge count supports multi-measurement aggregation (M3)',
+      () {
     const measurements = [
       MeasurementFact(
         measurementId: 'M201',
@@ -1485,7 +1658,8 @@ void main() {
     },
   );
 
-  testWidgets('measurement summary shows safe copy and verbatim value', (tester) async {
+  testWidgets('measurement summary shows safe copy and verbatim value',
+      (tester) async {
     const measurement = MeasurementFact(
       measurementId: 'M006',
       mode: 'dc_voltage',
@@ -1519,7 +1693,8 @@ void main() {
     expect(find.textContaining('Value: 4.987 V'), findsOneWidget);
   });
 
-  testWidgets('stale measurement shows stale after repair label', (tester) async {
+  testWidgets('stale measurement shows stale after repair label',
+      (tester) async {
     const measurement = MeasurementFact(
       measurementId: 'M007',
       mode: 'dc_voltage',
@@ -1547,7 +1722,8 @@ void main() {
     await _selectPlacement(tester, 'cmp_r101');
 
     expect(find.text('Stale after repair'), findsOneWidget);
-    expect(find.textContaining('Valid until event ID: evt_800008'), findsOneWidget);
+    expect(find.textContaining('Valid until event ID: evt_800008'),
+        findsOneWidget);
   });
 
   testWidgets('template_id does not render forbidden electrical identity words',
@@ -1683,7 +1859,8 @@ void main() {
     expect(find.textContaining('Trace ID: tr_004'), findsOneWidget);
   });
 
-  testWidgets('Q2 does not match Q20 in visual trace association', (tester) async {
+  testWidgets('Q2 does not match Q20 in visual trace association',
+      (tester) async {
     const trace = VisualTraceFact(
       traceId: 'tr_005',
       photoId: 'ph_005',
@@ -1705,7 +1882,8 @@ void main() {
     await _selectPlacement(tester, 'Q2');
 
     expect(find.textContaining('Trace ID: tr_005'), findsNothing);
-    expect(find.text('No related visual traces for selected component.'), findsOneWidget);
+    expect(find.text('No related visual traces for selected component.'),
+        findsOneWidget);
   });
 
   testWidgets('visual trace summary shows safe copy and metadata fields',
@@ -1745,7 +1923,8 @@ void main() {
       find.text('Photo-local evidence; no board coordinate available'),
       findsOneWidget,
     );
-    expect(find.text('Does not create or confirm connectivity'), findsOneWidget);
+    expect(
+        find.text('Does not create or confirm connectivity'), findsOneWidget);
     expect(find.textContaining('Trace ID: tr_006'), findsOneWidget);
     expect(find.textContaining('Photo ID: ph_006'), findsOneWidget);
     expect(find.textContaining('Evidence type: visual_trace'), findsOneWidget);
@@ -1835,9 +2014,14 @@ void main() {
     expect(source, isNot(contains('drawPhotoLocal')));
     expect(source, isNot(contains('drawPhotoOverlay')));
     expect(source, contains('InteractiveViewer('));
-    expect(source, contains('transformationController: _transformationController'));
+    expect(source,
+        contains('transformationController: _transformationController'));
     expect(source, contains('minScale: _kMinZoom'));
     expect(source, contains('maxScale: _kMaxZoom'));
+    expect(source, contains('GestureDetector('));
+    expect(source, contains('board_canvas_tap_layer'));
+    expect(source, contains('onPlacementSelected'));
+    expect(source, contains('_renderedPlacementContains('));
     expect(source, isNot(contains('Confirm net')));
     expect(source, isNot(contains('Show photo')));
     expect(source, isNot(contains('Render overlay')));

@@ -2,101 +2,163 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_SYNC / QA_RUN`
+`RECOVERY_REPLACE_SCOPE_LOCK / DOCS_SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_SYNC / QA_RUN`
+`CODEX / DOCS_SYNC / SCOPE_LOCK`
 
 ## Mode
 
-Documentation and QA evidence only for manual Windows/desktop Board Canvas interaction smoke after tap-to-select.
+Documentation scope-lock only. This pass replaces the uncommitted narrower fit/reset discoverability draft with the broader user-selected layout-density direction. No runtime, test, tooling, staging, commit, or push changes are allowed.
 
 ## Current goal
 
-- Create a docs-only manual smoke QA record for the combined Board Canvas interaction surface.
-- Record the smoke checklist and actual manual result status without inventing observations.
-- Preserve runtime, test, tooling, schema, writer, materializer, validator, projection, and Project ZIP boundaries.
+- Lock a future layout-density implementation scope for Board Canvas and Project Overview.
+- Make board/canvas/workspace surfaces dominant while compacting fixed chrome.
+- Preserve Board Canvas read-only, zero-event, projection, tap-to-select, pan/zoom/fit, measurement badge/count, inspector, visual-trace metadata, photo-alignment metadata-only, and `renderer writes: none` behavior.
+- Keep safety/evidence copy available even if it moves, collapses, shortens, or becomes summary-first.
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Scope decision
 
-- scope type: `DOCS_SYNC / QA_RUN`
-- lane: `CODEX / DOCS_SYNC / QA_RUN`
-- mode: docs-only QA evidence; no runtime, test, tooling, staging, commit, or push changes in this pass.
-- latest accepted baseline: `5a34980` (`docs: add tap to select closeout audit`)
-- previous manual smoke status: `PARTIAL / BLOCKED_NO_PLACEMENTS`
-- rerun manual smoke status: `PASS_WITH_NITS`
+- scope type: `DOCS_SCOPE_LOCK`
+- lane: `CODEX / DOCS_SYNC / SCOPE_LOCK`
+- latest accepted baseline: `2d18a39` (`docs: record board canvas interaction smoke pass with nits`)
+- upstream smoke result: `PASS_WITH_NITS`
+- recovery action: discard/replace the uncommitted narrower fit/reset draft; do not keep it as the active route or queue target.
+- future implementation target: `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
 
-## File allowlist for this pass
+## File allowlist for this scope-lock pass
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS.md`
 
-## Smoke target
+## Design decision
 
-Manual Windows/desktop smoke was first attempted on an opened project that verified only the empty-state path because no confirmed board-normalized placements were present.
+Accepted layout-density recommendation: Variant B / persistent slim rails.
 
-Initial observed empty-state path:
+Direction:
 
-- Board Canvas route/screen opens.
-- Empty state displays `No confirmed visual placements yet.`
-- Secondary copy displays `Board canvas is read-only in V1. Placement workflow is a future step.`
-- Footer displays `renderer writes: none`.
-- No placement chips or canvas placements are available.
+- Board Canvas and Project Overview board/workspace areas should become the dominant visual surfaces.
+- Fixed text, menu, legend, selector, and inspector chrome should be reduced where safe.
+- Selector and inspector areas should remain compact but usable.
+- Safety/evidence copy may move behind disclosure, popover, accordion, or compact legend treatment.
+- Safety/evidence copy must not disappear and must remain reachable by click/tap/keyboard, not hover-only.
+- Fit/reset discoverability is included inside this layout-density follow-up; it is not a separate active route.
 
-Rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`.
+## Smoke nits carried forward
 
-Rerun observed:
+This layout-density scope helps address:
 
-- Project overview shows `board_canvas_smoke_fixture` / `board_canvas_positive_smoke`.
-- Read-only projection reports `1 placement(s) found`.
-- Board Canvas opens with rendered board-normalized placement `SMP001`.
-- Placement selector shows `SMP001 (SMP001)`.
-- Board canvas renders the placement and measurement badge `M`.
-- Inspector opens/updates for `SMP001`.
-- Measurement badge safety copy is visible.
-- Measurement summary card is visible and shows measurement `M1001`, continuity, `From SMP001.1`, `To TP1`, and value `0.1 ohm`.
-- Visual trace metadata card is visible and read-only.
-- Photo alignment readiness metadata-only panel is visible.
-- Footer `renderer writes: none` remains visible.
-- No authoring/write controls were observed on Board Canvas.
+- fit/reset discoverability nit;
+- wasted canvas/workspace space;
+- excessive legend/safety text footprint;
+- oversized selector, inspector, and menu chrome.
 
-Not fully validated in rerun:
+This scope must not claim to fix:
 
-- multi-placement tap switching was not testable because the sample has one rendered placement;
-- fit/reset was not found and was not validated;
-- post-fit tap alignment was not validated.
+- pan after zoom expected behavior;
+- viewport appearance after zoom expected behavior;
+- multi-placement smoke coverage gap.
 
-Nits / limitations:
+## Locked future implementation scope
 
-- pan was only visibly usable after mouse-wheel zoom;
-- canvas visible size/viewport appearance changed after zoom;
-- fit/reset discoverability issue.
+Future implementation may improve layout density only.
 
-## Forbidden touches
+Allowed future implementation changes:
 
-- runtime files
-- test files
-- tooling files
-- component creation
+1. Reclaim Board Canvas width and height.
+2. Replace the fixed selector column with a compact selector row or compact selector area.
+3. Move Board Canvas legend/safety copy out of canvas vertical flow into collapsed Safety/Evidence disclosure, info popover, accordion, or compact legend row.
+4. Make inspector more compact, narrower, collapsible, or summary-first.
+5. Make fit/reset more discoverable while preserving existing reset behavior.
+6. Reduce excessive padding/card chrome where safe.
+7. For Project Overview, allow a later slice to expand the board preview/workspace and compact the action/navigation/future-tools rail.
+8. Preserve keys where possible:
+   - `board_canvas_fit_view_button`
+   - `renderer_writes_none`
+   - `placement_selector_*`
+9. Preserve existing Board Canvas behavior:
+   - read-only renderer
+   - pan/zoom/fit
+   - tap-to-select
+   - chip selector
+   - inspector
+   - measurement badges/counts
+   - visual-trace metadata
+   - photo-alignment readiness metadata-only panel
+   - `renderer writes: none`
+
+## Downstream implementation slices
+
+1. First smallest safe slice: Board Canvas width reclaim.
+   - compact selector row
+   - move legend/safety copy to collapsed disclosure/info
+   - reduce padding
+   - no selection, pan, zoom, or tap behavior change
+
+2. Follow-up slice: fit/reset discoverability plus inspector compactness.
+   - labeled fit/reset control
+   - compact/collapsible inspector
+   - summary-first sections
+
+3. Deferred slice: Project Overview density.
+   - board preview grows beyond fixed height
+   - right action/navigation rail compacts
+   - Future tools collapsed by default
+
+## Expected future touch set
+
+Runtime:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `lib/features/project/screens/project_overview_screen.dart`
+
+Tests:
+
+- `test/widget/board_canvas_screen_test.dart`
+- relevant Project Overview widget tests if present
+
+Governance:
+
+- route docs and implementation audit doc for the future implementation pass
+
+## Future test intent
+
+Future implementation must test:
+
+1. Board Canvas still renders placements.
+2. Tap-to-select still works.
+3. Chip selector still works.
+4. Pan/zoom/fit still works.
+5. Fit/reset is more discoverable.
+6. Measurement badge/count remains safe and visible.
+7. Safety/evidence copy remains accessible.
+8. `renderer writes: none` remains visible.
+9. No authoring controls appear.
+10. Source-boundary guard remains intact.
+11. Project Overview board workspace remains read-only.
+12. No writer, schema, materializer, validator, projection, or ZIP changes occur.
+
+## Strict non-goals / forbidden future implementation changes
+
+- new board semantics
+- new facts/events/coordinates
 - placement creation/editing
 - marker editing/dragging/authoring
 - measurement creation/editing
-- probe/pin/pad authoring
-- board coordinate authoring
-- new fact/event/measurement semantics
-- new association rule
+- probe/pin/pad anchors
 - net/path/trace inference
 - visual_trace geometry
 - trace-color editing
@@ -109,7 +171,7 @@ Nits / limitations:
 - Edit Component behavior changes
 - writer service changes
 - `MeasurementEventWriter` changes
-- event schema/model changes
+- schema/model changes
 - validator changes
 - materializer changes
 - projection contract changes
@@ -119,21 +181,20 @@ Nits / limitations:
 - `sequence` field
 - custom unit / `Muu ühik`
 - dependency/toolchain/generated/platform changes
-- broad Board Canvas redesign
-- platform/sample/assets (`assets/samples/pelle_pv20_minimal/metadata/`)
-- `_incoming/`
+- broad theme/token migration
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
+Current: `V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Scope-lock carry-forward
 
 - Board Canvas remains read-only unless separately scoped.
-- `events.jsonl` remains canonical truth and this QA pass must not write it.
-- `known_facts.json` remains projection/cache and this QA pass must not mutate it.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- AI/helper must not author canonical events or canonical facts.
 - Project ZIP import/export remains out of scope.
 - Measurement badges and inspector counts remain component-level evidence summaries only.
-- Manual smoke rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`; remaining limitations require user decision before any new scope.
+- Layout-density polish must not change reset semantics, pan/zoom semantics, tap-to-select semantics, selection semantics, event/fact behavior, or Project ZIP behavior.

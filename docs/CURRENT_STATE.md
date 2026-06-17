@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Current product state
 
@@ -30,7 +30,8 @@
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS` is accepted/pushed in `bbc51c1` (`docs: lock board canvas tap to select`).
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); tapping/clicking an already-rendered board-normalized placement updates only volatile Board Canvas selection state, equivalent to choosing the existing placement selector chip.
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS` is accepted/pushed as `5a34980` (`docs: add tap to select closeout audit`) and returned the queue to `NEEDS_USER_DECISION`.
-- `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is the current docs-only QA route for manual Windows/desktop Board Canvas interaction smoke after tap-to-select. The first manual smoke attempt was `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`. Confirmed observations include one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and persistent `renderer writes: none`. Remaining limitations: single-placement sample did not validate multi-placement switching; fit/reset was not found or validated; post-fit tap alignment was not validated.
+- `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is completed and pushed as `2d18a39` (`docs: record board canvas interaction smoke pass with nits`). The first manual smoke attempt was `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`. Confirmed observations include one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and persistent `renderer writes: none`. Remaining limitations: single-placement sample did not validate multi-placement switching; fit/reset was not found or validated; post-fit tap alignment was not validated.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS` is the current docs-only scope lock. It replaces the uncommitted narrower fit/reset draft with a broader layout-density lock using accepted Variant B / persistent slim rails direction: Board Canvas and Project Overview board/workspace surfaces should become dominant, selector/legend/safety/inspector chrome should become compact but usable, and safety/evidence copy must remain accessible by click/tap/keyboard. Future implementation target: `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`.
 
 ## Accepted recent governance state
 

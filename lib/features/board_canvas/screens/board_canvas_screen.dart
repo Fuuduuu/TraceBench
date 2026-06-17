@@ -161,7 +161,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return _buildScaffold(
       context,
       Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final selector = _PlacementSelector(
@@ -190,15 +190,27 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
             );
+            final controlBand = _BoardCanvasControlBand(
+              selector: selector,
+              safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
+            );
 
             if (constraints.maxWidth >= 1180) {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(width: 260, child: selector),
-                  const SizedBox(width: 16),
-                  Expanded(flex: 7, child: canvas),
-                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 7,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        controlBand,
+                        const SizedBox(height: 8),
+                        Expanded(child: canvas),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   SizedBox(width: 370, child: metadata),
                 ],
               );
@@ -208,18 +220,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    width: 260,
+                  Expanded(
+                    flex: 7,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        selector,
-                        const SizedBox(height: 12),
-                        Expanded(child: metadata),
+                        controlBand,
+                        const SizedBox(height: 8),
+                        Expanded(child: canvas),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(child: canvas),
+                  const SizedBox(width: 12),
+                  SizedBox(width: 300, child: metadata),
                 ],
               );
             }
@@ -227,10 +240,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                selector,
-                const SizedBox(height: 12),
+                controlBand,
+                const SizedBox(height: 8),
                 Expanded(flex: 3, child: canvas),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Expanded(flex: 2, child: metadata),
               ],
             );
@@ -405,6 +418,45 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
   }
 }
 
+class _BoardCanvasControlBand extends StatelessWidget {
+  const _BoardCanvasControlBand({
+    required this.selector,
+    required this.safetyEvidence,
+  });
+
+  final Widget selector;
+  final Widget safetyEvidence;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 760) {
+          return Row(
+            key: const Key('board_canvas_control_band'),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(flex: 3, child: selector),
+              const SizedBox(width: 8),
+              Expanded(flex: 2, child: safetyEvidence),
+            ],
+          );
+        }
+
+        return Column(
+          key: const Key('board_canvas_control_band'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            selector,
+            const SizedBox(height: 8),
+            safetyEvidence,
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _PlacementSelector extends StatelessWidget {
   const _PlacementSelector({
     required this.entries,
@@ -426,28 +478,32 @@ class _PlacementSelector extends StatelessWidget {
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _SectionHeader(
-              title: 'Placement selection (read-only)',
+              title: 'Placements',
               subtitle: 'read-only · projection view',
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: entries
-                  .map(
-                    (entry) => ChoiceChip(
-                      key: Key('placement_selector_${entry.key}'),
-                      label: Text(entry.selectorLabel),
-                      selected: selectedKey == entry.key,
-                      onSelected: (_) => onSelected(entry.key),
-                    ),
-                  )
-                  .toList(growable: false),
+            const SizedBox(height: 6),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: entries
+                    .map(
+                      (entry) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          key: Key('placement_selector_${entry.key}'),
+                          label: Text(entry.selectorLabel),
+                          selected: selectedKey == entry.key,
+                          onSelected: (_) => onSelected(entry.key),
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
             ),
           ],
         ),
@@ -587,13 +643,6 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Footprint geometry is read-only display metadata.',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall,
-                  ),
                 ],
               );
             }
@@ -625,12 +674,36 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                const _BoardCanvasLegend(),
               ],
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
+  const _BoardCanvasSafetyEvidenceDisclosure();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: const ExpansionTile(
+        key: Key('board_canvas_safety_evidence_disclosure'),
+        tilePadding: EdgeInsets.symmetric(horizontal: 10),
+        childrenPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+        title: Text('Safety / Evidence'),
+        subtitle: Text('read-only projection boundaries'),
+        children: [
+          _BoardCanvasLegend(),
+        ],
       ),
     );
   }

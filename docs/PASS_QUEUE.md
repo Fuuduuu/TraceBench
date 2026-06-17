@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -265,5 +265,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit accepted tap-to-select as-is with no required fixes. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted/pushed tap-to-select implementation; recorded validation/audit evidence and returned route to `NEEDS_USER_DECISION` as `5a34980` (`docs: add tap to select closeout audit`). |
 | V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS | CODEX / DOCS_SYNC / QA_RUN | completed (`PASS_WITH_NITS`) | Manual Windows/desktop smoke first recorded `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` confirmed one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and `renderer writes: none`. NITs: single-placement sample did not validate multi-placement switching; fit/reset and post-fit tap alignment were not validated; pan was visibly usable after wheel zoom and viewport appearance changed after zoom. |
-| V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC / SCOPE_LOCK | in progress | Recovery replacement scope lock: supersedes the uncommitted narrow fit/reset draft and locks Variant B / persistent slim rails layout-density direction for Board Canvas and Project Overview surfaces. |
-| V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned | Future layout-density implementation: Board Canvas workspace reclaim first, compact selector/safety/legend flow, fit/reset discoverability, compact inspector, and later Project Overview density while preserving read-only/zero-event behavior. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC / SCOPE_LOCK | accepted/pushed | Recovery replacement scope lock accepted and pushed as `af8425d` (`docs: lock board canvas layout density`); locks Variant B / persistent slim rails layout-density direction and routes to implementation. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented / pending post-audit | First safe Board Canvas density slice: compact selector/control band, Safety / Evidence disclosure outside the canvas panel, reduced padding, no fixed 260 selector column, and preserved read-only/tap-select/pan-zoom-fit/measurement/footer behavior. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent post-audit of the first layout-density implementation slice; verify no scope drift, preserved Board Canvas behavior, route-doc consistency, and no writer/schema/materializer/validator/projection/ZIP changes. |

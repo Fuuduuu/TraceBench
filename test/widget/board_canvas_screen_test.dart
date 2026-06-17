@@ -59,6 +59,13 @@ Future<void> _selectPlacement(WidgetTester tester, String label) async {
   await tester.pump(const Duration(milliseconds: 16));
 }
 
+Future<void> _openSafetyEvidence(WidgetTester tester) async {
+  await tester.tap(
+    find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
+  );
+  await tester.pumpAndSettle();
+}
+
 Future<void> _tapCanvasAtNormalized(
   WidgetTester tester, {
   required double x,
@@ -227,15 +234,16 @@ void main() {
 
     expect(find.byType(BoardCanvasScreen), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
     expect(
-      find.text('Footprint geometry is read-only display metadata.'),
+      find.text('Safety / Evidence'),
       findsOneWidget,
     );
     expect(find.text('No confirmed visual placements yet.'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('wide board canvas shows static read-only footprint legend',
+  testWidgets('wide board canvas uses compact controls and safety disclosure',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -253,9 +261,21 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
+      findsOneWidget,
+    );
     expect(find.text('Board projection canvas'), findsOneWidget);
     expect(
         find.text('Existing board-normalized placements only'), findsOneWidget);
+    expect(find.text('Placements'), findsOneWidget);
+    expect(find.text('R101 (cmp_r101)'), findsOneWidget);
+    expect(find.text('Safety / Evidence'), findsOneWidget);
+    expect(find.text('Body outline'), findsNothing);
+
+    await _openSafetyEvidence(tester);
+
     expect(find.text('Body outline'), findsOneWidget);
     expect(find.text('Pin pads'), findsOneWidget);
     expect(find.text('Pin-1 marker'), findsOneWidget);
@@ -332,6 +352,8 @@ void main() {
       ),
     );
     await tester.pump();
+
+    await _openSafetyEvidence(tester);
 
     expect(find.text('Measurement badge'), findsOneWidget);
     expect(
@@ -1975,6 +1997,11 @@ void main() {
     expect(source, contains('_entriesEquivalent('));
     expect(source, contains('template.pinAnchors'));
     expect(source, contains('template.orientationMarker'));
+    expect(source, isNot(contains('width: 260')));
+    expect(source, contains('_BoardCanvasControlBand'));
+    expect(source, contains('_BoardCanvasSafetyEvidenceDisclosure'));
+    expect(source, contains('board_canvas_control_band'));
+    expect(source, contains('board_canvas_safety_evidence_disclosure'));
     expect(source, isNot(contains('MeasurementEventWriter')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+`PROJECT_SOURCE_GUIDE_REFRESH_PASS`
 
 ## Type
 
-`DOCS_SYNC / POST_AUDIT_RECORD`
+`DOCS_SYNC / SOURCE_ORIENTATION_REFRESH`
 
 ## Lane
 
@@ -14,14 +14,15 @@
 
 ## Mode
 
-Repo-local docs-only governance update. Do not modify runtime code, tests, tooling, schemas, samples, generated/platform files, stage, commit, or push.
+Repo-local docs/source-orientation refresh. Do not modify runtime code, tests, tooling, schemas, samples, generated/platform files, stage, commit, or push.
 
 ## Current goal
 
-- Record that `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` was independently post-audited by Claude Code and accepted as `ACCEPT_AS_IS`.
-- Record that the implementation was committed and pushed as `bd929ca` (`feat(project-overview): polish layout density`).
-- Preserve the accepted implementation summary and validation evidence.
-- Route to `NEEDS_USER_DECISION` as the final bookkeeping step for this Project Overview / Workbench density slice.
+- Refresh repo-local assistant/source orientation after the Project Overview / Workbench layout-density route was closed out.
+- Record that the current accepted route is `NEEDS_USER_DECISION`.
+- Record latest accepted pushed work as `19fc1c9` (`docs: close out project overview layout density`).
+- Preserve accepted Project Overview / Workbench density and Board Canvas manual-smoke PASS state.
+- Keep external source-guide material orientation-only and non-canonical.
 
 ## Next recommended pass
 
@@ -29,33 +30,41 @@ Repo-local docs-only governance update. Do not modify runtime code, tests, tooli
 
 ## Baseline
 
-- Scope-lock baseline: `c59d3ae` (`docs: lock project overview layout density`)
+- Latest pushed closeout: `19fc1c9` (`docs: close out project overview layout density`)
 - Implementation commit: `bd929ca` (`feat(project-overview): polish layout density`)
 - Independent audit verdict: `ACCEPT_AS_IS`
-- Focused Flutter validation: `flutter test test/widget/project_overview_screen_test.dart` PASS (`17/17`)
-- Repo validation: `py -3 tools/validate_all.py` PASS (`273`)
-- Whitespace validation: `git diff --check` PASS; CRLF working-copy warnings only
+- Focused Flutter validation before implementation push: `flutter test test/widget/project_overview_screen_test.dart` PASS (`17/17`)
+- Repo validation before implementation push: `py -3 tools/validate_all.py` PASS (`273`)
+- Board Canvas manual smoke: PASS with user wording "kõik on passed. ja töötab"
 
 ## File allowlist for this docs-only pass
 
-Governance only:
+Governance/source-orientation docs only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/audit/PROJECT_SOURCE_GUIDE_REFRESH_PASS.md`
 
-## Accepted implementation summary to preserve
+## Accepted Project Overview density state to preserve
 
-- Project Overview / Workbench board preview is larger and more dominant.
-- Wide right rail was compacted from 300px to 252px.
-- Rail spacing/status chips/helper copy were tightened.
-- Future tools are collapsed by default using a restorable `ExpansionTile`.
+- Responsive read-only board/workbench preview enlarged and made dominant.
+- Wide right action rail compacted from 300px to 252px.
+- Rail spacing/status chips/helper copy tightened.
+- Future tools collapsed by default via restorable `ExpansionTile`.
 - Expanded Future tools remain disabled/inert.
-- Primary actions, existing routes, read-only preview behavior, and existing keys were preserved.
-- Board Canvas runtime/tests were not touched.
-- writer/schema/materializer/validator/projection/Project ZIP/facts/events surfaces were not touched.
+- Primary actions, existing routes, read-only preview behavior, and existing keys preserved.
+- Board Canvas runtime/tests untouched.
+- writer/schema/materializer/validator/projection/Project ZIP/fact/event surfaces untouched.
+
+## Accepted Board Canvas state to preserve
+
+- Board Canvas is accepted/pushed/manual-smoke PASS.
+- Renderer remains read-only with `renderer writes: none`.
+- Accepted state includes board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety/Evidence controls, canvas status overlay, and volatile inspector hide/show.
 
 ## Strict non-goals / forbidden changes
 
@@ -82,7 +91,7 @@ Governance only:
 - `sequence`
 - `Muu ühik`
 - dependency/toolchain/generated/platform changes
-- broad app-wide theme/token migration
+- new duplicate orientation/source-guide files
 
 ## Required validation
 
@@ -94,7 +103,9 @@ Governance only:
 
 ## Current route lock
 
-Current: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+Current pass: `PROJECT_SOURCE_GUIDE_REFRESH_PASS`
+
+Current accepted route: `NEEDS_USER_DECISION`
 
 Next: `NEEDS_USER_DECISION`
 

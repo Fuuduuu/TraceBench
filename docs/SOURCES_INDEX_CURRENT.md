@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Routing, handoff, and conflict-resolution index for TraceBench governance after V1 RC.
+Routing, handoff, and conflict-resolution index for current TraceBench governance.
 
 ## Current release/governance state
 
@@ -16,6 +16,15 @@ Routing, handoff, and conflict-resolution index for TraceBench governance after 
   - `docs/MODEL_ROUTING.md`
 - External/non-repo orientation pointer:
   - `TraceBench_Project_Source_Guide.md` is orientation-only material outside the canonical repo docs. Do not assume it exists in this repository, and do not treat it as canonical governance.
+
+## Current orientation snapshot
+
+- Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
+- Current accepted route: `NEEDS_USER_DECISION`.
+- Latest accepted pushed work: Project Overview / Workbench layout-density closeout `19fc1c9` (`docs: close out project overview layout density`).
+- Board Canvas density polish is accepted/pushed/manual-smoke PASS.
+- Project Overview / Workbench layout density is accepted/pushed/closed out.
+- Safe future options: manual Project Overview visual smoke record, UI-only auto-hide scope lock, multi-placement fixture coverage, or another route-review if needed.
 
 ## CURRENT_STATE size/archive discipline
 

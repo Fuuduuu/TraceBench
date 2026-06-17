@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`
 
 ## Current product state
 
@@ -32,7 +32,8 @@
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS` is accepted/pushed as `5a34980` (`docs: add tap to select closeout audit`) and returned the queue to `NEEDS_USER_DECISION`.
 - `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is completed and pushed as `2d18a39` (`docs: record board canvas interaction smoke pass with nits`). The first manual smoke attempt was `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`. Confirmed observations include one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and persistent `renderer writes: none`. Remaining limitations: single-placement sample did not validate multi-placement switching; fit/reset was not found or validated; post-fit tap alignment was not validated.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS` is accepted/pushed as `af8425d` (`docs: lock board canvas layout density`). It replaced the uncommitted narrower fit/reset draft with the broader accepted Variant B / persistent slim rails layout-density direction.
-- `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS` is the current implementation route and is limited to the first safe Board Canvas density slice: reclaim Board Canvas width/height, replace the fixed selector column with compact controls, move legend/safety copy out of the canvas panel into an accessible Safety / Evidence disclosure, and reduce surrounding padding. It preserves read-only renderer behavior, tap-to-select, chip selector keys, pan/zoom/fit behavior, measurement badges/counts, inspector content, visual-trace metadata, photo-alignment metadata-only panel, and `renderer writes: none`. Fit/reset discoverability, inspector collapse/compactness, Project Overview density, multi-placement fixture coverage, and smoke rerun remain outside this pass and route to post-audit/user decision.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS` is pushed as `16072fa` (`feat(board-canvas): reclaim canvas layout space`). It implemented the first safe Board Canvas density slice: compact selector/control band, Safety / Evidence disclosure outside the canvas panel, reduced padding, no fixed 260 selector column, and preserved read-only renderer behavior, tap-to-select, chip selector keys, pan/zoom/fit behavior, measurement badges/counts, inspector content, visual-trace metadata, photo-alignment metadata-only panel, and `renderer writes: none`.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS` is the current docs-only scope lock. User screenshot review of the pushed density slice found that the board/canvas still does not reclaim enough width or height. The next polish target is Board Canvas chrome density only: more compact top Board Canvas header/appbar area, optional explicit-toggle auto-hide for the top/header area, collapsible Placement selection, compact/collapsed Safety / Evidence by default, and a right inspector that can collapse/hide/move right so the board view becomes substantially larger. The same layout-density design direction also applies to the Workbench / Project Overview screen: larger board/workspace preview, more compact right action/navigation/future-tools rail, collapsed or quieter Future tools, compact repeated helper/status text, and optional collapse/auto-hide logic where safe. Runtime implementation must remain split: the next implementation is Board Canvas only; Project Overview / Workbench density requires a later separate pass such as `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` or `V2_WORKBENCH_LAYOUT_DENSITY_IMPL_PASS`.
 
 ## Accepted recent governance state
 

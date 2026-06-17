@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -269,5 +269,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | pushed / user-reviewed | First safe Board Canvas density slice pushed as `16072fa` (`feat(board-canvas): reclaim canvas layout space`): compact selector/control band, Safety / Evidence disclosure outside the canvas panel, reduced padding, no fixed 260 selector column, and preserved read-only/tap-select/pan-zoom-fit/measurement/footer behavior. User screenshot review found this improved density but did not reclaim enough board space. |
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | superseded by user review route | Independent post-audit route was not pursued before the pushed implementation was visually reviewed; follow-up now routes through `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS` for a second scope-locked polish slice. |
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC / SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted and pushed as `a7f58f5` (`docs: lock board canvas layout density polish`); locks compact top/header chrome, optional explicit-toggle auto-hide, collapsible Placement selection, compact/collapsed Safety / Evidence, and collapsible/hideable right inspector while preserving Board Canvas read-only behavior. Also records that the same density direction applies to Workbench / Project Overview, but runtime implementation must be split. |
-| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented / pending post-audit | Board Canvas-only layout-density polish: compact AppBar/footer/padding, collapsed Placement selector disclosure, compact collapsed Safety / Evidence disclosure, canvas status overlay, volatile inspector hide/show affordance, preserved read-only/tap-select/pan-zoom-fit/measurement/footer behavior; auto-hide and Project Overview / Workbench density deferred. |
-| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent implementation post-audit for `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`; verify no scope drift, preserved Board Canvas behavior, route-doc consistency, and no writer/schema/materializer/validator/projection/ZIP changes. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only layout-density polish accepted and pushed as `4fe7ade` (`feat(board-canvas): polish layout density`): compact AppBar/footer/padding, collapsed Placement selector disclosure, compact collapsed Safety / Evidence disclosure, canvas status overlay, volatile inspector hide/show affordance, preserved read-only/tap-select/chip-selector/pan-zoom-fit/measurement-summary/visual-trace/photo-alignment/footer behavior; auto-hide, Project Overview / Workbench density, multi-placement fixture, and manual smoke rerun deferred. Claude Code post-audit returned `ACCEPT_AS_IS` with no required fixes. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit for `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS` accepted the pushed implementation as-is with no required fixes. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout for accepted/pushed `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`; records validation and audit evidence, preserves boundaries, and routes to `NEEDS_USER_DECISION`. |

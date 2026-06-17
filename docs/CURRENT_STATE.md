@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -34,7 +34,8 @@
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_SCOPE_LOCK_PASS` is accepted/pushed as `af8425d` (`docs: lock board canvas layout density`). It replaced the uncommitted narrower fit/reset draft with the broader accepted Variant B / persistent slim rails layout-density direction.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_IMPL_PASS` is pushed as `16072fa` (`feat(board-canvas): reclaim canvas layout space`). It implemented the first safe Board Canvas density slice: compact selector/control band, Safety / Evidence disclosure outside the canvas panel, reduced padding, no fixed 260 selector column, and preserved read-only renderer behavior, tap-to-select, chip selector keys, pan/zoom/fit behavior, measurement badges/counts, inspector content, visual-trace metadata, photo-alignment metadata-only panel, and `renderer writes: none`.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `a7f58f5` (`docs: lock board canvas layout density polish`). User screenshot review of the pushed first density slice found that the board/canvas still did not reclaim enough width or height. The lock keeps the next runtime implementation Board Canvas-only while recording the same design direction for a later separate Workbench / Project Overview density pass.
-- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS` is the current implementation route. It makes Board Canvas chrome more space-efficient by using a more compact AppBar/footer/padding, a collapsed Placement selector disclosure with preserved selector chips, a compact collapsed Safety / Evidence disclosure, a canvas status overlay instead of in-flow canvas header text, and a volatile hide/show inspector affordance that lets the board/canvas expand and then restores inspector content. Auto-hide remains deferred; Project Overview / Workbench density remains a later separate pass.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `4fe7ade` (`feat(board-canvas): polish layout density`). The accepted Board Canvas-only implementation compacted AppBar/footer/padding, kept the Placement selector collapsed/compact, kept Safety / Evidence compact/collapsed and accessible, moved status into a canvas overlay, added volatile inspector hide/show for more canvas space, and preserved Board Canvas read-only behavior, tap-to-select, chip selector behavior, pan/zoom/fit, measurement badge/count, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, and `renderer writes: none`.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS` is the current docs-only closeout route. Auto-hide remains deferred; Project Overview / Workbench density remains a separate later pass; multi-placement fixture work remains deferred; manual smoke rerun remains deferred. Next recommended route is `NEEDS_USER_DECISION`.
 
 ## Accepted recent governance state
 

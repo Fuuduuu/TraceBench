@@ -15,7 +15,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Next recommended pass
 
-`NEEDS_USER_ACTION`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -264,4 +264,4 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS | CODEX / FLUTTER_IMPLEMENTATION | accepted/pushed | UI-only tap/click selection for existing rendered placements accepted and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); preserves chip selection, pan/zoom/fit, and zero-event/read-only boundaries. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit accepted tap-to-select as-is with no required fixes. |
 | V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted/pushed tap-to-select implementation; recorded validation/audit evidence and returned route to `NEEDS_USER_DECISION` as `5a34980` (`docs: add tap to select closeout audit`). |
-| V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS | CODEX / DOCS_SYNC / QA_RUN | in progress (`PARTIAL / BLOCKED_NO_PLACEMENTS`) | Manual Windows/desktop smoke reached Board Canvas empty state and confirmed `renderer writes: none`; tap-to-select, placement switching, chip selector, pan/zoom/tap alignment, and measurement badge/count steps remain blocked until a project/sample with confirmed board-normalized placements is opened or seeded. |
+| V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS | CODEX / DOCS_SYNC / QA_RUN | completed (`PASS_WITH_NITS`) | Manual Windows/desktop smoke first recorded `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` confirmed one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and `renderer writes: none`. NITs: single-placement sample did not validate multi-placement switching; fit/reset and post-fit tap alignment were not validated; pan was visibly usable after wheel zoom and viewport appearance changed after zoom. |

@@ -6,7 +6,7 @@
 
 ## Next recommended pass
 
-`NEEDS_USER_ACTION`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -30,7 +30,7 @@
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_SCOPE_LOCK_PASS` is accepted/pushed in `bbc51c1` (`docs: lock board canvas tap to select`).
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `3e61d48` (`feat(board-canvas): add tap to select`); tapping/clicking an already-rendered board-normalized placement updates only volatile Board Canvas selection state, equivalent to choosing the existing placement selector chip.
 - `V2_BOARD_CANVAS_TAP_TO_SELECT_CLOSEOUT_PASS` is accepted/pushed as `5a34980` (`docs: add tap to select closeout audit`) and returned the queue to `NEEDS_USER_DECISION`.
-- `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is the current docs-only QA route for manual Windows/desktop Board Canvas interaction smoke after tap-to-select. Manual smoke was attempted, but the opened project had no confirmed board-normalized visual placements; current result is `PARTIAL / BLOCKED_NO_PLACEMENTS`.
+- `V2_BOARD_CANVAS_INTERACTION_SMOKE_PASS` is the current docs-only QA route for manual Windows/desktop Board Canvas interaction smoke after tap-to-select. The first manual smoke attempt was `PARTIAL / BLOCKED_NO_PLACEMENTS`; rerun with `board_canvas_positive_smoke` is recorded as `PASS_WITH_NITS`. Confirmed observations include one rendered board-normalized `SMP001` placement, selector/inspector visibility, measurement badge/safety copy, measurement `M1001`, read-only visual trace metadata, photo-alignment readiness metadata, and persistent `renderer writes: none`. Remaining limitations: single-placement sample did not validate multi-placement switching; fit/reset was not found or validated; post-fit tap alignment was not validated.
 
 ## Accepted recent governance state
 

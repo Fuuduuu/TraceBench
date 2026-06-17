@@ -103,7 +103,8 @@ List<Map<String, dynamic>> _normalizedPlacementFacts() {
 }
 
 void main() {
-  testWidgets('shows stale projection banner when projection is stale', (tester) async {
+  testWidgets('shows stale projection banner when projection is stale',
+      (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
     await _pumpProjectOverview(
       tester,
@@ -116,7 +117,8 @@ void main() {
     expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
   });
 
-  testWidgets('renders workbench-first shell with dominant primary action', (tester) async {
+  testWidgets('renders workbench-first shell with dominant primary action',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -148,10 +150,12 @@ void main() {
     );
     expect(find.text('Töölaud / PCB board'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-workbench-board-preview')), findsNothing);
+    expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
+        findsNothing);
   });
 
-  testWidgets('renders compact status strip for board statistics', (tester) async {
+  testWidgets('renders compact status strip for board statistics',
+      (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),
     );
@@ -169,7 +173,8 @@ void main() {
     expect(find.text('Pole paigaldatud'), findsOneWidget);
   });
 
-  testWidgets('wide layout makes the workbench zone visually dominant', (tester) async {
+  testWidgets('wide layout makes the workbench zone visually dominant',
+      (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),
     );
@@ -182,13 +187,45 @@ void main() {
       useRouter: false,
     );
 
-    final workbenchZoneRect = tester.getRect(find.byKey(const ValueKey('overview-workbench-zone')));
-    final actionsPanelRect = tester.getRect(find.byKey(const ValueKey('overview-actions-panel')));
+    final workbenchZoneRect =
+        tester.getRect(find.byKey(const ValueKey('overview-workbench-zone')));
+    final actionsPanelRect =
+        tester.getRect(find.byKey(const ValueKey('overview-actions-panel')));
 
     expect(workbenchZoneRect.width, greaterThan(actionsPanelRect.width * 2.0));
   });
 
-  testWidgets('renders sparse-placement workbench placeholder state', (tester) async {
+  testWidgets('wide density layout gives board preview room and compacts rail',
+      (tester) async {
+    final projectState = _inlineProjectState(
+      componentVisualPlacements: _normalizedPlacementFacts(),
+    );
+    await tester.binding.setSurfaceSize(const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    final workbenchZoneRect = tester.getRect(
+      find.byKey(const ValueKey('overview-workbench-zone')),
+    );
+    final actionsPanelRect = tester.getRect(
+      find.byKey(const ValueKey('overview-actions-panel')),
+    );
+    final boardPreviewRect = tester.getRect(
+      find.byKey(const ValueKey('overview-workbench-board-preview')),
+    );
+
+    expect(actionsPanelRect.width, lessThanOrEqualTo(260));
+    expect(workbenchZoneRect.width, greaterThan(actionsPanelRect.width * 4));
+    expect(boardPreviewRect.height, greaterThanOrEqualTo(430));
+  });
+
+  testWidgets('renders sparse-placement workbench placeholder state',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -198,14 +235,19 @@ void main() {
 
     expect(find.text('PCB/workbench placeholder'), findsOneWidget);
     expect(
-      find.text('No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.'),
+      find.text(
+          'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.'),
       findsOneWidget,
     );
-    expect(find.text('Read-only projection: 1 placement(s) found'), findsNothing);
-    expect(find.byKey(const ValueKey('overview-workbench-board-preview')), findsNothing);
+    expect(
+        find.text('Read-only projection: 1 placement(s) found'), findsNothing);
+    expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
+        findsNothing);
   });
 
-  testWidgets('renders read-only board canvas when normalized placements are available', (tester) async {
+  testWidgets(
+      'renders read-only board canvas when normalized placements are available',
+      (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),
     );
@@ -215,13 +257,17 @@ void main() {
       useRouter: false,
     );
 
-    expect(find.byKey(const ValueKey('overview-workbench-board-preview')), findsOneWidget);
-    expect(find.text('Read-only projection: 1 placement(s) found'), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
+        findsOneWidget);
+    expect(find.text('Read-only projection: 1 placement(s) found'),
+        findsOneWidget);
     expect(find.text('PCB/workbench placeholder'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('future tools are present but inert', (tester) async {
+  testWidgets(
+      'future tools are collapsed by default and remain inert when restored',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -236,9 +282,34 @@ void main() {
       find.byKey(const ValueKey('overview-future-trace-colors-button')),
     ];
 
+    expect(find.byKey(const ValueKey('overview-future-tools-panel')),
+        findsOneWidget);
     for (final button in inertButtons) {
+      expect(button, findsNothing);
+    }
+
+    final futureToolsPanel =
+        find.byKey(const ValueKey('overview-future-tools-panel'));
+    await tester.ensureVisible(futureToolsPanel);
+    await tester.pump();
+    await tester.tap(futureToolsPanel);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    for (final button in inertButtons) {
+      expect(button, findsOneWidget);
       final widget = tester.widget<OutlinedButton>(button);
       expect(widget.onPressed, isNull);
+    }
+
+    await tester.ensureVisible(futureToolsPanel);
+    await tester.pump();
+    await tester.tap(futureToolsPanel);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    for (final button in inertButtons) {
+      expect(button, findsNothing);
     }
   });
 
@@ -250,18 +321,26 @@ void main() {
       useRouter: false,
     );
 
-    expect(find.byKey(const ValueKey('overview-measurement-record-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-measurement-record-button')),
+        findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-measure-sheet-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-add-component-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-edit-component-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-board-graph-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-board-canvas-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-reference-images-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-measure-sheet-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-add-component-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-edit-component-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-board-graph-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-board-canvas-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-reference-images-button')),
+        findsOneWidget);
     expect(find.byKey(const ValueKey('overview-project-id')), findsOneWidget);
   });
 
-  testWidgets('legacy measurement action routes to measure sheet', (tester) async {
+  testWidgets('legacy measurement action routes to measure sheet',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -283,7 +362,9 @@ void main() {
     expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
   });
 
-  testWidgets('legacy /project/measurements/new route remains compatibility redirect', (tester) async {
+  testWidgets(
+      'legacy /project/measurements/new route remains compatibility redirect',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -294,10 +375,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
-    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsAtLeastNWidgets(1));
+    expect(
+        find.text('Koht → Väärtus → Ühik → Salvesta'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('Add Component action navigates to add component screen', (tester) async {
+  testWidgets('Add Component action navigates to add component screen',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -318,7 +401,8 @@ void main() {
     expect(find.text('Add Component'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('Edit Component action navigates to edit component screen', (tester) async {
+  testWidgets('Edit Component action navigates to edit component screen',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -339,7 +423,8 @@ void main() {
     expect(find.text('Edit Component'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('Board Canvas action navigates to board canvas screen', (tester) async {
+  testWidgets('Board Canvas action navigates to board canvas screen',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -349,7 +434,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final boardCanvasAction = find.byKey(const ValueKey('overview-board-canvas-button'));
+    final boardCanvasAction =
+        find.byKey(const ValueKey('overview-board-canvas-button'));
     expect(boardCanvasAction, findsOneWidget);
 
     await tester.ensureVisible(boardCanvasAction);
@@ -358,8 +444,8 @@ void main() {
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets(
-      'Board Canvas action does not mutate project events', (tester) async {
+  testWidgets('Board Canvas action does not mutate project events',
+      (tester) async {
     final seededEvent = TraceBenchEvent(
       schemaVersion: '2.0.0',
       eventId: 'evt-overview-canvas-readonly',
@@ -384,10 +470,14 @@ void main() {
     await tester.pumpAndSettle();
 
     final initialEvents = List<String>.from(
-      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
     );
 
-    final boardCanvasAction = find.byKey(const ValueKey('overview-board-canvas-button'));
+    final boardCanvasAction =
+        find.byKey(const ValueKey('overview-board-canvas-button'));
     expect(boardCanvasAction, findsOneWidget);
     await tester.ensureVisible(boardCanvasAction);
     await tester.tap(boardCanvasAction);
@@ -396,12 +486,16 @@ void main() {
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
 
     final resultingEvents = List<String>.from(
-      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
     );
     expect(resultingEvents, equals(initialEvents));
   });
 
-  testWidgets('Reference Images action navigates to reference image screen', (tester) async {
+  testWidgets('Reference Images action navigates to reference image screen',
+      (tester) async {
     final projectState = _inlineProjectState();
     await _pumpProjectOverview(
       tester,
@@ -411,7 +505,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final referenceImagesAction = find.byKey(const ValueKey('overview-reference-images-button'));
+    final referenceImagesAction =
+        find.byKey(const ValueKey('overview-reference-images-button'));
     expect(referenceImagesAction, findsOneWidget);
     await tester.ensureVisible(referenceImagesAction);
     await tester.tap(referenceImagesAction);
@@ -419,7 +514,9 @@ void main() {
     expect(find.text('Reference Images'), findsAtLeastNWidgets(1));
   });
 
-  testWidgets('overview shell does not mutate project events on render or measurement navigation', (tester) async {
+  testWidgets(
+      'overview shell does not mutate project events on render or measurement navigation',
+      (tester) async {
     final seededEvent = TraceBenchEvent(
       schemaVersion: '2.0.0',
       eventId: 'evt-overview-readonly',
@@ -444,7 +541,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final initialEvents = List<String>.from(
-      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
     );
 
     final measureSheetAction = find.byKey(
@@ -455,7 +555,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final resultingEvents = List<String>.from(
-      container.read(projectStateProvider)!.events.map((event) => event.eventId),
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
     );
     expect(resultingEvents, equals(initialEvents));
   });

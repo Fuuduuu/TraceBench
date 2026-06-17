@@ -59,7 +59,9 @@ class ProjectOverviewScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ProjectionStaleBanner(isStale: projectState.isProjectionStale),
+                  ProjectionStaleBanner(
+                    isStale: projectState.isProjectionStale,
+                  ),
                   const SizedBox(height: 8),
                   _WorkbenchShellLayout(
                     boardContextDetails: boardContextDetails,
@@ -118,7 +120,7 @@ class _WorkbenchShellLayout extends StatelessWidget {
 
         final actionRail = SizedBox(
           key: const ValueKey('overview-actions-panel'),
-          width: isWide ? 300 : double.infinity,
+          width: isWide ? 252 : double.infinity,
           child: _ActionRailCard(projectState: projectState),
         );
 
@@ -127,10 +129,9 @@ class _WorkbenchShellLayout extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 8,
                 child: workbenchZone,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               actionRail,
             ],
           );
@@ -140,7 +141,7 @@ class _WorkbenchShellLayout extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             workbenchZone,
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             actionRail,
           ],
         );
@@ -175,12 +176,14 @@ class _WorkbenchZoneCard extends StatelessWidget {
         ? 'No usable board placement is available yet.'
         : 'Read-only projection: ${boardPlacements.length} placement(s) found';
     final subtitle = isBeginnerMode
-        ? (hasSymptom ? projectState.manifest.symptom : 'Start from board view first.')
+        ? (hasSymptom
+            ? projectState.manifest.symptom
+            : 'Start from board view first.')
         : boardContextDetails;
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -199,7 +202,11 @@ class _WorkbenchZoneCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text(humanReadableTitle, style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              humanReadableTitle,
+              style: Theme.of(context).textTheme.titleSmall,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 4),
             Text(
               boardSummary,
@@ -216,7 +223,6 @@ class _WorkbenchZoneCard extends StatelessWidget {
                 boardPlacements: boardPlacements,
                 componentFacts: projectState.knownFacts.components,
               ),
-            const SizedBox(height: 8),
             const SizedBox(height: 4),
             SizedBox(
               key: const ValueKey('overview-status-strip'),
@@ -225,13 +231,25 @@ class _WorkbenchZoneCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _OverviewChip(label: 'Kõik komponendid', value: projectState.componentCount),
+                    _OverviewChip(
+                      label: 'Kõik komponendid',
+                      value: projectState.componentCount,
+                    ),
                     const SizedBox(width: 6),
-                    _OverviewChip(label: 'Mõõtmised', value: projectState.measurementCount),
+                    _OverviewChip(
+                      label: 'Mõõtmised',
+                      value: projectState.measurementCount,
+                    ),
                     const SizedBox(width: 6),
-                    _OverviewChip(label: 'Aktiivne', value: projectState.activeMeasurementCount),
+                    _OverviewChip(
+                      label: 'Aktiivne',
+                      value: projectState.activeMeasurementCount,
+                    ),
                     const SizedBox(width: 6),
-                    _OverviewChip(label: 'Aegunud', value: projectState.staleMeasurementCount),
+                    _OverviewChip(
+                      label: 'Aegunud',
+                      value: projectState.staleMeasurementCount,
+                    ),
                     const SizedBox(width: 6),
                     _OverviewChip(
                       label: 'Pole paigaldatud',
@@ -242,11 +260,6 @@ class _WorkbenchZoneCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              'Toimingute mõju ja mõõtmised on kontekstis allpool.',
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-            const SizedBox(height: 8),
             if (projectState.manifest.projectId == 'prj_pelle_pv20_001')
               const Chip(label: Text('Bundled sample')),
           ],
@@ -272,84 +285,105 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
       for (final component in componentFacts) component.componentId: component,
     };
 
-    return Card(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Board workspace (read-only)',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 6),
-            SizedBox(
-              height: 300,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) {
-                    return const SizedBox.shrink();
-                  }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final boardHeight = constraints.maxWidth >= 900
+            ? 430.0
+            : constraints.maxWidth >= 640
+                ? 380.0
+                : 320.0;
 
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: _WorkbenchGridPainter(),
-                          ),
-                        ),
-                        ...boardPlacements.map((placement) {
-                          final designator = componentById[placement.componentId]
-                                  ?.designator
-                                  ?.trim() ??
-                              placement.componentId;
-                          final x = _clamp(placement.centerX.toDouble());
-                          final y = _clamp(placement.centerY.toDouble());
-                          final size =
-                              math.max(24.0, constraints.maxWidth * 0.03).clamp(24.0, 48.0);
-                          return Positioned(
-                            left: x * (constraints.maxWidth - size) + 1,
-                            top: y * (constraints.maxHeight - size) + 1,
-                            child: _WorkbenchPlacementBadge(
-                              designator: designator,
-                              isSelected: false,
-                              size: size,
-                            ),
-                          );
-                        }),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              'renderer writes: none',
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Placement summary is read-only and local only.',
-              style: TextStyle(fontSize: 11.5),
+            borderRadius: BorderRadius.circular(8),
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Board workspace (read-only)',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 6),
+                SizedBox(
+                  height: boardHeight,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth <= 0 ||
+                          constraints.maxHeight <= 0) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHigh,
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: CustomPaint(
+                                painter: _WorkbenchGridPainter(),
+                              ),
+                            ),
+                            ...boardPlacements.map((placement) {
+                              final designator =
+                                  componentById[placement.componentId]
+                                          ?.designator
+                                          ?.trim() ??
+                                      placement.componentId;
+                              final x = _clamp(placement.centerX.toDouble());
+                              final y = _clamp(placement.centerY.toDouble());
+                              final size = math
+                                  .max(24.0, constraints.maxWidth * 0.03)
+                                  .clamp(24.0, 48.0);
+                              return Positioned(
+                                left: x * (constraints.maxWidth - size) + 1,
+                                top: y * (constraints.maxHeight - size) + 1,
+                                child: _WorkbenchPlacementBadge(
+                                  designator: designator,
+                                  isSelected: false,
+                                  size: size,
+                                ),
+                              );
+                            }),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  'renderer writes: none',
+                                  style: Theme.of(context).textTheme.labelSmall,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Placement summary is read-only and local only.',
+                  style: TextStyle(fontSize: 11.5),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -415,7 +449,10 @@ class _WorkbenchPlacementBadge extends StatelessWidget {
           color: isSelected
               ? Theme.of(context).colorScheme.primaryContainer
               : const Color(0xFFD4C7A8),
-          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary,
+            width: 1.5,
+          ),
         ),
         child: Center(
           child: Text(
@@ -445,33 +482,41 @@ class _WorkbenchPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.dashboard_customize_outlined, size: 36),
-              const SizedBox(height: 10),
-              const Text('PCB/workbench placeholder'),
-              const SizedBox(height: 6),
-              const Text(
-                'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12),
-              ),
-              const SizedBox(height: 6),
-              const Text('Context and route behavior are preserved.'),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final placeholderHeight = constraints.maxWidth >= 720 ? 360.0 : 320.0;
+
+        return Container(
+          height: placeholderHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
           ),
-        ),
-      ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.dashboard_customize_outlined, size: 34),
+                  const SizedBox(height: 8),
+                  const Text('PCB/workbench placeholder'),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text('Context and route behavior are preserved.'),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -486,10 +531,11 @@ class _ActionRailCard extends StatelessWidget {
     final outlinedButtonStyle = OutlinedButton.styleFrom(
       visualDensity: VisualDensity.compact,
       minimumSize: const Size(0, 34),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
+    final sectionTitleStyle = Theme.of(context).textTheme.labelLarge;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -498,28 +544,31 @@ class _ActionRailCard extends StatelessWidget {
           key: const ValueKey('overview-measurement-record-button'),
           onPressed: () => context.go('/project/measure-sheet'),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
             textStyle: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w700,
             ),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           icon: const Icon(Icons.science_outlined, size: 18),
           label: const Text('Lisa mõõtmine'),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Card(
+          margin: const EdgeInsets.symmetric(vertical: 2),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(7),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Võtted', style: Theme.of(context).textTheme.titleSmall),
+                Text('Võtted', style: sectionTitleStyle),
                 const SizedBox(height: 6),
                 Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
+                  spacing: 5,
+                  runSpacing: 5,
                   children: [
                     OutlinedButton(
                       key: const ValueKey('overview-measure-sheet-button'),
@@ -545,18 +594,19 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Card(
+          margin: const EdgeInsets.symmetric(vertical: 2),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(7),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Navigatsioon', style: Theme.of(context).textTheme.titleSmall),
+                Text('Navigatsioon', style: sectionTitleStyle),
                 const SizedBox(height: 6),
                 Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
+                  spacing: 5,
+                  runSpacing: 5,
                   children: [
                     OutlinedButton(
                       key: const ValueKey('overview-board-graph-button'),
@@ -588,15 +638,15 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         ExpansionTile(
           title: const Text('Muud tegevused'),
           tilePadding: EdgeInsets.zero,
-          childrenPadding: const EdgeInsets.only(bottom: 10, left: 8, right: 8),
+          childrenPadding: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
           children: [
             Wrap(
-              spacing: 6,
-              runSpacing: 6,
+              spacing: 5,
+              runSpacing: 5,
               children: [
                 OutlinedButton(
                   key: const ValueKey('overview-measurements-button'),
@@ -639,51 +689,58 @@ class _ActionRailCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Card(
+          margin: const EdgeInsets.symmetric(vertical: 2),
           color: Theme.of(context).colorScheme.surfaceContainerLow,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Future tools (tulekul)', style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    OutlinedButton(
-                      key: const ValueKey('overview-future-contour-button'),
-                      onPressed: null,
-                      style: outlinedButtonStyle,
-                      child: const Text('Lisa kontuur'),
-                    ),
-                    OutlinedButton(
-                      key: const ValueKey('overview-future-photo-button'),
-                      onPressed: null,
-                      style: outlinedButtonStyle,
-                      child: const Text('Tuvasta foto abil'),
-                    ),
-                    OutlinedButton(
-                      key: const ValueKey('overview-future-layers-button'),
-                      onPressed: null,
-                      style: outlinedButtonStyle,
-                      child: const Text('Layers'),
-                    ),
-                    OutlinedButton(
-                      key: const ValueKey('overview-future-trace-colors-button'),
-                      onPressed: null,
-                      style: outlinedButtonStyle,
-                      child: const Text('Trace colors'),
-                    ),
-                  ],
-                ),
-              ],
+          child: ExpansionTile(
+            key: const ValueKey('overview-future-tools-panel'),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+            childrenPadding: const EdgeInsets.only(
+              bottom: 8,
+              left: 8,
+              right: 8,
             ),
+            title: Text('Future tools (tulekul)', style: sectionTitleStyle),
+            subtitle: Text(
+              'Disabled',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            children: [
+              Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: [
+                  OutlinedButton(
+                    key: const ValueKey('overview-future-contour-button'),
+                    onPressed: null,
+                    style: outlinedButtonStyle,
+                    child: const Text('Lisa kontuur'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey('overview-future-photo-button'),
+                    onPressed: null,
+                    style: outlinedButtonStyle,
+                    child: const Text('Tuvasta foto abil'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey('overview-future-layers-button'),
+                    onPressed: null,
+                    style: outlinedButtonStyle,
+                    child: const Text('Layers'),
+                  ),
+                  OutlinedButton(
+                    key: const ValueKey('overview-future-trace-colors-button'),
+                    onPressed: null,
+                    style: outlinedButtonStyle,
+                    child: const Text('Trace colors'),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         Text(
           projectState.manifest.projectId,
           key: const ValueKey('overview-project-id'),
@@ -732,17 +789,18 @@ class _OverviewChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: SizedBox(
-        width: 118,
+        width: 112,
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+            border:
+                Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             child: Row(
               children: [
                 Expanded(
@@ -752,10 +810,10 @@ class _OverviewChip extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Text(
                   value.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),

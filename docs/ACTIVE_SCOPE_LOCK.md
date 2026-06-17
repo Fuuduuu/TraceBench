@@ -2,109 +2,66 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-`FLUTTER_IMPLEMENTATION`
+`DOCS_SYNC / POST_AUDIT_RECORD`
 
 ## Lane
 
-`CODEX / FLUTTER_UI_POLISH`
+`CODEX / DOCS_SYNC`
 
 ## Mode
 
-Implement the locked Project Overview / Workbench layout-density slice. Do not broaden scope, stage, commit, or push.
+Repo-local docs-only governance update. Do not modify runtime code, tests, tooling, schemas, samples, generated/platform files, stage, commit, or push.
 
 ## Current goal
 
-- Make the main Project Overview / Workbench board preview larger and more visually dominant.
-- Compact top/header/status/helper text where safe.
-- Compact the right action/navigation rail.
-- Make Future tools visually quieter and collapsed by default.
-- Preserve primary actions, route behavior, read-only boundaries, and disabled/inert future-tool behavior.
+- Record that `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` was independently post-audited by Claude Code and accepted as `ACCEPT_AS_IS`.
+- Record that the implementation was committed and pushed as `bd929ca` (`feat(project-overview): polish layout density`).
+- Preserve the accepted implementation summary and validation evidence.
+- Route to `NEEDS_USER_DECISION` as the final bookkeeping step for this Project Overview / Workbench density slice.
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Baseline
 
 - Scope-lock baseline: `c59d3ae` (`docs: lock project overview layout density`)
-- Board Canvas density polish implementation: `4fe7ade` (`feat(board-canvas): polish layout density`)
-- Board Canvas density polish closeout: `09cdeb7` (`docs: close out board canvas layout density polish`)
-- Board Canvas density polish smoke record: `d6cb892` (`docs: record board canvas layout density polish smoke`)
-- Board Canvas manual smoke result: PASS, user wording "kõik on passed. ja töötab"
-- The Board Canvas density scope lock explicitly deferred the same density direction for Workbench / Project Overview as a separate implementation pass.
+- Implementation commit: `bd929ca` (`feat(project-overview): polish layout density`)
+- Independent audit verdict: `ACCEPT_AS_IS`
+- Focused Flutter validation: `flutter test test/widget/project_overview_screen_test.dart` PASS (`17/17`)
+- Repo validation: `py -3 tools/validate_all.py` PASS (`273`)
+- Whitespace validation: `git diff --check` PASS; CRLF working-copy warnings only
 
-## Naming / surface alias
+## File allowlist for this docs-only pass
 
-Repo runtime uses `ProjectOverviewScreen` in:
-
-- `lib/features/project/screens/project_overview_screen.dart`
-
-Repo tests use:
-
-- `test/widget/project_overview_screen_test.dart`
-
-Existing screen copy and tests also refer to the central surface as Workbench / workbench zone (`overview-workbench-zone`). In this implementation pass, "Project Overview" and "Workbench" refer to that same Project Overview / Workbench Home screen surface, not Board Canvas.
-
-## File allowlist for this implementation pass
-
-Runtime:
-
-- `lib/features/project/screens/project_overview_screen.dart`
-
-Tests:
-
-- `test/widget/project_overview_screen_test.dart`
-
-Governance:
+Governance only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS.md`
+- `docs/audit/V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS.md`
 
-Do not touch Board Canvas runtime/tests in this Project Overview implementation unless a separate pass is selected.
+## Accepted implementation summary to preserve
 
-## Locked implementation scope
-
-Allow Project Overview / Workbench layout density only:
-
-1. Make the main project/workspace/board preview area larger and more dominant.
-2. Compact top/header/status/helper text where possible.
-3. Compact the right action/navigation rail.
-4. Collapse or visually quiet Future tools by default.
-5. Keep primary actions discoverable and usable.
-6. Keep read-only/future-tool boundaries clear.
-7. Allow UI-only volatile collapse/hide behavior for panels if safe.
-8. Preserve all existing project navigation and existing enabled actions.
-
-## User direction preserved
-
-- The same layout-density logic that improved Board Canvas should apply to Workbench / Project Overview.
-- Board/workspace preview should become larger and more dominant.
-- Right-side action/navigation/future-tools rail should become more compact.
-- Future tools should be collapsed or visually quieter by default.
-- Repeated helper/status text should become compact.
-- Action/menu areas should remain usable but should not consume excessive board/workspace area.
-- Optional collapse/hide behavior may apply to Workbench panels where safe.
-- UI should remain technician-first and fast to scan.
-
-## Strict accessibility rules
-
-- Critical actions must not become hover-only.
-- Collapsed panels must remain restorable by click/tap/keyboard.
-- Labels and semantics should remain understandable.
-- Future/disabled tools must remain clearly disabled/inert, not misleadingly active.
+- Project Overview / Workbench board preview is larger and more dominant.
+- Wide right rail was compacted from 300px to 252px.
+- Rail spacing/status chips/helper copy were tightened.
+- Future tools are collapsed by default using a restorable `ExpansionTile`.
+- Expanded Future tools remain disabled/inert.
+- Primary actions, existing routes, read-only preview behavior, and existing keys were preserved.
+- Board Canvas runtime/tests were not touched.
+- writer/schema/materializer/validator/projection/Project ZIP/facts/events surfaces were not touched.
 
 ## Strict non-goals / forbidden changes
 
-- Board Canvas runtime
-- Board Canvas tests
-- Board Canvas tap-to-select/pan/zoom/fit/layout
+- Runtime code
+- Tests
+- Board Canvas runtime/tests
 - Save Measurement behavior
 - Add Component behavior
 - Edit Component behavior
@@ -129,8 +86,6 @@ Allow Project Overview / Workbench layout density only:
 
 ## Required validation
 
-- `dart format --output=none --set-exit-if-changed lib/features/project/screens/project_overview_screen.dart test/widget/project_overview_screen_test.dart`
-- `flutter test test/widget/project_overview_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --name-status`
 - `git diff --cached --name-status`
@@ -139,9 +94,9 @@ Allow Project Overview / Workbench layout density only:
 
 ## Current route lock
 
-Current: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
+Current: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 
-Next: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Scope carry-forward
 
@@ -150,5 +105,5 @@ Next: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 - `known_facts.json` remains projection/cache.
 - AI/helper must not author canonical events or canonical facts.
 - Project ZIP import/export remains out of scope.
-- This implementation does not reopen Board Canvas layout-density implementation.
-- This implementation does not change canonical fact/event/write behavior.
+- This docs-only pass does not reopen Project Overview implementation.
+- This docs-only pass does not change canonical fact/event/write behavior.

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -274,5 +274,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted/pushed `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`; accepted/pushed as `09cdeb7` (`docs: close out board canvas layout density polish`), records validation and audit evidence, preserves boundaries, and routes to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual QA record accepted/pushed as `d6cb892` (`docs: record board canvas layout density polish smoke`); user-reported Board Canvas layout-density polish smoke PASS with exact wording "kõik on passed. ja töötab"; no runtime/test/tooling changes; routed to `NEEDS_USER_DECISION`. |
 | V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC / SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `c59d3ae` (`docs: lock project overview layout density`) for the deferred Project Overview / Workbench density track after accepted Board Canvas layout-density polish; implementation target is `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`. |
-| V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented / pending post-audit | Project Overview / Workbench-only layout-density implementation: enlarged board/workspace preview, compacted action/navigation/future-tools rail and helper/status text, kept primary actions usable, preserved routes/read-only/future-tool boundaries, and avoided Board Canvas/runtime evidence-surface drift. |
-| V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent implementation post-audit for `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`; verify scoped diff, focused tests, validation, accessibility/restorability, disabled Future tools, and forbidden-surface non-touch before any closeout. |
+| V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Project Overview / Workbench-only layout-density implementation accepted and pushed as `bd929ca` (`feat(project-overview): polish layout density`): enlarged board/workspace preview, compacted right rail from 300px to 252px, tightened rail spacing/status chips/helper copy, collapsed Future tools by default with restorable disabled/inert expanded tools, kept primary actions usable, preserved routes/read-only/future-tool boundaries, and avoided Board Canvas/runtime evidence-surface drift. |
+| V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted (`ACCEPT_AS_IS`) / current bookkeeping | Independent Claude Code implementation post-audit accepted `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` as-is; docs-only post-audit/closeout bookkeeping records accepted pushed state and routes to `NEEDS_USER_DECISION`. |

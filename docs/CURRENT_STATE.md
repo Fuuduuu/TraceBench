@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current product state
 
@@ -38,7 +38,7 @@
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS` is accepted/pushed as `09cdeb7` (`docs: close out board canvas layout density polish`) and returned the route to `NEEDS_USER_DECISION`.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS` is accepted/pushed as `d6cb892` (`docs: record board canvas layout density polish smoke`). User reported the post-closeout Board Canvas layout-density polish smoke as PASS with exact wording: "kõik on passed. ja töötab". The user-reported checklist confirms larger board/canvas area, collapsed/compact Placement and Safety / Evidence controls that open normally, visible/hideable/restorable inspector, wider canvas with inspector hidden, tap-to-select, chip selector, mouse-wheel zoom, pan after zoom, fit/reset discoverability, measurement badge/count, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, persistent `renderer writes: none`, and no authoring/write/save/edit controls observed.
 - `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS` is accepted/pushed as `c59d3ae` (`docs: lock project overview layout density`).
-- `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` is implemented and pending post-audit. The implementation enlarges the Project Overview / Workbench board preview, compacts the right action/navigation rail, collapses Future tools by default while keeping them disabled/inert after restore, reduces repeated helper/status chrome, and preserves primary actions, existing routes, read-only preview behavior, Board Canvas boundaries, and writer/schema/materializer/validator/projection/Project ZIP surfaces.
+- `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` is accepted, committed, and pushed as `bd929ca` (`feat(project-overview): polish layout density`). Claude Code independent post-audit returned `ACCEPT_AS_IS`. The accepted implementation enlarges the Project Overview / Workbench board preview, compacts the right action/navigation rail from 300px to 252px, collapses Future tools by default while keeping them disabled/inert after restore, reduces repeated helper/status chrome, and preserves primary actions, existing routes, read-only preview behavior, Board Canvas boundaries, and writer/schema/materializer/validator/projection/Project ZIP surfaces.
 
 ## Accepted recent governance state
 

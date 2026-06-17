@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS`
+`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -271,4 +271,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SYNC / SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted and pushed as `a7f58f5` (`docs: lock board canvas layout density polish`); locks compact top/header chrome, optional explicit-toggle auto-hide, collapsible Placement selection, compact/collapsed Safety / Evidence, and collapsible/hideable right inspector while preserving Board Canvas read-only behavior. Also records that the same density direction applies to Workbench / Project Overview, but runtime implementation must be split. |
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only layout-density polish accepted and pushed as `4fe7ade` (`feat(board-canvas): polish layout density`): compact AppBar/footer/padding, collapsed Placement selector disclosure, compact collapsed Safety / Evidence disclosure, canvas status overlay, volatile inspector hide/show affordance, preserved read-only/tap-select/chip-selector/pan-zoom-fit/measurement-summary/visual-trace/photo-alignment/footer behavior; auto-hide, Project Overview / Workbench density, multi-placement fixture, and manual smoke rerun deferred. Claude Code post-audit returned `ACCEPT_AS_IS` with no required fixes. |
 | V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted (`ACCEPT_AS_IS`) | Independent implementation post-audit for `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS` accepted the pushed implementation as-is with no required fixes. |
-| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | current | Docs-only closeout for accepted/pushed `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`; records validation and audit evidence, preserves boundaries, and routes to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS | CODEX / DOCS_CLOSEOUT | accepted/pushed | Docs-only closeout for accepted/pushed `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS`; accepted/pushed as `09cdeb7` (`docs: close out board canvas layout density polish`), records validation and audit evidence, preserves boundaries, and routes to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | current | Docs-only manual QA record after accepted/pushed layout-density polish; user-reported Board Canvas layout-density polish smoke PASS with exact wording "kõik on passed. ja töötab"; no runtime/test/tooling changes; routes to `NEEDS_USER_DECISION`. |

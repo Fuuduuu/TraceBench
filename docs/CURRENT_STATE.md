@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Current product state
 
@@ -36,7 +36,8 @@
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `a7f58f5` (`docs: lock board canvas layout density polish`). User screenshot review of the pushed first density slice found that the board/canvas still did not reclaim enough width or height. The lock keeps the next runtime implementation Board Canvas-only while recording the same design direction for a later separate Workbench / Project Overview density pass.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_IMPL_PASS` is implemented, audited, accepted, committed, and pushed as `4fe7ade` (`feat(board-canvas): polish layout density`). The accepted Board Canvas-only implementation compacted AppBar/footer/padding, kept the Placement selector collapsed/compact, kept Safety / Evidence compact/collapsed and accessible, moved status into a canvas overlay, added volatile inspector hide/show for more canvas space, and preserved Board Canvas read-only behavior, tap-to-select, chip selector behavior, pan/zoom/fit, measurement badge/count, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, and `renderer writes: none`.
 - `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_CLOSEOUT_PASS` is accepted/pushed as `09cdeb7` (`docs: close out board canvas layout density polish`) and returned the route to `NEEDS_USER_DECISION`.
-- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS` is the current docs-only manual QA record route. User reported the post-closeout Board Canvas layout-density polish smoke as PASS with exact wording: "kõik on passed. ja töötab". The user-reported checklist confirms larger board/canvas area, collapsed/compact Placement and Safety / Evidence controls that open normally, visible/hideable/restorable inspector, wider canvas with inspector hidden, tap-to-select, chip selector, mouse-wheel zoom, pan after zoom, fit/reset discoverability, measurement badge/count, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, persistent `renderer writes: none`, and no authoring/write/save/edit controls observed. No screenshots are recorded as attached in repo context. Auto-hide, Project Overview / Workbench density, and multi-placement fixture work remain deferred. Next recommended route is `NEEDS_USER_DECISION`.
+- `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS` is accepted/pushed as `d6cb892` (`docs: record board canvas layout density polish smoke`). User reported the post-closeout Board Canvas layout-density polish smoke as PASS with exact wording: "kõik on passed. ja töötab". The user-reported checklist confirms larger board/canvas area, collapsed/compact Placement and Safety / Evidence controls that open normally, visible/hideable/restorable inspector, wider canvas with inspector hidden, tap-to-select, chip selector, mouse-wheel zoom, pan after zoom, fit/reset discoverability, measurement badge/count, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, persistent `renderer writes: none`, and no authoring/write/save/edit controls observed.
+- `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS` is the current docs-only scope-lock route. It opens the deferred separate Project Overview / Workbench density track that was recorded during Board Canvas layout-density work: larger board/workspace preview, compact right action/navigation/future-tools rail, visually quieter Future tools, compact helper/status text, usable primary actions, optional UI-only collapse/hide where safe, and technician-first scan speed. Future implementation target is `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`.
 
 ## Accepted recent governance state
 

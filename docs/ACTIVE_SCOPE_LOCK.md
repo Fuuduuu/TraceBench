@@ -2,41 +2,55 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
 ## Type
 
-`DOCS_MANUAL_QA_RECORD`
+`DOCS_SYNC / SCOPE_LOCK`
 
 ## Lane
 
-`CODEX / DOCS_MANUAL_QA_RECORD`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Mode
 
-Documentation/manual QA record only. Do not modify runtime code, tests, tooling, schemas, samples, Project ZIP logic, writer/materializer/validator/projection files, stage, commit, or push.
+Documentation scope-lock only. Do not modify runtime code, tests, tooling, schemas, samples, Project ZIP logic, writer/materializer/validator/projection files, stage, commit, or push.
 
 ## Current goal
 
-- Record the user-reported manual Board Canvas layout-density polish smoke result as PASS.
-- Record exact user wording: "kõik on passed. ja töötab".
-- Record the checklist summary without inventing screenshots or observations beyond user-reported context.
+- Create the separate Project Overview / Workbench layout-density scope lock that was deferred during Board Canvas layout-density polish.
+- Keep this pass docs-only.
+- Lock future implementation target:
+  - `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
 - Return route docs to:
-  - Current: `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS`
-  - Next recommended: `NEEDS_USER_DECISION`
+  - Current: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
+  - Next recommended: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Baseline
 
-- Accepted closeout commit: `09cdeb7` (`docs: close out board canvas layout density polish`)
-- Accepted implementation commit: `4fe7ade` (`feat(board-canvas): polish layout density`)
-- Startup route context: closeout pass was pushed; route availability was `NEEDS_USER_DECISION` via next recommended route.
-- User-reported smoke result: PASS
+- Board Canvas density polish implementation: `4fe7ade` (`feat(board-canvas): polish layout density`)
+- Board Canvas density polish closeout: `09cdeb7` (`docs: close out board canvas layout density polish`)
+- Board Canvas density polish smoke record: `d6cb892` (`docs: record board canvas layout density polish smoke`)
+- Board Canvas manual smoke result: PASS, user wording "kõik on passed. ja töötab"
+- The Board Canvas density scope lock explicitly deferred the same density direction for Workbench / Project Overview as a separate implementation pass.
 
-## File allowlist for this manual QA record pass
+## Naming / surface alias
+
+Repo runtime uses `ProjectOverviewScreen` in:
+
+- `lib/features/project/screens/project_overview_screen.dart`
+
+Repo tests use:
+
+- `test/widget/project_overview_screen_test.dart`
+
+Existing screen copy and tests also refer to the central surface as Workbench / workbench zone (`overview-workbench-zone`). In this scope lock, "Project Overview" and "Workbench" refer to that same Project Overview / Workbench Home screen surface, not Board Canvas.
+
+## File allowlist for this scope-lock pass
 
 Docs only:
 
@@ -44,62 +58,101 @@ Docs only:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS.md`
+- `docs/audit/V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS.md`
 
-## Smoke record scope
+## Expected future touch set
 
-Record the user-reported PASS checklist:
+Future implementation should likely touch only:
 
-1. Board/canvas is noticeably larger.
-2. Placement selector is collapsed/compact and opens normally.
-3. Safety / Evidence is collapsed/compact and opens normally.
-4. Inspector is visible.
-5. Inspector hide/collapse works.
-6. Inspector restore works and content returns.
-7. Canvas becomes wider when inspector is hidden.
-8. Tap-to-select works.
-9. Chip/selector selection works.
-10. Mouse wheel zoom works.
-11. Pan works after zoom.
-12. Fit/reset is discoverable/works.
-13. Measurement badge/count remains visible.
-14. Measurement summary remains visible.
-15. Visual-trace metadata remains visible.
-16. Photo-alignment readiness metadata-only panel remains visible.
-17. Footer still shows `renderer writes: none`.
-18. No authoring/write/save/edit controls appeared.
+Runtime:
 
-## Deferred / not implemented
+- `lib/features/project/screens/project_overview_screen.dart`
 
-- Auto-hide remains deferred.
-- Project Overview / Workbench density remains a separate later pass.
-- Multi-placement fixture remains deferred unless separately scoped.
+Tests:
 
-## Strict non-goals / forbidden changes
+- `test/widget/project_overview_screen_test.dart`
 
-- runtime code
-- tests
-- tooling
-- schemas
-- samples
-- pubspec files
-- Project ZIP logic
-- writer/materializer/validator/projection files
-- platform/generated files
+Governance:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS.md`
+
+Do not touch Board Canvas runtime/tests in this Project Overview implementation unless a separate pass is selected.
+
+## Locked Future Implementation Scope
+
+Allow future implementation to improve Project Overview / Workbench layout density only:
+
+1. Make the main project/workspace/board preview area larger and more dominant.
+2. Compact top/header/status/helper text where possible.
+3. Compact the right action/navigation rail.
+4. Collapse or visually quiet Future tools by default.
+5. Keep primary actions discoverable and usable.
+6. Keep read-only/future-tool boundaries clear.
+7. Allow UI-only volatile collapse/hide behavior for panels if safe.
+8. Preserve all existing project navigation and existing enabled actions.
+
+## User Direction To Preserve
+
+- The same layout-density logic that improved Board Canvas should apply to Workbench / Project Overview.
+- Board/workspace preview should become larger and more dominant.
+- Right-side action/navigation/future-tools rail should become more compact.
+- Future tools should be collapsed or visually quieter by default.
+- Repeated helper/status text should become compact.
+- Action/menu areas should remain usable but should not consume excessive board/workspace area.
+- Optional collapse/hide behavior may apply to Workbench panels where safe.
+- UI should remain technician-first and fast to scan.
+
+## Strict Accessibility Rules
+
+- Critical actions must not become hover-only.
+- Collapsed panels must remain restorable by click/tap/keyboard.
+- Labels and semantics should remain understandable.
+- Future/disabled tools must remain clearly disabled/inert, not misleadingly active.
+
+## Strict Non-Goals / Forbidden Changes
+
+- Board Canvas runtime
+- Board Canvas tap-to-select/pan/zoom/fit/layout
+- Save Measurement behavior
+- Add Component behavior
+- Edit Component behavior
+- Reference Images behavior
+- writer service
+- `MeasurementEventWriter`
+- schema/model
+- validator/materializer/projection
+- Project ZIP import/export
+- `known_facts` mutation
+- `events.jsonl` write path
 - facts/events/coordinates
 - placement/measurement/marker editing
 - probe/pin/pad anchors
 - net/path/trace inference
 - visual_trace geometry
 - photo/layers/AI/OCR/CV
-- Save/Add/Edit behavior
-- `known_facts` mutation
-- `events.jsonl` mutation
 - `sequence`
 - `Muu ühik`
-- screenshots or visual evidence claims not present in repo/context
-- automated validation claims not actually run in this pass
-- unrelated docs
+- dependency/toolchain/generated/platform changes
+- broad app-wide theme/token migration
+
+## Expected Future Tests
+
+Future implementation should test:
+
+1. Project Overview / Workbench screen still renders.
+2. Main workspace/preview area is more dominant where practical to assert.
+3. Right action/navigation/future-tools rail remains usable but more compact.
+4. Future tools remain disabled/inert/visually quiet where applicable.
+5. Primary actions remain discoverable.
+6. Collapsed/hidden panels, if implemented, can be restored.
+7. No Board Canvas runtime changed.
+8. No writer/schema/materializer/validator/projection/Project ZIP changes.
+9. No authoring/write behavior changes unless already existing and explicitly enabled.
+10. Source-boundary guard remains intact if the repo has one.
 
 ## Required validation
 
@@ -110,9 +163,9 @@ Record the user-reported PASS checklist:
 
 ## Current route lock
 
-Current: `V2_BOARD_CANVAS_LAYOUT_DENSITY_POLISH_SMOKE_PASS`
+Current: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS`
 
 ## Scope-lock carry-forward
 
@@ -121,5 +174,5 @@ Next: `NEEDS_USER_DECISION`
 - `known_facts.json` remains projection/cache.
 - AI/helper must not author canonical events or canonical facts.
 - Project ZIP import/export remains out of scope.
-- Measurement badges and inspector counts remain component-level evidence summaries only.
-- This manual QA record does not reopen implementation or closeout work.
+- This scope lock does not reopen Board Canvas layout-density implementation.
+- This scope lock does not implement Project Overview / Workbench runtime changes.

@@ -55,7 +55,14 @@ Widget _harness({required ProjectState? projectState, Key? boardCanvasKey}) {
 }
 
 Future<void> _selectPlacement(WidgetTester tester, String label) async {
-  await tester.tap(find.text(label).first);
+  final chip = find.widgetWithText(ChoiceChip, label);
+  if (chip.evaluate().isEmpty) {
+    await tester.tap(
+      find.byKey(const Key('board_canvas_placement_selector_disclosure')),
+    );
+    await tester.pumpAndSettle();
+  }
+  await tester.tap(chip.first);
   await tester.pump(const Duration(milliseconds: 16));
 }
 
@@ -243,7 +250,7 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('wide board canvas uses compact controls and safety disclosure',
+  testWidgets('wide board canvas uses compact collapsed controls',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -263,14 +270,33 @@ void main() {
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
     expect(
+      find.byKey(const Key('board_canvas_placement_selector_disclosure')),
+      findsOneWidget,
+    );
+    expect(
       find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_inspector_toggle_button')),
       findsOneWidget,
     );
     expect(find.text('Board projection canvas'), findsOneWidget);
     expect(
         find.text('Existing board-normalized placements only'), findsOneWidget);
     expect(find.text('Placements'), findsOneWidget);
-    expect(find.text('R101 (cmp_r101)'), findsOneWidget);
+    expect(find.text('1 placement available'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsNothing);
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_placement_selector_disclosure')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'),
+      findsOneWidget,
+    );
     expect(find.text('Safety / Evidence'), findsOneWidget);
     expect(find.text('Body outline'), findsNothing);
 
@@ -302,6 +328,47 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('wide board canvas hides and restores inspector chrome',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    final visibleCanvasSize =
+        tester.getSize(find.byKey(const Key('board_canvas_painter')));
+
+    await tester
+        .tap(find.byKey(const Key('board_canvas_inspector_toggle_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Placement inspector (read-only)'), findsNothing);
+    final hiddenCanvasSize =
+        tester.getSize(find.byKey(const Key('board_canvas_painter')));
+    expect(hiddenCanvasSize.width, greaterThan(visibleCanvasSize.width));
+    expect(find.text('renderer writes: none'), findsOneWidget);
+
+    await tester
+        .tap(find.byKey(const Key('board_canvas_inspector_toggle_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -2000,11 +2067,16 @@ void main() {
     expect(source, isNot(contains('width: 260')));
     expect(source, contains('_BoardCanvasControlBand'));
     expect(source, contains('_BoardCanvasSafetyEvidenceDisclosure'));
+    expect(source, contains('_InspectorChromeToggle'));
+    expect(source, contains('_CanvasStatusPill'));
     expect(source, contains('board_canvas_control_band'));
+    expect(source, contains('board_canvas_placement_selector_disclosure'));
     expect(source, contains('board_canvas_safety_evidence_disclosure'));
+    expect(source, contains('board_canvas_inspector_toggle_button'));
     expect(source, isNot(contains('MeasurementEventWriter')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));
+    expect(source, isNot(contains('ProjectOverviewScreen')));
     expect(source, isNot(contains('jsonDecode(')));
     expect(source, isNot(contains('known_facts.json')));
     expect(source, isNot(contains('events.jsonl')));

@@ -60,6 +60,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
+  bool _inspectorVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -161,12 +162,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return _buildScaffold(
       context,
       Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final selector = _PlacementSelector(
               entries: entries,
               selectedKey: selectedKey,
+              selectedLabel: selectedEntry?.selectorLabel,
               onSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
@@ -193,6 +195,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             final controlBand = _BoardCanvasControlBand(
               selector: selector,
               safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
+              inspectorToggle: _InspectorChromeToggle(
+                inspectorVisible: _inspectorVisible,
+                onPressed: () {
+                  setState(() {
+                    _inspectorVisible = !_inspectorVisible;
+                  });
+                },
+              ),
             );
 
             if (constraints.maxWidth >= 1180) {
@@ -210,8 +220,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  SizedBox(width: 370, child: metadata),
+                  if (_inspectorVisible) ...[
+                    const SizedBox(width: 8),
+                    SizedBox(width: 320, child: metadata),
+                  ],
                 ],
               );
             }
@@ -231,8 +243,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  SizedBox(width: 300, child: metadata),
+                  if (_inspectorVisible) ...[
+                    const SizedBox(width: 8),
+                    SizedBox(width: 280, child: metadata),
+                  ],
                 ],
               );
             }
@@ -241,10 +255,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 controlBand,
-                const SizedBox(height: 8),
-                Expanded(flex: 3, child: canvas),
-                const SizedBox(height: 8),
-                Expanded(flex: 2, child: metadata),
+                const SizedBox(height: 6),
+                Expanded(flex: _inspectorVisible ? 4 : 1, child: canvas),
+                if (_inspectorVisible) ...[
+                  const SizedBox(height: 6),
+                  Expanded(flex: 2, child: metadata),
+                ],
               ],
             );
           },
@@ -315,6 +331,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   Widget _buildScaffold(BuildContext context, Widget content) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 40,
         title: const Text('Board Canvas'),
       ),
       body: SafeArea(
@@ -323,7 +340,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             Expanded(child: content),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Text(
                 'renderer writes: none',
@@ -422,10 +439,12 @@ class _BoardCanvasControlBand extends StatelessWidget {
   const _BoardCanvasControlBand({
     required this.selector,
     required this.safetyEvidence,
+    required this.inspectorToggle,
   });
 
   final Widget selector;
   final Widget safetyEvidence;
+  final Widget inspectorToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -436,9 +455,11 @@ class _BoardCanvasControlBand extends StatelessWidget {
             key: const Key('board_canvas_control_band'),
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(flex: 3, child: selector),
-              const SizedBox(width: 8),
-              Expanded(flex: 2, child: safetyEvidence),
+              Expanded(flex: 5, child: selector),
+              const SizedBox(width: 6),
+              Expanded(flex: 3, child: safetyEvidence),
+              const SizedBox(width: 6),
+              inspectorToggle,
             ],
           );
         }
@@ -448,11 +469,54 @@ class _BoardCanvasControlBand extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             selector,
-            const SizedBox(height: 8),
-            safetyEvidence,
+            const SizedBox(height: 6),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: safetyEvidence),
+                const SizedBox(width: 6),
+                inspectorToggle,
+              ],
+            ),
           ],
         );
       },
+    );
+  }
+}
+
+class _InspectorChromeToggle extends StatelessWidget {
+  const _InspectorChromeToggle({
+    required this.inspectorVisible,
+    required this.onPressed,
+  });
+
+  final bool inspectorVisible;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: SizedBox(
+        width: 48,
+        height: 48,
+        child: IconButton(
+          key: const Key('board_canvas_inspector_toggle_button'),
+          tooltip: inspectorVisible ? 'Hide inspector' : 'Show inspector',
+          icon: Icon(
+            inspectorVisible
+                ? Icons.keyboard_double_arrow_right
+                : Icons.keyboard_double_arrow_left,
+          ),
+          onPressed: onPressed,
+        ),
+      ),
     );
   }
 }
@@ -461,33 +525,43 @@ class _PlacementSelector extends StatelessWidget {
   const _PlacementSelector({
     required this.entries,
     required this.selectedKey,
+    required this.selectedLabel,
     required this.onSelected,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+  final String? selectedLabel;
   final ValueChanged<String> onSelected;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final summary = selectedLabel ??
+        '${entries.length} placement${entries.length == 1 ? '' : 's'} available';
     return Card(
       color: theme.colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _SectionHeader(
-              title: 'Placements',
-              subtitle: 'read-only · projection view',
-            ),
-            const SizedBox(height: 6),
-            SingleChildScrollView(
+      child: ExpansionTile(
+        key: const Key('board_canvas_placement_selector_disclosure'),
+        initiallyExpanded: false,
+        maintainState: true,
+        visualDensity: VisualDensity.compact,
+        tilePadding: const EdgeInsets.symmetric(horizontal: 10),
+        childrenPadding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
+        title: const Text('Placements'),
+        subtitle: Text(
+          summary,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: entries
@@ -504,6 +578,39 @@ class _PlacementSelector extends StatelessWidget {
                     )
                     .toList(growable: false),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CanvasStatusPill extends StatelessWidget {
+  const _CanvasStatusPill();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Board projection canvas',
+              style: theme.textTheme.labelLarge,
+            ),
+            Text(
+              'Existing board-normalized placements only',
+              style: theme.textTheme.bodySmall,
             ),
           ],
         ),
@@ -617,63 +724,30 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(6),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final compact = constraints.maxHeight < 190;
-            if (compact) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        LayoutBuilder(
-                          builder: (context, canvasConstraints) {
-                            return _buildCanvas(
-                              context,
-                              size: Size(
-                                math.max(240, canvasConstraints.maxWidth),
-                                math.max(96, constraints.maxHeight - 28),
-                              ),
-                            );
-                          },
-                        ),
-                        _buildFitButton(context),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            return Stack(
               children: [
-                const _SectionHeader(
-                  title: 'Board projection canvas',
-                  tag: 'READ-ONLY',
-                  subtitle: 'Existing board-normalized placements only',
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      LayoutBuilder(
-                        builder: (context, canvasConstraints) {
-                          return _buildCanvas(
-                            context,
-                            size: Size(
-                              math.max(240, constraints.maxWidth),
-                              math.max(180, canvasConstraints.maxHeight - 96),
-                            ),
-                          );
-                        },
-                      ),
-                      _buildFitButton(context),
-                    ],
+                Positioned.fill(
+                  child: LayoutBuilder(
+                    builder: (context, canvasConstraints) {
+                      return _buildCanvas(
+                        context,
+                        size: Size(
+                          math.max(240, canvasConstraints.maxWidth),
+                          math.max(96, canvasConstraints.maxHeight),
+                        ),
+                      );
+                    },
                   ),
                 ),
+                const Positioned(
+                  left: 6,
+                  top: 6,
+                  child: _CanvasStatusPill(),
+                ),
+                _buildFitButton(context),
               ],
             );
           },
@@ -697,10 +771,13 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
       ),
       child: const ExpansionTile(
         key: Key('board_canvas_safety_evidence_disclosure'),
+        initiallyExpanded: false,
+        maintainState: true,
+        visualDensity: VisualDensity.compact,
         tilePadding: EdgeInsets.symmetric(horizontal: 10),
-        childrenPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+        childrenPadding: EdgeInsets.fromLTRB(10, 0, 10, 8),
         title: Text('Safety / Evidence'),
-        subtitle: Text('read-only projection boundaries'),
+        subtitle: Text('collapsed · read-only boundaries'),
         children: [
           _BoardCanvasLegend(),
         ],

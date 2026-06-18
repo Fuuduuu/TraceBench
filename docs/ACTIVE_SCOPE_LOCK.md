@@ -2,21 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 
 ## Type
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Lane
 
-Docs-only scope-lock for the next runtime implementation pass `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS.md`.
-No runtime code, tests, tools, schemas, samples, generated/platform files, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, `_incoming` assets, staging, commit, or push actions are in scope.
+Runtime implementation pass for `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS.md`.
 
 ## Current goal
 
-Lock a narrow Workbench wide-rail polish pass that converts the rail into a contextual panel-mode button system and removes wide-rail chrome duplication while keeping read-only read-panel behavior.
+Implement the locked Workbench wide-rail polish pass that converts the rail into a contextual panel-mode button system and removes wide-rail chrome duplication while keeping read-only behavior.
 
 ## Baseline
 
@@ -30,6 +29,7 @@ Lock a narrow Workbench wide-rail polish pass that converts the rail into a cont
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `2f03346` (`docs: lock workbench rail canvas-corner polish scope`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is `df2dbe9` (`docs: record workbench rail canvas-corner polish impl post-audit`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS` is accepted/pushed as `027e594` (`docs: record workbench rail canvas-corner polish manual smoke`).
+- `V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `a28cc48` (`docs: lock workbench rail button polish scope`).
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` remains the deferred route for inline value/unit/Save/read-write panel work.
 
@@ -39,27 +39,28 @@ Lock a narrow Workbench wide-rail polish pass that converts the rail into a cont
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS.md`
 
 ## Required validation
 
+- `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
+- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --check`
 
 ## Strict forbidden implementation scope
 
-- Runtime or test changes are out of scope in this lock pass.
-- Wide Workbench layout only unless implementation proves a safe narrow fallback is required.
-- No placement, selection, tap-to-select, pan/zoom/fit, measurement association/count, visual_trace geometry/interp, photo-alignment, or route-consolidation changes.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event edits.
+- Runtime implementation may update only the locked Workbench-wide rail polish surface in `lib/features/board_canvas/screens/board_canvas_screen.dart` and matching widget tests.
+- Wide Workbench layout focus only unless implementation proves a safe narrow fallback is required.
+- No placement, selection, tap-to-select, pan/zoom/fit, measurement association/count, visual_trace geometry/interp, photo-alignment, route-consolidation, or writer/schema/materializer/validator/projection/Project ZIP/fact/event edits.
 - No inline measurement value/unit entry, Save behavior, new write path, theme/token migration, or generated/platform/pubspec changes.
 - `renderer writes: none` must remain present and visible.
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
+Current pass: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 
-Next: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
+Next: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Scope carry-forward
 
@@ -69,4 +70,4 @@ Next: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 - No V2 `sequence`.
 - Board Canvas focus controls are local UI state only.
 - Focus canvas should remain a canvas-corner action.
-- Current rail-button scope lock routes wide-rail action space to contextual panel mode selection and removes `Hide inspector` from wide rail.
+- Current rail-button implementation keeps wide-rail action space as a contextual panel-mode selector and removes `Hide inspector` from wide rail.

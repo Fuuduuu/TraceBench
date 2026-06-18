@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Current accepted route before this pass
 
@@ -39,15 +39,17 @@
 
 ## Current scope
 
-Current acceptance context after post-audit:
+Current acceptance context:
 
-- Active work in scope is a new lock for Workbench rail-button polish. Current accepted runtime behavior remains:
-  - 3-zone Workbench layout with dominant read-only canvas.
-  - selection-driven contextual right panel for inspector/placement/safety modes;
-  - `Focus canvas` as canvas-corner control;
-  - `Hide/Show controls` recovery behavior;
-  - `Placements` and `Safety / Evidence` rail/contextual behavior preserved.
-- Scope-lock changes are now locked for the next implementation pass and include:
+- Implementation currently in progress for the `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` lock:
+  - `V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `a28cc48` (`docs: lock workbench rail button polish scope`).
+  - Current accepted runtime behavior remains:
+    - 3-zone Workbench layout with dominant read-only canvas.
+    - selection-driven contextual right panel for inspector/placement/safety modes;
+    - `Focus canvas` as canvas-corner control;
+    - `Hide/Show controls` recovery behavior;
+    - `Placements` and `Safety / Evidence` rail/contextual behavior preserved.
+- Implementation is now targeting the same lock intent:
   - remove `Hide inspector` from the wide rail;
   - remove redundant Workbench/title-like rail item if present;
   - make the wide rail explicitly a contextual panel-mode switcher;
@@ -65,7 +67,7 @@ Current acceptance context after post-audit:
   - empty-canvas deselection clearing local UI state and collapsing the right panel.
 - Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 
-Next route is `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
+Next route is `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`.
 
 ## Core boundaries
 

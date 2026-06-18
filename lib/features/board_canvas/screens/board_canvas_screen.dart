@@ -23,7 +23,12 @@ const EdgeInsets _kCompactControlTilePadding =
 const EdgeInsets _kCompactControlChildrenPadding =
     EdgeInsets.fromLTRB(8, 0, 8, 6);
 
-enum _WorkbenchContextPanelMode { hidden, inspector, placements, safetyEvidence }
+enum _WorkbenchContextPanelMode {
+  hidden,
+  inspector,
+  placements,
+  safetyEvidence
+}
 
 bool measurementEndpointMatchesComponent(
   String endpoint,
@@ -210,9 +215,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               entries: entries,
               selectedKey: selectedKey,
               measurementCountsByComponentId: measurementCountByComponent,
-              cornerFocusAction: useWorkbenchShell && !_canvasFocusMode
-                  ? focusToggle
-                  : null,
+              cornerFocusAction:
+                  useWorkbenchShell && !_canvasFocusMode ? focusToggle : null,
               onPlacementSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
@@ -234,21 +238,24 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
             );
-            final inspectorToggle = _InspectorChromeToggle(
-              inspectorVisible: _inspectorVisible,
-              showLabel: false,
-              onPressed: () {
-                setState(() {
-                  _inspectorVisible = !_inspectorVisible;
-                });
-              },
-            );
             final controlBand = useWorkbenchShell
                 ? const SizedBox.shrink(key: Key('board_canvas_control_band'))
                 : _BoardCanvasControlBand(
                     selector: selector,
-                    safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
-                    trailingActions: <Widget>[focusToggle, inspectorToggle],
+                    safetyEvidence:
+                        const _BoardCanvasSafetyEvidenceDisclosure(),
+                    trailingActions: <Widget>[
+                      focusToggle,
+                      _InspectorChromeToggle(
+                        inspectorVisible: _inspectorVisible,
+                        showLabel: false,
+                        onPressed: () {
+                          setState(() {
+                            _inspectorVisible = !_inspectorVisible;
+                          });
+                        },
+                      ),
+                    ],
                   );
             final restoreBar = _CanvasFocusRestoreBar(
               onRestore: () {
@@ -256,7 +263,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   _canvasFocusMode = false;
                   _inspectorVisible = true;
                   if (selectedKey == null &&
-                      _contextPanelMode == _WorkbenchContextPanelMode.inspector) {
+                      _contextPanelMode ==
+                          _WorkbenchContextPanelMode.inspector) {
                     _contextPanelMode = _WorkbenchContextPanelMode.hidden;
                   }
                 });
@@ -281,7 +289,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     onSelected: (value) {
                       setState(() {
                         _selectedPlacementKey = value;
-                        _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.inspector;
                         _inspectorVisible = true;
                       });
                     },
@@ -304,6 +313,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 icon: Icons.format_list_bulleted_rounded,
                 tooltip: 'Show placements in right contextual panel',
                 label: 'Placements',
+                modeKey: 'placements',
                 selected:
                     _contextPanelMode == _WorkbenchContextPanelMode.placements,
                 onPressed: () {
@@ -318,15 +328,30 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 buttonKey: const Key('board_canvas_rail_safety_evidence_tool'),
                 icon: Icons.shield_outlined,
                 tooltip: 'Show safety/evidence read-only details',
-                label: 'Safety / Evidence',
-                selected:
-                    _contextPanelMode ==
-                        _WorkbenchContextPanelMode.safetyEvidence,
+                label: 'Safety',
+                modeKey: 'safety',
+                selected: _contextPanelMode ==
+                    _WorkbenchContextPanelMode.safetyEvidence,
                 onPressed: () {
                   setState(() {
                     _selectedPlacementKey = null;
                     _contextPanelMode =
                         _WorkbenchContextPanelMode.safetyEvidence;
+                    _inspectorVisible = true;
+                  });
+                },
+              );
+              final inspectorPanelToggle = _WorkbenchPanelModeButton(
+                buttonKey: const Key('board_canvas_rail_inspector_tool'),
+                icon: Icons.info_outline,
+                tooltip: 'Show inspector context panel',
+                label: 'Inspector',
+                modeKey: 'inspector',
+                selected:
+                    _contextPanelMode == _WorkbenchContextPanelMode.inspector,
+                onPressed: () {
+                  setState(() {
+                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
                     _inspectorVisible = true;
                   });
                 },
@@ -337,7 +362,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 children: [
                   if (!_canvasFocusMode) ...[
                     _WorkbenchToolRail(
-                      inspectorToggle: inspectorToggle,
+                      inspectorTool: inspectorPanelToggle,
                       placementTool: focusPanelToggle,
                       safetyEvidenceTool: safetyPanelToggle,
                     ),
@@ -614,12 +639,12 @@ class _BoardCanvasControlBand extends StatelessWidget {
 
 class _WorkbenchToolRail extends StatelessWidget {
   const _WorkbenchToolRail({
-    required this.inspectorToggle,
+    required this.inspectorTool,
     required this.placementTool,
     required this.safetyEvidenceTool,
   });
 
-  final Widget inspectorToggle;
+  final Widget inspectorTool;
   final Widget placementTool;
   final Widget safetyEvidenceTool;
 
@@ -640,9 +665,9 @@ class _WorkbenchToolRail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _WorkbenchSectionHeader(label: 'Workbench tools'),
+              const _WorkbenchSectionHeader(label: 'Panels'),
               const SizedBox(height: _kWorkbenchToolTileGap),
-              inspectorToggle,
+              inspectorTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
               placementTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -686,6 +711,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
     required this.tooltip,
     required this.label,
     required this.selected,
+    required this.modeKey,
     required this.onPressed,
   });
 
@@ -694,21 +720,28 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
   final String tooltip;
   final String label;
   final bool selected;
+  final String modeKey;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tileColor = selected
-        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.30)
         : theme.colorScheme.surfaceContainerLow;
+    final borderColor =
+        selected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant;
+    final labelStyle = theme.textTheme.labelSmall?.copyWith(
+      fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+    );
+    final tooltipText = selected ? '$tooltip • active' : tooltip;
 
     final content = SizedBox(
       width: _kCompactControlTileHeight,
       height: _kCompactControlTileHeight,
       child: IconButton(
         key: buttonKey,
-        tooltip: tooltip,
+        tooltip: tooltipText,
         iconSize: _kWorkbenchRailContentIconSize,
         style: IconButton.styleFrom(
           minimumSize: const Size.square(_kCompactControlTileHeight),
@@ -726,14 +759,37 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Card(
-          margin: EdgeInsets.zero,
-          color: tileColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(color: theme.colorScheme.outlineVariant),
+        Semantics(
+          button: true,
+          selected: selected,
+          label: '$label panel mode',
+          hint: tooltipText,
+          child: Card(
+            margin: EdgeInsets.zero,
+            color: tileColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: borderColor),
+            ),
+            child: Stack(
+              children: [
+                content,
+                if (selected)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 2, right: 2),
+                      child: Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        size: 10,
+                        color: theme.colorScheme.onPrimaryContainer,
+                        key: Key('board_canvas_rail_${modeKey}_active'),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-          child: content,
         ),
         const SizedBox(height: 2),
         Text(
@@ -741,7 +797,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall,
+          style: labelStyle,
         ),
       ],
     );

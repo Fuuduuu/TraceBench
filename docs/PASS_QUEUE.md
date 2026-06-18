@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -281,5 +281,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI density implementation accepted/pushed as `462eab2` (`feat(board-canvas): compact top chrome density`): compacted AppBar/title chrome and collapsed Placement / Safety-Evidence / inspector-toggle row while preserving renderer read-only behavior, `renderer writes: none`, tap-to-select, pan/zoom/fit, selector/inspector behavior, measurement metadata, visual_trace/photo-alignment metadata, and writer/schema/materializer/validator/projection/Project ZIP/fact/event boundaries. |
 | V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `669d9f5` (`docs: close out board canvas top-chrome density`); recorded Claude Code implementation post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, accepted/pushed implementation commit `462eab2`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`) for a future Board Canvas UI-only volatile auto-hide/collapse polish for inspector/sidebar/top-control chrome; implementation target `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; preserves renderer read-only behavior, `renderer writes: none`, canonical semantics, and no-write boundaries. |
-| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | current / pending Claude Code read-only post-audit | Board Canvas-only UI implementation adds deterministic volatile focus mode: explicit focus button hides top controls and inspector/sidebar, visible restore strip shows controls again, and focused widget coverage preserves no-write/read-only behavior without renderer/canonical semantics changes. |
-| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent read-only implementation post-audit for `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS` before staging, commit, or push. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI implementation accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`): deterministic volatile focus mode with explicit `Focus canvas` / `Show controls` affordances, hidden chrome recovery, `renderer writes: none` visible in focus mode, private widget state only, no timers or persistence, and no renderer/canonical/write-surface changes. Claude Code implementation post-audit returned `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current / pending Claude Code read-only audit | Docs-only post-audit bookkeeping for accepted/pushed `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; records validation evidence, preserved boundaries, and routes next to `NEEDS_USER_DECISION`. |

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current accepted route before this pass
 
@@ -19,14 +19,15 @@
 - Board Canvas top-chrome density implementation is accepted/pushed as `462eab2` (`feat(board-canvas): compact top chrome density`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Board Canvas top-chrome density route is closed out as `669d9f5` (`docs: close out board canvas top-chrome density`).
 - Board Canvas UI auto-hide scope lock is accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`).
+- Board Canvas UI auto-hide implementation is accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
-- Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, and persistent `renderer writes: none`.
+- Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This implementation pass adds deterministic, volatile, UI-only Board Canvas focus chrome. The focused state hides the top control band and inspector/sidebar, leaves a visible `Show controls` restore strip, and restores controls plus the read-only inspector without writing events or facts.
+This docs-only post-audit bookkeeping pass records accepted/pushed Board Canvas UI auto-hide implementation state. The accepted implementation adds deterministic, volatile, UI-only focus mode: `Focus canvas` hides the top control band and inspector/sidebar, `Show controls` restores them, and `renderer writes: none` remains visible.
 
-The implementation remains local widget state only. It preserves Board Canvas behavior, canonical semantics, read-only renderer boundaries, and persistent `renderer writes: none`. No auto-hide persistence or cross-session memory is added.
+The implementation remains private widget state only. It preserves Board Canvas behavior, canonical semantics, read-only renderer boundaries, and persistent `renderer writes: none`. No auto-hide persistence, cross-session memory, timers, event/fact writes, or writer/schema/materializer/validator/projection/Project ZIP changes were added. This route now points to `NEEDS_USER_DECISION`.
 
 ## Core boundaries
 

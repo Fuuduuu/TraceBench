@@ -2,23 +2,22 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-`CODEX / FLUTTER_UI_POLISH`
+`CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC`
 
 ## Lane
 
-Repo-local implementation pass. Runtime edits are limited to Board Canvas UI; tests are limited to Board Canvas widget tests; governance edits are limited to the active pass docs. Do not modify unscoped runtime, tools, schemas, samples, generated/platform files, dependencies, stage, commit, or push.
+Repo-local docs-only governance update. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
 
 ## Current goal
 
-- Implement the locked Board Canvas UI-only auto-hide/collapse polish.
-- Give the canvas more visual priority with reversible, discoverable, volatile local UI state.
-- Preserve renderer behavior, canonical state, selection semantics, measurement semantics, and write paths.
-- Preserve read-only boundary copy and `renderer writes: none`.
-- Route next to Claude Code read-only implementation post-audit.
+- Record that `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS` was independently post-audited, accepted, committed, and pushed.
+- Record Claude Code implementation post-audit verdict `ACCEPT_AS_IS`.
+- Record `SAFE_FOR_COMMIT_PUSH: YES`.
+- Preserve accepted implementation facts and route next to `NEEDS_USER_DECISION`.
 
 ## Current accepted route before this pass
 
@@ -26,26 +25,35 @@ Repo-local implementation pass. Runtime edits are limited to Board Canvas UI; te
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Baseline
 
 - Scope lock accepted/pushed: `e55b1f8` (`docs: lock board canvas ui auto-hide scope`).
-- Top-chrome density implementation accepted/pushed: `462eab2` (`feat(board-canvas): compact top chrome density`).
-- Top-chrome density route closed out: `669d9f5` (`docs: close out board canvas top-chrome density`).
-- Board Canvas is accepted/pushed/manual-smoke PASS.
+- Implementation accepted/pushed: `dd69545` (`feat(board-canvas): add canvas focus mode`).
+- Claude Code implementation post-audit verdict: `ACCEPT_AS_IS`.
+- `SAFE_FOR_COMMIT_PUSH: YES`.
+- Validation before push:
+  - `dart format` clean.
+  - `flutter test test/widget/board_canvas_screen_test.dart` PASS (`63/63`).
+  - `py -3 tools/validate_all.py` PASS (`273`).
+  - `git diff --check` PASS, CRLF warnings only.
+
+## Accepted implementation summary
+
+- Board Canvas gained deterministic, volatile, UI-only focus mode.
+- A compact `Focus canvas` button hides the top control band and inspector/sidebar.
+- A visible `Show controls` restore strip always remains.
+- Hidden chrome is recoverable; no hidden-state trap.
+- State is private widget state only.
+- No persistence or cross-session memory was added.
+- No timers or timer-based auto-hide behavior were added.
+- `renderer writes: none` remains visible in focus mode.
 - Renderer remains read-only.
-- `renderer writes: none` must remain true.
+- Selection, tap-to-select, pan/zoom/fit, measurement metadata, visual_trace, and photo-alignment behavior remain unchanged.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event surfaces changed.
 
 ## File allowlist for this pass
-
-Runtime:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-
-Tests:
-
-- `test/widget/board_canvas_screen_test.dart`
 
 Governance:
 
@@ -53,35 +61,21 @@ Governance:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS.md`
 
-## Allowed implementation scope
+## Allowed docs-only scope
 
-- UI-only volatile auto-hide/collapse state for Board Canvas chrome.
-- Inspector/sidebar hide/reveal or collapse affordance.
-- Top control band auto-collapse/reduce prominence.
-- Reveal-on-tap/focus/explicit restore button.
-- Responsive UI behavior where chrome competes with canvas space.
-- Compact safety/read-only copy only if meaning remains clear.
-- Focused Board Canvas widget tests for:
-  - controls are recoverable;
-  - auto-hide/collapse does not write events/facts;
-  - read-only boundary remains visible or recoverable;
-  - `renderer writes: none` remains present;
-  - existing selector/inspector behavior remains functionally equivalent.
-
-## Implementation decision
-
-Use deterministic explicit focus mode rather than timer-based auto-hide:
-
-- A compact `Focus canvas` tooltip button enters local focus mode.
-- Focus mode hides the Board Canvas top control band and inspector/sidebar.
-- A visible `Show controls` restore strip remains in the UI.
-- Restoring controls exits focus mode and restores the read-only inspector.
-- Focus mode is private widget state only and is not persisted.
+- Update governance docs to mark the implementation as accepted/pushed/post-audited.
+- Add the post-audit bookkeeping audit artifact.
+- Route next according to repo convention.
+- Prefer `NEEDS_USER_DECISION` because this closes the Board Canvas UI auto-hide route.
 
 ## Strict forbidden scope
 
+- No `lib/` changes.
+- No `test/` changes.
+- No tools/schema/sample/generated/platform/pubspec changes.
+- No Board Canvas runtime changes.
 - No renderer behavior changes.
 - No board-normalized placement semantics changes.
 - No selected placement semantics changes.
@@ -100,13 +94,12 @@ Use deterministic explicit focus mode rather than timer-based auto-hide:
 - No persistence/cross-session memory.
 - Do not remove the read-only boundary copy.
 - Do not remove `renderer writes: none`.
+- No staging, commit, or push.
 
-Renderer must remain read-only and `renderer writes: none` must remain true.
+Renderer remains read-only and `renderer writes: none` remains true.
 
 ## Required validation
 
-- `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
-- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --check`
 - `git diff --name-status`
@@ -115,9 +108,9 @@ Renderer must remain read-only and `renderer writes: none` must remain true.
 
 ## Current route lock
 
-Current pass: `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+Current pass: `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
 
-Next: `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Scope carry-forward
 

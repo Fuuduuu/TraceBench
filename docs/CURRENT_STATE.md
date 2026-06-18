@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`
+`V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current accepted route before this pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
+`V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`
 
 ## Latest accepted pushed work
 
@@ -25,16 +25,20 @@
 - Workbench Home redesign design-gap capture is accepted/pushed as `422416f` (`docs: capture workbench home redesign design gap`); `_incoming/ui_redesign/2026-06-14_workbench_home/` is registered as design-input-only and W1-W11 routing is captured.
 - Workbench bench-layout scope lock is accepted/pushed as `5d88998` (`docs: lock workbench bench layout scope`); implementation is limited to UI-only 3-zone Board Canvas / Workbench layout shell.
 - Workbench 3-zone Board Canvas shell implementation is accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`); `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` post-audit was accepted `AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
+- Workbench tool rail refinement is accepted/pushed as `ffba4ea` (`feat(board-canvas): refine workbench tool rail density`) after implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This implementation pass refines the already accepted 3-zone Workbench shell by tightening left rail control density and labelling/inertness semantics while preserving read-only renderer behavior.
+Post-audit governance bookkeeping for `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`:
+- accepted implementation: compact left rail with grouped headers and compact disabled/inert future tools;
+- focus-inspector flow and wide/narrow control affordances preserved;
+- read-only canvas and `renderer writes: none` semantics remain unchanged.
 
 The `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only: non-runtime, non-canonical, no HTML/CSS/mockup code copied into Flutter runtime, no runtime assets copied, and not accepted as implementation.
 
-Next route is `V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS` for post-audit closure, unless a user-decided pause is required.
+Next route is `NEEDS_USER_DECISION`.
 
 ## Core boundaries
 

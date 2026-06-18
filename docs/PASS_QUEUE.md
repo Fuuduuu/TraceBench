@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -282,4 +282,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `669d9f5` (`docs: close out board canvas top-chrome density`); recorded Claude Code implementation post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, accepted/pushed implementation commit `462eab2`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`) for a future Board Canvas UI-only volatile auto-hide/collapse polish for inspector/sidebar/top-control chrome; implementation target `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; preserves renderer read-only behavior, `renderer writes: none`, canonical semantics, and no-write boundaries. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI implementation accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`): deterministic volatile focus mode with explicit `Focus canvas` / `Show controls` affordances, hidden chrome recovery, `renderer writes: none` visible in focus mode, private widget state only, no timers or persistence, and no renderer/canonical/write-surface changes. Claude Code implementation post-audit returned `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`. |
-| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current / pending Claude Code read-only audit | Docs-only post-audit bookkeeping for accepted/pushed `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; records validation evidence, preserved boundaries, and routes next to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); recorded accepted/pushed implementation `dd69545`, Claude Code post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | current / pending Claude Code read-only audit | Docs-only manual smoke record for accepted Board Canvas focus/top-chrome behavior. User reported "Muidu käik töötas smoke testis", interpreted narrowly as Board Canvas focus/top-chrome flow worked in manual smoke; separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference remains outside accepted runtime state. |

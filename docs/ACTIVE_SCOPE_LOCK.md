@@ -2,26 +2,26 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
 
 ## Type
 
-`CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC`
+`CODEX / DOCS_MANUAL_QA_RECORD`
 
 ## Lane
 
-Repo-local docs-only governance update. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
+Repo-local docs-only manual smoke record. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
 
 ## Current goal
 
-- Record that `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS` was independently post-audited, accepted, committed, and pushed.
-- Record Claude Code implementation post-audit verdict `ACCEPT_AS_IS`.
-- Record `SAFE_FOR_COMMIT_PUSH: YES`.
-- Preserve accepted implementation facts and route next to `NEEDS_USER_DECISION`.
+- Record user manual smoke evidence for the accepted Board Canvas UI focus mode and compact top-chrome behavior.
+- Interpret user wording narrowly as Board Canvas focus/top-chrome flow worked in manual smoke testing.
+- Keep route at `NEEDS_USER_DECISION` after the smoke record.
+- Clarify that the separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot is not accepted as current runtime implementation.
 
 ## Current accepted route before this pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
@@ -29,29 +29,40 @@ Repo-local docs-only governance update. Do not change runtime code, tests, tools
 
 ## Baseline
 
-- Scope lock accepted/pushed: `e55b1f8` (`docs: lock board canvas ui auto-hide scope`).
-- Implementation accepted/pushed: `dd69545` (`feat(board-canvas): add canvas focus mode`).
-- Claude Code implementation post-audit verdict: `ACCEPT_AS_IS`.
-- `SAFE_FOR_COMMIT_PUSH: YES`.
-- Validation before push:
-  - `dart format` clean.
-  - `flutter test test/widget/board_canvas_screen_test.dart` PASS (`63/63`).
-  - `py -3 tools/validate_all.py` PASS (`273`).
-  - `git diff --check` PASS, CRLF warnings only.
-
-## Accepted implementation summary
-
-- Board Canvas gained deterministic, volatile, UI-only focus mode.
-- A compact `Focus canvas` button hides the top control band and inspector/sidebar.
-- A visible `Show controls` restore strip always remains.
-- Hidden chrome is recoverable; no hidden-state trap.
-- State is private widget state only.
-- No persistence or cross-session memory was added.
-- No timers or timer-based auto-hide behavior were added.
-- `renderer writes: none` remains visible in focus mode.
+- Board Canvas UI auto-hide implementation accepted/pushed: `dd69545` (`feat(board-canvas): add canvas focus mode`).
+- Board Canvas UI auto-hide post-audit/closeout accepted/pushed: `5b72aba` (`docs: close out board canvas ui auto-hide`).
+- Current accepted route should remain `NEEDS_USER_DECISION`.
 - Renderer remains read-only.
-- Selection, tap-to-select, pan/zoom/fit, measurement metadata, visual_trace, and photo-alignment behavior remain unchanged.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event surfaces changed.
+- `renderer writes: none` remains true.
+
+## Accepted Board Canvas UI behavior
+
+- Compact top app bar/header.
+- Compact Placement / Safety-Evidence / collapse-control row.
+- Deterministic volatile `Focus canvas` mode.
+- `Focus canvas` hides the top control band plus inspector/sidebar.
+- `Show controls` restore strip remains visible.
+- Controls and read-only details are recoverable.
+- `renderer writes: none` remains visible.
+- Renderer remains read-only.
+- No persistence or cross-session memory.
+- No timers.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event changes.
+
+## Manual smoke evidence
+
+User reported:
+
+> "Muidu käik töötas smoke testis"
+
+Narrow interpretation:
+
+- Board Canvas focus/top-chrome flow worked in manual smoke testing.
+
+Out-of-scope clarification:
+
+- The separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot is not recorded as accepted implementation in this pass.
+- That redesign reference remains a separate future route-review/design-gap topic unless explicitly scoped later.
 
 ## File allowlist for this pass
 
@@ -61,14 +72,13 @@ Governance:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS.md`
 
 ## Allowed docs-only scope
 
-- Update governance docs to mark the implementation as accepted/pushed/post-audited.
-- Add the post-audit bookkeeping audit artifact.
-- Route next according to repo convention.
-- Prefer `NEEDS_USER_DECISION` because this closes the Board Canvas UI auto-hide route.
+- Record the smoke result as manual/user evidence.
+- Keep route at `NEEDS_USER_DECISION` after the smoke record.
+- Clarify that the future redesign reference remains separate and is not accepted as the current runtime target.
 
 ## Strict forbidden scope
 
@@ -92,6 +102,7 @@ Governance:
 - No broad app-wide theme/token/design-system migration.
 - No generated/platform/dependency/pubspec changes.
 - No persistence/cross-session memory.
+- No timers.
 - Do not remove the read-only boundary copy.
 - Do not remove `renderer writes: none`.
 - No staging, commit, or push.
@@ -108,7 +119,7 @@ Renderer remains read-only and `renderer writes: none` remains true.
 
 ## Current route lock
 
-Current pass: `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+Current pass: `V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
 
 Next: `NEEDS_USER_DECISION`
 

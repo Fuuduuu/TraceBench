@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -10,7 +10,7 @@
 
 ## Current accepted route before this pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Latest accepted pushed work
 
@@ -20,14 +20,15 @@
 - Board Canvas top-chrome density route is closed out as `669d9f5` (`docs: close out board canvas top-chrome density`).
 - Board Canvas UI auto-hide scope lock is accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`).
 - Board Canvas UI auto-hide implementation is accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
+- Board Canvas UI auto-hide post-audit/closeout is accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); accepted route is `NEEDS_USER_DECISION`.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This docs-only post-audit bookkeeping pass records accepted/pushed Board Canvas UI auto-hide implementation state. The accepted implementation adds deterministic, volatile, UI-only focus mode: `Focus canvas` hides the top control band and inspector/sidebar, `Show controls` restores them, and `renderer writes: none` remains visible.
+This docs-only manual smoke record captures user evidence for the accepted Board Canvas compact top-chrome and UI focus mode. User wording: "Muidu käik töötas smoke testis". This is interpreted narrowly as: Board Canvas focus/top-chrome flow worked in manual smoke testing.
 
-The implementation remains private widget state only. It preserves Board Canvas behavior, canonical semantics, read-only renderer boundaries, and persistent `renderer writes: none`. No auto-hide persistence, cross-session memory, timers, event/fact writes, or writer/schema/materializer/validator/projection/Project ZIP changes were added. This route now points to `NEEDS_USER_DECISION`.
+This pass does not accept or promote the separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot as current implementation. That reference remains a separate future route-review/design-gap topic unless explicitly scoped later. Route remains `NEEDS_USER_DECISION`.
 
 ## Core boundaries
 

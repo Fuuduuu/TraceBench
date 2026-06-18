@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -295,6 +295,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | UI-only implementation moved wide-workbench `Placements` / `Safety / Evidence` disclosures to left rail actions, added contextual panel modes, and preserved read-only/selection invariants with no write-flow changes. |
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route returned to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual smoke record for accepted context-panel disclosure behavior; user-reported "Kõik passed aga teeks paar muudatust" is recorded narrowly as flow PASS; route remains `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | drafted / pending independent audit | Docs-only manual smoke record for accepted Workbench canvas-corner polish behavior; user-reported "hide inspector nupp on ikka alles, selle peaks ära kaotama..." is interpreted narrowly as smoke PASS; route to `NEEDS_USER_DECISION` with future rail-button design notes. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Focus canvas moved from the Workbench left rail to a compact canvas-corner action in `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`); no writer/event/projection/tap-to-select semantic changes. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed / accepted/pushed as 2f03346 | Docs-only scope lock for wide Workbench left-rail and canvas-corner focus-control polish; moves `Focus canvas` toward a canvas-corner action, improves rail clarity/compactness, and routes to `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`. |

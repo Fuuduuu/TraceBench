@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -11,6 +11,10 @@
 ## Current accepted route before this pass
 
 `NEEDS_USER_DECISION`
+
+## Current accepted route during this pass
+
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
 
 ## Latest accepted pushed work
 
@@ -29,6 +33,7 @@
 - Workbench manual smoke evidence record is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) indicating user wording "Muidu kõik töötab nii nagu peab" as narrow smoke pass for the current 3-zone layout and left-rail flow.
 - Workbench context-panel disclosure implementation is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench canvas-corner polish implementation is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
+- Workbench canvas-corner polish manual smoke evidence is recorded in this pass.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
@@ -56,6 +61,7 @@ Current acceptance context after post-audit:
   - right contextual panel opening from rail selection or component selection,
   - panel empty/default state when no meaningful contextual mode is selected,
   - empty-canvas deselection clearing local UI state and collapsing the right panel.
+- Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 
 Next route is `NEEDS_USER_DECISION`.
 

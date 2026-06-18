@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
 
 ## Type
 
-`CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC`
+`CODEX / DOCS_MANUAL_QA_RECORD`
 
 ## Lane
 
-Docs-only post-audit bookkeeping and routing update for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md` / `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`.
+Docs-only manual smoke record for accepted `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` runtime behavior.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS.md`.
 No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
 
 ## Current goal
 
-Record `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` as accepted/pushed with post-audit route closure.
+Record manual smoke evidence and future design notes for the accepted `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` and carry the route onward with `NEEDS_USER_DECISION`.
 
 ## Baseline
 
@@ -28,7 +28,7 @@ Record `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` as accepted/pushed wit
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) and `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS` is accepted/pushed as `4ddfa57` (`docs: record workbench context panel disclosure impl post-audit`).
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS` is accepted/pushed as `31ec25f` (`docs: record workbench context panel disclosure manual smoke`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `2f03346` (`docs: lock workbench rail canvas-corner polish scope`).
-- `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is this route.
+- `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is `df2dbe9` (`docs: record workbench rail canvas-corner polish impl post-audit`).
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` remains the deferred route for inline value/unit/Save/read-write panel work.
 
@@ -57,7 +57,7 @@ Record `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` as accepted/pushed wit
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
+Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
 
 Next: `NEEDS_USER_DECISION`
 

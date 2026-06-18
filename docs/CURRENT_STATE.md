@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`
+`V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS`
 
 ## Current accepted route before this pass
 
@@ -30,11 +30,11 @@
 
 ## Current scope
 
-This docs-only post-audit pass records acceptance of the UI-only 3-zone Board Canvas / Workbench shell implementation: left vertical rail, center read-only Board Canvas zone as the dominant surface, and right read-only contextual panel container.
+This implementation pass refines the already accepted 3-zone Workbench shell by tightening left rail control density and labelling/inertness semantics while preserving read-only renderer behavior.
 
 The `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only: non-runtime, non-canonical, no HTML/CSS/mockup code copied into Flutter runtime, no runtime assets copied, and not accepted as implementation.
 
-Next route is `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS` for the next implementation slice after successful post-audit closure, unless a user-decided pause is required.
+Next route is `V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS` for post-audit closure, unless a user-decided pause is required.
 
 ## Core boundaries
 

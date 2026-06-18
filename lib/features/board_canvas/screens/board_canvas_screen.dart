@@ -10,9 +10,12 @@ import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 
 const double _kCompactBoardCanvasAppBarHeight = 36;
-const double _kCompactControlTileHeight = 38;
-const double _kCompactControlIconSize = 18;
-const double _kWorkbenchRailWidth = 52;
+const double _kCompactControlTileHeight = 34;
+const double _kCompactControlIconSize = 16;
+const double _kWorkbenchRailWidth = 92;
+const double _kWorkbenchRailContentIconSize = 18;
+const double _kWorkbenchToolTileGap = 4;
+const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
 const EdgeInsets _kCompactControlTilePadding =
@@ -206,6 +209,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               photoToBoardAlignments: photoToBoardAlignments,
             );
             final focusToggle = _CanvasFocusButton(
+              showLabel: useWorkbenchShell,
               onPressed: () {
                 setState(() {
                   _canvasFocusMode = true;
@@ -215,6 +219,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             );
             final inspectorToggle = _InspectorChromeToggle(
               inspectorVisible: _inspectorVisible,
+              showLabel: useWorkbenchShell,
               onPressed: () {
                 setState(() {
                   _inspectorVisible = !_inspectorVisible;
@@ -540,11 +545,14 @@ class _WorkbenchToolRail extends StatelessWidget {
           border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          padding: _kWorkbenchRailPadding,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const _WorkbenchSectionHeader(label: 'Workbench tools'),
+              const SizedBox(height: _kWorkbenchToolTileGap),
               focusToggle,
-              const SizedBox(height: 6),
+              const SizedBox(height: _kWorkbenchToolTileGap),
               inspectorToggle,
               const SizedBox(height: 8),
               Divider(
@@ -552,21 +560,47 @@ class _WorkbenchToolRail extends StatelessWidget {
                 thickness: 1,
                 color: theme.colorScheme.outlineVariant,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
+              const _WorkbenchSectionHeader(label: 'Future tools'),
+              const SizedBox(height: 4),
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_trace_tool'),
                 icon: Icons.timeline,
-                tooltip: 'Future trace tool inactive',
+                tooltip: 'Trace map (future/readonly) - inactive',
+                label: 'Trace',
+                showLabel: true,
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: _kWorkbenchToolTileGap),
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_repair_map_tool'),
                 icon: Icons.map_outlined,
-                tooltip: 'Future repair map inactive',
+                tooltip: 'Repair map (future) - inactive',
+                label: 'Repair map',
+                showLabel: true,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _WorkbenchSectionHeader extends StatelessWidget {
+  const _WorkbenchSectionHeader({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: 2, bottom: 2),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.labelSmall,
       ),
     );
   }
@@ -577,15 +611,20 @@ class _InactiveRailToolButton extends StatelessWidget {
     required this.buttonKey,
     required this.icon,
     required this.tooltip,
+    this.label,
+    this.showLabel = false,
   });
 
   final Key buttonKey;
   final IconData icon;
   final String tooltip;
+  final String? label;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    final theme = Theme.of(context);
+    final button = SizedBox(
       width: _kCompactControlTileHeight,
       height: _kCompactControlTileHeight,
       child: IconButton(
@@ -596,10 +635,30 @@ class _InactiveRailToolButton extends StatelessWidget {
           minimumSize: const Size.square(_kCompactControlTileHeight),
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          foregroundColor: theme.disabledColor,
         ),
         icon: Icon(icon),
         onPressed: null,
       ),
+    );
+
+    if (!showLabel || label == null) {
+      return button;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        button,
+        const SizedBox(height: 2),
+        Text(
+          label!,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
     );
   }
 }
@@ -643,14 +702,18 @@ class _CompactDisclosureTitle extends StatelessWidget {
 }
 
 class _CanvasFocusButton extends StatelessWidget {
-  const _CanvasFocusButton({required this.onPressed});
+  const _CanvasFocusButton({
+    required this.onPressed,
+    this.showLabel = false,
+  });
 
   final VoidCallback onPressed;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
+    final button = Card(
       margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
@@ -663,7 +726,7 @@ class _CanvasFocusButton extends StatelessWidget {
         child: IconButton(
           key: const Key('board_canvas_focus_toggle_button'),
           tooltip: 'Focus canvas',
-          iconSize: _kCompactControlIconSize,
+          iconSize: _kWorkbenchRailContentIconSize,
           style: IconButton.styleFrom(
             minimumSize: const Size.square(_kCompactControlTileHeight),
             padding: EdgeInsets.zero,
@@ -673,6 +736,90 @@ class _CanvasFocusButton extends StatelessWidget {
           onPressed: onPressed,
         ),
       ),
+    );
+
+    if (!showLabel) {
+      return button;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        button,
+        const SizedBox(height: 2),
+        Text(
+          'Focus canvas',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
+    );
+  }
+}
+
+class _InspectorChromeToggle extends StatelessWidget {
+  const _InspectorChromeToggle({
+    required this.inspectorVisible,
+    required this.onPressed,
+    this.showLabel = false,
+  });
+
+  final bool inspectorVisible;
+  final VoidCallback onPressed;
+  final bool showLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final icon = inspectorVisible
+        ? Icons.keyboard_double_arrow_right
+        : Icons.keyboard_double_arrow_left;
+    final tooltip = inspectorVisible ? 'Hide inspector' : 'Show inspector';
+    final label = inspectorVisible ? 'Hide inspector' : 'Show inspector';
+    final button = Card(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: SizedBox(
+        width: _kCompactControlTileHeight,
+        height: _kCompactControlTileHeight,
+        child: IconButton(
+          key: const Key('board_canvas_inspector_toggle_button'),
+          tooltip: tooltip,
+          iconSize: _kWorkbenchRailContentIconSize,
+          style: IconButton.styleFrom(
+            minimumSize: const Size.square(_kCompactControlTileHeight),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: Icon(icon),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+
+    if (!showLabel) {
+      return button;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        button,
+        const SizedBox(height: 2),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
     );
   }
 }
@@ -724,49 +871,6 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
               child: const Text('Show controls'),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _InspectorChromeToggle extends StatelessWidget {
-  const _InspectorChromeToggle({
-    required this.inspectorVisible,
-    required this.onPressed,
-  });
-
-  final bool inspectorVisible;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      child: SizedBox(
-        width: _kCompactControlTileHeight,
-        height: _kCompactControlTileHeight,
-        child: IconButton(
-          key: const Key('board_canvas_inspector_toggle_button'),
-          tooltip: inspectorVisible ? 'Hide inspector' : 'Show inspector',
-          iconSize: _kCompactControlIconSize,
-          style: IconButton.styleFrom(
-            minimumSize: const Size.square(_kCompactControlTileHeight),
-            padding: EdgeInsets.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          icon: Icon(
-            inspectorVisible
-                ? Icons.keyboard_double_arrow_right
-                : Icons.keyboard_double_arrow_left,
-          ),
-          onPressed: onPressed,
         ),
       ),
     );

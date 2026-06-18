@@ -426,8 +426,26 @@ void main() {
     final futureMapTool = tester.widget<IconButton>(
       find.byKey(const Key('board_canvas_rail_future_repair_map_tool')),
     );
+    final focusButton = tester.widget<IconButton>(
+      find.byKey(const Key('board_canvas_focus_toggle_button')),
+    );
+    final inspectorButton = tester.widget<IconButton>(
+      find.byKey(const Key('board_canvas_inspector_toggle_button')),
+    );
+
     expect(futureTraceTool.onPressed, isNull);
     expect(futureMapTool.onPressed, isNull);
+    expect(futureTraceTool.tooltip, 'Trace map (future/readonly) - inactive');
+    expect(futureMapTool.tooltip, 'Repair map (future) - inactive');
+    expect(focusButton.onPressed, isNotNull);
+    expect(inspectorButton.onPressed, isNotNull);
+    expect(find.text('Workbench tools'), findsOneWidget);
+    expect(find.text('Future tools'), findsOneWidget);
+    expect(find.text('Focus canvas'), findsOneWidget);
+    expect(find.text('Hide inspector'), findsOneWidget);
+    expect(find.text('Trace'), findsOneWidget);
+    expect(find.text('Repair map'), findsOneWidget);
+    expect(railSize.width, lessThan(120));
     expect(state.events, isEmpty);
   });
 

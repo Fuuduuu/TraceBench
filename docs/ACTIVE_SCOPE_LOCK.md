@@ -2,20 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 
 ## Type
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Lane
-Docs-only scope lock for Workbench contextual panel disclosure flow on the accepted 3-zone layout.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS.md`.
+Implementation pass for Workbench contextual-panel disclosure flow on the accepted 3-zone layout.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS.md` as implementation artifacts.
 Do not stage, commit, or push in this pass.
 
 ## Current goal
 
-Lock the next narrow implementation slice for a wide Workbench contextual-panel disclosure mode in read-only readback behavior and route to implementation.
+Implement the narrow wide-workbench contextual disclosure flow by moving `Placements` and `Safety / Evidence` controls out of the top control band and driving the right contextual panel from the left rail and local component selection.
 
 ## Baseline
 
@@ -23,40 +23,46 @@ Lock the next narrow implementation slice for a wide Workbench contextual-panel 
 - `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` is accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`).
 - `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS` is accepted/pushed as `ffba4ea` (`feat(board-canvas): refine workbench tool rail density`).
 - `V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS` is accepted/pushed as `289e21a` (`docs: record workbench tool rail impl post-audit`).
-- `V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS` is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) and the current baseline for this lock was user wording "Muidu kõik töötab nii nagu peab".
+- `V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS` is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) and the current baseline for this pass is user wording "Muidu kõik töötab nii nagu peab".
+- `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS` is accepted/pushed as `46bdc26` (`docs: lock workbench context panel disclosure scope`).
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - Board Canvas read-only boundaries and focus/top-chrome behavior were accepted in prior passes.
 
 ## Allowed governance scope
 
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS.md`
 
 ## Required validation
 
+- `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
+- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --check`
 
 ## Strict forbidden implementation scope
 
-- No runtime/test/tooling/schema/materializer/validator/projection/Project ZIP changes.
-- No board-canvas runtime behavior changes.
+- No runtime or test behavior changes outside workbench right-panel disclosure mode/interaction.
+- No runtime write-flow expansion (`value`/`unit`/`Save`/`inline-entry`).
+- No board-canvas runtime behavior changes outside this disclosure pass.
 - No board-normalized placement/selection semantics changes.
-- No top-band UI changes for this pass unless moved into rail disclosure.
+- No top-band UI changes for this pass except moving disclosures into rail actions.
 - No inline measurement entry, Save, unit selector, or value editing.
 - No writer/schema/materializer/validator/projection/Project ZIP/event/fact path changes.
-- No `/project/measure-sheet` deletion or delete route consolidation.
+- No `/project/measure-sheet` deletion or route consolidation.
 - Renderer must remain read-only.
 - `renderer writes: none` must remain true.
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`
+Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 
-Next: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
+Next: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
 
 ## Scope carry-forward
 
@@ -69,4 +75,4 @@ Next: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 - No V2 `sequence`.
 - Project ZIP import/export remains out of scope.
 - Future inline measurement entry (value/unit/Save) is deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`.
-- Pin/lock/info-bar contextual-panel affordance is deferred and is not required behavior for this scope-lock.
+- Pin/lock/info-bar contextual-panel affordance is deferred and is not required behavior for this pass.

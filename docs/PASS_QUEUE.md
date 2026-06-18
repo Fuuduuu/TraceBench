@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -291,8 +291,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`) | UI-only 3-zone responsive workbench layout shell in Board Canvas: left rail, dominant read-only center canvas, right read-only contextual panel; no write behavior. |
 | V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Independent implementation post-audit for `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`; accepted as `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; verify UI-only shell, read-only renderer, inert rail tools, and no event/fact/write surface drift. |
-| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | drafted / pending independent audit | Docs-only scope lock for wide-workbench contextual-panel disclosure: move Placements/Safety-Evidence into the left rail/menu and open corresponding read-only content in the right panel; supports local component inspection and empty-canvas hide behavior. |
-| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after scope lock | UI-only implementation of Workbench contextual-panel disclosure: rail selectors for Placements/Safety-Evidence, component-driven right panel content, and panel visibility behavior. |
+| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Scope lock accepted/pushed as `46bdc26` (`docs: lock workbench context panel disclosure scope`); implementation target is `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`. |
+| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented locally / pending Claude Code read-only post-audit | UI-only implementation moved wide-workbench `Placements` / `Safety / Evidence` disclosures to left rail actions, added contextual panel modes, and preserved read-only/selection invariants with no write-flow changes. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |

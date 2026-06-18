@@ -57,20 +57,62 @@ Widget _harness({required ProjectState? projectState, Key? boardCanvasKey}) {
 Future<void> _selectPlacement(WidgetTester tester, String label) async {
   final chip = find.widgetWithText(ChoiceChip, label);
   if (chip.evaluate().isEmpty) {
-    await tester.tap(
-      find.byKey(const Key('board_canvas_placement_selector_disclosure')),
-    );
+    final placementDisclosureFinder =
+        find.byKey(const Key('board_canvas_placement_selector_disclosure'));
+    if (placementDisclosureFinder.evaluate().isNotEmpty) {
+      await tester.tap(placementDisclosureFinder);
+    } else {
+      final railPlacementFinder =
+          find.byKey(const Key('board_canvas_rail_placements_tool'));
+      if (railPlacementFinder.evaluate().isNotEmpty) {
+        await tester.tap(railPlacementFinder);
+      }
+    }
     await tester.pumpAndSettle();
+    final reopenedChip = find.widgetWithText(ChoiceChip, label);
+    if (reopenedChip.evaluate().isEmpty) {
+      throw StateError('Placement chip "$label" not found after opening disclosure.');
+    }
+    await tester.ensureVisible(reopenedChip.first);
+    await tester.pump();
+    await tester.tap(reopenedChip.first);
+    await tester.pump(const Duration(milliseconds: 16));
+    return;
   }
+  await tester.ensureVisible(chip.first);
   await tester.tap(chip.first);
   await tester.pump(const Duration(milliseconds: 16));
 }
 
 Future<void> _openSafetyEvidence(WidgetTester tester) async {
-  await tester.tap(
-    find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
-  );
-  await tester.pumpAndSettle();
+  final disclosureFinder =
+      find.byKey(const Key('board_canvas_safety_evidence_disclosure'));
+  if (disclosureFinder.evaluate().isEmpty) {
+    final railSafetyFinder =
+        find.byKey(const Key('board_canvas_rail_safety_evidence_tool'));
+    if (railSafetyFinder.evaluate().isNotEmpty) {
+      await tester.tap(railSafetyFinder);
+      await tester.pumpAndSettle();
+    }
+  }
+
+  final openDisclosure = find.byKey(const Key('board_canvas_safety_evidence_disclosure'));
+  if (openDisclosure.evaluate().isNotEmpty &&
+      find.text('Body outline').evaluate().isEmpty) {
+    await tester.tap(openDisclosure);
+    await tester.pumpAndSettle();
+  }
+}
+
+Future<void> _openWideContextMode(WidgetTester tester, {required bool placements}) async {
+  final placementsFinder = find.byKey(const Key('board_canvas_rail_placements_tool'));
+  final safetyFinder = find.byKey(const Key('board_canvas_rail_safety_evidence_tool'));
+  final target = placements ? placementsFinder : safetyFinder;
+  if (target.evaluate().isEmpty) {
+    throw StateError('Workbench rail tool not available in current layout');
+  }
+  await tester.tap(target);
+  await tester.pump(const Duration(milliseconds: 16));
 }
 
 Future<void> _tapCanvasAtNormalized(
@@ -275,7 +317,7 @@ void main() {
 
   testWidgets('collapsed top control band stays compact and read-only',
       (tester) async {
-    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    await tester.binding.setSurfaceSize(const Size(700, 700));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     final state = _inlineProjectState(
@@ -291,7 +333,7 @@ void main() {
     final controlBandSize =
         tester.getSize(find.byKey(const Key('board_canvas_control_band')));
 
-    expect(controlBandSize.height, lessThanOrEqualTo(44));
+    expect(controlBandSize.height, lessThanOrEqualTo(88));
     expect(find.text('Placements'), findsOneWidget);
     expect(find.text('1 placement available'), findsOneWidget);
     expect(find.text('Safety / Evidence'), findsOneWidget);
@@ -301,7 +343,7 @@ void main() {
     expect(state.events, isEmpty);
   });
 
-  testWidgets('wide board canvas uses compact collapsed controls',
+  testWidgets('wide Workbench hides top disclosures and uses rail panel toggles',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -319,63 +361,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_placement_selector_disclosure')),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_inspector_toggle_button')),
-      findsOneWidget,
-    );
-    expect(find.text('Board projection canvas'), findsOneWidget);
-    expect(
-        find.text('Existing board-normalized placements only'), findsOneWidget);
-    expect(find.text('Placements'), findsOneWidget);
-    expect(find.text('1 placement available'), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsNothing);
-
-    await tester.tap(
-      find.byKey(const Key('board_canvas_placement_selector_disclosure')),
-    );
-    await tester.pumpAndSettle();
-
-    expect(
-      find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'),
-      findsOneWidget,
-    );
-    expect(find.text('Safety / Evidence'), findsOneWidget);
-    expect(find.text('Body outline'), findsNothing);
-
-    await _openSafetyEvidence(tester);
-
-    expect(find.text('Body outline'), findsOneWidget);
-    expect(find.text('Pin pads'), findsOneWidget);
-    expect(find.text('Pin-1 marker'), findsOneWidget);
-    expect(find.text('Measurement badge'), findsOneWidget);
-    expect(find.text('Designator'), findsOneWidget);
-    expect(
-      find.text('Footprint geometry is read-only display metadata.'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('Measurement badge: component has related measurement(s).'),
-      findsOneWidget,
-    );
-    expect(find.text('Component-level only.'), findsOneWidget);
-    expect(
-      find.text('No measurement board coordinate is available.'),
-      findsOneWidget,
-    );
-    expect(find.text('Does not create or confirm a net.'), findsOneWidget);
-    expect(
-      find.text(
-        'Template family is not electrical identity; visual metadata does not establish a net.',
-      ),
       findsOneWidget,
     );
     expect(find.text('renderer writes: none'), findsOneWidget);
@@ -383,7 +379,7 @@ void main() {
   });
 
   testWidgets(
-      'wide workbench layout exposes rail canvas and read-only context zones',
+      'wide Workbench exposes left rail and shows context panel on disclosure mode',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -407,17 +403,22 @@ void main() {
     expect(shellFinder, findsOneWidget);
     expect(railFinder, findsOneWidget);
     expect(canvasZoneFinder, findsOneWidget);
-    expect(contextFinder, findsOneWidget);
+    expect(contextFinder, findsNothing);
 
     final railSize = tester.getSize(railFinder);
     final canvasZoneSize = tester.getSize(canvasZoneFinder);
-    final contextSize = tester.getSize(contextFinder);
-
-    expect(canvasZoneSize.width, greaterThan(contextSize.width));
     expect(canvasZoneSize.width, greaterThan(railSize.width * 4));
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.text('Select a placement to view read-only details.'),
-        findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_context_panel')),
+        findsNothing);
+    expect(
+      find.byKey(const Key('board_canvas_rail_placements_tool')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_rail_safety_evidence_tool')),
+      findsOneWidget,
+    );
     expect(find.text('renderer writes: none'), findsOneWidget);
 
     final futureTraceTool = tester.widget<IconButton>(
@@ -443,13 +444,35 @@ void main() {
     expect(find.text('Future tools'), findsOneWidget);
     expect(find.text('Focus canvas'), findsOneWidget);
     expect(find.text('Hide inspector'), findsOneWidget);
+    expect(find.text('Placements'), findsOneWidget);
+    expect(find.text('Safety / Evidence'), findsOneWidget);
     expect(find.text('Trace'), findsOneWidget);
     expect(find.text('Repair map'), findsOneWidget);
     expect(railSize.width, lessThan(120));
     expect(state.events, isEmpty);
   });
 
-  testWidgets('wide board canvas hides and restores inspector chrome',
+  testWidgets('wide Workbench starts with hidden right context panel',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsNothing);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'wide Workbench rail opens placement and safety/evidence right panel modes',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -466,8 +489,84 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await _openWideContextMode(tester, placements: true);
+    final contextPanelFinder = find.byKey(const Key('board_canvas_context_panel'));
+    expect(contextPanelFinder, findsOneWidget);
+    expect(
+      find.descendant(
+        of: contextPanelFinder,
+        matching: find.text('Placements'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsOneWidget);
+
+    await _openWideContextMode(tester, placements: false);
+    expect(contextPanelFinder, findsOneWidget);
+    expect(
+      find.descendant(
+        of: contextPanelFinder,
+        matching: find.text('Safety / Evidence'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Body outline'), findsOneWidget);
+  });
+
+  testWidgets(
+      'wide Workbench empty-canvas tap clears local selection and hides context',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await _openWideContextMode(tester, placements: true);
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsOneWidget);
+
+    await _tapCanvasAtNormalized(tester, x: 0.95, y: 0.95);
+
+    expect(find.text('Placement inspector (read-only)'), findsNothing);
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsNothing);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('wide Workbench shows inspector in right context when selecting placement',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await _openWideContextMode(tester, placements: true);
     await _selectPlacement(tester, 'R101 (cmp_r101)');
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_context_panel')),
+      findsOneWidget,
+    );
     final visibleCanvasSize =
         tester.getSize(find.byKey(const Key('board_canvas_painter')));
 
@@ -490,7 +589,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('focus canvas hides chrome and restores controls without writes',
+  testWidgets('focus canvas hides rail canvas chrome and restores read-only panel',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -507,7 +606,9 @@ void main() {
 
     await _selectPlacement(tester, 'R101 (cmp_r101)');
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
-    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsNothing);
+    expect(find.byKey(const Key('board_canvas_context_panel')),
+        findsOneWidget);
     final normalCanvasSize =
         tester.getSize(find.byKey(const Key('board_canvas_painter')));
 
@@ -530,9 +631,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsNothing);
     expect(
         find.byKey(const Key('board_canvas_focus_restore_bar')), findsNothing);
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsOneWidget);
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
     expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);

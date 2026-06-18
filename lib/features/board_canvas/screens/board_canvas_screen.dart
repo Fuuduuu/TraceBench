@@ -23,6 +23,8 @@ const EdgeInsets _kCompactControlTilePadding =
 const EdgeInsets _kCompactControlChildrenPadding =
     EdgeInsets.fromLTRB(8, 0, 8, 6);
 
+enum _WorkbenchContextPanelMode { hidden, inspector, placements, safetyEvidence }
+
 bool measurementEndpointMatchesComponent(
   String endpoint,
   String componentId,
@@ -76,6 +78,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
+  _WorkbenchContextPanelMode _contextPanelMode =
+      _WorkbenchContextPanelMode.hidden;
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +192,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               onSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
+                  _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  _inspectorVisible = true;
                 });
               },
             );
@@ -198,6 +204,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               onPlacementSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
+                  _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  _inspectorVisible = true;
+                });
+              },
+              onCanvasTapEmpty: () {
+                setState(() {
+                  _selectedPlacementKey = null;
+                  _contextPanelMode = _WorkbenchContextPanelMode.hidden;
                 });
               },
             );
@@ -226,26 +240,94 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 });
               },
             );
-            final controlBand = _BoardCanvasControlBand(
-              selector: selector,
-              safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
-              trailingActions: useWorkbenchShell
-                  ? const <Widget>[]
-                  : <Widget>[focusToggle, inspectorToggle],
-            );
+            final controlBand = useWorkbenchShell
+                ? const SizedBox.shrink(key: Key('board_canvas_control_band'))
+                : _BoardCanvasControlBand(
+                    selector: selector,
+                    safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
+                    trailingActions: <Widget>[focusToggle, inspectorToggle],
+                  );
             final restoreBar = _CanvasFocusRestoreBar(
               onRestore: () {
                 setState(() {
                   _canvasFocusMode = false;
                   _inspectorVisible = true;
+                  if (selectedKey == null &&
+                      _contextPanelMode == _WorkbenchContextPanelMode.inspector) {
+                    _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                  }
                 });
               },
             );
 
             if (useWorkbenchShell) {
+              Widget? contextPanel;
+              switch (_contextPanelMode) {
+                case _WorkbenchContextPanelMode.hidden:
+                  contextPanel = null;
+                  break;
+                case _WorkbenchContextPanelMode.inspector:
+                  contextPanel = metadata;
+                  break;
+                case _WorkbenchContextPanelMode.placements:
+                  contextPanel = _PlacementSelector(
+                    entries: entries,
+                    selectedKey: selectedKey,
+                    selectedLabel: selectedEntry?.selectorLabel,
+                    initiallyExpanded: true,
+                    onSelected: (value) {
+                      setState(() {
+                        _selectedPlacementKey = value;
+                        _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                        _inspectorVisible = true;
+                      });
+                    },
+                  );
+                  break;
+                case _WorkbenchContextPanelMode.safetyEvidence:
+                  contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
+                    initiallyExpanded: true,
+                  );
+                  break;
+              }
               final contextPanelWidth = constraints.maxWidth >= 1180
                   ? _kWideContextPanelWidth
                   : _kMediumContextPanelWidth;
+              final showContextPanel = _inspectorVisible &&
+                  !_canvasFocusMode &&
+                  contextPanel != null;
+              final focusPanelToggle = _WorkbenchPanelModeButton(
+                buttonKey: const Key('board_canvas_rail_placements_tool'),
+                icon: Icons.format_list_bulleted_rounded,
+                tooltip: 'Show placements in right contextual panel',
+                label: 'Placements',
+                selected:
+                    _contextPanelMode == _WorkbenchContextPanelMode.placements,
+                onPressed: () {
+                  setState(() {
+                    _selectedPlacementKey = null;
+                    _contextPanelMode = _WorkbenchContextPanelMode.placements;
+                    _inspectorVisible = true;
+                  });
+                },
+              );
+              final safetyPanelToggle = _WorkbenchPanelModeButton(
+                buttonKey: const Key('board_canvas_rail_safety_evidence_tool'),
+                icon: Icons.shield_outlined,
+                tooltip: 'Show safety/evidence read-only details',
+                label: 'Safety / Evidence',
+                selected:
+                    _contextPanelMode ==
+                        _WorkbenchContextPanelMode.safetyEvidence,
+                onPressed: () {
+                  setState(() {
+                    _selectedPlacementKey = null;
+                    _contextPanelMode =
+                        _WorkbenchContextPanelMode.safetyEvidence;
+                    _inspectorVisible = true;
+                  });
+                },
+              );
               return Row(
                 key: const Key('board_canvas_workbench_shell'),
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -254,6 +336,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     _WorkbenchToolRail(
                       focusToggle: focusToggle,
                       inspectorToggle: inspectorToggle,
+                      placementTool: focusPanelToggle,
+                      safetyEvidenceTool: safetyPanelToggle,
                     ),
                     const SizedBox(width: 6),
                   ],
@@ -262,18 +346,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       key: const Key('board_canvas_workbench_canvas_zone'),
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (_canvasFocusMode) restoreBar else controlBand,
-                        const SizedBox(height: 4),
+                        if (_canvasFocusMode) restoreBar,
                         Expanded(child: canvas),
                       ],
                     ),
                   ),
-                  if (_inspectorVisible && !_canvasFocusMode) ...[
+                  if (showContextPanel) ...[
                     const SizedBox(width: 8),
                     SizedBox(
                       key: const Key('board_canvas_context_panel'),
                       width: contextPanelWidth,
-                      child: metadata,
+                      child: contextPanel,
                     ),
                   ],
                 ],
@@ -345,6 +428,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     if (entries.isEmpty) {
       if (_selectedPlacementKey != null) {
         _selectedPlacementKey = null;
+        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
       }
       return null;
     }
@@ -355,6 +439,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }
 
     if (_selectedPlacementKey != null) {
+      if (_contextPanelMode == _WorkbenchContextPanelMode.inspector) {
+        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+      }
       _selectedPlacementKey = null;
     }
     return null;
@@ -527,10 +614,14 @@ class _WorkbenchToolRail extends StatelessWidget {
   const _WorkbenchToolRail({
     required this.focusToggle,
     required this.inspectorToggle,
+    required this.placementTool,
+    required this.safetyEvidenceTool,
   });
 
   final Widget focusToggle;
   final Widget inspectorToggle;
+  final Widget placementTool;
+  final Widget safetyEvidenceTool;
 
   @override
   Widget build(BuildContext context) {
@@ -554,6 +645,10 @@ class _WorkbenchToolRail extends StatelessWidget {
               focusToggle,
               const SizedBox(height: _kWorkbenchToolTileGap),
               inspectorToggle,
+              const SizedBox(height: _kWorkbenchToolTileGap),
+              placementTool,
+              const SizedBox(height: _kWorkbenchToolTileGap),
+              safetyEvidenceTool,
               const SizedBox(height: 8),
               Divider(
                 height: 1,
@@ -582,6 +677,75 @@ class _WorkbenchToolRail extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _WorkbenchPanelModeButton extends StatelessWidget {
+  const _WorkbenchPanelModeButton({
+    required this.buttonKey,
+    required this.icon,
+    required this.tooltip,
+    required this.label,
+    required this.selected,
+    required this.onPressed,
+  });
+
+  final Key buttonKey;
+  final IconData icon;
+  final String tooltip;
+  final String label;
+  final bool selected;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tileColor = selected
+        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+        : theme.colorScheme.surfaceContainerLow;
+
+    final content = SizedBox(
+      width: _kCompactControlTileHeight,
+      height: _kCompactControlTileHeight,
+      child: IconButton(
+        key: buttonKey,
+        tooltip: tooltip,
+        iconSize: _kWorkbenchRailContentIconSize,
+        style: IconButton.styleFrom(
+          minimumSize: const Size.square(_kCompactControlTileHeight),
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          foregroundColor: selected
+              ? theme.colorScheme.onPrimaryContainer
+              : theme.colorScheme.onSurfaceVariant,
+        ),
+        icon: Icon(icon),
+        onPressed: onPressed,
+      ),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Card(
+          margin: EdgeInsets.zero,
+          color: tileColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
+          child: content,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
     );
   }
 }
@@ -883,12 +1047,14 @@ class _PlacementSelector extends StatelessWidget {
     required this.selectedKey,
     required this.selectedLabel,
     required this.onSelected,
+    this.initiallyExpanded = false,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final String? selectedLabel;
   final ValueChanged<String> onSelected;
+  final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -904,7 +1070,7 @@ class _PlacementSelector extends StatelessWidget {
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_placement_selector_disclosure'),
-        initiallyExpanded: false,
+        initiallyExpanded: initiallyExpanded,
         maintainState: true,
         dense: true,
         visualDensity: VisualDensity.compact,
@@ -982,12 +1148,14 @@ class _CanvasPanel extends StatefulWidget {
     required this.selectedKey,
     required this.measurementCountsByComponentId,
     required this.onPlacementSelected,
+    required this.onCanvasTapEmpty,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final Map<String, int> measurementCountsByComponentId;
   final ValueChanged<String> onPlacementSelected;
+  final VoidCallback onCanvasTapEmpty;
 
   @override
   State<_CanvasPanel> createState() => _CanvasPanelState();
@@ -1021,6 +1189,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         return;
       }
     }
+    widget.onCanvasTapEmpty();
   }
 
   Widget _buildCanvas(BuildContext context, {required Size size}) {
@@ -1115,7 +1284,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 }
 
 class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
-  const _BoardCanvasSafetyEvidenceDisclosure();
+  const _BoardCanvasSafetyEvidenceDisclosure({this.initiallyExpanded = false});
+
+  final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -1127,9 +1298,9 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
-      child: const ExpansionTile(
-        key: Key('board_canvas_safety_evidence_disclosure'),
-        initiallyExpanded: false,
+      child: ExpansionTile(
+        key: const Key('board_canvas_safety_evidence_disclosure'),
+        initiallyExpanded: initiallyExpanded,
         maintainState: true,
         dense: true,
         visualDensity: VisualDensity.compact,

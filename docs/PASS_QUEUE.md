@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -284,14 +284,15 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI implementation accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`): deterministic volatile focus mode with explicit `Focus canvas` / `Show controls` affordances, hidden chrome recovery, `renderer writes: none` visible in focus mode, private widget state only, no timers or persistence, and no renderer/canonical/write-surface changes. Claude Code implementation post-audit returned `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); recorded accepted/pushed implementation `dd69545`, Claude Code post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual smoke record accepted/pushed as `10adac9` (`docs: record board canvas ui auto-hide smoke`): user reported "Muidu käik töötas smoke testis", interpreted narrowly as Board Canvas focus/top-chrome flow worked in manual smoke; separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference remained outside accepted runtime state. |
-| V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | drafted / pending independent audit | Docs-only manual smoke record for accepted Workbench 3-zone layout and left tool rail flow; user-reported "Muidu kõik töötab nii nagu peab", interpreted narrowly as manual smoke PASS for workbench 3-zone layout / left rail behavior. |
+| V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual smoke record for accepted Workbench 3-zone layout and left tool rail flow; user-reported "Muidu kõik töötab nii nagu peab", interpreted narrowly as manual smoke PASS for Workbench 3-zone layout + left rail behavior. |
 | V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS | CODEX / DOCS_DESIGN_GAP_CAPTURE | accepted/pushed as `422416f` | Docs-only capture of `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only; records integrated workbench target, design gaps, write-flow boundaries, and W1-W11 governed work breakdown. |
 | V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `5d88998` | Docs-only scope lock for the first integrated workbench 3-zone layout: left rail placeholder or existing actions, center read-only board canvas, right contextual zone; UI-only, no writer/event/projection/schema behavior. |
 | V2_WORKBENCH_TOOL_RAIL_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | UI-only left rail refinement on the accepted Workbench shell, with compact dense grouping, compact disabled future tools, preserved focus-mode/inspector semantics, and preserved read-only/`renderer writes: none` behavior. |
 | V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`) | UI-only 3-zone responsive workbench layout shell in Board Canvas: left rail, dominant read-only center canvas, right read-only contextual panel; no write behavior. |
 | V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Independent implementation post-audit for `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`; accepted as `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; verify UI-only shell, read-only renderer, inert rail tools, and no event/fact/write surface drift. |
-| V2_WORKBENCH_CONTEXT_PANEL_READONLY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after layout shell | Right contextual panel read-only arming on component selection; show selected designator/read-only metadata/readings; no Save control yet. |
+| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | drafted / pending independent audit | Docs-only scope lock for wide-workbench contextual-panel disclosure: move Placements/Safety-Evidence into the left rail/menu and open corresponding read-only content in the right panel; supports local component inspection and empty-canvas hide behavior. |
+| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after scope lock | UI-only implementation of Workbench contextual-panel disclosure: rail selectors for Placements/Safety-Evidence, component-driven right panel content, and panel visibility behavior. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
 
 ## Current accepted route before this pass
 
@@ -26,18 +26,23 @@
 - Workbench bench-layout scope lock is accepted/pushed as `5d88998` (`docs: lock workbench bench layout scope`); implementation is limited to UI-only 3-zone Board Canvas / Workbench layout shell.
 - Workbench 3-zone Board Canvas shell implementation is accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`); `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` post-audit was accepted `AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench tool rail refinement is accepted/pushed as `ffba4ea` (`feat(board-canvas): refine workbench tool rail density`) after implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
+- Workbench manual smoke evidence record is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) indicating user wording "Muidu kõik töötab nii nagu peab" as narrow smoke pass for the current 3-zone layout and left-rail flow.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-Manual smoke evidence record for `V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS`:
-- user wording "Muidu kõik töötab nii nagu peab" is interpreted narrowly as Workbench 3-zone layout and left rail flow working in manual smoke;
-- no runtime behavior changes were made in this pass; accepted Board Canvas/UI rails behavior remains the boundary preserved target.
+Scope-lock decision for `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS`:
+- user decision is to move wide-layout `Placements` and `Safety/Evidence` controls from the top control band into the left rail/menu as read-only disclosure entries;
+- selecting these entries opens their content in the right contextual panel;
+- selecting a board component opens/updates the right panel in inspector mode;
+- empty-canvas clicks clear local selection and auto-hide the right panel;
+- the right panel remains hidden by default when no useful content is available;
+- pin/lock/info-bar affordances are deferred, not part of this pass;
+- value/unit/Save/inline measurement entry is deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`;
+- the `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only and is not accepted runtime implementation.
 
-The `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only: non-runtime, non-canonical, no HTML/CSS/mockup code copied into Flutter runtime, no runtime assets copied, and not accepted as implementation.
-
-Next route is `NEEDS_USER_DECISION`.
+Next route is `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`.
 
 ## Core boundaries
 

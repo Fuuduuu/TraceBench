@@ -2,22 +2,22 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
 
 ## Type
 
-`CODEX / DOCS_MANUAL_QA_RECORD`
+`CODEX / DOCS_DESIGN_GAP_CAPTURE`
 
 ## Lane
 
-Repo-local docs-only manual smoke record. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
+Repo-local docs-only design-gap capture and route governance. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
 
 ## Current goal
 
-- Record user manual smoke evidence for the accepted Board Canvas UI focus mode and compact top-chrome behavior.
-- Interpret user wording narrowly as Board Canvas focus/top-chrome flow worked in manual smoke testing.
-- Keep route at `NEEDS_USER_DECISION` after the smoke record.
-- Clarify that the separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot is not accepted as current runtime implementation.
+- Capture `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only.
+- Record the design gap between the accepted current app and the integrated technician workbench target.
+- Record the target architecture interpretation and W1-W11 governed work breakdown.
+- Route next to `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`.
 
 ## Current accepted route before this pass
 
@@ -25,44 +25,71 @@ Repo-local docs-only manual smoke record. Do not change runtime code, tests, too
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Baseline
 
-- Board Canvas UI auto-hide implementation accepted/pushed: `dd69545` (`feat(board-canvas): add canvas focus mode`).
-- Board Canvas UI auto-hide post-audit/closeout accepted/pushed: `5b72aba` (`docs: close out board canvas ui auto-hide`).
-- Current accepted route should remain `NEEDS_USER_DECISION`.
-- Renderer remains read-only.
-- `renderer writes: none` remains true.
+- Latest accepted pushed baseline: `10adac9` (`docs: record board canvas ui auto-hide smoke`).
+- Board Canvas focus mode/top-chrome behavior has user smoke evidence: "Muidu käik töötas smoke testis".
+- Project Overview / Workbench layout density is accepted/pushed/closed out.
+- Board Canvas top-chrome density is accepted/pushed/closed out.
+- Board Canvas UI focus mode / auto-hide is accepted/pushed/closed out.
+- Board Canvas UI auto-hide manual smoke record is accepted/pushed.
+- Board Canvas remains read-only unless separately scoped.
+- `renderer writes: none` must remain true.
 
-## Accepted Board Canvas UI behavior
+## Reference material
 
-- Compact top app bar/header.
-- Compact Placement / Safety-Evidence / collapse-control row.
-- Deterministic volatile `Focus canvas` mode.
-- `Focus canvas` hides the top control band plus inspector/sidebar.
-- `Show controls` restore strip remains visible.
-- Controls and read-only details are recoverable.
-- `renderer writes: none` remains visible.
-- Renderer remains read-only.
-- No persistence or cross-session memory.
-- No timers.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event changes.
+Prompt path checked:
 
-## Manual smoke evidence
+- `C:\Users\Kasutaja\Desktop\TraceBench_incoming\ui_redesign\2026-06-14_workbench_home\`
 
-User reported:
+Local resolution:
 
-> "Muidu käik töötas smoke testis"
+- The external `TraceBench_incoming` path was not present.
+- The repo-local scratch/reference path exists and was inspected:
+  - `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\2026-06-14_workbench_home\Technician Workbench Home - Design Review (standalone).html`
+  - `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\2026-06-14_workbench_home\workbench.css`
 
-Narrow interpretation:
+Reference handling:
 
-- Board Canvas focus/top-chrome flow worked in manual smoke testing.
+- Design input only.
+- Non-runtime and non-canonical.
+- No CSS/HTML/mockup code copy into Flutter runtime.
+- No image/assets copied into runtime.
+- `_incoming/` remains untracked scratch/reference input.
 
-Out-of-scope clarification:
+## Design-gap summary
 
-- The separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot is not recorded as accepted implementation in this pass.
-- That redesign reference remains a separate future route-review/design-gap topic unless explicitly scoped later.
+- Current app does not have a left vertical tool/action rail.
+- Current right panel is a read-only inspector, not measurement entry.
+- Measurement entry is currently a separate page.
+- Target wants one integrated bench workflow.
+- Theme parity is separate and optional.
+- Future tools remain inert unless separately scoped.
+
+## Target architecture interpretation
+
+- Left rail: UI/action/navigation tool rail, with future tools inert until separately scoped.
+- Center surface: read-only board canvas / renderer as dominant workbench surface.
+- Right contextual panel: selected component updates the panel with read-only context first.
+- Future integrated measurement panel: right-panel writer host only, not renderer write behavior.
+- Future write-flow must reuse the accepted writer path, preserve explicit target selection and human confirmation, and create only accepted canonical measurement events.
+- Inline measurement-entry work crosses into protected write-flow territory and needs separate scope-lock.
+
+## Governed work breakdown
+
+- W1 `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`: docs-only design-input capture and route governance.
+- W2 `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`: docs-only 3-zone layout scope lock; UI-only, renderer read-only.
+- W3 `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`: UI-only left rail; reuse existing routes/actions; future tools inert.
+- W4 `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`: UI-only 3-zone responsive layout shell; no writes.
+- W5 `V2_WORKBENCH_CONTEXT_PANEL_READONLY_IMPL_PASS`: read-only right panel on selection; no Save.
+- W6 `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`: protected scope-lock for inline measurement entry.
+- W7 `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`: inline value/unit/Save using accepted writer path only; high-risk audit.
+- W8 `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`: route/nav consolidation; keep `/project/measure-sheet` fallback/redirect.
+- W9 `V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS`: optional later theme scope, separate from layout/write work.
+- W10 Per-slice test/fixture coverage: attach focused tests and fixture coverage to each implementation slice.
+- W11 `V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS`: manual Windows smoke after integrated panel/navigation work.
 
 ## File allowlist for this pass
 
@@ -72,19 +99,23 @@ Governance:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/audit/V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS.md`
 
 ## Allowed docs-only scope
 
-- Record the smoke result as manual/user evidence.
-- Keep route at `NEEDS_USER_DECISION` after the smoke record.
-- Clarify that the future redesign reference remains separate and is not accepted as the current runtime target.
+- Register the reference in repo source/orientation docs as design-input-only.
+- Record that the reference was previously only partially represented as read-only input and not governed as the active target.
+- Record design gap, target architecture interpretation, and W1-W11 work breakdown.
+- Route next to `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`.
 
 ## Strict forbidden scope
 
 - No `lib/` changes.
 - No `test/` changes.
 - No tools/schema/sample/generated/platform/pubspec changes.
+- No runtime behavior changes.
 - No Board Canvas runtime changes.
 - No renderer behavior changes.
 - No board-normalized placement semantics changes.
@@ -101,10 +132,7 @@ Governance:
 - No AI/OCR/CV/photo inference behavior.
 - No broad app-wide theme/token/design-system migration.
 - No generated/platform/dependency/pubspec changes.
-- No persistence/cross-session memory.
-- No timers.
-- Do not remove the read-only boundary copy.
-- Do not remove `renderer writes: none`.
+- No copying `_incoming` assets/code into runtime.
 - No staging, commit, or push.
 
 Renderer remains read-only and `renderer writes: none` remains true.
@@ -119,9 +147,9 @@ Renderer remains read-only and `renderer writes: none` remains true.
 
 ## Current route lock
 
-Current pass: `V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
+Current pass: `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Scope carry-forward
 

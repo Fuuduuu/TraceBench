@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -283,4 +283,14 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`) for a future Board Canvas UI-only volatile auto-hide/collapse polish for inspector/sidebar/top-control chrome; implementation target `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; preserves renderer read-only behavior, `renderer writes: none`, canonical semantics, and no-write boundaries. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI implementation accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`): deterministic volatile focus mode with explicit `Focus canvas` / `Show controls` affordances, hidden chrome recovery, `renderer writes: none` visible in focus mode, private widget state only, no timers or persistence, and no renderer/canonical/write-surface changes. Claude Code implementation post-audit returned `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); recorded accepted/pushed implementation `dd69545`, Claude Code post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
-| V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | current / pending Claude Code read-only audit | Docs-only manual smoke record for accepted Board Canvas focus/top-chrome behavior. User reported "Muidu käik töötas smoke testis", interpreted narrowly as Board Canvas focus/top-chrome flow worked in manual smoke; separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference remains outside accepted runtime state. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual smoke record accepted/pushed as `10adac9` (`docs: record board canvas ui auto-hide smoke`): user reported "Muidu käik töötas smoke testis", interpreted narrowly as Board Canvas focus/top-chrome flow worked in manual smoke; separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference remained outside accepted runtime state. |
+| V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS | CODEX / DOCS_DESIGN_GAP_CAPTURE | current / pending Claude Code read-only audit | Docs-only capture of `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only; records integrated workbench target, design gaps, write-flow boundaries, and W1-W11 governed work breakdown. |
+| V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | recommended next | Docs-only scope lock for the first integrated workbench 3-zone layout: left rail, center read-only board canvas, right contextual zone; UI-only, no writer/event/projection/schema behavior. |
+| V2_WORKBENCH_TOOL_RAIL_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after layout scope lock | UI-only left rail implementation; reuse existing routes/actions and keep future tools inert. |
+| V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after scope lock | UI-only 3-zone responsive workbench layout shell; no write behavior. |
+| V2_WORKBENCH_CONTEXT_PANEL_READONLY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after layout shell | Right contextual panel read-only arming on component selection; show selected designator/read-only metadata/readings; no Save control yet. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
+| V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |
+| V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later | Optional theme scope only; do not mix with layout or write-flow work. |
+| V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

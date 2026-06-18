@@ -21,10 +21,10 @@ Routing, handoff, and conflict-resolution index for current TraceBench governanc
 
 - Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
 - Current accepted route: `NEEDS_USER_DECISION`.
-- Latest accepted pushed work: Project Overview / Workbench layout-density closeout `19fc1c9` (`docs: close out project overview layout density`).
+- Latest accepted pushed work: Board Canvas UI auto-hide manual smoke record `10adac9` (`docs: record board canvas ui auto-hide smoke`).
 - Board Canvas density polish is accepted/pushed/manual-smoke PASS.
 - Project Overview / Workbench layout density is accepted/pushed/closed out.
-- Safe future options: manual Project Overview visual smoke record, UI-only auto-hide scope lock, multi-placement fixture coverage, or another route-review if needed.
+- Current design-gap capture routes toward `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`; write-flow integration, route consolidation, and theme parity remain separate later scopes.
 
 ## CURRENT_STATE size/archive discipline
 
@@ -140,3 +140,4 @@ Archive files are never read by default.
 ## Design/prototype source folders
 
 - docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Claude Design / UX review returned `ACCEPT_WITH_NITS`; source files remain non-runtime design input, not production Flutter source, not Project ZIP content, and not evidence/canonical input.
+- `_incoming/ui_redesign/2026-06-14_workbench_home/`: local scratch/reference-only Technician Workbench Home design input for integrated workbench direction. Contains standalone HTML/CSS mockup material; it remains untracked, non-runtime, non-canonical, not Project ZIP content, and must not be copied into Flutter/runtime/assets.

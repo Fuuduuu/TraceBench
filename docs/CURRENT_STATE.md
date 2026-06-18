@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Current accepted route before this pass
 
@@ -21,14 +21,17 @@
 - Board Canvas UI auto-hide scope lock is accepted/pushed as `e55b1f8` (`docs: lock board canvas ui auto-hide scope`).
 - Board Canvas UI auto-hide implementation is accepted/pushed as `dd69545` (`feat(board-canvas): add canvas focus mode`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Board Canvas UI auto-hide post-audit/closeout is accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); accepted route is `NEEDS_USER_DECISION`.
+- Board Canvas UI auto-hide manual smoke is accepted/pushed as `10adac9` (`docs: record board canvas ui auto-hide smoke`); user evidence "Muidu käik töötas smoke testis" is recorded narrowly as Board Canvas focus/top-chrome flow worked in manual smoke.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This docs-only manual smoke record captures user evidence for the accepted Board Canvas compact top-chrome and UI focus mode. User wording: "Muidu käik töötas smoke testis". This is interpreted narrowly as: Board Canvas focus/top-chrome flow worked in manual smoke testing.
+This docs-only design-gap capture records `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only for an integrated technician workbench target. The reference is non-runtime and non-canonical; do not copy HTML/CSS/mockup code or assets into Flutter runtime.
 
-This pass does not accept or promote the separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference screenshot as current implementation. That reference remains a separate future route-review/design-gap topic unless explicitly scoped later. Route remains `NEEDS_USER_DECISION`.
+Captured target: left vertical tool/action rail, center read-only board canvas as the dominant surface, and right contextual panel that updates on selected component. Future inline measurement entry belongs in the right panel as a writer host using the accepted writer path, explicit target selection, and human confirmation; it is not renderer write behavior and requires a separate protected scope-lock.
+
+Next route is `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS` for a UI-only 3-zone layout scope lock with renderer read-only.
 
 ## Core boundaries
 

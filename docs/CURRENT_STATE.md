@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current accepted route before this pass
 
@@ -27,23 +27,20 @@
 - Workbench 3-zone Board Canvas shell implementation is accepted/pushed as `3936cc2` (`feat(board-canvas): add workbench 3-zone layout shell`); `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` post-audit was accepted `AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench tool rail refinement is accepted/pushed as `ffba4ea` (`feat(board-canvas): refine workbench tool rail density`) after implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench manual smoke evidence record is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) indicating user wording "Muidu kõik töötab nii nagu peab" as narrow smoke pass for the current 3-zone layout and left-rail flow.
-- Workbench context-panel disclosure implementation is currently under active local implementation in `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` (runtime + tests updated locally, not yet pushed).
+- Workbench context-panel disclosure implementation is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-Active implementation focus for `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`:
-- wide Workbench layout moves `Placements` and `Safety / Evidence` controls from the top control band into left rail disclosure actions;
-- selecting either disclosure opens read-only matching content in the right contextual panel;
-- selecting a rendered component updates and opens the right inspector mode;
-- empty-canvas clicks clear local selection and auto-hide the contextual panel;
-- default right panel visibility is hidden when there is no useful content to show;
-- pin/lock/info-bar affordances are deferred, not part of this pass;
-- value/unit/Save/inline measurement entry is deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`;
-- the `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only and is not accepted runtime implementation.
+Current acceptance context after post-audit:
 
-Next route is `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`.
+- Workbench wide layout discloses `Placements` and `Safety / Evidence` from the left rail and drives the right contextual panel from rail or component selection in read-only mode.
+- Right context panel stays hidden when no meaningful content is active and is reopened as local UI state when needed.
+- Pin/lock/info-bar contextual affordances are deferred; inline value/unit/Save entry remains deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`.
+- `_incoming/ui_redesign/2026-06-14_workbench_home/` remains design-input-only and is not part of accepted runtime behavior.
+
+Next route is `NEEDS_USER_DECISION`.
 
 ## Core boundaries
 

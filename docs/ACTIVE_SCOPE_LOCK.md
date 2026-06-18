@@ -2,20 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-`CODEX / FLUTTER_UI_POLISH`
+`CLAUDE_CODE / AUDIT_ONLY`
 
 ## Lane
-Implementation pass for Workbench contextual-panel disclosure flow on the accepted 3-zone layout.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS.md` as implementation artifacts.
-Do not stage, commit, or push in this pass.
+Docs-only post-audit bookkeeping for implementation pass `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS.md`.
+No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
 
 ## Current goal
 
-Implement the narrow wide-workbench contextual disclosure flow by moving `Placements` and `Safety / Evidence` controls out of the top control band and driving the right contextual panel from the left rail and local component selection.
+Record `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` as accepted/pushed after independent post-audit with route handoff under repo convention.
 
 ## Baseline
 
@@ -25,44 +25,33 @@ Implement the narrow wide-workbench contextual disclosure flow by moving `Placem
 - `V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS` is accepted/pushed as `289e21a` (`docs: record workbench tool rail impl post-audit`).
 - `V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS` is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) and the current baseline for this pass is user wording "Muidu kõik töötab nii nagu peab".
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS` is accepted/pushed as `46bdc26` (`docs: lock workbench context panel disclosure scope`).
+- `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) after post-audit `ACCEPT_AS_IS`.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - Board Canvas read-only boundaries and focus/top-chrome behavior were accepted in prior passes.
 
 ## Allowed governance scope
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS.md`
+- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS.md`
 
 ## Required validation
 
-- `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
-- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --check`
 
 ## Strict forbidden implementation scope
 
-- No runtime or test behavior changes outside workbench right-panel disclosure mode/interaction.
-- No runtime write-flow expansion (`value`/`unit`/`Save`/`inline-entry`).
-- No board-canvas runtime behavior changes outside this disclosure pass.
-- No board-normalized placement/selection semantics changes.
-- No top-band UI changes for this pass except moving disclosures into rail actions.
-- No inline measurement entry, Save, unit selector, or value editing.
-- No writer/schema/materializer/validator/projection/Project ZIP/event/fact path changes.
-- No `/project/measure-sheet` deletion or route consolidation.
-- Renderer must remain read-only.
+- Runtime/test/other scope edits are out of scope in this post-audit pass.
 - `renderer writes: none` must remain true.
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`
+Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
 
-Next: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Scope carry-forward
 

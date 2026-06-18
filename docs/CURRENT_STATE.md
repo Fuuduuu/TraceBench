@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -39,6 +39,14 @@ Current acceptance context after post-audit:
 - Right context panel stays hidden when no meaningful content is active and is reopened as local UI state when needed.
 - Pin/lock/info-bar contextual affordances are deferred; inline value/unit/Save entry remains deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` remains design-input-only and is not part of accepted runtime behavior.
+
+## Current accepted behavior evidence
+
+- Workbench context-panel disclosure flow passed manual smoke in a user test report ("Kõik passed aga teeks paar muudatust"), interpreted narrowly as:
+  - Workbench wide layout with left-rail-discovered `Placements` and `Safety / Evidence` disclosures,
+  - right contextual panel opening from rail selection or component selection,
+  - panel empty/default state when no meaningful contextual mode is selected,
+  - empty-canvas deselection clearing local UI state and collapsing the right panel.
 
 Next route is `NEEDS_USER_DECISION`.
 

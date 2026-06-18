@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -294,6 +294,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed | Scope lock accepted/pushed as `46bdc26` (`docs: lock workbench context panel disclosure scope`); implementation target is `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`. |
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | UI-only implementation moved wide-workbench `Placements` / `Safety / Evidence` disclosures to left rail actions, added contextual panel modes, and preserved read-only/selection invariants with no write-flow changes. |
 | V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route returned to `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | drafted / pending independent audit | Docs-only manual smoke record for accepted context-panel disclosure behavior; user-reported "Kõik passed aga teeks paar muudatust" is recorded narrowly as flow PASS; route remains `NEEDS_USER_DECISION`. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |

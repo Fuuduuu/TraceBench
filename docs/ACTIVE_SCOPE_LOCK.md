@@ -2,20 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS`
 
 ## Type
 
-`CLAUDE_CODE / AUDIT_ONLY`
+`CODEX / DOCS_MANUAL_QA_RECORD`
 
 ## Lane
-Docs-only post-audit bookkeeping for implementation pass `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS.md`.
+Docs-only manual smoke recording for accepted implementation pass `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS.md`.
 No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
 
 ## Current goal
 
-Record `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` as accepted/pushed after independent post-audit with route handoff under repo convention.
+Record manual smoke evidence for `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS` while preserving post-audit acceptance and route continuity.
 
 ## Baseline
 
@@ -35,7 +35,7 @@ Record `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` as accepted/pushed afte
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS.md`
 
 ## Required validation
 
@@ -49,7 +49,7 @@ Record `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` as accepted/pushed afte
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS`
+Current pass: `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS`
 
 Next: `NEEDS_USER_DECISION`
 

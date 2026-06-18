@@ -382,6 +382,55 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+      'wide workbench layout exposes rail canvas and read-only context zones',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final shellFinder = find.byKey(const Key('board_canvas_workbench_shell'));
+    final railFinder = find.byKey(const Key('board_canvas_workbench_rail'));
+    final canvasZoneFinder =
+        find.byKey(const Key('board_canvas_workbench_canvas_zone'));
+    final contextFinder = find.byKey(const Key('board_canvas_context_panel'));
+
+    expect(shellFinder, findsOneWidget);
+    expect(railFinder, findsOneWidget);
+    expect(canvasZoneFinder, findsOneWidget);
+    expect(contextFinder, findsOneWidget);
+
+    final railSize = tester.getSize(railFinder);
+    final canvasZoneSize = tester.getSize(canvasZoneFinder);
+    final contextSize = tester.getSize(contextFinder);
+
+    expect(canvasZoneSize.width, greaterThan(contextSize.width));
+    expect(canvasZoneSize.width, greaterThan(railSize.width * 4));
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('Select a placement to view read-only details.'),
+        findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+
+    final futureTraceTool = tester.widget<IconButton>(
+      find.byKey(const Key('board_canvas_rail_future_trace_tool')),
+    );
+    final futureMapTool = tester.widget<IconButton>(
+      find.byKey(const Key('board_canvas_rail_future_repair_map_tool')),
+    );
+    expect(futureTraceTool.onPressed, isNull);
+    expect(futureMapTool.onPressed, isNull);
+    expect(state.events, isEmpty);
+  });
+
   testWidgets('wide board canvas hides and restores inspector chrome',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

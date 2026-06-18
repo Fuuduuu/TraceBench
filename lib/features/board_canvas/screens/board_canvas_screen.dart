@@ -12,6 +12,9 @@ import '../../../shared/models/project_state.dart';
 const double _kCompactBoardCanvasAppBarHeight = 36;
 const double _kCompactControlTileHeight = 38;
 const double _kCompactControlIconSize = 18;
+const double _kWorkbenchRailWidth = 52;
+const double _kWideContextPanelWidth = 320;
+const double _kMediumContextPanelWidth = 280;
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -174,6 +177,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final useWorkbenchShell = constraints.maxWidth >= 900;
             final selector = _PlacementSelector(
               entries: entries,
               selectedKey: selectedKey,
@@ -201,25 +205,28 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
             );
+            final focusToggle = _CanvasFocusButton(
+              onPressed: () {
+                setState(() {
+                  _canvasFocusMode = true;
+                  _inspectorVisible = false;
+                });
+              },
+            );
+            final inspectorToggle = _InspectorChromeToggle(
+              inspectorVisible: _inspectorVisible,
+              onPressed: () {
+                setState(() {
+                  _inspectorVisible = !_inspectorVisible;
+                });
+              },
+            );
             final controlBand = _BoardCanvasControlBand(
               selector: selector,
               safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
-              focusToggle: _CanvasFocusButton(
-                onPressed: () {
-                  setState(() {
-                    _canvasFocusMode = true;
-                    _inspectorVisible = false;
-                  });
-                },
-              ),
-              inspectorToggle: _InspectorChromeToggle(
-                inspectorVisible: _inspectorVisible,
-                onPressed: () {
-                  setState(() {
-                    _inspectorVisible = !_inspectorVisible;
-                  });
-                },
-              ),
+              trailingActions: useWorkbenchShell
+                  ? const <Widget>[]
+                  : <Widget>[focusToggle, inspectorToggle],
             );
             final restoreBar = _CanvasFocusRestoreBar(
               onRestore: () {
@@ -230,36 +237,24 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               },
             );
 
-            if (constraints.maxWidth >= 1180) {
+            if (useWorkbenchShell) {
+              final contextPanelWidth = constraints.maxWidth >= 1180
+                  ? _kWideContextPanelWidth
+                  : _kMediumContextPanelWidth;
               return Row(
+                key: const Key('board_canvas_workbench_shell'),
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    flex: 7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (_canvasFocusMode) restoreBar else controlBand,
-                        const SizedBox(height: 4),
-                        Expanded(child: canvas),
-                      ],
+                  if (!_canvasFocusMode) ...[
+                    _WorkbenchToolRail(
+                      focusToggle: focusToggle,
+                      inspectorToggle: inspectorToggle,
                     ),
-                  ),
-                  if (_inspectorVisible && !_canvasFocusMode) ...[
-                    const SizedBox(width: 8),
-                    SizedBox(width: 320, child: metadata),
+                    const SizedBox(width: 6),
                   ],
-                ],
-              );
-            }
-
-            if (constraints.maxWidth >= 900) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
                   Expanded(
-                    flex: 7,
                     child: Column(
+                      key: const Key('board_canvas_workbench_canvas_zone'),
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (_canvasFocusMode) restoreBar else controlBand,
@@ -270,7 +265,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   ),
                   if (_inspectorVisible && !_canvasFocusMode) ...[
                     const SizedBox(width: 8),
-                    SizedBox(width: 280, child: metadata),
+                    SizedBox(
+                      key: const Key('board_canvas_context_panel'),
+                      width: contextPanelWidth,
+                      child: metadata,
+                    ),
                   ],
                 ],
               );
@@ -469,14 +468,12 @@ class _BoardCanvasControlBand extends StatelessWidget {
   const _BoardCanvasControlBand({
     required this.selector,
     required this.safetyEvidence,
-    required this.focusToggle,
-    required this.inspectorToggle,
+    required this.trailingActions,
   });
 
   final Widget selector;
   final Widget safetyEvidence;
-  final Widget focusToggle;
-  final Widget inspectorToggle;
+  final List<Widget> trailingActions;
 
   @override
   Widget build(BuildContext context) {
@@ -490,10 +487,10 @@ class _BoardCanvasControlBand extends StatelessWidget {
               Expanded(flex: 5, child: selector),
               const SizedBox(width: 4),
               Expanded(flex: 3, child: safetyEvidence),
-              const SizedBox(width: 4),
-              focusToggle,
-              const SizedBox(width: 4),
-              inspectorToggle,
+              for (final action in trailingActions) ...[
+                const SizedBox(width: 4),
+                action,
+              ],
             ],
           );
         }
@@ -508,15 +505,101 @@ class _BoardCanvasControlBand extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: safetyEvidence),
-                const SizedBox(width: 4),
-                focusToggle,
-                const SizedBox(width: 4),
-                inspectorToggle,
+                for (final action in trailingActions) ...[
+                  const SizedBox(width: 4),
+                  action,
+                ],
               ],
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _WorkbenchToolRail extends StatelessWidget {
+  const _WorkbenchToolRail({
+    required this.focusToggle,
+    required this.inspectorToggle,
+  });
+
+  final Widget focusToggle;
+  final Widget inspectorToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      key: const Key('board_canvas_workbench_rail'),
+      width: _kWorkbenchRailWidth,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          child: Column(
+            children: [
+              focusToggle,
+              const SizedBox(height: 6),
+              inspectorToggle,
+              const SizedBox(height: 8),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: theme.colorScheme.outlineVariant,
+              ),
+              const SizedBox(height: 8),
+              const _InactiveRailToolButton(
+                buttonKey: Key('board_canvas_rail_future_trace_tool'),
+                icon: Icons.timeline,
+                tooltip: 'Future trace tool inactive',
+              ),
+              const SizedBox(height: 6),
+              const _InactiveRailToolButton(
+                buttonKey: Key('board_canvas_rail_future_repair_map_tool'),
+                icon: Icons.map_outlined,
+                tooltip: 'Future repair map inactive',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InactiveRailToolButton extends StatelessWidget {
+  const _InactiveRailToolButton({
+    required this.buttonKey,
+    required this.icon,
+    required this.tooltip,
+  });
+
+  final Key buttonKey;
+  final IconData icon;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _kCompactControlTileHeight,
+      height: _kCompactControlTileHeight,
+      child: IconButton(
+        key: buttonKey,
+        tooltip: tooltip,
+        iconSize: _kCompactControlIconSize,
+        style: IconButton.styleFrom(
+          minimumSize: const Size.square(_kCompactControlTileHeight),
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        icon: Icon(icon),
+        onPressed: null,
+      ),
     );
   }
 }

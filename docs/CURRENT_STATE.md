@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS`
 
 ## Current accepted route before this pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
 ## Latest accepted pushed work
 
@@ -23,16 +23,17 @@
 - Board Canvas UI auto-hide post-audit/closeout is accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); accepted route is `NEEDS_USER_DECISION`.
 - Board Canvas UI auto-hide manual smoke is accepted/pushed as `10adac9` (`docs: record board canvas ui auto-hide smoke`); user evidence "Muidu käik töötas smoke testis" is recorded narrowly as Board Canvas focus/top-chrome flow worked in manual smoke.
 - Workbench Home redesign design-gap capture is accepted/pushed as `422416f` (`docs: capture workbench home redesign design gap`); `_incoming/ui_redesign/2026-06-14_workbench_home/` is registered as design-input-only and W1-W11 routing is captured.
+- Workbench bench-layout scope lock is accepted/pushed as `5d88998` (`docs: lock workbench bench layout scope`); implementation is limited to UI-only 3-zone Board Canvas / Workbench layout shell.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This docs-only scope-lock defines the next implementation target: a UI-only 3-zone Board Canvas / Workbench layout shell with a left rail placeholder or existing action/navigation surface, center read-only Board Canvas as the dominant area, and a right contextual panel container.
+This local implementation pass adds the UI-only 3-zone Board Canvas / Workbench shell: left vertical rail, center read-only Board Canvas zone as the dominant surface, and right read-only contextual panel container.
 
 The `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only: non-runtime, non-canonical, no HTML/CSS/mockup code copied into Flutter runtime, no runtime assets copied, and not accepted as implementation.
 
-Next route is `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`. It may rearrange the UI shell only. It must not add inline measurement entry, Save controls, new write paths, routing consolidation, `/project/measure-sheet` deletion, renderer behavior changes, or canonical/event/fact/projection/schema/Project ZIP changes.
+Next route is `V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS` for Claude Code read-only implementation audit. The implementation must remain UI-only: no inline measurement entry, Save controls, new write paths, routing consolidation, `/project/measure-sheet` deletion, renderer behavior changes, or canonical/event/fact/projection/schema/Project ZIP changes.
 
 ## Core boundaries
 

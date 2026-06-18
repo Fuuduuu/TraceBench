@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -285,9 +285,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `5b72aba` (`docs: close out board canvas ui auto-hide`); recorded accepted/pushed implementation `dd69545`, Claude Code post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
 | V2_BOARD_CANVAS_UI_AUTO_HIDE_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | accepted/pushed | Docs-only manual smoke record accepted/pushed as `10adac9` (`docs: record board canvas ui auto-hide smoke`): user reported "Muidu käik töötas smoke testis", interpreted narrowly as Board Canvas focus/top-chrome flow worked in manual smoke; separate `_incoming/ui_redesign/2026-06-14_workbench_home` reference remained outside accepted runtime state. |
 | V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS | CODEX / DOCS_DESIGN_GAP_CAPTURE | accepted/pushed as `422416f` | Docs-only capture of `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only; records integrated workbench target, design gaps, write-flow boundaries, and W1-W11 governed work breakdown. |
-| V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current / pending Claude Code read-only audit | Docs-only scope lock for the first integrated workbench 3-zone layout: left rail placeholder or existing actions, center read-only board canvas, right contextual zone; UI-only, no writer/event/projection/schema behavior. |
+| V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `5d88998` | Docs-only scope lock for the first integrated workbench 3-zone layout: left rail placeholder or existing actions, center read-only board canvas, right contextual zone; UI-only, no writer/event/projection/schema behavior. |
 | V2_WORKBENCH_TOOL_RAIL_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after initial layout shell | UI-only left rail refinement if still needed after the initial shell; reuse existing routes/actions and keep future tools inert. |
-| V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | next implementation / after scope-lock audit | UI-only 3-zone responsive workbench layout shell; no write behavior. |
+| V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented locally / pending Claude Code read-only post-audit | UI-only 3-zone responsive workbench layout shell in Board Canvas: left rail, dominant read-only center canvas, right read-only contextual panel; no write behavior. |
+| V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Independent implementation post-audit for `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`; verify UI-only shell, read-only renderer, inert rail tools, no copied `_incoming` code/assets, and no event/fact/write surface drift. |
 | V2_WORKBENCH_CONTEXT_PANEL_READONLY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | planned / after layout shell | Right contextual panel read-only arming on component selection; show selected designator/read-only metadata/readings; no Save control yet. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |

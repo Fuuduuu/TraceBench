@@ -2,100 +2,69 @@
 
 ## Current pass
 
-`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
 ## Type
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Lane
 
-Repo-local docs-only scope lock. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, `_incoming` artifacts, stage, commit, or push.
+Repo-local implementation pass. Runtime edits are limited to Board Canvas layout shell UI, tests are limited to Board Canvas widget tests, and governance edits are limited to route/audit docs. Do not stage, commit, or push.
 
 ## Current goal
 
-Lock the future `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` implementation scope for the first integrated Workbench redesign step: a UI-only 3-zone Board Canvas / Workbench layout shell.
+Implement the locked UI-only 3-zone Workbench / Board Canvas layout shell:
 
-## Problem statement
+- left vertical rail;
+- center read-only Board Canvas as dominant surface;
+- right read-only contextual panel container.
 
-The accepted Board Canvas and Workbench density passes improved chrome and available canvas space, but the integrated technician workbench target still needs a governed shell that makes the board canvas the dominant work surface while creating explicit homes for actions and context.
+This pass improves layout structure only. It does not add measurement-entry or write-flow behavior.
 
-The first implementation must be only layout structure:
+## Baseline
 
-- left rail placeholder or existing action/navigation surface;
-- center read-only Board Canvas area as the dominant surface;
-- right contextual panel container.
-
-It must not open the future measurement-entry/write-flow surface.
-
-## Current baseline
-
-- `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS` is accepted/pushed as `422416f` (`docs: capture workbench home redesign design gap`).
-- `_incoming/ui_redesign/2026-06-14_workbench_home/` is registered as design-input-only.
+- `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS` is accepted/pushed as `5d88998` (`docs: lock workbench bench layout scope`).
+- `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only, non-runtime, non-canonical, not copied into Flutter runtime, and not accepted as implementation.
 - Board Canvas is accepted/pushed/manual-smoke PASS.
 - Board Canvas focus/top-chrome behavior has user smoke evidence: "Muidu käik töötas smoke testis".
-- Board Canvas remains read-only unless separately scoped.
 - Renderer remains read-only.
 - `renderer writes: none` must remain true.
 
-## Design-input reference boundary
+## Implementation summary
 
-The local `_incoming/ui_redesign/2026-06-14_workbench_home/` material is reference input only:
+- Add a wide-layout keyed Workbench shell around Board Canvas.
+- Add a left rail keyed `board_canvas_workbench_rail`.
+- Reuse existing `Focus canvas` and inspector show/hide actions in the rail on wide layouts.
+- Keep future rail tools clearly disabled/inert.
+- Keep the existing selector and Safety / Evidence controls in the compact top band.
+- Keep center canvas keyed as the dominant `board_canvas_workbench_canvas_zone`.
+- Host existing read-only inspector/context content in keyed `board_canvas_context_panel`.
+- Preserve narrow responsive fallback by keeping controls in the top band when the rail is not shown.
 
-- non-runtime;
-- non-canonical;
-- no HTML/CSS/mockup code copy into Flutter runtime;
-- no image or asset copy into runtime;
-- not accepted as implementation;
-- `_incoming/` remains untracked scratch/reference input.
-
-Implementation may follow the governed direction, not the mockup code.
-
-## Next implementation pass
-
-`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
-
-## Expected future implementation surfaces
-
-Runtime:
+## Allowed implementation scope
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- A local Board Canvas UI helper/widget file only if repo inspection proves it already belongs to this exact screen surface and the implementation audit explains why it is necessary.
-
-Tests:
-
 - `test/widget/board_canvas_screen_test.dart`
-
-Governance:
-
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS.md`
 
-## Allowed future implementation scope
+## Required tests
 
-- Board Canvas / Workbench 3-zone layout shell.
-- Left vertical rail using existing actions/routes only.
-- Future or disabled tool placeholders only if clearly disabled/inert.
-- Center existing read-only renderer/canvas as the dominant surface.
-- Right contextual panel container.
-- Existing read-only inspector/context content may be hosted in the right panel.
-- Responsive fallback for narrower screens if needed.
-- UI-only visual/layout rearrangement.
-- Focused widget tests for:
-  - three zones on wide layout;
-  - center canvas dominance;
-  - renderer read-only boundary;
-  - `renderer writes: none` visible or safely recoverable;
-  - rail future tools inert;
-  - no events/facts written.
+- Wide layout has three named zones.
+- Center canvas remains dominant over rail/context panel.
+- Renderer remains read-only.
+- `renderer writes: none` remains visible or safely recoverable.
+- Rail future tools remain inert.
+- No events/facts are written.
 
-## Strict forbidden future implementation scope
+## Strict forbidden scope
 
 - No inline measurement entry.
-- No Save button in the right panel.
+- No right-panel Save button.
 - No new write path.
 - No writer/schema/materializer/validator/projection/Project ZIP changes.
 - No `events.jsonl` or `known_facts.json` write/mutation changes.
@@ -117,61 +86,18 @@ Governance:
 - Renderer must remain read-only.
 - `renderer writes: none` must remain true.
 
-## Future write-flow separation
-
-Inline measurement entry belongs to later protected work:
-
-- `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`
-- `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`
-
-This layout pass must not add value/unit entry, Save controls, writer adapters, event creation, projection changes, or any renderer write behavior. Standalone `/project/measure-sheet` remains fallback/redirect unless route consolidation is separately scoped.
-
-## Implementation audit requirements
-
-The future implementation post-audit must verify:
-
-- UI-only 3-zone shell behavior.
-- No event/fact/write surfaces changed.
-- Renderer remains read-only.
-- `renderer writes: none` remains true and visible or safely recoverable.
-- Rail placeholders are disabled/inert.
-- Right panel remains read-only only.
-- Existing Board Canvas selection/tap-to-select/pan/zoom/fit/placement/measurement-summary behavior is preserved.
-- Tests avoid brittle pixel-perfect mockup copying.
-- No `_incoming` HTML/CSS/assets were copied into runtime.
-
-## File allowlist for this docs-only pass
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS.md`
-
-## Forbidden scope for this docs-only pass
-
-- No `lib/` changes.
-- No `test/` changes.
-- No tools/schema/sample/generated/platform/pubspec changes.
-- No runtime behavior changes.
-- No `_incoming` file changes.
-- No staging, commit, or push.
-
 ## Required validation
 
+- `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
+- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 - `git diff --check`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git status --short --branch`
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+Current pass: `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
-Next: `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
+Next: `V2_WORKBENCH_BENCH_LAYOUT_IMPL_POST_AUDIT_PASS`
 
 ## Scope carry-forward
 

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -279,4 +279,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | PROJECT_SOURCE_GUIDE_REFRESH_PASS | CODEX / DOCS_SOURCE_ORIENTATION | accepted/pushed | Repo-local docs/source-orientation refresh accepted/pushed as `7269648` (`docs: refresh project source orientation`) after the Project Overview / Workbench layout-density closeout; records current accepted route `NEEDS_USER_DECISION`, latest pushed closeout `19fc1c9`, accepted Board Canvas manual-smoke PASS, accepted Project Overview density state, and safe future options without creating duplicate orientation files. |
 | V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `d6797fd` (`docs: lock board canvas top-chrome density scope`) for a Board Canvas UI-only top-chrome density polish after user screenshot review. |
 | V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Board Canvas-only UI density implementation accepted/pushed as `462eab2` (`feat(board-canvas): compact top chrome density`): compacted AppBar/title chrome and collapsed Placement / Safety-Evidence / inspector-toggle row while preserving renderer read-only behavior, `renderer writes: none`, tap-to-select, pan/zoom/fit, selector/inspector behavior, measurement metadata, visual_trace/photo-alignment metadata, and writer/schema/materializer/validator/projection/Project ZIP/fact/event boundaries. |
-| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current / pending Claude Code read-only audit | Docs-only post-audit bookkeeping records Claude Code implementation post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, accepted/pushed implementation commit `462eab2`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only post-audit bookkeeping accepted/pushed as `669d9f5` (`docs: close out board canvas top-chrome density`); recorded Claude Code implementation post-audit `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`, accepted/pushed implementation commit `462eab2`, validation evidence, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current / pending Claude Code read-only audit | Docs-only scope lock for a future Board Canvas UI-only volatile auto-hide/collapse polish for inspector/sidebar/top-control chrome; implementation target `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`; preserves renderer read-only behavior, `renderer writes: none`, canonical semantics, and no-write boundaries. |
+| V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | recommended next | Future Board Canvas-only UI implementation may add discoverable/recoverable volatile chrome auto-hide/collapse behavior for inspector/sidebar/top-control band, with focused widget tests and no renderer/canonical/write semantics changes. |

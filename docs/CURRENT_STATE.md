@@ -2,34 +2,32 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`
 
 ## Current accepted route before this pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Latest accepted pushed work
 
 - Source/orientation refresh is accepted/pushed as `7269648` (`docs: refresh project source orientation`).
 - Board Canvas top-chrome density scope lock is accepted/pushed as `d6797fd` (`docs: lock board canvas top-chrome density scope`).
 - Board Canvas top-chrome density implementation is accepted/pushed as `462eab2` (`feat(board-canvas): compact top chrome density`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
+- Board Canvas top-chrome density route is closed out as `669d9f5` (`docs: close out board canvas top-chrome density`).
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, and persistent `renderer writes: none`.
 
 ## Current scope
 
-This docs-only pass records accepted/pushed `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS` and its independent Claude Code implementation post-audit.
+This docs-only pass scope-locks a future UI-only Board Canvas chrome auto-hide/collapse polish.
 
-User screenshot review identified two remaining density issues:
+The next implementation target is `V2_BOARD_CANVAS_UI_AUTO_HIDE_IMPL_PASS`. That pass may make Board Canvas inspector/sidebar/top-control chrome more reversible and space-efficient so the canvas area feels more dominant, but only as volatile local UI state with explicit restore/show controls.
 
-- the top app bar/header with back button and "Board Canvas" title can be narrower/shorter;
-- the row containing Placements, Safety / Evidence, and collapse/expand controls can be narrower and more compact.
-
-The accepted implementation compacted the header and top control row so the board area becomes more dominant, without changing Board Canvas behavior or evidence/write boundaries.
+The future implementation must preserve Board Canvas behavior, canonical semantics, read-only renderer boundaries, and persistent `renderer writes: none`. Auto-hide must remain discoverable and recoverable, must not permanently hide safety/read-only meaning, and must not add persistence or cross-session memory.
 
 ## Core boundaries
 

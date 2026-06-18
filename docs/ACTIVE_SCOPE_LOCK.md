@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
 
 ## Type
 
-`CODEX / DOCS_MANUAL_QA_RECORD`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Lane
 
-Docs-only manual smoke record for accepted `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` runtime behavior.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS.md`.
-No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
+Docs-only scope-lock for the next runtime implementation pass `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS.md`.
+No runtime code, tests, tools, schemas, samples, generated/platform files, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, `_incoming` assets, staging, commit, or push actions are in scope.
 
 ## Current goal
 
-Record manual smoke evidence and future design notes for the accepted `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` and carry the route onward with `NEEDS_USER_DECISION`.
+Lock a narrow Workbench wide-rail polish pass that converts the rail into a contextual panel-mode button system and removes wide-rail chrome duplication while keeping read-only read-panel behavior.
 
 ## Baseline
 
@@ -29,6 +29,7 @@ Record manual smoke evidence and future design notes for the accepted `V2_WORKBE
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS` is accepted/pushed as `31ec25f` (`docs: record workbench context panel disclosure manual smoke`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `2f03346` (`docs: lock workbench rail canvas-corner polish scope`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is `df2dbe9` (`docs: record workbench rail canvas-corner polish impl post-audit`).
+- `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS` is accepted/pushed as `027e594` (`docs: record workbench rail canvas-corner polish manual smoke`).
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` remains the deferred route for inline value/unit/Save/read-write panel work.
 
@@ -38,8 +39,7 @@ Record manual smoke evidence and future design notes for the accepted `V2_WORKBE
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS.md`
 
 ## Required validation
 
@@ -57,9 +57,9 @@ Record manual smoke evidence and future design notes for the accepted `V2_WORKBE
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
+Current pass: `V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
 
-Next: `NEEDS_USER_DECISION`
+Next: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 
 ## Scope carry-forward
 
@@ -68,4 +68,5 @@ Next: `NEEDS_USER_DECISION`
 - `visual_trace` is not a net.
 - No V2 `sequence`.
 - Board Canvas focus controls are local UI state only.
-- Focus-canvas canvas-corner polish was implemented and accepted in `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
+- Focus canvas should remain a canvas-corner action.
+- Current rail-button scope lock routes wide-rail action space to contextual panel mode selection and removes `Hide inspector` from wide rail.

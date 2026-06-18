@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
 
 ## Current accepted route before this pass
 
@@ -14,7 +14,7 @@
 
 ## Current accepted route during this pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS`
 
 ## Latest accepted pushed work
 
@@ -33,7 +33,7 @@
 - Workbench manual smoke evidence record is accepted/pushed as `1cf63c0` (`docs: record workbench tool rail manual smoke`) indicating user wording "Muidu kõik töötab nii nagu peab" as narrow smoke pass for the current 3-zone layout and left-rail flow.
 - Workbench context-panel disclosure implementation is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench canvas-corner polish implementation is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
-- Workbench canvas-corner polish manual smoke evidence is recorded in this pass.
+- Workbench canvas-corner polish manual smoke evidence is accepted as `027e594` (`docs: record workbench rail canvas-corner polish manual smoke`) with user report interpreted narrowly as flow PASS.
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
@@ -41,17 +41,19 @@
 
 Current acceptance context after post-audit:
 
-- Accepted Workbench canvas-corner polish behavior includes:
-  - `Focus canvas` moved from the left rail to a compact canvas-corner control.
-  - Workbench rail compactness and clarity while preserving:
-    - `Placements` and `Safety / Evidence` rail actions,
-    - `Hide/Show inspector` local-panel control,
-    - future-tool inertness,
-    - focus/show-controls recoverability,
-    - right panel contextual behavior.
-- Existing contextual panel disclosure behavior remains unchanged:
-  - right context panel opens from rail selections or component selection;
-  - no inline value/unit/Save/write flow is introduced.
+- Active work in scope is a new lock for Workbench rail-button polish. Current accepted runtime behavior remains:
+  - 3-zone Workbench layout with dominant read-only canvas.
+  - selection-driven contextual right panel for inspector/placement/safety modes;
+  - `Focus canvas` as canvas-corner control;
+  - `Hide/Show controls` recovery behavior;
+  - `Placements` and `Safety / Evidence` rail/contextual behavior preserved.
+- Scope-lock changes are now locked for the next implementation pass and include:
+  - remove `Hide inspector` from the wide rail;
+  - remove redundant Workbench/title-like rail item if present;
+  - make the wide rail explicitly a contextual panel-mode switcher;
+  - keep future tools visible but clearly disabled/inert;
+  - require clear icon + label + tooltip rail actions without truncation;
+  - keep all read-only, `renderer writes: none`, and panel-content behavior unchanged.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` remains design-input-only and is not part of accepted runtime behavior.
 
 ## Current accepted behavior evidence
@@ -63,7 +65,7 @@ Current acceptance context after post-audit:
   - empty-canvas deselection clearing local UI state and collapsing the right panel.
 - Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 
-Next route is `NEEDS_USER_DECISION`.
+Next route is `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
 
 ## Core boundaries
 

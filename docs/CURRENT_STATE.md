@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_TOOL_RAIL_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -10,7 +10,7 @@
 
 ## Current accepted route before this pass
 
-`V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Latest accepted pushed work
 
@@ -31,10 +31,9 @@
 
 ## Current scope
 
-Post-audit governance bookkeeping for `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`:
-- accepted implementation: compact left rail with grouped headers and compact disabled/inert future tools;
-- focus-inspector flow and wide/narrow control affordances preserved;
-- read-only canvas and `renderer writes: none` semantics remain unchanged.
+Manual smoke evidence record for `V2_WORKBENCH_TOOL_RAIL_MANUAL_SMOKE_PASS`:
+- user wording "Muidu kõik töötab nii nagu peab" is interpreted narrowly as Workbench 3-zone layout and left rail flow working in manual smoke;
+- no runtime behavior changes were made in this pass; accepted Board Canvas/UI rails behavior remains the boundary preserved target.
 
 The `_incoming/ui_redesign/2026-06-14_workbench_home/` reference remains design-input-only: non-runtime, non-canonical, no HTML/CSS/mockup code copied into Flutter runtime, no runtime assets copied, and not accepted as implementation.
 

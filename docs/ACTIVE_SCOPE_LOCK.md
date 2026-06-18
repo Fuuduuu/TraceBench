@@ -2,20 +2,20 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-`CODEX / FLUTTER_UI_POLISH`
+`CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC`
 
 ## Lane
 
-Runtime implementation pass for `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS.md`.
+Docs-only implementation post-audit pass for `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS.md`.
 
 ## Current goal
 
-Implement the locked Workbench wide-rail polish pass that converts the rail into a contextual panel-mode button system and removes wide-rail chrome duplication while keeping read-only behavior.
+Record that `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` is accepted/pushed after Claude Code implementation post-audit (`ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`) and transition routing state accordingly.
 
 ## Baseline
 
@@ -30,6 +30,7 @@ Implement the locked Workbench wide-rail polish pass that converts the rail into
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is `df2dbe9` (`docs: record workbench rail canvas-corner polish impl post-audit`).
 - `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_MANUAL_SMOKE_PASS` is accepted/pushed as `027e594` (`docs: record workbench rail canvas-corner polish manual smoke`).
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `a28cc48` (`docs: lock workbench rail button polish scope`).
+- `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` is accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) with implementation post-audit verdict `ACCEPT_AS_IS` and `SAFE_FOR_COMMIT_PUSH: YES`.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` remains the deferred route for inline value/unit/Save/read-write panel work.
 
@@ -39,7 +40,7 @@ Implement the locked Workbench wide-rail polish pass that converts the rail into
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS.md`
+- `docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS.md`
 
 ## Required validation
 
@@ -58,9 +59,9 @@ Implement the locked Workbench wide-rail polish pass that converts the rail into
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
+Current pass: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
 
-Next: `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Scope carry-forward
 

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS`
+`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -300,7 +300,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed / accepted/pushed as 2f03346 | Docs-only scope lock for wide Workbench left-rail and canvas-corner focus-control polish; moves `Focus canvas` toward a canvas-corner action, improves rail clarity/compactness, and routes to `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`. |
 | V2_WORKBENCH_RAIL_BUTTON_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | completed / accepted/pushed as a28cc48 | Docs-only scope lock to refine the Workbench wide rail into a contextual panel-mode button system: remove `Hide inspector`, remove redundant Workbench/title rail item, keep Focus in canvas-corner action, keep future tools disabled/inert, and keep panel-mode rails/active-state clear with explicit icon+label+tooltip. |
-| V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented / pending independent audit | UI-only Workbench wide rail button polish removing `Hide inspector` from wide rail, keeping Focus in canvas-corner action, clarifying contextual panel-mode rails (`Inspector`, `Placements`, `Safety`) with active-state cues, and preserving existing contextual-panel/discovery behavior. |
+| V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) | UI-only Workbench wide rail button polish removing `Hide inspector` from wide rail, keeping Focus in canvas-corner action, clarifying contextual panel-mode rails (`Inspector`, `Placements`, `Safety`) with active-state cues, and preserving existing contextual-panel/discovery behavior. |
+| V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Docs-only implementation post-audit accepted/pushed for `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` with implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route | Docs-only protected scope-lock for inline measurement-entry panel; crosses from read-only UI into write-flow territory. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |

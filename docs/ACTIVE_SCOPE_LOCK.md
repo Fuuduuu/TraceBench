@@ -2,27 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-`CODEX / FLUTTER_UI_POLISH`
+`CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC`
 
 ## Lane
 
-Implementation pass for the narrow Workbench rail/canvas-corner polish `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
-Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md`.
+Docs-only post-audit bookkeeping and routing update for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
+Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md` / `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`.
 No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
 
 ## Current goal
 
-Lock the implementation scope for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`:
-
-- move the existing `Focus canvas` control toward a compact canvas-corner action style;
-- make the wide Workbench left rail clearer and denser with better grouping, labels, tooltips, and icon sizing;
-- remove or de-emphasize the wide-rail `Hide inspector` control if it is redundant once context-panel-driven flow is clear;
-- keep context-panel disclosure behavior, read-only renderer semantics, and focus/show controls intact;
-- preserve no-write and no-canonical-semantic changes.
+Record `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` as accepted/pushed with post-audit route closure.
 
 ## Baseline
 
@@ -33,7 +27,8 @@ Lock the implementation scope for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_P
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_SCOPE_LOCK_PASS` is accepted/pushed as `46bdc26` (`docs: lock workbench context panel disclosure scope`).
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_PASS` is accepted/pushed as `a1c9080` (`feat(board-canvas): add workbench context panel disclosure`) and `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_IMPL_POST_AUDIT_PASS` is accepted/pushed as `4ddfa57` (`docs: record workbench context panel disclosure impl post-audit`).
 - `V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS` is accepted/pushed as `31ec25f` (`docs: record workbench context panel disclosure manual smoke`).
-- `NEEDS_USER_DECISION` is the accepted route before this lock.
+- `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS` is accepted/pushed as `2f03346` (`docs: lock workbench rail canvas-corner polish scope`).
+- `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS` is accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) and `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS` is this route.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` is design-input-only and not accepted as implementation.
 - `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` remains the deferred route for inline value/unit/Save/read-write panel work.
 
@@ -44,6 +39,7 @@ Lock the implementation scope for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_P
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md`
 
 ## Required validation
 
@@ -61,9 +57,9 @@ Lock the implementation scope for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_P
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
+Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
 
-Next: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Scope carry-forward
 
@@ -72,4 +68,4 @@ Next: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
 - `visual_trace` is not a net.
 - No V2 `sequence`.
 - Board Canvas focus controls are local UI state only.
-- Focus-canvas canvas-corner polish and inspector-hide refinement are implemented only in the next implementation pass.
+- Focus-canvas canvas-corner polish was implemented and accepted in `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.

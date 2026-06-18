@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
 
 ## Type
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Lane
 
-Docs-only scope-lock for the next narrow Workbench rail/canvas-corner polish implementation pass `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
+Implementation pass for the narrow Workbench rail/canvas-corner polish `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
 Governance docs are limited to `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS.md`.
 No code/runtime/test edits are in scope. Do not stage, commit, or push in this pass.
 
@@ -61,9 +61,9 @@ Lock the implementation scope for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_P
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS`
+Current pass: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
 
-Next: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
+Next: `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Scope carry-forward
 

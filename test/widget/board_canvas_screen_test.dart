@@ -439,11 +439,19 @@ void main() {
     expect(futureTraceTool.tooltip, 'Trace map (future/readonly) - inactive');
     expect(futureMapTool.tooltip, 'Repair map (future) - inactive');
     expect(focusButton.onPressed, isNotNull);
+    expect(focusButton.tooltip, 'Focus canvas');
+    expect(
+      find.descendant(
+        of: railFinder,
+        matching: find.byKey(const Key('board_canvas_focus_toggle_button')),
+      ),
+      findsNothing,
+    );
+    expect(find.byKey(const Key('board_canvas_focus_toggle_button')),
+        findsOneWidget);
     expect(inspectorButton.onPressed, isNotNull);
     expect(find.text('Workbench tools'), findsOneWidget);
     expect(find.text('Future tools'), findsOneWidget);
-    expect(find.text('Focus canvas'), findsOneWidget);
-    expect(find.text('Hide inspector'), findsOneWidget);
     expect(find.text('Placements'), findsOneWidget);
     expect(find.text('Safety / Evidence'), findsOneWidget);
     expect(find.text('Trace'), findsOneWidget);

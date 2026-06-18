@@ -197,10 +197,22 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 });
               },
             );
+            final focusToggle = _CanvasFocusButton(
+              showLabel: false,
+              onPressed: () {
+                setState(() {
+                  _canvasFocusMode = true;
+                  _inspectorVisible = false;
+                });
+              },
+            );
             final canvas = _CanvasPanel(
               entries: entries,
               selectedKey: selectedKey,
               measurementCountsByComponentId: measurementCountByComponent,
+              cornerFocusAction: useWorkbenchShell && !_canvasFocusMode
+                  ? focusToggle
+                  : null,
               onPlacementSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
@@ -222,18 +234,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
             );
-            final focusToggle = _CanvasFocusButton(
-              showLabel: useWorkbenchShell,
-              onPressed: () {
-                setState(() {
-                  _canvasFocusMode = true;
-                  _inspectorVisible = false;
-                });
-              },
-            );
             final inspectorToggle = _InspectorChromeToggle(
               inspectorVisible: _inspectorVisible,
-              showLabel: useWorkbenchShell,
+              showLabel: false,
               onPressed: () {
                 setState(() {
                   _inspectorVisible = !_inspectorVisible;
@@ -334,7 +337,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 children: [
                   if (!_canvasFocusMode) ...[
                     _WorkbenchToolRail(
-                      focusToggle: focusToggle,
                       inspectorToggle: inspectorToggle,
                       placementTool: focusPanelToggle,
                       safetyEvidenceTool: safetyPanelToggle,
@@ -612,13 +614,11 @@ class _BoardCanvasControlBand extends StatelessWidget {
 
 class _WorkbenchToolRail extends StatelessWidget {
   const _WorkbenchToolRail({
-    required this.focusToggle,
     required this.inspectorToggle,
     required this.placementTool,
     required this.safetyEvidenceTool,
   });
 
-  final Widget focusToggle;
   final Widget inspectorToggle;
   final Widget placementTool;
   final Widget safetyEvidenceTool;
@@ -642,14 +642,12 @@ class _WorkbenchToolRail extends StatelessWidget {
             children: [
               const _WorkbenchSectionHeader(label: 'Workbench tools'),
               const SizedBox(height: _kWorkbenchToolTileGap),
-              focusToggle,
-              const SizedBox(height: _kWorkbenchToolTileGap),
               inspectorToggle,
               const SizedBox(height: _kWorkbenchToolTileGap),
               placementTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
               safetyEvidenceTool,
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Divider(
                 height: 1,
                 thickness: 1,
@@ -1147,6 +1145,7 @@ class _CanvasPanel extends StatefulWidget {
     required this.entries,
     required this.selectedKey,
     required this.measurementCountsByComponentId,
+    this.cornerFocusAction,
     required this.onPlacementSelected,
     required this.onCanvasTapEmpty,
   });
@@ -1154,6 +1153,7 @@ class _CanvasPanel extends StatefulWidget {
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final Map<String, int> measurementCountsByComponentId;
+  final Widget? cornerFocusAction;
   final ValueChanged<String> onPlacementSelected;
   final VoidCallback onCanvasTapEmpty;
 
@@ -1224,17 +1224,28 @@ class _CanvasPanelState extends State<_CanvasPanel> {
     );
   }
 
-  Widget _buildFitButton(BuildContext context) {
+  Widget _buildCornerControls(BuildContext context) {
     final theme = Theme.of(context);
+    final fitButton = IconButton(
+      key: const Key('board_canvas_fit_view_button'),
+      tooltip: 'Fit board view',
+      icon: const Icon(Icons.center_focus_strong),
+      color: theme.colorScheme.onSurface,
+      onPressed: _fitCanvasView,
+    );
+
     return Positioned(
       top: 8,
       right: 8,
-      child: IconButton(
-        key: const Key('board_canvas_fit_view_button'),
-        tooltip: 'Fit board view',
-        icon: const Icon(Icons.center_focus_strong),
-        color: theme.colorScheme.onSurface,
-        onPressed: _fitCanvasView,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.cornerFocusAction != null) ...[
+            widget.cornerFocusAction!,
+            const SizedBox(width: 6),
+          ],
+          fitButton,
+        ],
       ),
     );
   }
@@ -1273,7 +1284,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   top: 6,
                   child: _CanvasStatusPill(),
                 ),
-                _buildFitButton(context),
+                _buildCornerControls(context),
               ],
             );
           },

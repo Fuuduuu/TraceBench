@@ -423,6 +423,56 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('focus canvas hides chrome and restores controls without writes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    final normalCanvasSize =
+        tester.getSize(find.byKey(const Key('board_canvas_painter')));
+
+    await tester.tap(find.byKey(const Key('board_canvas_focus_toggle_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('board_canvas_control_band')), findsNothing);
+    expect(find.byKey(const Key('board_canvas_focus_restore_bar')),
+        findsOneWidget);
+    expect(find.text('Show controls'), findsOneWidget);
+    expect(find.text('Placement inspector (read-only)'), findsNothing);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(state.events, isEmpty);
+    final focusedCanvasSize =
+        tester.getSize(find.byKey(const Key('board_canvas_painter')));
+    expect(focusedCanvasSize.width, greaterThan(normalCanvasSize.width));
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_focus_restore_button')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+    expect(
+        find.byKey(const Key('board_canvas_focus_restore_bar')), findsNothing);
+    expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(state.events, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
       'multi-measurement badge scenarios stay component-level in legend and inspector',
       (tester) async {

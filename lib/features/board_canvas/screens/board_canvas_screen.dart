@@ -69,6 +69,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
   bool _inspectorVisible = true;
+  bool _canvasFocusMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +204,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             final controlBand = _BoardCanvasControlBand(
               selector: selector,
               safetyEvidence: const _BoardCanvasSafetyEvidenceDisclosure(),
+              focusToggle: _CanvasFocusButton(
+                onPressed: () {
+                  setState(() {
+                    _canvasFocusMode = true;
+                    _inspectorVisible = false;
+                  });
+                },
+              ),
               inspectorToggle: _InspectorChromeToggle(
                 inspectorVisible: _inspectorVisible,
                 onPressed: () {
@@ -211,6 +220,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   });
                 },
               ),
+            );
+            final restoreBar = _CanvasFocusRestoreBar(
+              onRestore: () {
+                setState(() {
+                  _canvasFocusMode = false;
+                  _inspectorVisible = true;
+                });
+              },
             );
 
             if (constraints.maxWidth >= 1180) {
@@ -222,13 +239,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        controlBand,
+                        if (_canvasFocusMode) restoreBar else controlBand,
                         const SizedBox(height: 4),
                         Expanded(child: canvas),
                       ],
                     ),
                   ),
-                  if (_inspectorVisible) ...[
+                  if (_inspectorVisible && !_canvasFocusMode) ...[
                     const SizedBox(width: 8),
                     SizedBox(width: 320, child: metadata),
                   ],
@@ -245,13 +262,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        controlBand,
+                        if (_canvasFocusMode) restoreBar else controlBand,
                         const SizedBox(height: 4),
                         Expanded(child: canvas),
                       ],
                     ),
                   ),
-                  if (_inspectorVisible) ...[
+                  if (_inspectorVisible && !_canvasFocusMode) ...[
                     const SizedBox(width: 8),
                     SizedBox(width: 280, child: metadata),
                   ],
@@ -262,10 +279,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                controlBand,
+                if (_canvasFocusMode) restoreBar else controlBand,
                 const SizedBox(height: 4),
-                Expanded(flex: _inspectorVisible ? 4 : 1, child: canvas),
-                if (_inspectorVisible) ...[
+                Expanded(
+                  flex: _inspectorVisible && !_canvasFocusMode ? 4 : 1,
+                  child: canvas,
+                ),
+                if (_inspectorVisible && !_canvasFocusMode) ...[
                   const SizedBox(height: 4),
                   Expanded(flex: 2, child: metadata),
                 ],
@@ -449,11 +469,13 @@ class _BoardCanvasControlBand extends StatelessWidget {
   const _BoardCanvasControlBand({
     required this.selector,
     required this.safetyEvidence,
+    required this.focusToggle,
     required this.inspectorToggle,
   });
 
   final Widget selector;
   final Widget safetyEvidence;
+  final Widget focusToggle;
   final Widget inspectorToggle;
 
   @override
@@ -468,6 +490,8 @@ class _BoardCanvasControlBand extends StatelessWidget {
               Expanded(flex: 5, child: selector),
               const SizedBox(width: 4),
               Expanded(flex: 3, child: safetyEvidence),
+              const SizedBox(width: 4),
+              focusToggle,
               const SizedBox(width: 4),
               inspectorToggle,
             ],
@@ -484,6 +508,8 @@ class _BoardCanvasControlBand extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: safetyEvidence),
+                const SizedBox(width: 4),
+                focusToggle,
                 const SizedBox(width: 4),
                 inspectorToggle,
               ],
@@ -529,6 +555,94 @@ class _CompactDisclosureTitle extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CanvasFocusButton extends StatelessWidget {
+  const _CanvasFocusButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: SizedBox(
+        width: _kCompactControlTileHeight,
+        height: _kCompactControlTileHeight,
+        child: IconButton(
+          key: const Key('board_canvas_focus_toggle_button'),
+          tooltip: 'Focus canvas',
+          iconSize: _kCompactControlIconSize,
+          style: IconButton.styleFrom(
+            minimumSize: const Size.square(_kCompactControlTileHeight),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: const Icon(Icons.fullscreen),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+  }
+}
+
+class _CanvasFocusRestoreBar extends StatelessWidget {
+  const _CanvasFocusRestoreBar({required this.onRestore});
+
+  final VoidCallback onRestore;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      key: const Key('board_canvas_focus_restore_bar'),
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Row(
+          children: [
+            Icon(
+              Icons.fullscreen_exit,
+              size: _kCompactControlIconSize,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                'Canvas focus mode. Controls and read-only details are recoverable.',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+            const SizedBox(width: 8),
+            TextButton(
+              key: const Key('board_canvas_focus_restore_button'),
+              style: TextButton.styleFrom(
+                minimumSize: const Size(96, _kCompactControlTileHeight - 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+              onPressed: onRestore,
+              child: const Text('Show controls'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

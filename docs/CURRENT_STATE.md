@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_CONTEXT_PANEL_DISCLOSURE_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`
 
 ## Current accepted route before this pass
 
@@ -35,9 +35,14 @@
 
 Current acceptance context after post-audit:
 
-- Workbench wide layout discloses `Placements` and `Safety / Evidence` from the left rail and drives the right contextual panel from rail or component selection in read-only mode.
-- Right context panel stays hidden when no meaningful content is active and is reopened as local UI state when needed.
-- Pin/lock/info-bar contextual affordances are deferred; inline value/unit/Save entry remains deferred to `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`.
+- Scope now locks a narrow rail/canvas-corner polish pass on the accepted Workbench shell:
+  - move `Focus canvas` from the left rail toward a compact canvas-corner action;
+  - remove or de-emphasize the wide-rail `Hide inspector` affordance if redundant once contextual disclosure behavior is panel-driven;
+  - make the wide Workbench left rail cleaner, clearer, and denser with stronger grouping/labels/tooltips;
+  - keep wide Workbench primary behavior read-only with no new write or canonical-semantic changes.
+- Existing contextual panel disclosure behavior remains unchanged in this scope lock:
+  - right context panel opens from rail selections or component selection;
+  - no inline value/unit/Save/write flow is introduced.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` remains design-input-only and is not part of accepted runtime behavior.
 
 ## Current accepted behavior evidence
@@ -48,7 +53,7 @@ Current acceptance context after post-audit:
   - panel empty/default state when no meaningful contextual mode is selected,
   - empty-canvas deselection clearing local UI state and collapsing the right panel.
 
-Next route is `NEEDS_USER_DECISION`.
+Next route is `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`.
 
 ## Core boundaries
 

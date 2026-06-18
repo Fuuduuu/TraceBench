@@ -250,6 +250,57 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
+  testWidgets('Board Canvas app bar keeps compact title chrome',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ],
+          placements: const [boardPlacement],
+        ),
+      ),
+    );
+
+    final appBarSize = tester.getSize(find.byType(AppBar));
+
+    expect(appBarSize.height, lessThanOrEqualTo(36));
+    expect(find.text('Board Canvas'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('collapsed top control band stays compact and read-only',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final controlBandSize =
+        tester.getSize(find.byKey(const Key('board_canvas_control_band')));
+
+    expect(controlBandSize.height, lessThanOrEqualTo(44));
+    expect(find.text('Placements'), findsOneWidget);
+    expect(find.text('1 placement available'), findsOneWidget);
+    expect(find.text('Safety / Evidence'), findsOneWidget);
+    expect(find.textContaining('read-only'), findsAtLeastNWidgets(1));
+    expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsNothing);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
   testWidgets('wide board canvas uses compact collapsed controls',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

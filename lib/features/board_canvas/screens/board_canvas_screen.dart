@@ -9,6 +9,14 @@ import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 
+const double _kCompactBoardCanvasAppBarHeight = 36;
+const double _kCompactControlTileHeight = 38;
+const double _kCompactControlIconSize = 18;
+const EdgeInsets _kCompactControlTilePadding =
+    EdgeInsets.symmetric(horizontal: 8);
+const EdgeInsets _kCompactControlChildrenPadding =
+    EdgeInsets.fromLTRB(8, 0, 8, 6);
+
 bool measurementEndpointMatchesComponent(
   String endpoint,
   String componentId,
@@ -162,7 +170,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return _buildScaffold(
       context,
       Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final selector = _PlacementSelector(
@@ -215,7 +223,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         controlBand,
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                         Expanded(child: canvas),
                       ],
                     ),
@@ -238,7 +246,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         controlBand,
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                         Expanded(child: canvas),
                       ],
                     ),
@@ -255,10 +263,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 controlBand,
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Expanded(flex: _inspectorVisible ? 4 : 1, child: canvas),
                 if (_inspectorVisible) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Expanded(flex: 2, child: metadata),
                 ],
               ],
@@ -331,7 +339,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   Widget _buildScaffold(BuildContext context, Widget content) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 40,
+        toolbarHeight: _kCompactBoardCanvasAppBarHeight,
+        leadingWidth: 36,
+        titleSpacing: 0,
         title: const Text('Board Canvas'),
       ),
       body: SafeArea(
@@ -456,9 +466,9 @@ class _BoardCanvasControlBand extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(flex: 5, child: selector),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               Expanded(flex: 3, child: safetyEvidence),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               inspectorToggle,
             ],
           );
@@ -469,18 +479,56 @@ class _BoardCanvasControlBand extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             selector,
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: safetyEvidence),
-                const SizedBox(width: 6),
+                const SizedBox(width: 4),
                 inspectorToggle,
               ],
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _CompactDisclosureTitle extends StatelessWidget {
+  const _CompactDisclosureTitle({
+    required this.label,
+    required this.detail,
+  });
+
+  final String label;
+  final String detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Flexible(
+          flex: 4,
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelLarge,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          flex: 3,
+          child: Text(
+            detail,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -498,17 +546,24 @@ class _InspectorChromeToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
+      margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: SizedBox(
-        width: 48,
-        height: 48,
+        width: _kCompactControlTileHeight,
+        height: _kCompactControlTileHeight,
         child: IconButton(
           key: const Key('board_canvas_inspector_toggle_button'),
           tooltip: inspectorVisible ? 'Hide inspector' : 'Show inspector',
+          iconSize: _kCompactControlIconSize,
+          style: IconButton.styleFrom(
+            minimumSize: const Size.square(_kCompactControlTileHeight),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           icon: Icon(
             inspectorVisible
                 ? Icons.keyboard_double_arrow_right
@@ -540,23 +595,24 @@ class _PlacementSelector extends StatelessWidget {
     final summary = selectedLabel ??
         '${entries.length} placement${entries.length == 1 ? '' : 's'} available';
     return Card(
+      margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_placement_selector_disclosure'),
         initiallyExpanded: false,
         maintainState: true,
+        dense: true,
         visualDensity: VisualDensity.compact,
-        tilePadding: const EdgeInsets.symmetric(horizontal: 10),
-        childrenPadding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
-        title: const Text('Placements'),
-        subtitle: Text(
-          summary,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        minTileHeight: _kCompactControlTileHeight,
+        tilePadding: _kCompactControlTilePadding,
+        childrenPadding: _kCompactControlChildrenPadding,
+        title: _CompactDisclosureTitle(
+          label: 'Placements',
+          detail: summary,
         ),
         children: [
           Align(
@@ -764,20 +820,25 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
+      margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: const ExpansionTile(
         key: Key('board_canvas_safety_evidence_disclosure'),
         initiallyExpanded: false,
         maintainState: true,
+        dense: true,
         visualDensity: VisualDensity.compact,
-        tilePadding: EdgeInsets.symmetric(horizontal: 10),
-        childrenPadding: EdgeInsets.fromLTRB(10, 0, 10, 8),
-        title: Text('Safety / Evidence'),
-        subtitle: Text('collapsed · read-only boundaries'),
+        minTileHeight: _kCompactControlTileHeight,
+        tilePadding: _kCompactControlTilePadding,
+        childrenPadding: _kCompactControlChildrenPadding,
+        title: _CompactDisclosureTitle(
+          label: 'Safety / Evidence',
+          detail: 'read-only boundaries',
+        ),
         children: [
           _BoardCanvasLegend(),
         ],

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
+`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -277,5 +277,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | accepted/pushed | Project Overview / Workbench-only layout-density implementation accepted and pushed as `bd929ca` (`feat(project-overview): polish layout density`): enlarged board/workspace preview, compacted right rail from 300px to 252px, tightened rail spacing/status chips/helper copy, collapsed Future tools by default with restorable disabled/inert expanded tools, kept primary actions usable, preserved routes/read-only/future-tool boundaries, and avoided Board Canvas/runtime evidence-surface drift. |
 | V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed | Independent Claude Code implementation post-audit accepted `V2_PROJECT_OVERVIEW_LAYOUT_DENSITY_IMPL_PASS` as-is; docs-only post-audit/closeout bookkeeping accepted/pushed as `19fc1c9` (`docs: close out project overview layout density`) and routes to `NEEDS_USER_DECISION`. |
 | PROJECT_SOURCE_GUIDE_REFRESH_PASS | CODEX / DOCS_SOURCE_ORIENTATION | accepted/pushed | Repo-local docs/source-orientation refresh accepted/pushed as `7269648` (`docs: refresh project source orientation`) after the Project Overview / Workbench layout-density closeout; records current accepted route `NEEDS_USER_DECISION`, latest pushed closeout `19fc1c9`, accepted Board Canvas manual-smoke PASS, accepted Project Overview density state, and safe future options without creating duplicate orientation files. |
-| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current / pending Claude Code read-only audit | Docs-only scope lock for a future Board Canvas UI-only top-chrome density polish after user screenshot review: compact the top app bar/header and Placement / Safety-Evidence / collapse-control row while preserving read-only renderer behavior, `renderer writes: none`, tap-to-select, pan/zoom/fit, selector/inspector behavior, measurement metadata, visual_trace/photo-alignment metadata, and all writer/schema/materializer/validator/projection/Project ZIP/fact/event boundaries. |
-| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | recommended next after scope-lock audit | Future implementation target for `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS`; allowed by the lock only after independent read-only audit accepts the scope. |
+| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed | Docs-only scope lock accepted/pushed as `d6797fd` (`docs: lock board canvas top-chrome density scope`) for a Board Canvas UI-only top-chrome density polish after user screenshot review. |
+| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_POLISH | implemented locally / pending post-audit | Board Canvas-only UI density implementation compacts the AppBar/title chrome and collapsed Placement / Safety-Evidence / inspector-toggle row while preserving renderer read-only behavior, `renderer writes: none`, tap-to-select, pan/zoom/fit, selector/inspector behavior, measurement metadata, visual_trace/photo-alignment metadata, and writer/schema/materializer/validator/projection/Project ZIP/fact/event boundaries. |
+| V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | recommended next | Read-only implementation post-audit before staging, commit, or push; apply `docs/AUDIT_CONTRACT.md` implementation-post-audit checks to the scoped diff and validation evidence. |

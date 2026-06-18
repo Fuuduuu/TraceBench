@@ -2,39 +2,34 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
 
 ## Type
 
-`DOCS_SYNC / SCOPE_LOCK`
+`CODEX / FLUTTER_UI_POLISH`
 
 ## Lane
 
-`CODEX / DOCS_SCOPE_LOCK`
-
-## Mode
-
-Repo-local docs-only scope lock. Do not modify runtime code, tests, tooling, schemas, samples, generated/platform files, stage, commit, or push.
+Repo-local implementation pass. Do not stage, commit, or push.
 
 ## Current goal
 
-- Lock a narrow future Board Canvas UI-only density polish pass focused only on the top chrome/header and selector/control row.
-- Record user screenshot-review evidence that the top app bar/header and the row containing Placement, Safety / Evidence, and collapse/expand controls still consume too much space.
-- Preserve all accepted Board Canvas read-only renderer behavior, including `renderer writes: none`.
-- Route the future implementation to `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`.
+- Compact the Board Canvas top app bar/header and selector/control row so the board canvas area feels more dominant.
+- Keep the work UI-only and Board Canvas-only.
+- Preserve all accepted read-only renderer behavior, including persistent `renderer writes: none`.
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
+`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Baseline
 
-- Current accepted route before this lock: `NEEDS_USER_DECISION`
-- Source-orientation refresh: `7269648` (`docs: refresh project source orientation`)
+- Scope lock accepted/pushed: `d6797fd` (`docs: lock board canvas top-chrome density scope`)
+- Source/orientation refresh: `7269648` (`docs: refresh project source orientation`)
 - Project Overview / Workbench layout-density closeout: `19fc1c9` (`docs: close out project overview layout density`)
 - Board Canvas layout-density polish implementation: `4fe7ade` (`feat(board-canvas): polish layout density`)
 - Board Canvas manual smoke: PASS with user wording "kõik on passed. ja töötab"
-- Board Canvas accepted state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, and persistent `renderer writes: none`.
+- Accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, and persistent `renderer writes: none`.
 
 ## Problem statement
 
@@ -43,23 +38,9 @@ Board Canvas top chrome and selector/control rows still consume too much vertica
 - the top app bar/header with back button and "Board Canvas" title can be narrower/shorter;
 - the row containing Placements, Safety / Evidence, and the collapse/expand control can be narrower and more compact.
 
-No screenshot asset is added by this docs-only pass.
+No screenshot asset is added by this pass.
 
-## File allowlist for this docs-only pass
-
-Governance only:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS.md`
-
-## Future implementation target
-
-`V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
-
-## Future implementation allowlist
+## File allowlist for this pass
 
 Runtime:
 
@@ -77,9 +58,9 @@ Governance:
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS.md`
 
-No other runtime/test files are pre-approved by this scope lock. If implementation genuinely requires a helper extraction or a different Board Canvas UI file, stop and update scope before editing.
+No other runtime/test files are approved by this scope lock. If implementation genuinely requires a helper extraction or a different Board Canvas UI file, stop and update scope before editing.
 
-## Allowed future implementation scope
+## Allowed implementation scope
 
 - Board Canvas app bar/header visual density.
 - Board Canvas top title/back row height, padding, and spacing.
@@ -87,33 +68,34 @@ No other runtime/test files are pre-approved by this scope lock. If implementati
 - Safety / Evidence collapsed control visual density.
 - Collapse/show-hide control size, padding, spacing, and alignment.
 - Visual-only layout polish that gives more space to the board canvas.
-- Responsive behavior if needed, as long as it is UI-only.
+- UI-only responsive behavior if needed.
 - Existing read-only labels/copy may be shortened only if meaning and safety boundary remain clear.
+- Focused Board Canvas widget tests for compact chrome and read-only behavior.
 
-## Strict non-goals / forbidden future scope
+## Strict non-goals / forbidden scope
 
-- Renderer behavior changes
-- board-normalized placement semantics changes
-- selected placement semantics changes
-- tap-to-select behavior changes
-- pan/zoom/fit behavior changes
-- measurement association/count logic changes
-- measurement summary semantics changes
-- visual_trace geometry or interpretation changes
-- photo-alignment semantics changes
-- new facts/events/coordinates/net/path/trace/probe/pin/pad semantics
-- writer/schema/materializer/validator/projection/Project ZIP changes
-- `events.jsonl` or `known_facts.json` write/mutation changes
-- AI/OCR/CV/photo inference behavior
-- broad app-wide theme/token/design-system migration
-- generated/platform/dependency/pubspec changes
-- runtime writes, authoring, save, edit, apply, confirm, or promote controls
-- Project Overview / Workbench layout changes
-- Reference Images, Save Measurement, Add Component, or Edit Component behavior changes
+- Renderer behavior changes.
+- Board-normalized placement semantics changes.
+- Selected placement semantics changes.
+- Tap-to-select behavior changes.
+- Pan/zoom/fit behavior changes.
+- Measurement association/count logic changes.
+- Measurement summary semantics changes.
+- Visual trace geometry or interpretation changes.
+- Photo-alignment semantics changes.
+- New facts/events/coordinates/net/path/trace/probe/pin/pad semantics.
+- Writer/schema/materializer/validator/projection/Project ZIP changes.
+- `events.jsonl` or `known_facts.json` write/mutation changes.
+- AI/OCR/CV/photo inference behavior.
+- Broad app-wide theme/token/design-system migration.
+- Generated/platform/dependency/pubspec changes.
+- Runtime writes, authoring, save, edit, apply, confirm, or promote controls.
+- Project Overview / Workbench layout changes.
+- Reference Images, Save Measurement, Add Component, or Edit Component behavior changes.
 
 Renderer must remain read-only and `renderer writes: none` must remain true.
 
-## Future implementation audit requirements
+## Implementation audit requirements
 
 The implementation post-audit must verify:
 
@@ -127,29 +109,17 @@ The implementation post-audit must verify:
 
 ## Required validation
 
-Scope-lock validation:
-
-- `py -3 tools/validate_all.py`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git diff --check`
-- `git status --short --branch`
-
-Future implementation validation:
-
 - `dart format --output=none --set-exit-if-changed lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
 - `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
-- `git diff --name-status`
-- `git diff --cached --name-status`
 - `git diff --check`
 - `git status --short --branch`
 
 ## Current route lock
 
-Current pass: `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_SCOPE_LOCK_PASS`
+Current pass: `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
 
-Next: `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
+Next: `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Scope carry-forward
 
@@ -161,4 +131,3 @@ Next: `V2_BOARD_CANVAS_TOP_CHROME_DENSITY_IMPL_PASS`
 - `visual_trace` is not a net.
 - No V2 `sequence`.
 - Project ZIP import/export remains out of scope.
-- This docs-only pass does not implement runtime UI changes.

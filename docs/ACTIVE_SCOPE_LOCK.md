@@ -2,96 +2,69 @@
 
 ## Current pass
 
-`V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
+`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
 ## Type
 
-`CODEX / DOCS_DESIGN_GAP_CAPTURE`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Lane
 
-Repo-local docs-only design-gap capture and route governance. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, stage, commit, or push.
+Repo-local docs-only scope lock. Do not change runtime code, tests, tools, schemas, samples, generated/platform files, dependencies, Board Canvas behavior, writer/materializer/validator/projection/Project ZIP/fact/event surfaces, `_incoming` artifacts, stage, commit, or push.
 
 ## Current goal
 
-- Capture `_incoming/ui_redesign/2026-06-14_workbench_home/` as design-input-only.
-- Record the design gap between the accepted current app and the integrated technician workbench target.
-- Record the target architecture interpretation and W1-W11 governed work breakdown.
-- Route next to `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`.
+Lock the future `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS` implementation scope for the first integrated Workbench redesign step: a UI-only 3-zone Board Canvas / Workbench layout shell.
 
-## Current accepted route before this pass
+## Problem statement
 
-`NEEDS_USER_DECISION`
+The accepted Board Canvas and Workbench density passes improved chrome and available canvas space, but the integrated technician workbench target still needs a governed shell that makes the board canvas the dominant work surface while creating explicit homes for actions and context.
 
-## Next recommended pass
+The first implementation must be only layout structure:
 
-`V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+- left rail placeholder or existing action/navigation surface;
+- center read-only Board Canvas area as the dominant surface;
+- right contextual panel container.
 
-## Baseline
+It must not open the future measurement-entry/write-flow surface.
 
-- Latest accepted pushed baseline: `10adac9` (`docs: record board canvas ui auto-hide smoke`).
-- Board Canvas focus mode/top-chrome behavior has user smoke evidence: "Muidu käik töötas smoke testis".
-- Project Overview / Workbench layout density is accepted/pushed/closed out.
-- Board Canvas top-chrome density is accepted/pushed/closed out.
-- Board Canvas UI focus mode / auto-hide is accepted/pushed/closed out.
-- Board Canvas UI auto-hide manual smoke record is accepted/pushed.
+## Current baseline
+
+- `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS` is accepted/pushed as `422416f` (`docs: capture workbench home redesign design gap`).
+- `_incoming/ui_redesign/2026-06-14_workbench_home/` is registered as design-input-only.
+- Board Canvas is accepted/pushed/manual-smoke PASS.
+- Board Canvas focus/top-chrome behavior has user smoke evidence: "Muidu käik töötas smoke testis".
 - Board Canvas remains read-only unless separately scoped.
+- Renderer remains read-only.
 - `renderer writes: none` must remain true.
 
-## Reference material
+## Design-input reference boundary
 
-Prompt path checked:
+The local `_incoming/ui_redesign/2026-06-14_workbench_home/` material is reference input only:
 
-- `C:\Users\Kasutaja\Desktop\TraceBench_incoming\ui_redesign\2026-06-14_workbench_home\`
-
-Local resolution:
-
-- The external `TraceBench_incoming` path was not present.
-- The repo-local scratch/reference path exists and was inspected:
-  - `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\2026-06-14_workbench_home\Technician Workbench Home - Design Review (standalone).html`
-  - `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\2026-06-14_workbench_home\workbench.css`
-
-Reference handling:
-
-- Design input only.
-- Non-runtime and non-canonical.
-- No CSS/HTML/mockup code copy into Flutter runtime.
-- No image/assets copied into runtime.
+- non-runtime;
+- non-canonical;
+- no HTML/CSS/mockup code copy into Flutter runtime;
+- no image or asset copy into runtime;
+- not accepted as implementation;
 - `_incoming/` remains untracked scratch/reference input.
 
-## Design-gap summary
+Implementation may follow the governed direction, not the mockup code.
 
-- Current app does not have a left vertical tool/action rail.
-- Current right panel is a read-only inspector, not measurement entry.
-- Measurement entry is currently a separate page.
-- Target wants one integrated bench workflow.
-- Theme parity is separate and optional.
-- Future tools remain inert unless separately scoped.
+## Next implementation pass
 
-## Target architecture interpretation
+`V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
-- Left rail: UI/action/navigation tool rail, with future tools inert until separately scoped.
-- Center surface: read-only board canvas / renderer as dominant workbench surface.
-- Right contextual panel: selected component updates the panel with read-only context first.
-- Future integrated measurement panel: right-panel writer host only, not renderer write behavior.
-- Future write-flow must reuse the accepted writer path, preserve explicit target selection and human confirmation, and create only accepted canonical measurement events.
-- Inline measurement-entry work crosses into protected write-flow territory and needs separate scope-lock.
+## Expected future implementation surfaces
 
-## Governed work breakdown
+Runtime:
 
-- W1 `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`: docs-only design-input capture and route governance.
-- W2 `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`: docs-only 3-zone layout scope lock; UI-only, renderer read-only.
-- W3 `V2_WORKBENCH_TOOL_RAIL_IMPL_PASS`: UI-only left rail; reuse existing routes/actions; future tools inert.
-- W4 `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`: UI-only 3-zone responsive layout shell; no writes.
-- W5 `V2_WORKBENCH_CONTEXT_PANEL_READONLY_IMPL_PASS`: read-only right panel on selection; no Save.
-- W6 `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`: protected scope-lock for inline measurement entry.
-- W7 `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`: inline value/unit/Save using accepted writer path only; high-risk audit.
-- W8 `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`: route/nav consolidation; keep `/project/measure-sheet` fallback/redirect.
-- W9 `V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS`: optional later theme scope, separate from layout/write work.
-- W10 Per-slice test/fixture coverage: attach focused tests and fixture coverage to each implementation slice.
-- W11 `V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS`: manual Windows smoke after integrated panel/navigation work.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- A local Board Canvas UI helper/widget file only if repo inspection proves it already belongs to this exact screen surface and the implementation audit explains why it is necessary.
 
-## File allowlist for this pass
+Tests:
+
+- `test/widget/board_canvas_screen_test.dart`
 
 Governance:
 
@@ -99,43 +72,92 @@ Governance:
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
+- `docs/audit/V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS.md`
+
+## Allowed future implementation scope
+
+- Board Canvas / Workbench 3-zone layout shell.
+- Left vertical rail using existing actions/routes only.
+- Future or disabled tool placeholders only if clearly disabled/inert.
+- Center existing read-only renderer/canvas as the dominant surface.
+- Right contextual panel container.
+- Existing read-only inspector/context content may be hosted in the right panel.
+- Responsive fallback for narrower screens if needed.
+- UI-only visual/layout rearrangement.
+- Focused widget tests for:
+  - three zones on wide layout;
+  - center canvas dominance;
+  - renderer read-only boundary;
+  - `renderer writes: none` visible or safely recoverable;
+  - rail future tools inert;
+  - no events/facts written.
+
+## Strict forbidden future implementation scope
+
+- No inline measurement entry.
+- No Save button in the right panel.
+- No new write path.
+- No writer/schema/materializer/validator/projection/Project ZIP changes.
+- No `events.jsonl` or `known_facts.json` write/mutation changes.
+- No routing/navigation consolidation.
+- No deletion of `/project/measure-sheet`.
+- No component/fact/event/coordinate/net/path/trace/probe/pin/pad semantic changes.
+- No renderer behavior changes.
+- No board-normalized placement semantics changes.
+- No selected placement semantics changes.
+- No tap-to-select behavior changes except preserving existing UI selection.
+- No pan/zoom/fit behavior changes.
+- No measurement association/count logic changes.
+- No visual_trace geometry or interpretation changes.
+- No photo-alignment semantics changes.
+- No AI/OCR/CV/photo inference behavior.
+- No broad app-wide dark theme or token/design-system migration.
+- No generated/platform/dependency/pubspec changes.
+- No copying `_incoming` HTML/CSS/assets into runtime.
+- Renderer must remain read-only.
+- `renderer writes: none` must remain true.
+
+## Future write-flow separation
+
+Inline measurement entry belongs to later protected work:
+
+- `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`
+- `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`
+
+This layout pass must not add value/unit entry, Save controls, writer adapters, event creation, projection changes, or any renderer write behavior. Standalone `/project/measure-sheet` remains fallback/redirect unless route consolidation is separately scoped.
+
+## Implementation audit requirements
+
+The future implementation post-audit must verify:
+
+- UI-only 3-zone shell behavior.
+- No event/fact/write surfaces changed.
+- Renderer remains read-only.
+- `renderer writes: none` remains true and visible or safely recoverable.
+- Rail placeholders are disabled/inert.
+- Right panel remains read-only only.
+- Existing Board Canvas selection/tap-to-select/pan/zoom/fit/placement/measurement-summary behavior is preserved.
+- Tests avoid brittle pixel-perfect mockup copying.
+- No `_incoming` HTML/CSS/assets were copied into runtime.
+
+## File allowlist for this docs-only pass
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
 - `docs/SOURCES_INDEX_CURRENT.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS.md`
+- `docs/audit/V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS.md`
 
-## Allowed docs-only scope
-
-- Register the reference in repo source/orientation docs as design-input-only.
-- Record that the reference was previously only partially represented as read-only input and not governed as the active target.
-- Record design gap, target architecture interpretation, and W1-W11 work breakdown.
-- Route next to `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`.
-
-## Strict forbidden scope
+## Forbidden scope for this docs-only pass
 
 - No `lib/` changes.
 - No `test/` changes.
 - No tools/schema/sample/generated/platform/pubspec changes.
 - No runtime behavior changes.
-- No Board Canvas runtime changes.
-- No renderer behavior changes.
-- No board-normalized placement semantics changes.
-- No selected placement semantics changes.
-- No tap-to-select behavior changes.
-- No pan/zoom/fit behavior changes.
-- No measurement association/count logic changes.
-- No measurement summary semantics changes.
-- No visual_trace geometry or interpretation changes.
-- No photo-alignment semantics changes.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics.
-- No writer/schema/materializer/validator/projection/Project ZIP changes.
-- No `events.jsonl` or `known_facts.json` write/mutation changes.
-- No AI/OCR/CV/photo inference behavior.
-- No broad app-wide theme/token/design-system migration.
-- No generated/platform/dependency/pubspec changes.
-- No copying `_incoming` assets/code into runtime.
+- No `_incoming` file changes.
 - No staging, commit, or push.
-
-Renderer remains read-only and `renderer writes: none` remains true.
 
 ## Required validation
 
@@ -147,9 +169,9 @@ Renderer remains read-only and `renderer writes: none` remains true.
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_HOME_REDESIGN_DESIGN_GAP_CAPTURE_PASS`
+Current pass: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
 
-Next: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`
+Next: `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`
 
 ## Scope carry-forward
 

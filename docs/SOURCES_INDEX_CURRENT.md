@@ -20,11 +20,11 @@ Routing, handoff, and conflict-resolution index for current TraceBench governanc
 ## Current orientation snapshot
 
 - Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
-- Current accepted route: `NEEDS_USER_DECISION`.
-- Latest accepted pushed work: Board Canvas UI auto-hide manual smoke record `10adac9` (`docs: record board canvas ui auto-hide smoke`).
+- Current route: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`; next route `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`.
+- Latest accepted pushed work: Workbench Home redesign design-gap capture `422416f` (`docs: capture workbench home redesign design gap`).
 - Board Canvas density polish is accepted/pushed/manual-smoke PASS.
 - Project Overview / Workbench layout density is accepted/pushed/closed out.
-- Current design-gap capture routes toward `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`; write-flow integration, route consolidation, and theme parity remain separate later scopes.
+- Current Workbench bench-layout scope lock routes toward `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`; write-flow integration, route consolidation, and theme parity remain separate later scopes.
 
 ## CURRENT_STATE size/archive discipline
 

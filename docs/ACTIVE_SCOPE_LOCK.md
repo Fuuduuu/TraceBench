@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
+`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
 
 ## Type
 
@@ -10,19 +10,20 @@
 
 ## Lane
 
-Docs-only governance-hygiene normalization for docs/audit route bookkeeping.
+Docs-only governance-hygiene archive cleanup for docs-pass sequencing and operational routing focus.
 
 ## Current goal
 
-Normalize `docs/AUDIT_INDEX.md` semantics and route bookkeeping for docs-hygiene sequencing.
+Archive/compact completed historical `PASS_QUEUE` entries while preserving operational route sequencing and full audit history.
 
 ## Baseline
 
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS` is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`).
+- `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` is accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`).
 - `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` returned routing to `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`.
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` runtime behavior is accepted (`349b0e9`, `feat(board-canvas): convert workbench rail to panel-mode buttons`) with `renderer writes: none`.
-- `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` is the requested target for this current docs-only normalization track.
+- `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` is the current docs-only archive-and-focus docs-hygiene track.
 
 ## Allowed governance scope
 
@@ -33,22 +34,20 @@ Normalize `docs/AUDIT_INDEX.md` semantics and route bookkeeping for docs-hygiene
 - `docs/WORK_INTAKE_INDEX.md` (if future route parking is needed)
 - `docs/audit/TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS.md`
 - `docs/audit/TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS.md`
+- `docs/audit/TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS.md`
 
 ## Current route lock
 
-Current pass: `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
-Next: `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+Current pass: `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+Next: `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
 
 ## Current scope summary
 
 - This pass is docs-only and intentionally does not change runtime code, tests, tools, schemas, samples, generated artifacts, or `_incoming` assets.
-- Pro-audit findings are recorded as future governance cleanup direction only:
-  - `PASS_QUEUE` is currently overloaded as both active pass ledger and history.
-  - `AUDIT_INDEX` needs normalization of historical/handoff indirections.
-  - Core invariants are duplicated across governance docs and need consolidation.
-  - `MODEL_ROUTING` and `PROMPTING_PROTOCOL` references should become more canonical/pointer-based.
-  - Workbench 3-zone direction should be preserved as canonical architecture reference.
-  - Future cleanup is split into narrow, sequenced docs-only passes.
+- Move completed `PASS_QUEUE` historical rows to `docs/PASS_QUEUE_ARCHIVE.md` while preserving them for provenance.
+- Keep current operational queue focused to active route context (`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`) and future actionable passes.
+- Preserve the already-normalized `AUDIT_INDEX` conventions and accepted/pushed status for `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`.
+- `renderer writes: none` remains a runtime acceptance invariant from the most recent implementation baselines.
 
 ## Baseline / baseline owner mapping
 

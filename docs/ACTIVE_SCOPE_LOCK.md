@@ -2,26 +2,27 @@
 
 ## Current pass
 
-`TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`
+`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
 
 ## Type
 
-`CODEX / DOCS_SCOPE_LOCK`
+`CODEX / DOCS_HYGIENE`
 
 ## Lane
 
-Docs-only governance-hygiene scope lock for targeted docs cleanup after workbench rail-button completion.
+Docs-only governance-hygiene normalization for docs/audit route bookkeeping.
 
 ## Current goal
 
-Lock future docs-only cleanup sequencing and ownership alignment before implementation edits.
+Normalize `docs/AUDIT_INDEX.md` semantics and route bookkeeping for docs-hygiene sequencing.
 
 ## Baseline
 
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS` is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`).
-- `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS` returned routing to `NEEDS_USER_DECISION`.
+- `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
+- `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` returned routing to `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`.
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` runtime behavior is accepted (`349b0e9`, `feat(board-canvas): convert workbench rail to panel-mode buttons`) with `renderer writes: none`.
-- `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` is the requested target for the next docs-only track.
+- `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` is the requested target for this current docs-only normalization track.
 
 ## Allowed governance scope
 
@@ -31,11 +32,12 @@ Lock future docs-only cleanup sequencing and ownership alignment before implemen
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md` (if future route parking is needed)
 - `docs/audit/TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS.md`
 
 ## Current route lock
 
-Current pass: `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
+Current pass: `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
+Next: `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
 
 ## Current scope summary
 

@@ -2,6 +2,17 @@
 
 Lazy-loading index for pass audit documents.
 
+## Conventions
+
+This file is audit/provenance history, not the active route pointer.
+
+- `docs/CURRENT_STATE.md` is the operational route handoff.
+- `docs/PASS_QUEUE.md` is the sequencing and next-pass planning ledger.
+- `docs/ACTIVE_SCOPE_LOCK.md` is the active surface/allowlist pointer for current docs locks.
+- Mark route rows as `accepted/pushed as <hash> (<commit message>)` when a pass is accepted and pushed.
+- Keep in-progress or not-yet-audited rows as drafted/pending and do not mark them accepted early.
+- Preserve historical rows and closeout indirection; do not delete existing audit history.
+
 | PASS_ID | File | Status |
 |---|---|---|
 | V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md | completed (docs-only scope lock for first Workbench Home implementation slice; Option C / Hybrid; preserved route/action invariants; next `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`) |
@@ -468,4 +479,5 @@ Lazy-loading index for pass audit documents.
 | V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS | docs/audit/V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS.md | accepted/pushed | Docs-only implementation post-audit accepted/pushed for `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` with implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS | docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS.md | accepted/pushed as `c8bfd3b` (`feat(board-canvas): move focus canvas to canvas-corner action`) | UI-only wide Workbench rail/canvas-corner polish implementation moved `Focus canvas` from left rail to canvas-corner action while preserving context-panel, selection, and no-write semantics. |
 | V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS | docs/audit/V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_POST_AUDIT_PASS.md | accepted/pushed | Docs-only implementation post-audit bookkeeping for `V2_WORKBENCH_RAIL_CANVAS_CORNER_POLISH_IMPL_PASS`; implementation post-audit verdict `ACCEPT_AS_IS`, `SAFE_FOR_COMMIT_PUSH: YES`; route to `NEEDS_USER_DECISION`. |
-| TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS | docs/audit/TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS.md | drafted / pending independent audit | Docs-only scope-lock pass for targeted governance/docs cleanup after Pro docs-hygiene findings; locks a narrow future pass sequence (no runtime/testing changes): `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`. |
+| TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS | docs/audit/TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS.md | accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`) | Docs-only scope-lock pass for targeted governance/docs cleanup after Pro docs-hygiene findings; locks a narrow future pass sequence (no runtime/testing changes): `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`. |
+| TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS | docs/audit/TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS.md | drafted / pending independent audit | Docs-only docs-hygiene pass to normalize `AUDIT_INDEX.md` route semantics, bookkeeping rows, and add local conventions for route ownership. |

@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`
+`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
+`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
 
 ## Current accepted route before this pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`
 
 ## Current accepted route during this pass
 
-`TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`
+`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
 
 ## Latest accepted pushed work
 
@@ -36,6 +36,7 @@
 - Workbench canvas-corner polish manual smoke evidence is accepted as `027e594` (`docs: record workbench rail canvas-corner polish manual smoke`) with user report interpreted narrowly as flow PASS.
 - Workbench wide rail button polish is accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) after Claude Code implementation post-audit `ACCEPT_AS_IS` with `SAFE_FOR_COMMIT_PUSH: YES`.
 - Workbench rail-button implementation post-audit/closeout is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`); no manual smoke-record pass is opened because user smoke evidence already confirms behavior.
+- TraceBench docs hygiene scope lock is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
@@ -43,7 +44,7 @@
 
 Current acceptance and route-context lock target:
 
-- `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` locks a future docs-only documentation/governance-hygiene cleanup track after accepted `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS`.
+- `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` performs the first docs-only normalization slice for `docs/AUDIT_INDEX.md` semantics, history clarity, and route bookkeeping after accepted `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` (`dbe9271`).
 - Existing accepted runtime behavior remains:
   - 3-zone Workbench with dominant read-only center canvas.
   - Wide rail panel mode behavior: `Inspector`, `Placements`, `Safety`.
@@ -64,7 +65,7 @@ Current acceptance and route-context lock target:
 - Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 - Workbench rail-button polish runtime behavior was confirmed in user manual context with "Kontrollisin, hetkel sobivad." interpreted narrowly as manual smoke PASS; no separate smoke PASS route is opened.
 
-Next route is `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`.
+Next route is `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`.
 
 ## Core boundaries
 

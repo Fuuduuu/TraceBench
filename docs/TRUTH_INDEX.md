@@ -1,5 +1,23 @@
 # TRUTH_INDEX.md
 
+## Core invariants ownership
+
+`docs/TRUTH_INDEX.md` is the canonical owner of core, non-runtime-changing invariants.
+Operational docs should reference this section instead of duplicating invariant essays.
+
+Core invariants (semantics unchanged):
+
+- `events.jsonl` is canonical truth; `known_facts.json` is projection/cache.
+- AI/helper may not author canonical facts or canonical events.
+- Photo pixels are not facts.
+- `visual_trace` is not a net.
+- Candidate/reference/context fields are visual hints, not canonical evidence.
+- Board Canvas remains read-only unless separately scoped.
+- Reference Images remain sidecar / non-canonical unless separately scoped.
+- Do not add `sequence` to V2 events.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
+- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+
 | Fact type | Canonical owner | Update trigger | Obsolete handling | Secondary pointer allowed? |
 |---|---|---|---|---|
 | Product promise | PROJECT_MEMORY.md | V1 scope or architecture acceptance | update stable promise text; delete duplicates in secondary files | CURRENT_STATE short pointer |

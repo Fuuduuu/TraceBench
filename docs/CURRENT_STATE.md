@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
+`TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`
 
 ## Current accepted route before this pass
 
-`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS`
+`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
 
 ## Current accepted route during this pass
 
-`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
 
 ## Latest accepted pushed work
 
@@ -38,6 +38,7 @@
 - Workbench rail-button implementation post-audit/closeout is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`); no manual smoke-record pass is opened because user smoke evidence already confirms behavior.
 - TraceBench docs hygiene scope lock is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS is accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`).
+- TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS is accepted/pushed as `c70e23f` (`docs: archive completed pass-queue history`).
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
@@ -45,7 +46,7 @@
 
 Current acceptance and route-context lock target:
 
-- `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` archives completed `PASS_QUEUE` history rows to keep routing/sequencing operational while preserving all historical rows in `docs/PASS_QUEUE_ARCHIVE.md`.
+- `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` is the current docs-only hygiene pass that consolidates core invariants as a canonical reference in `docs/TRUTH_INDEX.md`.
 - Existing accepted runtime behavior remains:
   - 3-zone Workbench with dominant read-only center canvas.
   - Wide rail panel mode behavior: `Inspector`, `Placements`, `Safety`.
@@ -66,19 +67,12 @@ Current acceptance and route-context lock target:
 - Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 - Workbench rail-button polish runtime behavior was confirmed in user manual context with "Kontrollisin, hetkel sobivad." interpreted narrowly as manual smoke PASS; no separate smoke PASS route is opened.
 
-Next route is `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`.
+Next route is `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`.
 
 ## Core boundaries
 
-- `events.jsonl` is canonical truth; `known_facts.json` is projection/cache.
-- AI/helper must not author canonical events or canonical facts.
-- Photo pixels are not facts.
-- `visual_trace` is not a net.
-- Board Canvas remains read-only unless separately scoped.
-- `renderer writes: none` must remain true.
-- No V2 `sequence`.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event changes unless separately scoped.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+- Canonical invariants are owned by `docs/TRUTH_INDEX.md`; operational docs should reference that section.
+- Local reminders that remain route-relevant here: Board Canvas is read-only unless separately scoped, `renderer writes: none`, and no V2 `sequence`.
 
 ## Pointers
 

@@ -66,14 +66,10 @@ Any protected surface change requires dedicated protected-surface scope-lock and
 
 ## Core invariants
 
-- `events.jsonl` is canonical truth.
-- `known_facts.json` is projection/cache.
-- AI/helper may not author canonical events or canonical facts.
-- Photo pixels are not facts.
-- `visual_trace` is not a net.
-- Candidate/reference/context fields are visual hints, not canonical evidence.
+Canonical invariants are owned by `docs/TRUTH_INDEX.md`.
+
+- Keep runtime/engine guidance short and reference `docs/TRUTH_INDEX.md` before execution.
 - Board Canvas remains read-only unless separately scoped.
-- Reference Images remain sidecar / non-canonical unless separately scoped.
 - Do not add `sequence` to V2 events.
 
 ## Read order

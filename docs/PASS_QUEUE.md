@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`CURRENT_STATE_HISTORY_TRIM_PASS`
+`TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -34,6 +34,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_WRITE_FLOW_IMPLEMENTATION | future high-risk implementation | Inline value/unit/Save in right panel using accepted writer path only; requires strict audit and no renderer writes. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete the standalone measure sheet route. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later | Optional theme scope only; do not mix with layout or write-flow work. |
-| CURRENT_STATE_HISTORY_TRIM_PASS | CODEX / DOCS_HYGIENE | drafted / pending independent audit | Current docs-only trim of `docs/CURRENT_STATE.md` operational history; preserves provenance in `docs/AUDIT_INDEX.md`, `docs/PASS_QUEUE_ARCHIVE.md`, and `docs/audit/*.md`. |
-| TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS | DOCS_HYGIENE / WORKFLOW | planned | Planned workbench architecture diagram/documentation refresh pass to align with the compacted pass queue and current runtime baseline. |
+| CURRENT_STATE_HISTORY_TRIM_PASS | CODEX / DOCS_HYGIENE | accepted/pushed as `4af4ac6` (`docs: trim current-state into operational handoff`) | Current docs-only trim pass accepted/pushed; route to `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`. |
+| TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS | DOCS_HYGIENE / WORKFLOW | drafted / pending independent audit | Workbench architecture diagram and reference refresh documenting current accepted 3-zone read-only Workbench model, inert future tools, and protected future write-flow boundaries. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

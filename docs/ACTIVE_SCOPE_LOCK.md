@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`CURRENT_STATE_HISTORY_TRIM_PASS`
+`TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
 
 ## Type
 
@@ -10,11 +10,11 @@
 
 ## Lane
 
-Docs-only operational handoff trim for `docs/CURRENT_STATE.md`.
+Docs-only architecture-reference refresh for accepted Workbench model documentation.
 
 ## Current goal
 
-Trim `docs/CURRENT_STATE.md` so it stays focused on current route state, accepted pushed baseline, concise runtime handoff, and canonical owner pointers while preserving provenance in archive and audit docs.
+Refresh the canonical Workbench architecture reference and keep route/provenance docs aligned to the accepted 3-zone read-only Workbench model with explicit read-only/future boundaries.
 
 ## Baseline
 
@@ -25,6 +25,7 @@ Trim `docs/CURRENT_STATE.md` so it stays focused on current route state, accepte
 - `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` is accepted/pushed as `c70e23f` (`docs: archive completed pass-queue history`).
 - `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` is accepted/pushed as `b60ae0c` (`docs: centralize core invariants owner in TRUTH_INDEX`).
 - `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` is accepted/pushed as `a56721d` (`docs: centralize model-routing owner in MODEL_ROUTING`).
+- `CURRENT_STATE_HISTORY_TRIM_PASS` is accepted/pushed as `4af4ac6` (`docs: trim current-state into operational handoff`).
 
 ## Allowed governance scope
 
@@ -33,6 +34,8 @@ Trim `docs/CURRENT_STATE.md` so it stays focused on current route state, accepte
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/CURRENT_STATE_HISTORY_TRIM_PASS.md`
+- `docs/audit/TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS.md`
+- `docs/PROJECT_MEMORY.md`
 
 ## Conditional scope
 
@@ -43,16 +46,17 @@ Neither conditional file is expected for this pass.
 
 ## Current route lock
 
-Current pass: `CURRENT_STATE_HISTORY_TRIM_PASS`
-Next: `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
+Current pass: `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Current scope summary
 
 - This pass is docs-only and intentionally does not change runtime code, tests, tools, schemas, samples, generated artifacts, platform files, dependencies, or `_incoming` assets.
-- Compress `docs/CURRENT_STATE.md` history into compact pointers to canonical owners and provenance stores.
+- Keep `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` aligned with the current accepted Workbench architecture reference and route state.
 - Preserve the accepted Workbench / Board Canvas read-only runtime baseline.
 - Preserve `docs/AUDIT_INDEX.md` as audit provenance and `docs/PASS_QUEUE_ARCHIVE.md` as completed queue history.
 - Do not change product semantics, protected-surface semantics, model-routing semantics, prompt semantics, or canonical invariant meaning.
+- Keep architecture reference ownership in `docs/PROJECT_MEMORY.md` aligned with this pass.
 
 ## Baseline / owner mapping
 

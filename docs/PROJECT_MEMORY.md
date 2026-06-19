@@ -53,6 +53,41 @@ TraceBench should be a technician-first bench workflow, not an engineering sprea
 - `repair_action_recorded(action_type="remove_component")` is the V1 removal model.
 - External AI Component Reading Simulation Lab is outside this repository and not part of TraceBench canonical truth surfaces.
 
+## Accepted Workbench architecture (current route)
+
+```mermaid
+flowchart LR
+  subgraph "Current accepted Workbench"
+    direction TB
+    R["Left rail\nInspector · Placements · Safety\n(Trace, Repair map disabled / inert)"]
+    BC["Board Canvas center (read-only)\nboard-normalized placement rendering\nread-only inspector\nmeasurement + visual-trace metadata"]
+    P["Right contextual panel (read-only)"]
+    SF["Canvas controls: Focus / Show controls\nFit / Recenter / Zoom"]
+    C["Selection state"]
+    E["Event system + known_facts projections"]
+  end
+
+  subgraph "Protected future write-flow"
+    MW["Integrated value/unit/Save flow\n(inline measurement write path)"]
+  end
+
+  R --> P
+  BC --> C
+  C --> R
+  BC --> SF
+  BC --> P
+  P --> BC
+  E --> BC
+  MW -.->|separately scoped only| BC
+  MW -.->|separately scoped only| P
+```
+
+- The accepted runtime is strictly read-only in this model: no canonical write path through the Workbench canvas/panel/rail controls.
+- `renderer writes: none` is an active accepted baseline constraint.
+- `Trace` and `Repair map` are currently visible as UI affordances but disabled/inert.
+- Empty-canvas tap is read-only state behavior only (clear local selection/panel state).
+- `/project/measure-sheet` and inline value/unit/Save work are future/protected and must be implemented only through separate accepted write-flow passes.
+
 ## Non-negotiables
 
 - local-first

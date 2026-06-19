@@ -26,10 +26,15 @@ Canonical read-order also includes:
 
 ## Workflow model
 
-- Codex: implementation and scoped docs/code edits inside active lock.
-- Claude Code: repo-local audit and independent checks.
-- GPT Pro: strategy/scope/risk review.
-- Gemini: research/source discovery and external-source discovery.
+Canonical helper/model role ownership lives in `docs/MODEL_ROUTING.md`.
+
+Local route-safety reminders:
+
+- Codex writes scoped docs/code inside the active lock.
+- Claude Code performs repo-local audit before staging/commit/push unless repo convention explicitly says otherwise.
+- ChatGPT / GPT Pro provide strategy, routing, risk review, prompts, and non-final pre-audit.
+- Claude Design is design review only; Gemini is research/input only.
+- User manually stages, commits, and pushes with exact staging sets.
 
 ## Pass discipline
 
@@ -122,3 +127,4 @@ Known scratch/untracked artifacts must not be staged unless explicitly scoped:
 - Stable architecture truth: `docs/PROJECT_MEMORY.md`
 - Memory policy: `docs/MEMORY_PROTOCOL.md`, `docs/TRUTH_INDEX.md`
 - Prompt contract: `docs/PROMPTING_PROTOCOL.md`
+- Helper/model routing: `docs/MODEL_ROUTING.md`

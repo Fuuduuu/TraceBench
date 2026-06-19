@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
+`TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`
 
 ## Next recommended pass
 
-`TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`
+`CURRENT_STATE_HISTORY_TRIM_PASS`
 
 ## Current accepted route before this pass
 
-`TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
 
 ## Current accepted route during this pass
 
-`TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS`
+`TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`
 
 ## Latest accepted pushed work
 
@@ -39,6 +39,7 @@
 - TraceBench docs hygiene scope lock is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS is accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`).
 - TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS is accepted/pushed as `c70e23f` (`docs: archive completed pass-queue history`).
+- TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS is accepted/pushed as `b60ae0c` (`docs: centralize core invariants owner in TRUTH_INDEX`).
 - Project Overview / Workbench layout density is accepted/pushed/closed out as `19fc1c9` (`docs: close out project overview layout density`).
 - Board Canvas layout-density polish is accepted/pushed and manual-smoke PASS with user wording: "kõik on passed. ja töötab". The accepted Board Canvas state includes read-only renderer shell, board-normalized placements, chip/selector flow, read-only inspector, measurement summary, visual-trace metadata, photo-alignment readiness metadata-only panel, pan/zoom/fit, component-level measurement badges/counts, selected inspector related-measurement count, UI-only tap-to-select, compact chrome, collapsed Placement and Safety / Evidence controls, canvas status overlay, volatile inspector hide/show, volatile focus mode, and persistent `renderer writes: none`.
 
@@ -46,7 +47,7 @@
 
 Current acceptance and route-context lock target:
 
-- `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` is the current docs-only hygiene pass that consolidates core invariants as a canonical reference in `docs/TRUTH_INDEX.md`.
+- `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` is the current docs-only hygiene pass that confirms `docs/MODEL_ROUTING.md` as canonical helper/model role owner and keeps prompt guidance reference-based.
 - Existing accepted runtime behavior remains:
   - 3-zone Workbench with dominant read-only center canvas.
   - Wide rail panel mode behavior: `Inspector`, `Placements`, `Safety`.
@@ -54,7 +55,7 @@ Current acceptance and route-context lock target:
   - `Hide inspector` removed from wide rail; future tools (`Trace`, `Repair map`) remain visible and disabled/inert.
   - `renderer writes: none` remains present and preserved.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/` remains design-input-only and is not part of accepted runtime behavior.
-- Planned docs-hygiene route sequence (no implementation yet):
+- Planned docs-hygiene route sequence (no runtime implementation in this pass):
   `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`.
 
 ## Current accepted behavior evidence
@@ -67,7 +68,7 @@ Current acceptance and route-context lock target:
 - Workbench rail/canvas-corner polish manual smoke passed in user report ("hide inspector nupp on ikka alles..."), interpreted narrowly as flow PASS with current behavior and `renderer writes: none` preserved.
 - Workbench rail-button polish runtime behavior was confirmed in user manual context with "Kontrollisin, hetkel sobivad." interpreted narrowly as manual smoke PASS; no separate smoke PASS route is opened.
 
-Next route is `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`.
+Next route is `CURRENT_STATE_HISTORY_TRIM_PASS`.
 
 ## Core boundaries
 
@@ -79,5 +80,7 @@ Next route is `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS`.
 - Current/next pass routing: `docs/PASS_QUEUE.md`
 - Active allowed/forbidden surfaces: `docs/ACTIVE_SCOPE_LOCK.md`
 - Accepted history and audit evidence: `docs/AUDIT_INDEX.md` and `docs/audit/*.md`
+- Helper/model role ownership: `docs/MODEL_ROUTING.md`
+- Prompt-shape and contract-by-reference guidance: `docs/PROMPTING_PROTOCOL.md`
 - Stable architecture truth: `docs/PROJECT_MEMORY.md`
 - Source/orientation index: `docs/SOURCES_INDEX_CURRENT.md`

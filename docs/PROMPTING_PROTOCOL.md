@@ -5,6 +5,7 @@
 Keep prompts compact, scoped, and auditable without losing safety.
 
 Canonical repo docs win over prompt/chat memory.
+Use `docs/MODEL_ROUTING.md` for helper/model role ownership and `docs/AUDIT_CONTRACT.md` for reusable audit contracts instead of repeating long stable blocks.
 
 ## Required prompt fields (always)
 
@@ -292,18 +293,17 @@ For measurement, repair-flow, or bench-workflow prompts:
 - ensure reference/research/candidate values do not look measured;
 - do not treat visual prototypes as implementation permission or event-writing authorization.
 
-### 6) Model/tool routing reminder
+### 6) Model/tool routing reference
 
-Every implementation/audit prompt should state:
+Do not duplicate helper/model role ownership blocks in prompts. Reference `docs/MODEL_ROUTING.md` and state only pass-specific routing details:
 
-- best model/helper for the pass;
-- why that helper is chosen;
-- whether Claude Code / GPT Pro / Claude Design review is required and why;
+- selected model/helper for the pass and why;
+- whether Claude Code final repo-local audit, GPT Pro strategy/pre-audit, or Claude Design review is required for this pass;
 - exact validation sequence.
 
 ## Lean audit prompts
 
-Future audits may use `docs/AUDIT_CONTRACT.md` and lean prompts instead of repeating full boundary lists, as long as repo docs remain canonical and protected-surface boundaries are still enforced.
+Future audits may use `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, and lean prompts instead of repeating full boundary or role lists, as long as repo docs remain canonical and protected-surface boundaries are still enforced.
 
 Lean audit prompts should use:
 

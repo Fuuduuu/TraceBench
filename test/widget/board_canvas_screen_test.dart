@@ -134,6 +134,14 @@ Future<void> _tapCanvasAtNormalized(
   await tester.pump(const Duration(milliseconds: 16));
 }
 
+Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
+  final finder = find.byKey(key);
+  await tester.ensureVisible(finder);
+  await tester.pump();
+  await tester.tap(finder);
+  await tester.pump(const Duration(milliseconds: 16));
+}
+
 void main() {
   const boardPlacement = ComponentVisualPlacementFact(
     componentId: 'cmp_r101',
@@ -1983,7 +1991,7 @@ void main() {
     expect(counts, isEmpty);
   });
 
-  test('measurement badge count supports multi-measurement aggregation (M3)',
+  test('measurement badge count supports multiple related measurements (M3)',
       () {
     const measurements = [
       MeasurementFact(
@@ -2116,6 +2124,475 @@ void main() {
     expect(find.text('Stale after repair'), findsOneWidget);
     expect(find.textContaining('Valid until event ID: evt_800008'),
         findsOneWidget);
+  });
+
+  testWidgets(
+      'measurement value badge controls are discoverable and hidden by default',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M900',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 4.987,
+      unit: 'V',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: const [measurement],
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+          const Key('board_canvas_measurement_value_badge_global_toggle')),
+      findsOneWidget,
+    );
+    expect(find.text('Show All'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M900')),
+      findsNothing,
+    );
+
+    await _selectPlacement(tester, 'cmp_r101');
+
+    expect(
+      find.byKey(
+        const Key('board_canvas_selected_measurement_value_badge_toggle'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Show measurement badge'), findsOneWidget);
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets(
+      'selected component measurement value toggle shows and hides only that component',
+      (tester) async {
+    const r101Measurement = MeasurementFact(
+      measurementId: 'M901',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 1.1,
+      unit: 'V',
+    );
+    const u1Measurement = MeasurementFact(
+      measurementId: 'M902',
+      mode: 'dc_voltage',
+      from: 'cmp_u1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 2.2,
+      unit: 'V',
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+      ],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+      measurements: const [r101Measurement, u1Measurement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_selected_measurement_value_badge_toggle'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M901')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M902')),
+      findsNothing,
+    );
+    expect(find.text('Hide measurement badge'), findsOneWidget);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_selected_measurement_value_badge_toggle'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M901')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M902')),
+      findsNothing,
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('global measurement value toggle shows and hides all badges',
+      (tester) async {
+    const r101Measurement = MeasurementFact(
+      measurementId: 'M903',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 3.3,
+      unit: 'V',
+    );
+    const u1Measurement = MeasurementFact(
+      measurementId: 'M904',
+      mode: 'dc_voltage',
+      from: 'cmp_u1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 4.4,
+      unit: 'V',
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+      ],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+      measurements: const [r101Measurement, u1Measurement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+
+    expect(find.text('Hide All'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M903')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M904')),
+      findsOneWidget,
+    );
+    expect(find.text('3.3 V'), findsOneWidget);
+    expect(find.text('4.4 V'), findsOneWidget);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+
+    expect(find.text('Show All'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M903')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M904')),
+      findsNothing,
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'multiple measurement value badges stack deterministically without aggregation',
+      (tester) async {
+    const measurements = [
+      MeasurementFact(
+        measurementId: 'M912',
+        mode: 'dc_voltage',
+        from: 'cmp_r101',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: 'active',
+        powerState: 'on',
+        value: 2.0,
+        unit: 'V',
+      ),
+      MeasurementFact(
+        measurementId: 'M911',
+        mode: 'dc_voltage',
+        from: 'cmp_r101.1',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: 'active',
+        powerState: 'on',
+        value: 1.0,
+        unit: 'V',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: measurements,
+        ),
+      ),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+
+    final firstTop = tester.getTopLeft(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M911')),
+    );
+    final secondTop = tester.getTopLeft(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M912')),
+    );
+
+    expect(firstTop.dy, lessThan(secondTop.dy));
+    expect(find.text('1.0 V'), findsOneWidget);
+    expect(find.text('2.0 V'), findsOneWidget);
+    expect(find.text('3.0 V'), findsNothing);
+  });
+
+  testWidgets(
+      'stale suspect and invalid measurement value badges are not fresh authoritative',
+      (tester) async {
+    const measurements = [
+      MeasurementFact(
+        measurementId: 'M920',
+        mode: 'dc_voltage',
+        from: 'cmp_r101',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: 'stale_after_repair',
+        powerState: 'off',
+        value: 3.3,
+        unit: 'V',
+      ),
+      MeasurementFact(
+        measurementId: 'M921',
+        mode: 'dc_voltage',
+        from: 'cmp_r101.1',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: 'suspect',
+        powerState: 'off',
+        value: 3.4,
+        unit: 'V',
+      ),
+      MeasurementFact(
+        measurementId: 'M922',
+        mode: 'dc_voltage',
+        from: 'cmp_r101.2',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: 'invalid',
+        powerState: 'off',
+        value: 3.5,
+        unit: 'V',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [ComponentFact(componentId: 'cmp_r101')],
+          placements: const [boardPlacement],
+          measurements: measurements,
+        ),
+      ),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M920')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M921')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M922')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measurement_value_badge_status_M920'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measurement_value_badge_status_M921'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measurement_value_badge_status_M922'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byTooltip(
+        'stale_after_repair - not fresh authoritative value',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byTooltip('suspect - not fresh authoritative value'),
+      findsOneWidget,
+    );
+    expect(
+      find.byTooltip('invalid - not fresh authoritative value'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'incomplete measurement value badge eligibility renders no overlay control',
+      (tester) async {
+    const missingValue = MeasurementFact(
+      measurementId: 'M930',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      unit: 'V',
+    );
+    const missingUnit = MeasurementFact(
+      measurementId: 'M931',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 1.2,
+    );
+    const missingAssociation = MeasurementFact(
+      measurementId: 'M932',
+      mode: 'dc_voltage',
+      from: 'floating_node',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 1.3,
+      unit: 'V',
+    );
+    const photoOnlyAnchor = MeasurementFact(
+      measurementId: 'M933',
+      mode: 'dc_voltage',
+      from: 'cmp_photo',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 1.4,
+      unit: 'V',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_r101'),
+            ComponentFact(componentId: 'cmp_photo'),
+          ],
+          placements: const [boardPlacement, photoLocalPlacement],
+          measurements: const [
+            missingValue,
+            missingUnit,
+            missingAssociation,
+            photoOnlyAnchor,
+          ],
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+          const Key('board_canvas_measurement_value_badge_global_toggle')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M930')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M931')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M932')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M933')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('measurement value badge visibility is volatile widget state',
+      (tester) async {
+    const measurement = MeasurementFact(
+      measurementId: 'M940',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 4.0,
+      unit: 'V',
+    );
+    final state = _inlineProjectState(
+      components: const [ComponentFact(componentId: 'cmp_r101')],
+      placements: const [boardPlacement],
+      measurements: const [measurement],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('first')),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M940')),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('second')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M940')),
+      findsNothing,
+    );
+    expect(state.events, isEmpty);
   });
 
   testWidgets('template_id does not render forbidden electrical identity words',

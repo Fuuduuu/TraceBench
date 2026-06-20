@@ -72,6 +72,79 @@ int measurementCountForComponent({
       .length;
 }
 
+Map<String, List<MeasurementFact>> measurementValueBadgesByComponents({
+  required List<MeasurementFact> measurements,
+  required Set<String> componentIds,
+}) {
+  final badgesByComponent = <String, List<MeasurementFact>>{};
+  for (final componentId in componentIds) {
+    final matches = <_IndexedMeasurement>[];
+    for (var index = 0; index < measurements.length; index++) {
+      final measurement = measurements[index];
+      if (!measurementHasScalarValueAndUnit(measurement)) {
+        continue;
+      }
+      if (measurementEndpointMatchesComponent(measurement.from, componentId) ||
+          measurementEndpointMatchesComponent(measurement.to, componentId)) {
+        matches.add(_IndexedMeasurement(index, measurement));
+      }
+    }
+    if (matches.isEmpty) {
+      continue;
+    }
+    matches.sort(_compareIndexedMeasurements);
+    badgesByComponent[componentId] =
+        matches.map((match) => match.measurement).toList(growable: false);
+  }
+  return badgesByComponent;
+}
+
+bool measurementHasScalarValueAndUnit(MeasurementFact measurement) {
+  final unit = measurement.unit?.trim();
+  if (unit == null || unit.isEmpty) {
+    return false;
+  }
+
+  final value = measurement.value;
+  if (value is num) {
+    return value.isFinite;
+  }
+  if (value is String) {
+    return value.trim().isNotEmpty;
+  }
+  return false;
+}
+
+String measurementValueBadgeText(MeasurementFact measurement) {
+  return '${measurement.value} ${measurement.unit}';
+}
+
+bool measurementValidityNeedsCaution(MeasurementFact measurement) {
+  final status = measurement.validityStatus.toLowerCase();
+  return status.contains('stale') ||
+      status.contains('invalid') ||
+      status.contains('suspect');
+}
+
+int _compareIndexedMeasurements(
+  _IndexedMeasurement left,
+  _IndexedMeasurement right,
+) {
+  final leftId = left.measurement.measurementId.trim();
+  final rightId = right.measurement.measurementId.trim();
+  if (leftId.isNotEmpty && rightId.isNotEmpty && leftId != rightId) {
+    return leftId.compareTo(rightId);
+  }
+  return left.index.compareTo(right.index);
+}
+
+class _IndexedMeasurement {
+  const _IndexedMeasurement(this.index, this.measurement);
+
+  final int index;
+  final MeasurementFact measurement;
+}
+
 class BoardCanvasScreen extends ConsumerStatefulWidget {
   const BoardCanvasScreen({super.key});
 
@@ -83,6 +156,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
+  final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
   _WorkbenchContextPanelMode _contextPanelMode =
       _WorkbenchContextPanelMode.hidden;
 
@@ -179,9 +253,33 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       measurements: knownFacts.measurements,
       componentIds: entries.map((entry) => entry.placement.componentId).toSet(),
     );
+    final measurementValueBadgesByComponent =
+        measurementValueBadgesByComponents(
+      measurements: knownFacts.measurements,
+      componentIds: entries.map((entry) => entry.placement.componentId).toSet(),
+    );
+    final eligibleMeasurementValueBadgeComponentIds =
+        measurementValueBadgesByComponent.keys.toSet();
+    final visibleMeasurementValueBadgeComponentIds =
+        _visibleMeasurementValueBadgeComponentIds
+            .where(eligibleMeasurementValueBadgeComponentIds.contains)
+            .toSet();
+    final allMeasurementValueBadgesVisible =
+        eligibleMeasurementValueBadgeComponentIds.isNotEmpty &&
+            visibleMeasurementValueBadgeComponentIds.length ==
+                eligibleMeasurementValueBadgeComponentIds.length;
     final selectedMeasurementCount = selectedEntry == null
         ? 0
         : measurementCountByComponent[selectedEntry.placement.componentId] ?? 0;
+    final selectedMeasurementValueBadgeCount = selectedEntry == null
+        ? 0
+        : measurementValueBadgesByComponent[selectedEntry.placement.componentId]
+                ?.length ??
+            0;
+    final selectedMeasurementValueBadgesVisible = selectedEntry != null &&
+        visibleMeasurementValueBadgeComponentIds.contains(
+          selectedEntry.placement.componentId,
+        );
 
     return _buildScaffold(
       context,
@@ -215,6 +313,24 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               entries: entries,
               selectedKey: selectedKey,
               measurementCountsByComponentId: measurementCountByComponent,
+              measurementValueBadgesByComponentId:
+                  measurementValueBadgesByComponent,
+              visibleMeasurementValueBadgeComponentIds:
+                  visibleMeasurementValueBadgeComponentIds,
+              hasEligibleMeasurementValueBadges:
+                  eligibleMeasurementValueBadgeComponentIds.isNotEmpty,
+              allMeasurementValueBadgesVisible:
+                  allMeasurementValueBadgesVisible,
+              onToggleAllMeasurementValueBadges: () {
+                setState(() {
+                  _visibleMeasurementValueBadgeComponentIds.clear();
+                  if (!allMeasurementValueBadgesVisible) {
+                    _visibleMeasurementValueBadgeComponentIds.addAll(
+                      eligibleMeasurementValueBadgeComponentIds,
+                    );
+                  }
+                });
+              },
               cornerFocusAction:
                   useWorkbenchShell && !_canvasFocusMode ? focusToggle : null,
               onPlacementSelected: (value) {
@@ -234,6 +350,26 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             final metadata = _InspectorPanel(
               selectedEntry: selectedEntry,
               selectedMeasurementCount: selectedMeasurementCount,
+              selectedMeasurementValueBadgeCount:
+                  selectedMeasurementValueBadgeCount,
+              selectedMeasurementValueBadgesVisible:
+                  selectedMeasurementValueBadgesVisible,
+              onToggleSelectedMeasurementValueBadges: selectedEntry == null ||
+                      selectedMeasurementValueBadgeCount == 0
+                  ? null
+                  : () {
+                      final componentId = selectedEntry!.placement.componentId;
+                      setState(() {
+                        if (_visibleMeasurementValueBadgeComponentIds
+                            .contains(componentId)) {
+                          _visibleMeasurementValueBadgeComponentIds
+                              .remove(componentId);
+                        } else {
+                          _visibleMeasurementValueBadgeComponentIds
+                              .add(componentId);
+                        }
+                      });
+                    },
               relatedMeasurements: relatedMeasurements,
               relatedVisualTraces: relatedVisualTraces,
               photoToBoardAlignments: photoToBoardAlignments,
@@ -1201,6 +1337,11 @@ class _CanvasPanel extends StatefulWidget {
     required this.entries,
     required this.selectedKey,
     required this.measurementCountsByComponentId,
+    required this.measurementValueBadgesByComponentId,
+    required this.visibleMeasurementValueBadgeComponentIds,
+    required this.hasEligibleMeasurementValueBadges,
+    required this.allMeasurementValueBadgesVisible,
+    required this.onToggleAllMeasurementValueBadges,
     this.cornerFocusAction,
     required this.onPlacementSelected,
     required this.onCanvasTapEmpty,
@@ -1209,6 +1350,11 @@ class _CanvasPanel extends StatefulWidget {
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final Map<String, int> measurementCountsByComponentId;
+  final Map<String, List<MeasurementFact>> measurementValueBadgesByComponentId;
+  final Set<String> visibleMeasurementValueBadgeComponentIds;
+  final bool hasEligibleMeasurementValueBadges;
+  final bool allMeasurementValueBadgesVisible;
+  final VoidCallback onToggleAllMeasurementValueBadges;
   final Widget? cornerFocusAction;
   final ValueChanged<String> onPlacementSelected;
   final VoidCallback onCanvasTapEmpty;
@@ -1250,6 +1396,10 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 
   Widget _buildCanvas(BuildContext context, {required Size size}) {
     final theme = Theme.of(context);
+    final canvasSize = Size(
+      math.max(240, size.width),
+      math.max(96, size.height),
+    );
     return InteractiveViewer(
       key: const Key('board_canvas_interactive_viewer'),
       transformationController: _transformationController,
@@ -1261,19 +1411,38 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       child: GestureDetector(
         key: const Key('board_canvas_tap_layer'),
         behavior: HitTestBehavior.opaque,
-        onTapUp: (details) => _selectPlacementAt(details.localPosition, size),
-        child: CustomPaint(
-          key: const Key('board_canvas_painter'),
-          painter: _BoardPlacementPainter(
-            entries: widget.entries,
-            selectedKey: widget.selectedKey,
-            measurementCountsByComponentId:
-                widget.measurementCountsByComponentId,
-            colorScheme: theme.colorScheme,
-          ),
-          child: SizedBox(
-            width: math.max(240, size.width),
-            height: math.max(96, size.height),
+        onTapUp: (details) =>
+            _selectPlacementAt(details.localPosition, canvasSize),
+        child: SizedBox(
+          width: canvasSize.width,
+          height: canvasSize.height,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  key: const Key('board_canvas_painter'),
+                  painter: _BoardPlacementPainter(
+                    entries: widget.entries,
+                    selectedKey: widget.selectedKey,
+                    measurementCountsByComponentId:
+                        widget.measurementCountsByComponentId,
+                    colorScheme: theme.colorScheme,
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: _MeasurementValueBadgeLayer(
+                    entries: widget.entries,
+                    measurementValueBadgesByComponentId:
+                        widget.measurementValueBadgesByComponentId,
+                    visibleMeasurementValueBadgeComponentIds:
+                        widget.visibleMeasurementValueBadgeComponentIds,
+                    size: canvasSize,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1282,6 +1451,28 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 
   Widget _buildCornerControls(BuildContext context) {
     final theme = Theme.of(context);
+    final measurementValueBadgeToggle = TextButton.icon(
+      key: const Key('board_canvas_measurement_value_badge_global_toggle'),
+      style: TextButton.styleFrom(
+        backgroundColor:
+            theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.9),
+        foregroundColor: theme.colorScheme.onSurface,
+        minimumSize: const Size(92, _kCompactControlTileHeight),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
+      icon: Icon(
+        widget.allMeasurementValueBadgesVisible
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+        size: _kCompactControlIconSize,
+      ),
+      label: Text(
+        widget.allMeasurementValueBadgesVisible ? 'Hide All' : 'Show All',
+      ),
+      onPressed: widget.onToggleAllMeasurementValueBadges,
+    );
     final fitButton = IconButton(
       key: const Key('board_canvas_fit_view_button'),
       tooltip: 'Fit board view',
@@ -1298,6 +1489,15 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         children: [
           if (widget.cornerFocusAction != null) ...[
             widget.cornerFocusAction!,
+            const SizedBox(width: 6),
+          ],
+          if (widget.hasEligibleMeasurementValueBadges) ...[
+            Tooltip(
+              message: widget.allMeasurementValueBadgesVisible
+                  ? 'Hide all measurement value badges'
+                  : 'Show all measurement value badges',
+              child: measurementValueBadgeToggle,
+            ),
             const SizedBox(width: 6),
           ],
           fitButton,
@@ -1430,6 +1630,10 @@ class _BoardCanvasLegend extends StatelessWidget {
               style: theme.textTheme.bodySmall,
             ),
             Text(
+              'Value badges are optional and show projected value plus unit only.',
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
               'Component-level only.',
               style: theme.textTheme.bodySmall,
             ),
@@ -1544,6 +1748,9 @@ class _InspectorPanel extends StatelessWidget {
   const _InspectorPanel({
     required this.selectedEntry,
     required this.selectedMeasurementCount,
+    required this.selectedMeasurementValueBadgeCount,
+    required this.selectedMeasurementValueBadgesVisible,
+    required this.onToggleSelectedMeasurementValueBadges,
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
     required this.photoToBoardAlignments,
@@ -1551,6 +1758,9 @@ class _InspectorPanel extends StatelessWidget {
 
   final _PlacementEntry? selectedEntry;
   final int selectedMeasurementCount;
+  final int selectedMeasurementValueBadgeCount;
+  final bool selectedMeasurementValueBadgesVisible;
+  final VoidCallback? onToggleSelectedMeasurementValueBadges;
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
   final List<PhotoToBoardAlignmentFact> photoToBoardAlignments;
@@ -1576,6 +1786,12 @@ class _InspectorPanel extends StatelessWidget {
         _PlacementInspectorCard(
           entry: selectedEntry!,
           selectedMeasurementCount: selectedMeasurementCount,
+          selectedMeasurementValueBadgeCount:
+              selectedMeasurementValueBadgeCount,
+          selectedMeasurementValueBadgesVisible:
+              selectedMeasurementValueBadgesVisible,
+          onToggleSelectedMeasurementValueBadges:
+              onToggleSelectedMeasurementValueBadges,
         ),
       );
       children.add(
@@ -1610,10 +1826,16 @@ class _PlacementInspectorCard extends StatelessWidget {
   const _PlacementInspectorCard({
     required this.entry,
     required this.selectedMeasurementCount,
+    required this.selectedMeasurementValueBadgeCount,
+    required this.selectedMeasurementValueBadgesVisible,
+    required this.onToggleSelectedMeasurementValueBadges,
   });
 
   final _PlacementEntry entry;
   final int selectedMeasurementCount;
+  final int selectedMeasurementValueBadgeCount;
+  final bool selectedMeasurementValueBadgesVisible;
+  final VoidCallback? onToggleSelectedMeasurementValueBadges;
 
   @override
   Widget build(BuildContext context) {
@@ -1626,6 +1848,9 @@ class _PlacementInspectorCard extends StatelessWidget {
     final badgeCountLabel = selectedMeasurementCount == 1
         ? 'Related measurement: 1'
         : 'Related measurements: $selectedMeasurementCount';
+    final valueBadgeCountLabel = selectedMeasurementValueBadgeCount == 1
+        ? 'Eligible value badge: 1'
+        : 'Eligible value badges: $selectedMeasurementValueBadgeCount';
 
     return Card(
       child: Padding(
@@ -1717,6 +1942,33 @@ class _PlacementInspectorCard extends StatelessWidget {
               const Text(
                   'No probe, pin/anchor, or endpoint line semantics are shown.'),
               const Text('Does not create or confirm a net.'),
+              if (selectedMeasurementValueBadgeCount > 0) ...[
+                const SizedBox(height: 8),
+                Text(valueBadgeCountLabel),
+                TextButton.icon(
+                  key: const Key(
+                    'board_canvas_selected_measurement_value_badge_toggle',
+                  ),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(148, _kCompactControlTileHeight),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  icon: Icon(
+                    selectedMeasurementValueBadgesVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: _kCompactControlIconSize,
+                  ),
+                  label: Text(
+                    selectedMeasurementValueBadgesVisible
+                        ? 'Hide measurement badge'
+                        : 'Show measurement badge',
+                  ),
+                  onPressed: onToggleSelectedMeasurementValueBadges,
+                ),
+              ],
               const SizedBox(height: 8),
             ],
             if (component?.installationStatus != null)
@@ -2058,6 +2310,161 @@ class _PlacementEntry {
       return '$designator (${placement.componentId})';
     }
     return placement.componentId;
+  }
+}
+
+class _MeasurementValueBadgeLayer extends StatelessWidget {
+  const _MeasurementValueBadgeLayer({
+    required this.entries,
+    required this.measurementValueBadgesByComponentId,
+    required this.visibleMeasurementValueBadgeComponentIds,
+    required this.size,
+  });
+
+  final List<_PlacementEntry> entries;
+  final Map<String, List<MeasurementFact>> measurementValueBadgesByComponentId;
+  final Set<String> visibleMeasurementValueBadgeComponentIds;
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+    for (final entry in entries) {
+      final componentId = entry.placement.componentId;
+      if (!visibleMeasurementValueBadgeComponentIds.contains(componentId)) {
+        continue;
+      }
+      final measurements = measurementValueBadgesByComponentId[componentId] ??
+          const <MeasurementFact>[];
+      if (measurements.isEmpty) {
+        continue;
+      }
+
+      final center = _renderedPlacementCenter(entry, size);
+      final bodySize = _renderedPlacementBodySize(entry);
+      const badgeWidth = 108.0;
+      const badgeHeight = 22.0;
+      const badgeGap = 3.0;
+      final stackHeight = measurements.length * badgeHeight +
+          (measurements.length - 1) * badgeGap;
+      final rightCandidate = center.dx + bodySize.width / 2 + 8;
+      final leftCandidate = center.dx - bodySize.width / 2 - badgeWidth - 8;
+      final left = (rightCandidate + badgeWidth <= size.width - 4
+              ? rightCandidate
+              : leftCandidate)
+          .clamp(4.0, math.max(4.0, size.width - badgeWidth - 4))
+          .toDouble();
+      var top = center.dy - stackHeight / 2;
+      top = top
+          .clamp(4.0, math.max(4.0, size.height - stackHeight - 4))
+          .toDouble();
+
+      for (var index = 0; index < measurements.length; index++) {
+        final measurement = measurements[index];
+        children.add(
+          Positioned(
+            left: left,
+            top: top + index * (badgeHeight + badgeGap),
+            width: badgeWidth,
+            height: badgeHeight,
+            child: _MeasurementValueBadge(measurement: measurement),
+          ),
+        );
+      }
+    }
+
+    return Stack(
+      key: const Key('board_canvas_measurement_value_badge_layer'),
+      clipBehavior: Clip.none,
+      children: children,
+    );
+  }
+}
+
+class _MeasurementValueBadge extends StatelessWidget {
+  const _MeasurementValueBadge({required this.measurement});
+
+  final MeasurementFact measurement;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final valueText = measurementValueBadgeText(measurement);
+    final needsCaution = measurementValidityNeedsCaution(measurement);
+    final foreground = needsCaution
+        ? theme.colorScheme.onErrorContainer
+        : theme.colorScheme.onPrimaryContainer;
+    final background = needsCaution
+        ? theme.colorScheme.errorContainer.withValues(alpha: 0.94)
+        : theme.colorScheme.primaryContainer.withValues(alpha: 0.94);
+    final borderColor =
+        needsCaution ? theme.colorScheme.error : theme.colorScheme.primary;
+    final semanticsLabel = needsCaution
+        ? 'Measurement value badge ${measurement.measurementId}: $valueText; ${measurement.validityStatus}; not fresh authoritative value'
+        : 'Measurement value badge ${measurement.measurementId}: $valueText';
+
+    return Semantics(
+      key: Key(
+        'board_canvas_measurement_value_badge_semantics_${measurement.measurementId}',
+      ),
+      label: semanticsLabel,
+      child: Tooltip(
+        message: needsCaution
+            ? '${measurement.validityStatus} - not fresh authoritative value'
+            : 'Projected measurement value',
+        child: DecoratedBox(
+          key: Key(
+            'board_canvas_measurement_value_badge_${measurement.measurementId}',
+          ),
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(7),
+            border:
+                Border.all(color: borderColor, width: needsCaution ? 1.8 : 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.24),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (needsCaution) ...[
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    key: Key(
+                      'board_canvas_measurement_value_badge_status_${measurement.measurementId}',
+                    ),
+                    size: 12,
+                    color: foreground,
+                  ),
+                  const SizedBox(width: 3),
+                ],
+                Flexible(
+                  child: Text(
+                    valueText,
+                    key: Key(
+                      'board_canvas_measurement_value_badge_value_${measurement.measurementId}',
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

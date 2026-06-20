@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`
 
 ## Type
 
@@ -10,15 +10,14 @@ CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Record post-audit closeout of the accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS` scope-lock while preserving the protected runtime boundary.
+Activate the implementation lock for the accepted first Add Component template-list UI slice and define the narrow runtime/test allowlist.
 
 ## Baseline
 
 - Current route before this lock: `NEEDS_USER_DECISION`.
 - Measurement overlay track is accepted and closed through manual smoke.
-- Accepted overlay implementation: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- Measurement overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` (`PASS_WITH_NIT`).
-- Add Component remains deferred/protected.
+- Add Component template-list scope-lock is accepted/pushed as `be752e1` (`docs: record add component template-list scope-lock post-audit`).
+- Add Component remains deferred outside this implementation slice.
 - Add Component product-boundary decisions were captured in:
   - `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
   - `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
@@ -29,7 +28,8 @@ Record post-audit closeout of the accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: UI_SCOPE_LOCK`
+- `ROUTE_EFFECT: IMPLEMENTATION_LOCK`
+- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
 
 ## Allowed files
 
@@ -38,9 +38,9 @@ Record post-audit closeout of the accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS.md`
 
 ## Reference-only files
 
@@ -51,7 +51,7 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-Lock the first Add Component runtime-toplevel UI slice:
+Activate the first Add Component runtime-toplevel UI slice for implementation pass:
 
 - Entry point: `Board Canvas` rail Add Component action only.
 - Right-side contextual panel opens directly in template-list mode.
@@ -64,6 +64,11 @@ Lock the first Add Component runtime-toplevel UI slice:
 - Confirm payload remains unresolved and deferred.
 - Project Overview Add Component deep-link remains deferred.
 - Edit Layout stays a separate protected future track.
+
+## Implementation allowlist
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
 ## Pro review constraints
 
@@ -87,8 +92,8 @@ Lock the first Add Component runtime-toplevel UI slice:
 
 ## Forbidden files / surfaces
 
-- Runtime implementation files.
-- Widget, unit, integration, or golden tests.
+- Additional runtime implementation files.
+- Additional widget/unit/integration/golden test files.
 - `_incoming` design artifact edits.
 - `docs/PROJECT_MEMORY.md` accepted architecture updates.
 - Schema, writer, materializer, validator, projection, Project ZIP, event, fact, or canonical routing semantics.
@@ -99,8 +104,8 @@ Lock the first Add Component runtime-toplevel UI slice:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`.
 
 ## Required validation
 

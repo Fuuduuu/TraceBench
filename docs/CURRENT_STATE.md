@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only post-audit closeout for the accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS` and route handoff.
+- Current pass purpose: docs-only implementation-lock activation for the first Add Component template-list UI slice, moving from accepted scope-lock to runtime-anchored implementation path.
 
 ## Accepted docs-hygiene baseline
 
@@ -79,18 +79,21 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only scope-lock for the first Add Component UI slice.
+- This pass is a docs-only implementation-lock activation for the first Add Component UI slice.
 - Source status remains `DESIGN_INPUT_ONLY` for existing design evidence.
-- Runtime status remains `NOT_ACCEPTED`.
+- Runtime status remains `NOT_ACCEPTED` for this docs-only pass (implementation happens in the next pass).
 - Architecture status remains `NOT_ACCEPTED`.
 - Canonical semantics remain `NONE`.
-- Route effect is `UI_SCOPE_LOCK`.
+- Route effect is `IMPLEMENTATION_LOCK`.
 - Board Canvas rail Add Component entry opens a right contextual panel in template-list mode.
-- Template-list state and selection are local UI-only and volatile.
+- Runtime/test allowlist opens to:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- Template-list scope remains local and volatile in this stage.
 - Geometry-first reduced starter taxonomy remains the accepted visual-contact direction.
-- Vocabulary is `visual contact`, `contact marker`, `template family`; canonical pin/pad/electrical wording is deferred.
+- Vocabulary remains `visual contact`, `contact marker`, `template family`; canonical pin/pad/electrical wording is deferred.
 - Scope is rectangular-perimeter visual contacts with side intent (`top`, `right`, `bottom`, `left`) only.
-- Template selection sets local panel selection only; no ghost placement, builder, rotation draft, or Confirm in this slice.
+- Template selection may set local panel selection only; this stage must not mutate project-level routing or runtime write-path semantics.
 - Add Component deep-link from Project Overview remains deferred.
 - Edit Layout remains a protected future slice.
 - Measure Sheet and overlay runtime behavior remain unchanged.

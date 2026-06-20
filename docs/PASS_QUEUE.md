@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -51,5 +51,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `5e4f850` (`docs: activate add component template-list implementation lock`) | Docs-only implementation-lock activation for the first Add Component runtime slice; implementation allowlist opens Board Canvas runtime and widget test files only. |
 | V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`) | Board Canvas Add Component template-list runtime entry implemented with local volatile template selection and read-only boundary preservation. |
 | V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed docs-only post-audit closeout | Docs-only post-audit closeout records accepted implementation and boundary confirmation; routes onward to `NEEDS_USER_DECISION`. |
-| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | current docs-only manual smoke record | User-provided manual smoke result: PASS for Add Component template-list UI slice; routes onward to `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | completed docs-only manual smoke record | User-provided manual smoke result: PASS for Add Component template-list UI slice; routes onward to `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current docs-only scope lock | Right-panel template-list state may open a visual-contact builder slice: local side-count editing (`top`, `right`, `bottom`, `left`), rectangular-perimeter layout, and local volatile state only; no builder persistence, placement, rotation, Confirm, or canonical semantic writing in this pass. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

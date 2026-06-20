@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only manual smoke record for the accepted first Add Component template-list implementation.
+- Current pass purpose: docs-only scope-lock for the first Add Component visual-contact builder UI-only slice.
 - Current accepted Add Component implementation: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 
 ## Accepted docs-hygiene baseline
@@ -56,7 +56,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only manual smoke pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only scope-lock pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -75,31 +75,33 @@ The current docs-hygiene sequence is accepted through:
 - Memory/intake rules: `docs/MEMORY_PROTOCOL.md`
 - Protected-surface boundaries: `docs/PROTECTED_SURFACES.md`
 
+
 ## Current scope
 
-- This pass is a repo-local docs-only manual smoke record for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
-- Source status remains `DESIGN_INPUT_ONLY` for existing design evidence.
-- Runtime status is `ACCEPTED` for this slice.
-- Architecture status remains `NOT_ACCEPTED`.
-- Canonical semantics remain `NONE`.
-- Route effect is `MANUAL_SMOKE_RECORD`.
-- Board Canvas rail Add Component entry opens a right contextual panel in template-list mode.
-- Template list remains UI-only and local.
-- Selection is local volatile widget state only.
-- Runtime/test allowlist used during implementation was:
-   - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-   - `test/widget/board_canvas_screen_test.dart`
+- This pass is a docs-only scope-lock: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` is active.
+- Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
+- Runtime status: `NOT_ACCEPTED`.
+- Architecture status: `NOT_ACCEPTED`.
+- Canonical semantics: `NONE`.
+- Route effect: `SCOPE_LOCK`.
+- Board Canvas Add Component entry still opens the right contextual panel in template-list mode.
+- Template-list selection may open a right-panel visual-contact builder state.
+- Builder is UI-local and volatile widget-state-only.
+- Builder uses rectangular-perimeter layout only with editable side counts (`top`, `right`, `bottom`, `left`).
+- Starter templates may seed the builder; builder and list state remains isolated/local.
+- Invalid states remain UI-only:
+  - zero contact markers,
+  - excessive marker count,
+  - reset to template defaults.
+- Wording remains locked to `visual contact`, `contact marker`, and `template family`.
 - Geometry-first reduced starter taxonomy remains the accepted direction.
-- Rectangular-perimeter visual-contact templates and side intent (`top`, `right`, `bottom`, `left`) remain.
-- Vocabulary remains `visual contact`, `contact marker`, `template family`; canonical pin/pad/electrical wording is deferred.
-- Scope is rectangular-perimeter visual contacts with side intent (`top`, `right`, `bottom`, `left`) only.
-- Template selection stays local and in-memory only.
-- This phase preserves inspector/placements/safety behavior and measurement overlay behavior.
 - Add Component deep-link from Project Overview remains deferred.
-- Edit Layout remains a protected future slice.
-- Measure Sheet, project routing, and protected writer/surface semantics remain unchanged.
+- No builder persistence/Confirm/ghost/rotation runtime flow is authorized.
+- Preserve template-list behavior from accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
+- Preserve inspector/placements/safety behavior and measurement overlay behavior.
+- Preserve `Measure Sheet` and `renderer writes: none`.
 
-## Manual smoke record
+## Manual smoke record (previous)
 
 - Pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS`.
 - Result: PASS.

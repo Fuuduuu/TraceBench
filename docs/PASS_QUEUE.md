@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -46,5 +46,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS | CODEX / DOCS_DESIGN_INPUT_CAPTURE | completed docs-only gap capture | Captures Add Component Footprint Builder HTML/CSS as `DESIGN_INPUT_ONLY`; runtime `NOT_ACCEPTED`; architecture `NOT_ACCEPTED`; canonical semantics `NONE`; route effect `GAP_CAPTURE_ONLY`; follow-up to `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS` for boundary decisions. |
 | V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `118113e` (`docs: lock add component workbench flow scope`) | Lock accepted and closed; board-rail-first flow, rectangular-perimeter visual contacts, deferred confirm payload, and protected runtime semantics remain in force. |
 | V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS | CODEX / DOCS_SCOPE_LOCK | completed docs-only post-audit closeout | Independent lock closeout records accepted scope-lock commit, confirms boundaries, and routes to `NEEDS_USER_DECISION`. |
-| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | current docs-only scope lock | First Add Component UI slice: Board Canvas rail entry opens right contextual panel in template-list mode, local visual-contact template selection only, no builder/ghost/rotation/placement/Confirm in this pass. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `26ce000` (`docs: lock add component template-list ui slice scope`) | First Add Component UI slice: Board Canvas rail entry opens right contextual panel in template-list mode, local visual-contact template selection only, no builder/ghost/rotation/placement/Confirm in this pass. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current docs-only post-audit closeout | Closeout records accepted scope-lock commit, confirms lock boundaries (`renderer writes: none`, Board Canvas rail entry, right contextual template-list panel, local volatile selection only, geometry-first reduced starter taxonomy, rectangular-perimeter visual-contact templates, visual-contact/contact-marker/template-family wording, no ghost/placement/builder/rotation/Confirm/Edit Layout/Project Overview rewrite, no Measure Sheet and runtime/test/protected-surface changes), and routes to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

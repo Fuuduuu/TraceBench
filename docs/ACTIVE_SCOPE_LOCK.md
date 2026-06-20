@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Type
 
@@ -10,7 +10,7 @@ CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Lock the first Add Component UI-only slice for a template-list entry mode while preserving the protected runtime boundary.
+Record post-audit closeout of the accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS` scope-lock while preserving the protected runtime boundary.
 
 ## Baseline
 
@@ -40,6 +40,7 @@ Lock the first Add Component UI-only slice for a template-list entry mode while 
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS.md`
 
 ## Reference-only files
 
@@ -98,8 +99,8 @@ Lock the first Add Component runtime-toplevel UI slice:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

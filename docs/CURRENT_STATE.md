@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
@@ -17,7 +17,8 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only post-audit closeout for the first Add Component template-list implementation.
+- Current pass purpose: docs-only manual smoke record for the accepted first Add Component template-list implementation.
+- Current accepted Add Component implementation: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 
 ## Accepted docs-hygiene baseline
 
@@ -55,7 +56,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only closeout pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only manual smoke pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -76,12 +77,12 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only implementation closeout for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
+- This pass is a repo-local docs-only manual smoke record for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
 - Source status remains `DESIGN_INPUT_ONLY` for existing design evidence.
 - Runtime status is `ACCEPTED` for this slice.
 - Architecture status remains `NOT_ACCEPTED`.
 - Canonical semantics remain `NONE`.
-- Route effect is `IMPLEMENTATION_POST_AUDIT`.
+- Route effect is `MANUAL_SMOKE_RECORD`.
 - Board Canvas rail Add Component entry opens a right contextual panel in template-list mode.
 - Template list remains UI-only and local.
 - Selection is local volatile widget state only.
@@ -97,6 +98,13 @@ The current docs-hygiene sequence is accepted through:
 - Add Component deep-link from Project Overview remains deferred.
 - Edit Layout remains a protected future slice.
 - Measure Sheet, project routing, and protected writer/surface semantics remain unchanged.
+
+## Manual smoke record
+
+- Pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_MANUAL_SMOKE_PASS`.
+- Result: PASS.
+- User evidence: manual check reported the Add Component template-list UI slice as acceptable.
+- Route after this manual smoke record: `NEEDS_USER_DECISION`.
 
 ## Product-boundary decisions scope-locked
 

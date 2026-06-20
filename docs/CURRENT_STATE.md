@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: capture Add Component Footprint Builder design input as design-input-only / gap evidence and route to `NEEDS_USER_DECISION`.
+- Current pass purpose: decide and record Add Component Workbench product-boundary decisions before flow locking.
 
 ## Accepted docs-hygiene baseline
 
@@ -79,14 +79,26 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is docs-only design-input / gap-evidence capture for the Add Component Footprint Builder artifacts under `_incoming/ui_redesign/Components/`.
+- This pass is docs-only product-boundary decision capture for the Add Component Footprint Builder artifacts under `_incoming/ui_redesign/Components/`.
 - Source status: `DESIGN_INPUT_ONLY`.
 - Runtime status: `NOT_ACCEPTED`.
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `GAP_CAPTURE_ONLY`.
+- Route effect: `PRODUCT_BOUNDARY_DECISION`.
+- Confirm boundary: payload remains unresolved in this pass.
 - Allowed route docs are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
 - Measure Sheet remains unchanged; Add Component remains deferred/protected pending a future dedicated scope lock.
+
+## Product-boundary decisions recorded
+
+- Terminology: `visual contact`, `contact marker`, `template family`; avoid canonical pin/pad/electrical-identity wording.
+- First geometry model: rectangular-perimeter visual contact layout first; top/right/bottom/left count model; symbolic visual layout only.
+- Starter taxonomy: geometry-first reduced set; no electrical identity-first catalog as first scope.
+- Entry point: Board Canvas rail first; Project Overview Add Component deep-link deferred.
+- Rotation: `90`-degree steps first; arbitrary `0-360` rotation deferred.
+- Interaction conflict: Add Component ghost/placement mode and measurement overlay controls are mutually exclusive or must be explicitly disarmed before switching.
+- Confirm boundary: Confirm payload unresolved; no canonical write accepted for pins/pads/nets/traces/probes; schema/writer/materializer/projection/event/fact/route decisions deferred.
+- Edit Layout remains a separate protected future track and is not part of initial Add Component UI scope.
 ## Validation baseline
 
 - `git diff --check`
@@ -114,4 +126,4 @@ The current docs-hygiene sequence is accepted through:
 - Capture status: source `DESIGN_INPUT_ONLY`; runtime `NOT_ACCEPTED`; architecture `NOT_ACCEPTED`; canonical semantics `NONE`; route effect `GAP_CAPTURE_ONLY`.
 - Design direction captured only: future protected Workbench Add Component flow, geometry-first template/list direction, per-side visual-contact builder (`top`/`right`/`bottom`/`left`), local ghost preview before Confirm, rotation intent local until separately scoped, Confirm and Edit Layout as protected future writer tracks, Board Canvas rail as first entry point, Project Overview entry not rewired yet, Measure Sheet unchanged.
 - Pro review constraints captured: do not accept the artifact internal V4 pass ID as repo pass ID; do not treat HTML/CSS as runtime source; do not update `PROJECT_MEMORY.md` as accepted architecture; do not accept canonical footprint/pin/pad semantics; do not accept Confirm payload; do not proceed directly to implementation.
-- Open product decisions remain: visual-contact terminology, rectangular-perimeter first model, reduced starter taxonomy, rotation scope, board-side deferral, designator policy, Confirm payload boundary, and Edit Layout as a separate protected future track.
+- Follow-up to this pass: `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS` captured visual-contact terminology, first-geometry model, rotation, entry-point, and interaction boundaries; designator policy and Confirm payload remain unresolved.

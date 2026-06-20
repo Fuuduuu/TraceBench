@@ -2,22 +2,22 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
 
 ## Type
 
-CODEX / DOCS_DESIGN_INPUT_CAPTURE
+CODEX / DOCS_PRODUCT_BOUNDARY_DECISION
 
 ## Goal
 
-Capture the Add Component Footprint Builder design artifacts as design-input-only / gap evidence without accepting runtime behavior, architecture, canonical semantics, writer payloads, or implementation routing.
+Record product-boundary decisions for Add Component Workbench flow and explicit deferred semantics before flow scope-locking.
 
 ## Baseline
 
 - Current route before this decision track: `NEEDS_USER_DECISION`.
 - Measurement overlay track is accepted and closed through manual smoke.
 - Accepted overlay implementation: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- Manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`, result `PASS_WITH_NIT`.
+- Measurement overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`, result `PASS_WITH_NIT`.
 - Add Component remains deferred/protected.
 - User-provided design input files:
   - `_incoming/ui_redesign/Components/Add Component Footprint Builder - Design Review.html`
@@ -30,7 +30,7 @@ Capture the Add Component Footprint Builder design artifacts as design-input-onl
 - `RUNTIME_STATUS: NOT_ACCEPTED`
 - `ARCHITECTURE_STATUS: NOT_ACCEPTED`
 - `CANONICAL_SEMANTICS: NONE`
-- `ROUTE_EFFECT: GAP_CAPTURE_ONLY`
+- `ROUTE_EFFECT: PRODUCT_BOUNDARY_DECISION`
 
 ## Allowed files
 
@@ -39,7 +39,7 @@ Capture the Add Component Footprint Builder design artifacts as design-input-onl
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS.md`
 
 ## Reference-only files
 
@@ -50,37 +50,37 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-Record the design direction only:
+Record additive boundary decisions only:
 
-- Add Component as future protected Workbench flow.
-- Geometry-first template/list direction.
-- Per-side visual contact builder: top/right/bottom/left.
-- Local ghost preview before Confirm.
-- Rotation intent remains local until separately scoped.
-- Confirm and Edit Layout are protected future writer tracks.
-- Board Canvas rail should be first entry point.
-- Project Overview entry should not be rewired yet.
-- Measure Sheet remains unchanged.
+- Terminology: `visual contact`, `contact marker`, `template family`; avoid canonical pin/pad/electrical-identity wording.
+- First geometry model: rectangular-perimeter visual contacts, top/right/bottom/left side intent; symbolic visual layout only.
+- Starter taxonomy: geometry-first reduced set.
+- Entry point: Board Canvas rail first; Project Overview Add Component deep-link deferred.
+- Rotation: `90`-degree steps in first scope; arbitrary `0-360` rotation deferred.
+- Interaction conflict: Add Component ghost/placement mode and measurement-overlay controls are mutually exclusive or explicitly disarmed on mode switch.
+- Confirm boundary: payload remains unresolved; no canonical write accepted in this pass.
+- Writer/schema/materializer/validator/projection/event/fact/Project ZIP/authored routing decisions remain deferred.
+- Edit Layout is a separate protected future track.
 
 ## Pro review constraints
 
 - Do not accept the artifact's internal V4 pass ID as repo pass ID.
 - Do not treat HTML/CSS as runtime source.
 - Do not update `PROJECT_MEMORY.md` as accepted architecture yet.
-- Do not accept canonical footprint/pin/pad semantics.
+- Do not accept canonical footprint/pin/pad/net/trace semantics.
 - Do not accept Confirm payload.
 - Do not proceed directly to implementation.
 
 ## Open product decisions
 
-- visual-contact terminology;
-- rectangular-perimeter first model;
-- reduced starter taxonomy;
-- rotation scope;
-- board-side deferral;
-- designator policy;
-- Confirm payload boundary;
-- Edit Layout as separate protected future track.
+- visual-contact terminology: set to `visual contact`, `contact marker`, `template family`.
+- rectangular-perimeter first model: selected for phase 1.
+- reduced starter taxonomy: selected for phase 1.
+- rotation scope: `90`-degree steps first.
+- board-side deferral: selected.
+- designator policy: deferred.
+- Confirm payload boundary: unresolved.
+- Edit Layout as separate protected future track: selected.
 
 ## Forbidden files / surfaces
 
@@ -91,13 +91,13 @@ Record the design direction only:
 - Schema, writer, materializer, validator, projection, Project ZIP, event, fact, or canonical routing semantics.
 - Canonical footprint, pin, pad, contact, net, measurement, board-side, rotation, designator, or Confirm payload semantics.
 - Project Overview rewiring.
-- Measure Sheet changes.
+- Measure Sheet behavior changes.
 - Direct implementation route selection.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`.
 
 ## Required validation
 
@@ -113,4 +113,4 @@ py -3 tools\validate_all.py
 
 ## Stop conditions
 
-Stop and report if capture requires runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, Project Overview rewiring, Measure Sheet, `_incoming`, or accepted-architecture changes.
+Stop and report if this pass needs runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, Project Overview rewiring, Measure Sheet, `_incoming`, or accepted-architecture changes.

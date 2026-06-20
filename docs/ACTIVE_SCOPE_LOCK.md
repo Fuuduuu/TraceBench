@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Type
 
@@ -14,12 +14,13 @@ Docs-only protected-projection scope lock for read-only Workbench measurement ba
 
 ## Current goal
 
-Lock a narrow, projection-only Workbench measurement overlay implementation direction and keep route/provenance docs aligned while preserving no-write runtime boundaries.
+Record and close out the independently post-audited measurement-overlay scope-lock pass, while keeping route/provenance docs aligned and preserving no-write runtime boundaries.
 
 ## Baseline
 
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS` is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`).
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` is accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) and retains `renderer writes: none`.
+- `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS` is accepted/pushed as `8544a4b` (`docs: lock workbench measurement overlay scope`) and retains projection-only overlay direction.
 - `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS` is accepted/pushed as `94a1143` (`docs: refresh workbench architecture reference`).
 - `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` is accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`).
@@ -35,6 +36,7 @@ Lock a narrow, projection-only Workbench measurement overlay implementation dire
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS.md`
 
 ## Conditional scope
 
@@ -45,8 +47,8 @@ Neither conditional file is expected for this pass.
 
 ## Current route lock
 
-Current pass: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS`
-Next: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
+Current pass: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
+Next: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
 
 ## Current scope summary
 
@@ -57,6 +59,7 @@ Next: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
 - No runtime, protected-surface, model-routing, prompt, or canonical invariant semantic changes.
 - Keep runtime measurement overlay direction read-only by default with deterministic, projection-only behavior and explicit `multi_measurement` handling.
 - Explicitly defer both inline value/unit entry and Add Component flows.
+- Next implementation pass may touch only narrow runtime/test surfaces needed for read-only overlay rendering (if repo convention requires implementation allowlist planning); no protected surfaces are pre-authorized in this pass.
 
 ## Baseline / owner mapping
 

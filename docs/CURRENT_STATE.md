@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
 
 ## Repository handoff
 
@@ -48,6 +48,7 @@ The current docs-hygiene sequence is accepted through:
 - No event authoring, no projection persistence, no overlay persistence, and no Add Component work.
 - `renderer writes: none` remains.
 - Measure Sheet remains unchanged as existing recording/write fallback.
+- Scope-lock pass is accepted as `8544a4b` (`docs: lock workbench measurement overlay scope`) with independent post-audit `ACCEPT_AS_IS`; no runtime or protected-surface edits were required in this post-audit bookkeeping.
 
 ## Canonical owners
 
@@ -64,7 +65,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is docs-only and only sets the measurement-overlay scope-lock direction plus route/provenance lock updates.
+- This pass is docs-only post-audit documentation and routing update.
 - Allowed route docs are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
 - Measure Sheet and Add Component are explicitly deferred and preserved unchanged.
 

@@ -429,6 +429,10 @@ void main() {
       findsOneWidget,
     );
     expect(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+      findsOneWidget,
+    );
+    expect(
       find.byKey(const Key('board_canvas_rail_safety_evidence_tool')),
       findsOneWidget,
     );
@@ -465,6 +469,7 @@ void main() {
         findsOneWidget);
     expect(find.text('Panels'), findsOneWidget);
     expect(find.text('Future tools'), findsOneWidget);
+    expect(find.text('Add Component'), findsOneWidget);
     expect(find.text('Placements'), findsOneWidget);
     expect(find.text('Safety'), findsOneWidget);
     expect(find.text('Inspector'), findsOneWidget);
@@ -490,6 +495,128 @@ void main() {
       findsOneWidget,
     );
     expect(railSize.width, lessThan(120));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('wide Workbench opens Add Component template-list panel',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+      ],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_context_panel')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Starter rectangular template families'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_rail_add_component_active')),
+      findsOneWidget,
+    );
+    expect(state.events, isEmpty);
+
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom_selected',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('template family'), findsAtLeastNWidgets(1));
+    expect(find.textContaining('visual contacts'), findsAtLeastNWidgets(1));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component template selection is local volatile in-memory state only',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('first')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester
+        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom_selected',
+        ),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('second')),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom_selected',
+        ),
+      ),
+      findsNothing,
+    );
     expect(state.events, isEmpty);
   });
 
@@ -1573,7 +1700,6 @@ void main() {
       'Add reference point',
       'Run AI',
       'Detect components',
-      'Add component',
     ];
 
     for (final action in forbiddenActions) {

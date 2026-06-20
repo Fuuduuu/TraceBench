@@ -27,6 +27,7 @@ enum _WorkbenchContextPanelMode {
   hidden,
   inspector,
   placements,
+  addComponentTemplates,
   safetyEvidence
 }
 
@@ -145,6 +146,64 @@ class _IndexedMeasurement {
   final MeasurementFact measurement;
 }
 
+class _AddComponentTemplateDefinition {
+  const _AddComponentTemplateDefinition({
+    required this.id,
+    required this.templateFamily,
+    required this.topContactMarkers,
+    required this.rightContactMarkers,
+    required this.bottomContactMarkers,
+    required this.leftContactMarkers,
+    required this.example,
+  });
+
+  final String id;
+  final String templateFamily;
+  final int topContactMarkers;
+  final int rightContactMarkers;
+  final int bottomContactMarkers;
+  final int leftContactMarkers;
+  final String example;
+
+  String get contactMarkerSummary {
+    return 'Top: $topContactMarkers, Right: $rightContactMarkers, '
+        'Bottom: $bottomContactMarkers, Left: $leftContactMarkers';
+  }
+}
+
+const _kStarterAddComponentTemplates = <_AddComponentTemplateDefinition>[
+  _AddComponentTemplateDefinition(
+    id: 'template_family_rect_2_top_bottom',
+    templateFamily: 'Rectangular template family — 2 visual-contact',
+    topContactMarkers: 1,
+    rightContactMarkers: 0,
+    bottomContactMarkers: 1,
+    leftContactMarkers: 0,
+    example:
+        'rectangular-perimeter geometry with top and bottom contact markers.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_rect_4_perimeter',
+    templateFamily: 'Rectangular template family — 4 visual-contact',
+    topContactMarkers: 1,
+    rightContactMarkers: 1,
+    bottomContactMarkers: 1,
+    leftContactMarkers: 1,
+    example:
+        'rectangular-perimeter geometry with one contact marker each side.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_rect_6_edge_balance',
+    templateFamily: 'Rectangular template family — 6 visual-contact',
+    topContactMarkers: 2,
+    rightContactMarkers: 1,
+    bottomContactMarkers: 2,
+    leftContactMarkers: 1,
+    example:
+        'rectangular-perimeter geometry with top/right/bottom/left balance.',
+  ),
+];
+
 class BoardCanvasScreen extends ConsumerStatefulWidget {
   const BoardCanvasScreen({super.key});
 
@@ -154,6 +213,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
+  String? _selectedAddComponentTemplateId;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -432,6 +492,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     },
                   );
                   break;
+                case _WorkbenchContextPanelMode.addComponentTemplates:
+                  contextPanel = _AddComponentTemplateListPanel(
+                    entries: _kStarterAddComponentTemplates,
+                    selectedTemplateId: _selectedAddComponentTemplateId,
+                    onTemplateSelected: (value) {
+                      setState(() {
+                        _selectedAddComponentTemplateId = value;
+                      });
+                    },
+                  );
+                  break;
                 case _WorkbenchContextPanelMode.safetyEvidence:
                   contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
                     initiallyExpanded: true,
@@ -456,6 +527,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   setState(() {
                     _selectedPlacementKey = null;
                     _contextPanelMode = _WorkbenchContextPanelMode.placements;
+                    _inspectorVisible = true;
+                  });
+                },
+              );
+              final addComponentPanelToggle = _WorkbenchPanelModeButton(
+                buttonKey: const Key('board_canvas_rail_add_component_tool'),
+                icon: Icons.add_box_outlined,
+                tooltip: 'Open Add Component template-list mode',
+                label: 'Add Component',
+                modeKey: 'add_component',
+                selected: _contextPanelMode ==
+                    _WorkbenchContextPanelMode.addComponentTemplates,
+                onPressed: () {
+                  setState(() {
+                    _selectedPlacementKey = null;
+                    _contextPanelMode =
+                        _WorkbenchContextPanelMode.addComponentTemplates;
                     _inspectorVisible = true;
                   });
                 },
@@ -498,6 +586,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 children: [
                   if (!_canvasFocusMode) ...[
                     _WorkbenchToolRail(
+                      addComponentTool: addComponentPanelToggle,
                       inspectorTool: inspectorPanelToggle,
                       placementTool: focusPanelToggle,
                       safetyEvidenceTool: safetyPanelToggle,
@@ -775,11 +864,13 @@ class _BoardCanvasControlBand extends StatelessWidget {
 
 class _WorkbenchToolRail extends StatelessWidget {
   const _WorkbenchToolRail({
+    required this.addComponentTool,
     required this.inspectorTool,
     required this.placementTool,
     required this.safetyEvidenceTool,
   });
 
+  final Widget addComponentTool;
   final Widget inspectorTool;
   final Widget placementTool;
   final Widget safetyEvidenceTool;
@@ -802,6 +893,8 @@ class _WorkbenchToolRail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const _WorkbenchSectionHeader(label: 'Panels'),
+              const SizedBox(height: _kWorkbenchToolTileGap),
+              addComponentTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
               inspectorTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -1223,6 +1316,161 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
               ),
               onPressed: onRestore,
               child: const Text('Show controls'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AddComponentTemplateListPanel extends StatelessWidget {
+  const _AddComponentTemplateListPanel({
+    required this.entries,
+    required this.selectedTemplateId,
+    required this.onTemplateSelected,
+    this.initiallyExpanded = true,
+  });
+
+  final List<_AddComponentTemplateDefinition> entries;
+  final String? selectedTemplateId;
+  final ValueChanged<String> onTemplateSelected;
+  final bool initiallyExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: ExpansionTile(
+        key: const Key('board_canvas_add_component_template_list'),
+        initiallyExpanded: initiallyExpanded,
+        maintainState: true,
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        minTileHeight: _kCompactControlTileHeight,
+        tilePadding: _kCompactControlTilePadding,
+        childrenPadding: _kCompactControlChildrenPadding,
+        title: const _CompactDisclosureTitle(
+          label: 'Add Component',
+          detail: 'Starter rectangular template families',
+        ),
+        children: entries
+            .map(
+              (entry) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _AddComponentTemplateListTile(
+                  entry: entry,
+                  selected: selectedTemplateId == entry.id,
+                  onTap: () => onTemplateSelected(entry.id),
+                ),
+              ),
+            )
+            .toList(growable: false),
+      ),
+    );
+  }
+}
+
+class _AddComponentTemplateListTile extends StatelessWidget {
+  const _AddComponentTemplateListTile({
+    required this.entry,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final _AddComponentTemplateDefinition entry;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseColor = selected
+        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.30)
+        : theme.colorScheme.surface;
+    final borderColor =
+        selected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant;
+
+    return InkWell(
+      key: Key('board_canvas_add_component_template_${entry.id}'),
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: baseColor,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: borderColor),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              selected
+                  ? Icons.check_circle_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              color: selected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.templateFamily,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      if (selected)
+                        Icon(
+                          Icons.label_important,
+                          size: 16,
+                          key: Key(
+                            'board_canvas_add_component_template_${entry.id}_selected',
+                          ),
+                          color: theme.colorScheme.onPrimaryContainer,
+                          semanticLabel: 'selected',
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'template family',
+                    style: theme.textTheme.labelSmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'visual contacts: ${entry.contactMarkerSummary}',
+                    maxLines: 2,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    entry.example,
+                    maxLines: 2,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

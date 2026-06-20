@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
 
 ## Next recommended pass
 
@@ -41,5 +41,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `f832ee4` (`docs: activate workbench measurement overlay implementation lock`) | Docs-only implementation lock activation that recorded the pushed post-audit closeout and opened `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` with a narrow Board Canvas runtime/test allowlist only. |
 | V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`) | Narrow read-only Workbench measurement overlay implementation: existing projected `MeasurementFact` value+unit, explicit component association, existing `board_normalized` anchors, selected-component toggle, global Show All / Hide All, deterministic stacked badges, defensive stale/suspect/invalid UI treatment, volatile UI-only state, no persistence, Measure Sheet unchanged, Add Component deferred. |
 | V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `300d2c2` (`docs: record workbench measurement overlay impl post-audit`) | Records Claude Code implementation audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, validation evidence, accepted pushed implementation commit, and route to manual smoke. |
-| V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | current docs-only manual smoke record | Records user-provided manual visual smoke `PASS_WITH_NIT` with non-blocking Project Overview Add Component nit; routes next to `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | completed docs-only manual smoke record | Records user-provided manual visual smoke `PASS_WITH_NIT` with non-blocking Project Overview Add Component nit; route returned to `NEEDS_USER_DECISION`. |
+| V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS | CODEX / DOCS_DESIGN_INPUT_CAPTURE | current docs-only gap capture | Captures Add Component Footprint Builder HTML/CSS as `DESIGN_INPUT_ONLY`; runtime `NOT_ACCEPTED`; architecture `NOT_ACCEPTED`; canonical semantics `NONE`; route effect `GAP_CAPTURE_ONLY`; next route `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

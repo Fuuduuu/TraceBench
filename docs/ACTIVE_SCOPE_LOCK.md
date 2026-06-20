@@ -2,23 +2,35 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
 
 ## Type
 
-CODEX / DOCS_MANUAL_QA_RECORD
+CODEX / DOCS_DESIGN_INPUT_CAPTURE
 
 ## Goal
 
-Record user-provided manual visual smoke evidence for the accepted read-only Workbench measurement overlay implementation and route onward.
+Capture the Add Component Footprint Builder design artifacts as design-input-only / gap evidence without accepting runtime behavior, architecture, canonical semantics, writer payloads, or implementation routing.
 
 ## Baseline
 
-- Accepted implementation commit: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- Previous closeout route: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS` accepted/pushed as `300d2c2` (`docs: record workbench measurement overlay impl post-audit`).
-- Claude Code implementation audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
-- Current route: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current route before this decision track: `NEEDS_USER_DECISION`.
+- Measurement overlay track is accepted and closed through manual smoke.
+- Accepted overlay implementation: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
+- Manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`, result `PASS_WITH_NIT`.
+- Add Component remains deferred/protected.
+- User-provided design input files:
+  - `_incoming/ui_redesign/Components/Add Component Footprint Builder - Design Review.html`
+  - `_incoming/ui_redesign/Components/builder.css`
+- GPT Pro review verdict: `READY_FOR_DOCS_CAPTURE`.
+
+## Status labels to record
+
+- `SOURCE_STATUS: DESIGN_INPUT_ONLY`
+- `RUNTIME_STATUS: NOT_ACCEPTED`
+- `ARCHITECTURE_STATUS: NOT_ACCEPTED`
+- `CANONICAL_SEMANTICS: NONE`
+- `ROUTE_EFFECT: GAP_CAPTURE_ONLY`
 
 ## Allowed files
 
@@ -26,49 +38,66 @@ Record user-provided manual visual smoke evidence for the accepted read-only Wor
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS.md`
+- `docs/WORK_INTAKE_INDEX.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS.md`
+
+## Reference-only files
+
+- `_incoming/ui_redesign/Components/Add Component Footprint Builder - Design Review.html`
+- `_incoming/ui_redesign/Components/builder.css`
+
+These files may be read as design input only. They must not be edited, staged, or treated as runtime source.
+
+## Capture scope
+
+Record the design direction only:
+
+- Add Component as future protected Workbench flow.
+- Geometry-first template/list direction.
+- Per-side visual contact builder: top/right/bottom/left.
+- Local ghost preview before Confirm.
+- Rotation intent remains local until separately scoped.
+- Confirm and Edit Layout are protected future writer tracks.
+- Board Canvas rail should be first entry point.
+- Project Overview entry should not be rewired yet.
+- Measure Sheet remains unchanged.
+
+## Pro review constraints
+
+- Do not accept the artifact's internal V4 pass ID as repo pass ID.
+- Do not treat HTML/CSS as runtime source.
+- Do not update `PROJECT_MEMORY.md` as accepted architecture yet.
+- Do not accept canonical footprint/pin/pad semantics.
+- Do not accept Confirm payload.
+- Do not proceed directly to implementation.
+
+## Open product decisions
+
+- visual-contact terminology;
+- rectangular-perimeter first model;
+- reduced starter taxonomy;
+- rotation scope;
+- board-side deferral;
+- designator policy;
+- Confirm payload boundary;
+- Edit Layout as separate protected future track.
 
 ## Forbidden files / surfaces
 
 - Runtime implementation files.
-- Widget or unit tests.
-- Schema, writer, materializer, validator, projection, Project ZIP, event, fact, routing, or protected-surface semantics.
-- Measurement authoring/value/unit/Save paths.
-- Canonical visibility events or persisted overlay visibility state.
-- Add Component implementation or activation.
+- Widget, unit, integration, or golden tests.
+- `_incoming` design artifact edits.
+- `docs/PROJECT_MEMORY.md` accepted architecture updates.
+- Schema, writer, materializer, validator, projection, Project ZIP, event, fact, or canonical routing semantics.
+- Canonical footprint, pin, pad, contact, net, measurement, board-side, rotation, designator, or Confirm payload semantics.
+- Project Overview rewiring.
+- Measure Sheet changes.
+- Direct implementation route selection.
 
-## Manual smoke evidence to record
+## Route
 
-Result: `PASS_WITH_NIT`.
-
-Observed evidence:
-
-- Board Canvas opens.
-- Measurement overlay control is visible.
-- Global Show All / Hide All works visually.
-- Measurement badge appears near the component.
-- Badge displays one value + unit: `0.1 ohm`.
-- Selected component inspector opens/updates.
-- `renderer writes: none` remains visible.
-- Measure Sheet remains available.
-- Board Canvas overlay flow does not activate Add Component.
-- Add Component remains deferred for Board Canvas / overlay work.
-
-Nit:
-
-- Project Overview still shows an existing Add Component action.
-- This is non-blocking because this overlay pass did not implement or activate Add Component inside Board Canvas / Workbench overlay flow.
-- Add Component remains a separate protected future track.
-
-## Boundary confirmations
-
-- Read-only overlay remains accepted.
-- `renderer writes: none` remains preserved.
-- Measure Sheet remains unchanged.
-- No value/unit/Save/authoring was introduced.
-- No canonical visibility events were introduced.
-- Add Component remains deferred.
-- No schema/writer/materializer/validator/projection/Project ZIP/event/fact changes are allowed in this pass.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 
@@ -84,4 +113,4 @@ py -3 tools\validate_all.py
 
 ## Stop conditions
 
-Stop and report if any runtime/code/test/protected-surface change is required or if manual smoke recording cannot remain docs-only.
+Stop and report if capture requires runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, Project Overview rewiring, Measure Sheet, `_incoming`, or accepted-architecture changes.

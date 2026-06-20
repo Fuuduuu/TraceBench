@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
 
 ## Repository handoff
 
@@ -14,7 +14,9 @@
 - Branch: `main`
 - Latest accepted docs-hygiene baseline pass: `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS` at `94a1143` (`docs: refresh workbench architecture reference`).
 - Latest accepted measurement-overlay governance baseline: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS` at `f1226d4` (`docs: record workbench measurement overlay scope-lock post-audit`).
-- Current pass purpose: implement the narrow read-only Workbench measurement overlay from existing projected measurements, inside the implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
+- Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
+- Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
+- Current pass purpose: record the accepted/pushed read-only measurement overlay implementation and route to focused manual smoke.
 
 ## Accepted docs-hygiene baseline
 
@@ -41,12 +43,20 @@ The current docs-hygiene sequence is accepted through:
 - Empty-canvas tap may only clear local UI selection/panel state.
 - Board Canvas renderer is read-only, with `renderer writes: none`.
 - `Known-facts`/legacy visual evidence and metadata remain read-only as currently scoped.
+- Optional measurement value overlay badges are available on Board Canvas:
+  - existing projected `MeasurementFact` value + unit only;
+  - existing explicit component association only;
+  - existing `board_normalized` component visual anchors only;
+  - selected-component visibility toggle and global Show All / Hide All;
+  - deterministic stacked badges for multiple measurements;
+  - stale/suspect/invalid readings marked as non-authoritative UI metadata;
+  - volatile UI-only state with no persistence or canonical visibility events.
 
 ## Not accepted in this route
 
 - No inline value/unit/Save write-flow is accepted in this route.
 - No writer/materializer/validator, schema, tools, sample, generated, platform, dependency, Project ZIP, app routing, or `_incoming` behavior changes.
-- Runtime/test changes are limited to the focused Board Canvas implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
+- Runtime/test changes for the overlay implementation are accepted/pushed at `e1f78ed`; this closeout pass is docs-only.
 - No event authoring, no projection persistence, no overlay persistence, and no Add Component work.
 - `renderer writes: none` remains.
 - Measure Sheet remains unchanged as existing recording/write fallback.
@@ -67,15 +77,13 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is the narrow Workbench / Board Canvas implementation pass for optional read-only measurement overlay badges.
-- Allowed runtime/test surfaces are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
+- This pass is docs-only post-audit closeout for the accepted/pushed read-only measurement overlay implementation.
+- Allowed route docs are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
 - Measure Sheet and Add Component are explicitly deferred and preserved unchanged.
 
 ## Validation baseline
 
 - `git diff --check`
-- `dart format <changed dart files>`
-- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 
 ## Pointers

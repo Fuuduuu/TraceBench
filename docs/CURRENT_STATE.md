@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: close out accepted Add Component Workbench scope-lock with independent post-audit acceptance.
+- Current pass purpose: docs-only scope-lock for the first Add Component UI slice (template-list entry mode).
 
 ## Accepted docs-hygiene baseline
 
@@ -58,7 +58,7 @@ The current docs-hygiene sequence is accepted through:
 - No inline value/unit/Save write-flow is accepted in this route.
 - No writer/materializer/validator, schema, tools, sample, generated, platform, dependency, Project ZIP, app routing, or `_incoming` behavior changes.
 - Add Component Footprint Builder HTML/CSS artifacts are design input only and are not accepted runtime source, architecture, or canonical semantics.
-- Runtime and test changes for Add Component are not accepted in this scope lock.
+- Runtime and test changes for first Add Component UI slice are not accepted in this scope lock.
 - No event authoring, no projection persistence, no overlay persistence, and no Add Component runtime/write-flow work.
 - `renderer writes: none` remains.
 - Measure Sheet remains unchanged as existing recording/write fallback.
@@ -79,19 +79,21 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only post-audit closeout for the Add Component Workbench scope-lock.
-- Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
-- Runtime status: `NOT_ACCEPTED`.
-- Architecture status: `NOT_ACCEPTED`.
-- Canonical semantics: `NONE`.
-- Route effect: `FLOW_SCOPE_LOCK`.
-- Entry point is fixed to Board Canvas rail; Project Overview deep-link stays deferred.
-- Initial scope is rectangular-perimeter visual contact layout, first on `top/right/bottom/left` perimeter count model.
-- Local visual-contact template/builder/ghost/rotation draft remains UI-only until separately scoped.
-- Confirm payload is unresolved and deferred.
-- Interaction mode rule: Add Component placement/ghost mode and measurement-overlay controls remain mutually exclusive or must disarm before switch.
-- Edit Layout remains a separate protected future track.
-- Add Component runtime write-flow remains deferred; Measure Sheet and overlay writer semantics remain unchanged.
+- This pass is a docs-only scope-lock for the first Add Component UI slice.
+- Source status remains `DESIGN_INPUT_ONLY` for existing design evidence.
+- Runtime status remains `NOT_ACCEPTED`.
+- Architecture status remains `NOT_ACCEPTED`.
+- Canonical semantics remain `NONE`.
+- Route effect is `UI_SCOPE_LOCK`.
+- Board Canvas rail Add Component entry opens a right contextual panel in template-list mode.
+- Template-list state and selection are local UI-only and volatile.
+- Geometry-first reduced starter taxonomy remains the accepted visual-contact direction.
+- Vocabulary is `visual contact`, `contact marker`, `template family`; canonical pin/pad/electrical wording is deferred.
+- Scope is rectangular-perimeter visual contacts with side intent (`top`, `right`, `bottom`, `left`) only.
+- Template selection sets local panel selection only; no ghost placement, builder, rotation draft, or Confirm in this slice.
+- Add Component deep-link from Project Overview remains deferred.
+- Edit Layout remains a protected future slice.
+- Measure Sheet and overlay runtime behavior remain unchanged.
 
 ## Product-boundary decisions scope-locked
 

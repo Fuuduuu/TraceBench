@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`
 
 ## Type
 
@@ -10,7 +10,7 @@ CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Close out the Add Component Workbench interaction scope lock as an accepted docs-only audit step before implementation planning.
+Lock the first Add Component UI-only slice for a template-list entry mode while preserving the protected runtime boundary.
 
 ## Baseline
 
@@ -29,7 +29,7 @@ Close out the Add Component Workbench interaction scope lock as an accepted docs
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: FLOW_SCOPE_LOCK`
+- `ROUTE_EFFECT: UI_SCOPE_LOCK`
 
 ## Allowed files
 
@@ -39,7 +39,7 @@ Close out the Add Component Workbench interaction scope lock as an accepted docs
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS.md`
 
 ## Reference-only files
 
@@ -50,17 +50,19 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-Lock the Add Component interaction surface with deferred runtime semantics:
+Lock the first Add Component runtime-toplevel UI slice:
 
-- Entry point: `Board Canvas` rail first; Project Overview Add Component deep-link remains deferred.
-- First geometry model: rectangular-perimeter visual contact layout; side intent `top`, `right`, `bottom`, `left`.
-- Terminology: `visual contact`, `contact marker`, `template family` only; avoid canonical pin/pad/electrical-identity wording.
-- Starter taxonomy: geometry-first reduced set.
-- Rotation: `90`-degree steps in phase one; arbitrary `0-360` rotation deferred.
-- Interaction conflict: Add Component ghost/placement mode and measurement-overlay controls remain mutually exclusive or explicitly disarmed on switch.
-- Template list, builder, ghost, and rotation draft are local/UI-only for this scope.
-- Confirm payload boundary unresolved and remains deferred.
-- Edit Layout is a separate protected future track.
+- Entry point: `Board Canvas` rail Add Component action only.
+- Right-side contextual panel opens directly in template-list mode.
+- Template list, per-template contact-marker rendering previews, and template selection are UI-only local state.
+- Selection updates are local-only and remain volatile.
+- No runtime/template placement builder, ghost placement mode, rotation draft, or placement confirmation in this pass.
+- Geometry model stays rectangular-perimeter visual-contact only, side-wise (`top` / `right` / `bottom` / `left`) intent, and geometry-first reduced starter taxonomy.
+- Terminology remains `visual contact`, `contact marker`, `template family`; no canonical pin/pad/electrical identity wording.
+- Interaction conflict: this slice must not alter Add Component placement/ghost runtime flow and is local panel-only.
+- Confirm payload remains unresolved and deferred.
+- Project Overview Add Component deep-link remains deferred.
+- Edit Layout stays a separate protected future track.
 
 ## Pro review constraints
 
@@ -96,8 +98,8 @@ Lock the Add Component interaction surface with deferred runtime semantics:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS`.
 
 ## Required validation
 

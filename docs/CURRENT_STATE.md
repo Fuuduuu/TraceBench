@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: lock the Add Component Workbench interaction scope after product-boundary decisions and before runtime/implementation work.
+- Current pass purpose: close out accepted Add Component Workbench scope-lock with independent post-audit acceptance.
 
 ## Accepted docs-hygiene baseline
 
@@ -79,7 +79,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only scope-lock for the Add Component Workbench flow before any runtime implementation.
+- This pass is a docs-only post-audit closeout for the Add Component Workbench scope-lock.
 - Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
 - Runtime status: `NOT_ACCEPTED`.
 - Architecture status: `NOT_ACCEPTED`.

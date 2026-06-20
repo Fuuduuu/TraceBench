@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Type
 
@@ -10,7 +10,7 @@ CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Lock the Add Component Workbench interaction scope before runtime implementation planning.
+Close out the Add Component Workbench interaction scope lock as an accepted docs-only audit step before implementation planning.
 
 ## Baseline
 
@@ -39,6 +39,7 @@ Lock the Add Component Workbench interaction scope before runtime implementation
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS.md`
 
 ## Reference-only files
 
@@ -95,8 +96,8 @@ Lock the Add Component interaction surface with deferred runtime semantics:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

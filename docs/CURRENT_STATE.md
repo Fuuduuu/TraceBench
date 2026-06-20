@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only implementation-lock activation for the first Add Component template-list UI slice, moving from accepted scope-lock to runtime-anchored implementation path.
+- Current pass purpose: docs-only post-audit closeout for the first Add Component template-list implementation.
 
 ## Accepted docs-hygiene baseline
 
@@ -55,13 +55,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No inline value/unit/Save write-flow is accepted in this route.
-- No writer/materializer/validator, schema, tools, sample, generated, platform, dependency, Project ZIP, app routing, or `_incoming` behavior changes.
-- Add Component Footprint Builder HTML/CSS artifacts are design input only and are not accepted runtime source, architecture, or canonical semantics.
-- Runtime and test changes for first Add Component UI slice are not accepted in this scope lock.
-- No event authoring, no projection persistence, no overlay persistence, and no Add Component runtime/write-flow work.
-- `renderer writes: none` remains.
-- Measure Sheet remains unchanged as existing recording/write fallback.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only closeout pass.
+- Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
+- `renderer writes: none` is preserved from prior accepted behavior.
+- Measure Sheet remains unchanged.
 - Scope-lock pass is accepted as `8544a4b` (`docs: lock workbench measurement overlay scope`) with independent post-audit closeout pushed at `f1226d4`; no runtime or protected-surface edits were made in the post-audit bookkeeping.
 
 ## Canonical owners
@@ -79,24 +76,27 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only implementation-lock activation for the first Add Component UI slice.
+- This pass is a docs-only implementation closeout for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
 - Source status remains `DESIGN_INPUT_ONLY` for existing design evidence.
-- Runtime status remains `NOT_ACCEPTED` for this docs-only pass (implementation happens in the next pass).
+- Runtime status is `ACCEPTED` for this slice.
 - Architecture status remains `NOT_ACCEPTED`.
 - Canonical semantics remain `NONE`.
-- Route effect is `IMPLEMENTATION_LOCK`.
+- Route effect is `IMPLEMENTATION_POST_AUDIT`.
 - Board Canvas rail Add Component entry opens a right contextual panel in template-list mode.
-- Runtime/test allowlist opens to:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- Template-list scope remains local and volatile in this stage.
-- Geometry-first reduced starter taxonomy remains the accepted visual-contact direction.
+- Template list remains UI-only and local.
+- Selection is local volatile widget state only.
+- Runtime/test allowlist used during implementation was:
+   - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+   - `test/widget/board_canvas_screen_test.dart`
+- Geometry-first reduced starter taxonomy remains the accepted direction.
+- Rectangular-perimeter visual-contact templates and side intent (`top`, `right`, `bottom`, `left`) remain.
 - Vocabulary remains `visual contact`, `contact marker`, `template family`; canonical pin/pad/electrical wording is deferred.
 - Scope is rectangular-perimeter visual contacts with side intent (`top`, `right`, `bottom`, `left`) only.
-- Template selection may set local panel selection only; this stage must not mutate project-level routing or runtime write-path semantics.
+- Template selection stays local and in-memory only.
+- This phase preserves inspector/placements/safety behavior and measurement overlay behavior.
 - Add Component deep-link from Project Overview remains deferred.
 - Edit Layout remains a protected future slice.
-- Measure Sheet and overlay runtime behavior remain unchanged.
+- Measure Sheet, project routing, and protected writer/surface semantics remain unchanged.
 
 ## Product-boundary decisions scope-locked
 

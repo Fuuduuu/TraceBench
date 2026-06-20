@@ -2,22 +2,22 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_SCOPE_LOCK
+CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
 
 ## Goal
 
-Activate the implementation lock for the accepted first Add Component template-list UI slice and define the narrow runtime/test allowlist.
+Record docs-only post-audit closeout for the first Add Component template-list implementation.
 
 ## Baseline
 
-- Current route before this lock: `NEEDS_USER_DECISION`.
+- Current route before this closeout: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`.
 - Measurement overlay track is accepted and closed through manual smoke.
 - Add Component template-list scope-lock is accepted/pushed as `be752e1` (`docs: record add component template-list scope-lock post-audit`).
-- Add Component remains deferred outside this implementation slice.
+- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` is accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - Add Component product-boundary decisions were captured in:
   - `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
   - `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
@@ -28,8 +28,8 @@ Activate the implementation lock for the accepted first Add Component template-l
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: IMPLEMENTATION_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`
+- `ROUTE_EFFECT: IMPLEMENTATION_POST_AUDIT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 
 ## Allowed files
 
@@ -41,6 +41,7 @@ Activate the implementation lock for the accepted first Add Component template-l
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_PASS.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_SCOPE_LOCK_POST_AUDIT_PASS.md`
 - `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS.md`
 
 ## Reference-only files
 
@@ -51,7 +52,7 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-Activate the first Add Component runtime-toplevel UI slice for implementation pass:
+Post-audit confirmation applies to the already implemented first Add Component runtime slice:
 
 - Entry point: `Board Canvas` rail Add Component action only.
 - Right-side contextual panel opens directly in template-list mode.
@@ -104,8 +105,8 @@ Activate the first Add Component runtime-toplevel UI slice for implementation pa
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

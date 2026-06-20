@@ -2,24 +2,25 @@
 
 ## Current pass
 
-`TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS`
 
 ## Type
 
-`CODEX / DOCS_HYGIENE`
+`CODEX / DOCS_SCOPE_LOCK`
 
 ## Lane
 
-Docs-only architecture-reference refresh for accepted Workbench model documentation.
+Docs-only protected-projection scope lock for read-only Workbench measurement badge overlay direction.
 
 ## Current goal
 
-Refresh the canonical Workbench architecture reference and keep route/provenance docs aligned to the accepted 3-zone read-only Workbench model with explicit read-only/future boundaries.
+Lock a narrow, projection-only Workbench measurement overlay implementation direction and keep route/provenance docs aligned while preserving no-write runtime boundaries.
 
 ## Baseline
 
-- `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` runtime behavior is accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) with `renderer writes: none`.
 - `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_POST_AUDIT_PASS` is accepted/pushed as `467d5fe` (`docs: record workbench rail button polish impl post-audit`).
+- `V2_WORKBENCH_RAIL_BUTTON_POLISH_IMPL_PASS` is accepted/pushed as `349b0e9` (`feat(board-canvas): convert workbench rail to panel-mode buttons`) and retains `renderer writes: none`.
+- `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS` is accepted/pushed as `94a1143` (`docs: refresh workbench architecture reference`).
 - `TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS` is accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`).
 - `TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` is accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`).
 - `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` is accepted/pushed as `c70e23f` (`docs: archive completed pass-queue history`).
@@ -33,9 +34,7 @@ Refresh the canonical Workbench architecture reference and keep route/provenance
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/CURRENT_STATE_HISTORY_TRIM_PASS.md`
-- `docs/audit/TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS.md`
-- `docs/PROJECT_MEMORY.md`
+- `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS.md`
 
 ## Conditional scope
 
@@ -46,17 +45,18 @@ Neither conditional file is expected for this pass.
 
 ## Current route lock
 
-Current pass: `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`
-Next: `NEEDS_USER_DECISION`
+Current pass: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS`
+Next: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Current scope summary
 
 - This pass is docs-only and intentionally does not change runtime code, tests, tools, schemas, samples, generated artifacts, platform files, dependencies, or `_incoming` assets.
-- Keep `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` aligned with the current accepted Workbench architecture reference and route state.
+- Keep `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` aligned with the projection-only overlay direction and route state.
 - Preserve the accepted Workbench / Board Canvas read-only runtime baseline.
-- Preserve `docs/AUDIT_INDEX.md` as audit provenance and `docs/PASS_QUEUE_ARCHIVE.md` as completed queue history.
-- Do not change product semantics, protected-surface semantics, model-routing semantics, prompt semantics, or canonical invariant meaning.
-- Keep architecture reference ownership in `docs/PROJECT_MEMORY.md` aligned with this pass.
+- Preserve `docs/AUDIT_INDEX.md` as audit provenance.
+- No runtime, protected-surface, model-routing, prompt, or canonical invariant semantic changes.
+- Keep runtime measurement overlay direction read-only by default with deterministic, projection-only behavior and explicit `multi_measurement` handling.
+- Explicitly defer both inline value/unit entry and Add Component flows.
 
 ## Baseline / owner mapping
 
@@ -82,6 +82,8 @@ Next: `NEEDS_USER_DECISION`
 - Board Canvas and all runtime behavior remain read-only.
 - `renderer writes: none` remains present in accepted behavior context.
 - No inline Workbench value/unit/Save or write-flow integration is accepted by this pass.
+- No `events.jsonl`, `known_facts.json`, schema, materializer, validator, or writer service/project-ZIP changes.
+- No Add Component work is accepted in this scope.
 - No `_incoming/` assets are treated as accepted runtime behavior.
 - Codex writes scoped docs/code inside the active lock, Claude Code is the final repo-local audit gate before staging/commit/push unless repo convention explicitly says otherwise, and the user manually stages/commits/pushes with exact staging sets.
 - No broad staging (`git add .` / `git add -A`) is allowed.

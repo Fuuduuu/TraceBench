@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -37,5 +37,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | CURRENT_STATE_HISTORY_TRIM_PASS | CODEX / DOCS_HYGIENE | accepted/pushed as `4af4ac6` (`docs: trim current-state into operational handoff`) | Current docs-only trim pass accepted/pushed; route to `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`. |
 | TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS | DOCS_HYGIENE / WORKFLOW | accepted/pushed as `94a1143` (`docs: refresh workbench architecture reference`) | Workbench architecture diagram and reference refresh documenting current accepted 3-zone read-only Workbench model, inert future tools, and protected future write-flow boundaries. |
 | V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `8544a4b` (`docs: lock workbench measurement overlay scope`) | Narrow read-only Workbench measurement overlay scope lock. Existing projected measurements only, read-through badge overlay projection, selected-component visibility controls, and no runtime/event/schema/validator/materializer/projection/Project ZIP/write-flow edits. Route points to `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`. |
-| V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS | CODEX / DOCS_SCOPE_LOCK | docs-only current post-audit closeout | Records independent audit acceptance (`ACCEPT_AS_IS`) and routes implementation to `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` as a separate allowed pass. |
+| V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `f1226d4` (`docs: record workbench measurement overlay scope-lock post-audit`) | Docs-only post-audit closeout; recorded independent audit acceptance (`ACCEPT_AS_IS`) and no runtime/test/protected-surface changes. |
+| V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | drafted / pending independent audit | Docs-only implementation lock activation that records the pushed post-audit closeout and opens `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` with a narrow Board Canvas runtime/test allowlist only. |
+| V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS | CODEX / FLUTTER_PASS | current implementation route locked | Narrow read-only Workbench measurement overlay implementation: existing projected measurements, explicit component association, existing `board_normalized` anchors, volatile UI-only visibility, no persistence, Measure Sheet unchanged, Add Component deferred. |
+| V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY | next required audit route | Independent repo-local implementation post-audit before any staging/commit/push. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

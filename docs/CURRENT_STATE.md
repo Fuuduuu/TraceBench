@@ -2,18 +2,19 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
 - Latest accepted docs-hygiene baseline pass: `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS` at `94a1143` (`docs: refresh workbench architecture reference`).
-- Current pass purpose: lock the projection-only Workbench measurement overlay direction with read-only runtime assumptions and explicit route/provenance alignment.
+- Latest accepted measurement-overlay governance baseline: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS` at `f1226d4` (`docs: record workbench measurement overlay scope-lock post-audit`).
+- Current pass purpose: implement the narrow read-only Workbench measurement overlay from existing projected measurements, inside the implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
 
 ## Accepted docs-hygiene baseline
 
@@ -44,11 +45,12 @@ The current docs-hygiene sequence is accepted through:
 ## Not accepted in this route
 
 - No inline value/unit/Save write-flow is accepted in this route.
-- No runtime/model/runtime, writer/materializer/validator, schema, tests, tools, sample, generated, platform, or `_incoming` behavior changes.
+- No writer/materializer/validator, schema, tools, sample, generated, platform, dependency, Project ZIP, app routing, or `_incoming` behavior changes.
+- Runtime/test changes are limited to the focused Board Canvas implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
 - No event authoring, no projection persistence, no overlay persistence, and no Add Component work.
 - `renderer writes: none` remains.
 - Measure Sheet remains unchanged as existing recording/write fallback.
-- Scope-lock pass is accepted as `8544a4b` (`docs: lock workbench measurement overlay scope`) with independent post-audit `ACCEPT_AS_IS`; no runtime or protected-surface edits were required in this post-audit bookkeeping.
+- Scope-lock pass is accepted as `8544a4b` (`docs: lock workbench measurement overlay scope`) with independent post-audit closeout pushed at `f1226d4`; no runtime or protected-surface edits were made in the post-audit bookkeeping.
 
 ## Canonical owners
 
@@ -65,13 +67,15 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is docs-only post-audit documentation and routing update.
-- Allowed route docs are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
+- This pass is the narrow Workbench / Board Canvas implementation pass for optional read-only measurement overlay badges.
+- Allowed runtime/test surfaces are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
 - Measure Sheet and Add Component are explicitly deferred and preserved unchanged.
 
 ## Validation baseline
 
 - `git diff --check`
+- `dart format <changed dart files>`
+- `flutter test test/widget/board_canvas_screen_test.dart`
 - `py -3 tools/validate_all.py`
 
 ## Pointers

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: decide and record Add Component Workbench product-boundary decisions before flow locking.
+- Current pass purpose: lock the Add Component Workbench interaction scope after product-boundary decisions and before runtime/implementation work.
 
 ## Accepted docs-hygiene baseline
 
@@ -58,7 +58,7 @@ The current docs-hygiene sequence is accepted through:
 - No inline value/unit/Save write-flow is accepted in this route.
 - No writer/materializer/validator, schema, tools, sample, generated, platform, dependency, Project ZIP, app routing, or `_incoming` behavior changes.
 - Add Component Footprint Builder HTML/CSS artifacts are design input only and are not accepted runtime source, architecture, or canonical semantics.
-- Runtime/test changes for the overlay implementation are accepted/pushed at `e1f78ed`; the manual smoke record is docs-only; this design-input capture is docs-only.
+- Runtime and test changes for Add Component are not accepted in this scope lock.
 - No event authoring, no projection persistence, no overlay persistence, and no Add Component runtime/write-flow work.
 - `renderer writes: none` remains.
 - Measure Sheet remains unchanged as existing recording/write fallback.
@@ -79,26 +79,27 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is docs-only product-boundary decision capture for the Add Component Footprint Builder artifacts under `_incoming/ui_redesign/Components/`.
-- Source status: `DESIGN_INPUT_ONLY`.
+- This pass is a docs-only scope-lock for the Add Component Workbench flow before any runtime implementation.
+- Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
 - Runtime status: `NOT_ACCEPTED`.
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `PRODUCT_BOUNDARY_DECISION`.
-- Confirm boundary: payload remains unresolved in this pass.
-- Allowed route docs are defined in `docs/ACTIVE_SCOPE_LOCK.md`.
-- Measure Sheet remains unchanged; Add Component remains deferred/protected pending a future dedicated scope lock.
+- Route effect: `FLOW_SCOPE_LOCK`.
+- Entry point is fixed to Board Canvas rail; Project Overview deep-link stays deferred.
+- Initial scope is rectangular-perimeter visual contact layout, first on `top/right/bottom/left` perimeter count model.
+- Local visual-contact template/builder/ghost/rotation draft remains UI-only until separately scoped.
+- Confirm payload is unresolved and deferred.
+- Interaction mode rule: Add Component placement/ghost mode and measurement-overlay controls remain mutually exclusive or must disarm before switch.
+- Edit Layout remains a separate protected future track.
+- Add Component runtime write-flow remains deferred; Measure Sheet and overlay writer semantics remain unchanged.
 
-## Product-boundary decisions recorded
+## Product-boundary decisions scope-locked
 
-- Terminology: `visual contact`, `contact marker`, `template family`; avoid canonical pin/pad/electrical-identity wording.
-- First geometry model: rectangular-perimeter visual contact layout first; top/right/bottom/left count model; symbolic visual layout only.
-- Starter taxonomy: geometry-first reduced set; no electrical identity-first catalog as first scope.
-- Entry point: Board Canvas rail first; Project Overview Add Component deep-link deferred.
-- Rotation: `90`-degree steps first; arbitrary `0-360` rotation deferred.
-- Interaction conflict: Add Component ghost/placement mode and measurement overlay controls are mutually exclusive or must be explicitly disarmed before switching.
-- Confirm boundary: Confirm payload unresolved; no canonical write accepted for pins/pads/nets/traces/probes; schema/writer/materializer/projection/event/fact/route decisions deferred.
-- Edit Layout remains a separate protected future track and is not part of initial Add Component UI scope.
+- Visual-contact vocabulary is locked: `visual contact`, `contact marker`, `template family`; avoid canonical pin/pad/electrical-identity wording.
+- Rotation is limited to `90`-degree steps; arbitrary `0-360` rotation is deferred.
+- Starter taxonomy remains geometry-first reduced set.
+- Template list/builder/ghost/rotation draft and overlay interaction conflict handling remain local/UI-only.
+- Confirm payload remains unresolved; schema/writer/materializer/validator/projection/event/fact/Project ZIP semantics stay deferred to protected future scopes.
 ## Validation baseline
 
 - `git diff --check`

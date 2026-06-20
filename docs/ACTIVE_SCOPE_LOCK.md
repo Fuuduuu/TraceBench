@@ -2,23 +2,26 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`
 
 ## Type
 
-CODEX / DOCS_PRODUCT_BOUNDARY_DECISION
+CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Record product-boundary decisions for Add Component Workbench flow and explicit deferred semantics before flow scope-locking.
+Lock the Add Component Workbench interaction scope before runtime implementation planning.
 
 ## Baseline
 
-- Current route before this decision track: `NEEDS_USER_DECISION`.
+- Current route before this lock: `NEEDS_USER_DECISION`.
 - Measurement overlay track is accepted and closed through manual smoke.
 - Accepted overlay implementation: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- Measurement overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`, result `PASS_WITH_NIT`.
+- Measurement overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` (`PASS_WITH_NIT`).
 - Add Component remains deferred/protected.
+- Add Component product-boundary decisions were captured in:
+  - `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
+  - `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
 - User-provided design input files:
   - `_incoming/ui_redesign/Components/Add Component Footprint Builder - Design Review.html`
   - `_incoming/ui_redesign/Components/builder.css`
@@ -26,11 +29,7 @@ Record product-boundary decisions for Add Component Workbench flow and explicit 
 
 ## Status labels to record
 
-- `SOURCE_STATUS: DESIGN_INPUT_ONLY`
-- `RUNTIME_STATUS: NOT_ACCEPTED`
-- `ARCHITECTURE_STATUS: NOT_ACCEPTED`
-- `CANONICAL_SEMANTICS: NONE`
-- `ROUTE_EFFECT: PRODUCT_BOUNDARY_DECISION`
+- `ROUTE_EFFECT: FLOW_SCOPE_LOCK`
 
 ## Allowed files
 
@@ -39,7 +38,7 @@ Record product-boundary decisions for Add Component Workbench flow and explicit 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS.md`
 
 ## Reference-only files
 
@@ -50,32 +49,32 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-Record additive boundary decisions only:
+Lock the Add Component interaction surface with deferred runtime semantics:
 
-- Terminology: `visual contact`, `contact marker`, `template family`; avoid canonical pin/pad/electrical-identity wording.
-- First geometry model: rectangular-perimeter visual contacts, top/right/bottom/left side intent; symbolic visual layout only.
+- Entry point: `Board Canvas` rail first; Project Overview Add Component deep-link remains deferred.
+- First geometry model: rectangular-perimeter visual contact layout; side intent `top`, `right`, `bottom`, `left`.
+- Terminology: `visual contact`, `contact marker`, `template family` only; avoid canonical pin/pad/electrical-identity wording.
 - Starter taxonomy: geometry-first reduced set.
-- Entry point: Board Canvas rail first; Project Overview Add Component deep-link deferred.
-- Rotation: `90`-degree steps in first scope; arbitrary `0-360` rotation deferred.
-- Interaction conflict: Add Component ghost/placement mode and measurement-overlay controls are mutually exclusive or explicitly disarmed on mode switch.
-- Confirm boundary: payload remains unresolved; no canonical write accepted in this pass.
-- Writer/schema/materializer/validator/projection/event/fact/Project ZIP/authored routing decisions remain deferred.
+- Rotation: `90`-degree steps in phase one; arbitrary `0-360` rotation deferred.
+- Interaction conflict: Add Component ghost/placement mode and measurement-overlay controls remain mutually exclusive or explicitly disarmed on switch.
+- Template list, builder, ghost, and rotation draft are local/UI-only for this scope.
+- Confirm payload boundary unresolved and remains deferred.
 - Edit Layout is a separate protected future track.
 
 ## Pro review constraints
 
 - Do not accept the artifact's internal V4 pass ID as repo pass ID.
 - Do not treat HTML/CSS as runtime source.
-- Do not update `PROJECT_MEMORY.md` as accepted architecture yet.
+- Do not update `PROJECT_MEMORY.md` as accepted architecture.
 - Do not accept canonical footprint/pin/pad/net/trace semantics.
 - Do not accept Confirm payload.
 - Do not proceed directly to implementation.
 
 ## Open product decisions
 
-- visual-contact terminology: set to `visual contact`, `contact marker`, `template family`.
-- rectangular-perimeter first model: selected for phase 1.
-- reduced starter taxonomy: selected for phase 1.
+- visual-contact terminology: locked.
+- rectangular-perimeter first model: selected.
+- reduced starter taxonomy: selected.
 - rotation scope: `90`-degree steps first.
 - board-side deferral: selected.
 - designator policy: deferred.
@@ -96,8 +95,8 @@ Record additive boundary decisions only:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_FLOW_SCOPE_LOCK_POST_AUDIT_PASS`.
 
 ## Required validation
 

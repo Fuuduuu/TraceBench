@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -16,7 +16,7 @@
 - Latest accepted measurement-overlay governance baseline: `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS` at `f1226d4` (`docs: record workbench measurement overlay scope-lock post-audit`).
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- Current pass purpose: record the accepted/pushed read-only measurement overlay implementation and route to focused manual smoke.
+- Current pass purpose: record user-provided manual visual smoke evidence for the accepted read-only measurement overlay implementation and route to `NEEDS_USER_DECISION`.
 
 ## Accepted docs-hygiene baseline
 
@@ -91,3 +91,12 @@ The current docs-hygiene sequence is accepted through:
 - Current pass / next route: `docs/PASS_QUEUE.md`
 - Active allowed/forbidden surfaces: `docs/ACTIVE_SCOPE_LOCK.md`
 - Audit provenance: `docs/AUDIT_INDEX.md`
+## Workbench measurement overlay manual smoke record
+
+- Pass: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
+- Manual smoke result: `PASS_WITH_NIT`.
+- Accepted implementation remains `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
+- Previous implementation post-audit closeout is accepted/pushed as `300d2c2` (`docs: record workbench measurement overlay impl post-audit`).
+- Evidence recorded from user screenshots/visual check: Board Canvas opens; measurement overlay control is visible; global Show All / Hide All works visually; a measurement badge appears near the component; the badge displays one value + unit (`0.1 ohm`); the selected component inspector opens/updates; `renderer writes: none` remains visible; Measure Sheet remains available; Board Canvas overlay flow does not activate Add Component; Add Component remains deferred for Board Canvas / overlay work.
+- Nit: Project Overview still shows an existing Add Component action. This is non-blocking because this overlay pass did not implement or activate Add Component inside Board Canvas / Workbench overlay flow. Add Component remains a separate protected future track.
+- Route after this manual smoke record: `NEEDS_USER_DECISION`.

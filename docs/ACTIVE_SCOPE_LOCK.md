@@ -2,79 +2,86 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
 
 ## Type
 
-`CODEX / DOCS_SYNC`
+CODEX / DOCS_MANUAL_QA_RECORD
 
-## Lane
+## Goal
 
-Docs-only implementation post-audit closeout for the accepted Workbench / Board Canvas read-only measurement overlay.
-
-## Current goal
-
-Record the accepted/pushed `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS`, capture Claude Code audit acceptance and validation evidence, preserve implementation boundaries, and route to a focused manual visual smoke/checkpoint.
+Record user-provided manual visual smoke evidence for the accepted read-only Workbench measurement overlay implementation and route onward.
 
 ## Baseline
 
-- `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` is accepted/pushed as `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
-- `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` is accepted/pushed as `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
-- `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_POST_AUDIT_PASS` is accepted/pushed as `f1226d4` (`docs: record workbench measurement overlay scope-lock post-audit`).
-- `V2_WORKBENCH_MEASUREMENT_OVERLAY_SCOPE_LOCK_PASS` is accepted/pushed as `8544a4b` (`docs: lock workbench measurement overlay scope`).
-- Claude Code implementation audit verdict: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
+- Accepted implementation commit: `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
+- Previous closeout route: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS` accepted/pushed as `300d2c2` (`docs: record workbench measurement overlay impl post-audit`).
+- Claude Code implementation audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
+- Current route: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
-## Allowed governance scope
+## Allowed files
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS.md`
 
-## Current route lock
+## Forbidden files / surfaces
 
-Current pass: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_POST_AUDIT_PASS`
-Next: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS`
+- Runtime implementation files.
+- Widget or unit tests.
+- Schema, writer, materializer, validator, projection, Project ZIP, event, fact, routing, or protected-surface semantics.
+- Measurement authoring/value/unit/Save paths.
+- Canonical visibility events or persisted overlay visibility state.
+- Add Component implementation or activation.
 
-## Current scope summary
+## Manual smoke evidence to record
 
-- This pass is docs-only and intentionally does not change runtime code, tests, tools, schemas, samples, generated artifacts, platform files, dependencies, app routing, or `_incoming` assets.
-- Record the accepted/pushed read-only measurement value overlay implementation.
-- Preserve the accepted Workbench / Board Canvas read-only runtime baseline.
-- Preserve `docs/AUDIT_INDEX.md` as audit provenance.
-- No runtime, protected-surface, model-routing, prompt, or canonical invariant semantic changes.
+Result: `PASS_WITH_NIT`.
 
-## Accepted implementation summary
+Observed evidence:
 
-- Read-only measurement value overlay on Workbench / Board Canvas.
-- Existing projected `MeasurementFact` value + unit only.
-- Existing explicit component association only.
-- Existing `board_normalized` component visual anchors only.
-- Selected-component toggle.
-- Global Show All / Hide All.
-- Deterministic stacked badges for multiple eligible measurements.
-- Defensive stale/suspect/invalid UI treatment.
-- Volatile UI-only visibility state.
-- No persistence and no canonical visibility events.
+- Board Canvas opens.
+- Measurement overlay control is visible.
+- Global Show All / Hide All works visually.
+- Measurement badge appears near the component.
+- Badge displays one value + unit: `0.1 ohm`.
+- Selected component inspector opens/updates.
+- `renderer writes: none` remains visible.
+- Measure Sheet remains available.
+- Board Canvas overlay flow does not activate Add Component.
+- Add Component remains deferred for Board Canvas / overlay work.
+
+Nit:
+
+- Project Overview still shows an existing Add Component action.
+- This is non-blocking because this overlay pass did not implement or activate Add Component inside Board Canvas / Workbench overlay flow.
+- Add Component remains a separate protected future track.
+
+## Boundary confirmations
+
+- Read-only overlay remains accepted.
+- `renderer writes: none` remains preserved.
+- Measure Sheet remains unchanged.
+- No value/unit/Save/authoring was introduced.
+- No canonical visibility events were introduced.
+- Add Component remains deferred.
+- No schema/writer/materializer/validator/projection/Project ZIP/event/fact changes are allowed in this pass.
 
 ## Required validation
 
-- `git status --short --branch`
-- `git log --oneline --decorate -10`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git diff --check`
-- `py -3 tools/validate_all.py`
+```powershell
+cd C:\Users\Kasutaja\Desktop\TraceBench
+git status --short --branch
+git log --oneline --decorate -10
+git diff --name-status
+git diff --cached --name-status
+git diff --check
+py -3 tools\validate_all.py
+```
 
-## Scope carry-forward
+## Stop conditions
 
-- Board Canvas remains read-only.
-- `renderer writes: none` remains present in accepted behavior context.
-- Measure Sheet remains unchanged.
-- Add Component remains deferred.
-- No inline Workbench value/unit/Save or write-flow integration is accepted by this pass.
-- No `events.jsonl`, `known_facts.json`, schema, materializer, validator, writer service, projection contract, or Project ZIP changes are accepted by this pass.
-- No `_incoming/` assets are treated as accepted runtime behavior.
-- Codex writes scoped docs inside the active lock, Claude Code is the final repo-local audit gate before staging/commit/push unless repo convention explicitly says otherwise, and the user manually stages/commits/pushes with exact staging sets.
-- No broad staging (`git add .` / `git add -A`) is allowed.
+Stop and report if any runtime/code/test/protected-surface change is required or if manual smoke recording cannot remain docs-only.

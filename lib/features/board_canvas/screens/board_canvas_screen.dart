@@ -1550,7 +1550,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 6),
         decoration: BoxDecoration(
           color: baseColor,
           borderRadius: BorderRadius.circular(8),
@@ -1566,9 +1566,9 @@ class _AddComponentTemplateListTile extends StatelessWidget {
               color: selected
                   ? theme.colorScheme.primary
                   : theme.colorScheme.onSurfaceVariant,
-              size: 18,
+              size: 16,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1582,7 +1582,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                           entry.templateFamily,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall?.copyWith(
+                          style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
                           ),
@@ -1600,12 +1600,12 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
                     'template family',
                     style: theme.textTheme.labelSmall,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 1),
                   Text(
                     'visual contacts: ${entry.contactMarkerSummary}',
                     maxLines: 2,
@@ -1669,7 +1669,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1679,14 +1679,21 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               'template family: ${template.templateFamily}',
               style: theme.textTheme.labelSmall,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
+            Text(
+              'Contact markers',
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
             _ContactMarkerCountRow(
               side: 'Top',
               sideKey: 'top',
@@ -1698,7 +1705,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 onTopChanged(value);
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             _ContactMarkerCountRow(
               side: 'Right',
               sideKey: 'right',
@@ -1710,7 +1717,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 onRightChanged(value);
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             _ContactMarkerCountRow(
               side: 'Bottom',
               sideKey: 'bottom',
@@ -1722,7 +1729,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 onBottomChanged(value);
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             _ContactMarkerCountRow(
               side: 'Left',
               sideKey: 'left',
@@ -1734,21 +1741,33 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 onLeftChanged(value);
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             if (onResetToDefaults != null)
               Align(
                 alignment: Alignment.centerRight,
-                child: TextButton(
-                  key: const Key(
-                    'board_canvas_add_component_builder_reset_to_defaults',
+                child: SizedBox(
+                  height: 24,
+                  child: TextButton(
+                    key: const Key(
+                      'board_canvas_add_component_builder_reset_to_defaults',
+                    ),
+                    onPressed: onResetToDefaults,
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 0,
+                      ),
+                      minimumSize: const Size(0, 24),
+                      textStyle: theme.textTheme.labelSmall,
+                    ),
+                    child: const Text('Reset to template defaults'),
                   ),
-                  onPressed: onResetToDefaults,
-                  child: const Text('Reset to template defaults'),
                 ),
               ),
             if (hasZeroContactMarkers)
               Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: 2),
                 child: Text(
                   'No visual contact markers configured.',
                   key: const Key(
@@ -1761,7 +1780,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
               ),
             if (hasExcessiveContactMarkers)
               Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: 2),
                 child: Text(
                   'Excessive contact marker counts may be invalid.',
                   key: const Key(
@@ -1773,14 +1792,14 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                   maxLines: 2,
                 ),
               ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               'Rectangular-perimeter preview',
               style: theme.textTheme.labelSmall,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             AspectRatio(
-              aspectRatio: 1.6,
+              aspectRatio: 2.1,
               child: RepaintBoundary(
                 child: CustomPaint(
                   key: const Key('board_canvas_add_component_builder_preview'),
@@ -1816,52 +1835,49 @@ class _ContactMarkerCountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          '$side contact marker',
-          style: theme.textTheme.labelSmall,
+        SizedBox(
+          width: 58,
+          child: Text(
+            side,
+            style: theme.textTheme.labelSmall,
+          ),
         ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            IconButton(
-              iconSize: 18,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 30, height: 30),
-              onPressed: value <= 0 ? null : () => onChanged(value - 1),
-              icon: const Icon(Icons.remove_circle_outline),
-              tooltip: 'Decrease $side contact markers',
-              key: Key(
-                'board_canvas_add_component_template_builder_${sideKey}_decrement',
-              ),
+        IconButton(
+          iconSize: 16,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints.tightFor(width: 26, height: 24),
+          onPressed: value <= 0 ? null : () => onChanged(value - 1),
+          icon: const Icon(Icons.remove_circle_outline),
+          tooltip: 'Decrease $side contact markers',
+          key: Key(
+            'board_canvas_add_component_template_builder_${sideKey}_decrement',
+          ),
+        ),
+        Container(
+          width: 28,
+          alignment: Alignment.center,
+          child: Text(
+            value.toString(),
+            key: Key(
+              'board_canvas_add_component_template_builder_${sideKey}_value',
             ),
-            Container(
-              width: 42,
-              alignment: Alignment.center,
-              child: Text(
-                value.toString(),
-                key: Key(
-                  'board_canvas_add_component_template_builder_${sideKey}_value',
-                ),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
-            IconButton(
-              iconSize: 18,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 30, height: 30),
-              onPressed: () => onChanged(value + 1),
-              icon: const Icon(Icons.add_circle_outline),
-              tooltip: 'Increase $side contact markers',
-              key: Key(
-                'board_canvas_add_component_template_builder_${sideKey}_increment',
-              ),
-            ),
-          ],
+          ),
+        ),
+        IconButton(
+          iconSize: 16,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints.tightFor(width: 26, height: 24),
+          onPressed: () => onChanged(value + 1),
+          icon: const Icon(Icons.add_circle_outline),
+          tooltip: 'Increase $side contact markers',
+          key: Key(
+            'board_canvas_add_component_template_builder_${sideKey}_increment',
+          ),
         ),
       ],
     );
@@ -1883,7 +1899,7 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rectInsets = const EdgeInsets.all(16.0);
+    final rectInsets = const EdgeInsets.all(12.0);
     final paintArea = Offset.zero & size;
     final previewRect = Rect.fromLTWH(
       rectInsets.left,
@@ -1894,7 +1910,7 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
 
     final boundaryPaint = Paint()
       ..color = const Color(0xFF5C6BC0)
-      ..strokeWidth = 2
+      ..strokeWidth = 1.8
       ..style = PaintingStyle.stroke;
 
     final markerPaint = Paint()
@@ -1940,13 +1956,13 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     }
     if (count == 1) {
       final center = Offset(rect.center.dx, rect.top);
-      canvas.drawCircle(center, 4, paint);
+      canvas.drawCircle(center, 3.0, paint);
       return;
     }
     for (var i = 0; i < count; i++) {
       final x = rect.left + rect.width * ((i + 1) / (count + 1));
       final point = Offset(x, rect.top);
-      canvas.drawCircle(point, 4, paint);
+      canvas.drawCircle(point, 3.0, paint);
     }
   }
 
@@ -1961,13 +1977,13 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     }
     if (count == 1) {
       final center = Offset(rect.center.dx, rect.bottom);
-      canvas.drawCircle(center, 4, paint);
+      canvas.drawCircle(center, 3.0, paint);
       return;
     }
     for (var i = 0; i < count; i++) {
       final x = rect.left + rect.width * ((i + 1) / (count + 1));
       final point = Offset(x, rect.bottom);
-      canvas.drawCircle(point, 4, paint);
+      canvas.drawCircle(point, 3.0, paint);
     }
   }
 
@@ -1982,13 +1998,13 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     }
     if (count == 1) {
       final center = Offset(rect.left, rect.center.dy);
-      canvas.drawCircle(center, 4, paint);
+      canvas.drawCircle(center, 3.0, paint);
       return;
     }
     for (var i = 0; i < count; i++) {
       final y = rect.top + rect.height * ((i + 1) / (count + 1));
       final point = Offset(rect.left, y);
-      canvas.drawCircle(point, 4, paint);
+      canvas.drawCircle(point, 3.0, paint);
     }
   }
 
@@ -2003,13 +2019,13 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     }
     if (count == 1) {
       final center = Offset(canvasRect.right, canvasRect.center.dy);
-      canvas.drawCircle(center, 4, paint);
+      canvas.drawCircle(center, 3.0, paint);
       return;
     }
     for (var i = 0; i < count; i++) {
       final y = canvasRect.top + canvasRect.height * ((i + 1) / (count + 1));
       final point = Offset(canvasRect.right, y);
-      canvas.drawCircle(point, 4, paint);
+      canvas.drawCircle(point, 3.0, paint);
     }
   }
 

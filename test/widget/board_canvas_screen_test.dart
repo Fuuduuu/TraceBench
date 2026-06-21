@@ -677,6 +677,53 @@ void main() {
   });
 
   testWidgets(
+      'visual-contact builder panel uses compact layout and shared contact marker context',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Contact markers'), findsOneWidget);
+    expect(find.text('Top'), findsOneWidget);
+    expect(find.text('Right'), findsOneWidget);
+    expect(find.text('Bottom'), findsOneWidget);
+    expect(find.text('Left'), findsOneWidget);
+    expect(find.text('Top contact marker'), findsNothing);
+    expect(find.text('Right contact marker'), findsNothing);
+    expect(find.text('Bottom contact marker'), findsNothing);
+    expect(find.text('Left contact marker'), findsNothing);
+
+    final previewSize = tester.getSize(
+      find.byKey(const Key('board_canvas_add_component_builder_preview')),
+    );
+    expect(previewSize.height, lessThan(170));
+    expect(previewSize.width, greaterThan(previewSize.height));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
       'visual-contact builder top/right/bottom/left counts are editable locally',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

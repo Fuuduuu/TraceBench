@@ -2,15 +2,15 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_SCOPE_LOCK
+CLAUDE_CODE / DOCS_SYNC_CLOSEOUT
 
 ## Goal
 
-Create a docs-only scope-lock for the next Add Component UI-only slice: right-panel visual-contact builder.
+Record docs-only post-audit closeout for the accepted/pushed Add Component visual-contact builder scope-lock (`61ed41e`).
 
 ## Baseline
 
@@ -27,8 +27,8 @@ Create a docs-only scope-lock for the next Add Component UI-only slice: right-pa
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
+- `ROUTE_EFFECT: SCOPE_LOCK_POST_AUDIT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 
 ## Allowed files
 
@@ -110,8 +110,8 @@ Right-panel visual-contact builder scope remains UI-local and does not authorize
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

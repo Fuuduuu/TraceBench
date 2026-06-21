@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -78,7 +78,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- This pass is a docs-only scope-lock: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` is active.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` is closed as accepted/pushed with commit `61ed41e` (`docs: lock add component visual-contact builder scope`).
 - Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
 - Runtime status: `NOT_ACCEPTED`.
 - Architecture status: `NOT_ACCEPTED`.
@@ -100,6 +100,12 @@ The current docs-hygiene sequence is accepted through:
 - Preserve template-list behavior from accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
 - Preserve inspector/placements/safety behavior and measurement overlay behavior.
 - Preserve `Measure Sheet` and `renderer writes: none`.
+
+## Closeout state
+
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` remains docs-only and accepted/pushed; no runtime, schema, writer, materializer, validator, projection, Project ZIP, event, or fact changes occurred in this pass.
 
 ## Manual smoke record (previous)
 

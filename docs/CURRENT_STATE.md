@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only scope-lock for the first Add Component visual-contact builder UI-only slice.
+- Current pass purpose: docs-only implementation-lock for the first Add Component visual-contact builder runtime slice.
 - Current accepted Add Component implementation: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 
 ## Accepted docs-hygiene baseline
@@ -83,16 +83,11 @@ The current docs-hygiene sequence is accepted through:
 - Runtime status: `NOT_ACCEPTED`.
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `SCOPE_LOCK`.
-- Board Canvas Add Component entry still opens the right contextual panel in template-list mode.
-- Template-list selection may open a right-panel visual-contact builder state.
-- Builder is UI-local and volatile widget-state-only.
-- Builder uses rectangular-perimeter layout only with editable side counts (`top`, `right`, `bottom`, `left`).
+- Route effect: `IMPLEMENTATION_LOCK`.
+- Board Canvas Add Component entry opens right contextual panel in template-list mode.
+- Template-list selection may transition to right-panel builder mode with local volatile side counts (`top`, `right`, `bottom`, `left`).
+- Builder behavior is right-panel UI-only and volatile; invalid/empty states are non-canonical UI-only.
 - Starter templates may seed the builder; builder and list state remains isolated/local.
-- Invalid states remain UI-only:
-  - zero contact markers,
-  - excessive marker count,
-  - reset to template defaults.
 - Wording remains locked to `visual contact`, `contact marker`, and `template family`.
 - Geometry-first reduced starter taxonomy remains the accepted direction.
 - Add Component deep-link from Project Overview remains deferred.
@@ -103,9 +98,9 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` remains docs-only and accepted/pushed; no runtime, schema, writer, materializer, validator, projection, Project ZIP, event, or fact changes occurred in this pass.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` and its post-audit closeout remain accepted/pushed; this pass only activates implementation-boundary docs and runtime allowlist.
 
 ## Manual smoke record (previous)
 

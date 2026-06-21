@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,7 +25,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only pass | Records clean Claude `ACCEPT_AS_IS` shorthand conditions for Lane A and the compact `CLAUDE_AUDIT_PACKET` requirement for docs-only governance passes. |
+| V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | current docs-only pass | Locks future local ghost implementation slice: local volatile canvas-ghost draft preview only, no persistence, no canonical placement/coords, no click/drag/rotation to place, and no Confirm/write. |
+| TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | completed docs-only pass | Records accepted shorthand rule and compact `CLAUDE_AUDIT_PACKET` policy; this shorthand docs-sync pass does not supersede ghost recovery context. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | completed docs-only pass (parked for standalone route recovery) | Local-only Add Component ghost preview remains UI-local only and non-authoritative. Scope-lock the draft ghost model: local volatile canvas ghost state, visual distinction from confirmed placement/overlay, deferred click-to-place decision, and explicit non-canonical draft coordinates if recorded locally. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `33d2f17` (`feat: polish add component builder active panel`) | Active Add Component panel polish remains preserved behavior; compact cards were replaced with a focused builder-first active state with shared contact-marker context and local volatile counts. |
 | TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`) | Docs-only scope lock for targeted docs/governance hygiene cleanup after Pro docs-hygiene findings; no runtime changes; locks future narrow pass order and canonical owner routing (`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`); user smoke evidence from `Kontrollisin, hetkel sobivad` is recorded as accepted behavior confirmation (no separate smoke pass). |

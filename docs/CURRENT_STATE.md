@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`
+`TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`
 
 ## Next recommended pass
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: record two-lane governance workflow in policy docs without changing product behavior.
+- Current pass purpose: amend two-lane governance docs using GPT Pro semantic-risk review.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -81,20 +81,23 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS` is current docs-sync governance alignment pass.
+- `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS` is current docs-sync governance alignment pass.
 - Runtime status: `NOT_ACCEPTED` (policy sync only).
 - Architecture status: `NOT_ACCEPTED` (policy, not implementation).
 - Canonical semantics: `NONE`.
 - Route effect: `DOCS_SYNC`.
 - Governance policy updates captured:
-  - Lane A: low-risk UI-only inside accepted lock, docs closeout, QA hardening.
-  - Lane B: protected/architecture-risk and route-ambiguity paths.
-- Two-lane classification is now required first for every pass prompt.
+  - Lane A/B are classified by semantic risk, not file type.
+  - Lane A: low-risk, docs-only/no protected behavior, no route ambiguity.
+  - Lane B: protected/architecture-risk or route ambiguity.
+  - Lane A parent-lock / bundle mechanism allows one parent with 2–4 child passes where route churn can be reduced.
+  - Lane A closeout only when route/scope/risk state changes.
+- Two-lane classification by semantic risk is now required first for every pass prompt.
 - `renderer writes: none`, inspector/placements/safety behavior, and measurement overlay behavior remain unchanged by this pass.
 
 ## Closeout state
 
-- Current pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`.
+- Current pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
 - No implementation or runtime commit is captured in this docs-sync governance pass.
 

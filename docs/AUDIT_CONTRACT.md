@@ -22,10 +22,22 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 
 ## Two-lane policy
 
-- Lane A pass families (docs-only sync, docs locks, scoped polish, QA hardening in accepted behavior) use lean contract prompts by default.
-- Lane B pass families (schema/validator/materializer/writer, event/facts, Project ZIP, renderer writes, AI/OCR/CV, route ambiguity) require full contract detail and a complete decision trail.
+- Lane A pass families (docs-only sync, docs locks, scoped polish, QA hardening in accepted behavior, no protected behavior activation) use lean contract prompts by default.
+- Lane B pass families (schema/validator/materializer/writer, event/facts, Project ZIP, renderer writes, AI/OCR/CV, route ambiguity, Confirm/write/persistence commits, canonical semantics changes) require full contract detail and a complete decision trail.
+- Lane A still requires independent Claude audit before routing onward.
 - Even in Lane A, protected-surface checks in `docs/PROTECTED_SURFACES.md` and routing consistency checks in `docs/MODEL_ROUTING.md` remain mandatory.
+- Lane A outputs should include explicit audit evidence handoff:
+  - Codex reports must include `CLAUDE_AUDIT_PACKET`.
+  - For routine child passes, prefer batched audit evidence or commit-trailer notes.
+  - Do not drop existing audit evidence or suppress previous findings.
 - Do not add redundant post-audit passes unless they capture meaningful state, boundary decisions, or protected/high-risk risk transitions.
+
+## Lane A evidence handoff requirement
+
+- `CLAUDE_AUDIT_PACKET` is required in Lane A closeout/lock/audit summary handoff to keep evidence continuity.
+- The packet should include: pass ID, lane/type, expected diff, focus, validation/run commands, and safety gate.
+- For routine bundle child passes, a combined milestone audit record is acceptable when risk and scope are unchanged.
+- Evidence may not be overwritten as "closed" without explicitly recording the boundary change reason.
 
 ## Contract: scope-lock-post-audit
 

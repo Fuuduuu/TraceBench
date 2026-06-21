@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`
+`TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`
 
 ## Type
 
@@ -10,12 +10,12 @@ CODEX / DOCS_SYNC
 
 ## Goal
 
-Record and align the two-lane governance docs-policy recovery after compact-polish docs + route-advance commit `6440f0c` (`docs: record add component builder compact polish`), then return to `NEEDS_USER_DECISION`.
+Amend two-lane governance policy docs using GPT Pro semantic-risk review: classify lanes by risk, define Lane A parent-lock bundles, enforce Lane A audit evidence handoff, and clarify compact closeout/index policy; no runtime or protected-surface changes.
 
 ## Baseline
 
-- Current route before this pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_POST_AUDIT_PASS`.
-- This pass is docs-only recovery and policy-sync; no runtime/test/protected-surface behavior changes.
+- Current route before this pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`.
+- This pass is Lane A docs-only policy amendment; no runtime/test/protected-surface behavior changes.
 - `_incoming` remains reference-only and is not accepted runtime source.
 
 ## Status labels to record
@@ -26,22 +26,25 @@ Record and align the two-lane governance docs-policy recovery after compact-poli
 
 ## Allowed files
 
-- `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/PROMPTING_PROTOCOL.md`
 - `docs/MODEL_ROUTING.md`
 - `docs/AUDIT_CONTRACT.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
 - `docs/audit/TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS.md`
+- `docs/audit/TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS.md`
 
 ## Preserve boundary
 
 - This recovery pass is docs-only.
 - No runtime/schema/writer/materializer/validator/projection/Project ZIP/event/fact/protected write-flow edits.
 - `renderer writes: none` remains preserved by the accepted implementation baseline.
-- `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/AUDIT_INDEX.md` are not changed in this candidate.
+- Route-tracking docs are updated in this amendment candidate.
 
 ## Route
 
-- Current pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`.
+- Current pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation

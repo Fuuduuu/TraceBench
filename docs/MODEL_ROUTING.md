@@ -66,12 +66,19 @@ Prompt docs and operating docs should reference this file instead of duplicating
 ## Lane policy
 
 - Lane A:
-  - default for low-risk UI-only edits inside accepted locks, docs closeouts, and hardening passes.
+  - default for low-risk work where semantic risk is low (no protected behavior activation, no route ambiguity, no canonical write-path impact).
   - no broad scope expansion.
   - Codex executes implementation/docs pass, Claude Code handles repo-local audit.
 - Lane B:
-  - default for protected surfaces, canonical data surfaces, renderer write semantics, schema/validator/materializer/writer/Project ZIP/authorship/OCR/AI/CV changes, and route ambiguity.
+  - default for protected surfaces, canonical data surfaces, renderer write semantics, route ambiguity, or any Canonical/architecture commitment risk.
   - full prompt + GPT risk review + dedicated scope-lock + full audit sequence required.
+
+### Lane A parent-lock / bundle mechanism
+
+- GPT may define one parent lock covering a bounded child bundle (typically 2–4 child passes).
+- Parent lock records the explicit child PASS_ID sequence and exact allowlists.
+- Child passes may execute Codex → Claude directly when scope is unchanged and risk remains low.
+- Parent lock must define clear escalation conditions and parent closure criteria.
 
 Model ownership still comes from this file for all lanes; prompts remain pointer-based to keep docs authoritative.
 

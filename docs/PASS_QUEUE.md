@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS`
+`TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`
 
 ## Next recommended pass
 
@@ -59,5 +59,6 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed docs-only post-audit closeout | Closeout records implementation details for `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` and confirms preserved boundaries; route onward is `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `17441cb` (`docs: lock add component builder compact polish`) | Scope-lock for compacting the existing Add Component visual-contact builder UI. No new behavior; compact template cards, denser layout, short side labels (`Top`/`Right`/`Bottom`/`Left`), shared contact-marker context, smaller right-panel preview, and compact reset action. Runtime/test allowlist is `lib/features/board_canvas/screens/board_canvas_screen.dart` + `test/widget/board_canvas_screen_test.dart`. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed docs-only post-audit closeout | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS` as `248893f` (`feat: compact add component builder UI`) and routes onward to `NEEDS_USER_DECISION`. |
-| TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only pass | Records the two-lane Lane A/Lane B governance workflow in policy docs and keeps this route in a docs-sync doc-only lane. |
+| TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `5eefc4e` (`docs: sync two-lane governance workflow`) | Records the initial two-lane governance workflow in protocol/routing/audit docs and kept this route in a docs-sync doc-only lane. |
+| TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS | CODEX / DOCS_SYNC | current docs-only pass | Amends two-lane policy with semantic-risk classification, parent-lock/bundle mechanics, CLAUDE_AUDIT_PACKET evidence discipline, Lane A closeout rule, and AUDIT_INDEX simplification policy. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

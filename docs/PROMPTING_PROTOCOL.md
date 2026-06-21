@@ -9,12 +9,12 @@ Use `docs/MODEL_ROUTING.md` for helper/model role ownership and `docs/AUDIT_CONT
 
 ## Two-lane pass policy
 
-Classify every pass as either `Lane A` or `Lane B`.
+Classify every pass by semantic risk first, not by file type.
 
 Lane A:
 
-- low-risk UI-only work inside an accepted lock;
-- docs closeouts;
+- Low-risk work inside an accepted lock, no protected behavior enabled, no protected route ambiguity.
+- Docs-only alignment and closeouts.
 - QA hardening.
 - GPT routes once.
 - Codex handles implementation/docs and uses lean prompts.
@@ -24,8 +24,18 @@ Lane A:
 
 Lane B:
 
-- events/facts/schema/validator/materializer/writer/Project ZIP/renderer writes/AI/OCR/CV/new canonical events/route ambiguity.
+- Any docs or implementation pass that authorizes protected behavior, including (but not only) Confirm/write, persistence, canonical semantics, route ambiguity, or future writer/evidence-path commitment.
+- route ambiguity or protected-surface risk even in a docs-only artifact.
 - keep full ceremony: GPT risk review, dedicated scope-lock, full prompt, Claude gate.
+
+### Lane A parent-lock / implementation bundle (new)
+
+For bounded low-risk sequences, GPT may define one parent-lock with **2–4 child passes**.
+
+- Parent lock records exact child PASS_IDs and exact allowlists.
+- Parent lock sets explicit escalation conditions (e.g., any protected-surface drift).
+- Child passes can move Codex → Claude directly, without extra route-ledger churn when no protected boundary expands.
+- Parent lock expiry is explicit in the child pass closeout or route-review note.
 
 No safety rails are relaxed:
 
@@ -272,7 +282,17 @@ Stop and route to user/deep review if:
 - Lane A and Lane B classification should be on every pass prompt.
 - Lean prompts are default for Lane A.
 - No redundant implementation scope-lock is needed for low-risk polish inside an accepted lock.
+- Lane A does not require a separate repo-changing post-audit closeout unless routing changes, scope changes, or durable risk state changes.
+- Keep audit evidence explicit; no evidence should be dropped between routine child passes.
+- Prefer commit trailers or a single batched milestone audit record when the child pass sequence is routine.
 - No separate post-audit closeout pass is required unless it records useful state or protected/high-risk work requires it.
+
+## Lane A audit evidence discipline
+
+- Independent Claude audit remains required for Lane A parent-lock and amendment passes.
+- Codex must emit a `CLAUDE_AUDIT_PACKET` section in pass output.
+- Prefer compact child-pass audit evidence batching when passes are routine and low-risk.
+- Preserve and carry forward prior audit evidence; do not silently collapse audit conclusions.
 
 ## Reusable guard clauses for implementation prompts
 

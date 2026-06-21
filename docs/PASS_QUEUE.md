@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,7 +25,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current docs-only pass | Runtime accepted in `cd19ae2` (`feat: add component local ghost preview`) and this pass records the docs-only closeout with closeout route handoff. |
+| V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | current docs-only pass | Visual template catalog scope-lock for the next Add Component right-panel step: base-shape/template-family first selection, compact visual cards, local draft selection state, and deferred contact-marker editing in the builder. |
+| V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | accepted/pushed as `4a2a212` (`docs: lock add component local ghost implementation`) | Implemented docs-only protection scope-lock for local volatile canvas-ghost draft preview; kept implementation strictly deferred and no runtime/test changes in that pass. |
 | TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | completed docs-only pass | Records accepted shorthand rule and compact `CLAUDE_AUDIT_PACKET` policy; this shorthand docs-sync pass does not supersede ghost recovery context. |

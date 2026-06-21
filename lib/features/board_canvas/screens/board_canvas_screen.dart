@@ -18,6 +18,7 @@ const double _kWorkbenchToolTileGap = 4;
 const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
+const int _kAddComponentContactMarkerWarningLimit = 8;
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -214,11 +215,67 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _selectedPlacementKey;
   String? _selectedAddComponentTemplateId;
+  int _addComponentTemplateTopContactMarkers = 0;
+  int _addComponentTemplateRightContactMarkers = 0;
+  int _addComponentTemplateBottomContactMarkers = 0;
+  int _addComponentTemplateLeftContactMarkers = 0;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
   _WorkbenchContextPanelMode _contextPanelMode =
       _WorkbenchContextPanelMode.hidden;
+
+  _AddComponentTemplateDefinition? _selectedAddComponentTemplateDefinition() {
+    for (final template in _kStarterAddComponentTemplates) {
+      if (template.id == _selectedAddComponentTemplateId) {
+        return template;
+      }
+    }
+    return null;
+  }
+
+  bool get _addComponentTemplateHasExcessiveCounts {
+    return _addComponentTemplateTopContactMarkers >
+            _kAddComponentContactMarkerWarningLimit ||
+        _addComponentTemplateRightContactMarkers >
+            _kAddComponentContactMarkerWarningLimit ||
+        _addComponentTemplateBottomContactMarkers >
+            _kAddComponentContactMarkerWarningLimit ||
+        _addComponentTemplateLeftContactMarkers >
+            _kAddComponentContactMarkerWarningLimit;
+  }
+
+  bool get _addComponentTemplateHasZeroMarkers =>
+      _addComponentTemplateTopContactMarkers +
+          _addComponentTemplateRightContactMarkers +
+          _addComponentTemplateBottomContactMarkers +
+          _addComponentTemplateLeftContactMarkers ==
+      0;
+
+  void _seedAddComponentTemplateContactCounts(
+    _AddComponentTemplateDefinition template,
+  ) {
+    _addComponentTemplateTopContactMarkers = template.topContactMarkers;
+    _addComponentTemplateRightContactMarkers = template.rightContactMarkers;
+    _addComponentTemplateBottomContactMarkers = template.bottomContactMarkers;
+    _addComponentTemplateLeftContactMarkers = template.leftContactMarkers;
+  }
+
+  void _setAddComponentTemplateSelection(String templateId) {
+    final template = _kStarterAddComponentTemplates
+        .cast<_AddComponentTemplateDefinition?>()
+        .firstWhere(
+          (entry) => entry?.id == templateId,
+          orElse: () => null,
+        );
+    if (template == null) {
+      return;
+    }
+    setState(() {
+      _selectedAddComponentTemplateId = templateId;
+      _seedAddComponentTemplateContactCounts(template);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -493,14 +550,43 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   );
                   break;
                 case _WorkbenchContextPanelMode.addComponentTemplates:
+                  final selectedTemplate =
+                      _selectedAddComponentTemplateDefinition();
                   contextPanel = _AddComponentTemplateListPanel(
                     entries: _kStarterAddComponentTemplates,
                     selectedTemplateId: _selectedAddComponentTemplateId,
-                    onTemplateSelected: (value) {
-                      setState(() {
-                        _selectedAddComponentTemplateId = value;
-                      });
+                    selectedTemplate: selectedTemplate,
+                    topContactMarkers: _addComponentTemplateTopContactMarkers,
+                    rightContactMarkers: _addComponentTemplateRightContactMarkers,
+                    bottomContactMarkers:
+                        _addComponentTemplateBottomContactMarkers,
+                    leftContactMarkers: _addComponentTemplateLeftContactMarkers,
+                    hasZeroContactMarkers: _addComponentTemplateHasZeroMarkers,
+                    hasExcessiveContactMarkers:
+                        _addComponentTemplateHasExcessiveCounts,
+                    onTemplateSelected: _setAddComponentTemplateSelection,
+                    onTopContactMarkersChanged: (value) {
+                      setState(() => _addComponentTemplateTopContactMarkers = value);
                     },
+                    onRightContactMarkersChanged: (value) {
+                      setState(() =>
+                          _addComponentTemplateRightContactMarkers = value);
+                    },
+                    onBottomContactMarkersChanged: (value) {
+                      setState(() =>
+                          _addComponentTemplateBottomContactMarkers = value);
+                    },
+                    onLeftContactMarkersChanged: (value) {
+                      setState(() =>
+                          _addComponentTemplateLeftContactMarkers = value);
+                    },
+                    onResetToTemplateDefaults: selectedTemplate == null
+                        ? null
+                        : () {
+                            setState(() {
+                              _seedAddComponentTemplateContactCounts(selectedTemplate);
+                            });
+                          },
                   );
                   break;
                 case _WorkbenchContextPanelMode.safetyEvidence:
@@ -1329,17 +1415,57 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.entries,
     required this.selectedTemplateId,
     required this.onTemplateSelected,
+    required this.selectedTemplate,
+    required this.topContactMarkers,
+    required this.rightContactMarkers,
+    required this.bottomContactMarkers,
+    required this.leftContactMarkers,
+    required this.hasZeroContactMarkers,
+    required this.hasExcessiveContactMarkers,
+    required this.onTopContactMarkersChanged,
+    required this.onRightContactMarkersChanged,
+    required this.onBottomContactMarkersChanged,
+    required this.onLeftContactMarkersChanged,
+    this.onResetToTemplateDefaults,
     this.initiallyExpanded = true,
   });
 
   final List<_AddComponentTemplateDefinition> entries;
   final String? selectedTemplateId;
   final ValueChanged<String> onTemplateSelected;
+  final _AddComponentTemplateDefinition? selectedTemplate;
+  final int topContactMarkers;
+  final int rightContactMarkers;
+  final int bottomContactMarkers;
+  final int leftContactMarkers;
+  final bool hasZeroContactMarkers;
+  final bool hasExcessiveContactMarkers;
+  final ValueChanged<int> onTopContactMarkersChanged;
+  final ValueChanged<int> onRightContactMarkersChanged;
+  final ValueChanged<int> onBottomContactMarkersChanged;
+  final ValueChanged<int> onLeftContactMarkersChanged;
+  final VoidCallback? onResetToTemplateDefaults;
   final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final maxPanelHeight =
+        MediaQuery.of(context).size.height > 200
+            ? MediaQuery.of(context).size.height - 210.0
+            : 200.0;
+    final templateRows = entries
+        .map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AddComponentTemplateListTile(
+              entry: entry,
+              selected: selectedTemplateId == entry.id,
+              onTap: () => onTemplateSelected(entry.id),
+            ),
+          ),
+        )
+        .toList(growable: false);
     return Card(
       margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
@@ -1360,18 +1486,40 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
           label: 'Add Component',
           detail: 'Starter rectangular template families',
         ),
-        children: entries
-            .map(
-              (entry) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _AddComponentTemplateListTile(
-                  entry: entry,
-                  selected: selectedTemplateId == entry.id,
-                  onTap: () => onTemplateSelected(entry.id),
-                ),
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: maxPanelHeight),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...templateRows,
+                  if (selectedTemplate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: _AddComponentTemplateBuilderPanel(
+                        key: const Key(
+                          'board_canvas_add_component_template_builder',
+                        ),
+                        template: selectedTemplate!,
+                        topContactMarkers: topContactMarkers,
+                        rightContactMarkers: rightContactMarkers,
+                        bottomContactMarkers: bottomContactMarkers,
+                        leftContactMarkers: leftContactMarkers,
+                        hasZeroContactMarkers: hasZeroContactMarkers,
+                        hasExcessiveContactMarkers: hasExcessiveContactMarkers,
+                        onTopChanged: onTopContactMarkersChanged,
+                        onRightChanged: onRightContactMarkersChanged,
+                        onBottomChanged: onBottomContactMarkersChanged,
+                        onLeftChanged: onLeftContactMarkersChanged,
+                        onResetToDefaults: onResetToTemplateDefaults,
+                      ),
+                    ),
+                ],
               ),
-            )
-            .toList(growable: false),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1476,6 +1624,403 @@ class _AddComponentTemplateListTile extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _AddComponentTemplateBuilderPanel extends StatelessWidget {
+  const _AddComponentTemplateBuilderPanel({
+    super.key,
+    required this.template,
+    required this.topContactMarkers,
+    required this.rightContactMarkers,
+    required this.bottomContactMarkers,
+    required this.leftContactMarkers,
+    required this.hasZeroContactMarkers,
+    required this.hasExcessiveContactMarkers,
+    required this.onTopChanged,
+    required this.onRightChanged,
+    required this.onBottomChanged,
+    required this.onLeftChanged,
+    this.onResetToDefaults,
+  });
+
+  final _AddComponentTemplateDefinition template;
+  final int topContactMarkers;
+  final int rightContactMarkers;
+  final int bottomContactMarkers;
+  final int leftContactMarkers;
+  final bool hasZeroContactMarkers;
+  final bool hasExcessiveContactMarkers;
+  final ValueChanged<int> onTopChanged;
+  final ValueChanged<int> onRightChanged;
+  final ValueChanged<int> onBottomChanged;
+  final ValueChanged<int> onLeftChanged;
+  final VoidCallback? onResetToDefaults;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      key: const Key('board_canvas_add_component_builder_card'),
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Visual-contact builder',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'template family: ${template.templateFamily}',
+              style: theme.textTheme.labelSmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+            _ContactMarkerCountRow(
+              side: 'Top',
+              sideKey: 'top',
+              value: topContactMarkers,
+              onChanged: (value) {
+                if (value < 0) {
+                  return;
+                }
+                onTopChanged(value);
+              },
+            ),
+            const SizedBox(height: 8),
+            _ContactMarkerCountRow(
+              side: 'Right',
+              sideKey: 'right',
+              value: rightContactMarkers,
+              onChanged: (value) {
+                if (value < 0) {
+                  return;
+                }
+                onRightChanged(value);
+              },
+            ),
+            const SizedBox(height: 8),
+            _ContactMarkerCountRow(
+              side: 'Bottom',
+              sideKey: 'bottom',
+              value: bottomContactMarkers,
+              onChanged: (value) {
+                if (value < 0) {
+                  return;
+                }
+                onBottomChanged(value);
+              },
+            ),
+            const SizedBox(height: 8),
+            _ContactMarkerCountRow(
+              side: 'Left',
+              sideKey: 'left',
+              value: leftContactMarkers,
+              onChanged: (value) {
+                if (value < 0) {
+                  return;
+                }
+                onLeftChanged(value);
+              },
+            ),
+            const SizedBox(height: 8),
+            if (onResetToDefaults != null)
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  key: const Key(
+                    'board_canvas_add_component_builder_reset_to_defaults',
+                  ),
+                  onPressed: onResetToDefaults,
+                  child: const Text('Reset to template defaults'),
+                ),
+              ),
+            if (hasZeroContactMarkers)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'No visual contact markers configured.',
+                  key: const Key(
+                    'board_canvas_add_component_builder_zero_markers_hint',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ),
+            if (hasExcessiveContactMarkers)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Excessive contact marker counts may be invalid.',
+                  key: const Key(
+                    'board_canvas_add_component_builder_excessive_markers_hint',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.tertiary,
+                  ),
+                  maxLines: 2,
+                ),
+              ),
+            const SizedBox(height: 8),
+            Text(
+              'Rectangular-perimeter preview',
+              style: theme.textTheme.labelSmall,
+            ),
+            const SizedBox(height: 6),
+            AspectRatio(
+              aspectRatio: 1.6,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  key: const Key('board_canvas_add_component_builder_preview'),
+                  painter: _RectangularPerimeterTemplatePreviewPainter(
+                    topContactMarkers: topContactMarkers,
+                    rightContactMarkers: rightContactMarkers,
+                    bottomContactMarkers: bottomContactMarkers,
+                    leftContactMarkers: leftContactMarkers,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContactMarkerCountRow extends StatelessWidget {
+  const _ContactMarkerCountRow({
+    required this.side,
+    required this.sideKey,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String side;
+  final String sideKey;
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$side contact marker',
+          style: theme.textTheme.labelSmall,
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            IconButton(
+              iconSize: 18,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 30, height: 30),
+              onPressed: value <= 0 ? null : () => onChanged(value - 1),
+              icon: const Icon(Icons.remove_circle_outline),
+              tooltip: 'Decrease $side contact markers',
+              key: Key(
+                'board_canvas_add_component_template_builder_${sideKey}_decrement',
+              ),
+            ),
+            Container(
+              width: 42,
+              alignment: Alignment.center,
+              child: Text(
+                value.toString(),
+                key: Key(
+                  'board_canvas_add_component_template_builder_${sideKey}_value',
+                ),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            IconButton(
+              iconSize: 18,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 30, height: 30),
+              onPressed: () => onChanged(value + 1),
+              icon: const Icon(Icons.add_circle_outline),
+              tooltip: 'Increase $side contact markers',
+              key: Key(
+                'board_canvas_add_component_template_builder_${sideKey}_increment',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
+  const _RectangularPerimeterTemplatePreviewPainter({
+    required this.topContactMarkers,
+    required this.rightContactMarkers,
+    required this.bottomContactMarkers,
+    required this.leftContactMarkers,
+  });
+
+  final int topContactMarkers;
+  final int rightContactMarkers;
+  final int bottomContactMarkers;
+  final int leftContactMarkers;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rectInsets = const EdgeInsets.all(16.0);
+    final paintArea = Offset.zero & size;
+    final previewRect = Rect.fromLTWH(
+      rectInsets.left,
+      rectInsets.top,
+      paintArea.width - rectInsets.horizontal,
+      paintArea.height - rectInsets.vertical,
+    );
+
+    final boundaryPaint = Paint()
+      ..color = const Color(0xFF5C6BC0)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    final markerPaint = Paint()
+      ..color = const Color(0xFF2E7D32)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRect(previewRect, boundaryPaint);
+    _drawContactMarkersAlongTop(
+      canvas,
+      previewRect,
+      topContactMarkers,
+      markerPaint,
+    );
+    _drawContactMarkersAlongRight(
+      canvas,
+      previewRect,
+      rightContactMarkers,
+      markerPaint,
+    );
+    _drawContactMarkersAlongBottom(
+      canvas,
+      previewRect,
+      bottomContactMarkers,
+      markerPaint,
+    );
+    _drawContactMarkersAlongLeft(
+      canvas,
+      previewRect,
+      leftContactMarkers,
+      markerPaint,
+    );
+  }
+
+  void _drawContactMarkersAlongTop(
+    Canvas canvas,
+    Rect rect,
+    int count,
+    Paint paint,
+  ) {
+    if (count <= 0) {
+      return;
+    }
+    if (count == 1) {
+      final center = Offset(rect.center.dx, rect.top);
+      canvas.drawCircle(center, 4, paint);
+      return;
+    }
+    for (var i = 0; i < count; i++) {
+      final x = rect.left + rect.width * ((i + 1) / (count + 1));
+      final point = Offset(x, rect.top);
+      canvas.drawCircle(point, 4, paint);
+    }
+  }
+
+  void _drawContactMarkersAlongBottom(
+    Canvas canvas,
+    Rect rect,
+    int count,
+    Paint paint,
+  ) {
+    if (count <= 0) {
+      return;
+    }
+    if (count == 1) {
+      final center = Offset(rect.center.dx, rect.bottom);
+      canvas.drawCircle(center, 4, paint);
+      return;
+    }
+    for (var i = 0; i < count; i++) {
+      final x = rect.left + rect.width * ((i + 1) / (count + 1));
+      final point = Offset(x, rect.bottom);
+      canvas.drawCircle(point, 4, paint);
+    }
+  }
+
+  void _drawContactMarkersAlongLeft(
+    Canvas canvas,
+    Rect rect,
+    int count,
+    Paint paint,
+  ) {
+    if (count <= 0) {
+      return;
+    }
+    if (count == 1) {
+      final center = Offset(rect.left, rect.center.dy);
+      canvas.drawCircle(center, 4, paint);
+      return;
+    }
+    for (var i = 0; i < count; i++) {
+      final y = rect.top + rect.height * ((i + 1) / (count + 1));
+      final point = Offset(rect.left, y);
+      canvas.drawCircle(point, 4, paint);
+    }
+  }
+
+  void _drawContactMarkersAlongRight(
+    Canvas canvas,
+    Rect canvasRect,
+    int count,
+    Paint paint,
+  ) {
+    if (count <= 0) {
+      return;
+    }
+    if (count == 1) {
+      final center = Offset(canvasRect.right, canvasRect.center.dy);
+      canvas.drawCircle(center, 4, paint);
+      return;
+    }
+    for (var i = 0; i < count; i++) {
+      final y = canvasRect.top + canvasRect.height * ((i + 1) / (count + 1));
+      final point = Offset(canvasRect.right, y);
+      canvas.drawCircle(point, 4, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(
+    covariant _RectangularPerimeterTemplatePreviewPainter oldDelegate,
+  ) {
+    return oldDelegate.topContactMarkers != topContactMarkers ||
+        oldDelegate.rightContactMarkers != rightContactMarkers ||
+        oldDelegate.bottomContactMarkers != bottomContactMarkers ||
+        oldDelegate.leftContactMarkers != leftContactMarkers;
   }
 }
 

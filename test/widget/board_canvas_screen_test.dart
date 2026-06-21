@@ -620,6 +620,556 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  testWidgets(
+      'Select Add Component template opens right-panel visual-contact builder',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_builder')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_card')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_preview')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Visual-contact builder'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_builder_top_value',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'visual-contact builder top/right/bottom/left counts are editable locally',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    String topCountText() => tester
+        .widget<Text>(
+          find.byKey(
+            const Key('board_canvas_add_component_template_builder_top_value'),
+          ),
+        )
+        .data!;
+
+    String rightCountText() => tester
+        .widget<Text>(
+          find.byKey(
+            const Key('board_canvas_add_component_template_builder_right_value'),
+          ),
+        )
+        .data!;
+
+    String bottomCountText() => tester
+        .widget<Text>(
+          find.byKey(
+            const Key('board_canvas_add_component_template_builder_bottom_value'),
+          ),
+        )
+        .data!;
+
+    String leftCountText() => tester
+        .widget<Text>(
+          find.byKey(
+            const Key('board_canvas_add_component_template_builder_left_value'),
+          ),
+        )
+        .data!;
+
+    expect(topCountText(), '1');
+    expect(rightCountText(), '0');
+    expect(bottomCountText(), '1');
+    expect(leftCountText(), '0');
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_top_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_right_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_bottom_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_left_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(topCountText(), '2');
+    expect(rightCountText(), '1');
+    expect(bottomCountText(), '2');
+    expect(leftCountText(), '1');
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'template selection reseeds builder counts from template defaults',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key(
+        'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_right_value'),
+            ),
+          )
+          .data,
+      '0',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_bottom_value'),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_left_value'),
+            ),
+          )
+          .data,
+      '0',
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_top_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_right_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_top_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+          )
+          .data,
+      '3',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_right_value'),
+            ),
+          )
+          .data,
+      '1',
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_template_family_rect_4_perimeter'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_right_value'),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_bottom_value'),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_left_value'),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_zero_markers_hint')),
+      findsNothing,
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('builder warning states expose zero/excessive hint UI only', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_template_family_rect_4_perimeter'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_top_decrement'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_right_decrement'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_bottom_decrement'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_left_decrement'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+          )
+          .data,
+      '0',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_right_value'),
+            ),
+          )
+          .data,
+      '0',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_bottom_value'),
+            ),
+          )
+          .data,
+      '0',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key('board_canvas_add_component_template_builder_left_value'),
+            ),
+          )
+          .data,
+      '0',
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_zero_markers_hint')),
+      findsOneWidget,
+    );
+
+    for (var i = 0; i < 9; i++) {
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_add_component_template_builder_top_increment'),
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+          )
+          .data,
+      '9',
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_excessive_markers_hint'),
+      ),
+      findsOneWidget,
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('visual-contact builder reset returns template defaults', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_top_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_template_builder_right_increment'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_top_value',
+              ),
+            ),
+          )
+          .data,
+      '2',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_right_value',
+              ),
+            ),
+          )
+          .data,
+      '2',
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_reset_to_defaults'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_top_value',
+              ),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_right_value',
+              ),
+            ),
+          )
+          .data,
+      '1',
+    );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('visual-contact builder mode has no write/placement controls', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_confirm')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_place')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_rotation')),
+      findsNothing,
+    );
+    expect(find.textContaining('Confirm'), findsNothing);
+    expect(state.events, isEmpty);
+  });
+
   testWidgets('wide Workbench starts with hidden right context panel',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

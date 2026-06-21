@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only post-audit closeout for the accepted Add Component visual-contact builder implementation.
+- Current pass purpose: docs-only scope-lock for compacting the accepted Add Component visual-contact builder UI.
 - Current accepted Add Component implementations:
   - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
   - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -58,7 +58,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only implementation-post-audit closeout pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only scope-lock pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -80,29 +80,31 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` is closed as accepted/pushed with commit `61ed41e` (`docs: lock add component visual-contact builder scope`).
-- Source status: `DESIGN_INPUT_ONLY` for existing design evidence.
-- Runtime status: `NOT_ACCEPTED`.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS` is current docs-only scope-lock for visual-builder layout compactness.
+- Runtime status: `NOT_ACCEPTED` (UI polish boundary only).
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `IMPLEMENTATION_LOCK`.
-- Board Canvas Add Component entry opens right contextual panel in template-list mode.
-- Template-list selection may transition to right-panel builder mode with local volatile side counts (`top`, `right`, `bottom`, `left`).
-- Builder behavior is right-panel UI-only and volatile; invalid/empty states are non-canonical UI-only.
-- Starter templates may seed the builder; builder and list state remains isolated/local.
-- Wording remains locked to `visual contact`, `contact marker`, and `template family`.
-- Geometry-first reduced starter taxonomy remains the accepted direction.
-- Add Component deep-link from Project Overview remains deferred.
-- No builder persistence/Confirm/ghost/rotation runtime flow is authorized.
-- Preserve template-list behavior from accepted `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS`.
-- Preserve inspector/placements/safety behavior and measurement overlay behavior.
-- Preserve `Measure Sheet` and `renderer writes: none`.
+- Route effect: `DOCS_SCOPE_LOCK`.
+- Compactness targets to preserve:
+  - compact template cards when needed,
+  - denser builder control layout,
+  - shorter labels: `Top`, `Right`, `Bottom`, `Left`,
+  - one shared `contact marker` context,
+  - smaller right-panel preview,
+  - reset as compact secondary action.
+- Existing behavior must remain unchanged:
+  - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted behavior stays intact.
+  - Template-list mode and local selection behavior remain unchanged.
+  - Visual-contact builder still uses local volatile `top` / `right` / `bottom` / `left` counts.
+  - Existing `template family`, `visual contact`, and `rectangular-perimeter layout` vocabulary remains unchanged.
+- `renderer writes: none`, inspector/placements/safety behavior, and measurement overlay behavior remain preserved.
+- No canvas placement/ghost/rotation/Confirm/Edit Layout runtime flow is authorized.
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` and its post-audit closeout remain accepted/pushed; this pass now records implementation closeout metadata and route state.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS`.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS` remains accepted/pushed; this pass now captures the compact-polish scope-lock.
 
 ## Manual smoke record (previous)
 

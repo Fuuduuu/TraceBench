@@ -2,33 +2,29 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS`
 
 ## Type
 
-CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
+CODEX / DOCS_SCOPE_LOCK
 
 ## Goal
 
-Record docs-only implementation post-audit for `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` and route onward.
+Lock a narrow docs-only scope-lock for compacting the accepted Add Component visual-contact builder UI.
 
 ## Baseline
 
-- Current route before this post-audit closeout: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`.
-- Add Component visual-contact builder scope-lock is accepted/pushed as `61ed41e` (`docs: lock add component visual-contact builder scope`) and post-audit as `535fe8e` (`docs: record add component visual-contact builder scope-lock post-audit`).
-- Add Component template-list implementation is accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
-- Add Component design-input artifacts remain source-only:
+- Current route before this pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`.
+- Add Component visual-contact builder implementation is accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS` manual smoke result was `PASS` with one non-blocking compactness nit (`builder is too large / bulky`).
+- Add Component Footprint Builder HTML/CSS remains design input only:
   - `_incoming/ui_redesign/Components/Add Component Footprint Builder - Design Review.html`
   - `_incoming/ui_redesign/Components/builder.css`
-- GPT Pro review verdict was `READY_FOR_DOCS_CAPTURE`.
-- Add Component product-boundary decisions were captured in:
-  - `V2_WORKBENCH_ADD_COMPONENT_DESIGN_GAP_CAPTURE_PASS`
-  - `V2_WORKBENCH_ADD_COMPONENT_PRODUCT_BOUNDARY_DECISION_PASS`
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: IMPLEMENTATION_POST_AUDIT`
-- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
+- `ROUTE_EFFECT: SCOPE_LOCK`
+- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS`
 
 ## Allowed files
 
@@ -36,7 +32,7 @@ Record docs-only implementation post-audit for `V2_WORKBENCH_ADD_COMPONENT_VISUA
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS.md`
 
 ## Reference-only files
 
@@ -47,92 +43,48 @@ These files may be read as design input only. They must not be edited, staged, o
 
 ## Capture scope
 
-The implementation-lock for this pass is docs-only and only narrows allowlist + boundaries:
-
-- Add Component template selection may transition into right-panel visual-contact builder mode.
-- Builder state is local volatile widget state for side counts:
-  - `top`
-  - `right`
-  - `bottom`
-  - `left`
-- Right panel preview is local/volatile UI-only.
-- Starter template defaults may seed builder controls.
-- Invalid or empty states are UI-only only:
-  - zero contact markers
-  - excessive marker count
-  - reset-to-default behavior
-- Existing template-list behavior remains intact.
-- Wording remains `visual contact`, `contact marker`, `template family`, and `rectangular-perimeter layout`.
-- Do not introduce canonical terms: `pin`, `pad`, `net`, `trace`, `probe`, `electrical identity`.
-- Add Component Project Overview entry remains deferred.
+- compact template cards if needed,
+- denser builder layout,
+- shorter side labels:
+  - `Top`
+  - `Right`
+  - `Bottom`
+  - `Left`,
+- one shared `contact marker` context instead of repeated long labels,
+- smaller right-panel preview,
+- reset as compact secondary action,
+- preserve existing template-list behavior and existing builder behavior.
 
 ## Implementation allowlist
 
-The future implementation pass may touch only:
+Future implementation is pre-authorized to touch only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-The implementation-boundary lock for this slice remains:
-
-- right-panel visual-contact builder only,
-- local volatile widget state only,
-- side-count fields only: `top`, `right`, `bottom`, `left`,
-- right-panel-only rectangular-perimeter preview,
-- no canvas ghost/placement/drag/click-to-place,
-- no rotation draft,
-- no Confirm/write,
-- no persistence,
-- no schema/writer/materializer/validator/projection/Project ZIP/event/fact changes,
-- no canonical pin/pad/net/trace/probe/electrical semantics.
-
-## Pro review constraints
-
-- Do not accept the artifact's internal V4 pass ID as repo pass ID.
-- Do not treat HTML/CSS as runtime source.
-- Do not update `PROJECT_MEMORY.md` as accepted architecture.
-- Do not accept canonical footprint/pin/pad/net/trace/probe/electrical semantics.
-- Confirm payload remains unresolved and deferred.
-- Preserve this as implementation-lock-only docs; do not implement runtime in this pass.
-
-## Open product decisions
-
-- visual-contact terminology: locked.
-- rectangular-perimeter first model: selected and pre-authorized for implementation.
-- geometry-first reduced starter taxonomy: selected and pre-authorized for implementation.
-- editable side-count builder intent: pre-authorized for implementation.
-- builder local volatility: pre-authorized for implementation.
-- Add Component deep-link route deferral: selected.
-- Confirm payload: unresolved.
-- Edit Layout: separate protected future track.
-
 ## Forbidden files / surfaces
 
-- Runtime test/runtime code edits.
-- Additional widget/unit/integration/golden test files.
-- `_incoming` design artifact edits.
-- `docs/PROJECT_MEMORY.md` accepted architecture updates.
-- `schema`/writer/materializer/validator/projection/Project ZIP/event/fact or canonical routing edits.
-- Canonical footprint, pin, pad, net, trace, probe, or electrical semantics.
-- Add Component ghost placement.
-- `Add Component` canvas placement, drag-to-place, or confirm flow.
-- rotation draft/authoring, Edit Layout runtime flow, or Project Overview deep-link rewiring.
-- `Measure Sheet` behavior changes.
-- direct runtime implementation route selection.
-- canvas placement/ghost/rotation/Confirm/write implementation.
-- persistence of builder state.
+- Runtime implementation, runtime tests, or files outside the two-file future allowlist in this pass.
+- No canvas ghost/placement/drag/click-to-place in this scope.
+- No rotation draft.
+- No Confirm/write flow.
+- No builder-state persistence.
+- No schema/writer/materializer/validator/projection/Project ZIP/event/fact changes.
+- No canonical pin/pad/net/trace/probe/electrical semantics.
+- No `Project Overview` deep-link rewiring.
+- No `Measure Sheet` behavior changes.
+- No `/_incoming` runtime usage.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS`.
 
 ## Required validation
 
 ```powershell
 cd C:\Users\Kasutaja\Desktop\TraceBench
 git status --short --branch
-git log --oneline --decorate -10
 git diff --name-status
 git diff --cached --name-status
 git diff --check
@@ -140,4 +92,4 @@ git diff --check
 
 ## Stop conditions
 
-Stop and report if this pass needs runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, canvas placement/ghost, rotation authoring, Confirm implementation, `Project Overview` rewiring, Measure Sheet changes, `_incoming`, or accepted-architecture changes.
+Stop and report if this pass needs runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, placement/ghost/rotation/Confirm/Edit Layout/Measure Sheet changes, `_incoming` runtime usage, or accepted-architecture changes.

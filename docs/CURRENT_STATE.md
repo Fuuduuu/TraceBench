@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
 
 ## Repository handoff
 
@@ -81,11 +81,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS` is current Lane A runtime polish pass.
-- Runtime status: `IN_PROGRESS` (UI polish only).
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` is current Lane B protected docs-only scope-lock pass.
+- Runtime status: `NOT_ACCEPTED` for this pass (docs-only lock only).
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `FLUTTER_PASS`.
+- Route effect: `DOCS_SCOPE_LOCK`.
 - Governance policy updates captured:
   - Lane A/B are classified by semantic risk, not file type.
   - Lane A: low-risk, docs-only/no protected behavior, no route ambiguity.
@@ -97,8 +97,8 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
 - No implementation or runtime commit is captured in this docs-sync governance pass.
 
 ## Manual smoke record (previous)

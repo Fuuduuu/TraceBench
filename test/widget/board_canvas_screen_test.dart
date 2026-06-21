@@ -540,6 +540,37 @@ void main() {
       findsOneWidget,
     );
     expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_2_top_bottom',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_4_perimeter',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_6_edge_balance',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('2 contacts'), findsOneWidget);
+    expect(find.text('4 contacts'), findsOneWidget);
+    expect(find.text('6 contacts'), findsOneWidget);
+    expect(find.textContaining('template family'), findsNothing);
+    expect(find.textContaining('rectangular-perimeter geometry'), findsNothing);
+    expect(find.textContaining('visual contacts'), findsNothing);
+    expect(find.textContaining('template shape'), findsNothing);
+    expect(
       find.byKey(const Key('board_canvas_rail_add_component_active')),
       findsOneWidget,
     );
@@ -561,8 +592,109 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.text('template family'), findsAtLeastNWidgets(1));
-    expect(find.textContaining('visual contacts'), findsAtLeastNWidgets(1));
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_summary')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_summary_shape')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_visual_body')),
+      findsOneWidget,
+    );
+    expect(
+        find.byKey(
+            const Key('board_canvas_add_component_template_builder_top_value')),
+        findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('template cards are compact and visual in browse mode',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.textContaining('template family'), findsNothing);
+    expect(find.textContaining('rectangular-perimeter geometry'), findsNothing);
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list_rows')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_2_top_bottom',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_4_perimeter',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_rect_6_edge_balance',
+        ),
+      ),
+      findsOneWidget,
+    );
+
+    final firstTemplateBounds = tester.getRect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    final secondTemplateBounds = tester.getRect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter',
+        ),
+      ),
+    );
+    final thirdTemplateBounds = tester.getRect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_6_edge_balance',
+        ),
+      ),
+    );
+    expect(firstTemplateBounds.height, lessThanOrEqualTo(60));
+    expect(secondTemplateBounds.height, lessThanOrEqualTo(60));
+    expect(thirdTemplateBounds.height, lessThanOrEqualTo(60));
+    expect(firstTemplateBounds.width, lessThan(700));
+    expect(secondTemplateBounds.width, lessThan(700));
+    expect(thirdTemplateBounds.width, lessThan(700));
+
+    expect(find.text('2 contacts'), findsOneWidget);
+    expect(find.text('4 contacts'), findsOneWidget);
+    expect(find.text('6 contacts'), findsOneWidget);
     expect(state.events, isEmpty);
   });
 
@@ -654,8 +786,30 @@ void main() {
       findsOneWidget,
     );
     expect(
+      find.byKey(const Key('board_canvas_add_component_template_summary')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_template_summary_shape'),
+      ),
+      findsOneWidget,
+    );
+    expect(
       find.byKey(const Key('board_canvas_add_component_builder_card')),
       findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_change_template')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_visual_body')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list_rows')),
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_add_component_builder_preview')),
@@ -665,6 +819,7 @@ void main() {
       find.text('Visual-contact builder'),
       findsOneWidget,
     );
+    expect(find.textContaining('template family'), findsNothing);
     expect(
       find.byKey(
         const Key(
@@ -706,20 +861,197 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.text('Contact markers'), findsOneWidget);
-    expect(find.text('Top'), findsOneWidget);
-    expect(find.text('Right'), findsOneWidget);
-    expect(find.text('Bottom'), findsOneWidget);
-    expect(find.text('Left'), findsOneWidget);
     expect(find.text('Top contact marker'), findsNothing);
     expect(find.text('Right contact marker'), findsNothing);
     expect(find.text('Bottom contact marker'), findsNothing);
     expect(find.text('Left contact marker'), findsNothing);
 
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_top_control'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_right_control'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_bottom_control'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_left_control'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_builder_reset_to_defaults',
+        ),
+      ),
+      findsOneWidget,
+    );
+
     final previewSize = tester.getSize(
       find.byKey(const Key('board_canvas_add_component_builder_preview')),
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_visual_body'),
+      ),
+      findsOneWidget,
+    );
     expect(previewSize.height, lessThan(170));
     expect(previewSize.width, greaterThan(previewSize.height));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'visual-contact builder controls are spatially attached to the rectangular preview',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final topRect = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_builder_top_control')),
+    );
+    final rightRect = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_builder_right_control')),
+    );
+    final bottomRect = tester.getRect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_bottom_control'),
+      ),
+    );
+    final leftRect = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_builder_left_control')),
+    );
+    final bodyRect = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_builder_preview')),
+    );
+
+    expect(topRect.center.dy, lessThan(bodyRect.top));
+    expect(topRect.bottom, lessThan(bodyRect.top));
+    expect(bottomRect.center.dy, greaterThan(bodyRect.bottom));
+    expect(bottomRect.top, greaterThan(bodyRect.bottom));
+    expect(leftRect.center.dx, lessThan(bodyRect.left));
+    expect(leftRect.right, lessThan(bodyRect.left));
+    expect(rightRect.center.dx, greaterThan(bodyRect.right));
+    expect(rightRect.left, greaterThan(bodyRect.right));
+    expect(topRect, isNot(equals(bodyRect)));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'selected template summary is primary and change-template restores template list',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester
+        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    final summaryTop = tester.getTopLeft(
+      find.byKey(const Key('board_canvas_add_component_template_summary')),
+    );
+    final builderTop = tester.getTopLeft(
+      find.byKey(const Key('board_canvas_add_component_template_builder')),
+    );
+    expect(builderTop.dy, greaterThan(summaryTop.dy));
+    expect(
+      find.textContaining('template family'),
+      findsNothing,
+    );
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_summary_shape')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_visual_body')),
+      findsOneWidget,
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list_rows')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_change_template')),
+      findsOneWidget,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_change_template'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list_rows')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_builder')),
+      findsNothing,
+    );
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     expect(state.events, isEmpty);
   });
 
@@ -763,7 +1095,8 @@ void main() {
     String rightCountText() => tester
         .widget<Text>(
           find.byKey(
-            const Key('board_canvas_add_component_template_builder_right_value'),
+            const Key(
+                'board_canvas_add_component_template_builder_right_value'),
           ),
         )
         .data!;
@@ -771,7 +1104,8 @@ void main() {
     String bottomCountText() => tester
         .widget<Text>(
           find.byKey(
-            const Key('board_canvas_add_component_template_builder_bottom_value'),
+            const Key(
+                'board_canvas_add_component_template_builder_bottom_value'),
           ),
         )
         .data!;
@@ -833,7 +1167,8 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester
+        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
@@ -846,7 +1181,8 @@ void main() {
     expect(
       tester
           .widget<Text>(
-            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+            find.byKey(const Key(
+                'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
       '1',
@@ -855,7 +1191,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_right_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_right_value'),
             ),
           )
           .data,
@@ -865,7 +1202,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_bottom_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_bottom_value'),
             ),
           )
           .data,
@@ -875,7 +1213,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_left_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_left_value'),
             ),
           )
           .data,
@@ -900,7 +1239,8 @@ void main() {
     expect(
       tester
           .widget<Text>(
-            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+            find.byKey(const Key(
+                'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
       '3',
@@ -909,7 +1249,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_right_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_right_value'),
             ),
           )
           .data,
@@ -918,14 +1259,23 @@ void main() {
 
     await _tapWidgetByKey(
       tester,
-      const Key('board_canvas_add_component_template_template_family_rect_4_perimeter'),
+      const Key('board_canvas_add_component_change_template'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter',
+        ),
+      ),
     );
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
       tester
           .widget<Text>(
-            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+            find.byKey(const Key(
+                'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
       '1',
@@ -934,7 +1284,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_right_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_right_value'),
             ),
           )
           .data,
@@ -944,7 +1295,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_bottom_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_bottom_value'),
             ),
           )
           .data,
@@ -954,20 +1306,23 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_left_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_left_value'),
             ),
           )
           .data,
       '1',
     );
     expect(
-      find.byKey(const Key('board_canvas_add_component_builder_zero_markers_hint')),
+      find.byKey(
+          const Key('board_canvas_add_component_builder_zero_markers_hint')),
       findsNothing,
     );
     expect(state.events, isEmpty);
   });
 
-  testWidgets('builder warning states expose zero/excessive hint UI only', (tester) async {
+  testWidgets('builder warning states expose zero/excessive hint UI only',
+      (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -981,11 +1336,13 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await tester
+        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
-      const Key('board_canvas_add_component_template_template_family_rect_4_perimeter'),
+      const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter'),
     );
     await tester.pump(const Duration(milliseconds: 16));
 
@@ -1013,7 +1370,8 @@ void main() {
     expect(
       tester
           .widget<Text>(
-            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+            find.byKey(const Key(
+                'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
       '0',
@@ -1022,7 +1380,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_right_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_right_value'),
             ),
           )
           .data,
@@ -1032,7 +1391,8 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_bottom_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_bottom_value'),
             ),
           )
           .data,
@@ -1042,14 +1402,16 @@ void main() {
       tester
           .widget<Text>(
             find.byKey(
-              const Key('board_canvas_add_component_template_builder_left_value'),
+              const Key(
+                  'board_canvas_add_component_template_builder_left_value'),
             ),
           )
           .data,
       '0',
     );
     expect(
-      find.byKey(const Key('board_canvas_add_component_builder_zero_markers_hint')),
+      find.byKey(
+          const Key('board_canvas_add_component_builder_zero_markers_hint')),
       findsOneWidget,
     );
 
@@ -1064,7 +1426,8 @@ void main() {
     expect(
       tester
           .widget<Text>(
-            find.byKey(const Key('board_canvas_add_component_template_builder_top_value')),
+            find.byKey(const Key(
+                'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
       '9',
@@ -1078,7 +1441,8 @@ void main() {
     expect(state.events, isEmpty);
   });
 
-  testWidgets('visual-contact builder reset returns template defaults', (tester) async {
+  testWidgets('visual-contact builder reset returns template defaults',
+      (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -1174,7 +1538,8 @@ void main() {
     expect(state.events, isEmpty);
   });
 
-  testWidgets('visual-contact builder mode has no write/placement controls', (tester) async {
+  testWidgets('visual-contact builder mode has no write/placement controls',
+      (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -2276,7 +2641,6 @@ void main() {
       'Confirm measurement',
       'Edit',
       'Edit measurement',
-      'Change template',
       'Promote',
       'Promote to net',
       'Delete',

@@ -11,7 +11,7 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`
 
 ## Next recommended pass
 
@@ -25,6 +25,7 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
+| V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS | CODEX / FLUTTER_PASS | in progress | Keep Add Component template selection on the active right-panel, and render selected template summary with compact builder controls instead of full template cards. Change-template restores list mode while preserving local volatile counts and warnings. |
 | TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`) | Docs-only scope lock for targeted docs/governance hygiene cleanup after Pro docs-hygiene findings; no runtime changes; locks future narrow pass order and canonical owner routing (`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`); user smoke evidence from `Kontrollisin, hetkel sobivad` is recorded as accepted behavior confirmation (no separate smoke pass). |
 | TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS | CODEX / DOCS_HYGIENE | accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`) | Docs-only pass for `docs/AUDIT_INDEX.md` semantics and route-bookkeeping normalization; docs-hygiene follow-up is `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`. |
 | TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS | CODEX / DOCS_HYGIENE | accepted/pushed as `c70e23f` (`docs: archive completed pass-queue history`) | Docs-only docs-hygiene cleanup pass that archived completed `PASS_QUEUE` history and kept operational routing and sequencing focused. |

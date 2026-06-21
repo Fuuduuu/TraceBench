@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`
 
 ## Next recommended pass
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: amend two-lane governance docs using GPT Pro semantic-risk review.
+- Current pass purpose: polish Add Component right-panel builder active-state layout so the selected template is primary.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -81,11 +81,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS` is current docs-sync governance alignment pass.
-- Runtime status: `NOT_ACCEPTED` (policy sync only).
-- Architecture status: `NOT_ACCEPTED` (policy, not implementation).
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS` is current Lane A runtime polish pass.
+- Runtime status: `IN_PROGRESS` (UI polish only).
+- Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `DOCS_SYNC`.
+- Route effect: `FLUTTER_PASS`.
 - Governance policy updates captured:
   - Lane A/B are classified by semantic risk, not file type.
   - Lane A: low-risk, docs-only/no protected behavior, no route ambiguity.
@@ -97,7 +97,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
 - No implementation or runtime commit is captured in this docs-sync governance pass.
 

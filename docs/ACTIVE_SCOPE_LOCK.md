@@ -2,29 +2,29 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
 
 ## Goal
 
-Lock the future Add Component visual template catalog in the right contextual panel so contact-marker editing remains in the locked visual builder flow and identity semantics remain non-canonical.
+Record the accepted/pushed Add Component visual template catalog implementation closeout after implementation audit.
 
 ## Baseline
 
-- Current route before this pass: `NEEDS_USER_DECISION` after accepted local ghost post-audit closeout.
-- Latest accepted Add Component runtime baseline: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` at `cd19ae2` (`feat: add component local ghost preview`).
+- Current route before this pass: `NEEDS_USER_DECISION` after local ghost closeout and catalog implementation closeout scope-lock handoff.
+- Latest accepted Add Component runtime baseline: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` at `435e43a` (`feat: add component visual template catalog`).
 - Current baseline includes:
-  - local draft Add Component ghost preview,
-  - local draft `Draft label`,
+  - local volatile right-panel visual-template catalog selection flow,
+  - local volatile side-count builder seed state,
   - no canonical placement.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: DOCS_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS`
+- `ROUTE_EFFECT: DOCS_SYNC_CLOSEOUT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 - `LANE_B`
 
 ## Allowed files
@@ -33,7 +33,7 @@ Lock the future Add Component visual template catalog in the right contextual pa
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS.md`
 
 ## Preserve boundary
 
@@ -103,8 +103,8 @@ No other runtime/test files are pre-authorized.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_SCOPE_LOCK
+CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
 
 ## Goal
 
-Create a docs-only implementation-lock for the next Add Component UI slice: right-panel visual-contact builder implementation.
+Record docs-only implementation post-audit for `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` and route onward.
 
 ## Baseline
 
-- Current route before this implementation-lock: `NEEDS_USER_DECISION`.
+- Current route before this post-audit closeout: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`.
 - Add Component visual-contact builder scope-lock is accepted/pushed as `61ed41e` (`docs: lock add component visual-contact builder scope`) and post-audit as `535fe8e` (`docs: record add component visual-contact builder scope-lock post-audit`).
 - Add Component template-list implementation is accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - Add Component design-input artifacts remain source-only:
@@ -27,8 +27,8 @@ Create a docs-only implementation-lock for the next Add Component UI slice: righ
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: IMPLEMENTATION_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`
+- `ROUTE_EFFECT: IMPLEMENTATION_POST_AUDIT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 
 ## Allowed files
 
@@ -36,8 +36,7 @@ Create a docs-only implementation-lock for the next Add Component UI slice: righ
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/WORK_INTAKE_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS.md`
 
 ## Reference-only files
 
@@ -125,8 +124,8 @@ The implementation-boundary lock for this slice remains:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

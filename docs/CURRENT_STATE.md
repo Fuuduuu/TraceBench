@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,8 +17,10 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only implementation-lock for the first Add Component visual-contact builder runtime slice.
-- Current accepted Add Component implementation: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
+- Current pass purpose: docs-only post-audit closeout for the accepted Add Component visual-contact builder implementation.
+- Current accepted Add Component implementations:
+  - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
+  - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
 
 ## Accepted docs-hygiene baseline
 
@@ -56,7 +58,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only scope-lock pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only implementation-post-audit closeout pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -98,9 +100,9 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS`.
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` and its post-audit closeout remain accepted/pushed; this pass only activates implementation-boundary docs and runtime allowlist.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
+- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_SCOPE_LOCK_PASS` and its post-audit closeout remain accepted/pushed; this pass now records implementation closeout metadata and route state.
 
 ## Manual smoke record (previous)
 

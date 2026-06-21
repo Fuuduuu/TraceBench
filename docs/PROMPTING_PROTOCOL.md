@@ -7,12 +7,39 @@ Keep prompts compact, scoped, and auditable without losing safety.
 Canonical repo docs win over prompt/chat memory.
 Use `docs/MODEL_ROUTING.md` for helper/model role ownership and `docs/AUDIT_CONTRACT.md` for reusable audit contracts instead of repeating long stable blocks.
 
+## Two-lane pass policy
+
+Classify every pass as either `Lane A` or `Lane B`.
+
+Lane A:
+
+- low-risk UI-only work inside an accepted lock;
+- docs closeouts;
+- QA hardening.
+- GPT routes once.
+- Codex handles implementation/docs and uses lean prompts.
+- user sends Codex output directly to Claude for audit.
+- user stages/commits/pushes manually.
+- return to GPT only for blocker, route conflict, protected-surface ambiguity, or unclear audit.
+
+Lane B:
+
+- events/facts/schema/validator/materializer/writer/Project ZIP/renderer writes/AI/OCR/CV/new canonical events/route ambiguity.
+- keep full ceremony: GPT risk review, dedicated scope-lock, full prompt, Claude gate.
+
+No safety rails are relaxed:
+
+- explicit staging only;
+- no `git add .` / no broad commits;
+- repo docs remain authority;
+- protected surfaces remain hard-gated.
+
 ## Required prompt fields (always)
 
 Every implementation/audit prompt must include:
 
 - `PASS_ID`
-- `Lane`
+- `Lane` (`A` or `B`)
 - `Mode`
 - `Goal`
 - `Gate`
@@ -239,6 +266,13 @@ Stop and route to user/deep review if:
 - Keep validation commands explicit and literal in prompts.
 - Do not mark PASS success without command evidence.
 - For docs-only passes: run `py -3 tools\validate_all.py`, `git diff --name-only`, `git status --short --branch` unless the pass explicitly changes this.
+
+## Lane-by-pass mapping
+
+- Lane A and Lane B classification should be on every pass prompt.
+- Lean prompts are default for Lane A.
+- No redundant implementation scope-lock is needed for low-risk polish inside an accepted lock.
+- No separate post-audit closeout pass is required unless it records useful state or protected/high-risk work requires it.
 
 ## Reusable guard clauses for implementation prompts
 

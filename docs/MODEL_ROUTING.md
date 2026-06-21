@@ -43,6 +43,8 @@ Prompt docs and operating docs should reference this file instead of duplicating
 | Situation | Route |
 |---|---|
 | Narrow deterministic edit with locked scope | Codex |
+| Lane A doc/polish/corrective pass | Codex first, then Claude Code |
+| Lane B protected/high-risk work | ChatGPT / GPT Pro first, then Codex, then Claude Code |
 | Independent repo-local compliance audit | Claude Code |
 | Architecture/evidence-floor decision | ChatGPT / GPT Pro |
 | Prompt construction or non-final pre-audit | ChatGPT / GPT Pro |
@@ -60,6 +62,18 @@ Prompt docs and operating docs should reference this file instead of duplicating
 - Use exact staging sets only; never use broad staging.
 - High-risk Codex implementation must receive non-Codex review before acceptance (typically Claude Code, and GPT Pro when evidence/architecture boundaries are at risk).
 - V2 backend surfaces are accepted through validator -> materializer -> writer service; UI write flows remain separately scoped/audited and not yet implemented.
+
+## Lane policy
+
+- Lane A:
+  - default for low-risk UI-only edits inside accepted locks, docs closeouts, and hardening passes.
+  - no broad scope expansion.
+  - Codex executes implementation/docs pass, Claude Code handles repo-local audit.
+- Lane B:
+  - default for protected surfaces, canonical data surfaces, renderer write semantics, schema/validator/materializer/writer/Project ZIP/authorship/OCR/AI/CV changes, and route ambiguity.
+  - full prompt + GPT risk review + dedicated scope-lock + full audit sequence required.
+
+Model ownership still comes from this file for all lanes; prompts remain pointer-based to keep docs authoritative.
 
 ## Practical handoff pattern
 

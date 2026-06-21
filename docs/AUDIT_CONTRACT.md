@@ -20,6 +20,13 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - Findings ranking: rank findings as `BLOCKER`, `HIGH`, `MEDIUM`, `LOW`, or `NIT`.
 - Verdict and safety gate: return one verdict option and `safe_to_commit` or `safe_for_commit_push` as `YES` or `NO`.
 
+## Two-lane policy
+
+- Lane A pass families (docs-only sync, docs locks, scoped polish, QA hardening in accepted behavior) use lean contract prompts by default.
+- Lane B pass families (schema/validator/materializer/writer, event/facts, Project ZIP, renderer writes, AI/OCR/CV, route ambiguity) require full contract detail and a complete decision trail.
+- Even in Lane A, protected-surface checks in `docs/PROTECTED_SURFACES.md` and routing consistency checks in `docs/MODEL_ROUTING.md` remain mandatory.
+- Do not add redundant post-audit passes unless they capture meaningful state, boundary decisions, or protected/high-risk risk transitions.
+
 ## Contract: scope-lock-post-audit
 
 Use after a docs-only scope lock is drafted and needs independent audit before closeout.

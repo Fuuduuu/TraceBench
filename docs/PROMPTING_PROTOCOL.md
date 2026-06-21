@@ -287,6 +287,33 @@ Stop and route to user/deep review if:
 - Prefer commit trailers or a single batched milestone audit record when the child pass sequence is routine.
 - No separate post-audit closeout pass is required unless it records useful state or protected/high-risk work requires it.
 
+## Accepted shorthand for clean Lane A audits
+
+- In Lane A docs-only passes, user may reply only `Accepted` when all are true:
+  - Claude returned `ACCEPT_AS_IS`.
+  - `SAFE_FOR_STAGING: YES`.
+  - no blockers.
+  - `expected safe staging set == actual changed files`.
+  - no route/hash/scoping mismatch.
+- If any condition fails, the user must paste relevant audit details instead of `Accepted`:
+  - `ACCEPT_WITH_NITS`
+  - `BLOCKED`
+  - `SAFE_FOR_STAGING: NO`
+  - unexpected changed files
+  - route/hash mismatch
+  - scope concern
+  - protected-surface warning
+  - staging set mismatch.
+- For Lane A docs-closeout/lock/audit summary passes, Codex must still emit a compact `CLAUDE_AUDIT_PACKET`.
+- Packet checks should be token-light and limited to:
+  - expected diff
+  - current/next route
+  - boundary/protected-surface checks
+  - validation commands/results
+  - staging state
+  - exact safe staging set when accepted.
+- Do not rely on full repeated role blocks for this policy check. Reference `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, `docs/PROTECTED_SURFACES.md`, and `docs/ACTIVE_SCOPE_LOCK.md` where relevant.
+
 ## Lane A audit evidence discipline
 
 - Independent Claude audit remains required for Lane A parent-lock and amendment passes.

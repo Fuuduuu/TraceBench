@@ -39,6 +39,25 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - For routine bundle child passes, a combined milestone audit record is acceptable when risk and scope are unchanged.
 - Evidence may not be overwritten as "closed" without explicitly recording the boundary change reason.
 
+## Compact `CLAUDE_AUDIT_PACKET` for clean Lane A docs-only passes
+
+- For clean Lane A docs-only passes where no blockers are found, audit may be returned as compact packet form instead of full prose.
+- Required packet fields:
+  - `AUDIT_VERDICT` (`ACCEPT_AS_IS` only for shorthand path).
+  - `SAFE_FOR_STAGING` (`YES` / `NO`).
+  - `EXPECTED_DIFF`.
+  - `CURRENT_ROUTE` / `NEXT_ROUTE`.
+  - `BOUNDARY_RESULT` and protected-surface confirmation.
+  - `VALIDATION_RESULTS` (commands and pass/fail).
+  - `STAGED` state (`NO`) and exact safe staging set if accepted.
+- No full evidence details are required only when:
+  - `AUDIT_VERDICT` is `ACCEPT_AS_IS`
+  - `SAFE_FOR_STAGING` is `YES`
+  - no blockers
+  - no route/hash mismatch
+  - no unexpected changed files.
+- If shorthand is used, packet must still explicitly confirm `no false accepted/pushed` claim for the current uncommitted pass.
+
 ## Contract: scope-lock-post-audit
 
 Use after a docs-only scope lock is drafted and needs independent audit before closeout.

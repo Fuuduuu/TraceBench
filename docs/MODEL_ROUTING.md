@@ -82,6 +82,17 @@ Prompt docs and operating docs should reference this file instead of duplicating
 
 Model ownership still comes from this file for all lanes; prompts remain pointer-based to keep docs authoritative.
 
+### Accepted shorthand guard (Lane A)
+
+- Compact `Accepted` can be used by user handoff only when the current Lane A pass is clean:
+  - `AUDIT_VERDICT` is `ACCEPT_AS_IS`;
+  - `SAFE_FOR_STAGING: YES`;
+  - no blockers;
+  - no route/hash/scoping mismatches;
+  - no unexpected changed files.
+- If any condition fails, the full audit packet/evidence must be pasted.
+- Route consistency for this handoff still requires `CURRENT_STATE.md`, `PASS_QUEUE.md`, and `ACTIVE_SCOPE_LOCK.md` to agree on current and next pass.
+
 ## Practical handoff pattern
 
 1. Codex executes scoped implementation/doc pass.

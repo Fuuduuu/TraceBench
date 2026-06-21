@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`
+`TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -25,7 +25,8 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | in progress | Local-only Add Component ghost preview remains UI-local only and non-authoritative. Scope-lock the draft ghost model: local volatile canvas ghost state, visual distinction from confirmed placement/overlay, deferred click-to-place decision, and explicit non-canonical draft coordinates if recorded locally. |
+| TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only pass | Records clean Claude `ACCEPT_AS_IS` shorthand conditions for Lane A and the compact `CLAUDE_AUDIT_PACKET` requirement for docs-only governance passes. |
+| V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | completed docs-only pass (parked for standalone route recovery) | Local-only Add Component ghost preview remains UI-local only and non-authoritative. Scope-lock the draft ghost model: local volatile canvas ghost state, visual distinction from confirmed placement/overlay, deferred click-to-place decision, and explicit non-canonical draft coordinates if recorded locally. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `33d2f17` (`feat: polish add component builder active panel`) | Active Add Component panel polish remains preserved behavior; compact cards were replaced with a focused builder-first active state with shared contact-marker context and local volatile counts. |
 | TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `dbe9271` (`docs: lock tracebench docs hygiene scope`) | Docs-only scope lock for targeted docs/governance hygiene cleanup after Pro docs-hygiene findings; no runtime changes; locks future narrow pass order and canonical owner routing (`TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS` → `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS` → `TRACEBENCH_CORE_INVARIANTS_OWNER_REFRESH_PASS` → `TRACEBENCH_MODEL_ROUTING_OWNER_REFRESH_PASS` → `CURRENT_STATE_HISTORY_TRIM_PASS` → `TRACEBENCH_WORKBENCH_ARCHITECTURE_DIAGRAM_REFRESH_PASS`); user smoke evidence from `Kontrollisin, hetkel sobivad` is recorded as accepted behavior confirmation (no separate smoke pass). |
 | TRACEBENCH_AUDIT_INDEX_NORMALIZATION_PASS | CODEX / DOCS_HYGIENE | accepted/pushed as `7c12aa7` (`docs: normalize audit index route bookkeeping`) | Docs-only pass for `docs/AUDIT_INDEX.md` semantics and route-bookkeeping normalization; docs-hygiene follow-up is `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`. |
@@ -62,5 +63,5 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | accepted/pushed as `17441cb` (`docs: lock add component builder compact polish`) | Scope-lock for compacting the existing Add Component visual-contact builder UI. No new behavior; compact template cards, denser layout, short side labels (`Top`/`Right`/`Bottom`/`Left`), shared contact-marker context, smaller right-panel preview, and compact reset action. Runtime/test allowlist is `lib/features/board_canvas/screens/board_canvas_screen.dart` + `test/widget/board_canvas_screen_test.dart`. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed docs-only post-audit closeout | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS` as `248893f` (`feat: compact add component builder UI`) and routes onward to `NEEDS_USER_DECISION`. |
 | TRACEBENCH_TWO_LANE_GOVERNANCE_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `5eefc4e` (`docs: sync two-lane governance workflow`) | Records the initial two-lane governance workflow in protocol/routing/audit docs and kept this route in a docs-sync doc-only lane. |
-| TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS | CODEX / DOCS_SYNC | current docs-only pass | Amends two-lane policy with semantic-risk classification, parent-lock/bundle mechanics, CLAUDE_AUDIT_PACKET evidence discipline, Lane A closeout rule, and AUDIT_INDEX simplification policy. |
+| TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS | CODEX / DOCS_SYNC | accepted/pushed as `fc9ef99` (`docs: amend two-lane governance workflow`) | Amends two-lane policy with semantic-risk classification, parent-lock/bundle mechanics, CLAUDE_AUDIT_PACKET evidence discipline, Lane A closeout rule, and AUDIT_INDEX simplification policy. |
 | V2_WORKBENCH_INTEGRATED_PANEL_SMOKE_PASS | CODEX / DOCS_MANUAL_QA_RECORD | future QA route | Manual Windows smoke after integrated panel/navigation work. |

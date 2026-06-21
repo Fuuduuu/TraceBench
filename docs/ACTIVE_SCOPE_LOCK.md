@@ -2,27 +2,30 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`
+`TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CODEX / DOCS_SYNC
 
 ## Goal
 
-Record a protected docs-only scope-lock for a local-only Add Component canvas ghost preview draft. The ghost is read-only UI state only, non-authoritative, and does not commit placement or create persistent/projection state.
+Record the Lane A docs-only shorthand and compact audit packet policy for this pass stream:
+- user-facing `Accepted` shorthand conditions;
+- compact `CLAUDE_AUDIT_PACKET` requirements;
+- no runtime/test/protected-surface edits for this governance pass.
 
 ## Baseline
 
- - Current route before this pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`.
- - Existing Add Component template-list + visual-contact builder behavior is baseline.
- - `_incoming` remains reference-only and is not accepted runtime source.
+ - Current route before this pass: `TRACEBENCH_TWO_LANE_GOVERNANCE_PRO_REVIEW_AMEND_PASS`.
+ - Latest accepted feature baseline remains `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`.
+ - `_incoming` remains design/reference only and is not accepted runtime source.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: DOCS_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
-- `LANE_B`
+- `ROUTE_EFFECT: DOCS_SYNC`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
+- `LANE_A`
 
 ## Allowed files
 
@@ -30,25 +33,26 @@ Record a protected docs-only scope-lock for a local-only Add Component canvas gh
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/AUDIT_CONTRACT.md`
+- `docs/MODEL_ROUTING.md`
+- `docs/audit/TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS.md`
 
 ## Preserve boundary
 
-Local-only/volatile behavior boundaries for future implementation:
+This governance sync pass is docs-only:
 
-- Local ghost draft is UI-only and non-canonical.
-- No canonical placement/authoring/state persistence.
-- No writer/event/fact/schema/projection changes.
-- No canvas placement, drag/click-to-place, rotation draft, Confirm/write, or Edit Layout.
-- `renderer writes: none` remains preserved by prior accepted baseline.
-- Ghost/preview must remain visually distinct from confirmed placement and measurement overlay.
-- `Project Overview` deep-linking is deferred.
-- Template/builder behavior remains unchanged.
+- No runtime/test implementation files are modified.
+- No schema/writer/materializer/validator/projection/event/fact changes.
+- No `Project ZIP` or route-ambiguity changes.
+- No `*_incoming` runtime source usage.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`.
-- Open decisions remain recorded for implementation alignment: click-to-place strategy, ghost follows cursor or stays at neutral preview location, and explicit non-canonical draft coordinate semantics.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
+- Current pass: `TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`.
+- Route now requires `ACCEPT_AS_IS` + `SAFE_FOR_STAGING: YES` before any shorthand `Accepted` handoff.
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` remains parked as a separate docs-only scope in adjacent ledgers while this shorthand policy pass records provenance correction.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 
@@ -58,15 +62,6 @@ git log --oneline --decorate -10
 git diff --name-status
 git diff --cached --name-status
 git diff --check
-```
-
-Implementation allowlist for the future ghost implementation pass:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-```text
-No runtime/test implementation files are modified in this docs-only pass.
 ```
 
 ## Stop conditions

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`
+`TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: polish Add Component right-panel builder active-state layout so the selected template is primary.
+- Current pass purpose: record clean Claude-audit shorthand handling and compact `CLAUDE_AUDIT_PACKET` rule for Lane A docs-only governance passes.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -81,11 +81,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` is current Lane B protected docs-only scope-lock pass.
+- `TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS` is current Lane A docs-only workflow policy pass.
 - Runtime status: `NOT_ACCEPTED` for this pass (docs-only lock only).
 - Architecture status: `NOT_ACCEPTED`.
 - Canonical semantics: `NONE`.
-- Route effect: `DOCS_SCOPE_LOCK`.
+- Route effect: `DOCS_SYNC`.
 - Governance policy updates captured:
   - Lane A/B are classified by semantic risk, not file type.
   - Lane A: low-risk, docs-only/no protected behavior, no route ambiguity.
@@ -94,11 +94,12 @@ The current docs-hygiene sequence is accepted through:
   - Lane A closeout only when route/scope/risk state changes.
 - Two-lane classification by semantic risk is now required first for every pass prompt.
 - `renderer writes: none`, inspector/placements/safety behavior, and measurement overlay behavior remain unchanged by this pass.
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` is parked in this route chain while this shorthand docs-sync pass records provenance correction; ghost scope-lock recovery is handled separately and this pass does not mix that scope.
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
+- Current pass: `TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 - No implementation or runtime commit is captured in this docs-sync governance pass.
 
 ## Manual smoke record (previous)

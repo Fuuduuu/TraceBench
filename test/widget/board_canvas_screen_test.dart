@@ -1582,6 +1582,135 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  testWidgets(
+      'local Add Component template ghost preview appears only when builder is active',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const measurement = MeasurementFact(
+      measurementId: 'M990',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 9.9,
+      unit: 'V',
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101')
+      ],
+      placements: const [boardPlacement],
+      measurements: const [measurement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsNothing,
+    );
+
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_4_perimeter',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_ghost_preview_body',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_draft_label_input',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_ghost_preview_status',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Draft / unsaved'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'AGH789',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.descendant(
+        of: find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview'),
+        ),
+        matching: find.text('AGH789'),
+      ),
+      findsOneWidget,
+    );
+    final statusRect = tester.getRect(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_preview_status'),
+      ),
+    );
+    final bodyRect = tester.getRect(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_preview_body'),
+      ),
+    );
+    expect(statusRect.top, lessThan(bodyRect.top));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measurement_value_badge_global_toggle'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.byKey(const Key('board_canvas_measurement_value_badge_M990')),
+      findsOneWidget,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_change_template'),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsNothing,
+    );
+    expect(state.events, isEmpty);
+  });
+
   testWidgets('wide Workbench starts with hidden right context panel',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

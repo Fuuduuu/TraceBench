@@ -237,6 +237,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   int _addComponentTemplateRightContactMarkers = 0;
   int _addComponentTemplateBottomContactMarkers = 0;
   int _addComponentTemplateLeftContactMarkers = 0;
+  String _addComponentTemplateDraftLabel = '';
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -398,6 +399,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         _visibleMeasurementValueBadgeComponentIds
             .where(eligibleMeasurementValueBadgeComponentIds.contains)
             .toSet();
+    final selectedAddComponentTemplate =
+        _selectedAddComponentTemplateDefinition();
     final allMeasurementValueBadgesVisible =
         eligibleMeasurementValueBadgeComponentIds.isNotEmpty &&
             visibleMeasurementValueBadgeComponentIds.length ==
@@ -480,6 +483,20 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   _contextPanelMode = _WorkbenchContextPanelMode.hidden;
                 });
               },
+              showAddComponentTemplateGhost: _contextPanelMode ==
+                      _WorkbenchContextPanelMode.addComponentTemplates &&
+                  _selectedAddComponentTemplateId != null,
+              addComponentTemplateGhostTopContactMarkers:
+                  _addComponentTemplateTopContactMarkers,
+              addComponentTemplateGhostRightContactMarkers:
+                  _addComponentTemplateRightContactMarkers,
+              addComponentTemplateGhostBottomContactMarkers:
+                  _addComponentTemplateBottomContactMarkers,
+              addComponentTemplateGhostLeftContactMarkers:
+                  _addComponentTemplateLeftContactMarkers,
+              addComponentTemplateGhostDraftLabel:
+                  _addComponentTemplateDraftLabel,
+              selectedAddComponentTemplate: selectedAddComponentTemplate,
             );
             final metadata = _InspectorPanel(
               selectedEntry: selectedEntry,
@@ -567,12 +584,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   );
                   break;
                 case _WorkbenchContextPanelMode.addComponentTemplates:
-                  final selectedTemplate =
-                      _selectedAddComponentTemplateDefinition();
                   contextPanel = _AddComponentTemplateListPanel(
                     entries: _kStarterAddComponentTemplates,
                     selectedTemplateId: _selectedAddComponentTemplateId,
-                    selectedTemplate: selectedTemplate,
+                    selectedTemplate: selectedAddComponentTemplate,
                     topContactMarkers: _addComponentTemplateTopContactMarkers,
                     rightContactMarkers:
                         _addComponentTemplateRightContactMarkers,
@@ -583,6 +598,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     hasExcessiveContactMarkers:
                         _addComponentTemplateHasExcessiveCounts,
                     onTemplateSelected: _setAddComponentTemplateSelection,
+                    draftLabel: _addComponentTemplateDraftLabel,
+                    onDraftLabelChanged: (value) {
+                      setState(() {
+                        _addComponentTemplateDraftLabel = value;
+                      });
+                    },
                     onTopContactMarkersChanged: (value) {
                       setState(
                           () => _addComponentTemplateTopContactMarkers = value);
@@ -604,14 +625,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _selectedAddComponentTemplateId = null;
                       });
                     },
-                    onResetToTemplateDefaults: selectedTemplate == null
-                        ? null
-                        : () {
-                            setState(() {
-                              _seedAddComponentTemplateContactCounts(
-                                  selectedTemplate);
-                            });
-                          },
+                    onResetToTemplateDefaults:
+                        selectedAddComponentTemplate == null
+                            ? null
+                            : () {
+                                setState(() {
+                                  _seedAddComponentTemplateContactCounts(
+                                      selectedAddComponentTemplate);
+                                });
+                              },
                   );
                   break;
                 case _WorkbenchContextPanelMode.safetyEvidence:
@@ -1452,6 +1474,8 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.onBottomContactMarkersChanged,
     required this.onLeftContactMarkersChanged,
     required this.onChangeTemplateSelection,
+    required this.draftLabel,
+    required this.onDraftLabelChanged,
     this.onResetToTemplateDefaults,
     this.initiallyExpanded = true,
   });
@@ -1471,6 +1495,8 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final ValueChanged<int> onBottomContactMarkersChanged;
   final ValueChanged<int> onLeftContactMarkersChanged;
   final VoidCallback onChangeTemplateSelection;
+  final String draftLabel;
+  final ValueChanged<String> onDraftLabelChanged;
   final VoidCallback? onResetToTemplateDefaults;
   final bool initiallyExpanded;
 
@@ -1536,6 +1562,26 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                     _AddComponentTemplateSelectedSummary(
                       template: selectedTemplate!,
                       onChangeTemplate: onChangeTemplateSelection,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      key: const Key(
+                        'board_canvas_add_component_template_draft_label_input',
+                      ),
+                      initialValue: draftLabel,
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        labelText: 'Draft label',
+                        hintText: 'e.g. AGH789',
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                      ),
+                      maxLength: 16,
+                      onChanged: onDraftLabelChanged,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 12),
                     ),
                     _AddComponentTemplateBuilderPanel(
                       key: const Key(
@@ -2039,12 +2085,22 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     required this.rightContactMarkers,
     required this.bottomContactMarkers,
     required this.leftContactMarkers,
+    this.boundaryColor = const Color(0xFF5C6BC0),
+    this.markerColor = const Color(0xFF2E7D32),
+    this.fillColor = Colors.transparent,
+    this.strokeWidth = 1.8,
+    this.dashedBoundary = false,
   });
 
   final int topContactMarkers;
   final int rightContactMarkers;
   final int bottomContactMarkers;
   final int leftContactMarkers;
+  final Color boundaryColor;
+  final Color markerColor;
+  final Color fillColor;
+  final double strokeWidth;
+  final bool dashedBoundary;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -2058,16 +2114,26 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     );
 
     final boundaryPaint = Paint()
-      ..color = const Color(0xFF5C6BC0)
-      ..strokeWidth = 1.8
+      ..color = boundaryColor
+      ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
     final markerPaint = Paint()
-      ..color = const Color(0xFF2E7D32)
+      ..color = markerColor
       ..strokeWidth = 2
       ..style = PaintingStyle.fill;
 
-    canvas.drawRect(previewRect, boundaryPaint);
+    if (fillColor != Colors.transparent) {
+      final fillPaint = Paint()
+        ..color = fillColor
+        ..style = PaintingStyle.fill;
+      canvas.drawRect(previewRect, fillPaint);
+    }
+    if (dashedBoundary) {
+      _drawDashedRect(canvas, previewRect, boundaryPaint);
+    } else {
+      canvas.drawRect(previewRect, boundaryPaint);
+    }
     _drawContactMarkersAlongTop(
       canvas,
       previewRect,
@@ -2092,6 +2158,74 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
       leftContactMarkers,
       markerPaint,
     );
+  }
+
+  void _drawDashedRect(Canvas canvas, Rect rect, Paint paint) {
+    const dashLength = 6.0;
+    const gap = 3.0;
+
+    _drawDashedLine(
+      canvas,
+      Offset(rect.left, rect.top),
+      Offset(rect.right, rect.top),
+      paint,
+      dashLength,
+      gap,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.right, rect.top),
+      Offset(rect.right, rect.bottom),
+      paint,
+      dashLength,
+      gap,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.right, rect.bottom),
+      Offset(rect.left, rect.bottom),
+      paint,
+      dashLength,
+      gap,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.left, rect.bottom),
+      Offset(rect.left, rect.top),
+      paint,
+      dashLength,
+      gap,
+    );
+  }
+
+  void _drawDashedLine(
+    Canvas canvas,
+    Offset start,
+    Offset end,
+    Paint paint,
+    double dashLength,
+    double gap,
+  ) {
+    final distance = (end - start).distance;
+    if (distance == 0) {
+      return;
+    }
+    final direction = (end - start) / distance;
+    var remaining = distance;
+    var current = start;
+
+    while (remaining > 0) {
+      final segmentLength = math.min(dashLength, remaining);
+      final next = current + direction * segmentLength;
+      canvas.drawLine(current, next, paint);
+      remaining -= segmentLength;
+      if (remaining <= 0) {
+        break;
+      }
+      final gapDistance = math.min(gap, remaining);
+      current = next + direction * gapDistance;
+      remaining -= gapDistance;
+    }
   }
 
   void _drawContactMarkersAlongTop(
@@ -2420,6 +2554,13 @@ class _CanvasPanel extends StatefulWidget {
     this.cornerFocusAction,
     required this.onPlacementSelected,
     required this.onCanvasTapEmpty,
+    this.showAddComponentTemplateGhost = false,
+    required this.addComponentTemplateGhostTopContactMarkers,
+    required this.addComponentTemplateGhostRightContactMarkers,
+    required this.addComponentTemplateGhostBottomContactMarkers,
+    required this.addComponentTemplateGhostLeftContactMarkers,
+    required this.addComponentTemplateGhostDraftLabel,
+    required this.selectedAddComponentTemplate,
   });
 
   final List<_PlacementEntry> entries;
@@ -2433,6 +2574,13 @@ class _CanvasPanel extends StatefulWidget {
   final Widget? cornerFocusAction;
   final ValueChanged<String> onPlacementSelected;
   final VoidCallback onCanvasTapEmpty;
+  final bool showAddComponentTemplateGhost;
+  final int addComponentTemplateGhostTopContactMarkers;
+  final int addComponentTemplateGhostRightContactMarkers;
+  final int addComponentTemplateGhostBottomContactMarkers;
+  final int addComponentTemplateGhostLeftContactMarkers;
+  final String addComponentTemplateGhostDraftLabel;
+  final _AddComponentTemplateDefinition? selectedAddComponentTemplate;
 
   @override
   State<_CanvasPanel> createState() => _CanvasPanelState();
@@ -2505,6 +2653,17 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   ),
                 ),
               ),
+              if (widget.showAddComponentTemplateGhost &&
+                  widget.selectedAddComponentTemplate != null) ...[
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: _buildLocalAddComponentTemplateGhost(context),
+                    ),
+                  ),
+                ),
+              ],
               Positioned.fill(
                 child: IgnorePointer(
                   child: _MeasurementValueBadgeLayer(
@@ -2520,6 +2679,103 @@ class _CanvasPanelState extends State<_CanvasPanel> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLocalAddComponentTemplateGhost(BuildContext context) {
+    final theme = Theme.of(context);
+    final String draftLabel = widget.addComponentTemplateGhostDraftLabel.trim();
+    final ghostPreview = widget.selectedAddComponentTemplate == null
+        ? null
+        : ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200, maxHeight: 115),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                AspectRatio(
+                  aspectRatio: 2.4,
+                  child: CustomPaint(
+                    key: const Key(
+                      'board_canvas_add_component_template_ghost_preview_body',
+                    ),
+                    painter: _RectangularPerimeterTemplatePreviewPainter(
+                      topContactMarkers:
+                          widget.addComponentTemplateGhostTopContactMarkers,
+                      rightContactMarkers:
+                          widget.addComponentTemplateGhostRightContactMarkers,
+                      bottomContactMarkers:
+                          widget.addComponentTemplateGhostBottomContactMarkers,
+                      leftContactMarkers:
+                          widget.addComponentTemplateGhostLeftContactMarkers,
+                      boundaryColor: const Color(0xFFFFC857),
+                      markerColor: const Color(0xFFF6A623),
+                      fillColor: const Color(0x22FFC857),
+                      dashedBoundary: true,
+                      strokeWidth: 2.1,
+                    ),
+                  ),
+                ),
+                if (draftLabel.isNotEmpty)
+                  Positioned.fill(
+                    child: Center(
+                      child: Text(
+                        draftLabel,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                Positioned(
+                  top: -20,
+                  right: 0,
+                  child: Container(
+                    key: const Key(
+                      'board_canvas_add_component_template_ghost_preview_status',
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
+                    ),
+                    child: Text(
+                      'Draft / unsaved',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+    if (ghostPreview == null) {
+      return const SizedBox.shrink();
+    }
+    return Semantics(
+      label: 'Local draft add component template ghost preview',
+      child: Container(
+        key: const Key('board_canvas_add_component_template_ghost_preview'),
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color:
+              theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.34),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: theme.colorScheme.outlineVariant,
+          ),
+        ),
+        child: ghostPreview,
       ),
     );
   }

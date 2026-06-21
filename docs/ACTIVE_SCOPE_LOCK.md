@@ -2,31 +2,26 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CLAUDE_CODE / DOCS_CLOSEOUT
 
 ## Goal
 
-Authorize the next implementation scope for Add Component local ghost preview without runtime changes in this pass:
-- local-only canvas ghost preview after accepted visual-contact builder state,
-- no canonical placement or persistence,
-- no Confirm/write,
-- no placement/rotation runtime,
-- no shared/protected surface changes.
+Record the docs-only post-audit closeout for `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` and route forward after acceptance.
 
 ## Baseline
 
-- Current route before this pass: `TRACEBENCH_ACCEPTED_SHORTHAND_DOCS_SYNC_PASS`.
-- Latest accepted Add Component runtime baseline: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_ACTIVE_PANEL_POLISH_PASS`.
+- Current route before this pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
+- Latest accepted Add Component runtime baseline: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` at `cd19ae2` (`feat: add component local ghost preview`).
 - `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` remains parked as recovered route context.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: DOCS_PROTECTED_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS`
+- `ROUTE_EFFECT: DOCS_CLOSEOUT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 - `LANE_B`
 
 ## Allowed files
@@ -35,22 +30,20 @@ Authorize the next implementation scope for Add Component local ghost preview wi
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS.md`
 
 ## Preserve boundary
 
-This pass is docs-only and is a protected implementation-scope activation:
-
+- This pass is docs-only and records closeout state only.
 - No runtime code/tests are modified.
 - No `schema/writer/materializer/validator/projection/event/fact/Project ZIP` changes.
-- No Add Component placement runtime.
-- No rotation draft or placement/drag/click-to-place behavior.
-- No Confirm/write or Edit Layout in this pass.
+- No Add Component persistence or canonical placement in this pass.
+- No rotation draft, click/drag-to-place, or Confirm/write in this pass.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 
@@ -64,14 +57,12 @@ git diff --check
 
 ## Stop conditions
 
-- Stop if any runtime/editorial file outside `docs/` changes.
-- Stop and report if this pass claims an accepted/pushed hash for this uncommitted lock pass.
-- Stop if this pass asserts runtime changes to protected surfaces or placement semantics.
+- Stop if runtime files outside docs are added to this pass.
+- Stop if this pass claims an accepted/pushed hash for the uncommitted closeout pass.
+- Stop if any protected-surface claim is changed in this docs-only closeout.
 
 ## STOP_IF
 
-- This lock pass is accepted only if `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` is kept as implementation-only.
-- Click-to-place is deferred in this boundary.
-- Drag-to-place is deferred.
-- Rotation draft is deferred.
-- Any draft coordinate must be local UI memory only and explicitly non-canonical.
+- Draft label remains local volatile/non-canonical/no persistence.
+- Click-to-place stays deferred unless a later lock changes it explicitly.
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` remains protected from edit/persist semantics beyond this closeout.

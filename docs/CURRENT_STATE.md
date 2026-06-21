@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,11 +17,12 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: lock the future Add Component local ghost implementation scope (docs-only implementation-lock pass) without runtime edits in this pass.
+- Current pass purpose: record accepted local ghost implementation closeout and lane-guarded route handoff.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS` accepted/pushed as `248893f` (`feat: compact add component builder UI`).
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`).
 
 ## Accepted docs-hygiene baseline
 
@@ -81,11 +82,15 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS` is current Lane B protected implementation lock pass (docs-only pre-implementation lock).
-- Runtime status: `NOT_ACCEPTED` for this pass.
-- Architecture status: `NOT_ACCEPTED`.
-- Canonical semantics: `NONE`.
-- Route effect: `DOCS_PROTECTED_SCOPE_LOCK`.
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS` is the current closeout pass.
+- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` is accepted/pushed as local draft implementation.
+- Runtime status for this route: implementation accepted/pushed (`cd19ae2`).
+- Architecture status remains `NOT_ACCEPTED` for this route's runtime/architecture.
+- Canonical semantics are intentionally minimal and non-canonical for draft state:
+  - local volatile ghost shape/state
+  - local draft label
+  - unsaved visual preview only.
+- Route effect: closeout docs-only records the `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES` boundary.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
   - Lane B: protected/architecture-risk or route ambiguity.
@@ -94,9 +99,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS`.
-- No implementation or runtime commit is captured in this docs-only lock pass.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
+- Runtime commit captured in this baseline closeout: `cd19ae2` (`feat: add component local ghost preview`).
+- Closeout scope: local ghost preview remains local volatile UI/draft only; draft label is non-canonical and non-persistent.
 
 ## Manual smoke record (previous)
 

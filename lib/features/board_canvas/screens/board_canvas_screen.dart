@@ -193,33 +193,66 @@ class _AddComponentTemplateDefinition {
 const _kStarterAddComponentTemplates = <_AddComponentTemplateDefinition>[
   _AddComponentTemplateDefinition(
     id: 'template_family_rect_2_top_bottom',
-    templateFamily: 'Rectangular template family — 2 visual-contact',
+    templateFamily: 'Rectangular chip',
     topContactMarkers: 1,
     rightContactMarkers: 0,
     bottomContactMarkers: 1,
     leftContactMarkers: 0,
-    example:
-        'rectangular-perimeter geometry with top and bottom contact markers.',
+    example: 'Rectangular chip style with paired vertical contact markers.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_rect_4_perimeter',
-    templateFamily: 'Rectangular template family — 4 visual-contact',
+    templateFamily: 'Dual-row package',
     topContactMarkers: 1,
     rightContactMarkers: 1,
     bottomContactMarkers: 1,
     leftContactMarkers: 1,
-    example:
-        'rectangular-perimeter geometry with one contact marker each side.',
+    example: 'Dual-row package visual layout with four local contact markers.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_rect_6_edge_balance',
-    templateFamily: 'Rectangular template family — 6 visual-contact',
+    templateFamily: 'Quad-row package',
     topContactMarkers: 2,
     rightContactMarkers: 1,
     bottomContactMarkers: 2,
     leftContactMarkers: 1,
-    example:
-        'rectangular-perimeter geometry with top/right/bottom/left balance.',
+    example: 'Quad-row package style with six visual contact markers.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_small_3_side_package',
+    templateFamily: 'Small 3-side package',
+    topContactMarkers: 1,
+    rightContactMarkers: 1,
+    bottomContactMarkers: 1,
+    leftContactMarkers: 0,
+    example: 'Small 3-side package starter with three visual-contact markers.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_connector_strip',
+    templateFamily: 'Connector strip',
+    topContactMarkers: 1,
+    rightContactMarkers: 2,
+    bottomContactMarkers: 1,
+    leftContactMarkers: 1,
+    example: 'Connector strip profile for four-plus local markers.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_radial_round',
+    templateFamily: 'Radial / round',
+    topContactMarkers: 1,
+    rightContactMarkers: 1,
+    bottomContactMarkers: 1,
+    leftContactMarkers: 0,
+    example: 'Radial visual template with three contact markers.',
+  ),
+  _AddComponentTemplateDefinition(
+    id: 'template_family_generic_blank',
+    templateFamily: 'Generic blank',
+    topContactMarkers: 0,
+    rightContactMarkers: 0,
+    bottomContactMarkers: 0,
+    leftContactMarkers: 0,
+    example: 'Generic blank template starts with zero local markers.',
   ),
 ];
 
@@ -1537,7 +1570,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         title: _CompactDisclosureTitle(
           label: 'Add Component',
           detail: selectedTemplate == null
-              ? 'Starter rectangular template families'
+              ? 'Starter visual template families'
               : 'Active template',
         ),
         children: [
@@ -1611,6 +1644,67 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   }
 }
 
+Widget _buildTemplateMiniShape(
+  BuildContext context,
+  _AddComponentTemplateDefinition template, {
+  double width = 22,
+  double height = 14,
+}) {
+  final theme = Theme.of(context);
+  final isRadialRound = template.id == 'template_family_radial_round';
+  final isConnector = template.id == 'template_family_connector_strip';
+  final isGenericBlank = template.id == 'template_family_generic_blank';
+
+  final double shapeWidth = isRadialRound
+      ? height
+      : isConnector
+          ? 26
+          : template.id == 'template_family_small_3_side_package'
+              ? 16
+              : template.id == 'template_family_quad_row_package'
+                  ? 26
+                  : width;
+
+  final double shapeHeight = isRadialRound
+      ? width
+      : isConnector
+          ? 8
+          : template.id == 'template_family_small_3_side_package'
+              ? 16
+              : template.id == 'template_family_quad_row_package'
+                  ? 16
+                  : height;
+
+  return Container(
+    width: shapeWidth,
+    height: shapeHeight,
+    decoration: BoxDecoration(
+      borderRadius: isRadialRound ? null : BorderRadius.circular(4),
+      shape: isRadialRound ? BoxShape.circle : BoxShape.rectangle,
+      border: Border.all(
+        color: isGenericBlank
+            ? theme.colorScheme.outlineVariant
+            : theme.colorScheme.outline,
+      ),
+    ),
+    child: isRadialRound
+        ? null
+        : Center(
+            child: Container(
+              width: (shapeWidth / 1.45).clamp(6.0, 20.0),
+              height: (shapeHeight / 1.45).clamp(4.0, 10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(isGenericBlank ? 1 : 2),
+                border: Border.all(
+                  color: theme.colorScheme.primary,
+                  width: isConnector ? 0.8 : 1,
+                ),
+              ),
+            ),
+          ),
+  );
+}
+
 class _AddComponentTemplateSelectedSummary extends StatelessWidget {
   const _AddComponentTemplateSelectedSummary({
     required this.template,
@@ -1639,24 +1733,11 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
             key: const Key(
               'board_canvas_add_component_template_summary_shape',
             ),
-            width: 32,
-            height: 22,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: theme.colorScheme.outline),
-            ),
-            child: Center(
-              child: Container(
-                width: 20,
-                height: 12,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  border: Border.all(
-                    color: theme.colorScheme.primary,
-                    width: 1.2,
-                  ),
-                ),
-              ),
+            child: _buildTemplateMiniShape(
+              context,
+              template,
+              width: 28,
+              height: 20,
             ),
           ),
           const SizedBox(width: 8),
@@ -2373,24 +2454,11 @@ class _AddComponentTemplateListTile extends StatelessWidget {
               key: Key(
                 'board_canvas_add_component_template_shape_${entry.id}',
               ),
-              width: 28,
-              height: 18,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: theme.colorScheme.outline),
-              ),
-              child: Center(
-                child: Container(
-                  width: 16,
-                  height: 9,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    border: Border.all(
-                      color: theme.colorScheme.primary,
-                      width: 1,
-                    ),
-                  ),
-                ),
+              child: _buildTemplateMiniShape(
+                context,
+                entry,
+                width: 20,
+                height: 14,
               ),
             ),
             const SizedBox(width: 6),

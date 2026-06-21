@@ -528,9 +528,18 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Starter rectangular template families'),
+      find.text('Starter visual template families'),
       findsOneWidget,
     );
+    const forbiddenTemplateText = [
+      'SOT-23',
+      'SOIC',
+      'QFN',
+      'DIP',
+    ];
+    for (final forbidden in forbiddenTemplateText) {
+      expect(find.textContaining(forbidden), findsNothing);
+    }
     expect(
       find.byKey(
         const Key(
@@ -563,6 +572,102 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_small_3_side_package',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_connector_strip',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_radial_round',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_shape_template_family_generic_blank',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_template_family_small_3_side_package'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_shape_template_family_small_3_side_package'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_template_family_connector_strip'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_shape_template_family_connector_strip'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_template_family_radial_round'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_shape_template_family_radial_round'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_template_family_generic_blank'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key(
+            'board_canvas_add_component_template_shape_template_family_generic_blank'),
+      ),
+      findsOneWidget,
+    );
+
+    expect(find.text('Rectangular chip'), findsOneWidget);
+    expect(find.text('Small 3-side package'), findsOneWidget);
+    expect(find.text('Dual-row package'), findsOneWidget);
+    expect(find.text('Quad-row package'), findsOneWidget);
+    expect(find.text('Connector strip'), findsOneWidget);
+    expect(find.text('Radial / round'), findsOneWidget);
+    expect(find.text('Generic blank'), findsOneWidget);
     expect(find.text('2 contacts'), findsOneWidget);
     expect(find.text('4 contacts'), findsOneWidget);
     expect(find.text('6 contacts'), findsOneWidget);
@@ -685,12 +790,21 @@ void main() {
         ),
       ),
     );
+    final fourthTemplateBounds = tester.getRect(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_small_3_side_package',
+        ),
+      ),
+    );
     expect(firstTemplateBounds.height, lessThanOrEqualTo(60));
     expect(secondTemplateBounds.height, lessThanOrEqualTo(60));
     expect(thirdTemplateBounds.height, lessThanOrEqualTo(60));
     expect(firstTemplateBounds.width, lessThan(700));
     expect(secondTemplateBounds.width, lessThan(700));
     expect(thirdTemplateBounds.width, lessThan(700));
+    expect(fourthTemplateBounds.height, lessThanOrEqualTo(60));
+    expect(fourthTemplateBounds.width, lessThan(700));
 
     expect(find.text('2 contacts'), findsOneWidget);
     expect(find.text('4 contacts'), findsOneWidget);
@@ -1319,6 +1433,93 @@ void main() {
       findsNothing,
     );
     expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'each visual template opens and reseeds builder counts from local defaults',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    const templateDefaults = <String, List<int>>{
+      'template_family_rect_2_top_bottom': [1, 0, 1, 0],
+      'template_family_rect_4_perimeter': [1, 1, 1, 1],
+      'template_family_rect_6_edge_balance': [2, 1, 2, 1],
+      'template_family_small_3_side_package': [1, 1, 1, 0],
+      'template_family_connector_strip': [1, 2, 1, 1],
+      'template_family_radial_round': [1, 1, 1, 0],
+      'template_family_generic_blank': [0, 0, 0, 0],
+    };
+    final orderedTemplates = templateDefaults.keys.toList();
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    for (final templateId in orderedTemplates) {
+      if (templateId != orderedTemplates.first) {
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_add_component_change_template'),
+        );
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      await tester.tap(
+        find.byKey(Key('board_canvas_add_component_template_$templateId')),
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+
+      final defaults = templateDefaults[templateId]!;
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const Key(
+                  'board_canvas_add_component_template_builder_top_value')),
+            )
+            .data,
+        '${defaults[0]}',
+      );
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const Key(
+                  'board_canvas_add_component_template_builder_right_value')),
+            )
+            .data,
+        '${defaults[1]}',
+      );
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const Key(
+                  'board_canvas_add_component_template_builder_bottom_value')),
+            )
+            .data,
+        '${defaults[2]}',
+      );
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const Key(
+                  'board_canvas_add_component_template_builder_left_value')),
+            )
+            .data,
+        '${defaults[3]}',
+      );
+      expect(state.events, isEmpty);
+    }
   });
 
   testWidgets('builder warning states expose zero/excessive hint UI only',

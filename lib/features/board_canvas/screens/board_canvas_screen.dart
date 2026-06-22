@@ -147,6 +147,16 @@ class _IndexedMeasurement {
   final MeasurementFact measurement;
 }
 
+enum _AddComponentTemplateBodyShape {
+  rectangular,
+  smallThreeSide,
+  dualRow,
+  quadRow,
+  connectorStrip,
+  radialRound,
+  genericBlank,
+}
+
 class _AddComponentTemplateDefinition {
   const _AddComponentTemplateDefinition({
     required this.id,
@@ -165,6 +175,51 @@ class _AddComponentTemplateDefinition {
   final int bottomContactMarkers;
   final int leftContactMarkers;
   final String example;
+
+  _AddComponentTemplateBodyShape get bodyShape {
+    switch (id) {
+      case 'template_family_radial_round':
+        return _AddComponentTemplateBodyShape.radialRound;
+      case 'template_family_connector_strip':
+        return _AddComponentTemplateBodyShape.connectorStrip;
+      case 'template_family_small_3_side_package':
+        return _AddComponentTemplateBodyShape.smallThreeSide;
+      case 'template_family_rect_2_top_bottom':
+        return _AddComponentTemplateBodyShape.rectangular;
+      case 'template_family_generic_blank':
+        return _AddComponentTemplateBodyShape.genericBlank;
+      case 'template_family_rect_4_perimeter':
+        return _AddComponentTemplateBodyShape.dualRow;
+      case 'template_family_rect_6_edge_balance':
+        return _AddComponentTemplateBodyShape.quadRow;
+      default:
+        return _AddComponentTemplateBodyShape.genericBlank;
+    }
+  }
+
+  double get bodyAspectRatio {
+    switch (bodyShape) {
+      case _AddComponentTemplateBodyShape.radialRound:
+        return 1.0;
+      case _AddComponentTemplateBodyShape.connectorStrip:
+        return 4.0;
+      case _AddComponentTemplateBodyShape.smallThreeSide:
+        return 1.35;
+      case _AddComponentTemplateBodyShape.dualRow:
+        return 1.65;
+      case _AddComponentTemplateBodyShape.quadRow:
+        return 1.2;
+      case _AddComponentTemplateBodyShape.rectangular:
+        return 2.4;
+      case _AddComponentTemplateBodyShape.genericBlank:
+        return 2.0;
+    }
+  }
+
+  bool get isRoundTemplateBody => bodyShape == _AddComponentTemplateBodyShape.radialRound;
+
+  bool get isConnectorStripTemplateBody =>
+      bodyShape == _AddComponentTemplateBodyShape.connectorStrip;
 
   String get shortTemplateShapeName {
     final familyPrefix = templateFamily.split('—').first.trim();
@@ -203,20 +258,20 @@ const _kStarterAddComponentTemplates = <_AddComponentTemplateDefinition>[
   _AddComponentTemplateDefinition(
     id: 'template_family_rect_4_perimeter',
     templateFamily: 'Dual-row package',
-    topContactMarkers: 1,
-    rightContactMarkers: 1,
-    bottomContactMarkers: 1,
-    leftContactMarkers: 1,
+    topContactMarkers: 0,
+    rightContactMarkers: 4,
+    bottomContactMarkers: 0,
+    leftContactMarkers: 4,
     example: 'Dual-row package visual layout with four local contact markers.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_rect_6_edge_balance',
     templateFamily: 'Quad-row package',
     topContactMarkers: 2,
-    rightContactMarkers: 1,
+    rightContactMarkers: 2,
     bottomContactMarkers: 2,
-    leftContactMarkers: 1,
-    example: 'Quad-row package style with six visual contact markers.',
+    leftContactMarkers: 2,
+    example: 'Quad-row package style with four-side contact markers.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_small_3_side_package',
@@ -230,20 +285,20 @@ const _kStarterAddComponentTemplates = <_AddComponentTemplateDefinition>[
   _AddComponentTemplateDefinition(
     id: 'template_family_connector_strip',
     templateFamily: 'Connector strip',
-    topContactMarkers: 1,
-    rightContactMarkers: 2,
-    bottomContactMarkers: 1,
-    leftContactMarkers: 1,
-    example: 'Connector strip profile for four-plus local markers.',
+    topContactMarkers: 4,
+    rightContactMarkers: 0,
+    bottomContactMarkers: 0,
+    leftContactMarkers: 0,
+    example: 'Connector strip profile for one-row local markers.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_radial_round',
     templateFamily: 'Radial / round',
     topContactMarkers: 1,
-    rightContactMarkers: 1,
+    rightContactMarkers: 0,
     bottomContactMarkers: 1,
     leftContactMarkers: 0,
-    example: 'Radial visual template with three contact markers.',
+    example: 'Radial visual template with paired contacts.',
   ),
   _AddComponentTemplateDefinition(
     id: 'template_family_generic_blank',
@@ -1651,17 +1706,22 @@ Widget _buildTemplateMiniShape(
   double height = 14,
 }) {
   final theme = Theme.of(context);
-  final isRadialRound = template.id == 'template_family_radial_round';
-  final isConnector = template.id == 'template_family_connector_strip';
-  final isGenericBlank = template.id == 'template_family_generic_blank';
+  final isRadialRound = template.isRoundTemplateBody;
+  final isConnector = template.isConnectorStripTemplateBody;
+  final isGenericBlank =
+      template.bodyShape == _AddComponentTemplateBodyShape.genericBlank;
+  final isSmallThreeSide =
+      template.bodyShape == _AddComponentTemplateBodyShape.smallThreeSide;
+  final isQuadRow =
+      template.bodyShape == _AddComponentTemplateBodyShape.quadRow;
 
   final double shapeWidth = isRadialRound
       ? height
       : isConnector
           ? 26
-          : template.id == 'template_family_small_3_side_package'
+          : isSmallThreeSide
               ? 16
-              : template.id == 'template_family_quad_row_package'
+              : isQuadRow
                   ? 26
                   : width;
 
@@ -1669,9 +1729,9 @@ Widget _buildTemplateMiniShape(
       ? width
       : isConnector
           ? 8
-          : template.id == 'template_family_small_3_side_package'
+          : isSmallThreeSide
               ? 16
-              : template.id == 'template_family_quad_row_package'
+              : isQuadRow
                   ? 16
                   : height;
 
@@ -1917,20 +1977,26 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                                 maxWidth: 140,
                                 maxHeight: 82,
                               ),
-                              child: RepaintBoundary(
-                                child: AspectRatio(
-                                  aspectRatio: 2.1,
-                                  child: CustomPaint(
-                                    key: const Key(
-                                      'board_canvas_add_component_builder_preview',
-                                    ),
-                                    painter:
-                                        _RectangularPerimeterTemplatePreviewPainter(
-                                      topContactMarkers: topContactMarkers,
-                                      rightContactMarkers: rightContactMarkers,
-                                      bottomContactMarkers:
-                                          bottomContactMarkers,
-                                      leftContactMarkers: leftContactMarkers,
+                              child: KeyedSubtree(
+                                key: Key(
+                                  'board_canvas_add_component_builder_preview_${template.id}',
+                                ),
+                                child: RepaintBoundary(
+                                  child: AspectRatio(
+                                    aspectRatio: template.bodyAspectRatio,
+                                    child: CustomPaint(
+                                      key: const Key(
+                                        'board_canvas_add_component_builder_preview',
+                                      ),
+                                      painter:
+                                          _RectangularPerimeterTemplatePreviewPainter(
+                                        template: template,
+                                        topContactMarkers: topContactMarkers,
+                                        rightContactMarkers: rightContactMarkers,
+                                        bottomContactMarkers:
+                                            bottomContactMarkers,
+                                        leftContactMarkers: leftContactMarkers,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -2162,6 +2228,7 @@ class _ContactMarkerCountRow extends StatelessWidget {
 
 class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
   const _RectangularPerimeterTemplatePreviewPainter({
+    required this.template,
     required this.topContactMarkers,
     required this.rightContactMarkers,
     required this.bottomContactMarkers,
@@ -2173,6 +2240,7 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     this.dashedBoundary = false,
   });
 
+  final _AddComponentTemplateDefinition template;
   final int topContactMarkers;
   final int rightContactMarkers;
   final int bottomContactMarkers;
@@ -2193,6 +2261,7 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
       paintArea.width - rectInsets.horizontal,
       paintArea.height - rectInsets.vertical,
     );
+    final bodyPath = _buildBodyPath(previewRect);
 
     final boundaryPaint = Paint()
       ..color = boundaryColor
@@ -2208,13 +2277,14 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
       final fillPaint = Paint()
         ..color = fillColor
         ..style = PaintingStyle.fill;
-      canvas.drawRect(previewRect, fillPaint);
+      canvas.drawPath(bodyPath, fillPaint);
     }
     if (dashedBoundary) {
-      _drawDashedRect(canvas, previewRect, boundaryPaint);
+      _drawDashedPath(canvas, bodyPath, boundaryPaint);
     } else {
-      canvas.drawRect(previewRect, boundaryPaint);
+      canvas.drawPath(bodyPath, boundaryPaint);
     }
+
     _drawContactMarkersAlongTop(
       canvas,
       previewRect,
@@ -2241,42 +2311,41 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     );
   }
 
-  void _drawDashedRect(Canvas canvas, Rect rect, Paint paint) {
+  Path _buildBodyPath(Rect rect) {
+    if (template.bodyShape == _AddComponentTemplateBodyShape.radialRound) {
+      return Path()..addOval(Rect.fromCircle(center: rect.center, radius: math.min(rect.width, rect.height) / 2));
+    }
+
+    final radius = template.bodyShape == _AddComponentTemplateBodyShape.genericBlank
+        ? const Radius.circular(2)
+        : const Radius.circular(4);
+    return Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          rect,
+          radius,
+        ),
+      );
+  }
+
+  void _drawDashedPath(
+    Canvas canvas,
+    Path path,
+    Paint paint,
+  ) {
     const dashLength = 6.0;
     const gap = 3.0;
-
-    _drawDashedLine(
-      canvas,
-      Offset(rect.left, rect.top),
-      Offset(rect.right, rect.top),
-      paint,
-      dashLength,
-      gap,
-    );
-    _drawDashedLine(
-      canvas,
-      Offset(rect.right, rect.top),
-      Offset(rect.right, rect.bottom),
-      paint,
-      dashLength,
-      gap,
-    );
-    _drawDashedLine(
-      canvas,
-      Offset(rect.right, rect.bottom),
-      Offset(rect.left, rect.bottom),
-      paint,
-      dashLength,
-      gap,
-    );
-    _drawDashedLine(
-      canvas,
-      Offset(rect.left, rect.bottom),
-      Offset(rect.left, rect.top),
-      paint,
-      dashLength,
-      gap,
-    );
+    for (final metric in path.computeMetrics()) {
+      var distance = metric.length;
+      var offset = 0.0;
+      while (distance > 0) {
+        final segmentEnd = math.min(offset + dashLength, metric.length);
+        final segment = metric.extractPath(offset, segmentEnd);
+        canvas.drawPath(segment, paint);
+        offset = segmentEnd + gap;
+        distance = metric.length - offset;
+      }
+    }
   }
 
   void _drawDashedLine(
@@ -2397,7 +2466,8 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
   bool shouldRepaint(
     covariant _RectangularPerimeterTemplatePreviewPainter oldDelegate,
   ) {
-    return oldDelegate.topContactMarkers != topContactMarkers ||
+    return oldDelegate.template != template ||
+        oldDelegate.topContactMarkers != topContactMarkers ||
         oldDelegate.rightContactMarkers != rightContactMarkers ||
         oldDelegate.bottomContactMarkers != bottomContactMarkers ||
         oldDelegate.leftContactMarkers != leftContactMarkers;
@@ -2762,25 +2832,32 @@ class _CanvasPanelState extends State<_CanvasPanel> {
               clipBehavior: Clip.none,
               children: [
                 AspectRatio(
-                  aspectRatio: 2.4,
-                  child: CustomPaint(
-                    key: const Key(
-                      'board_canvas_add_component_template_ghost_preview_body',
+                  aspectRatio:
+                      widget.selectedAddComponentTemplate!.bodyAspectRatio,
+                  child: KeyedSubtree(
+                    key: Key(
+                      'board_canvas_add_component_template_ghost_preview_body_${widget.selectedAddComponentTemplate!.id}',
                     ),
-                    painter: _RectangularPerimeterTemplatePreviewPainter(
-                      topContactMarkers:
-                          widget.addComponentTemplateGhostTopContactMarkers,
-                      rightContactMarkers:
-                          widget.addComponentTemplateGhostRightContactMarkers,
-                      bottomContactMarkers:
-                          widget.addComponentTemplateGhostBottomContactMarkers,
-                      leftContactMarkers:
-                          widget.addComponentTemplateGhostLeftContactMarkers,
-                      boundaryColor: const Color(0xFFFFC857),
-                      markerColor: const Color(0xFFF6A623),
-                      fillColor: const Color(0x22FFC857),
-                      dashedBoundary: true,
-                      strokeWidth: 2.1,
+                    child: CustomPaint(
+                      key: const Key(
+                        'board_canvas_add_component_template_ghost_preview_body',
+                      ),
+                      painter: _RectangularPerimeterTemplatePreviewPainter(
+                        template: widget.selectedAddComponentTemplate!,
+                        topContactMarkers:
+                            widget.addComponentTemplateGhostTopContactMarkers,
+                        rightContactMarkers:
+                            widget.addComponentTemplateGhostRightContactMarkers,
+                        bottomContactMarkers:
+                            widget.addComponentTemplateGhostBottomContactMarkers,
+                        leftContactMarkers:
+                            widget.addComponentTemplateGhostLeftContactMarkers,
+                        boundaryColor: const Color(0xFFFFC857),
+                        markerColor: const Color(0xFFF6A623),
+                        fillColor: const Color(0x22FFC857),
+                        dashedBoundary: true,
+                        strokeWidth: 2.1,
+                      ),
                     ),
                   ),
                 ),

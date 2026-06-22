@@ -668,9 +668,11 @@ void main() {
     expect(find.text('Connector strip'), findsOneWidget);
     expect(find.text('Radial / round'), findsOneWidget);
     expect(find.text('Generic blank'), findsOneWidget);
-    expect(find.text('2 contacts'), findsOneWidget);
-    expect(find.text('4 contacts'), findsOneWidget);
-    expect(find.text('6 contacts'), findsOneWidget);
+    expect(find.text('2 contacts'), findsWidgets);
+    expect(find.text('4 contacts'), findsWidgets);
+    expect(find.text('8 contacts'), findsWidgets);
+    expect(find.text('3 contacts'), findsWidgets);
+    expect(find.text('0 contacts'), findsWidgets);
     expect(find.textContaining('template family'), findsNothing);
     expect(find.textContaining('rectangular-perimeter geometry'), findsNothing);
     expect(find.textContaining('visual contacts'), findsNothing);
@@ -806,9 +808,11 @@ void main() {
     expect(fourthTemplateBounds.height, lessThanOrEqualTo(60));
     expect(fourthTemplateBounds.width, lessThan(700));
 
-    expect(find.text('2 contacts'), findsOneWidget);
-    expect(find.text('4 contacts'), findsOneWidget);
-    expect(find.text('6 contacts'), findsOneWidget);
+    expect(find.text('2 contacts'), findsWidgets);
+    expect(find.text('4 contacts'), findsWidgets);
+    expect(find.text('8 contacts'), findsWidgets);
+    expect(find.text('3 contacts'), findsWidgets);
+    expect(find.text('0 contacts'), findsWidgets);
     expect(state.events, isEmpty);
   });
 
@@ -1356,7 +1360,7 @@ void main() {
             find.byKey(const Key(
                 'board_canvas_add_component_template_builder_top_value')),
           )
-          .data,
+      .data,
       '3',
     );
     expect(
@@ -1392,7 +1396,7 @@ void main() {
                 'board_canvas_add_component_template_builder_top_value')),
           )
           .data,
-      '1',
+      '0',
     );
     expect(
       tester
@@ -1403,7 +1407,7 @@ void main() {
             ),
           )
           .data,
-      '1',
+      '4',
     );
     expect(
       tester
@@ -1414,7 +1418,7 @@ void main() {
             ),
           )
           .data,
-      '1',
+      '0',
     );
     expect(
       tester
@@ -1425,7 +1429,7 @@ void main() {
             ),
           )
           .data,
-      '1',
+      '4',
     );
     expect(
       find.byKey(
@@ -1436,7 +1440,7 @@ void main() {
   });
 
   testWidgets(
-      'each visual template opens and reseeds builder counts from local defaults',
+      'each visual template opens and reseeds builder and ghost body shape',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -1450,12 +1454,21 @@ void main() {
 
     const templateDefaults = <String, List<int>>{
       'template_family_rect_2_top_bottom': [1, 0, 1, 0],
-      'template_family_rect_4_perimeter': [1, 1, 1, 1],
-      'template_family_rect_6_edge_balance': [2, 1, 2, 1],
+      'template_family_rect_4_perimeter': [0, 4, 0, 4],
+      'template_family_rect_6_edge_balance': [2, 2, 2, 2],
       'template_family_small_3_side_package': [1, 1, 1, 0],
-      'template_family_connector_strip': [1, 2, 1, 1],
-      'template_family_radial_round': [1, 1, 1, 0],
+      'template_family_connector_strip': [4, 0, 0, 0],
+      'template_family_radial_round': [1, 0, 1, 0],
       'template_family_generic_blank': [0, 0, 0, 0],
+    };
+    const templateBodyRatios = <String, double>{
+      'template_family_rect_2_top_bottom': 2.4,
+      'template_family_rect_4_perimeter': 1.65,
+      'template_family_rect_6_edge_balance': 1.2,
+      'template_family_small_3_side_package': 1.35,
+      'template_family_connector_strip': 4.0,
+      'template_family_radial_round': 1.0,
+      'template_family_generic_blank': 2.0,
     };
     final orderedTemplates = templateDefaults.keys.toList();
 
@@ -1482,6 +1495,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 16));
 
       final defaults = templateDefaults[templateId]!;
+      final ratio = templateBodyRatios[templateId]!;
       expect(
         tester
             .widget<Text>(
@@ -1518,6 +1532,30 @@ void main() {
             .data,
         '${defaults[3]}',
       );
+      final previewRect = tester.getRect(
+        find.byKey(Key(
+          'board_canvas_add_component_builder_preview_$templateId',
+        )),
+      );
+      expect(
+        previewRect.width / previewRect.height,
+        closeTo(ratio, 0.45),
+      );
+      final ghostRect = tester.getRect(
+        find.byKey(
+          Key('board_canvas_add_component_template_ghost_preview_body_$templateId'),
+        ),
+      );
+      expect(
+        ghostRect.width / ghostRect.height,
+        closeTo(ratio, 0.45),
+      );
+      expect(
+        find.byKey(
+          Key('board_canvas_add_component_template_ghost_preview_body_$templateId'),
+        ),
+        findsOneWidget,
+      );
       expect(state.events, isEmpty);
     }
   });
@@ -1543,7 +1581,7 @@ void main() {
     await _tapWidgetByKey(
       tester,
       const Key(
-          'board_canvas_add_component_template_template_family_rect_4_perimeter'),
+          'board_canvas_add_component_template_template_family_radial_round'),
     );
     await tester.pump(const Duration(milliseconds: 16));
 
@@ -1574,7 +1612,7 @@ void main() {
             find.byKey(const Key(
                 'board_canvas_add_component_template_builder_top_value')),
           )
-          .data,
+      .data,
       '0',
     );
     expect(
@@ -1585,7 +1623,7 @@ void main() {
                   'board_canvas_add_component_template_builder_right_value'),
             ),
           )
-          .data,
+      .data,
       '0',
     );
     expect(
@@ -1596,7 +1634,7 @@ void main() {
                   'board_canvas_add_component_template_builder_bottom_value'),
             ),
           )
-          .data,
+      .data,
       '0',
     );
     expect(
@@ -1607,7 +1645,7 @@ void main() {
                   'board_canvas_add_component_template_builder_left_value'),
             ),
           )
-          .data,
+      .data,
       '0',
     );
     expect(
@@ -1683,27 +1721,27 @@ void main() {
 
     expect(
       tester
-          .widget<Text>(
-            find.byKey(
-              const Key(
-                'board_canvas_add_component_template_builder_top_value',
-              ),
-            ),
-          )
-          .data,
-      '2',
+      .widget<Text>(
+        find.byKey(
+          const Key(
+            'board_canvas_add_component_template_builder_top_value',
+          ),
+        ),
+      )
+      .data,
+      '1',
     );
     expect(
       tester
-          .widget<Text>(
-            find.byKey(
-              const Key(
-                'board_canvas_add_component_template_builder_right_value',
-              ),
-            ),
-          )
-          .data,
-      '2',
+      .widget<Text>(
+        find.byKey(
+          const Key(
+            'board_canvas_add_component_template_builder_right_value',
+          ),
+        ),
+      )
+      .data,
+      '5',
     );
 
     await _tapWidgetByKey(
@@ -1722,7 +1760,7 @@ void main() {
             ),
           )
           .data,
-      '1',
+      '0',
     );
     expect(
       tester
@@ -1734,7 +1772,7 @@ void main() {
             ),
           )
           .data,
-      '1',
+      '4',
     );
     expect(state.events, isEmpty);
   });

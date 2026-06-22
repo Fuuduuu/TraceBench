@@ -2,46 +2,47 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CODEX / FLUTTER_PASS / PROTECTED_FOUNDATIONAL_IMPLEMENTATION
 
 ## Goal
 
-Create a docs-only protected/foundational scope-lock for the future BenchBeep token foundation pass.
+Implement the minimal BenchBeep token foundation authorized by the accepted protected/foundational scope-lock.
 
 ## Baseline
 
-- Latest accepted/pushed design-direction source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` at `79fa908` (`docs: sync BenchBeep design source index`).
-- Current route before this pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
+- Latest accepted/pushed token-foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` at `2620c44` (`docs: lock BenchBeep token foundation`).
+- Active-lock sync pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` records this route/allowlist repair only and performs no runtime/test implementation.
+- Current route after this sync: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: PROTECTED_FOUNDATIONAL_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+- `ROUTE_EFFECT: PROTECTED_FOUNDATIONAL_IMPLEMENTATION_ACTIVE`
+- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
 - `LANE_B`
 
-## Allowed files
+## Implementation allowlist
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS.md`
+- `lib/shared/theme/app_theme.dart`
+- `lib/shared/theme/benchbeep_visual_tokens.dart` only if a narrowly named token/theme helper is needed.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart` only for replacing already-scoped hardcoded Workbench/Add Component canvas colors.
+- `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 
-## Locked future work
+## Locked implementation work
 
-- Future implementation may introduce a minimal Flutter token foundation for the accepted BenchBeep design direction.
-- Future implementation may define app-level semantic visual tokens for surface/panel/rule colors.
-- Future implementation may define app-level semantic visual tokens for text hierarchy colors.
+- Implementation may introduce a minimal Flutter token foundation for the accepted BenchBeep design direction.
+- Implementation may define app-level semantic visual tokens for surface/panel/rule colors.
+- Implementation may define app-level semantic visual tokens for text hierarchy colors.
 - Token semantics are:
 - teal/copper = selected/confirmed/save;
 - amber = measuring/armed/measured;
 - purple/unknown = draft/unsaved/unknown.
-- Future implementation may prepare a small `ThemeExtension` or equivalent local token structure.
-- Future implementation may replace clearly scoped hardcoded Workbench/Add Component canvas colors only if covered by the future implementation pass.
+- Implementation may prepare a small `ThemeExtension` or equivalent local token structure.
+- Implementation may replace clearly scoped hardcoded Workbench/Add Component canvas colors only where already covered by this implementation allowlist.
+- The accepted Add Component draft ghost purple/unknown-draft semantics must be preserved.
 - Existing behavior must be preserved.
 
 ## Explicitly deferred
@@ -59,13 +60,11 @@ Create a docs-only protected/foundational scope-lock for the future BenchBeep to
 
 ## Boundary
 
-- This pass only locks the future token foundation scope.
+- The previous scope-lock is accepted/pushed as `2620c44`.
+- This active implementation lock authorizes only the minimal token foundation implementation.
 - Design sources and `_incoming` remain design input only, never runtime.
-- No runtime files are edited.
-- No test files are edited.
 - No untracked scratch files are touched or staged.
 - No product behavior is changed.
-- No ThemeExtension / token migration is implemented.
 - No Home screen is implemented.
 - No menu system or command menu is implemented.
 - No audio/beep behavior is implemented.
@@ -89,8 +88,8 @@ Create a docs-only protected/foundational scope-lock for the future BenchBeep to
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
-- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
 
 ## Required validation
 
@@ -100,4 +99,7 @@ git log --oneline --decorate -10
 git diff --name-status
 git diff --cached --name-status
 git diff --check
+flutter test test/widget/board_canvas_screen_test.dart
+flutter analyze
+py -3 tools\validate_all.py
 ```

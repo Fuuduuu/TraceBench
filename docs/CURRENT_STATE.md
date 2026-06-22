@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -26,7 +26,8 @@
 - Latest accepted/pushed Add Component draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` at `1f30841` (`docs: record add component draft ghost semantic color`).
 - Latest accepted/pushed BenchBeep design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` at `369eb77` (`docs: record BenchBeep design direction intake`).
 - Latest accepted/pushed BenchBeep design-direction source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` at `79fa908` (`docs: sync BenchBeep design source index`).
-- Current pass purpose: docs-only protected/foundational scope-lock for a future minimal BenchBeep token foundation pass.
+- Latest accepted/pushed BenchBeep token foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` at `2620c44` (`docs: lock BenchBeep token foundation`).
+- Current pass purpose: protected/foundational implementation of the minimal BenchBeep token foundation authorized by the accepted scope-lock.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -102,7 +103,10 @@ The current docs-hygiene sequence is accepted through:
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` is accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` is accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`).
 - `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` is accepted/pushed as `79fa908` (`docs: sync BenchBeep design source index`).
-- Current token-foundation scope-lock records future implementation boundaries only and does not edit runtime/tests.
+- Accepted token-foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
+- Active token-foundation implementation route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
+- Active-lock sync candidate: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` records the route/allowlist repair only and performs no runtime/test implementation.
+- Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
 - drag-to-place works;
@@ -144,9 +148,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
-- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
-- Scope-lock state: docs-only candidate; no accepted/pushed claim for this uncommitted scope-lock pass.
+- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
+- Next route after implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`.
+- Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
+- Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only route/allowlist repair candidate and has no accepted/pushed claim.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.
 - Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.

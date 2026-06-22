@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,8 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only sync for stale-nit closure after `_drawDashedLine` dead-code removal (`99967a2`).
+- Latest accepted docs-hygiene cleanup sync: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` at `8ad1d0c` (`docs: sync stale _drawDashedLine nit to resolved`).
+- Current pass purpose: docs-only protected scope-lock for local click-to-place draft positioning of the existing Add Component local canvas ghost preview.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -84,28 +85,28 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS` is the accepted/pushed scope-lock for this implementation (`33bd206`, `docs: lock add component template shape and defaults`).
-- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` is accepted/pushed as `673c486`.
-- Runtime status for this route: implementation accepted/pushed (`673c486`).
-- Architecture status remains `NOT_ACCEPTED` for any new runtime/architecture in this scope-lock.
-- Canonical semantics for this scope are intentionally minimal and non-canonical:
-  - template-family selection drives local builder/ghost visual shape only,
-  - template defaults are local volatile hints only,
-  - `Generic blank` may start at zero contact markers locally.
-- Route effect: implementation closeout for template shape/default propagation; implementation already accepted as `673c486`; route returns to `NEEDS_USER_DECISION`.
+- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` is a Lane B docs-only protected scope-lock.
+- Future work is limited to local click-to-place draft positioning for the existing Add Component local canvas ghost preview.
+- "click-to-place" means local draft positioning only:
+  - the clicked Board Canvas point is a UI preview anchor, not canonical board data,
+  - the ghost can move visually, but no component is created,
+  - draft position state is volatile UI state only,
+  - no event/fact/write/persistence/canonical placement is accepted.
+- Cancel/change-template must clear local draft position when applicable.
+- Existing builder/template/draft-label behavior remains local only.
+- Drag-to-place, rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
   - Lane B: protected/architecture-risk or route ambiguity.
-- `renderer writes: none`, inspector/placements/safety behavior, and measurement overlay behavior remain unchanged.
-- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_SCOPE_LOCK_PASS` remains parked as completed recovery context.
+- `renderer writes: none`, inspector/placements/safety behavior, measurement overlay behavior, Measure Sheet, and Project Overview remain unchanged.
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
-- Runtime commit captured in this closeout: `673c486` (`feat: propagate add component template shape and defaults`).
-- Closeout scope: Add Component template-shape/default propagation was accepted with geometry-first family-driven builder and ghost shape propagation, local seed defaults per family, and no runtime/protected-surface edits in this docs-only closeout pass.
-- `_drawDashedLine` cleanup is now resolved by `99967a2` (`refactor: remove orphaned _drawDashedLine dead code`); this row now documents the historical nit as superseded.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`.
+- Scope-lock state: docs-only candidate; no accepted/pushed claim for this uncommitted pass.
+- Latest accepted docs-sync baseline: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` accepted/pushed as `8ad1d0c`.
+- `_drawDashedLine` cleanup remains resolved by `99967a2` (`refactor: remove orphaned _drawDashedLine dead code`).
 
 ## Manual smoke record (previous)
 

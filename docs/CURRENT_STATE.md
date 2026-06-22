@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS`
 
 ## Next recommended pass
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: docs-only implementation closeout for template-family-to-shape/default propagation in Add Component local builder/ghost.
+- Current pass purpose: docs-only sync for stale-nit closure after `_drawDashedLine` dead-code removal (`99967a2`).
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -101,11 +101,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
 - Runtime commit captured in this closeout: `673c486` (`feat: propagate add component template shape and defaults`).
 - Closeout scope: Add Component template-shape/default propagation was accepted with geometry-first family-driven builder and ghost shape propagation, local seed defaults per family, and no runtime/protected-surface edits in this docs-only closeout pass.
-- Non-blocking nit: `_drawDashedLine` is orphaned dead code after the rect-to-path refactor and is deferred to a future lint/QA hygiene pass.
+- `_drawDashedLine` cleanup is now resolved by `99967a2` (`refactor: remove orphaned _drawDashedLine dead code`); this row now documents the historical nit as superseded.
 
 ## Manual smoke record (previous)
 

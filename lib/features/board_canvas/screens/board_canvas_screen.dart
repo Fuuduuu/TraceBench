@@ -2348,36 +2348,6 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
     }
   }
 
-  void _drawDashedLine(
-    Canvas canvas,
-    Offset start,
-    Offset end,
-    Paint paint,
-    double dashLength,
-    double gap,
-  ) {
-    final distance = (end - start).distance;
-    if (distance == 0) {
-      return;
-    }
-    final direction = (end - start) / distance;
-    var remaining = distance;
-    var current = start;
-
-    while (remaining > 0) {
-      final segmentLength = math.min(dashLength, remaining);
-      final next = current + direction * segmentLength;
-      canvas.drawLine(current, next, paint);
-      remaining -= segmentLength;
-      if (remaining <= 0) {
-        break;
-      }
-      final gapDistance = math.min(gap, remaining);
-      current = next + direction * gapDistance;
-      remaining -= gapDistance;
-    }
-  }
-
   void _drawContactMarkersAlongTop(
     Canvas canvas,
     Rect rect,

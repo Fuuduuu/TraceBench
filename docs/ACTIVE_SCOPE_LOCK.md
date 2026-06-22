@@ -2,29 +2,26 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`
 
 ## Type
 
-CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
+CODEX / DOCS_PROTECTED_SCOPE_LOCK
 
 ## Goal
 
-Record the accepted/pushed Add Component visual template catalog implementation closeout after implementation audit.
+Lock the next Add Component slice: selected visual template family drives local builder and ghost shape/defaults before implementation.
 
 ## Baseline
 
-- Current route before this pass: `NEEDS_USER_DECISION` after local ghost closeout and catalog implementation closeout scope-lock handoff.
+- Current route before this pass: `NEEDS_USER_DECISION`
 - Latest accepted Add Component runtime baseline: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` at `435e43a` (`feat: add component visual template catalog`).
-- Current baseline includes:
-  - local volatile right-panel visual-template catalog selection flow,
-  - local volatile side-count builder seed state,
-  - no canonical placement.
+- Latest accepted Add Component catalog runtime is local-only and geometry-first.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: DOCS_SYNC_CLOSEOUT`
-- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
+- `ROUTE_EFFECT: DOCS_SCOPE_LOCK`
+- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`
 - `LANE_B`
 
 ## Allowed files
@@ -33,32 +30,42 @@ Record the accepted/pushed Add Component visual template catalog implementation 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS.md`
 
 ## Preserve boundary
 
 - This pass is docs-only and must not change runtime.
-- No runtime code/tests are modified.
+- No runtime code/tests are edited.
 - No `schema/writer/materializer/validator/projection/event/fact/Project ZIP` changes.
-- No Add Component persistence, canonical placement, Confirm/write, Edit Layout, or Project Overview rewiring in this pass.
-- No `renderer` write-flow behavior change.
-- No runtime identity-claiming terms such as confirmed type/part identity.
+- No Add Component persistence or canonical placement in this pass.
+- No Confirm/write in this pass.
+- No Edit Layout in this pass.
+- No `Project Overview` rewiring in this pass.
+- No runtime `renderer` write-flow behavior change.
+- No canonical identity claiming terms (`pin`, `pad`, `net`, `trace`, `probe`, `electrical`).
+- Package names are research examples only and are not runtime labels in this scope.
 
 ## Locked scope
 
-- Right-panel visual template catalog is locked as the first selection step after Add Component entry.
-- The catalog is compact and thumbnail-first; avoid prose-heavy contact-leg cards at this stage.
-- Selection is base-shape/template-family first; contact-marker editing remains builder/visual-contact behavior after selection.
-- Template selection is local and volatile only; no persisted canonical effect.
-- Template-family labels are visual-only and may be non-canonical style descriptors only.
-- Safe vocabulary remains:
+- Selected visual template family must drive local builder body shape.
+- Selected visual template family must drive local canvas ghost body shape.
+- Selected visual template family may seed local default contact-marker counts/layout.
+- Contact-marker counts remain editable per side:
+  - `top`
+  - `right`
+  - `bottom`
+  - `left`
+- `Generic blank` may start at zero contact markers.
+- All default/seed values are local volatile UI hints only and are not canonical truth.
+- Existing right-panel builder and ghost local flow stays active/unchanged; only shape/default propagation is added.
+- Runtime vocabulary remains geometry-first:
   - visual template
   - template family
   - base shape
   - visual contact
   - contact marker
   - rectangular-perimeter layout
-- Allowed template-family direction remains geometry-first and reduced:
+- Template-family labels are limited to:
   - Rectangular chip
   - Small 3-side package
   - Dual-row package
@@ -66,45 +73,38 @@ Record the accepted/pushed Add Component visual template catalog implementation 
   - Connector strip
   - Radial / round
   - Generic blank
-- Open decisions are recorded as locked constraints:
-  - default contact-marker counts may be optional seed values (template-dependent) but not a canonical declaration.
-  - the visual catalog replaces/updates the current list before builder editing in this pass scope.
-  - users are prevented from inferring confirmed component identity from the catalog view.
 
-Visual template families in this scope-lock are closed to the geometry-first set only:
+## Default contact-marker guidance
 
-- Rectangular chip
-- Small 3-side package
-- Dual-row package
-- Quad-row package
-- Connector strip
-- Radial / round
-- Generic blank
+- Rectangular chip: 2-contact local default, opposite ends/sides.
+- Small 3-side package: 3-contact local default; future 5–6 variants may be added only in a separately scoped pass.
+- Dual-row package: left/right rows, low-safe default around 8 total.
+- Quad-row package: four-side layout, low-safe default around 16 total.
+- Connector strip: one-row strip default, editable N.
+- Radial / round: 2-contact local default, round body.
+- Generic blank: 0-contact local default, user-defined layout.
 
-These labels are visual template families only and do not claim any component or package identity, package-name recognition, AI/photo detection, or canonical pin/pad/net/traces/probe meaning.
-
-## Future implementation allowlist
+## Implementation allowlist for future pass
 
 The future implementation pass may edit only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-No other runtime/test files are pre-authorized.
-
 ## Forbidden surfaces
 
-- runtime ghost/placement/rotation/drag-to-place/click-to-place,
+- runtime ghost/placement/click-to-place/drag-to-place/rotation-draft,
 - Confirm/write or other persistence flows,
 - schema/writer/materializer/validator/projection/Project ZIP/event/fact changes,
 - Measure Sheet behavior,
 - AI/photo detection or AI-derived identity claims,
-- canonical pin/pad/net/trace/probe/electrical semantics.
+- SOT-23, SOIC, QFN, DIP as runtime labels,
+- “detected”, “matched”, “recognized”, “confirmed identity”.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`.
 
 ## Required validation
 
@@ -118,6 +118,6 @@ git diff --check
 
 ## Stop conditions
 
-- Stop if runtime files outside docs are added to this pass.
-- Stop if this pass claims an accepted/pushed hash for the uncommitted closeout route.
-- Stop if protected-surface or identity-semantic claims are introduced in this docs-only scope-lock.
+- Stop if runtime files outside docs are edited in this pass.
+- Stop if this pass claims an accepted/pushed hash for the uncommitted scope-lock route.
+- Stop if protected-surface or identity-semantics claims are introduced in this docs-only scope-lock.

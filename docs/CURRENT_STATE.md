@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`
 
 ## Repository handoff
 
@@ -17,7 +17,7 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: record accepted/pushed Add Component visual template catalog implementation closeout and route for next decision.
+- Current pass purpose: lock template-family-to-shape/default propagation for Add Component local builder/ghost before implementing shape-default behavior.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -83,15 +83,15 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS` is the current docs-only post-audit closeout pass.
+- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS` is the current docs-only protected scope-lock pass.
 - `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` is accepted/pushed as local draft implementation.
 - Runtime status for this route: implementation accepted/pushed (`cd19ae2`).
-- Architecture status remains `NOT_ACCEPTED` for this route's runtime/architecture.
-- Canonical semantics are intentionally minimal and non-canonical for draft state:
-  - local volatile ghost shape/state
-  - local draft label
-  - unsaved visual preview only.
-- Route effect: docs-only post-audit closeout for the accepted visual template catalog implementation.
+- Architecture status remains `NOT_ACCEPTED` for any new runtime/architecture in this scope-lock.
+- Canonical semantics for this scope are intentionally minimal and non-canonical:
+  - template-family selection drives local builder/ghost visual shape only,
+  - template defaults are local volatile hints only,
+  - `Generic blank` may start at zero contact markers locally.
+- Route effect: docs-only protected scope-lock for template shape/default propagation; implementation remains deferred to `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
   - Lane B: protected/architecture-risk or route ambiguity.

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -2721,9 +2722,16 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 
   final TransformationController _transformationController =
       TransformationController();
+  int? _addComponentTemplateGhostDragPointer;
+  Offset? _addComponentTemplateGhostDragStartGlobalPosition;
+  Offset? _addComponentTemplateGhostDragStartCanvasPosition;
+  Offset? _addComponentTemplateGhostDragGrabOffset;
+  double _addComponentTemplateGhostDragScale = 1.0;
+  Size _addComponentTemplateGhostDragCanvasSize = Size.zero;
 
   @override
   void dispose() {
+    _clearAddComponentTemplateGhostDragRoute();
     _transformationController.dispose();
     super.dispose();
   }
@@ -2762,8 +2770,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       transformationController: _transformationController,
       minScale: _kMinZoom,
       maxScale: _kMaxZoom,
-      panEnabled: true,
-      scaleEnabled: true,
+      panEnabled: !widget.showAddComponentTemplateGhost,
+      scaleEnabled: !widget.showAddComponentTemplateGhost,
       constrained: false,
       child: GestureDetector(
         key: const Key('board_canvas_tap_layer'),
@@ -2790,11 +2798,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
               if (widget.showAddComponentTemplateGhost &&
                   widget.selectedAddComponentTemplate != null) ...[
                 Positioned.fill(
-                  child: IgnorePointer(
-                    child: _buildLocalAddComponentTemplateGhostLayer(
-                      context,
-                      canvasSize,
-                    ),
+                  child: _buildLocalAddComponentTemplateGhostLayer(
+                    context,
+                    canvasSize,
                   ),
                 ),
               ],
@@ -2821,18 +2827,32 @@ class _CanvasPanelState extends State<_CanvasPanel> {
     BuildContext context,
     Size canvasSize,
   ) {
-    final ghost = _buildLocalAddComponentTemplateGhost(context);
+    final ghost = Builder(
+      builder: (ghostContext) {
+        return Listener(
+          key: const Key(
+            'board_canvas_add_component_template_ghost_drag_handle',
+          ),
+          behavior: HitTestBehavior.opaque,
+          onPointerDown: (details) => _startAddComponentTemplateGhostDrag(
+            details,
+            canvasSize,
+            ghostContext,
+          ),
+          child: _buildLocalAddComponentTemplateGhost(context),
+        );
+      },
+    );
     final draftAnchor = widget.addComponentTemplateGhostDraftAnchor;
     if (draftAnchor == null) {
-      return Align(
-        alignment: Alignment.center,
-        child: ghost,
+      return Stack(
+        children: [
+          Center(child: ghost),
+        ],
       );
     }
-    final clampedAnchor = Offset(
-      _clampDraftAnchorCoordinate(draftAnchor.dx, canvasSize.width),
-      _clampDraftAnchorCoordinate(draftAnchor.dy, canvasSize.height),
-    );
+    final clampedAnchor =
+        _clampAddComponentTemplateGhostDraftAnchor(draftAnchor, canvasSize);
     return Stack(
       children: [
         Positioned(
@@ -2847,6 +2867,91 @@ class _CanvasPanelState extends State<_CanvasPanel> {
           ),
         ),
       ],
+    );
+  }
+
+  void _startAddComponentTemplateGhostDrag(
+    PointerDownEvent details,
+    Size canvasSize,
+    BuildContext ghostContext,
+  ) {
+    final renderObject = ghostContext.findRenderObject();
+    if (renderObject is! RenderBox) {
+      return;
+    }
+    _clearAddComponentTemplateGhostDragRoute();
+    final scale = _transformationController.value.getMaxScaleOnAxis();
+    final currentAnchor = widget.addComponentTemplateGhostDraftAnchor ??
+        Offset(canvasSize.width / 2, canvasSize.height / 2);
+    final clampedAnchor =
+        _clampAddComponentTemplateGhostDraftAnchor(currentAnchor, canvasSize);
+    final ghostCenter = renderObject.size.center(Offset.zero);
+    final pointerCanvasPosition =
+        clampedAnchor + (details.localPosition - ghostCenter);
+
+    _addComponentTemplateGhostDragPointer = details.pointer;
+    _addComponentTemplateGhostDragStartGlobalPosition = details.position;
+    _addComponentTemplateGhostDragStartCanvasPosition = pointerCanvasPosition;
+    _addComponentTemplateGhostDragGrabOffset =
+        pointerCanvasPosition - clampedAnchor;
+    _addComponentTemplateGhostDragScale = scale <= 0 ? 1.0 : scale;
+    _addComponentTemplateGhostDragCanvasSize = canvasSize;
+    GestureBinding.instance.pointerRouter.addRoute(
+      details.pointer,
+      _handleAddComponentTemplateGhostDragPointer,
+    );
+  }
+
+  void _handleAddComponentTemplateGhostDragPointer(PointerEvent event) {
+    if (event.pointer != _addComponentTemplateGhostDragPointer) {
+      return;
+    }
+    if (event is PointerMoveEvent) {
+      final startGlobal = _addComponentTemplateGhostDragStartGlobalPosition;
+      final startCanvas = _addComponentTemplateGhostDragStartCanvasPosition;
+      final grabOffset = _addComponentTemplateGhostDragGrabOffset;
+      if (startGlobal == null || startCanvas == null || grabOffset == null) {
+        return;
+      }
+      final pointerCanvasPosition = startCanvas +
+          (event.position - startGlobal) / _addComponentTemplateGhostDragScale;
+      final nextAnchor = pointerCanvasPosition - grabOffset;
+      widget.onAddComponentTemplateGhostDraftAnchorChanged(
+        _clampAddComponentTemplateGhostDraftAnchor(
+          nextAnchor,
+          _addComponentTemplateGhostDragCanvasSize,
+        ),
+      );
+      return;
+    }
+    if (event is PointerUpEvent || event is PointerCancelEvent) {
+      _clearAddComponentTemplateGhostDragRoute();
+    }
+  }
+
+  void _clearAddComponentTemplateGhostDragRoute() {
+    final pointer = _addComponentTemplateGhostDragPointer;
+    if (pointer != null) {
+      GestureBinding.instance.pointerRouter.removeRoute(
+        pointer,
+        _handleAddComponentTemplateGhostDragPointer,
+      );
+    }
+    _addComponentTemplateGhostDragPointer = null;
+    _addComponentTemplateGhostDragStartGlobalPosition = null;
+    _addComponentTemplateGhostDragStartCanvasPosition = null;
+    _addComponentTemplateGhostDragGrabOffset = null;
+    _addComponentTemplateGhostDragScale = 1.0;
+    _addComponentTemplateGhostDragCanvasSize = Size.zero;
+  }
+
+  Offset _clampAddComponentTemplateGhostDraftAnchor(
+    Offset value,
+    Size canvasSize,
+  ) {
+    return Offset(
+      _clampDraftAnchorCoordinate(value.dx, canvasSize.width),
+      _clampDraftAnchorCoordinate(value.dy, canvasSize.height),
     );
   }
 

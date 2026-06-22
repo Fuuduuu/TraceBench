@@ -2043,6 +2043,85 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  testWidgets('dragging Add Component ghost updates local draft position only',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key(
+        'board_canvas_add_component_template_template_family_rect_4_perimeter',
+      ),
+    );
+
+    final ghostBodyFinder = find.byKey(
+      const Key('board_canvas_add_component_template_ghost_preview_body'),
+    );
+    expect(ghostBodyFinder, findsOneWidget);
+    final beforeDragRect = tester.getRect(ghostBodyFinder);
+
+    final dragStart = tester.getCenter(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_drag_handle'),
+      ),
+    );
+    const fastDragDelta = Offset(260, 120);
+    final gesture = await tester.startGesture(dragStart);
+    await gesture.moveBy(fastDragDelta);
+    await tester.pump(const Duration(milliseconds: 16));
+    await gesture.up();
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_draft_position'),
+      ),
+      findsOneWidget,
+    );
+    final afterDragRect = tester.getRect(ghostBodyFinder);
+    expect(
+      afterDragRect.center.dx,
+      closeTo(beforeDragRect.center.dx + fastDragDelta.dx, 12),
+    );
+    expect(
+      afterDragRect.center.dy,
+      closeTo(beforeDragRect.center.dy + fastDragDelta.dy, 12),
+    );
+    expect(state.events, isEmpty);
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_confirm')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_place')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_rotation')),
+      findsNothing,
+    );
+    expect(find.textContaining('Edit Layout'), findsNothing);
+    expect(find.textContaining('Resize'), findsNothing);
+    expect(find.textContaining('Snap'), findsNothing);
+    expect(find.textContaining('Grid'), findsNothing);
+    expect(find.textContaining('Magnet'), findsNothing);
+  });
+
   testWidgets('wide Workbench starts with hidden right context panel',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));

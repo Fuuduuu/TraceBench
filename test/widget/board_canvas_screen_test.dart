@@ -1899,6 +1899,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('Draft / unsaved'), findsOneWidget);
+    final ghostPaint = tester.widget<CustomPaint>(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_preview_body'),
+      ),
+    );
+    final ghostPainter = ghostPaint.painter as dynamic;
+    expect(ghostPainter.boundaryColor, const Color(0xFF7B3FF2));
+    expect(ghostPainter.markerColor, const Color(0xFF5E35B1));
+    expect(ghostPainter.fillColor, const Color(0x227B3FF2));
     await tester.enterText(
       find.byKey(
         const Key('board_canvas_add_component_template_draft_label_input'),

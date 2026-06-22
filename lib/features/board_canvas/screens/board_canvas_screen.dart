@@ -2964,6 +2964,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   Widget _buildLocalAddComponentTemplateGhost(BuildContext context) {
     final theme = Theme.of(context);
     final String draftLabel = widget.addComponentTemplateGhostDraftLabel.trim();
+    const addComponentDraftGhostBoundaryColor = Color(0xFF7B3FF2);
+    const addComponentDraftGhostMarkerColor = Color(0xFF5E35B1);
+    const addComponentDraftGhostFillColor = Color(0x227B3FF2);
     final ghostPreview = widget.selectedAddComponentTemplate == null
         ? null
         : ConstrainedBox(
@@ -2992,9 +2995,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                             .addComponentTemplateGhostBottomContactMarkers,
                         leftContactMarkers:
                             widget.addComponentTemplateGhostLeftContactMarkers,
-                        boundaryColor: const Color(0xFFFFC857),
-                        markerColor: const Color(0xFFF6A623),
-                        fillColor: const Color(0x22FFC857),
+                        boundaryColor: addComponentDraftGhostBoundaryColor,
+                        markerColor: addComponentDraftGhostMarkerColor,
+                        fillColor: addComponentDraftGhostFillColor,
                         dashedBoundary: true,
                         strokeWidth: 2.1,
                       ),

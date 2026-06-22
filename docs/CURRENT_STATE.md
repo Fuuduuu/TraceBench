@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS`
 
 ## Repository handoff
 
@@ -18,7 +18,8 @@
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
 - Latest accepted docs-hygiene cleanup sync: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` at `8ad1d0c` (`docs: sync stale _drawDashedLine nit to resolved`).
-- Current pass purpose: docs-only implementation closeout for accepted/pushed Add Component click-to-place draft positioning.
+- Latest accepted/pushed Add Component click-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `eae355f` (`docs: record add component click-to-place draft`).
+- Current pass purpose: docs-only protected scope-lock for local drag-to-place draft positioning of the existing Add Component local ghost/draft preview.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -64,7 +65,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only closeout pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only scope-lock pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -88,15 +89,19 @@ The current docs-hygiene sequence is accepted through:
 
 - `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` is accepted/pushed as `4f0fab1` (`docs: lock add component click-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` is accepted/pushed as `6177dea` (`feat: add component click-to-place draft`).
-- Accepted runtime behavior is limited to local click-to-place draft positioning for the existing Add Component local canvas ghost preview.
-- "click-to-place" means local draft positioning only:
-  - the clicked Board Canvas point is a UI preview anchor, not canonical board data,
-  - the ghost can move visually, but no component is created,
-  - draft position state is volatile UI state only,
-  - no event/fact/write/persistence/canonical placement is accepted.
-- Cancel/change-template must clear local draft position when applicable.
-- Existing builder/template/draft-label behavior remains local only.
-- Drag-to-place, rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, designator policy, and identity/package/electrical semantics remain deferred.
+- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` is accepted/pushed as `eae355f` (`docs: record add component click-to-place draft`).
+- Current scope locks future local drag-to-place draft positioning for the existing Add Component local ghost/draft preview.
+- "drag-to-place" means moving the existing local draft/ghost preview only:
+  - drag position is local volatile UI state only,
+  - dragged point/anchor is not canonical board data,
+  - no component is created by dragging,
+  - no confirmed placement is moved by dragging,
+  - no placement record is created or edited,
+  - no canonical board coordinates are produced, normalized, persisted, or written.
+- Drag may update the local draft anchor/position while dragging and may clamp the visual draft/ghost to safe canvas bounds if needed.
+- Existing click-to-place, template/catalog/builder, local ghost, and draft-label behavior must remain preserved.
+- Cancel/change-template/reset clears or reseeds local draft position only, as already scoped for local draft behavior.
+- Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
   - Lane B: protected/architecture-risk or route ambiguity.
@@ -104,12 +109,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
-- Closeout state: docs-only candidate; no accepted/pushed claim for this uncommitted pass.
-- Runtime commit captured in this closeout: `6177dea` (`feat: add component click-to-place draft`).
-- Claude audit recorded for the implementation: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Validation recorded for the implementation: `flutter test test/widget/board_canvas_screen_test.dart` passed 89/89; `flutter analyze` remained at 9 pre-existing issues with no new warnings.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`.
+- Next route: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS`.
+- Scope-lock state: docs-only candidate; no accepted/pushed claim for this uncommitted pass.
+- Latest accepted click-to-place implementation closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `eae355f`.
+- Manual smoke checkpoint for click-to-place draft UX passed.
 - Latest accepted docs-sync baseline: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` accepted/pushed as `8ad1d0c`.
 - `_drawDashedLine` cleanup remains resolved by `99967a2` (`refactor: remove orphaned _drawDashedLine dead code`).
 

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -31,7 +31,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `673c486` (`feat: propagate add component template shape and defaults`) | Template-family-driven builder and ghost shape propagation accepted with local default contact-marker layout seeding and no canonical/placement semantics. |
 | V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `d7a37ca` (`docs: close out add component template shape and defaults impl pass`) | Closeout records accepted implementation for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`, records accepted labels/defaults behavior, and notes `_drawDashedLine` deferred nit now resolved by `99967a2`. |
 | V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `8ad1d0c` (`docs: sync stale _drawDashedLine nit to resolved`) | Governance/docs sync cleared stale `_drawDashedLine` deferred nit status as resolved by `99967a2`; route returned to `NEEDS_USER_DECISION`. |
-| V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | current docs-only protected scope-lock | Lock future local click-to-place draft positioning for the existing Add Component local ghost preview: clicked point is local UI preview anchor only, no canonical placement/coordinates, no persistence/write/event/fact/schema/projection changes; next route is `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`. |
+| V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | accepted/pushed as `4f0fab1` (`docs: lock add component click-to-place draft`) | Locked local click-to-place draft positioning for the existing Add Component local ghost preview: clicked point is local UI preview anchor only, no canonical placement/coordinates, no persistence/write/event/fact/schema/projection changes. |
+| V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `6177dea` (`feat: add component click-to-place draft`) | Implements local click-to-place draft positioning for the existing Add Component ghost preview; clicked point remains local UI preview anchor only with no canonical placement/coordinates or event/fact/write/persistence changes. |
+| V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current docs-only implementation closeout | Closeout records accepted/pushed click-to-place draft implementation (`6177dea`), Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, focused validation, and route to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `7b98e18` (`docs: close out visual template catalog impl pass`) | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` implementation, confirmed package-name vocabulary restrictions, and `NEEDS_USER_DECISION` next routing. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |

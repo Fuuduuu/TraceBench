@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -18,7 +18,7 @@
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
 - Latest accepted docs-hygiene cleanup sync: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` at `8ad1d0c` (`docs: sync stale _drawDashedLine nit to resolved`).
-- Current pass purpose: docs-only protected scope-lock for local click-to-place draft positioning of the existing Add Component local canvas ghost preview.
+- Current pass purpose: docs-only implementation closeout for accepted/pushed Add Component click-to-place draft positioning.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -26,6 +26,7 @@
 - `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` accepted/pushed as `435e43a` (`feat: add component visual template catalog`).
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` accepted/pushed as `673c486` (`feat: propagate add component template shape and defaults`).
+- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `6177dea` (`feat: add component click-to-place draft`).
 
 ## Accepted docs-hygiene baseline
 
@@ -85,8 +86,9 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` is a Lane B docs-only protected scope-lock.
-- Future work is limited to local click-to-place draft positioning for the existing Add Component local canvas ghost preview.
+- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` is accepted/pushed as `4f0fab1` (`docs: lock add component click-to-place draft`).
+- `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` is accepted/pushed as `6177dea` (`feat: add component click-to-place draft`).
+- Accepted runtime behavior is limited to local click-to-place draft positioning for the existing Add Component local canvas ghost preview.
 - "click-to-place" means local draft positioning only:
   - the clicked Board Canvas point is a UI preview anchor, not canonical board data,
   - the ghost can move visually, but no component is created,
@@ -102,9 +104,12 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS`.
-- Scope-lock state: docs-only candidate; no accepted/pushed claim for this uncommitted pass.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
+- Closeout state: docs-only candidate; no accepted/pushed claim for this uncommitted pass.
+- Runtime commit captured in this closeout: `6177dea` (`feat: add component click-to-place draft`).
+- Claude audit recorded for the implementation: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Validation recorded for the implementation: `flutter test test/widget/board_canvas_screen_test.dart` passed 89/89; `flutter analyze` remained at 9 pre-existing issues with no new warnings.
 - Latest accepted docs-sync baseline: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` accepted/pushed as `8ad1d0c`.
 - `_drawDashedLine` cleanup remains resolved by `99967a2` (`refactor: remove orphaned _drawDashedLine dead code`).
 

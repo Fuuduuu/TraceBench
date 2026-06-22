@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`
 
 ## Type
 
@@ -10,19 +10,19 @@ CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
 
 ## Goal
 
-Record the docs-only post-audit closeout for the accepted/pushed Add Component drag-to-place draft implementation (`8e42537`).
+Record the docs-only post-audit closeout for the accepted/pushed Add Component draft ghost semantic-color implementation (`772eb78`).
 
 ## Baseline
 
-- Latest accepted/pushed drag-to-place draft scope-lock: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` at `bb3e23b` (`docs: lock add component drag-to-place draft`).
-- Latest accepted/pushed drag-to-place draft implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` at `8e42537` (`feat: add component drag-to-place draft`).
+- Latest accepted/pushed drag-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `c35dd22` (`docs: record add component drag-to-place draft`).
+- Latest accepted/pushed draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` at `772eb78` (`style: use draft semantic color for add component ghost`).
 - Implementation changed only `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 
 ## Status labels to record
 
 - `ROUTE_EFFECT: IMPL_POST_AUDIT_CLOSEOUT`
 - `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
-- `LANE_B`
+- `LANE_A`
 
 ## Allowed files
 
@@ -30,24 +30,29 @@ Record the docs-only post-audit closeout for the accepted/pushed Add Component d
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS.md`
+
+## Design context
+
+- Claude design critique recommended: amber = measured / active measuring; purple / unknown = draft / unsaved / unknown.
+- BenchBeep is the user-facing app name.
+- This closeout records context only and does not implement new design recommendations.
 
 ## Accepted implementation behavior
 
-- Click-to-place still works.
-- Drag-to-place works.
-- Fast drag no longer causes cursor/ghost drift.
-- Dragging moves only the existing local Add Component draft/ghost preview.
-- Drag position is local volatile UI state only.
-- Dragged point/anchor is not canonical board data.
-- No component is created by dragging.
-- No confirmed placement is moved by dragging.
-- No placement record is created or edited.
-- No canonical board coordinates are produced, normalized, persisted, or written.
-- The ghost must remain visually draft/unsaved and distinguishable from confirmed placements and measurement overlays.
-- Existing click-to-place behavior must be preserved.
-- Existing template/catalog/builder/local ghost behavior must be preserved.
-- Cancel/change-template/reset clears or reseeds local draft position only, as already scoped for local draft behavior.
+- Add Component draft/ghost now uses purple/unknown-draft semantics rather than amber/measured semantics.
+- Dashed draft/unsaved styling remains.
+- Click-to-place behavior is preserved.
+- Drag-to-place behavior is preserved.
+- Fast drag drift fix is preserved.
+- No token-system migration.
+- No `app_theme.dart` / `ThemeExtension` migration.
+- No behavior/canonical/write/data changes.
+- No component creation.
+- No placement record creation or editing.
+- No canonical coordinates.
+- No persistence/events/facts/writer/schema/materializer/validator/projection/Project ZIP.
+- No Confirm/write/Edit Layout.
 
 ## Implementation files recorded
 
@@ -59,6 +64,7 @@ Record the docs-only post-audit closeout for the accepted/pushed Add Component d
 - This closeout pass is docs-only.
 - No runtime files are edited.
 - No test files are edited.
+- No product behavior is changed.
 - No event/fact/write/persistence.
 - No canonical placement.
 - No canonical coordinates.
@@ -75,10 +81,11 @@ Record the docs-only post-audit closeout for the accepted/pushed Add Component d
 - No designator policy acceptance.
 - No identity/package/electrical semantics.
 - No `_incoming` or screenshot/design artifact runtime use.
+- No docs/sources or design artifact runtime use.
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`
 - Next route: `NEEDS_USER_DECISION`
 
 ## Required validation

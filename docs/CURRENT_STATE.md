@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
@@ -21,7 +21,9 @@
 - Latest accepted/pushed Add Component click-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `eae355f` (`docs: record add component click-to-place draft`).
 - Latest accepted/pushed Add Component drag-to-place draft scope-lock: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` at `bb3e23b` (`docs: lock add component drag-to-place draft`).
 - Latest accepted/pushed Add Component drag-to-place draft implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` at `8e42537` (`feat: add component drag-to-place draft`).
-- Current pass purpose: docs-only post-audit closeout for the accepted/pushed local drag-to-place draft implementation.
+- Latest accepted/pushed Add Component drag-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `c35dd22` (`docs: record add component drag-to-place draft`).
+- Latest accepted/pushed Add Component draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` at `772eb78` (`style: use draft semantic color for add component ghost`).
+- Current pass purpose: docs-only post-audit closeout for the accepted/pushed Add Component draft ghost semantic-color implementation.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -31,6 +33,7 @@
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` accepted/pushed as `673c486` (`feat: propagate add component template shape and defaults`).
 - `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `6177dea` (`feat: add component click-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `8e42537` (`feat: add component drag-to-place draft`).
+- `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 
 ## Accepted docs-hygiene baseline
 
@@ -92,7 +95,9 @@ The current docs-hygiene sequence is accepted through:
 
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` is accepted/pushed as `bb3e23b` (`docs: lock add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` is accepted/pushed as `8e42537` (`feat: add component drag-to-place draft`).
-- Current closeout records the accepted drag-to-place implementation without editing runtime/tests.
+- `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` is accepted/pushed as `c35dd22` (`docs: record add component drag-to-place draft`).
+- `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` is accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
+- Current closeout records the accepted draft ghost semantic-color implementation without editing runtime/tests.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
 - drag-to-place works;
@@ -104,6 +109,12 @@ The current docs-hygiene sequence is accepted through:
 - no confirmed placement is moved;
 - no placement record is created or edited;
 - no canonical board coordinates are produced, normalized, persisted, or written.
+- Accepted draft ghost semantic-color behavior:
+- Add Component draft/ghost uses purple/unknown-draft semantics rather than amber/measured semantics;
+- dashed draft/unsaved styling remains;
+- click-to-place, drag-to-place, and the fast-drag drift fix remain preserved;
+- no token-system migration or `app_theme.dart` / `ThemeExtension` migration is accepted;
+- no behavior/canonical/write/data changes are accepted.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
@@ -112,10 +123,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
 - Closeout state: docs-only candidate; no accepted/pushed claim for this uncommitted closeout pass.
-- Latest accepted drag-to-place implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `8e42537`.
+- Latest accepted draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78`.
+- Latest accepted drag-to-place closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `c35dd22`.
 - Latest accepted click-to-place implementation closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `eae355f`.
 - Manual smoke checkpoint for click-to-place draft UX passed.
 - Latest accepted docs-sync baseline: `V2_WORKBENCH_BOARD_CANVAS_DASHED_LINE_CLEANUP_DOCS_SYNC_PASS` accepted/pushed as `8ad1d0c`.

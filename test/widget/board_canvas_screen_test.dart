@@ -8,6 +8,7 @@ import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_sc
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
 
 ProjectState _inlineProjectState({
   required List<ComponentFact> components,
@@ -143,6 +144,25 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
 }
 
 void main() {
+  test('buildTheme exposes BenchBeep semantic visual tokens', () {
+    final theme = buildTheme();
+    final tokens = theme.extension<BenchBeepVisualTokens>();
+
+    expect(tokens, isNotNull);
+    expect(tokens!.surface, const Color(0xFF101A17));
+    expect(tokens.panel, const Color(0xFF172722));
+    expect(tokens.rule, const Color(0xFF325247));
+    expect(tokens.textPrimary, const Color(0xFFE7EFE9));
+    expect(tokens.textSecondary, const Color(0xFFB6C8BD));
+    expect(tokens.textMuted, const Color(0xFF7C9086));
+    expect(tokens.selectedConfirmedSave, const Color(0xFF2DD4BF));
+    expect(tokens.selectedConfirmedSaveAccent, const Color(0xFFC47A35));
+    expect(tokens.measuringArmedMeasured, const Color(0xFFF3A712));
+    expect(tokens.draftUnsavedUnknown, const Color(0xFF7B3FF2));
+    expect(tokens.draftUnsavedUnknownStrong, const Color(0xFF5E35B1));
+    expect(tokens.draftUnsavedUnknownFill, const Color(0x227B3FF2));
+  });
+
   const boardPlacement = ComponentVisualPlacementFact(
     componentId: 'cmp_r101',
     coordinateSpace: 'board_normalized',

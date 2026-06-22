@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -27,7 +27,9 @@
 - Latest accepted/pushed BenchBeep design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` at `369eb77` (`docs: record BenchBeep design direction intake`).
 - Latest accepted/pushed BenchBeep design-direction source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` at `79fa908` (`docs: sync BenchBeep design source index`).
 - Latest accepted/pushed BenchBeep token foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` at `2620c44` (`docs: lock BenchBeep token foundation`).
-- Current pass purpose: protected/foundational implementation of the minimal BenchBeep token foundation authorized by the accepted scope-lock.
+- Latest accepted/pushed BenchBeep token foundation active-lock sync: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` at `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
+- Latest accepted/pushed BenchBeep token foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` at `18a2875` (`feat: add BenchBeep token foundation`).
+- Current pass purpose: docs-only closeout for the accepted BenchBeep token foundation implementation.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -38,6 +40,7 @@
 - `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `6177dea` (`feat: add component click-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `8e42537` (`feat: add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
+- `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 
 ## Accepted docs-hygiene baseline
 
@@ -104,8 +107,8 @@ The current docs-hygiene sequence is accepted through:
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` is accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`).
 - `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` is accepted/pushed as `79fa908` (`docs: sync BenchBeep design source index`).
 - Accepted token-foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
-- Active token-foundation implementation route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
-- Active-lock sync candidate: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` records the route/allowlist repair only and performs no runtime/test implementation.
+- Accepted token-foundation active-lock sync: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
+- Accepted token-foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -122,7 +125,7 @@ The current docs-hygiene sequence is accepted through:
 - Add Component draft/ghost uses purple/unknown-draft semantics rather than amber/measured semantics;
 - dashed draft/unsaved styling remains;
 - click-to-place, drag-to-place, and the fast-drag drift fix remain preserved;
-- no token-system migration or `app_theme.dart` / `ThemeExtension` migration is accepted;
+- no token-system migration or `app_theme.dart` / `ThemeExtension` migration was accepted in that prior semantic-color pass;
 - no behavior/canonical/write/data changes are accepted.
 - Design-direction intake status:
 - BenchBeep is the user-facing app/product name;
@@ -139,6 +142,15 @@ The current docs-hygiene sequence is accepted through:
 - small `ThemeExtension` or equivalent local token structure;
 - clearly scoped hardcoded Workbench/Add Component canvas color replacement only if covered by the future implementation pass;
 - existing behavior preserved.
+- Accepted token foundation implementation:
+- introduced inert `ThemeExtension<BenchBeepVisualTokens>`;
+- records semantic tokens for surface/panel/rule colors and text hierarchy;
+- records teal/copper = selected/confirmed/save;
+- records amber = measuring/armed/measured;
+- records purple/unknown = draft/unsaved/unknown;
+- added focused widget test coverage;
+- no token consumers are migrated yet;
+- visual/runtime behavior should remain unchanged.
 - Home launcher, menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
@@ -148,10 +160,13 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
-- Next route after implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
-- Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only route/allowlist repair candidate and has no accepted/pushed claim.
+- Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
+- Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
+- Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Validation evidence: `flutter test test/widget/board_canvas_screen_test.dart` passed `91/91`; `flutter analyze` reported `24` unchanged baseline issues; `py -3 tools/validate_all.py` passed `273`.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.
 - Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.

@@ -141,3 +141,12 @@ Archive files are never read by default.
 
 - docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Claude Design / UX review returned `ACCEPT_WITH_NITS`; source files remain non-runtime design input, not production Flutter source, not Project ZIP content, and not evidence/canonical input.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/`: local scratch/reference-only Technician Workbench Home design input for integrated workbench direction. Contains standalone HTML/CSS mockup material; it remains untracked, non-runtime, non-canonical, not Project ZIP content, and must not be copied into Flutter/runtime/assets.
+
+## Current design-direction intake
+
+- `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` records Claude design-direction recommendations as governed design intake only.
+- BenchBeep is the user-facing app/product name; TraceBench remains the repo/platform/project name; BoardFact remains a data-fact/subsystem name unless a specific surface earns it.
+- Direction: bench instrument identity, dark instrument-like UI, restrained panels/hairlines, IBM Plex Mono/Sans, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown.
+- Recent accepted application: Add Component draft ghost uses purple/unknown-draft semantics.
+- Future order remains token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock.
+- This intake does not treat `_incoming`, screenshots, docs/sources, mockups, or design artifacts as runtime truth.

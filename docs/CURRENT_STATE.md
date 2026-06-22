@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS`
+`V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`
 
 ## Next recommended pass
 
@@ -24,7 +24,8 @@
 - Latest accepted/pushed Add Component drag-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `c35dd22` (`docs: record add component drag-to-place draft`).
 - Latest accepted/pushed Add Component draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` at `772eb78` (`style: use draft semantic color for add component ghost`).
 - Latest accepted/pushed Add Component draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` at `1f30841` (`docs: record add component draft ghost semantic color`).
-- Current pass purpose: docs-only governed design-direction intake for BenchBeep naming and future visual-system direction.
+- Latest accepted/pushed BenchBeep design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` at `369eb77` (`docs: record BenchBeep design direction intake`).
+- Current pass purpose: docs-only source-index sync to adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover before token-foundation scope-lock routing.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -99,7 +100,7 @@ The current docs-hygiene sequence is accepted through:
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` is accepted/pushed as `c35dd22` (`docs: record add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` is accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` is accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`).
-- Current design intake records design direction only and does not edit runtime/tests.
+- Current source-index sync records the existing design-direction source-index carryover only and does not edit runtime/tests.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
 - drag-to-place works;
@@ -132,9 +133,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
-- Intake state: docs-only candidate; no accepted/pushed claim for this uncommitted design-intake pass.
+- Current pass: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`.
+- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
+- Source-index sync state: docs-only candidate; no accepted/pushed claim for this uncommitted source-index sync pass.
+- Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.
 - Latest accepted drag-to-place closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `c35dd22`.
 - Latest accepted click-to-place implementation closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `eae355f`.

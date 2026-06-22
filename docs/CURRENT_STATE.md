@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`
+`V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS`
 
 ## Next recommended pass
 
@@ -23,7 +23,8 @@
 - Latest accepted/pushed Add Component drag-to-place draft implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` at `8e42537` (`feat: add component drag-to-place draft`).
 - Latest accepted/pushed Add Component drag-to-place draft closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `c35dd22` (`docs: record add component drag-to-place draft`).
 - Latest accepted/pushed Add Component draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` at `772eb78` (`style: use draft semantic color for add component ghost`).
-- Current pass purpose: docs-only post-audit closeout for the accepted/pushed Add Component draft ghost semantic-color implementation.
+- Latest accepted/pushed Add Component draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` at `1f30841` (`docs: record add component draft ghost semantic color`).
+- Current pass purpose: docs-only governed design-direction intake for BenchBeep naming and future visual-system direction.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -97,7 +98,8 @@ The current docs-hygiene sequence is accepted through:
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` is accepted/pushed as `8e42537` (`feat: add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` is accepted/pushed as `c35dd22` (`docs: record add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` is accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
-- Current closeout records the accepted draft ghost semantic-color implementation without editing runtime/tests.
+- `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` is accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`).
+- Current design intake records design direction only and does not edit runtime/tests.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
 - drag-to-place works;
@@ -115,6 +117,13 @@ The current docs-hygiene sequence is accepted through:
 - click-to-place, drag-to-place, and the fast-drag drift fix remain preserved;
 - no token-system migration or `app_theme.dart` / `ThemeExtension` migration is accepted;
 - no behavior/canonical/write/data changes are accepted.
+- Design-direction intake status:
+- BenchBeep is the user-facing app/product name;
+- TraceBench remains the repo/platform/project name;
+- BoardFact is a data-fact/subsystem name, not the primary user-facing app name unless a specific surface earns it;
+- design direction is bench instrument identity, dark instrument-like UI, restrained panels/hairlines rather than glassmorphism, IBM Plex Mono/Sans direction, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown;
+- proposed future order is token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock;
+- Home implementation, menu implementation, command menu implementation, audio/save beep, full token migration, high-pin selector UX, dual-primary restyling, and accessibility contrast polish remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
@@ -123,10 +132,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS`.
+- Current pass: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
-- Closeout state: docs-only candidate; no accepted/pushed claim for this uncommitted closeout pass.
-- Latest accepted draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78`.
+- Intake state: docs-only candidate; no accepted/pushed claim for this uncommitted design-intake pass.
+- Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.
 - Latest accepted drag-to-place closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `c35dd22`.
 - Latest accepted click-to-place implementation closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `eae355f`.
 - Manual smoke checkpoint for click-to-place draft UX passed.

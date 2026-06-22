@@ -2,28 +2,26 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC
 
 ## Goal
 
-Create a docs-only protected scope-lock for local drag-to-place draft positioning of the existing Add Component local ghost/draft preview.
+Record the docs-only post-audit closeout for the accepted/pushed Add Component drag-to-place draft implementation (`8e42537`).
 
 ## Baseline
 
-- Current route before this pass: `NEEDS_USER_DECISION`
-- Latest accepted/pushed scope-lock baseline: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` at `4f0fab1` (`docs: lock add component click-to-place draft`).
-- Latest accepted/pushed implementation: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_PASS` at `6177dea` (`feat: add component click-to-place draft`).
-- Latest accepted/pushed implementation closeout: `V2_WORKBENCH_ADD_COMPONENT_CLICK_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` at `eae355f` (`docs: record add component click-to-place draft`).
-- Manual smoke checkpoint for click-to-place draft UX passed.
+- Latest accepted/pushed drag-to-place draft scope-lock: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS` at `bb3e23b` (`docs: lock add component drag-to-place draft`).
+- Latest accepted/pushed drag-to-place draft implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` at `8e42537` (`feat: add component drag-to-place draft`).
+- Implementation changed only `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: PROTECTED_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS`
+- `ROUTE_EFFECT: IMPL_POST_AUDIT_CLOSEOUT`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 - `LANE_B`
 
 ## Allowed files
@@ -32,12 +30,14 @@ Create a docs-only protected scope-lock for local drag-to-place draft positionin
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS.md`
 
-## Locked future work
+## Accepted implementation behavior
 
-- Dragging the existing local Add Component draft/ghost preview on Board Canvas may update its local draft anchor/position.
-- "drag-to-place" means moving the existing local draft/ghost preview only.
+- Click-to-place still works.
+- Drag-to-place works.
+- Fast drag no longer causes cursor/ghost drift.
+- Dragging moves only the existing local Add Component draft/ghost preview.
 - Drag position is local volatile UI state only.
 - Dragged point/anchor is not canonical board data.
 - No component is created by dragging.
@@ -45,19 +45,18 @@ Create a docs-only protected scope-lock for local drag-to-place draft positionin
 - No placement record is created or edited.
 - No canonical board coordinates are produced, normalized, persisted, or written.
 - The ghost must remain visually draft/unsaved and distinguishable from confirmed placements and measurement overlays.
-- The visual draft/ghost may be clamped to safe canvas bounds if needed.
 - Existing click-to-place behavior must be preserved.
 - Existing template/catalog/builder/local ghost behavior must be preserved.
 - Cancel/change-template/reset clears or reseeds local draft position only, as already scoped for local draft behavior.
 
-## Future implementation allowlist
+## Implementation files recorded
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
 ## Preserve boundary
 
-- This pass is docs-only.
+- This closeout pass is docs-only.
 - No runtime files are edited.
 - No test files are edited.
 - No event/fact/write/persistence.
@@ -79,8 +78,8 @@ Create a docs-only protected scope-lock for local drag-to-place draft positionin
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_SCOPE_LOCK_PASS`
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS`
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS`
+- Next route: `NEEDS_USER_DECISION`
 
 ## Required validation
 

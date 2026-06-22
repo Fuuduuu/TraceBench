@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -40,8 +40,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`) | Visual-semantic UI polish: Add Component draft/ghost uses purple/unknown-draft semantics instead of amber/measured semantics, preserving dashed draft styling, click-to-place, drag-to-place, fast-drag behavior, and all local-only boundaries. |
 | V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`) | Closeout records accepted/pushed draft ghost semantic-color implementation (`772eb78`), Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
 | V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS | CODEX / DOCS_DESIGN_INTAKE | accepted/pushed as `369eb77` (`docs: record BenchBeep design direction intake`) | Records BenchBeep naming, TraceBench/BoardFact naming boundaries, bench-instrument visual direction, semantic color guidance, accepted recent purple draft-ghost application, and future order of token foundation before Home before menus; no runtime/test/product behavior changes. |
-| V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only source-index sync | Adopts the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover into a forward-only sync pass and routes next to `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`; no runtime/test/product behavior changes. |
-| V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | next recommended route | Future docs-only protected/foundational scope-lock for minimal BenchBeep token foundation; implementation remains blocked until separately locked and accepted. |
+| V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `79fa908` (`docs: sync BenchBeep design source index`) | Adopts the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover into a forward-only sync pass and routes next to `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`; no runtime/test/product behavior changes. |
+| V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | current docs-only protected/foundational scope-lock | Locks future minimal BenchBeep token foundation only: semantic visual tokens for surfaces, panels, rules, text hierarchy, teal/copper selected/confirmed/save, amber measuring/armed/measured, purple/unknown draft/unsaved/unknown, and a small ThemeExtension or equivalent local token structure; no implementation in this pass. |
+| V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS | CODEX / FLUTTER_PASS | next recommended route | Future narrow implementation may introduce the accepted minimal token foundation only after this scope-lock is accepted/pushed; no Home/menu/audio/data/write behavior. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `7b98e18` (`docs: close out visual template catalog impl pass`) | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` implementation, confirmed package-name vocabulary restrictions, and `NEEDS_USER_DECISION` next routing. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |

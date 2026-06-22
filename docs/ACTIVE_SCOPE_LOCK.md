@@ -2,27 +2,26 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
 
 ## Type
 
-CODEX / DOCS_SYNC
+CODEX / DOCS_PROTECTED_SCOPE_LOCK
 
 ## Goal
 
-Adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover into a tiny forward-only docs sync pass before rerunning the token-foundation scope-lock.
+Create a docs-only protected/foundational scope-lock for the future BenchBeep token foundation pass.
 
 ## Baseline
 
-- Latest accepted/pushed design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` at `369eb77` (`docs: record BenchBeep design direction intake`).
-- Existing tracked carryover: `docs/SOURCES_INDEX_CURRENT.md` records the BenchBeep design-direction intake in the source/design index.
-- Current route before this pass: `NEEDS_USER_DECISION`.
+- Latest accepted/pushed design-direction source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` at `79fa908` (`docs: sync BenchBeep design source index`).
+- Current route before this pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: SOURCE_INDEX_SYNC`
-- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
-- `LANE_A`
+- `ROUTE_EFFECT: PROTECTED_FOUNDATIONAL_SCOPE_LOCK`
+- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
+- `LANE_B`
 
 ## Allowed files
 
@@ -30,23 +29,38 @@ Adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover in
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/SOURCES_INDEX_CURRENT.md`
-- `docs/audit/V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS.md`
+- `docs/audit/V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS.md`
 
-## Source-index sync record
+## Locked future work
 
-- `docs/SOURCES_INDEX_CURRENT.md` design-direction update is intentional for this sync pass.
-- It records BenchBeep as the user-facing app/product name.
-- It records TraceBench as the repo/platform/project name.
-- It records BoardFact as a data-fact/subsystem name.
-- It records bench-instrument design direction and semantic colors.
-- It records accepted Add Component draft ghost purple/unknown-draft application.
-- It records future order: token foundation -> Home launcher -> menus.
-- It records `_incoming` / docs/sources as design input only, not runtime truth.
+- Future implementation may introduce a minimal Flutter token foundation for the accepted BenchBeep design direction.
+- Future implementation may define app-level semantic visual tokens for surface/panel/rule colors.
+- Future implementation may define app-level semantic visual tokens for text hierarchy colors.
+- Token semantics are:
+- teal/copper = selected/confirmed/save;
+- amber = measuring/armed/measured;
+- purple/unknown = draft/unsaved/unknown.
+- Future implementation may prepare a small `ThemeExtension` or equivalent local token structure.
+- Future implementation may replace clearly scoped hardcoded Workbench/Add Component canvas colors only if covered by the future implementation pass.
+- Existing behavior must be preserved.
+
+## Explicitly deferred
+
+- Home launcher implementation.
+- Menu system implementation.
+- Command menu.
+- Context menus.
+- Audio/save beep.
+- High-pin selector UX.
+- Dual-primary visual restyling.
+- Broad typography/font asset bundling unless separately scoped.
+- Full app redesign.
+- Any data/canonical/write behavior.
 
 ## Boundary
 
-- This pass is docs-only source-index sync.
+- This pass only locks the future token foundation scope.
+- Design sources and `_incoming` remain design input only, never runtime.
 - No runtime files are edited.
 - No test files are edited.
 - No untracked scratch files are touched or staged.
@@ -56,6 +70,7 @@ Adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover in
 - No menu system or command menu is implemented.
 - No audio/beep behavior is implemented.
 - No event/fact/write/persistence.
+- Token work must not alter canonical board data, events, facts, writer, schema, materializer, validator, projection, Project ZIP, placement records, Confirm/write, or Edit Layout.
 - No canonical placement.
 - No canonical coordinates.
 - No `schema/writer/materializer/validator/projection/Project ZIP` changes.
@@ -74,8 +89,8 @@ Adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover in
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`
-- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
+- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
+- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
 
 ## Required validation
 

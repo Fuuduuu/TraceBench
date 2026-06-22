@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`
 
 ## Repository handoff
 
@@ -25,7 +25,8 @@
 - Latest accepted/pushed Add Component draft ghost semantic-color implementation: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` at `772eb78` (`style: use draft semantic color for add component ghost`).
 - Latest accepted/pushed Add Component draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` at `1f30841` (`docs: record add component draft ghost semantic color`).
 - Latest accepted/pushed BenchBeep design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` at `369eb77` (`docs: record BenchBeep design direction intake`).
-- Current pass purpose: docs-only source-index sync to adopt the existing `docs/SOURCES_INDEX_CURRENT.md` design-direction carryover before token-foundation scope-lock routing.
+- Latest accepted/pushed BenchBeep design-direction source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` at `79fa908` (`docs: sync BenchBeep design source index`).
+- Current pass purpose: docs-only protected/foundational scope-lock for a future minimal BenchBeep token foundation pass.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -73,7 +74,7 @@ The current docs-hygiene sequence is accepted through:
 
 ## Not accepted in this route
 
-- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only closeout pass.
+- No runtime code, schema, writer, validator, materializer, projection, Project ZIP, event, or fact changes are made in this docs-only scope-lock pass.
 - Add Component Footprint Builder HTML/CSS artifacts remain design input only and are not accepted runtime source, architecture, or canonical semantics.
 - `renderer writes: none` is preserved from prior accepted behavior.
 - Measure Sheet remains unchanged.
@@ -100,7 +101,8 @@ The current docs-hygiene sequence is accepted through:
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` is accepted/pushed as `c35dd22` (`docs: record add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` is accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` is accepted/pushed as `1f30841` (`docs: record add component draft ghost semantic color`).
-- Current source-index sync records the existing design-direction source-index carryover only and does not edit runtime/tests.
+- `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` is accepted/pushed as `79fa908` (`docs: sync BenchBeep design source index`).
+- Current token-foundation scope-lock records future implementation boundaries only and does not edit runtime/tests.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
 - drag-to-place works;
@@ -125,6 +127,15 @@ The current docs-hygiene sequence is accepted through:
 - design direction is bench instrument identity, dark instrument-like UI, restrained panels/hairlines rather than glassmorphism, IBM Plex Mono/Sans direction, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown;
 - proposed future order is token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock;
 - Home implementation, menu implementation, command menu implementation, audio/save beep, full token migration, high-pin selector UX, dual-primary restyling, and accessibility contrast polish remain deferred.
+- Token foundation future scope is limited to a minimal Flutter token foundation for accepted BenchBeep design direction:
+- app-level semantic tokens for surface/panel/rule colors and text hierarchy colors;
+- teal/copper = selected/confirmed/save;
+- amber = measuring/armed/measured;
+- purple/unknown = draft/unsaved/unknown;
+- small `ThemeExtension` or equivalent local token structure;
+- clearly scoped hardcoded Workbench/Add Component canvas color replacement only if covered by the future implementation pass;
+- existing behavior preserved.
+- Home launcher, menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
@@ -133,9 +144,10 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS`.
-- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
-- Source-index sync state: docs-only candidate; no accepted/pushed claim for this uncommitted source-index sync pass.
+- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS`.
+- Next route: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`.
+- Scope-lock state: docs-only candidate; no accepted/pushed claim for this uncommitted scope-lock pass.
+- Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.
 - Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.
 - Latest accepted drag-to-place closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_POST_AUDIT_PASS` accepted/pushed as `c35dd22`.

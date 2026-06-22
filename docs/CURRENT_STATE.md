@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -17,13 +17,14 @@
 - Latest accepted measurement-overlay implementation lock: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_SCOPE_LOCK_PASS` at `f832ee4` (`docs: activate workbench measurement overlay implementation lock`).
 - Latest accepted measurement-overlay implementation: `V2_WORKBENCH_MEASUREMENT_OVERLAY_IMPL_PASS` at `e1f78ed` (`feat(board-canvas): add read-only measurement value overlay`).
 - Latest measurement-overlay manual smoke record: `V2_WORKBENCH_MEASUREMENT_OVERLAY_MANUAL_SMOKE_PASS` recorded user visual smoke `PASS_WITH_NIT`; route returned to `NEEDS_USER_DECISION`.
-- Current pass purpose: lock template-family-to-shape/default propagation for Add Component local builder/ghost before implementing shape-default behavior.
+- Current pass purpose: docs-only implementation closeout for template-family-to-shape/default propagation in Add Component local builder/ghost.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_COMPACT_POLISH_IMPL_PASS` accepted/pushed as `248893f` (`feat: compact add component builder UI`).
 - `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` accepted/pushed as `435e43a` (`feat: add component visual template catalog`).
+- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` accepted/pushed as `673c486` (`feat: propagate add component template shape and defaults`).
 
 ## Accepted docs-hygiene baseline
 
@@ -83,15 +84,15 @@ The current docs-hygiene sequence is accepted through:
 
 ## Current scope
 
-- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS` is the current docs-only protected scope-lock pass.
-- `V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS` is accepted/pushed as local draft implementation.
-- Runtime status for this route: implementation accepted/pushed (`cd19ae2`).
+- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS` is the accepted/pushed scope-lock for this implementation (`33bd206`, `docs: lock add component template shape and defaults`).
+- `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` is accepted/pushed as `673c486`.
+- Runtime status for this route: implementation accepted/pushed (`673c486`).
 - Architecture status remains `NOT_ACCEPTED` for any new runtime/architecture in this scope-lock.
 - Canonical semantics for this scope are intentionally minimal and non-canonical:
   - template-family selection drives local builder/ghost visual shape only,
   - template defaults are local volatile hints only,
   - `Generic blank` may start at zero contact markers locally.
-- Route effect: docs-only protected scope-lock for template shape/default propagation; implementation remains deferred to `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`.
+- Route effect: implementation closeout for template shape/default propagation; implementation already accepted as `673c486`; route returns to `NEEDS_USER_DECISION`.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
   - Lane B: protected/architecture-risk or route ambiguity.
@@ -100,10 +101,11 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`.
 - Next route: `NEEDS_USER_DECISION`.
-- Runtime commit captured in this closeout: `435e43a` (`feat: add component visual template catalog`).
-- Closeout scope: Add Component visual template catalog accepts closed geometry-first family labels, with template selection opening the local volatile right-panel builder flow and no runtime/protected-surface edits in this docs-only pass.
+- Runtime commit captured in this closeout: `673c486` (`feat: propagate add component template shape and defaults`).
+- Closeout scope: Add Component template-shape/default propagation was accepted with geometry-first family-driven builder and ghost shape propagation, local seed defaults per family, and no runtime/protected-surface edits in this docs-only closeout pass.
+- Non-blocking nit: `_drawDashedLine` is orphaned dead code after the rect-to-path refactor and is deferred to a future lint/QA hygiene pass.
 
 ## Manual smoke record (previous)
 

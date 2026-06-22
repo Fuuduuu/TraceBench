@@ -2,15 +2,19 @@
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_SCOPE_LOCK
+CLAUDE_CODE / DOCS_SYNC_CLOSEOUT
 
 ## Goal
 
-Lock the next Add Component slice: selected visual template family drives local builder and ghost shape/defaults before implementation.
+Record the accepted/pushed implementation closeout for:
+
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS` (`673c486`, `feat: propagate add component template shape and defaults`).
+
+Preserve closeout boundary and route.
 
 ## Baseline
 
@@ -21,7 +25,7 @@ Lock the next Add Component slice: selected visual template family drives local 
 ## Status labels to record
 
 - `ROUTE_EFFECT: DOCS_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`
+- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
 - `LANE_B`
 
 ## Allowed files
@@ -30,7 +34,7 @@ Lock the next Add Component slice: selected visual template family drives local 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS.md`
 
 ## Preserve boundary
 
@@ -103,8 +107,8 @@ The future implementation pass may edit only:
 
 ## Route
 
-- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`.
-- Next route: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`.
+- Current pass: `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 
 ## Required validation
 

@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS`
+`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -27,7 +27,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 |---|---|---|---|
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | accepted/pushed as `2b313a8` (`docs: lock add component visual template catalog`) | Visual template catalog scope-lock for the next Add Component right-panel step: base-shape/template-family first selection, compact visual cards, local draft selection state, and deferred contact-marker editing in the builder. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `435e43a` (`feat: add component visual template catalog`) | Add Component template selection now uses closed geometry-first visual template cards; selection opens right-panel builder flow with local volatile defaults. |
-| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | current docs-only scope-lock | Lock template-family-driven builder/ghost shape propagation and local default contact-marker seeding rules. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | accepted/pushed as `33bd206` (`docs: lock add component template shape and defaults`) | Lock template-family-driven builder/ghost shape propagation and local default contact-marker seeding rules. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `673c486` (`feat: propagate add component template shape and defaults`) | Template-family-driven builder and ghost shape propagation accepted with local default contact-marker layout seeding and no canonical/placement semantics. |
+| V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | current docs-only post-audit closeout | Closeout records accepted implementation for `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_SHAPE_AND_DEFAULTS_IMPL_PASS`, records accepted labels/defaults behavior, and routes to `NEEDS_USER_DECISION`. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `7b98e18` (`docs: close out visual template catalog impl pass`) | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` implementation, confirmed package-name vocabulary restrictions, and `NEEDS_USER_DECISION` next routing. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |

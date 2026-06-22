@@ -1360,7 +1360,7 @@ void main() {
             find.byKey(const Key(
                 'board_canvas_add_component_template_builder_top_value')),
           )
-      .data,
+          .data,
       '3',
     );
     expect(
@@ -1612,7 +1612,7 @@ void main() {
             find.byKey(const Key(
                 'board_canvas_add_component_template_builder_top_value')),
           )
-      .data,
+          .data,
       '0',
     );
     expect(
@@ -1623,7 +1623,7 @@ void main() {
                   'board_canvas_add_component_template_builder_right_value'),
             ),
           )
-      .data,
+          .data,
       '0',
     );
     expect(
@@ -1634,7 +1634,7 @@ void main() {
                   'board_canvas_add_component_template_builder_bottom_value'),
             ),
           )
-      .data,
+          .data,
       '0',
     );
     expect(
@@ -1645,7 +1645,7 @@ void main() {
                   'board_canvas_add_component_template_builder_left_value'),
             ),
           )
-      .data,
+          .data,
       '0',
     );
     expect(
@@ -1721,26 +1721,26 @@ void main() {
 
     expect(
       tester
-      .widget<Text>(
-        find.byKey(
-          const Key(
-            'board_canvas_add_component_template_builder_top_value',
-          ),
-        ),
-      )
-      .data,
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_top_value',
+              ),
+            ),
+          )
+          .data,
       '1',
     );
     expect(
       tester
-      .widget<Text>(
-        find.byKey(
-          const Key(
-            'board_canvas_add_component_template_builder_right_value',
-          ),
-        ),
-      )
-      .data,
+          .widget<Text>(
+            find.byKey(
+              const Key(
+                'board_canvas_add_component_template_builder_right_value',
+              ),
+            ),
+          )
+          .data,
       '5',
     );
 
@@ -1947,6 +1947,99 @@ void main() {
           const Key('board_canvas_add_component_template_ghost_preview')),
       findsNothing,
     );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'clicking board canvas moves Add Component ghost as local draft only',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key(
+        'board_canvas_add_component_template_template_family_rect_4_perimeter',
+      ),
+    );
+
+    final ghostBodyFinder = find.byKey(
+      const Key('board_canvas_add_component_template_ghost_preview_body'),
+    );
+    expect(ghostBodyFinder, findsOneWidget);
+    final defaultGhostBodyRect = tester.getRect(ghostBodyFinder);
+
+    final painterFinder = find.byKey(const Key('board_canvas_painter'));
+    final painterTopLeft = tester.getTopLeft(painterFinder);
+    final painterSize = tester.getSize(painterFinder);
+    await tester.tapAt(
+      painterTopLeft +
+          Offset(painterSize.width * 0.72, painterSize.height * 0.28),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_template_ghost_draft_position'),
+      ),
+      findsOneWidget,
+    );
+    final movedGhostBodyRect = tester.getRect(ghostBodyFinder);
+    expect(
+      movedGhostBodyRect.center.dx,
+      greaterThan(defaultGhostBodyRect.center.dx + 80),
+    );
+    expect(
+      movedGhostBodyRect.center.dy,
+      lessThan(defaultGhostBodyRect.center.dy - 50),
+    );
+    expect(state.events, isEmpty);
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_confirm')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_place')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_rotation')),
+      findsNothing,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_reset_to_defaults'),
+    );
+    final resetGhostBodyRect = tester.getRect(ghostBodyFinder);
+    expect(
+      resetGhostBodyRect.center.dx,
+      lessThan(movedGhostBodyRect.center.dx - 80),
+    );
+    expect(
+      resetGhostBodyRect.center.dy,
+      greaterThan(movedGhostBodyRect.center.dy + 50),
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_change_template'),
+    );
+    expect(ghostBodyFinder, findsNothing);
     expect(state.events, isEmpty);
   });
 

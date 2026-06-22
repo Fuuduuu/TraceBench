@@ -216,7 +216,8 @@ class _AddComponentTemplateDefinition {
     }
   }
 
-  bool get isRoundTemplateBody => bodyShape == _AddComponentTemplateBodyShape.radialRound;
+  bool get isRoundTemplateBody =>
+      bodyShape == _AddComponentTemplateBodyShape.radialRound;
 
   bool get isConnectorStripTemplateBody =>
       bodyShape == _AddComponentTemplateBodyShape.connectorStrip;
@@ -326,6 +327,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   int _addComponentTemplateBottomContactMarkers = 0;
   int _addComponentTemplateLeftContactMarkers = 0;
   String _addComponentTemplateDraftLabel = '';
+  Offset? _addComponentTemplateGhostDraftAnchor;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -380,6 +382,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     setState(() {
       _selectedAddComponentTemplateId = templateId;
       _seedAddComponentTemplateContactCounts(template);
+      _addComponentTemplateGhostDraftAnchor = null;
     });
   }
 
@@ -584,7 +587,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   _addComponentTemplateLeftContactMarkers,
               addComponentTemplateGhostDraftLabel:
                   _addComponentTemplateDraftLabel,
+              addComponentTemplateGhostDraftAnchor:
+                  _addComponentTemplateGhostDraftAnchor,
               selectedAddComponentTemplate: selectedAddComponentTemplate,
+              onAddComponentTemplateGhostDraftAnchorChanged: (value) {
+                setState(() {
+                  _addComponentTemplateGhostDraftAnchor = value;
+                });
+              },
             );
             final metadata = _InspectorPanel(
               selectedEntry: selectedEntry,
@@ -711,6 +721,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     onChangeTemplateSelection: () {
                       setState(() {
                         _selectedAddComponentTemplateId = null;
+                        _addComponentTemplateGhostDraftAnchor = null;
                       });
                     },
                     onResetToTemplateDefaults:
@@ -720,6 +731,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                 setState(() {
                                   _seedAddComponentTemplateContactCounts(
                                       selectedAddComponentTemplate);
+                                  _addComponentTemplateGhostDraftAnchor = null;
                                 });
                               },
                   );
@@ -1992,7 +2004,8 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                                           _RectangularPerimeterTemplatePreviewPainter(
                                         template: template,
                                         topContactMarkers: topContactMarkers,
-                                        rightContactMarkers: rightContactMarkers,
+                                        rightContactMarkers:
+                                            rightContactMarkers,
                                         bottomContactMarkers:
                                             bottomContactMarkers,
                                         leftContactMarkers: leftContactMarkers,
@@ -2313,12 +2326,16 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
 
   Path _buildBodyPath(Rect rect) {
     if (template.bodyShape == _AddComponentTemplateBodyShape.radialRound) {
-      return Path()..addOval(Rect.fromCircle(center: rect.center, radius: math.min(rect.width, rect.height) / 2));
+      return Path()
+        ..addOval(Rect.fromCircle(
+            center: rect.center,
+            radius: math.min(rect.width, rect.height) / 2));
     }
 
-    final radius = template.bodyShape == _AddComponentTemplateBodyShape.genericBlank
-        ? const Radius.circular(2)
-        : const Radius.circular(4);
+    final radius =
+        template.bodyShape == _AddComponentTemplateBodyShape.genericBlank
+            ? const Radius.circular(2)
+            : const Radius.circular(4);
     return Path()
       ..addRRect(
         RRect.fromRectAndRadius(
@@ -2668,7 +2685,9 @@ class _CanvasPanel extends StatefulWidget {
     required this.addComponentTemplateGhostBottomContactMarkers,
     required this.addComponentTemplateGhostLeftContactMarkers,
     required this.addComponentTemplateGhostDraftLabel,
+    required this.addComponentTemplateGhostDraftAnchor,
     required this.selectedAddComponentTemplate,
+    required this.onAddComponentTemplateGhostDraftAnchorChanged,
   });
 
   final List<_PlacementEntry> entries;
@@ -2688,7 +2707,9 @@ class _CanvasPanel extends StatefulWidget {
   final int addComponentTemplateGhostBottomContactMarkers;
   final int addComponentTemplateGhostLeftContactMarkers;
   final String addComponentTemplateGhostDraftLabel;
+  final Offset? addComponentTemplateGhostDraftAnchor;
   final _AddComponentTemplateDefinition? selectedAddComponentTemplate;
+  final ValueChanged<Offset> onAddComponentTemplateGhostDraftAnchorChanged;
 
   @override
   State<_CanvasPanel> createState() => _CanvasPanelState();
@@ -2712,6 +2733,11 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   }
 
   void _selectPlacementAt(Offset position, Size size) {
+    if (widget.showAddComponentTemplateGhost &&
+        widget.selectedAddComponentTemplate != null) {
+      widget.onAddComponentTemplateGhostDraftAnchorChanged(position);
+      return;
+    }
     for (final entry in widget.entries.reversed) {
       if (_renderedPlacementContains(
         entry: entry,
@@ -2765,9 +2791,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   widget.selectedAddComponentTemplate != null) ...[
                 Positioned.fill(
                   child: IgnorePointer(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: _buildLocalAddComponentTemplateGhost(context),
+                    child: _buildLocalAddComponentTemplateGhostLayer(
+                      context,
+                      canvasSize,
                     ),
                   ),
                 ),
@@ -2789,6 +2815,45 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         ),
       ),
     );
+  }
+
+  Widget _buildLocalAddComponentTemplateGhostLayer(
+    BuildContext context,
+    Size canvasSize,
+  ) {
+    final ghost = _buildLocalAddComponentTemplateGhost(context);
+    final draftAnchor = widget.addComponentTemplateGhostDraftAnchor;
+    if (draftAnchor == null) {
+      return Align(
+        alignment: Alignment.center,
+        child: ghost,
+      );
+    }
+    final clampedAnchor = Offset(
+      _clampDraftAnchorCoordinate(draftAnchor.dx, canvasSize.width),
+      _clampDraftAnchorCoordinate(draftAnchor.dy, canvasSize.height),
+    );
+    return Stack(
+      children: [
+        Positioned(
+          key: const Key(
+            'board_canvas_add_component_template_ghost_draft_position',
+          ),
+          left: clampedAnchor.dx,
+          top: clampedAnchor.dy,
+          child: FractionalTranslation(
+            translation: const Offset(-0.5, -0.5),
+            child: ghost,
+          ),
+        ),
+      ],
+    );
+  }
+
+  double _clampDraftAnchorCoordinate(double value, double extent) {
+    const minMargin = 28.0;
+    final maxMargin = math.max(minMargin, extent - minMargin);
+    return value.clamp(minMargin, maxMargin).toDouble();
   }
 
   Widget _buildLocalAddComponentTemplateGhost(BuildContext context) {
@@ -2818,8 +2883,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                             widget.addComponentTemplateGhostTopContactMarkers,
                         rightContactMarkers:
                             widget.addComponentTemplateGhostRightContactMarkers,
-                        bottomContactMarkers:
-                            widget.addComponentTemplateGhostBottomContactMarkers,
+                        bottomContactMarkers: widget
+                            .addComponentTemplateGhostBottomContactMarkers,
                         leftContactMarkers:
                             widget.addComponentTemplateGhostLeftContactMarkers,
                         boundaryColor: const Color(0xFFFFC857),

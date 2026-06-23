@@ -31,7 +31,8 @@
 - Latest accepted/pushed BenchBeep token foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` at `18a2875` (`feat: add BenchBeep token foundation`).
 - Latest accepted/pushed BenchBeep token foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` at `a4356fa` (`docs: record BenchBeep token foundation`).
 - Latest accepted/pushed BenchBeep Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` at `1249b6d` (`docs: lock BenchBeep home launcher`).
-- Current pass purpose: protected implementation route for the BenchBeep Home launcher / board-selection entry surface; `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the live implementation allowlist after accepted scope-lock `1249b6d`.
+- Latest accepted/pushed BenchBeep Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
+- Current pass purpose: protected implementation route for the BenchBeep Home launcher / board-selection entry surface; `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` expands the active implementation allowlist narrowly for Import project repair without changing the active route.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -114,7 +115,8 @@ The current docs-hygiene sequence is accepted through:
 - Accepted token-foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
 - Accepted Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` accepted/pushed as `1249b6d` (`docs: lock BenchBeep home launcher`).
 - Active Home launcher implementation route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
-- Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` records the accepted scope-lock and authorizes the implementation route/allowlist; it performs no runtime/test implementation and creates no implementation accepted/pushed hash claim.
+- Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
+- Home launcher import-action active-lock sync candidate: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` records the current Import project blocker and expands the implementation allowlist only enough to expose/reuse existing import behavior directly; it performs no runtime/test implementation and creates no Home implementation accepted/pushed hash claim.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -169,7 +171,17 @@ The current docs-hygiene sequence is accepted through:
 - `lib/app/app.dart` only for showing Home first and routing/opening the existing Workbench;
 - `test/widget/benchbeep_home_screen_test.dart` only for focused Home launcher widget tests;
 - `lib/shared/theme/app_theme.dart` only if strictly needed to consume the existing token foundation without changing token architecture;
+- `lib/features/project/screens/home_screen.dart` only to expose/reuse the existing import flow without changing its Project ZIP/import semantics;
+- `lib/app/router.dart` only if required to route directly to an existing import surface without routing through the legacy start screen;
+- a new narrowly named reusable import action/widget/service file only if required to extract the existing private `_importZip` behavior for reuse;
 - Codex must stop for re-scope if implementation needs any other runtime/test file.
+- Import project repair boundary:
+- must invoke/reuse existing import/open-project behavior directly;
+- must not route to the legacy start screen;
+- must not fake import behavior;
+- must not create new Project ZIP/import/write semantics;
+- `Open existing` must keep opening the existing Workbench context;
+- `Start new` remains deferred unless separately scoped.
 - Home launcher implementation is now the active route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
 - Menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
@@ -187,7 +199,8 @@ The current docs-hygiene sequence is accepted through:
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 - Token foundation closeout state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
 - Home launcher scope-lock state: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` accepted/pushed as `1249b6d` (`docs: lock BenchBeep home launcher`).
-- Home launcher active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` docs-only route/allowlist sync candidate; no implementation accepted/pushed hash claim.
+- Home launcher active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
+- Home launcher import-action active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` docs-only allowlist expansion candidate; no runtime/test implementation and no Home implementation accepted/pushed hash claim.
 - Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
 - Validation evidence: `flutter test test/widget/board_canvas_screen_test.dart` passed `91/91`; `flutter analyze` reported `24` unchanged baseline issues; `py -3 tools/validate_all.py` passed `273`.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.

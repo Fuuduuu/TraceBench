@@ -8,15 +8,14 @@ import 'package:go_router/go_router.dart';
 import '../../../app/app.dart';
 import '../../../shared/services/project_loader.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class ProjectZipImportAction {
+  const ProjectZipImportAction._();
 
-  Future<void> _loadBundledProject(WidgetRef ref) async {
-    final loaded = await ProjectLoader.loadFromAssets();
-    ref.read(projectStateProvider.notifier).state = loaded;
-  }
-
-  Future<void> _importZip(BuildContext context, WidgetRef ref) async {
+  static Future<void> importZip({
+    required BuildContext context,
+    required WidgetRef ref,
+    VoidCallback? onImported,
+  }) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
@@ -31,7 +30,11 @@ class HomeScreen extends ConsumerWidget {
         final loaded = await ProjectLoader.loadFromZipBytes(picked.bytes!);
         ref.read(projectStateProvider.notifier).state = loaded;
         if (context.mounted) {
-          context.go('/project');
+          if (onImported != null) {
+            onImported();
+          } else {
+            context.go('/project');
+          }
         }
         return;
       }
@@ -44,7 +47,11 @@ class HomeScreen extends ConsumerWidget {
       final loaded = await ProjectLoader.loadFromZipBytes(bytes);
       ref.read(projectStateProvider.notifier).state = loaded;
       if (context.mounted) {
-        context.go('/project');
+        if (onImported != null) {
+          onImported();
+        } else {
+          context.go('/project');
+        }
       }
     } on ProjectLoadException catch (error) {
       if (context.mounted) {
@@ -59,6 +66,19 @@ class HomeScreen extends ConsumerWidget {
         );
       }
     }
+  }
+}
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+
+  Future<void> _loadBundledProject(WidgetRef ref) async {
+    final loaded = await ProjectLoader.loadFromAssets();
+    ref.read(projectStateProvider.notifier).state = loaded;
+  }
+
+  Future<void> _importZip(BuildContext context, WidgetRef ref) async {
+    await ProjectZipImportAction.importZip(context: context, ref: ref);
   }
 
   void _openNewProjectWizard(BuildContext context) {

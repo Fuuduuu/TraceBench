@@ -21,6 +21,7 @@ import '../features/report/screens/customer_report_screen.dart';
 
 GoRouter buildTraceBenchRouter({
   String initialLocation = '/',
+  WidgetBuilder? homeBuilder,
 }) {
   return GoRouter(
     initialLocation: initialLocation,
@@ -28,7 +29,7 @@ GoRouter buildTraceBenchRouter({
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => homeBuilder?.call(context) ?? const HomeScreen(),
         routes: [
           GoRoute(
             path: 'new-project',

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -36,7 +36,9 @@
 - Latest accepted/pushed BenchBeep Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` at `6758cfd` (`feat: add BenchBeep home launcher`).
 - Latest accepted/pushed BenchBeep Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` at `e5407d2` (`docs: record BenchBeep home launcher`).
 - Latest accepted/pushed BenchBeep menu-system scope-lock: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` at `c731513` (`docs: lock BenchBeep menu system`).
-- Current pass purpose: protected product-surface implementation route for the first narrow BenchBeep menu-system slice; `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the route/allowlist and performs no runtime/test implementation.
+- Latest accepted/pushed BenchBeep menu-system active-lock sync: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` at `c5e10b2` (`docs: arm BenchBeep menu system implementation`).
+- Latest accepted/pushed BenchBeep menu-system implementation: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` at `85bf54d` (`feat: add BenchBeep menu system`).
+- Current pass purpose: docs-only implementation closeout for the accepted/pushed BenchBeep Menu System implementation; no runtime/test changes are made in this closeout.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -49,6 +51,7 @@
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 - `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 - `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
+- `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` accepted/pushed as `85bf54d` (`feat: add BenchBeep menu system`).
 
 ## Accepted docs-hygiene baseline
 
@@ -124,16 +127,19 @@ The current docs-hygiene sequence is accepted through:
 - Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
 - Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`).
 - Accepted menu-system scope-lock: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` accepted/pushed as `c731513` (`docs: lock BenchBeep menu system`).
-- Menu-system active-lock sync: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only sync candidate that arms `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`; it does not implement runtime/test behavior and does not claim the implementation is accepted/pushed.
-- Active menu-system implementation route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
-- Menu-system implementation allowlist is narrow:
-- `lib/app/app.dart`;
-- `lib/app/router.dart`;
+- Menu-system active-lock sync: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `c5e10b2` (`docs: arm BenchBeep menu system implementation`).
+- Menu-system implementation: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` accepted/pushed as `85bf54d` (`feat: add BenchBeep menu system`).
+- Accepted menu-system implementation files:
 - `lib/features/home/screens/benchbeep_home_screen.dart`;
 - `lib/features/project/screens/project_overview_screen.dart`;
 - `test/widget/benchbeep_home_screen_test.dart`;
-- `test/widget/project_overview_screen_test.dart`;
-- Codex must stop for re-scope if implementation needs any other runtime/test/routing/theme/canvas/schema/writer/materializer/validator/projection/Project ZIP/event/fact/generated/tooling file.
+- `test/widget/project_overview_screen_test.dart`.
+- Accepted menu-system behavior:
+- narrow Menu System slice implemented;
+- Home launcher has an instrument-style menu/app-bar affordance;
+- Workbench/Overview has Home button plus breadcrumb affordance;
+- BenchBeep / TraceBench / BoardFact naming remains correct;
+- Home launcher behavior, Workbench behavior, Import project behavior, and Add Component catalog/builder/ghost/click-to-place/drag-to-place behavior remain preserved.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -227,8 +233,8 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
-- Next route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
@@ -238,9 +244,13 @@ The current docs-hygiene sequence is accepted through:
 - Home launcher import-action active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
 - Home launcher implementation state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
 - Home launcher closeout state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`).
-- Menu-system scope-lock state: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` is the current docs-only protected product-surface scope-lock; no runtime/test implementation is authorized in this pass.
-- Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Validation evidence: `flutter test` passed `330/330`; `flutter analyze` reported `24` unchanged baseline issues with no current-pass file findings; `py -3 tools/validate_all.py` passed `273`.
+- Menu-system scope-lock state: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` accepted/pushed as `c731513` (`docs: lock BenchBeep menu system`).
+- Menu-system active-lock sync state: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `c5e10b2` (`docs: arm BenchBeep menu system implementation`).
+- Menu-system implementation state: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` accepted/pushed as `85bf54d` (`feat: add BenchBeep menu system`).
+- Claude audit: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
+- Validation evidence: `flutter test` passed `332/332`; `flutter analyze` reported `18` pre-existing issues with zero findings in changed files; `py -3 tools/validate_all.py` passed `273`.
+- Non-blocking nits recorded: incidental const-correctness cleanup within allowlisted files; selected `find.text('BenchBeep')` assertions were loosened because the accepted menu/breadcrumb UI intentionally adds more `BenchBeep` occurrences.
+- Current closeout pass makes no runtime/test changes and does not claim an accepted/pushed hash for itself.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.
 - Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.

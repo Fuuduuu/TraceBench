@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
 
 ## Repository handoff
 
@@ -34,7 +34,8 @@
 - Latest accepted/pushed BenchBeep Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
 - Latest accepted/pushed BenchBeep Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` at `21975c1` (`docs: allow Home launcher import action repair`).
 - Latest accepted/pushed BenchBeep Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` at `6758cfd` (`feat: add BenchBeep home launcher`).
-- Current pass purpose: docs-only implementation post-audit closeout for the accepted/pushed BenchBeep Home launcher implementation.
+- Latest accepted/pushed BenchBeep Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` at `e5407d2` (`docs: record BenchBeep home launcher`).
+- Current pass purpose: docs-only protected product-surface scope-lock for future BenchBeep menu-system work.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -120,7 +121,8 @@ The current docs-hygiene sequence is accepted through:
 - Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
 - Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
 - Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
-- Active Home launcher closeout route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`.
+- Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`).
+- Active menu-system scope-lock route: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -145,7 +147,7 @@ The current docs-hygiene sequence is accepted through:
 - BoardFact is a data-fact/subsystem name, not the primary user-facing app name unless a specific surface earns it;
 - design direction is bench instrument identity, dark instrument-like UI, restrained panels/hairlines rather than glassmorphism, IBM Plex Mono/Sans direction, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown;
 - proposed future order is token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock;
-- Home implementation, menu implementation, command menu implementation, audio/save beep, full token migration, high-pin selector UX, dual-primary restyling, and accessibility contrast polish remain deferred.
+- Menu implementation, command menu implementation, audio/save beep, full token migration, high-pin selector UX, dual-primary restyling, and accessibility contrast polish remain deferred.
 - Token foundation future scope is limited to a minimal Flutter token foundation for accepted BenchBeep design direction:
 - app-level semantic tokens for surface/panel/rule colors and text hierarchy colors;
 - teal/copper = selected/confirmed/save;
@@ -196,6 +198,15 @@ The current docs-hygiene sequence is accepted through:
 - back/home navigation returns to the new BenchBeep Home launcher, not the legacy start screen;
 - `Start new` remains disabled/deferred unless separately scoped;
 - logo polish remains deferred.
+- Menu-system future scope is limited to product-surface/navigation direction only:
+- restrained BenchBeep menu system direction;
+- app-level menu affordances needed after the Home launcher;
+- technical/instrument-style menu surfaces, not generic SaaS navigation;
+- preserving Home launcher and Workbench navigation;
+- app bar / breadcrumb refinement if already present or needed for launcher/workbench flow;
+- context / overflow menu patterns where already appropriate;
+- command menu / Ctrl-K palette only as a future pro workflow surface;
+- clear disabled/future affordances for menu items not yet implemented.
 - Menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
@@ -205,8 +216,8 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`.
+- Next route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
@@ -215,6 +226,8 @@ The current docs-hygiene sequence is accepted through:
 - Home launcher active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
 - Home launcher import-action active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
 - Home launcher implementation state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
+- Home launcher closeout state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`).
+- Menu-system scope-lock state: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` is the current docs-only protected product-surface scope-lock; no runtime/test implementation is authorized in this pass.
 - Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
 - Validation evidence: `flutter test` passed `330/330`; `flutter analyze` reported `24` unchanged baseline issues with no current-pass file findings; `py -3 tools/validate_all.py` passed `273`.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.

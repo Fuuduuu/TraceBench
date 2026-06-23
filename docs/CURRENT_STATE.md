@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
+`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
@@ -32,7 +32,9 @@
 - Latest accepted/pushed BenchBeep token foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` at `a4356fa` (`docs: record BenchBeep token foundation`).
 - Latest accepted/pushed BenchBeep Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` at `1249b6d` (`docs: lock BenchBeep home launcher`).
 - Latest accepted/pushed BenchBeep Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
-- Current pass purpose: protected implementation route for the BenchBeep Home launcher / board-selection entry surface; `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` expands the active implementation allowlist narrowly for Import project repair without changing the active route.
+- Latest accepted/pushed BenchBeep Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` at `21975c1` (`docs: allow Home launcher import action repair`).
+- Latest accepted/pushed BenchBeep Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` at `6758cfd` (`feat: add BenchBeep home launcher`).
+- Current pass purpose: docs-only implementation post-audit closeout for the accepted/pushed BenchBeep Home launcher implementation.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -44,6 +46,7 @@
 - `V2_WORKBENCH_ADD_COMPONENT_DRAG_TO_PLACE_DRAFT_IMPL_PASS` accepted/pushed as `8e42537` (`feat: add component drag-to-place draft`).
 - `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_PASS` accepted/pushed as `772eb78` (`style: use draft semantic color for add component ghost`).
 - `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
+- `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
 
 ## Accepted docs-hygiene baseline
 
@@ -114,9 +117,10 @@ The current docs-hygiene sequence is accepted through:
 - Accepted token-foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 - Accepted token-foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
 - Accepted Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` accepted/pushed as `1249b6d` (`docs: lock BenchBeep home launcher`).
-- Active Home launcher implementation route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
 - Home launcher active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
-- Home launcher import-action active-lock sync candidate: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` records the current Import project blocker and expands the implementation allowlist only enough to expose/reuse existing import behavior directly; it performs no runtime/test implementation and creates no Home implementation accepted/pushed hash claim.
+- Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
+- Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
+- Active Home launcher closeout route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -182,7 +186,16 @@ The current docs-hygiene sequence is accepted through:
 - must not create new Project ZIP/import/write semantics;
 - `Open existing` must keep opening the existing Workbench context;
 - `Start new` remains deferred unless separately scoped.
-- Home launcher implementation is now the active route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
+- Accepted Home launcher implementation behavior:
+- app opens to the new BenchBeep Home launcher;
+- Home is a board/workbench launcher, not a marketing landing page;
+- BenchBeep is the user-facing app/product name;
+- `Open existing` opens the existing Workbench context;
+- `Import project` works through the existing allowed import/open-project flow and does not route to the old legacy start screen;
+- no fake import behavior and no new Project ZIP/import/write semantics were introduced;
+- back/home navigation returns to the new BenchBeep Home launcher, not the legacy start screen;
+- `Start new` remains disabled/deferred unless separately scoped;
+- logo polish remains deferred.
 - Menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
@@ -192,17 +205,18 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
-- Next route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`.
+- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`.
+- Next route: `NEEDS_USER_DECISION`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
 - Token foundation closeout state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
 - Home launcher scope-lock state: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` accepted/pushed as `1249b6d` (`docs: lock BenchBeep home launcher`).
 - Home launcher active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `e0055eb` (`docs: arm BenchBeep home launcher implementation`).
-- Home launcher import-action active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` docs-only allowlist expansion candidate; no runtime/test implementation and no Home implementation accepted/pushed hash claim.
+- Home launcher import-action active-lock sync state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
+- Home launcher implementation state: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
 - Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Validation evidence: `flutter test test/widget/board_canvas_screen_test.dart` passed `91/91`; `flutter analyze` reported `24` unchanged baseline issues; `py -3 tools/validate_all.py` passed `273`.
+- Validation evidence: `flutter test` passed `330/330`; `flutter analyze` reported `24` unchanged baseline issues with no current-pass file findings; `py -3 tools/validate_all.py` passed `273`.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.
 - Latest accepted design-direction intake: `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` accepted/pushed as `369eb77`.
 - Latest accepted draft ghost semantic-color closeout: `V2_WORKBENCH_ADD_COMPONENT_DRAFT_GHOST_SEMANTIC_COLOR_POST_AUDIT_PASS` accepted/pushed as `1f30841`.

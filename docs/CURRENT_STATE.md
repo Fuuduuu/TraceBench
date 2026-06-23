@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`
+`V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
 
 ## Repository handoff
 
@@ -29,7 +29,8 @@
 - Latest accepted/pushed BenchBeep token foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` at `2620c44` (`docs: lock BenchBeep token foundation`).
 - Latest accepted/pushed BenchBeep token foundation active-lock sync: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` at `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Latest accepted/pushed BenchBeep token foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` at `18a2875` (`feat: add BenchBeep token foundation`).
-- Current pass purpose: docs-only closeout for the accepted BenchBeep token foundation implementation.
+- Latest accepted/pushed BenchBeep token foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` at `a4356fa` (`docs: record BenchBeep token foundation`).
+- Current pass purpose: docs-only protected product-surface scope-lock for the future BenchBeep Home launcher / board-selection entry surface.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -109,6 +110,8 @@ The current docs-hygiene sequence is accepted through:
 - Accepted token-foundation scope-lock: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Accepted token-foundation active-lock sync: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Accepted token-foundation implementation: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
+- Accepted token-foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
+- Current Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -151,7 +154,15 @@ The current docs-hygiene sequence is accepted through:
 - added focused widget test coverage;
 - no token consumers are migrated yet;
 - visual/runtime behavior should remain unchanged.
-- Home launcher, menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
+- Home launcher future scope is limited to a BenchBeep launcher / board-selection entry surface:
+- Home is a launcher, not a marketing landing page;
+- Home lets a technician choose or open an existing board/workbench context;
+- restrained board cards / recent list / read-only safety framing may be used only if scoped in implementation;
+- Home may use the existing BenchBeep visual token foundation;
+- Home must route into the existing Workbench without changing canonical data behavior;
+- existing Workbench, Add Component, Measure Sheet, and Board Canvas behavior must be preserved.
+- Home launcher scope-lock is now the active/current future scope; Home launcher implementation remains deferred to `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
+- Menu system, command menu, context menus, audio/save beep, high-pin selector UX, dual-primary visual restyling, broad typography/font asset bundling, full app redesign, and any data/canonical/write behavior remain deferred.
 - Rotation draft, resize draft, Confirm/write, committed placement, canonical coordinates, moving confirmed placements, snap/grid/magnet behavior, designator policy, and identity/package/electrical semantics remain deferred.
 - Two-lane classification remains active and by semantic risk:
   - Lane A: low-risk docs-only/no protected behavior, no route ambiguity.
@@ -160,11 +171,13 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS`.
-- Next route: `NEEDS_USER_DECISION`.
+- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`.
+- Next route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).
+- Token foundation closeout state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`).
+- Home launcher scope-lock state: docs-only scope-lock candidate; no accepted/pushed claim for this uncommitted pass.
 - Claude audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
 - Validation evidence: `flutter test test/widget/board_canvas_screen_test.dart` passed `91/91`; `flutter analyze` reported `24` unchanged baseline issues; `py -3 tools/validate_all.py` passed `273`.
 - Latest accepted source-index sync: `V2_BENCHBEEP_DESIGN_DIRECTION_SOURCE_INDEX_SYNC_PASS` accepted/pushed as `79fa908`.

@@ -2,11 +2,11 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
 
 ## Repository handoff
 
@@ -35,7 +35,8 @@
 - Latest accepted/pushed BenchBeep Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` at `21975c1` (`docs: allow Home launcher import action repair`).
 - Latest accepted/pushed BenchBeep Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` at `6758cfd` (`feat: add BenchBeep home launcher`).
 - Latest accepted/pushed BenchBeep Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` at `e5407d2` (`docs: record BenchBeep home launcher`).
-- Current pass purpose: docs-only protected product-surface scope-lock for future BenchBeep menu-system work.
+- Latest accepted/pushed BenchBeep menu-system scope-lock: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` at `c731513` (`docs: lock BenchBeep menu system`).
+- Current pass purpose: protected product-surface implementation route for the first narrow BenchBeep menu-system slice; `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the route/allowlist and performs no runtime/test implementation.
 - Current accepted Add Component implementations:
 - `V2_WORKBENCH_ADD_COMPONENT_TEMPLATE_LIST_IMPL_PASS` accepted/pushed as `bec9583` (`feat(board-canvas): add read-only add component template-list panel`).
 - `V2_WORKBENCH_ADD_COMPONENT_VISUAL_LAYOUT_BUILDER_IMPL_PASS` accepted/pushed as `efb1ede` (`feat: add component visual-contact builder`).
@@ -122,7 +123,17 @@ The current docs-hygiene sequence is accepted through:
 - Home launcher import-action active-lock sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`).
 - Home launcher implementation: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`).
 - Home launcher implementation closeout: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS` accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`).
-- Active menu-system scope-lock route: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`.
+- Accepted menu-system scope-lock: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` accepted/pushed as `c731513` (`docs: lock BenchBeep menu system`).
+- Menu-system active-lock sync: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only sync candidate that arms `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`; it does not implement runtime/test behavior and does not claim the implementation is accepted/pushed.
+- Active menu-system implementation route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
+- Menu-system implementation allowlist is narrow:
+- `lib/app/app.dart`;
+- `lib/app/router.dart`;
+- `lib/features/home/screens/benchbeep_home_screen.dart`;
+- `lib/features/project/screens/project_overview_screen.dart`;
+- `test/widget/benchbeep_home_screen_test.dart`;
+- `test/widget/project_overview_screen_test.dart`;
+- Codex must stop for re-scope if implementation needs any other runtime/test/routing/theme/canvas/schema/writer/materializer/validator/projection/Project ZIP/event/fact/generated/tooling file.
 - Token foundation implementation allowlist is limited to `lib/shared/theme/app_theme.dart`, optional `lib/shared/theme/benchbeep_visual_tokens.dart` if a narrow helper is needed, `lib/features/board_canvas/screens/board_canvas_screen.dart` only for already-scoped Workbench/Add Component canvas color replacement, and `test/widget/board_canvas_screen_test.dart` only if focused regression coverage is needed.
 - Accepted drag-to-place behavior:
 - click-to-place still works;
@@ -216,8 +227,8 @@ The current docs-hygiene sequence is accepted through:
 
 ## Closeout state
 
-- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`.
-- Next route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
+- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`.
+- Next route: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`.
 - Scope-lock state: `V2_BENCHBEEP_TOKEN_FOUNDATION_SCOPE_LOCK_PASS` accepted/pushed as `2620c44` (`docs: lock BenchBeep token foundation`).
 - Active-lock sync state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`).
 - Token foundation implementation state: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS` accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`).

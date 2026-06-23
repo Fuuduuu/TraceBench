@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS`
+`V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -50,7 +50,10 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BENCHBEEP_HOME_LAUNCHER_IMPORT_ACTION_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `21975c1` (`docs: allow Home launcher import action repair`) | Records the Import project blocker and expands the active implementation allowlist narrowly so `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS` may expose/reuse existing import behavior directly without routing through the legacy start screen; no runtime/test implementation and no Home implementation accepted/pushed hash claim. |
 | V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `6758cfd` (`feat: add BenchBeep home launcher`) | Implements the accepted BenchBeep Home launcher / board-selection entry surface, direct existing import/open-project flow reuse, and back/home navigation to the new BenchBeep Home rather than the old legacy start screen; no fake import, new Project ZIP semantics, menus, audio, full redesign, or protected data/write changes. |
 | V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `e5407d2` (`docs: record BenchBeep home launcher`) | Records accepted/pushed Home launcher implementation `6758cfd`, Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, preserved boundaries, and route to `NEEDS_USER_DECISION`. |
-| V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK | current docs-only protected product-surface scope-lock | Locks future BenchBeep menu-system direction only: restrained technical/instrument-style menu affordances after Home launcher, app bar/breadcrumb refinement if needed, context/overflow menu patterns where appropriate, future command menu / Ctrl-K as a pro workflow surface, and disabled/future affordances for unimplemented menu items; no runtime/test/menu implementation in this pass. |
+| V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK | accepted/pushed as `c731513` (`docs: lock BenchBeep menu system`) | Locks future BenchBeep menu-system direction only: restrained technical/instrument-style menu affordances after Home launcher, app bar/breadcrumb refinement if needed, context/overflow menu patterns where appropriate, future command menu / Ctrl-K as a pro workflow surface, and disabled/future affordances for unimplemented menu items; no runtime/test/menu implementation in this pass. |
+| V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only protected active-lock sync candidate | Records accepted scope-lock `c731513` and arms `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` with a narrow implementation allowlist; no runtime/test implementation and no implementation accepted/pushed hash claim. |
+| V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS | CODEX / PROTECTED_PRODUCT_SURFACE_IMPLEMENTATION | active protected implementation route | Future narrow menu-system implementation under the armed allowlist; must stop for re-scope if any file outside the active implementation allowlist is needed. |
+| V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | next docs-only closeout route after accepted implementation | Future closeout only after implementation audit/staging/push. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `7b98e18` (`docs: close out visual template catalog impl pass`) | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` implementation, confirmed package-name vocabulary restrictions, and `NEEDS_USER_DECISION` next routing. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |

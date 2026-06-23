@@ -2,41 +2,48 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
 
 ## Type
 
-CODEX / DOCS_PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK
+CODEX / FLUTTER_PASS / PROTECTED_PRODUCT_SURFACE_IMPLEMENTATION
 
 ## Goal
 
-Create a docs-only scope-lock for the future BenchBeep Home launcher / board-selection entry surface.
+Implement the narrow BenchBeep Home launcher / board-selection entry surface authorized by accepted scope-lock `1249b6d`, after `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the live implementation route and allowlist.
 
 ## Baseline
 
-- Latest accepted/pushed token foundation closeout: `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS` at `a4356fa` (`docs: record BenchBeep token foundation`).
-- Current route before this pass: `NEEDS_USER_DECISION`.
+- Latest accepted/pushed Home launcher scope-lock: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS` at `1249b6d` (`docs: lock BenchBeep home launcher`).
+- Active-lock sync pass: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- This sync pass performs no runtime/test implementation and creates no Home implementation accepted/pushed hash claim.
+- Current implementation route after this sync: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
+- BenchBeep token foundation exists as inert `ThemeExtension<BenchBeepVisualTokens>`.
+- Existing Workbench, Add Component, Measure Sheet, and Board Canvas behavior remains accepted.
 
 ## Status labels to record
 
-- `ROUTE_EFFECT: PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK`
-- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
+- `ROUTE_EFFECT: PROTECTED_PRODUCT_SURFACE_IMPLEMENTATION_ACTIVE`
+- `ROUTE_EFFECT_NEXT: V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
 - `LANE_B`
 
-## Allowed files
+## Implementation allowlist
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS.md`
+The future Home launcher implementation may use only these narrow targets:
 
-## Locked future work
+- `lib/features/home/screens/benchbeep_home_screen.dart` only for the new narrow Home launcher screen/widget.
+- `lib/app/app.dart` only for showing Home first and routing/opening the existing Workbench.
+- `test/widget/benchbeep_home_screen_test.dart` only for focused Home launcher widget tests.
+- `lib/shared/theme/app_theme.dart` only if strictly needed to consume the existing token foundation without changing token architecture.
+
+If implementation requires any other runtime/test file, Codex must stop and request re-scope before editing.
+
+## Locked implementation work
 
 - Introduce a BenchBeep Home launcher / board-selection entry surface.
 - Home is a launcher, not a marketing landing page.
 - Home lets a technician choose or open an existing board/workbench context.
-- Home may show restrained board cards, a recent list, and read-only safety framing if scoped in implementation.
+- Home may show restrained board cards, a recent list, and read-only safety framing if kept inside the implementation allowlist.
 - Home may use the existing BenchBeep visual token foundation.
 - Home must route into the existing Workbench without changing canonical data behavior.
 - Existing Workbench, Add Component, Measure Sheet, and Board Canvas behavior must be preserved.
@@ -55,10 +62,10 @@ Create a docs-only scope-lock for the future BenchBeep Home launcher / board-sel
 - Context menus.
 - Left rail redesign.
 - Audio/save beep.
-- Token consumer migration for existing canvas colors.
-- Broad typography/font asset bundling.
+- Canvas token consumer migration.
 - High-pin selector UX.
-- Dual-primary restyling.
+- Dual-primary visual restyling.
+- Broad typography/font asset bundling.
 - Full app redesign.
 - Data model changes.
 - Canonical board/write behavior.
@@ -66,21 +73,22 @@ Create a docs-only scope-lock for the future BenchBeep Home launcher / board-sel
 
 ## Boundary
 
-- This pass only locks future Home launcher scope.
-- No runtime files are edited.
-- No test files are edited.
-- No product behavior is changed.
+- `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS` is docs-only route/allowlist sync.
+- No runtime files are edited in this sync pass.
+- No test files are edited in this sync pass.
+- No product behavior is changed in this sync pass.
 - `_incoming`, screenshots, docs/sources, and mockups remain design input only, never runtime truth.
 - Future Home implementation must not alter canonical board data, events, facts, writer, schema, materializer, validator, projection, Project ZIP, placement records, Confirm/write, or Edit Layout.
 - Future Home implementation must not create new canonical board/project data unless separately scoped.
 - Existing Workbench route and safety/read-only framing must remain intact.
-- No menus, command menu, context menus, audio/save beep, token consumer migration, high-pin selector UX, full app redesign, or broad font bundling are authorized.
+- No menus, command menu, context menus, audio/save beep, canvas token consumer migration, high-pin selector UX, full app redesign, or broad font bundling are authorized.
+- No false accepted/pushed hash is recorded for `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`.
 - No untracked scratch files are touched or staged.
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`
-- Next route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
+- Current pass: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
+- Next route: `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
 
 ## Required validation
 

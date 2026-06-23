@@ -11,11 +11,11 @@ PASS_QUEUE is the pass allowlist and sequencing ledger.
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`
+`V2_BENCHBEEP_HOME_LAUNCHER_IMPL_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -45,8 +45,9 @@ Canonical owner: docs/MEMORY_MAINTENANCE.md. This queue only points to the owner
 | V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_SYNC | accepted/pushed as `bdfe0b8` (`docs: arm BenchBeep token foundation implementation`) | Records accepted scope-lock `2620c44` and activates the live implementation route/allowlist for `V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS`; no runtime/test implementation and no implementation accepted/pushed hash. |
 | V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `18a2875` (`feat: add BenchBeep token foundation`) | Introduces inert `ThemeExtension<BenchBeepVisualTokens>` in `app_theme.dart` with semantic surface/panel/rule, text hierarchy, selected/confirmed/save, measuring/armed/measured, and draft/unsaved/unknown tokens plus focused widget coverage; no token consumers migrated and no behavior/data/write changes. |
 | V2_BENCHBEEP_TOKEN_FOUNDATION_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `a4356fa` (`docs: record BenchBeep token foundation`) | Records accepted/pushed token foundation implementation (`18a2875`), Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, validation evidence, inert-token boundary, and route to `NEEDS_USER_DECISION`. |
-| V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK | current docs-only protected product-surface scope-lock | Locks future BenchBeep Home launcher / board-selection entry surface only: launcher not marketing page, technician opens existing board/workbench context, optional restrained board cards/recent list/read-only safety framing, may use token foundation, preserves Workbench/Add Component/Measure Sheet/Board Canvas behavior and protected data/write boundaries. |
-| V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS | CODEX / FLUTTER_PASS | next recommended route | Future narrow implementation may introduce only the accepted Home launcher / board-selection entry surface after this scope-lock is accepted/pushed; no menus, command palette, context menus, audio, token consumer migration, full redesign, or canonical/write behavior. |
+| V2_BENCHBEEP_HOME_LAUNCHER_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_PRODUCT_SURFACE_SCOPE_LOCK | accepted/pushed as `1249b6d` (`docs: lock BenchBeep home launcher`) | Locks future BenchBeep Home launcher / board-selection entry surface only: launcher not marketing page, technician opens existing board/workbench context, optional restrained board cards/recent list/read-only safety framing, may use token foundation, preserves Workbench/Add Component/Measure Sheet/Board Canvas behavior and protected data/write boundaries. |
+| V2_BENCHBEEP_HOME_LAUNCHER_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only active-lock / route sync candidate | Records accepted Home launcher scope-lock `1249b6d` and arms the live route for `V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS`; no runtime/test implementation; no Home implementation accepted/pushed hash claim; untracked scratch remains untouched. |
+| V2_BENCHBEEP_HOME_LAUNCHER_IMPL_PASS | CODEX / FLUTTER_PASS | current protected implementation route | Future narrow implementation may introduce only the accepted Home launcher / board-selection entry surface. Allowlist: new narrow Home launcher screen/widget, existing app entry/routing file needed to show Home first and open existing Workbench, focused Home launcher widget tests, and theme/token file only if strictly needed to consume existing token foundation without changing token architecture. Stop if any other runtime/test file is required. |
 | V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | accepted/pushed as `7b98e18` (`docs: close out visual template catalog impl pass`) | Closeout records accepted `V2_WORKBENCH_ADD_COMPONENT_VISUAL_TEMPLATE_CATALOG_IMPL_PASS` implementation, confirmed package-name vocabulary restrictions, and `NEEDS_USER_DECISION` next routing. |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_POST_AUDIT_PASS | CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC | completed docs-only closeout | Docs-only post-audit closeout for local ghost implementation (`ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`); route set to `NEEDS_USER_DECISION` and implementation pass accepted as `cd19ae2` (`feat: add component local ghost preview`). |
 | V2_WORKBENCH_ADD_COMPONENT_LOCAL_GHOST_IMPL_PASS | CODEX / FLUTTER_PASS | accepted/pushed as `cd19ae2` (`feat: add component local ghost preview`) | Local ghost preview runtime implementation is accepted/pushed; preview remains local volatile/draft visual state, no canonical placement semantics. |

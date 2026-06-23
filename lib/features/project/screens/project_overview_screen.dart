@@ -43,12 +43,19 @@ class ProjectOverviewScreen extends ConsumerWidget {
         title: const Text('Project overview'),
         actions: [
           IconButton(
+            key: const ValueKey('overview-home-menu-button'),
+            tooltip: 'BenchBeep Home',
+            onPressed: () => context.go('/'),
+            icon: const Icon(Icons.home_outlined),
+          ),
+          IconButton(
             tooltip: 'toggle mode',
             onPressed: () => ref.read(beginnerModeProvider.notifier).state =
                 !ref.read(beginnerModeProvider),
             icon: const Icon(Icons.switch_account),
           ),
         ],
+        bottom: const _WorkbenchMenuBreadcrumb(),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,6 +82,72 @@ class ProjectOverviewScreen extends ConsumerWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WorkbenchMenuBreadcrumb extends StatelessWidget
+    implements PreferredSizeWidget {
+  const _WorkbenchMenuBreadcrumb();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(38);
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0.6,
+    );
+    final mutedStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      letterSpacing: 0.4,
+    );
+
+    return DecoratedBox(
+      key: const ValueKey('overview-menu-breadcrumb'),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+        ),
+      ),
+      child: SizedBox(
+        height: preferredSize.height,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Text('BenchBeep', style: labelStyle),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(Icons.chevron_right, size: 16),
+              ),
+              Text('Workbench', style: labelStyle),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(Icons.chevron_right, size: 16),
+              ),
+              Text('Overview', style: mutedStyle),
+              const Spacer(),
+              DecoratedBox(
+                key: const ValueKey('overview-menu-disabled-affordance'),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  child: Text('Future menu items disabled', style: mutedStyle),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -494,23 +567,23 @@ class _WorkbenchPlaceholder extends StatelessWidget {
               color: Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.dashboard_customize_outlined, size: 34),
-                  const SizedBox(height: 8),
-                  const Text('PCB/workbench placeholder'),
-                  const SizedBox(height: 6),
-                  const Text(
+                  Icon(Icons.dashboard_customize_outlined, size: 34),
+                  SizedBox(height: 8),
+                  Text('PCB/workbench placeholder'),
+                  SizedBox(height: 6),
+                  Text(
                     'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12),
                   ),
-                  const SizedBox(height: 6),
-                  const Text('Context and route behavior are preserved.'),
+                  SizedBox(height: 6),
+                  Text('Context and route behavior are preserved.'),
                 ],
               ),
             ),

@@ -150,8 +150,20 @@ void main() {
     );
     expect(find.text('Töölaud / PCB board'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-menu-breadcrumb')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-home-menu-button')),
+        findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-menu-disabled-affordance')),
+        findsOneWidget);
+    expect(find.text('BenchBeep'), findsOneWidget);
+    expect(find.text('Workbench'), findsOneWidget);
+    expect(find.text('Overview'), findsOneWidget);
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsNothing);
+    expect(find.textContaining('Command menu'), findsNothing);
+    expect(find.textContaining('Ctrl-K'), findsNothing);
+    expect(find.textContaining('Save beep'), findsNothing);
   });
 
   testWidgets('renders compact status strip for board statistics',
@@ -446,16 +458,16 @@ void main() {
 
   testWidgets('Board Canvas action does not mutate project events',
       (tester) async {
-    final seededEvent = TraceBenchEvent(
+    const seededEvent = TraceBenchEvent(
       schemaVersion: '2.0.0',
       eventId: 'evt-overview-canvas-readonly',
       projectId: 'inline_project',
       sequence: 1,
       createdAt: '2026-05-22T00:00:00Z',
-      actor: const {'source': 'overview-canvas-readonly-test'},
+      actor: {'source': 'overview-canvas-readonly-test'},
       eventType: 'measurement_recorded',
       status: 'accepted',
-      payload: const {},
+      payload: {},
     );
     final projectState = _inlineProjectState(
       isProjectionStale: false,
@@ -517,16 +529,16 @@ void main() {
   testWidgets(
       'overview shell does not mutate project events on render or measurement navigation',
       (tester) async {
-    final seededEvent = TraceBenchEvent(
+    const seededEvent = TraceBenchEvent(
       schemaVersion: '2.0.0',
       eventId: 'evt-overview-readonly',
       projectId: 'inline_project',
       sequence: 1,
       createdAt: '2026-05-22T00:00:00Z',
-      actor: const {'source': 'overview-readonly-test'},
+      actor: {'source': 'overview-readonly-test'},
       eventType: 'measurement_recorded',
       status: 'accepted',
-      payload: const {},
+      payload: {},
     );
     final projectState = _inlineProjectState(
       isProjectionStale: false,

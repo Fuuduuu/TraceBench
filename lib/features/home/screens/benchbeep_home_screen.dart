@@ -118,12 +118,139 @@ class BenchBeepHomeScreen extends StatelessWidget {
                       maxWidth: 1240,
                       minHeight: availableHeight > 0 ? availableHeight : 0,
                     ),
-                    child: isNarrow ? content : IntrinsicHeight(child: content),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _LauncherMenuBar(
+                          hasProject: hasProject,
+                          onOpenProject: onOpenProject,
+                          onOpenWorkbench: onOpenWorkbench,
+                          onImportProject: onImportProject,
+                        ),
+                        const SizedBox(height: 4),
+                        isNarrow ? content : IntrinsicHeight(child: content),
+                      ],
+                    ),
                   ),
                 ),
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _LauncherMenuBar extends StatelessWidget {
+  const _LauncherMenuBar({
+    required this.hasProject,
+    required this.onOpenProject,
+    required this.onOpenWorkbench,
+    required this.onImportProject,
+  });
+
+  final bool hasProject;
+  final VoidCallback onOpenProject;
+  final VoidCallback onOpenWorkbench;
+  final Future<void> Function(BuildContext context)? onImportProject;
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+      color: BenchBeepHomeScreen._inkMuted,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0.8,
+    );
+    final buttonStyle = OutlinedButton.styleFrom(
+      visualDensity: VisualDensity.compact,
+      minimumSize: const Size(0, 28),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      side: const BorderSide(color: BenchBeepHomeScreen._ruleStrong),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+    );
+
+    return DecoratedBox(
+      key: const ValueKey('benchbeep_app_menu_bar'),
+      decoration: BoxDecoration(
+        color: BenchBeepHomeScreen._paper,
+        border: Border.all(color: BenchBeepHomeScreen._rule),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text('Instrument menu', style: labelStyle),
+            ),
+            const _MenuPill(
+              key: ValueKey('benchbeep_menu_home_item'),
+              label: 'Home',
+              active: true,
+            ),
+            OutlinedButton(
+              key: const ValueKey('benchbeep_menu_workbench_button'),
+              onPressed: hasProject ? onOpenProject : onOpenWorkbench,
+              style: buttonStyle,
+              child: const Text('Workbench'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('benchbeep_menu_import_button'),
+              onPressed: onImportProject == null
+                  ? null
+                  : () => onImportProject!(context),
+              style: buttonStyle,
+              child: const Text('Import'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('benchbeep_menu_new_project_deferred'),
+              onPressed: null,
+              style: buttonStyle,
+              child: const Text('New project deferred'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuPill extends StatelessWidget {
+  const _MenuPill({
+    super.key,
+    required this.label,
+    required this.active,
+  });
+
+  final String label;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: active ? BenchBeepHomeScreen._signalTint : Colors.white,
+        border: Border.all(
+          color:
+              active ? BenchBeepHomeScreen._signal : BenchBeepHomeScreen._rule,
+        ),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: active
+                ? BenchBeepHomeScreen._signalDark
+                : BenchBeepHomeScreen._inkMuted,
+            fontWeight: FontWeight.w800,
+          ),
         ),
       ),
     );

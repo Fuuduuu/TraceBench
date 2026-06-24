@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
+`TRACEBENCH_PRODUCT_IDENTITY_OWNER_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest accepted/pushed pass: `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` at `d4f6f7d` (`docs: sync prompt audit gate`).
-- Current route before and after this recovery sync: `NEEDS_USER_DECISION`.
-- This pass is docs-only route-ledger recovery; it reconciles live route pointers with git evidence and does not change product behavior or arm implementation.
+- Latest accepted/pushed pass: `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS` at `c678b44` (`docs: recover TraceBench route ledger`).
+- Current route before this active-lock sync: `NEEDS_USER_DECISION`.
+- This pass is docs-only route/active-lock sync; it arms `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS` for future docs-only identity owner cleanup and does not implement the identity sync itself.
 
 ## Current accepted product state
 
@@ -37,7 +37,10 @@
 
 ## Active constraints
 
-- Current route is `NEEDS_USER_DECISION`; no implementation route is armed by this pass.
+- Current route after this active-lock sync is `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`.
+- The active lock for the next pass allows only `docs/PROJECT_MEMORY.md`, `docs/TRUTH_INDEX.md`, `README.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS.md`.
+- The future identity pass must stop if `docs/PROJECT_MEMORY.md` is missing instead of inventing a replacement durable owner.
+- This sync pass does not edit product identity owner files, runtime, tests, source/design files, or protected data/write surfaces.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

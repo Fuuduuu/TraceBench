@@ -2,57 +2,61 @@
 
 ## Current pass
 
-`TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
+`TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
 
 ## Type
 
-CODEX / DOCS_SYNC_RECOVERY
+CODEX / DOCS_SYNC
 
 ## Goal
 
-Reconcile live route/ledger docs with git evidence that `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted/pushed at `d4f6f7d` (`docs: sync prompt audit gate`) and route onward to `NEEDS_USER_DECISION` without runtime/test/product changes.
+Authorize the next docs-only product identity owner sync pass. The future pass may create one durable naming owner for BenchBeep / TraceBench / BoardFact identity, but this active-lock sync pass does not perform that identity cleanup.
 
 ## Baseline
 
-- `main` and `origin/main` are at `d4f6f7d` (`docs: sync prompt audit gate`).
-- No tracked diff and no staged diff before this recovery pass.
-- Live route docs still had stale current pointers to `TRACEBENCH_OPERATIONAL_HANDOFF_COMPACTION_PASS`, `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`, and prompt-audit candidate wording.
-- The prompt-audit artifact's own pre-commit staging state is historical and is not rewritten by this recovery pass.
+- Latest accepted/pushed pass: `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS` at `c678b44` (`docs: recover TraceBench route ledger`).
+- Attempted `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS` was blocked before edits because `docs/PASS_QUEUE.md` did not contain that pass and this active lock still named `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`.
+- This lock arms the future identity sync only; it does not mark the future identity sync accepted/pushed.
+
+## Identity facts for the future pass
+
+- `BenchBeep` = user-facing app/product name.
+- `TraceBench` = repository/platform/project name.
+- `BoardFact` = data-fact/subsystem name.
+- `BoardFact` is not the primary app wordmark unless a specific UI surface explicitly earns that subsystem label.
 
 ## Allowed files
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/TRUTH_INDEX.md`
+- `README.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS.md`
+- `docs/audit/TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS.md`
+
+## Required future-pass stop condition
+
+- If `docs/PROJECT_MEMORY.md` does not exist, the future identity sync pass must stop and report `BLOCKED` instead of inventing a new durable owner doc.
 
 ## Explicitly not changed
 
 - Runtime files.
 - Test files.
-- Historical audit artifacts, including `docs/audit/TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS.md`.
-- Product identity work.
+- Historical audit artifacts.
+- Product features.
+- Menu/runtime behavior.
+- Logo polish or branding UI.
+- Product identity sync in this active-lock sync pass.
 - Missing `33d2f17` pointer sync.
-- Product/menu runtime work.
-- New scope-locks.
+- Memory/handoff refresh.
 - Source/design runtime dependency.
 - Protected data/write surfaces.
 - Untracked scratch files.
 
-## Accepted prompt/audit policy preserved
-
-- Codex pass responses require a clearly separated `CLAUDE_AUDIT_PACKET`.
-- Visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`.
-- `Accepted` shorthand is strict and requires clean `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and exact expected staging set.
-- Protected implementation requires active-lock sync before runtime/test work when the active lock does not name the implementation pass and exact allowlist.
-- Exact staging only; never `git add .`, never `git add -A`, and never broad staging.
-
 ## Boundary
 
-- This recovery sync changes live route/ledger docs only.
-- It records no accepted/pushed hash for itself.
-- It does not arm implementation.
+- This lock authorizes only a docs-only identity owner sync.
+- It records no accepted/pushed hash for the future identity sync.
+- It does not authorize runtime/test/product behavior changes.
 - It does not create a new scope-lock.
 - It does not change product behavior.
 - It does not edit runtime, tests, schemas, writer, materializer, validator, projection, Project ZIP, event, or fact files.
@@ -61,8 +65,8 @@ Reconcile live route/ledger docs with git evidence that `TRACEBENCH_PROMPT_AUDIT
 
 ## Route
 
-- Current pass: `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
-- Next route: `NEEDS_USER_DECISION`
+- Current/armed pass: `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
+- Route after accepted/pushed: `NEEDS_USER_DECISION`
 
 ## Required validation
 

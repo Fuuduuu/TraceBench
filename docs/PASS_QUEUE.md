@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
+`TRACEBENCH_PRODUCT_IDENTITY_OWNER_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,8 +26,8 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS | CODEX / DOCS_SYNC_RECOVERY | current docs-only route-ledger recovery | Reconcile live route docs with git evidence that `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted/pushed at `d4f6f7d` (`docs: sync prompt audit gate`); remove stale current pointers for operational compaction, menu-system closeout, and prompt-audit candidate wording; no runtime/test/product behavior changes. |
-| NEEDS_USER_DECISION | USER / ROUTE_DECISION | next route | Choose the next protected product/runtime/docs track after accepted BenchBeep Home launcher and Menu System work. |
+| TRACEBENCH_PRODUCT_IDENTITY_OWNER_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only route/active-lock sync | Arm the next docs-only product identity owner sync pass after the blocked attempt; update route/active-lock ledgers only; no product identity edits, runtime/test changes, or scope expansion. |
+| TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS | CODEX / DOCS_SYNC | next armed docs-only identity owner sync | Future pass may edit only `docs/PROJECT_MEMORY.md`, `docs/TRUTH_INDEX.md`, `README.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS.md`; if `docs/PROJECT_MEMORY.md` is missing, stop and report `BLOCKED`. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route option | Inline measurement-entry panel scope-lock; crosses from read-only UI into write-flow territory and requires dedicated protected-surface review. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route option | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete standalone Measure Sheet routing. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with layout, menu, Home, or write-flow work. |

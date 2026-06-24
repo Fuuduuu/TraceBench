@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,8 +26,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS | CODEX / DOCS_SYNC | current docs-only route cleanup | Record `TRACEBENCH_AUDIT_INDEX_MISSING_POINTER_SYNC_PASS` accepted/pushed at `bb88226` (`docs: add missing audit index pointer`), remove stale current ownership for already-pushed passes, and route back to `NEEDS_USER_DECISION`. |
-| NEEDS_USER_DECISION | USER / ROUTE_DECISION | next route | Choose the next protected product/runtime/docs track after accepted BenchBeep Home launcher, Menu System, product identity owner sync, and missing AUDIT_INDEX pointer sync work. |
+| V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ROUTE_ACTIVE_LOCK_SYNC | current docs-only active-lock sync | Record the user-selected `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`, arm its narrow future runtime/test allowlist, and do not implement Flutter/runtime/test changes in this sync pass. |
+| V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | next armed implementation route | Narrow Workbench measurement navigation consolidation; preserve the standalone Measure Sheet route, `/project/measure-sheet` fallback/redirect, accepted Measure Sheet save behavior, Home/Menu/Add Component behavior, and protected-surface boundaries. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route option | Inline measurement-entry panel scope-lock; crosses from read-only UI into write-flow territory and requires dedicated protected-surface review. |
-| V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route option | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete standalone Measure Sheet routing. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with layout, menu, Home, or write-flow work. |

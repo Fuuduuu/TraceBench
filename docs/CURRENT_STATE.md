@@ -2,19 +2,20 @@
 
 ## Current pass
 
-`TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest accepted/pushed pass: `TRACEBENCH_AUDIT_INDEX_MISSING_POINTER_SYNC_PASS` at `bb88226` (`docs: add missing audit index pointer`).
-- Current route before this cleanup sync: `NEEDS_USER_DECISION`.
-- This pass is docs-only route cleanup after the missing audit-index pointer sync was accepted/pushed; it records that closure and routes back to `NEEDS_USER_DECISION`.
+- Latest accepted/pushed pass: `TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS` at `955a9b0` (`docs: sync route after missing audit pointer`).
+- Current route before this active-lock sync: `NEEDS_USER_DECISION`.
+- The user selected `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` from the future route options.
+- This pass is docs-only route/active-lock sync; it arms `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` for future Flutter navigation polish and does not change runtime behavior.
 
 ## Current accepted product state
 
@@ -37,10 +38,11 @@
 
 ## Active constraints
 
-- Current route after accepted/pushed is `NEEDS_USER_DECISION`.
-- Missing `33d2f17` AUDIT_INDEX pointer sync is closed and recorded at `bb88226`.
-- This cleanup may update only live route docs, `docs/AUDIT_INDEX.md`, and `docs/audit/TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS.md`.
-- No product/runtime route is armed by this cleanup.
+- Current route after accepted/pushed of this active-lock sync is `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`.
+- The active lock for the next pass authorizes only narrow navigation/screen runtime files and focused widget tests needed for measurement route consolidation.
+- The next implementation pass must preserve the standalone Measure Sheet route, `/project/measure-sheet` compatibility, accepted Measure Sheet save behavior, BenchBeep Home/Open existing/Import project/Back-Home/Menu System behavior, Board Canvas read-only behavior, and Add Component local draft behavior.
+- This active-lock sync may update only live route docs, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS.md`.
+- No runtime/test/product behavior changes are made in this sync pass.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

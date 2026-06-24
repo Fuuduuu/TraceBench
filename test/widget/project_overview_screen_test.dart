@@ -150,8 +150,8 @@ void main() {
     );
     expect(find.text('Töölaud / PCB board'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-menu-breadcrumb')),
-        findsOneWidget);
+    expect(
+        find.byKey(const ValueKey('overview-menu-breadcrumb')), findsOneWidget);
     expect(find.byKey(const ValueKey('overview-home-menu-button')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('overview-menu-disabled-affordance')),
@@ -382,6 +382,22 @@ void main() {
       tester,
       projectState: projectState,
       initialLocation: '/project/measurements/new',
+      useRouter: true,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
+    expect(
+        find.text('Koht → Väärtus → Ühik → Salvesta'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('/project/measure-sheet route resolves standalone measure sheet',
+      (tester) async {
+    final projectState = _inlineProjectState();
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project/measure-sheet',
       useRouter: true,
     );
     await tester.pumpAndSettle();

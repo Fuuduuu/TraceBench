@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/footprints/footprint_models.dart';
@@ -631,6 +632,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     safetyEvidence:
                         const _BoardCanvasSafetyEvidenceDisclosure(),
                     trailingActions: <Widget>[
+                      _MeasureSheetNavigationButton(
+                        onPressed: () {
+                          context.push('/project/measure-sheet');
+                        },
+                      ),
                       focusToggle,
                       _InspectorChromeToggle(
                         inspectorVisible: _inspectorVisible,
@@ -749,6 +755,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               final showContextPanel = _inspectorVisible &&
                   !_canvasFocusMode &&
                   contextPanel != null;
+              final measureSheetAction = _MeasureSheetNavigationButton(
+                showLabel: true,
+                onPressed: () {
+                  context.push('/project/measure-sheet');
+                },
+              );
               final focusPanelToggle = _WorkbenchPanelModeButton(
                 buttonKey: const Key('board_canvas_rail_placements_tool'),
                 icon: Icons.format_list_bulleted_rounded,
@@ -822,6 +834,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     _WorkbenchToolRail(
                       addComponentTool: addComponentPanelToggle,
                       inspectorTool: inspectorPanelToggle,
+                      measureSheetTool: measureSheetAction,
                       placementTool: focusPanelToggle,
                       safetyEvidenceTool: safetyPanelToggle,
                     ),
@@ -1100,12 +1113,14 @@ class _WorkbenchToolRail extends StatelessWidget {
   const _WorkbenchToolRail({
     required this.addComponentTool,
     required this.inspectorTool,
+    required this.measureSheetTool,
     required this.placementTool,
     required this.safetyEvidenceTool,
   });
 
   final Widget addComponentTool;
   final Widget inspectorTool;
+  final Widget measureSheetTool;
   final Widget placementTool;
   final Widget safetyEvidenceTool;
 
@@ -1127,6 +1142,8 @@ class _WorkbenchToolRail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const _WorkbenchSectionHeader(label: 'Panels'),
+              const SizedBox(height: _kWorkbenchToolTileGap),
+              measureSheetTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
               addComponentTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -1163,6 +1180,64 @@ class _WorkbenchToolRail extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _MeasureSheetNavigationButton extends StatelessWidget {
+  const _MeasureSheetNavigationButton({
+    required this.onPressed,
+    this.showLabel = false,
+  });
+
+  final VoidCallback onPressed;
+  final bool showLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final button = Card(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: SizedBox(
+        width: _kCompactControlTileHeight,
+        height: _kCompactControlTileHeight,
+        child: IconButton(
+          key: const Key('board_canvas_measure_sheet_button'),
+          tooltip: 'Open Measure Sheet',
+          iconSize: _kWorkbenchRailContentIconSize,
+          style: IconButton.styleFrom(
+            minimumSize: const Size.square(_kCompactControlTileHeight),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: const Icon(Icons.science_outlined),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+
+    if (!showLabel) {
+      return button;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        button,
+        const SizedBox(height: 2),
+        Text(
+          'Measure',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
     );
   }
 }

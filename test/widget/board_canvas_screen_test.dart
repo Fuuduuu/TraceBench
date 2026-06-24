@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -52,6 +53,20 @@ Widget _harness({required ProjectState? projectState, Key? boardCanvasKey}) {
       projectStateProvider.overrideWith((_) => projectState),
     ],
     child: MaterialApp(home: BoardCanvasScreen(key: boardCanvasKey)),
+  );
+}
+
+Widget _routerHarness({
+  required ProjectState? projectState,
+  String initialLocation = '/project/board-canvas',
+}) {
+  return ProviderScope(
+    overrides: [
+      projectStateProvider.overrideWith((_) => projectState),
+    ],
+    child: MaterialApp.router(
+      routerConfig: buildTraceBenchRouter(initialLocation: initialLocation),
+    ),
   );
 }
 
@@ -346,6 +361,40 @@ void main() {
     expect(appBarSize.height, lessThanOrEqualTo(36));
     expect(find.text('Board Canvas'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('Board Canvas measurement action routes to Measure Sheet',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_routerHarness(projectState: state));
+    await tester.pumpAndSettle();
+
+    final measureSheetAction = find.byKey(
+      const Key('board_canvas_measure_sheet_button'),
+    );
+    expect(measureSheetAction, findsOneWidget);
+    await tester.tap(measureSheetAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BoardCanvasScreen), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(find.text('Project overview'), findsNothing);
+    expect(state.events, isEmpty);
   });
 
   testWidgets('collapsed top control band stays compact and read-only',

@@ -1,10 +1,10 @@
-# TraceBench AI / BoardFact
+# BenchBeep
 
 Local-first, measurement-backed PCB repair documentation and schematic reconstruction workbench.
 
-V1.0 flow: `pildista → märgi → mõõda → kinnita → ekspordi`.
+BenchBeep is the user-facing app. TraceBench is the repository/platform/project name. BoardFact is the data-fact subsystem.
 
-Sprint 0 builds only the project skeleton, governance/memory system, schemas, validators, and Pelle PV20 sample. No UI/AI/OCR/fault probability in Sprint 0.
+Canonical product identity and architecture notes live in `docs/PROJECT_MEMORY.md`.
 
 ## Validation
 
@@ -13,4 +13,4 @@ Windows-friendly validation uses stdlib-only Python:
 - `py -3 tools\validate_all.py`
 - `python tools\validate_all.py` (fallback if `py` is unavailable)
 
-`make` and `pytest` are optional; they are not required for Sprint 0 validation.
+`make` and `pytest` are optional.

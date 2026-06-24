@@ -1,6 +1,15 @@
 # PROJECT_MEMORY.md
 
-Canonical product truth for TraceBench AI.
+Canonical product and architecture memory for TraceBench / BenchBeep.
+
+## Product identity
+
+Durable owner for product/project/subsystem naming:
+
+- `BenchBeep` is the user-facing app/product name.
+- `TraceBench` is the repository/platform/project name.
+- `BoardFact` is the data-fact/subsystem name.
+- `BoardFact` is not the primary app wordmark unless a specific UI surface explicitly earns that subsystem label.
 
 ## Product promise
 
@@ -19,7 +28,7 @@ V1.0 is a Known Facts Builder, not an AI repair agent.
 
 ## Technician-first workflow invariant
 
-TraceBench should be a technician-first bench workflow, not an engineering spreadsheet.
+BenchBeep should be a technician-first bench workflow, not an engineering spreadsheet.
 
 - Default workflow: select place/component/pin -> measure -> enter value -> choose unit -> save -> show status / next step.
 - Short form: `Koht -> Väärtus -> Ühik -> Salvesta`.

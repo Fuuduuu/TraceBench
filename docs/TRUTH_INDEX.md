@@ -18,8 +18,16 @@ Core invariants (semantics unchanged):
 - No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
 
+Product identity owner:
+
+- `docs/PROJECT_MEMORY.md` is the durable owner for BenchBeep / TraceBench / BoardFact naming.
+- `BenchBeep` is the user-facing app/product name.
+- `TraceBench` is the repository/platform/project name.
+- `BoardFact` is the data-fact/subsystem name and is not the primary app wordmark unless a specific UI surface explicitly earns that subsystem label.
+
 | Fact type | Canonical owner | Update trigger | Obsolete handling | Secondary pointer allowed? |
 |---|---|---|---|---|
+| Product identity naming | PROJECT_MEMORY.md | product identity naming acceptance | update durable identity section; replace stale duplicate wording in secondary files with compact pointers | CURRENT_STATE / README short pointer |
 | Product promise | PROJECT_MEMORY.md | V1 scope or architecture acceptance | update stable promise text; delete duplicates in secondary files | CURRENT_STATE short pointer |
 | Core rule | PROJECT_MEMORY.md / AGENTS.md | Core-rule change in protected pass | replace in canonical owner; keep old details only in audit if relevant | Prompt fragment |
 | Current pass | PASS_QUEUE.md | every accepted pass | replace current pass; move old pass to completed history | CURRENT_STATE.md only |

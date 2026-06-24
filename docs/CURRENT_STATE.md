@@ -2,20 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest accepted/pushed pass: `TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS` at `955a9b0` (`docs: sync route after missing audit pointer`).
-- Current route before this active-lock sync: `NEEDS_USER_DECISION`.
-- The user selected `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` from the future route options.
-- This pass is docs-only route/active-lock sync; it arms `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` for future Flutter navigation polish and does not change runtime behavior.
+- Latest accepted/pushed implementation pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` at `4a7ac96` (`feat(board-canvas): consolidate measurement navigation`).
+- Prior active-lock sync: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS` at `8c27bae` (`docs: arm measurement navigation consolidation`).
+- Manual smoke for the implementation was user-reported PASS before Claude audit.
+- Claude audit for the implementation was user-reported `ACCEPT_AS_IS` with `SAFE_FOR_STAGING: YES`.
+- This pass is docs-only post-audit closeout for the accepted/pushed implementation; it does not change runtime behavior.
 
 ## Current accepted product state
 
@@ -27,8 +28,12 @@
 - `Open existing` opens the existing Workbench context.
 - `Import project` uses the existing allowed import/open-project flow and does not route to the legacy start screen.
 - Back/home navigation returns to BenchBeep Home.
-- Workbench, Board Canvas, Measure Sheet, and Add Component behavior remain preserved.
-- Accepted Menu System implementation is the narrow instrument-style menu/app-bar/breadcrumb affordance:
+- Workbench, Project Overview, Board Canvas, Measure Sheet, and Add Component behavior remain preserved.
+- Project Overview measurement entry reaches the accepted standalone Measure Sheet flow.
+- Board Canvas has a navigation-only Measure Sheet entry that opens the accepted standalone Measure Sheet route while preserving Board Canvas as the back destination.
+- `/project/measure-sheet` direct/fallback compatibility remains preserved.
+- Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow and was not changed by the navigation consolidation.
+- Accepted Menu System implementation remains the narrow instrument-style menu/app-bar/breadcrumb affordance:
   - Home launcher menu/app-bar affordance;
   - Workbench/Overview Home button and breadcrumb affordance;
   - disabled future affordances for unimplemented menu items;
@@ -38,11 +43,10 @@
 
 ## Active constraints
 
-- Current route after accepted/pushed of this active-lock sync is `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`.
-- The active lock for the next pass authorizes only narrow navigation/screen runtime files and focused widget tests needed for measurement route consolidation.
-- The next implementation pass must preserve the standalone Measure Sheet route, `/project/measure-sheet` compatibility, accepted Measure Sheet save behavior, BenchBeep Home/Open existing/Import project/Back-Home/Menu System behavior, Board Canvas read-only behavior, and Add Component local draft behavior.
-- This active-lock sync may update only live route docs, `docs/AUDIT_INDEX.md`, and `docs/audit/V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS.md`.
-- No runtime/test/product behavior changes are made in this sync pass.
+- Current route after accepted/pushed of this closeout is `NEEDS_USER_DECISION`.
+- The measurement navigation implementation lock is released after this closeout.
+- No runtime/test/product implementation pass is currently armed.
+- Visual-first integrated measurement panel work remains a future protected route option and must not be treated as armed by this closeout.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

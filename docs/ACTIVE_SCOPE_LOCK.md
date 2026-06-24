@@ -2,39 +2,49 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`
+`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / FLUTTER_NAV_POLISH
+CODEX / DOCS_POST_AUDIT_CLOSEOUT
 
 ## Goal
 
-Narrow Workbench measurement navigation consolidation that preserves the existing accepted Measure Sheet flow and direct/fallback route compatibility.
+Docs-only closeout for accepted/pushed `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`.
 
 ## Baseline
 
-- Latest accepted/pushed pass: `TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS` at `955a9b0` (`docs: sync route after missing audit pointer`).
-- Previous attempted `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` correctly blocked before edits because live route docs still named `TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS` as current and this active lock allowed only route-cleanup docs.
-- `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` was present only as a future route option before this sync.
-- This lock arms the future implementation pass only; it does not mark the future implementation accepted/pushed.
+- `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS` accepted/pushed at `8c27bae` (`docs: arm measurement navigation consolidation`).
+- `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` accepted/pushed at `4a7ac96` (`feat(board-canvas): consolidate measurement navigation`).
+- The implementation changed exactly:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+  - `test/widget/project_overview_screen_test.dart`
+- Manual smoke was user-reported PASS before Claude audit.
+- Claude audit was user-reported `ACCEPT_AS_IS` with `SAFE_FOR_STAGING: YES`.
 
-## Allowed future implementation files
+## Allowed files for this closeout
 
-- `lib/app/router.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `test/widget/board_canvas_screen_test.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `test/widget/measure_sheet_screen_test.dart`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS.md`
 
-If another runtime or test file appears necessary, stop and report the exact rationale before editing it.
+If another runtime, test, tooling, schema, sample, asset, platform, or unrelated docs file appears necessary, stop and report the exact rationale before editing it.
 
-## Required preservation
+## Released implementation lock
+
+The runtime/test allowlist for `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` is released by this closeout.
+
+No runtime/test implementation pass is armed after this closeout.
+
+## Preserved accepted behavior
 
 - Existing standalone Measure Sheet route remains alive.
 - `/project/measure-sheet` direct/fallback route behavior remains compatible.
+- Project Overview measurement entry still reaches the accepted Measure Sheet flow.
+- Board Canvas measurement entry reaches the accepted Measure Sheet flow and preserves Board Canvas as the back destination.
 - Existing accepted Measure Sheet save behavior remains inside the existing Measure Sheet flow.
 - BenchBeep Home launcher remains preserved.
 - `Open existing` remains preserved.
@@ -46,6 +56,7 @@ If another runtime or test file appears necessary, stop and report the exact rat
 
 ## Explicitly forbidden
 
+- Runtime/test edits in this closeout.
 - Inline/integrated measurement panel implementation.
 - New measurement event type.
 - New write semantics.
@@ -57,27 +68,25 @@ If another runtime or test file appears necessary, stop and report the exact rat
 
 ## Boundary
 
-- This lock authorizes only narrow route/navigation/screen polish and focused widget tests for the future implementation pass.
-- Runtime/test implementation happens only in `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`, not in `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS`.
-- It records no accepted/pushed hash for the future implementation pass.
-- It does not authorize schema, writer, materializer, validator, projection, Project ZIP, event, fact, or canonical write changes.
-- It does not authorize product scope expansion, new measurement write flows, Add Component write behavior, or protected data/write surfaces.
+- This lock authorizes only docs-only closeout edits listed above.
+- It records the accepted/pushed implementation and releases the previous implementation allowlist.
+- It does not authorize product scope expansion, new measurement write flows, integrated measurement panel work, Add Component write behavior, or protected data/write surfaces.
+- Future visual-first integrated measurement panel work remains unarmed and requires a separate protected scope-lock before implementation.
 - `_incoming`, screenshots, docs/sources, and mockups remain design/reference input only, never runtime truth.
 - No untracked scratch files are touched or staged.
 
 ## Route
 
-- Current/armed pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS`
+- Current pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS`
 - Route after accepted/pushed: `NEEDS_USER_DECISION`
 
 ## Required validation
 
 ```powershell
 git status --short --branch
+git log --oneline --decorate -10
 git diff --name-status
 git diff --cached --name-status
 git diff --check
-dart format lib/app/router.dart lib/features/project/screens/project_overview_screen.dart lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/project_overview_screen_test.dart test/widget/board_canvas_screen_test.dart test/widget/benchbeep_home_screen_test.dart test/widget/measure_sheet_screen_test.dart
-flutter test test/widget/project_overview_screen_test.dart test/widget/board_canvas_screen_test.dart test/widget/benchbeep_home_screen_test.dart test/widget/measure_sheet_screen_test.dart
-flutter test
+python tools/validate_all.py
 ```

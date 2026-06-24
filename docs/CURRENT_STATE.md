@@ -2,21 +2,21 @@
 
 ## Current pass
 
-`V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
+- Latest accepted/pushed pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS` at `2270e0c` (`docs: record measurement navigation consolidation`).
 - Latest accepted/pushed implementation pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` at `4a7ac96` (`feat(board-canvas): consolidate measurement navigation`).
-- Prior active-lock sync: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_ACTIVE_LOCK_SYNC_PASS` at `8c27bae` (`docs: arm measurement navigation consolidation`).
-- Manual smoke for the implementation was user-reported PASS before Claude audit.
-- Claude audit for the implementation was user-reported `ACCEPT_AS_IS` with `SAFE_FOR_STAGING: YES`.
-- This pass is docs-only post-audit closeout for the accepted/pushed implementation; it does not change runtime behavior.
+- Current route before this scope lock: `NEEDS_USER_DECISION`.
+- This pass is docs-only protected scope-lock for a future visual-first integrated measurement panel workflow.
+- This pass does not arm runtime implementation and does not change runtime behavior.
 
 ## Current accepted product state
 
@@ -33,20 +33,26 @@
 - Board Canvas has a navigation-only Measure Sheet entry that opens the accepted standalone Measure Sheet route while preserving Board Canvas as the back destination.
 - `/project/measure-sheet` direct/fallback compatibility remains preserved.
 - Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow and was not changed by the navigation consolidation.
-- Accepted Menu System implementation remains the narrow instrument-style menu/app-bar/breadcrumb affordance:
-  - Home launcher menu/app-bar affordance;
-  - Workbench/Overview Home button and breadcrumb affordance;
-  - disabled future affordances for unimplemented menu items;
-  - no command menu, context menu, audio, canvas-token migration, full redesign, or protected-surface drift.
+- Accepted Menu System implementation remains the narrow instrument-style menu/app-bar/breadcrumb affordance.
 - Add Component catalog, builder, ghost, click-to-place, and drag-to-place behavior remain local/UI-only as previously accepted.
 - Board Canvas renderer remains read-only with `renderer writes: none`.
 
+## Protected future direction locked by current pass
+
+- Visual-first measurement workflow should keep Board Canvas visible as much as practical.
+- Measure should eventually open as a right-side contextual panel on Board Canvas, similar to Add Component.
+- Component selection should use user-defined component names when available.
+- Hover/focus should highlight the component on Canvas only as UI focus/preview, not as evidence.
+- Selecting a component should show component and visual-trace preview context without promoting visual traces to nets.
+- Selecting a pin/leg may reveal value/unit/save inputs under the visual context only in a separately armed implementation pass.
+- Any future save/write path must preserve the accepted human-authored Measure Sheet save semantics and must not add new canonical event/fact/schema/writer/materializer/projection behavior unless separately scoped.
+
 ## Active constraints
 
-- Current route after accepted/pushed of this closeout is `NEEDS_USER_DECISION`.
-- The measurement navigation implementation lock is released after this closeout.
-- No runtime/test/product implementation pass is currently armed.
-- Visual-first integrated measurement panel work remains a future protected route option and must not be treated as armed by this closeout.
+- Current route after accepted/pushed of this scope lock is `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- The next route is a docs-only active-lock sync decision, not runtime implementation.
+- Runtime implementation may begin only after a later live `docs/ACTIVE_SCOPE_LOCK.md` explicitly names the implementation pass and lists the exact runtime/test allowlist.
+- The future implementation must be narrow and must use manual smoke before Claude audit because it is product/UI surface work.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

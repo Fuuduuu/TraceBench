@@ -2,93 +2,66 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
+`TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
 
 ## Type
 
-CLAUDE_CODE / AUDIT_ONLY + CODEX / DOCS_SYNC_CLOSEOUT
+CODEX / DOCS_SYNC_RECOVERY
 
 ## Goal
 
-Record the accepted/pushed BenchBeep Menu System implementation closeout for `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` at `85bf54d` (`feat: add BenchBeep menu system`) and route onward to `NEEDS_USER_DECISION` without runtime/test changes.
+Reconcile live route/ledger docs with git evidence that `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted/pushed at `d4f6f7d` (`docs: sync prompt audit gate`) and route onward to `NEEDS_USER_DECISION` without runtime/test/product changes.
 
 ## Baseline
 
-- Latest accepted/pushed Menu System scope-lock: `V2_BENCHBEEP_MENU_SYSTEM_SCOPE_LOCK_PASS` at `c731513` (`docs: lock BenchBeep menu system`).
-- Latest accepted/pushed Menu System active-lock sync: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_ACTIVE_LOCK_SYNC_PASS` at `c5e10b2` (`docs: arm BenchBeep menu system implementation`).
-- Latest accepted/pushed Menu System implementation: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_PASS` at `85bf54d` (`feat: add BenchBeep menu system`).
-- Claude audit: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
-- This closeout performs no runtime/test implementation.
+- `main` and `origin/main` are at `d4f6f7d` (`docs: sync prompt audit gate`).
+- No tracked diff and no staged diff before this recovery pass.
+- Live route docs still had stale current pointers to `TRACEBENCH_OPERATIONAL_HANDOFF_COMPACTION_PASS`, `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`, and prompt-audit candidate wording.
+- The prompt-audit artifact's own pre-commit staging state is historical and is not rewritten by this recovery pass.
 
-## Status labels to record
+## Allowed files
 
-- `ROUTE_EFFECT: IMPLEMENTATION_POST_AUDIT_CLOSEOUT`
-- `ROUTE_EFFECT_NEXT: NEEDS_USER_DECISION`
-- `LANE_B`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS.md`
 
-## Accepted implementation files
-
-The accepted implementation changed only:
-
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/features/project/screens/project_overview_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `test/widget/project_overview_screen_test.dart`
-
-## Accepted behavior
-
-- Narrow Menu System slice implemented.
-- Home launcher has an instrument-style menu/app-bar affordance.
-- Workbench/Overview has Home button plus breadcrumb affordance.
-- BenchBeep / TraceBench / BoardFact naming remains correct.
-- Home launcher accepted behavior remains preserved.
-- `Open existing` still opens Workbench.
-- `Import project` still opens the existing allowed import/open-project flow.
-- `Import project` does not route to the legacy start screen.
-- Back/home navigation still returns to BenchBeep Home.
-- Workbench behavior remains preserved.
-- Add Component catalog, builder, ghost, click-to-place, and drag-to-place behavior remain preserved.
-
-## Validation evidence recorded
-
-- `flutter test`: all tests passed, `332` tests.
-- `flutter analyze`: `18` pre-existing issues, zero findings in changed files.
-- `py -3 tools/validate_all.py`: passed, `273` tests.
-
-## Non-blocking nits
-
-- Incidental const-correctness cleanup occurred within allowlisted files.
-- Some `find.text('BenchBeep')` assertions were loosened because the accepted menu/breadcrumb UI intentionally creates additional `BenchBeep` occurrences.
-
-## Explicitly not changed in this closeout
+## Explicitly not changed
 
 - Runtime files.
-- Tests.
-- Command menu / Ctrl-K palette.
-- Context menus.
-- Audio/save beep.
-- Canvas token consumer migration.
-- Full redesign, logo polish, high-pin selector UX, or new project creation.
-- Canonical board/write behavior.
-- Placement write / Confirm-write / Edit Layout.
-- Schema/writer/materializer/validator/projection/Project ZIP/event/fact files.
-- `_incoming`, screenshots, docs/sources, design artifacts, or untracked scratch files.
+- Test files.
+- Historical audit artifacts, including `docs/audit/TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS.md`.
+- Product identity work.
+- Missing `33d2f17` pointer sync.
+- Product/menu runtime work.
+- New scope-locks.
+- Source/design runtime dependency.
+- Protected data/write surfaces.
+- Untracked scratch files.
+
+## Accepted prompt/audit policy preserved
+
+- Codex pass responses require a clearly separated `CLAUDE_AUDIT_PACKET`.
+- Visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`.
+- `Accepted` shorthand is strict and requires clean `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and exact expected staging set.
+- Protected implementation requires active-lock sync before runtime/test work when the active lock does not name the implementation pass and exact allowlist.
+- Exact staging only; never `git add .`, never `git add -A`, and never broad staging.
 
 ## Boundary
 
-- This closeout records accepted implementation state only.
-- This closeout does not implement more menu behavior.
-- This closeout does not claim an accepted/pushed hash for itself.
-- Home launcher remains accepted and is not reworked by this pass.
-- Menu system remains a product-surface/navigation concern only.
-- Menu work must not create or alter canonical project, board, component, or placement data.
-- Menu work must not introduce Project ZIP import/export semantics.
-- `_incoming`, screenshots, docs/sources, and mockups remain design input only, never runtime truth.
+- This recovery sync changes live route/ledger docs only.
+- It records no accepted/pushed hash for itself.
+- It does not arm implementation.
+- It does not create a new scope-lock.
+- It does not change product behavior.
+- It does not edit runtime, tests, schemas, writer, materializer, validator, projection, Project ZIP, event, or fact files.
+- `_incoming`, screenshots, docs/sources, and mockups remain design/reference input only, never runtime truth.
 - No untracked scratch files are touched or staged.
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_MENU_SYSTEM_IMPL_POST_AUDIT_PASS`
+- Current pass: `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
 - Next route: `NEEDS_USER_DECISION`
 
 ## Required validation

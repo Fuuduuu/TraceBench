@@ -12,7 +12,7 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`TRACEBENCH_OPERATIONAL_HANDOFF_COMPACTION_PASS`
+`TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`
 
 ## Next recommended pass
 
@@ -26,7 +26,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
-| TRACEBENCH_OPERATIONAL_HANDOFF_COMPACTION_PASS | CODEX / DOCS_SYNC | current docs-only operational handoff compaction | Compact `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md` into current-route control-plane docs; preserve auditability through `AUDIT_INDEX`, `docs/audit`, `PASS_QUEUE_ARCHIVE`, and git history; no runtime/test/product behavior changes. |
+| TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS | CODEX / DOCS_SYNC_RECOVERY | current docs-only route-ledger recovery | Reconcile live route docs with git evidence that `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted/pushed at `d4f6f7d` (`docs: sync prompt audit gate`); remove stale current pointers for operational compaction, menu-system closeout, and prompt-audit candidate wording; no runtime/test/product behavior changes. |
 | NEEDS_USER_DECISION | USER / ROUTE_DECISION | next route | Choose the next protected product/runtime/docs track after accepted BenchBeep Home launcher and Menu System work. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | CODEX / DOCS_PROTECTED_SCOPE_LOCK | future protected route option | Inline measurement-entry panel scope-lock; crosses from read-only UI into write-flow territory and requires dedicated protected-surface review. |
 | V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS | CODEX / FLUTTER_NAV_POLISH | future route option | Route/navigation consolidation; keep `/project/measure-sheet` fallback/redirect and do not casually delete standalone Measure Sheet routing. |

@@ -2,40 +2,31 @@
 
 ## Current pass
 
-`TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
+`TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS`
 
 ## Type
 
-CODEX / DOCS_SYNC
+CODEX / DOCS_SYNC_ROUTE_CLEANUP
 
 ## Goal
 
-Authorize the next docs-only product identity owner sync pass. The future pass may create one durable naming owner for BenchBeep / TraceBench / BoardFact identity, but this active-lock sync pass does not perform that identity cleanup.
+Clean up live route docs after `TRACEBENCH_AUDIT_INDEX_MISSING_POINTER_SYNC_PASS` was accepted/pushed at `bb88226` (`docs: add missing audit index pointer`) and route back to `NEEDS_USER_DECISION` without runtime/test/product changes.
 
 ## Baseline
 
-- Latest accepted/pushed pass: `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS` at `c678b44` (`docs: recover TraceBench route ledger`).
-- Attempted `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS` was blocked before edits because `docs/PASS_QUEUE.md` did not contain that pass and this active lock still named `TRACEBENCH_ROUTE_LEDGER_RECOVERY_SYNC_PASS`.
-- This lock arms the future identity sync only; it does not mark the future identity sync accepted/pushed.
-
-## Identity facts for the future pass
-
-- `BenchBeep` = user-facing app/product name.
-- `TraceBench` = repository/platform/project name.
-- `BoardFact` = data-fact/subsystem name.
-- `BoardFact` is not the primary app wordmark unless a specific UI surface explicitly earns that subsystem label.
+- Latest accepted/pushed pass: `TRACEBENCH_AUDIT_INDEX_MISSING_POINTER_SYNC_PASS` at `bb88226` (`docs: add missing audit index pointer`).
+- Current route before this pass: `NEEDS_USER_DECISION`.
+- Working tree started with leftover tracked route-doc changes in `docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`, and `docs/PASS_QUEUE.md` from `TRACEBENCH_AUDIT_INDEX_MISSING_POINTER_SYNC_PASS`.
+- Those stale route-doc changes must not be staged as-is because the missing-pointer sync is already accepted/pushed.
+- The missing `33d2f17` AUDIT_INDEX pointer sync is closed.
 
 ## Allowed files
 
-- `docs/PROJECT_MEMORY.md`
-- `docs/TRUTH_INDEX.md`
-- `README.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS.md`
-
-## Required future-pass stop condition
-
-- If `docs/PROJECT_MEMORY.md` does not exist, the future identity sync pass must stop and report `BLOCKED` instead of inventing a new durable owner doc.
+- `docs/audit/TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS.md`
 
 ## Explicitly not changed
 
@@ -43,21 +34,18 @@ Authorize the next docs-only product identity owner sync pass. The future pass m
 - Test files.
 - Historical audit artifacts.
 - Product features.
-- Menu/runtime behavior.
-- Logo polish or branding UI.
-- Product identity sync in this active-lock sync pass.
-- Missing `33d2f17` pointer sync.
-- Memory/handoff refresh.
+- Product/runtime behavior.
+- Product identity cleanup.
 - Source/design runtime dependency.
 - Protected data/write surfaces.
 - Untracked scratch files.
 
 ## Boundary
 
-- This lock authorizes only a docs-only identity owner sync.
-- It records no accepted/pushed hash for the future identity sync.
-- It does not authorize runtime/test/product behavior changes.
-- It does not create a new scope-lock.
+- This sync is docs-only route cleanup.
+- It records no accepted/pushed hash for this uncommitted cleanup pass.
+- It does not create a new product route.
+- It does not expand the active lock for runtime work.
 - It does not change product behavior.
 - It does not edit runtime, tests, schemas, writer, materializer, validator, projection, Project ZIP, event, or fact files.
 - `_incoming`, screenshots, docs/sources, and mockups remain design/reference input only, never runtime truth.
@@ -65,7 +53,7 @@ Authorize the next docs-only product identity owner sync pass. The future pass m
 
 ## Route
 
-- Current/armed pass: `TRACEBENCH_PRODUCT_IDENTITY_OWNER_SYNC_PASS`
+- Current pass: `TRACEBENCH_POST_MISSING_POINTER_ROUTE_SYNC_PASS`
 - Route after accepted/pushed: `NEEDS_USER_DECISION`
 
 ## Required validation

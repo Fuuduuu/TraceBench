@@ -7,6 +7,27 @@ Keep prompts compact, scoped, and auditable without losing safety.
 Canonical repo docs win over prompt/chat memory.
 Use `docs/MODEL_ROUTING.md` for helper/model role ownership and `docs/AUDIT_CONTRACT.md` for reusable audit contracts instead of repeating long stable blocks.
 
+## Codex final-output audit packet rule
+
+Every TraceBench Codex PASS_ID response must end with a clearly separated `CLAUDE_AUDIT_PACKET`.
+
+The packet must be paste-ready for Claude Code and include:
+
+- PASS_ID, lane/type, and mode;
+- exact expected diff / safe staging set if accepted;
+- explicit `DO NOT edit/stage/commit/push`;
+- focused audit checklist for the pass-specific risk;
+- validation commands/results to verify;
+- verdict format and safety gate.
+
+For visual or product-surface work, Codex still prepares the packet, but the packet must be marked:
+
+```text
+USE ONLY AFTER MANUAL SMOKE PASS
+```
+
+Claude audit must not be used to approve a known-wrong visual draft.
+
 ## Two-lane pass policy
 
 Classify every pass by semantic risk first, not by file type.
@@ -287,9 +308,9 @@ Stop and route to user/deep review if:
 - Prefer commit trailers or a single batched milestone audit record when the child pass sequence is routine.
 - No separate post-audit closeout pass is required unless it records useful state or protected/high-risk work requires it.
 
-## Accepted shorthand for clean Lane A audits
+## Accepted shorthand for clean TraceBench audits
 
-- In Lane A docs-only passes, user may reply only `Accepted` when all are true:
+- User may reply only `Accepted` when all are true:
   - Claude returned `ACCEPT_AS_IS`.
   - `SAFE_FOR_STAGING: YES`.
   - no blockers.
@@ -304,7 +325,7 @@ Stop and route to user/deep review if:
   - scope concern
   - protected-surface warning
   - staging set mismatch.
-- For Lane A docs-closeout/lock/audit summary passes, Codex must still emit a compact `CLAUDE_AUDIT_PACKET`.
+- For TraceBench pass responses, Codex must still emit a compact `CLAUDE_AUDIT_PACKET`.
 - Packet checks should be token-light and limited to:
   - expected diff
   - current/next route
@@ -313,6 +334,27 @@ Stop and route to user/deep review if:
   - staging state
   - exact safe staging set when accepted.
 - Do not rely on full repeated role blocks for this policy check. Reference `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, `docs/PROTECTED_SURFACES.md`, and `docs/ACTIVE_SCOPE_LOCK.md` where relevant.
+
+## Active-lock sync before protected implementation
+
+After a protected scope-lock is accepted/pushed, implementation may begin only when `docs/ACTIVE_SCOPE_LOCK.md` names the implementation pass and lists the exact runtime/test write allowlist.
+
+If `docs/ACTIVE_SCOPE_LOCK.md` still names the docs-only scope-lock or lacks the runtime/test allowlist, route first to:
+
+```text
+<IMPLEMENTATION_PASS>_ACTIVE_LOCK_SYNC_PASS
+```
+
+The active-lock sync pass is docs-only. It may record the accepted scope-lock commit, arm the implementation route, and list the narrow implementation allowlist, but it must not implement runtime behavior.
+
+## Exact staging rule
+
+TraceBench staging must be explicit:
+
+- never use `git add .`;
+- never use `git add -A`;
+- never broad-stage unrelated changed files;
+- staging commands must list exact accepted files for the current pass.
 
 ## Lane A audit evidence discipline
 

@@ -19,6 +19,17 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - Artifact/docs hygiene: no generated artifacts, literal newline artifacts, tag/release mutations, or accidental runtime files unless scoped.
 - Findings ranking: rank findings as `BLOCKER`, `HIGH`, `MEDIUM`, `LOW`, or `NIT`.
 - Verdict and safety gate: return one verdict option and `safe_to_commit` or `safe_for_commit_push` as `YES` or `NO`.
+- Audit-packet handoff: every TraceBench Codex PASS_ID response must end with a clearly separated, paste-ready `CLAUDE_AUDIT_PACKET`.
+- Visual/manual-smoke gate: visual or product-surface packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`; Claude audit must not approve a known-wrong visual draft.
+- Exact staging: accepted staging sets must list exact files; `git add .`, `git add -A`, and broad staging are forbidden.
+
+## Active-lock sync gate for protected implementation
+
+After a protected scope-lock is accepted/pushed, implementation may start only when `docs/ACTIVE_SCOPE_LOCK.md` names the implementation pass and lists the exact runtime/test write allowlist.
+
+If the active lock still names the docs-only scope-lock, or if it lacks the runtime/test allowlist, auditors should require a docs-only `<IMPLEMENTATION_PASS>_ACTIVE_LOCK_SYNC_PASS` before implementation.
+
+The sync pass may arm the implementation route and allowlist, but must not implement runtime behavior.
 
 ## Two-lane policy
 
@@ -39,9 +50,9 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - For routine bundle child passes, a combined milestone audit record is acceptable when risk and scope are unchanged.
 - Evidence may not be overwritten as "closed" without explicitly recording the boundary change reason.
 
-## Compact `CLAUDE_AUDIT_PACKET` for clean Lane A docs-only passes
+## Compact `CLAUDE_AUDIT_PACKET` for clean audits
 
-- For clean Lane A docs-only passes where no blockers are found, audit may be returned as compact packet form instead of full prose.
+- For clean passes where no blockers are found, audit may be returned as compact packet form instead of full prose.
 - Required packet fields:
   - `AUDIT_VERDICT` (`ACCEPT_AS_IS` only for shorthand path).
   - `SAFE_FOR_STAGING` (`YES` / `NO`).
@@ -57,6 +68,12 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
   - no route/hash mismatch
   - no unexpected changed files.
 - If shorthand is used, packet must still explicitly confirm `no false accepted/pushed` claim for the current uncommitted pass.
+
+## Accepted shorthand gate
+
+The user may reply with only `Accepted` only when Claude returned `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and the exact safe staging set matches expected changed files.
+
+The user must paste relevant audit details when Claude returns or mentions `ACCEPT_WITH_NITS`, `BLOCKED`, `SAFE_FOR_STAGING: NO`, route/hash mismatch, unexpected files, protected-surface concern, staging-set mismatch, or unclear/conditional acceptance.
 
 ## Contract: scope-lock-post-audit
 

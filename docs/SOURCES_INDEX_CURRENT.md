@@ -2,9 +2,11 @@
 
 ## Purpose
 
-Routing, handoff, and conflict-resolution index for current TraceBench governance.
+Source/design/reference index for TraceBench governance inputs.
 
-## Current release/governance state
+This file does not own current route, current scope, next route, or active implementation truth. Use the canonical live docs listed below for operational state.
+
+## Canonical governance pointers
 
 - Current pass and next route: `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
 - Active scope lock: `docs/ACTIVE_SCOPE_LOCK.md`.
@@ -17,14 +19,12 @@ Routing, handoff, and conflict-resolution index for current TraceBench governanc
 - External/non-repo orientation pointer:
   - `TraceBench_Project_Source_Guide.md` is orientation-only material outside the canonical repo docs. Do not assume it exists in this repository, and do not treat it as canonical governance.
 
-## Current orientation snapshot
+## Reference orientation notes
 
-- Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
-- Current route: `V2_WORKBENCH_BENCH_LAYOUT_SCOPE_LOCK_PASS`; next route `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`.
-- Latest accepted pushed work: Workbench Home redesign design-gap capture `422416f` (`docs: capture workbench home redesign design gap`).
-- Board Canvas density polish is accepted/pushed/manual-smoke PASS.
-- Project Overview / Workbench layout density is accepted/pushed/closed out.
-- Current Workbench bench-layout scope lock routes toward `V2_WORKBENCH_BENCH_LAYOUT_IMPL_PASS`; write-flow integration, route consolidation, and theme parity remain separate later scopes.
+- Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`; this file intentionally does not repeat a current route snapshot.
+- Active-scope authority remains `docs/ACTIVE_SCOPE_LOCK.md` when a scope or implementation route is armed.
+- Accepted pass evidence and historical outcomes remain in `docs/AUDIT_INDEX.md`, `docs/audit/*.md`, `docs/PASS_QUEUE_ARCHIVE.md`, and git history.
+- Source/design entries here are reference and intake pointers only; they are not runtime truth and do not authorize implementation.
 
 ## CURRENT_STATE size/archive discipline
 
@@ -142,11 +142,11 @@ Archive files are never read by default.
 - docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Claude Design / UX review returned `ACCEPT_WITH_NITS`; source files remain non-runtime design input, not production Flutter source, not Project ZIP content, and not evidence/canonical input.
 - `_incoming/ui_redesign/2026-06-14_workbench_home/`: local scratch/reference-only Technician Workbench Home design input for integrated workbench direction. Contains standalone HTML/CSS mockup material; it remains untracked, non-runtime, non-canonical, not Project ZIP content, and must not be copied into Flutter/runtime/assets.
 
-## Current design-direction intake
+## Design-direction intake reference
 
 - `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` records Claude design-direction recommendations as governed design intake only.
 - BenchBeep is the user-facing app/product name; TraceBench remains the repo/platform/project name; BoardFact remains a data-fact/subsystem name unless a specific surface earns it.
 - Direction: bench instrument identity, dark instrument-like UI, restrained panels/hairlines, IBM Plex Mono/Sans, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown.
 - Recent accepted application: Add Component draft ghost uses purple/unknown-draft semantics.
-- Future order remains token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock.
+- Historical proposed order was token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock; those tracks have progressed through accepted scope/implementation/closeout passes and live route truth now belongs only in canonical route docs.
 - This intake does not treat `_incoming`, screenshots, docs/sources, mockups, or design artifacts as runtime truth.

@@ -363,19 +363,46 @@ void main() {
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
-  testWidgets('Board Canvas measurement action routes to Measure Sheet',
+  testWidgets('Board Canvas measurement action opens non-writing panel shell',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
+    const linkedTrace = VisualTraceFact(
+      traceId: 'tr_measure_r101',
+      photoId: 'ph_measure_r101',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_r101',
+      toComponent: 'cmp_u1',
+      fromPin: 'cmp_r101.2',
+      toPin: 'cmp_u1.2',
+      confidence: 'medium',
+      layer: 'top',
+      notes: 'visible copper near selected component',
+    );
+    const linkedMeasurement = MeasurementFact(
+      measurementId: 'M_measure_r101',
+      mode: 'dc_voltage',
+      from: 'cmp_r101.1',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'on',
+      value: 5.01,
+      unit: 'V',
+      originEventId: 'evt_measure_r101',
+    );
     final state = _inlineProjectState(
       components: const [
         ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1'),
       ],
-      placements: const [boardPlacement],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+      measurements: const [linkedMeasurement],
+      visualTraces: const [linkedTrace],
     );
 
-    await tester.pumpWidget(_routerHarness(projectState: state));
+    await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
     final measureSheetAction = find.byKey(
@@ -385,15 +412,99 @@ void main() {
     await tester.tap(measureSheetAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
-    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
-
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-
     expect(find.byType(BoardCanvasScreen), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.text('Project overview'), findsNothing);
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_integrated_measure_panel')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_rail_measure_active')),
+      findsOneWidget,
+    );
+    expect(find.text('Measure'), findsAtLeastNWidgets(1));
+    expect(find.text('Component focus'), findsOneWidget);
+    expect(find.text('R101'), findsOneWidget);
+    expect(find.text('Measured values'), findsOneWidget);
+    expect(find.text('cmp_r101.1'), findsOneWidget);
+    expect(find.text('5.01 V'), findsOneWidget);
+    expect(find.text('cmp_r101.2'), findsOneWidget);
+    expect(find.text('Add local value'), findsOneWidget);
+    expect(find.text('Quick local capture'), findsOneWidget);
+    expect(find.text('Pin/leg'), findsOneWidget);
+    expect(find.text('Väärtus'), findsOneWidget);
+    expect(find.text('Ühik'), findsOneWidget);
+    expect(find.text('Salvesta placeholder'), findsOneWidget);
+    expect(find.text('Local only'), findsOneWidget);
+    expect(find.text('Visual preview only'), findsOneWidget);
+    expect(find.text('Advanced technical details'), findsOneWidget);
+    expect(find.textContaining('Trace ID: tr_measure_r101'), findsNothing);
+    final savePlaceholder = tester.widget<ElevatedButton>(
+      find.byKey(const Key('board_canvas_measure_save_placeholder')),
+    );
+    expect(savePlaceholder.onPressed, isNull);
+
+    final componentTop = tester.getTopLeft(find.text('Component focus')).dy;
+    final valuesTop = tester.getTopLeft(find.text('Measured values')).dy;
+    final captureTop = tester.getTopLeft(find.text('Quick local capture')).dy;
+    final pinTop = tester.getTopLeft(find.text('Pin/leg')).dy;
+    final valueTop = tester.getTopLeft(find.text('Väärtus')).dy;
+    final unitTop = tester.getTopLeft(find.text('Ühik')).dy;
+    final saveTop = tester.getTopLeft(find.text('Salvesta placeholder')).dy;
+    final visualTop = tester.getTopLeft(find.text('Visual preview only')).dy;
+    final advancedTop =
+        tester.getTopLeft(find.text('Advanced technical details')).dy;
+    expect(componentTop, lessThan(valuesTop));
+    expect(valuesTop, lessThan(captureTop));
+    expect(captureTop, lessThan(pinTop));
+    expect(pinTop, lessThan(valueTop));
+    expect(valueTop, lessThan(unitTop));
+    expect(unitTop, lessThan(saveTop));
+    expect(saveTop, lessThan(visualTop));
+    expect(visualTop, lessThan(advancedTop));
+
+    await tester.ensureVisible(find.text('Advanced technical details'));
+    await tester.tap(find.text('Advanced technical details'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Trace ID: tr_measure_r101'), findsOneWidget);
+    expect(find.textContaining('Photo ID: ph_measure_r101'), findsOneWidget);
+
+    expect(find.text('Measure Sheet'), findsNothing);
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsNothing);
+    expect(state.events, isEmpty);
+
+    await _tapCanvasAtNormalized(tester, x: 0.52, y: 0.61);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_integrated_measure_panel')),
+      findsOneWidget,
+    );
+    expect(find.text('cmp_u1'), findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('direct Measure Sheet route remains compatible', (tester) async {
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(
+      _routerHarness(
+        projectState: state,
+        initialLocation: '/project/measure-sheet',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Measure Sheet'), findsAtLeastNWidgets(1));
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsOneWidget);
+    expect(find.byType(BoardCanvasScreen), findsNothing);
     expect(state.events, isEmpty);
   });
 
@@ -4559,6 +4670,9 @@ void main() {
     expect(source, contains('board_canvas_safety_evidence_disclosure'));
     expect(source, contains('board_canvas_inspector_toggle_button'));
     expect(source, isNot(contains('MeasurementEventWriter')));
+    expect(source, isNot(contains('v2_save_measurement_writer')));
+    expect(source, isNot(contains('V2SaveMeasurementWriter')));
+    expect(source, isNot(contains('v2SaveMeasurementWriter')));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));
     expect(source, isNot(contains('ProjectOverviewScreen')));

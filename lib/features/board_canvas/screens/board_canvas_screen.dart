@@ -30,6 +30,7 @@ enum _WorkbenchContextPanelMode {
   hidden,
   inspector,
   placements,
+  measure,
   addComponentTemplates,
   safetyEvidence
 }
@@ -525,7 +526,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               onSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
-                  _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
+                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  }
                   _inspectorVisible = true;
                 });
               },
@@ -566,14 +569,18 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               onPlacementSelected: (value) {
                 setState(() {
                   _selectedPlacementKey = value;
-                  _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
+                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
+                  }
                   _inspectorVisible = true;
                 });
               },
               onCanvasTapEmpty: () {
                 setState(() {
                   _selectedPlacementKey = null;
-                  _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
+                    _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                  }
                 });
               },
               showAddComponentTemplateGhost: _contextPanelMode ==
@@ -688,6 +695,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     },
                   );
                   break;
+                case _WorkbenchContextPanelMode.measure:
+                  contextPanel = _IntegratedMeasurePanel(
+                    selectedEntry: selectedEntry,
+                    relatedMeasurements: relatedMeasurements,
+                    relatedVisualTraces: relatedVisualTraces,
+                  );
+                  break;
                 case _WorkbenchContextPanelMode.addComponentTemplates:
                   contextPanel = _AddComponentTemplateListPanel(
                     entries: _kStarterAddComponentTemplates,
@@ -755,10 +769,22 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               final showContextPanel = _inspectorVisible &&
                   !_canvasFocusMode &&
                   contextPanel != null;
-              final measureSheetAction = _MeasureSheetNavigationButton(
-                showLabel: true,
+              final measurePanelToggle = _WorkbenchPanelModeButton(
+                buttonKey: const Key('board_canvas_measure_sheet_button'),
+                icon: Icons.science_outlined,
+                tooltip: 'Open measurement context panel',
+                label: 'Measure',
+                modeKey: 'measure',
+                selected:
+                    _contextPanelMode == _WorkbenchContextPanelMode.measure,
                 onPressed: () {
-                  context.push('/project/measure-sheet');
+                  setState(() {
+                    _selectedPlacementKey ??=
+                        entries.isEmpty ? null : entries.first.key;
+                    _contextPanelMode = _WorkbenchContextPanelMode.measure;
+                    _inspectorVisible = true;
+                    _canvasFocusMode = false;
+                  });
                 },
               );
               final focusPanelToggle = _WorkbenchPanelModeButton(
@@ -834,7 +860,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     _WorkbenchToolRail(
                       addComponentTool: addComponentPanelToggle,
                       inspectorTool: inspectorPanelToggle,
-                      measureSheetTool: measureSheetAction,
+                      measureSheetTool: measurePanelToggle,
                       placementTool: focusPanelToggle,
                       safetyEvidenceTool: safetyPanelToggle,
                     ),
@@ -3511,6 +3537,428 @@ class _InspectorPanel extends StatelessWidget {
             children[index],
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _IntegratedMeasurePanel extends StatelessWidget {
+  const _IntegratedMeasurePanel({
+    required this.selectedEntry,
+    required this.relatedMeasurements,
+    required this.relatedVisualTraces,
+  });
+
+  final _PlacementEntry? selectedEntry;
+  final List<MeasurementFact> relatedMeasurements;
+  final List<VisualTraceFact> relatedVisualTraces;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final selectedName =
+        selectedEntry == null ? null : _preferredComponentLabel(selectedEntry!);
+    final selectedDetail = selectedEntry == null
+        ? 'Select a component on Canvas.'
+        : selectedEntry!.selectorLabel;
+    final targetRows = _measureTargetRows();
+
+    return SingleChildScrollView(
+      key: const Key('board_canvas_integrated_measure_panel'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SectionHeader(
+                    title: 'Measure',
+                    tag: 'Local only',
+                    subtitle: 'Non-writing shell',
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'No project data is written from this panel.',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _SectionHeader(
+                    title: 'Component focus',
+                    tag: 'VISUAL',
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    selectedName ?? 'No component selected',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  if (selectedDetail != selectedName)
+                    Text(
+                      selectedDetail,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  const SizedBox(height: 10),
+                  DecoratedBox(
+                    key: const Key('board_canvas_measure_component_preview'),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: theme.colorScheme.surfaceContainerLowest,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.memory_outlined, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              relatedVisualTraces.isEmpty
+                                  ? 'No visual trace preview for this component.'
+                                  : '${relatedVisualTraces.length} visual trace preview${relatedVisualTraces.length == 1 ? '' : 's'} available.',
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _SectionHeader(
+                    title: 'Measured values',
+                    tag: 'MAIN',
+                    subtitle: 'existing values and local placeholders',
+                  ),
+                  const SizedBox(height: 10),
+                  ...targetRows.map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: _MeasureTargetRow(row: row),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _SectionHeader(
+                    title: 'Quick local capture',
+                    tag: 'INERT',
+                    subtitle: 'Pin/leg -> Väärtus -> Ühik -> Salvesta',
+                  ),
+                  const SizedBox(height: 10),
+                  const _MeasurePlaceholderInput(
+                    label: 'Pin/leg',
+                    hint: 'visual contact only',
+                  ),
+                  const SizedBox(height: 8),
+                  const _MeasurePlaceholderInput(
+                    label: 'Väärtus',
+                    hint: 'not saved here',
+                  ),
+                  const SizedBox(height: 8),
+                  const _MeasurePlaceholderInput(
+                    label: 'Ühik',
+                    hint: 'local only',
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    key: const Key('board_canvas_measure_save_placeholder'),
+                    onPressed: null,
+                    icon: const Icon(Icons.save_outlined),
+                    label: const Text('Salvesta placeholder'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _SectionHeader(
+                    title: 'Visual preview only',
+                    tag: 'VISUAL',
+                  ),
+                  const SizedBox(height: 6),
+                  const Text('Visual traces do not prove connectivity.'),
+                  if (selectedEntry == null) ...[
+                    const SizedBox(height: 6),
+                    const Text('No component selected for preview.'),
+                  ] else if (relatedVisualTraces.isEmpty) ...[
+                    const SizedBox(height: 6),
+                    const Text(
+                      'No related visual traces for selected component.',
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      '${relatedVisualTraces.length} visual trace preview${relatedVisualTraces.length == 1 ? '' : 's'} available.',
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+              childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              title: const Text('Advanced technical details'),
+              subtitle: const Text('read-only provenance'),
+              children: [
+                if (relatedVisualTraces.isEmpty &&
+                    relatedMeasurements.isEmpty) ...[
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('No advanced details for selected component.'),
+                  ),
+                ] else ...[
+                  if (relatedVisualTraces.isNotEmpty) ...[
+                    const _SectionHeader(
+                      title: 'Visual trace provenance',
+                      tag: 'READ',
+                    ),
+                    const SizedBox(height: 8),
+                    ...relatedVisualTraces.map(
+                      (trace) => _VisualTraceSummaryTile(trace: trace),
+                    ),
+                  ],
+                  if (relatedMeasurements.isNotEmpty) ...[
+                    if (relatedVisualTraces.isNotEmpty)
+                      const SizedBox(height: 8),
+                    const _SectionHeader(
+                      title: 'Existing measurement provenance',
+                      tag: 'READ',
+                    ),
+                    const SizedBox(height: 8),
+                    ...relatedMeasurements.map(
+                      (measurement) => _MeasurementSummaryTile(
+                        measurement: measurement,
+                      ),
+                    ),
+                  ],
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<_MeasureTargetRowData> _measureTargetRows() {
+    final componentId = selectedEntry?.placement.componentId;
+    final rowsByTarget = <String, _MeasureTargetRowData>{};
+
+    for (final measurement in relatedMeasurements) {
+      final target = _measurementTargetLabel(measurement, componentId);
+      rowsByTarget[target] = _MeasureTargetRowData(
+        target: target,
+        value: _measurementDisplayValue(measurement),
+        isExistingValue: true,
+      );
+    }
+
+    if (componentId != null) {
+      for (final trace in relatedVisualTraces) {
+        for (final target in _visualTraceTargets(trace, componentId)) {
+          rowsByTarget.putIfAbsent(
+            target,
+            () => _MeasureTargetRowData(
+              target: target,
+              value: 'Add local value',
+              isExistingValue: false,
+            ),
+          );
+        }
+      }
+    }
+
+    if (rowsByTarget.isEmpty) {
+      rowsByTarget[selectedEntry?.placement.componentId ?? 'No target'] =
+          _MeasureTargetRowData(
+        target: selectedEntry?.placement.componentId ?? 'Select component',
+        value: 'Add local value',
+        isExistingValue: false,
+      );
+    }
+
+    return rowsByTarget.values.toList(growable: false);
+  }
+
+  String _measurementTargetLabel(
+    MeasurementFact measurement,
+    String? componentId,
+  ) {
+    if (componentId != null) {
+      if (measurementEndpointMatchesComponent(measurement.from, componentId)) {
+        return measurement.from;
+      }
+      if (measurementEndpointMatchesComponent(measurement.to, componentId)) {
+        return measurement.to;
+      }
+    }
+    return measurement.measurementId;
+  }
+
+  String _measurementDisplayValue(MeasurementFact measurement) {
+    if (measurement.value == null) {
+      return measurement.reading;
+    }
+    final unit = measurement.unit?.trim();
+    if (unit == null || unit.isEmpty) {
+      return '${measurement.value}';
+    }
+    return '${measurement.value} $unit';
+  }
+
+  List<String> _visualTraceTargets(
+    VisualTraceFact trace,
+    String componentId,
+  ) {
+    final targets = <String>[];
+    if (_tracePinMatchesComponent(trace.fromPin, componentId)) {
+      targets.add(trace.fromPin!);
+    }
+    if (_tracePinMatchesComponent(trace.toPin, componentId)) {
+      targets.add(trace.toPin!);
+    }
+    if (targets.isEmpty && trace.fromComponent == componentId) {
+      targets.add(trace.fromComponent!);
+    }
+    if (targets.isEmpty && trace.toComponent == componentId) {
+      targets.add(trace.toComponent!);
+    }
+    return targets;
+  }
+
+  bool _tracePinMatchesComponent(String? pinId, String componentId) {
+    return pinId != null && pinId.startsWith('$componentId.');
+  }
+
+  String _preferredComponentLabel(_PlacementEntry entry) {
+    final designator = entry.component?.designator?.trim();
+    if (designator != null && designator.isNotEmpty) {
+      return designator;
+    }
+    return entry.placement.componentId;
+  }
+}
+
+class _MeasureTargetRowData {
+  const _MeasureTargetRowData({
+    required this.target,
+    required this.value,
+    required this.isExistingValue,
+  });
+
+  final String target;
+  final String value;
+  final bool isExistingValue;
+}
+
+class _MeasureTargetRow extends StatelessWidget {
+  const _MeasureTargetRow({required this.row});
+
+  final _MeasureTargetRowData row;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                row.target,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
+            const SizedBox(width: 8),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: row.isExistingValue
+                    ? theme.colorScheme.primaryContainer.withValues(alpha: 0.38)
+                    : theme.colorScheme.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: theme.colorScheme.outlineVariant),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                child: Text(
+                  row.value,
+                  style: theme.textTheme.labelSmall,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MeasurePlaceholderInput extends StatelessWidget {
+  const _MeasurePlaceholderInput({
+    required this.label,
+    required this.hint,
+  });
+
+  final String label;
+  final String hint;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      enabled: false,
+      decoration: InputDecoration(
+        isDense: true,
+        labelText: label,
+        hintText: hint,
+        border: const OutlineInputBorder(),
       ),
     );
   }

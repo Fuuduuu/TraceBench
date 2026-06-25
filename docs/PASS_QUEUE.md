@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -28,6 +28,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 |---|---|---|---|
 | V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | accepted/pushed as `934a5a4` (`docs: record integrated measurement panel shell`) | Recorded accepted/pushed integrated measurement panel shell implementation `0d015c9`, released the prior implementation active lock, preserved no-write Board Canvas boundaries, and routed to `NEEDS_USER_DECISION`. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_WORKFLOW | accepted/pushed as `375adbe` (`docs: lock measurement target capture scope`) | Locked the next integrated Measure panel UX slice for local UI-only target selection and draft value/unit capture; did not implement runtime behavior and routed to active-lock sync before implementation. |
-| V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | current docs-only active-lock sync | Arms the future target-capture implementation pass with an exact narrow Board Canvas runtime/test allowlist; does not implement runtime behavior and does not mark implementation accepted/pushed. |
-| V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | next armed implementation after sync acceptance | Future implementation may add only local UI-only target row selection, pin/leg selection, draft value/unit state, validation hints, and Canvas focus/highlight/preview in the files listed by `docs/ACTIVE_SCOPE_LOCK.md`; no Board Canvas canonical write/save behavior, writer wiring, or protected data-surface change is authorized. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | accepted/pushed as `ff271db` (`docs: arm measurement target capture implementation`) | Armed `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` with exact Board Canvas runtime/test allowlist and non-writing target-capture boundaries; did not implement runtime behavior. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | accepted/pushed as `80c9bff` (`feat(board-canvas): add measurement target capture`) | Manual smoke before Claude audit: user-reported `PASS_WITH_NITS` after UI parity/micro-polish review; remaining nits were visual polish only and did not affect non-writing boundaries. Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; added local UI-only target selection, inline draft value/unit controls, component visual before measured values, separate From -> To display/provenance context, preserved Continue in Measure Sheet compatibility, and did not add Board Canvas save/write behavior. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | current docs-only closeout | Records accepted/pushed implementation `80c9bff`, releases the implementation active lock, preserves no-write boundaries, and routes after acceptance to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

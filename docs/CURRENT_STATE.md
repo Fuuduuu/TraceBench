@@ -2,23 +2,25 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified for this closeout: `80c9bff` (`feat(board-canvas): add measurement target capture`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `d39db25` (`docs: record measurement target capture`), aligned with `origin/main`.
+- Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
 - Latest accepted/pushed implementation pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` at `80c9bff`.
 - Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS` at `ff271db` (`docs: arm measurement target capture implementation`).
 - Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS` at `375adbe` (`docs: lock measurement target capture scope`).
 - Prior integrated panel shell closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS` at `934a5a4` (`docs: record integrated measurement panel shell`).
-- Current route is this docs-only post-audit closeout.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- Current route is this docs-only scope-lock for the next integrated Measure panel visual-density polish slice.
+- Route before this new decision was `NEEDS_USER_DECISION`.
+- Route after this scope-lock is accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 
 ## Current accepted product state
 
@@ -62,8 +64,10 @@
 
 ## Active constraints
 
-- No implementation pass is armed after this closeout is accepted/pushed.
-- `docs/ACTIVE_SCOPE_LOCK.md` releases the prior Board Canvas implementation lock and authorizes only this docs-only closeout allowlist.
+- No implementation pass is armed by this scope-lock.
+- `docs/ACTIVE_SCOPE_LOCK.md` authorizes only this docs-only scope-lock allowlist.
+- The next active-lock sync, if accepted/pushed, should arm only the narrow visual-density implementation allowlist for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Future implementation remains local UI-only and non-writing.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

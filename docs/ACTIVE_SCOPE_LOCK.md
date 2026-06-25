@@ -2,69 +2,111 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
 
 ## Type
 
-CODEX / DOCS_POST_AUDIT_CLOSEOUT
+CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_POLISH
 
 ## Scope
 
-Docs-only closeout for the accepted/pushed integrated measurement panel target-capture implementation.
+Docs-only scope-lock for the next narrow integrated Board Canvas Measure panel visual-density polish slice.
 
-This pass records `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` as accepted/pushed at `80c9bff` (`feat(board-canvas): add measurement target capture`), releases the prior implementation active lock, and routes back to `NEEDS_USER_DECISION` after closeout acceptance.
+This pass records that `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` closed the previous target-capture lifecycle at `d39db25` (`docs: record measurement target capture`) and that the route before this new decision was `NEEDS_USER_DECISION`.
 
-## Active implementation lock state
+This pass does not implement runtime behavior and does not arm implementation directly.
 
-- Prior armed implementation pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS`.
-- Prior implementation allowlist:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- Implementation accepted/pushed at `80c9bff`.
-- Manual smoke before Claude audit: user-reported `PASS_WITH_NITS` after UI parity/micro-polish review; remaining nits were visual polish only and did not affect non-writing boundaries.
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
-- Safe implementation staging set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- The implementation allowlist is released by this closeout.
-- No implementation pass is armed after this closeout is accepted/pushed.
+## Allowed files for this scope-lock
 
-## Allowed files for this closeout
-
-This docs-only closeout may edit only:
+This docs-only scope-lock may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS.md`
 
-If any runtime, test, schema, writer, materializer, validator, projection, Project ZIP, event, fact, asset, sample, or untracked scratch file appears necessary, stop and request a new scope decision before editing it.
+If any runtime, test, schema, writer, materializer, validator, projection, Project ZIP, event, fact, asset, sample, platform, generated, or untracked scratch file appears necessary, stop and request a new scope decision before editing it.
 
-## Accepted behavior recorded
+## Future implementation intent
 
-- Integrated Board Canvas Measure panel now supports local UI-only target selection.
-- Component visual appears before measured values.
-- Measured values are shown as pin/leg rows with inline local draft value/unit controls.
-- From -> To context is separate, secondary, and display/provenance-only.
-- Advanced technical details remain last and secondary.
-- Continue in Measure Sheet compatibility remains preserved.
-- Existing standalone Measure Sheet route and `/project/measure-sheet` compatibility remain preserved.
-- Existing Measure Sheet save behavior remains preserved.
+A later implementation pass may polish only the accepted integrated Board Canvas Measure panel presentation so it remains technician-facing, compact, and readable.
 
-## Boundaries preserved
+Future implementation must preserve the accepted hierarchy:
 
-- No runtime/test edits in this closeout.
-- No Board Canvas canonical save/write behavior is accepted by this closeout.
-- No `events.jsonl` write or `known_facts` mutation from Board Canvas is accepted.
-- No import, call, route, or wiring to `v2_save_measurement_writer.dart` from Board Canvas is accepted.
-- No schema, writer, materializer, validator, projection, Project ZIP, event, or fact changes are accepted.
-- No canonical measurement, net, pin mapping, placement semantics, package identity, electrical proof, fault evidence, or AI/OCR/CV fact creation is accepted.
-- Visual trace context remains visual-only and must not imply connectivity.
+1. Compact header
+2. Component visual
+3. Measured values
+4. From -> To context
+5. Advanced technical details
+
+Future implementation may improve only:
+
+- right-panel visual density;
+- vertical spacing;
+- row height;
+- label hierarchy;
+- measured-value row readability;
+- unit/value control compactness;
+- prevention of awkward wrapping or overflow;
+- secondary styling of Continue in Measure Sheet;
+- collapsed or quiet Advanced section behavior;
+- compact From -> To context presentation;
+- small technician-facing copy improvements;
+- widget tests covering the UI structure and non-writing boundary.
+
+## Future implementation gate
+
+Runtime implementation may begin only after a later docs-only active-lock sync is accepted/pushed.
+
+Required next pass:
+
+- `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+
+That future active-lock sync should arm:
+
+- `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`
+
+Expected future implementation allowlist:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+The active-lock sync must inspect the live repo structure before finalizing the allowlist, must not invent files, and must not authorize broad directories.
+
+## Required preservation
+
+- Future implementation remains local UI-only and non-writing.
+- Functional Save remains in the accepted Measure Sheet path.
+- Optional Board Canvas affordances may continue to the existing Measure Sheet save flow, but must not perform canonical save/write.
+- Existing standalone Measure Sheet route and `/project/measure-sheet` direct/fallback compatibility remain preserved.
+- Project Overview measurement entry remains preserved.
+- Existing accepted Measure Sheet save behavior remains preserved.
+- Board Canvas renderer remains read-only except for separately authorized local UI focus/highlight/preview/draft state.
+- Board Canvas does not write `events.jsonl`, mutate `known_facts`, create canonical facts, or create canonical measurements.
+- Board Canvas does not import, call, route to, or otherwise wire `v2_save_measurement_writer.dart`.
+- From -> To context remains display/provenance-only and must not imply confirmed connectivity.
+- Visual traces remain visual-only and never measured nets.
+- Component/pin/leg/target selection remains UI state only and does not confirm identity, pin mapping, coordinates, nets, faults, packages, or electrical facts.
+- BenchBeep Home launcher, `Open existing`, `Import project`, back/home to BenchBeep Home, Menu System behavior, and Add Component local behavior remain preserved.
+
+## Forbidden surfaces preserved
+
+- No runtime/test edits in this scope-lock pass.
+- No implementation accepted/pushed hash claim for `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`.
+- No edits to router, Project Overview, Measure Sheet screen, Measure Sheet writer/service, schema, writer, validator, materializer, projection, Project ZIP, event, fact, platform, generated, sample, asset, or unlisted docs files are authorized.
+- No import, call, route to, or other wiring of `v2_save_measurement_writer.dart` from Board Canvas is authorized.
+- No canonical event/fact writes from Board Canvas.
+- No `events.jsonl` writes, `known_facts` mutation, canonical fact creation, or canonical measurement creation from Board Canvas.
+- No new Board Canvas save/write behavior.
+- No AI/OCR/CV fact creation.
+- No placement, coordinate, net, electrical, package, pin-mapping, identity, fault-evidence, or electrical-proof semantics changes.
+- No Confirm/write/Edit Layout behavior.
+- No Add Component Confirm/write behavior.
+- No command menu, context menu, audio/save beep, full redesign, or canvas token migration.
 - `_incoming`, screenshots, docs/sources, mockups, and source indexes remain non-runtime reference input only.
-- Exact staging only; never use `git add .`, `git add -A`, or `git commit -am`.
 
 ## Route
 
-- Current pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS`
-- Route after accepted/pushed: `NEEDS_USER_DECISION`
+- Current pass: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
+- Route after accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`

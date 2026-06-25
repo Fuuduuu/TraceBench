@@ -2,22 +2,22 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest accepted/pushed pass: `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` at `6711c6b` (`docs: lock integrated measurement panel scope`).
-- Previous accepted/pushed closeout: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_POST_AUDIT_PASS` at `2270e0c` (`docs: record measurement navigation consolidation`).
-- Latest accepted/pushed implementation pass: `V2_WORKBENCH_MEASUREMENT_NAV_CONSOLIDATION_PASS` at `4a7ac96` (`feat(board-canvas): consolidate measurement navigation`).
-- Route entering this docs repair is `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- This pass is a docs-only active-lock sync for the future visual-first integrated measurement panel implementation and is protected-UI / Lane-B-adjacent because it arms Board Canvas UI near write-flow boundaries.
-- This pass arms the next implementation route but does not implement runtime behavior.
+- Latest pushed HEAD verified for this closeout: `0d015c9` (`feat(board-canvas): add integrated measurement panel shell`), aligned with `origin/main`.
+- Latest accepted/pushed implementation pass: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS` at `0d015c9`.
+- Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS` at `710b87d` (`docs: arm integrated measurement panel implementation`).
+- Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS` at `6711c6b` (`docs: lock integrated measurement panel scope`).
+- Current route is this docs-only post-audit closeout.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 
 ## Current accepted product state
 
@@ -31,54 +31,42 @@
 - Back/home navigation returns to BenchBeep Home.
 - Workbench, Project Overview, Board Canvas, Measure Sheet, and Add Component behavior remain preserved.
 - Project Overview measurement entry reaches the accepted standalone Measure Sheet flow.
-- Board Canvas has a navigation-only Measure Sheet entry that opens the accepted standalone Measure Sheet route while preserving Board Canvas as the back destination.
-- `/project/measure-sheet` direct/fallback compatibility remains preserved.
-- Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow and was not changed by the navigation consolidation.
+- Existing standalone Measure Sheet route and `/project/measure-sheet` direct/fallback compatibility remain preserved.
+- Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow.
+- Board Canvas Measure entry now opens an integrated right-side contextual Measure panel in the workbench-shell UI.
+- Canvas stays visible while the integrated Measure panel is open.
+- The integrated Board Canvas Measure panel is a non-writing shell.
+- Measured values list is the main panel content.
+- Quick local capture controls are inert/local UI-only placeholders.
+- Advanced technical/provenance details are secondary.
+- Board Canvas does not provide canonical save/write behavior.
+- Board Canvas does not write `events.jsonl` or mutate `known_facts`.
+- Board Canvas does not import, call, route to, or wire `v2_save_measurement_writer.dart`.
 - Accepted Menu System implementation remains the narrow instrument-style menu/app-bar/breadcrumb affordance.
 - Add Component catalog, builder, ghost, click-to-place, and drag-to-place behavior remain local/UI-only as previously accepted.
 - Board Canvas renderer remains read-only with `renderer writes: none`.
 
 ## Protected future direction carried forward
 
-- Visual-first measurement workflow should keep Board Canvas visible as much as practical.
-- Measure should eventually open as a right-side contextual panel on Board Canvas, similar to Add Component.
-- Component selection should use user-defined component names when available.
-- Hover/focus should highlight the component on Canvas only as UI focus/preview, not as evidence.
-- Selecting a component should show component and visual-trace preview context without promoting visual traces to nets.
-- Selecting a pin/leg in the first implementation slice may reveal value/unit/save-looking controls only as inert or local UI-only placeholders inside a non-writing shell.
-- Functional save remains in the existing Measure Sheet path unless a later separate writer scope explicitly authorizes Board Canvas write wiring.
-- No future implementation under this allowlist may import, call, route to, or otherwise wire `v2_save_measurement_writer.dart` from Board Canvas.
-- Any future save/write path must preserve the accepted human-authored Measure Sheet save semantics and must not add new canonical event/fact/schema/writer/materializer/projection behavior unless separately scoped.
-
-## Armed implementation allowlist
-
-Future implementation pass:
-
-- `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`
-
-Allowed runtime/test files for that future implementation:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-If the future implementation requires router, Project Overview, Measure Sheet screen, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, or any other runtime/test file, it must stop and request a new active-lock sync before editing.
+- Functional Board Canvas measurement save/write remains deferred unless a later separate writer scope explicitly authorizes it.
+- Any future Board Canvas measurement write path must preserve human-authored append-only event semantics and must not add schema, writer, materializer, validator, projection, Project ZIP, event, or fact behavior unless separately scoped.
+- Visual trace context remains visual-only and must not imply electrical proof or connectivity.
+- Component focus, hover, preview, pin/leg selection, and value/unit/save-looking controls in Board Canvas remain local UI state unless separately scoped.
+- Command menu / Ctrl-K, context menus, audio/save beep, canvas token consumer migration, full redesign, logo polish, high-pin selector UX, new project creation, and broader menu behavior remain deferred unless separately scoped.
+- Canonical board/write behavior, placement writes, Confirm/write, Edit Layout, schema, writer, materializer, validator, projection, Project ZIP, event, and fact changes remain protected surfaces.
+- `_incoming`, screenshots, docs/sources, and mockups are design/reference input only, never runtime truth.
+- Exact staging only; never use `git add .`, `git add -A`, or `git commit -am`.
 
 ## Active constraints
 
-- Current route after accepted/pushed of this active-lock sync is `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`.
-- The implementation route is armed only for the exact runtime/test files listed in `docs/ACTIVE_SCOPE_LOCK.md`.
-- The future implementation must be narrow and must use manual smoke before Claude audit because it is product/UI surface work.
-- The future implementation may add only local UI-only focus/highlight/preview/panel state and a non-writing integrated measurement panel shell; it must not authorize canonical writes, `events.jsonl` writes, `known_facts` mutation, canonical fact creation, or new electrical semantics.
-- Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` is accepted:
+- No implementation pass is armed after this closeout is accepted/pushed.
+- `docs/ACTIVE_SCOPE_LOCK.md` releases the prior Board Canvas implementation lock and authorizes only this docs-only closeout allowlist.
+- Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;
   - `Accepted` shorthand is valid only for clean `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and exact expected staging set;
   - protected implementation requires active-lock sync before runtime/test work when the live active lock does not name the implementation pass and exact allowlist;
   - exact staging only remains required.
-- Command menu / Ctrl-K, context menus, audio/save beep, canvas token consumer migration, full redesign, logo polish, high-pin selector UX, new project creation, and broader menu behavior remain deferred unless separately scoped.
-- Canonical board/write behavior, placement writes, Confirm/write, Edit Layout, schema, writer, materializer, validator, projection, Project ZIP, event, and fact changes remain protected surfaces.
-- `_incoming`, screenshots, docs/sources, and mockups are design/reference input only, never runtime truth.
-- Exact staging only; never use `git add .`, `git add -A`, or `git commit -am`.
 
 ## Operational pointers
 

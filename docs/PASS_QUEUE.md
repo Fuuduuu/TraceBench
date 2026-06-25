@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Current-state maintenance trigger pointer
 
@@ -27,6 +27,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | PASS_ID | Lane | Status | Note |
 |---|---|---|---|
 | V2_INTEGRATED_MEASUREMENT_PANEL_SCOPE_LOCK_PASS | DOCS_SCOPE_LOCK / PROTECTED_UI_WORKFLOW | accepted/pushed as `6711c6b` (`docs: lock integrated measurement panel scope`) | Locked future visual-first integrated measurement panel direction and protected boundaries only; did not implement runtime UI, save/write behavior, or protected data semantics. |
-| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | current docs-only active-lock sync | Arms the future implementation pass with an exact narrow Board Canvas runtime/test allowlist near write-flow boundaries; does not implement runtime behavior and does not mark implementation accepted/pushed. |
-| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | next armed implementation after sync acceptance | Future narrow implementation may add only a visual-first right-side non-writing measurement panel shell/local UI state in the files listed by `docs/ACTIVE_SCOPE_LOCK.md`; save/value/unit controls are inert or local UI-only placeholders, Measure Sheet remains the only functional save path, manual smoke is required before Claude audit, and unscoped writer/schema/materializer/projection/event/fact changes remain forbidden. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | accepted/pushed as `710b87d` (`docs: arm integrated measurement panel implementation`) | Armed `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS` with the exact Board Canvas runtime/test allowlist and non-writing shell boundary; did not implement runtime behavior. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | accepted/pushed as `0d015c9` (`feat(board-canvas): add integrated measurement panel shell`) | Manual smoke PASS and Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; added the Board Canvas right-side integrated Measure panel shell, kept Canvas visible, made measured values primary, kept quick capture inert/local only, preserved standalone Measure Sheet route compatibility, and did not add Board Canvas save/write behavior. |
+| V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | current docs-only closeout | Records accepted/pushed implementation `0d015c9`, releases the implementation active lock, preserves no-write boundaries, and routes after acceptance to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

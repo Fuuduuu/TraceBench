@@ -42,6 +42,44 @@ bool measurementEndpointMatchesComponent(
   return endpoint == componentId || endpoint.startsWith('$componentId.');
 }
 
+String _displayDirectionLabel(String from, String? to) {
+  final trimmedFrom = from.trim();
+  final trimmedTo = to?.trim();
+  if (trimmedTo == null || trimmedTo.isEmpty) {
+    return trimmedFrom;
+  }
+  return '$trimmedFrom -> $trimmedTo';
+}
+
+String? _firstPresentText(Iterable<String?> values) {
+  for (final value in values) {
+    final trimmed = value?.trim();
+    if (trimmed != null && trimmed.isNotEmpty) {
+      return trimmed;
+    }
+  }
+  return null;
+}
+
+_EndpointDisplayParts _endpointDisplayParts(String endpoint) {
+  final trimmed = endpoint.trim();
+  final dotIndex = trimmed.indexOf('.');
+  if (dotIndex <= 0 || dotIndex == trimmed.length - 1) {
+    return _EndpointDisplayParts(component: trimmed, pin: null);
+  }
+  return _EndpointDisplayParts(
+    component: trimmed.substring(0, dotIndex),
+    pin: trimmed,
+  );
+}
+
+class _EndpointDisplayParts {
+  const _EndpointDisplayParts({required this.component, this.pin});
+
+  final String component;
+  final String? pin;
+}
+
 Map<String, int> measurementCountsByComponents({
   required List<MeasurementFact> measurements,
   required Set<String> componentIds,
@@ -700,6 +738,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     selectedEntry: selectedEntry,
                     relatedMeasurements: relatedMeasurements,
                     relatedVisualTraces: relatedVisualTraces,
+                    onContinueToMeasureSheet: () {
+                      context.push('/project/measure-sheet');
+                    },
                   );
                   break;
                 case _WorkbenchContextPanelMode.addComponentTemplates:
@@ -3542,266 +3583,339 @@ class _InspectorPanel extends StatelessWidget {
   }
 }
 
-class _IntegratedMeasurePanel extends StatelessWidget {
+class _IntegratedMeasurePanel extends StatefulWidget {
   const _IntegratedMeasurePanel({
     required this.selectedEntry,
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
+    required this.onContinueToMeasureSheet,
   });
 
   final _PlacementEntry? selectedEntry;
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
+  final VoidCallback onContinueToMeasureSheet;
+
+  @override
+  State<_IntegratedMeasurePanel> createState() =>
+      _IntegratedMeasurePanelState();
+}
+
+class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
+  static const List<String> _draftUnitOptions = ['V', 'Ω', 'Diode', 'Beep'];
+
+  String? _selectedTarget;
+  final Map<String, String> _draftValuesByTarget = {};
+  final Map<String, String> _draftUnitsByTarget = {};
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final selectedName =
-        selectedEntry == null ? null : _preferredComponentLabel(selectedEntry!);
-    final selectedDetail = selectedEntry == null
+    final selectedName = widget.selectedEntry == null
+        ? null
+        : _preferredComponentLabel(widget.selectedEntry!);
+    final selectedHeader = widget.selectedEntry == null
         ? 'Select a component on Canvas.'
-        : selectedEntry!.selectorLabel;
+        : widget.selectedEntry!.selectorLabel;
     final targetRows = _measureTargetRows();
+    final contextRows = _measureContextRows();
+    final selectedTargetRow = _effectiveSelectedTargetRow(targetRows);
+    final selectedTarget = selectedTargetRow?.target;
+    final measuredTargetCount =
+        targetRows.where((row) => row.isExistingValue).length;
 
     return SingleChildScrollView(
       key: const Key('board_canvas_integrated_measure_panel'),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: DecoratedBox(
+        key: const Key('board_canvas_measure_panel_surface'),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              key: const Key('board_canvas_measure_panel_header'),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _SectionHeader(
-                    title: 'Measure',
-                    tag: 'Local only',
-                    subtitle: 'Non-writing shell',
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'No project data is written from this panel.',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _SectionHeader(
-                    title: 'Component focus',
-                    tag: 'VISUAL',
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    selectedName ?? 'No component selected',
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  if (selectedDetail != selectedName)
-                    Text(
-                      selectedDetail,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  const SizedBox(height: 10),
-                  DecoratedBox(
-                    key: const Key('board_canvas_measure_component_preview'),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: theme.colorScheme.surfaceContainerLowest,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.memory_outlined, size: 18),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              relatedVisualTraces.isEmpty
-                                  ? 'No visual trace preview for this component.'
-                                  : '${relatedVisualTraces.length} visual trace preview${relatedVisualTraces.length == 1 ? '' : 's'} available.',
-                              style: theme.textTheme.bodySmall,
-                            ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Measure',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          selectedHeader,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const _MeasurePanelPill(label: 'local only · no write'),
+                ],
+              ),
+            ),
+            const _MeasurePanelDivider(),
+            Padding(
+              key: const Key('board_canvas_measure_visual_section'),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Component visual',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  _MeasureComponentPreview(
+                    selectedName: selectedName,
+                    selectedTarget: selectedTarget,
+                    targetRows: targetRows,
+                    onTargetSelected: (target) {
+                      setState(() {
+                        _selectedTarget = target;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Visual trace note: display only',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
+            const _MeasurePanelDivider(),
+            Padding(
+              key: const Key('board_canvas_measure_values_section'),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const _SectionHeader(
-                    title: 'Measured values',
-                    tag: 'MAIN',
-                    subtitle: 'existing values and local placeholders',
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Measured values',
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      _MeasurePanelPill(
+                        key: const Key('board_canvas_measure_values_count'),
+                        label:
+                            '$measuredTargetCount / ${targetRows.length} measured',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'value on each row · missing = local draft field',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   ...targetRows.map(
                     (row) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
-                      child: _MeasureTargetRow(row: row),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _SectionHeader(
-                    title: 'Quick local capture',
-                    tag: 'INERT',
-                    subtitle: 'Pin/leg -> Väärtus -> Ühik -> Salvesta',
-                  ),
-                  const SizedBox(height: 10),
-                  const _MeasurePlaceholderInput(
-                    label: 'Pin/leg',
-                    hint: 'visual contact only',
-                  ),
-                  const SizedBox(height: 8),
-                  const _MeasurePlaceholderInput(
-                    label: 'Väärtus',
-                    hint: 'not saved here',
-                  ),
-                  const SizedBox(height: 8),
-                  const _MeasurePlaceholderInput(
-                    label: 'Ühik',
-                    hint: 'local only',
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton.icon(
-                    key: const Key('board_canvas_measure_save_placeholder'),
-                    onPressed: null,
-                    icon: const Icon(Icons.save_outlined),
-                    label: const Text('Salvesta placeholder'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _SectionHeader(
-                    title: 'Visual preview only',
-                    tag: 'VISUAL',
-                  ),
-                  const SizedBox(height: 6),
-                  const Text('Visual traces do not prove connectivity.'),
-                  if (selectedEntry == null) ...[
-                    const SizedBox(height: 6),
-                    const Text('No component selected for preview.'),
-                  ] else if (relatedVisualTraces.isEmpty) ...[
-                    const SizedBox(height: 6),
-                    const Text(
-                      'No related visual traces for selected component.',
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      '${relatedVisualTraces.length} visual trace preview${relatedVisualTraces.length == 1 ? '' : 's'} available.',
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: ExpansionTile(
-              tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-              childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              title: const Text('Advanced technical details'),
-              subtitle: const Text('read-only provenance'),
-              children: [
-                if (relatedVisualTraces.isEmpty &&
-                    relatedMeasurements.isEmpty) ...[
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('No advanced details for selected component.'),
-                  ),
-                ] else ...[
-                  if (relatedVisualTraces.isNotEmpty) ...[
-                    const _SectionHeader(
-                      title: 'Visual trace provenance',
-                      tag: 'READ',
-                    ),
-                    const SizedBox(height: 8),
-                    ...relatedVisualTraces.map(
-                      (trace) => _VisualTraceSummaryTile(trace: trace),
-                    ),
-                  ],
-                  if (relatedMeasurements.isNotEmpty) ...[
-                    if (relatedVisualTraces.isNotEmpty)
-                      const SizedBox(height: 8),
-                    const _SectionHeader(
-                      title: 'Existing measurement provenance',
-                      tag: 'READ',
-                    ),
-                    const SizedBox(height: 8),
-                    ...relatedMeasurements.map(
-                      (measurement) => _MeasurementSummaryTile(
-                        measurement: measurement,
+                      child: _MeasureTargetRow(
+                        row: row,
+                        selected: row.target == selectedTarget,
+                        draftValue: _draftValuesByTarget[row.target] ?? '',
+                        draftUnit: _draftUnitsByTarget[row.target] ??
+                            _defaultDraftUnit(row),
+                        unitOptions: _draftUnitOptions,
+                        onSelected: () {
+                          setState(() {
+                            _selectedTarget = row.target;
+                          });
+                        },
+                        onDraftValueChanged: (value) {
+                          setState(() {
+                            _selectedTarget = row.target;
+                            _draftValuesByTarget[row.target] = value;
+                          });
+                        },
+                        onDraftUnitChanged: (value) {
+                          setState(() {
+                            _selectedTarget = row.target;
+                            _draftUnitsByTarget[row.target] = value;
+                          });
+                        },
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: const Key(
+                        'board_canvas_measure_continue_sheet_button',
+                      ),
+                      onPressed: widget.onContinueToMeasureSheet,
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.onSurfaceVariant,
+                        visualDensity: VisualDensity.compact,
+                        textStyle: theme.textTheme.labelMedium,
+                      ),
+                      icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                      label: const Text('Continue in Measure Sheet'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const _MeasurePanelDivider(),
+            Padding(
+              key: const Key('board_canvas_measure_context_section'),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'From -> To context',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'From -> To display does not confirm connectivity.',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (contextRows.isEmpty)
+                    Text(
+                      'No From -> To context for selected component.',
+                      style: theme.textTheme.bodySmall,
+                    )
+                  else
+                    ...contextRows.map(
+                      (row) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: _MeasureContextRow(row: row),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const _MeasurePanelDivider(),
+            Material(
+              color: Colors.transparent,
+              child: ExpansionTile(
+                key: const Key('board_canvas_measure_advanced_section'),
+                tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+                childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                title: const Text('Advanced technical details'),
+                subtitle: const Text('read-only provenance'),
+                children: [
+                  if (widget.relatedVisualTraces.isEmpty &&
+                      widget.relatedMeasurements.isEmpty) ...[
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Text('No advanced details for selected component.'),
+                    ),
+                  ] else ...[
+                    if (widget.relatedVisualTraces.isNotEmpty) ...[
+                      const _SectionHeader(
+                        title: 'Visual trace provenance',
+                        tag: 'READ',
+                      ),
+                      const SizedBox(height: 8),
+                      ...widget.relatedVisualTraces.map(
+                        (trace) => _VisualTraceSummaryTile(trace: trace),
+                      ),
+                    ],
+                    if (widget.relatedMeasurements.isNotEmpty) ...[
+                      if (widget.relatedVisualTraces.isNotEmpty)
+                        const SizedBox(height: 8),
+                      const _SectionHeader(
+                        title: 'Existing measurement provenance',
+                        tag: 'READ',
+                      ),
+                      const SizedBox(height: 8),
+                      ...widget.relatedMeasurements.map(
+                        (measurement) => _MeasurementSummaryTile(
+                          measurement: measurement,
+                        ),
+                      ),
+                    ],
                   ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
+  _MeasureTargetRowData? _effectiveSelectedTargetRow(
+    List<_MeasureTargetRowData> targetRows,
+  ) {
+    if (targetRows.isEmpty) {
+      return null;
+    }
+    for (final row in targetRows) {
+      if (row.target == _selectedTarget) {
+        return row;
+      }
+    }
+    return targetRows.first;
+  }
+
   List<_MeasureTargetRowData> _measureTargetRows() {
-    final componentId = selectedEntry?.placement.componentId;
+    final componentId = widget.selectedEntry?.placement.componentId;
     final rowsByTarget = <String, _MeasureTargetRowData>{};
 
-    for (final measurement in relatedMeasurements) {
+    for (final measurement in widget.relatedMeasurements) {
       final target = _measurementTargetLabel(measurement, componentId);
+      final displayValue = _measurementDisplayValue(measurement);
+      final displayUnit = _measurementDisplayUnit(measurement);
       rowsByTarget[target] = _MeasureTargetRowData(
         target: target,
-        value: _measurementDisplayValue(measurement),
+        displayLabel: _technicianTargetLabel(target),
+        value: displayValue,
+        unit: displayUnit,
         isExistingValue: true,
+        showExistingUnit: _shouldShowMeasurementUnit(displayUnit),
+        suggestedUnit: measurement.unit,
       );
     }
 
     if (componentId != null) {
-      for (final trace in relatedVisualTraces) {
+      for (final trace in widget.relatedVisualTraces) {
         for (final target in _visualTraceTargets(trace, componentId)) {
           rowsByTarget.putIfAbsent(
             target,
             () => _MeasureTargetRowData(
               target: target,
-              value: 'Add local value',
+              displayLabel: _technicianTargetLabel(target),
+              value: '',
               isExistingValue: false,
             ),
           );
@@ -3810,15 +3924,44 @@ class _IntegratedMeasurePanel extends StatelessWidget {
     }
 
     if (rowsByTarget.isEmpty) {
-      rowsByTarget[selectedEntry?.placement.componentId ?? 'No target'] =
+      rowsByTarget[widget.selectedEntry?.placement.componentId ?? 'No target'] =
           _MeasureTargetRowData(
-        target: selectedEntry?.placement.componentId ?? 'Select component',
-        value: 'Add local value',
+        target:
+            widget.selectedEntry?.placement.componentId ?? 'Select component',
+        displayLabel: _technicianTargetLabel(
+          widget.selectedEntry?.placement.componentId ?? 'Select component',
+        ),
+        value: '',
         isExistingValue: false,
       );
     }
 
     return rowsByTarget.values.toList(growable: false);
+  }
+
+  List<_MeasureContextRowData> _measureContextRows() {
+    final rows = <_MeasureContextRowData>[];
+
+    for (final measurement in widget.relatedMeasurements) {
+      rows.add(
+        _MeasureContextRowData(
+          label: _measurementDirectionLabel(measurement),
+          detail: 'measurement context · ${measurement.measurementId}',
+        ),
+      );
+    }
+
+    for (final trace in widget.relatedVisualTraces) {
+      final label = _visualTraceDirectionLabel(trace, trace.traceId);
+      rows.add(
+        _MeasureContextRowData(
+          label: label,
+          detail: 'visual-only context · ${trace.traceId}',
+        ),
+      );
+    }
+
+    return rows;
   }
 
   String _measurementTargetLabel(
@@ -3836,15 +3979,66 @@ class _IntegratedMeasurePanel extends StatelessWidget {
     return measurement.measurementId;
   }
 
+  String _measurementDirectionLabel(MeasurementFact measurement) {
+    return _displayDirectionLabel(measurement.from, measurement.to);
+  }
+
   String _measurementDisplayValue(MeasurementFact measurement) {
-    if (measurement.value == null) {
-      return measurement.reading;
+    final rawValue = measurement.value == null
+        ? measurement.reading
+        : '${measurement.value}';
+    final unit = measurement.unit?.trim().toLowerCase();
+    final normalized = rawValue.trim().toLowerCase();
+    if (unit == 'beep') {
+      if (normalized == 'true' ||
+          normalized == 'yes' ||
+          normalized == '1' ||
+          normalized == 'beep') {
+        return 'Beep';
+      }
+      if (normalized == 'false' ||
+          normalized == 'no' ||
+          normalized == '0' ||
+          normalized == 'silent') {
+        return 'No beep';
+      }
     }
+    return rawValue;
+  }
+
+  String? _measurementDisplayUnit(MeasurementFact measurement) {
     final unit = measurement.unit?.trim();
     if (unit == null || unit.isEmpty) {
-      return '${measurement.value}';
+      return null;
     }
-    return '${measurement.value} $unit';
+    return unit;
+  }
+
+  bool _shouldShowMeasurementUnit(String? unit) {
+    final normalized = unit?.trim().toLowerCase();
+    return normalized != null && normalized.isNotEmpty && normalized != 'beep';
+  }
+
+  String _technicianTargetLabel(String target) {
+    final trimmed = target.trim();
+    final separatorIndex = trimmed.lastIndexOf('.');
+    if (separatorIndex <= 0 || separatorIndex == trimmed.length - 1) {
+      return trimmed;
+    }
+    final pinLabel = trimmed.substring(separatorIndex + 1);
+    return 'Pin $pinLabel · $trimmed';
+  }
+
+  String _visualTraceDirectionLabel(
+    VisualTraceFact trace,
+    String fallbackTarget,
+  ) {
+    final from = _firstPresentText([trace.fromPin, trace.fromComponent]);
+    final to = _firstPresentText([trace.toPin, trace.toComponent]);
+    if (from != null) {
+      return _displayDirectionLabel(from, to);
+    }
+    return to ?? fallbackTarget;
   }
 
   List<String> _visualTraceTargets(
@@ -3871,6 +4065,10 @@ class _IntegratedMeasurePanel extends StatelessWidget {
     return pinId != null && pinId.startsWith('$componentId.');
   }
 
+  String _defaultDraftUnit(_MeasureTargetRowData row) {
+    return row.suggestedUnit ?? row.unit ?? _draftUnitOptions.first;
+  }
+
   String _preferredComponentLabel(_PlacementEntry entry) {
     final designator = entry.component?.designator?.trim();
     if (designator != null && designator.isNotEmpty) {
@@ -3883,54 +4081,642 @@ class _IntegratedMeasurePanel extends StatelessWidget {
 class _MeasureTargetRowData {
   const _MeasureTargetRowData({
     required this.target,
+    required this.displayLabel,
     required this.value,
     required this.isExistingValue,
+    this.unit,
+    this.showExistingUnit = true,
+    this.suggestedUnit,
   });
 
   final String target;
+  final String displayLabel;
   final String value;
   final bool isExistingValue;
+  final String? unit;
+  final bool showExistingUnit;
+  final String? suggestedUnit;
 }
 
-class _MeasureTargetRow extends StatelessWidget {
-  const _MeasureTargetRow({required this.row});
+class _MeasureContextRowData {
+  const _MeasureContextRowData({
+    required this.label,
+    required this.detail,
+  });
 
-  final _MeasureTargetRowData row;
+  final String label;
+  final String detail;
+}
+
+class _MeasurePanelDivider extends StatelessWidget {
+  const _MeasurePanelDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: Theme.of(context).colorScheme.outlineVariant,
+    );
+  }
+}
+
+class _MeasurePanelPill extends StatelessWidget {
+  const _MeasurePanelPill({super.key, required this.label});
+
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MeasureComponentPreview extends StatelessWidget {
+  const _MeasureComponentPreview({
+    required this.selectedName,
+    required this.selectedTarget,
+    required this.targetRows,
+    required this.onTargetSelected,
+  });
+
+  final String? selectedName;
+  final String? selectedTarget;
+  final List<_MeasureTargetRowData> targetRows;
+  final ValueChanged<String> onTargetSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final leftPads = <_MeasureTargetRowData>[];
+    final rightPads = <_MeasureTargetRowData>[];
+    for (var index = 0; index < targetRows.length; index++) {
+      if (index.isEven) {
+        leftPads.add(targetRows[index]);
+      } else {
+        rightPads.add(targetRows[index]);
+      }
+    }
+
+    return DecoratedBox(
+      key: const Key('board_canvas_measure_component_preview'),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(10),
+        color: theme.colorScheme.surfaceContainerLowest,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.memory_outlined, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    selectedName == null
+                        ? 'No component selected.'
+                        : '$selectedName footprint preview',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Text(
+                  'renderer writes: none',
+                  style: theme.textTheme.labelSmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            DecoratedBox(
+              key: const Key('board_canvas_measure_component_visual_stage'),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.42),
+                border: Border.all(color: theme.colorScheme.outlineVariant),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 10,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _MeasureVisualPadColumn(
+                      rows: leftPads,
+                      selectedTarget: selectedTarget,
+                      onTargetSelected: onTargetSelected,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer
+                              .withValues(alpha: 0.26),
+                          border: Border.all(
+                            color: theme.colorScheme.primary,
+                            width: 1.4,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 18,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                selectedName == null
+                                    ? 'component'
+                                    : '$selectedName body',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                selectedTarget == null
+                                    ? 'select pad'
+                                    : 'selected ${_targetVisualLabel(selectedTarget!)}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _MeasureVisualPadColumn(
+                      rows: rightPads,
+                      selectedTarget: selectedTarget,
+                      onTargetSelected: onTargetSelected,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _targetVisualLabel(String target) {
+    final dotIndex = target.lastIndexOf('.');
+    if (dotIndex <= 0 || dotIndex == target.length - 1) {
+      return target;
+    }
+    return target.substring(dotIndex + 1);
+  }
+}
+
+class _MeasureVisualPadColumn extends StatelessWidget {
+  const _MeasureVisualPadColumn({
+    required this.rows,
+    required this.selectedTarget,
+    required this.onTargetSelected,
+  });
+
+  final List<_MeasureTargetRowData> rows;
+  final String? selectedTarget;
+  final ValueChanged<String> onTargetSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final row in rows)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: _MeasureVisualPad(
+              row: row,
+              selected: row.target == selectedTarget,
+              onSelected: () => onTargetSelected(row.target),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MeasureVisualPad extends StatelessWidget {
+  const _MeasureVisualPad({
+    required this.row,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final _MeasureTargetRowData row;
+  final bool selected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final pad = DecoratedBox(
+      key: Key('board_canvas_measure_visual_pad_${row.target}'),
+      decoration: BoxDecoration(
+        color: selected
+            ? theme.colorScheme.tertiaryContainer
+            : row.isExistingValue
+                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.45)
+                : theme.colorScheme.surface,
+        border: Border.all(
+          color: selected
+              ? theme.colorScheme.tertiary
+              : theme.colorScheme.outlineVariant,
+          width: selected ? 2 : 1,
+        ),
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: selected
+            ? [
+                BoxShadow(
+                  color: theme.colorScheme.tertiary.withValues(alpha: 0.18),
+                  blurRadius: 8,
+                ),
+              ]
+            : null,
+      ),
+      child: SizedBox(
+        width: 38,
+        height: 28,
+        child: Center(
+          child: Text(
+            _MeasureComponentPreview._targetVisualLabel(row.target),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: selected
+                  ? theme.colorScheme.onTertiaryContainer
+                  : theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Widget keyedPad = InkWell(
+      key: Key('board_canvas_measure_visual_target_${row.target}'),
+      borderRadius: BorderRadius.circular(6),
+      onTap: onSelected,
+      child: pad,
+    );
+    if (selected) {
+      keyedPad = KeyedSubtree(
+        key: Key('board_canvas_measure_visual_pad_selected_${row.target}'),
+        child: KeyedSubtree(
+          key: Key('board_canvas_measure_visual_target_selected_${row.target}'),
+          child: keyedPad,
+        ),
+      );
+    }
+    return keyedPad;
+  }
+}
+
+class _MeasureTargetRow extends StatelessWidget {
+  const _MeasureTargetRow({
+    required this.row,
+    required this.selected,
+    required this.draftValue,
+    required this.draftUnit,
+    required this.unitOptions,
+    required this.onSelected,
+    required this.onDraftValueChanged,
+    required this.onDraftUnitChanged,
+  });
+
+  final _MeasureTargetRowData row;
+  final bool selected;
+  final String draftValue;
+  final String draftUnit;
+  final List<String> unitOptions;
+  final VoidCallback onSelected;
+  final ValueChanged<String> onDraftValueChanged;
+  final ValueChanged<String> onDraftUnitChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final trimmedDraft = draftValue.trim();
+    final unitValue =
+        unitOptions.contains(draftUnit) ? draftUnit : unitOptions.first;
+    Widget targetDot() {
+      return Container(
+        width: 9,
+        height: 9,
+        decoration: BoxDecoration(
+          color: selected
+              ? theme.colorScheme.primary
+              : row.isExistingValue
+                  ? theme.colorScheme.tertiary
+                  : Colors.transparent,
+          border: Border.all(
+            color: selected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline,
+          ),
+          shape: BoxShape.circle,
+        ),
+      );
+    }
+
+    Widget targetLabel() {
+      return Text(
+        row.displayLabel,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.bodySmall?.copyWith(
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+        ),
+      );
+    }
+
+    Widget existingValueControls() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _MeasureInlineReadonlyBox(
+            key: Key(
+              'board_canvas_measure_row_existing_value_${row.target}',
+            ),
+            value: row.value,
+            compact: !row.showExistingUnit,
+          ),
+          if (row.showExistingUnit && row.unit != null) ...[
+            const SizedBox(width: 6),
+            _MeasureInlineReadonlyBox(
+              key: Key(
+                'board_canvas_measure_row_existing_unit_${row.target}',
+              ),
+              value: row.unit!,
+              compact: true,
+            ),
+          ],
+        ],
+      );
+    }
+
+    Widget draftControls() {
+      return SizedBox(
+        width: 164,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: TextFormField(
+                key: Key(
+                  'board_canvas_measure_row_value_input_${row.target}',
+                ),
+                initialValue: draftValue,
+                decoration: const InputDecoration(
+                  isDense: true,
+                  hintText: 'lisa väärtus',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
+                onTap: onSelected,
+                onChanged: onDraftValueChanged,
+              ),
+            ),
+            const SizedBox(width: 6),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant,
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: SizedBox(
+                width: 62,
+                height: 38,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    key: Key(
+                      'board_canvas_measure_row_unit_select_${row.target}',
+                    ),
+                    value: unitValue,
+                    isExpanded: true,
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    items: unitOptions
+                        .map(
+                          (unit) => DropdownMenuItem<String>(
+                            value: unit,
+                            child: Text(
+                              unit,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
+                        .toList(growable: false),
+                    onChanged: (value) {
+                      if (value == null) {
+                        return;
+                      }
+                      onSelected();
+                      onDraftUnitChanged(value);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget targetRowContent(BoxConstraints constraints) {
+      final controls =
+          row.isExistingValue ? existingValueControls() : draftControls();
+      final isCompact = constraints.maxWidth < 300;
+      if (isCompact) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                targetDot(),
+                const SizedBox(width: 8),
+                Expanded(child: targetLabel()),
+              ],
+            ),
+            const SizedBox(height: 7),
+            Align(
+              alignment: Alignment.centerRight,
+              child: controls,
+            ),
+          ],
+        );
+      }
+      return Row(
+        children: [
+          targetDot(),
+          const SizedBox(width: 8),
+          Expanded(child: targetLabel()),
+          const SizedBox(width: 8),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: controls,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return MouseRegion(
+      onEnter: (_) => onSelected(),
+      child: InkWell(
+        key: Key('board_canvas_measure_target_row_${row.target}'),
+        borderRadius: BorderRadius.circular(9),
+        onTap: onSelected,
+        onHover: (hovering) {
+          if (hovering) {
+            onSelected();
+          }
+        },
+        child: DecoratedBox(
+          key: selected
+              ? Key('board_canvas_measure_target_row_selected_${row.target}')
+              : null,
+          decoration: BoxDecoration(
+            color: selected
+                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.28)
+                : row.isExistingValue
+                    ? theme.colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.34)
+                    : theme.colorScheme.surface,
+            border: Border.all(
+              color: selected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.outlineVariant,
+              width: selected ? 1.6 : 1,
+            ),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) =>
+                      targetRowContent(constraints),
+                ),
+                if (!row.isExistingValue) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    trimmedDraft.isEmpty
+                        ? 'Local draft only — not saved to project.'
+                        : 'Local draft: ${row.displayLabel} = $trimmedDraft $unitValue',
+                    key: Key(
+                      'board_canvas_measure_local_draft_summary_${row.target}',
+                    ),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontWeight: trimmedDraft.isEmpty
+                          ? FontWeight.w500
+                          : FontWeight.w800,
+                    ),
+                  ),
+                  if (trimmedDraft.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'Local draft only — not saved to project.',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MeasureContextRow extends StatelessWidget {
+  const _MeasureContextRow({required this.row});
+
+  final _MeasureContextRowData row;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
         border: Border.all(color: theme.colorScheme.outlineVariant),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
         child: Row(
           children: [
+            const Icon(Icons.alt_route_rounded, size: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                row.target,
+                row.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             const SizedBox(width: 8),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: row.isExistingValue
-                    ? theme.colorScheme.primaryContainer.withValues(alpha: 0.38)
-                    : theme.colorScheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: theme.colorScheme.outlineVariant),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                child: Text(
-                  row.value,
-                  style: theme.textTheme.labelSmall,
+            Flexible(
+              child: Text(
+                row.detail,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -3941,24 +4727,43 @@ class _MeasureTargetRow extends StatelessWidget {
   }
 }
 
-class _MeasurePlaceholderInput extends StatelessWidget {
-  const _MeasurePlaceholderInput({
-    required this.label,
-    required this.hint,
+class _MeasureInlineReadonlyBox extends StatelessWidget {
+  const _MeasureInlineReadonlyBox({
+    super.key,
+    required this.value,
+    this.compact = false,
   });
 
-  final String label;
-  final String hint;
+  final String value;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      enabled: false,
-      decoration: InputDecoration(
-        isDense: true,
-        labelText: label,
-        hintText: hint,
-        border: const OutlineInputBorder(),
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: compact ? 52 : 64,
+          maxWidth: compact ? 72 : 84,
+          minHeight: 36,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -4240,6 +5045,8 @@ class _MeasurementSummaryTile extends StatelessWidget {
     final valueText = measurement.value == null
         ? measurement.reading
         : '${measurement.value}${measurement.unit == null ? '' : ' ${measurement.unit}'}';
+    final fromParts = _endpointDisplayParts(measurement.from);
+    final toParts = _endpointDisplayParts(measurement.to);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -4257,6 +5064,26 @@ class _MeasurementSummaryTile extends StatelessWidget {
               _InspectorField(
                   label: 'Measurement ID', value: measurement.measurementId),
               _InspectorField(label: 'Mode', value: measurement.mode),
+              _InspectorField(
+                label: 'From -> To',
+                value: _displayDirectionLabel(measurement.from, measurement.to),
+              ),
+              _InspectorField(
+                label: 'From component',
+                value: fromParts.component,
+              ),
+              _InspectorField(
+                label: 'To component',
+                value: toParts.component,
+              ),
+              _InspectorField(
+                label: 'From pin',
+                value: fromParts.pin ?? '-',
+              ),
+              _InspectorField(
+                label: 'To pin',
+                value: toParts.pin ?? '-',
+              ),
               _InspectorField(label: 'From', value: measurement.from),
               _InspectorField(label: 'To', value: measurement.to),
               _InspectorField(label: 'Value', value: valueText),
@@ -4290,6 +5117,9 @@ class _VisualTraceSummaryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fromEndpoint =
+        _firstPresentText([trace.fromPin, trace.fromComponent]);
+    final toEndpoint = _firstPresentText([trace.toPin, trace.toComponent]);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: DecoratedBox(
@@ -4307,6 +5137,11 @@ class _VisualTraceSummaryTile extends StatelessWidget {
               _InspectorField(label: 'Photo ID', value: trace.photoId),
               _InspectorField(
                   label: 'Evidence type', value: trace.evidenceType),
+              if (fromEndpoint != null)
+                _InspectorField(
+                  label: 'From -> To',
+                  value: _displayDirectionLabel(fromEndpoint, toEndpoint),
+                ),
               if (trace.fromComponent != null)
                 _InspectorField(
                   label: 'From component',

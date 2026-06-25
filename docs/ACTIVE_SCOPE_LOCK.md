@@ -1,23 +1,32 @@
 # Active Scope Lock
 
-## Current pass
+## Current armed implementation pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS`
+
+## Prepared by
+
+`V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Type
 
-CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_WORKFLOW
+FLUTTER_UI_PROTECTED_IMPLEMENTATION / BOARD_CANVAS_TARGET_CAPTURE_DRAFT / PROTECTED_UI_LANE_B_ADJACENT
 
-## Scope
+## Goal
 
-Docs-only protected UI scope-lock for the next integrated measurement panel UX slice: target selection plus local value/unit draft capture.
+Arm the narrow future implementation pass for local UI-only target selection and draft value/unit capture inside the accepted integrated Board Canvas Measure panel.
 
-This pass does not implement runtime behavior and does not arm runtime implementation directly.
+The future implementation remains non-writing. It may add selected target-row state, pin/leg target selection UI, local draft value/unit state, local validation hints, and Canvas focus/highlight/preview linked to the selected target. It must not add canonical writes, `events.jsonl` writes, `known_facts` mutation, writer wiring, new electrical semantics, new schema/projection behavior, or protected data-surface changes.
+
+This active-lock sync is protected-UI / Lane-B-adjacent because it arms Board Canvas UI near accepted measurement write-flow boundaries.
 
 ## Baseline
 
-- Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS` at `934a5a4` (`docs: record integrated measurement panel shell`).
+- Latest accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS` at `375adbe` (`docs: lock measurement target capture scope`).
+- Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS` at `934a5a4` (`docs: record integrated measurement panel shell`).
 - Latest accepted/pushed implementation: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_PASS` at `0d015c9` (`feat(board-canvas): add integrated measurement panel shell`).
+- Current active-lock sync pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- This lock arms the implementation route only after the active-lock sync is accepted/pushed.
 - Accepted integrated Measure panel behavior:
   - Board Canvas Measure entry opens a right-side contextual panel in the workbench-shell UI.
   - Canvas stays visible.
@@ -28,19 +37,16 @@ This pass does not implement runtime behavior and does not arm runtime implement
   - Existing standalone Measure Sheet route and `/project/measure-sheet` compatibility remain preserved.
   - Existing Measure Sheet save behavior remains preserved.
 
-## Allowed files for this scope-lock pass
+## Allowed files for future implementation
 
-This docs-only pass may edit only:
+Future implementation may edit only:
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS.md`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-If any runtime, test, schema, writer, materializer, validator, projection, Project ZIP, event, fact, asset, sample, or untracked scratch file appears necessary, stop and request a new scope decision before editing it.
+If another runtime, test, route, Measure Sheet, Project Overview, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, docs, or untracked scratch file appears necessary during the future implementation pass, stop and report the exact required file and rationale before editing it.
 
-## Future behavior locked by this pass
+## Allowed behavior for future implementation
 
 Future implementation may allow only local UI-only behavior for the integrated Board Canvas Measure panel:
 
@@ -58,25 +64,6 @@ The technician workflow direction is:
 select component -> select pin/leg/target row -> enter local draft value/unit -> keep Canvas visible
 ```
 
-## Future implementation gate
-
-Runtime implementation may begin only after a later docs-only active-lock sync is accepted/pushed.
-
-Required next pass:
-
-- `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`
-
-That active-lock sync must:
-
-- name the implementation pass explicitly;
-- list exact runtime/test files;
-- keep the future implementation narrow;
-- preserve Board Canvas non-writing behavior;
-- preserve standalone Measure Sheet and `/project/measure-sheet` compatibility;
-- preserve existing Measure Sheet save behavior;
-- require manual smoke before Claude audit because the future implementation is product/UI surface work;
-- stop before editing if target-capture implementation requires router, Project Overview, Measure Sheet screen, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, asset, sample, or any other unlisted file.
-
 ## Required preservation
 
 - Future implementation must remain non-writing unless a later writer scope explicitly authorizes Board Canvas write wiring.
@@ -91,8 +78,9 @@ That active-lock sync must:
 
 ## Explicitly forbidden
 
-- Runtime/test edits in this scope-lock pass.
-- Direct runtime implementation route from this pass.
+- Runtime/test edits in this active-lock sync pass.
+- Runtime/test edits outside the exact future implementation allowlist.
+- Direct implementation before this active-lock sync is accepted/pushed.
 - Board Canvas canonical save/write behavior.
 - Importing, calling, routing to, or otherwise wiring `v2_save_measurement_writer.dart` from Board Canvas.
 - Edits to `lib/app/router.dart`.
@@ -110,7 +98,33 @@ That active-lock sync must:
 - Command menu, context menu, audio/save beep, full redesign, or canvas token migration.
 - Dependency on `_incoming`, screenshots, docs/sources, mockups, or source indexes as runtime truth.
 
+## Future implementation validation
+
+The future implementation pass must run at least:
+
+```powershell
+dart format lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart
+flutter test test/widget/board_canvas_screen_test.dart
+flutter test test/widget/measure_sheet_screen_test.dart
+flutter test test/widget/project_overview_screen_test.dart
+flutter test
+python tools/validate_all.py
+git status --short --branch
+git diff --name-status
+git diff --cached --name-status
+git diff --check
+```
+
+Because the future implementation is product/UI surface work, manual smoke must pass before Claude audit and the Claude audit packet must be marked `USE ONLY AFTER MANUAL SMOKE PASS`.
+
+## Boundary for this active-lock sync
+
+- This file was updated by a docs-only active-lock sync.
+- This sync does not implement runtime behavior.
+- This sync does not mark `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` accepted/pushed.
+- No untracked scratch files are touched or staged.
+
 ## Route
 
-- Current pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS`
-- Route after accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Current sync pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Armed implementation pass after accepted/pushed sync: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS`

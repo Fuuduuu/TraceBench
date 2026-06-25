@@ -2,25 +2,23 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `3ff38fe` (`docs: lock Board Canvas app visual polish scope`), aligned with `origin/main`.
-- Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS` at `3ff38fe` (`docs: lock Board Canvas app visual polish scope`).
-- Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
-- Latest accepted/pushed implementation: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS` at `8b140d6`.
-- Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `6b919fa` (`docs: arm measurement panel visual density implementation`).
-- Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594` (`docs: lock measurement panel visual density scope`).
-- Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
-- Current route is this docs-only active-lock sync for the future narrow Board Canvas/app visual-language polish implementation slice.
-- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`.
+- Latest pushed HEAD verified before this closeout: `f7dec73` (`feat(board-canvas): polish app visual language`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` at `f7dec73` (`feat(board-canvas): polish app visual language`).
+- Prior accepted/pushed active-lock sync: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `fb7067e` (`docs: arm Board Canvas app visual polish implementation`).
+- Prior accepted/pushed scope-lock: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS` at `3ff38fe` (`docs: lock Board Canvas app visual polish scope`).
+- Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
+- Current route is this docs-only post-audit closeout for the accepted/pushed Board Canvas/app visual-language polish implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 
 ## Current accepted product state
 
@@ -46,8 +44,17 @@
 - From -> To context is separate, compact, lower priority, and display/provenance-only.
 - Advanced technical/provenance details remain last, quiet, and secondary.
 - Measure HTML was used as the primary right-panel workflow reference for the visual-density implementation.
-- Board Canvas/app visual HTML was used only as visual-language reference.
+- Board Canvas/app visual HTML was used only as `DESIGN_INPUT_ONLY` visual-language reference.
 - `_incoming` HTML/design files are not runtime dependencies and are not canonical repo truth.
+- Board Canvas/app visual language is polished.
+- Board Canvas shell/chrome/status/read-only presentation is improved.
+- Board Canvas remains the dominant visual surface.
+- Right panel remains contextual and secondary.
+- Existing Add Component and Measure panel visual alignment was polished only where owned by Board Canvas screen.
+- Existing Board Canvas UI state remains local UI-only.
+- No disabled/future tool became functional.
+- No global redesign or theme migration was introduced.
+- Home, Project Overview, router, Measure Sheet, and canonical writer behavior remain unchanged.
 - Continue in Measure Sheet compatibility remains preserved.
 - Board Canvas does not provide canonical save/write behavior.
 - Board Canvas does not write `events.jsonl` or mutate `known_facts`.
@@ -70,9 +77,9 @@
 
 ## Active constraints
 
-- This active-lock sync is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
 - This pass does not implement runtime behavior and does not edit tests.
-- This pass arms `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` with the exact future implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
+- This pass records `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` as accepted/pushed at `f7dec73`, releases the implementation active lock, and routes next to `NEEDS_USER_DECISION`.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

@@ -21,6 +21,12 @@ const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
 const int _kAddComponentContactMarkerWarningLimit = 8;
+const Color _kMeasurePanelNavy = Color(0xFF173A5E);
+const Color _kMeasurePanelSignal = Color(0xFFE8742B);
+const Color _kMeasurePanelSignalTint = Color(0xFFFCEEE1);
+const Color _kMeasurePanelCoolSurface = Color(0xFFF8FAFC);
+const Color _kMeasurePanelBodyFill = Color(0xFFCDD9E6);
+const Color _kMeasurePanelRule = Color(0xFFC7D2DC);
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -3629,8 +3635,8 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
       child: DecoratedBox(
         key: const Key('board_canvas_measure_panel_surface'),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          border: Border.all(color: theme.colorScheme.outlineVariant),
+          color: _kMeasurePanelCoolSurface,
+          border: Border.all(color: _kMeasurePanelRule),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -3638,7 +3644,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
           children: [
             Padding(
               key: const Key('board_canvas_measure_panel_header'),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 7),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -3664,15 +3670,15 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  const _MeasurePanelPill(label: 'local only · no write'),
+                  const SizedBox(width: 6),
+                  const _MeasurePanelPill(label: 'local · no write'),
                 ],
               ),
             ),
             const _MeasurePanelDivider(),
             Padding(
               key: const Key('board_canvas_measure_visual_section'),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -3682,7 +3688,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 5),
                   _MeasureComponentPreview(
                     selectedName: selectedName,
                     selectedTarget: selectedTarget,
@@ -3693,9 +3699,9 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       });
                     },
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 5),
                   Text(
-                    'Visual trace note: display only',
+                    'Visual only; no connectivity proof.',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -3706,7 +3712,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
             const _MeasurePanelDivider(),
             Padding(
               key: const Key('board_canvas_measure_values_section'),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -3730,15 +3736,15 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'value on each row · missing = local draft field',
+                    'inline values · local drafts',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 7),
                   ...targetRows.map(
                     (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.only(bottom: 4),
                       child: _MeasureTargetRow(
                         row: row,
                         selected: row.target == selectedTarget,
@@ -3766,7 +3772,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 5),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton.icon(
@@ -3777,6 +3783,8 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       style: TextButton.styleFrom(
                         foregroundColor: theme.colorScheme.onSurfaceVariant,
                         visualDensity: VisualDensity.compact,
+                        minimumSize: const Size(0, 30),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
                         textStyle: theme.textTheme.labelMedium,
                       ),
                       icon: const Icon(Icons.open_in_new_rounded, size: 16),
@@ -3789,7 +3797,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
             const _MeasurePanelDivider(),
             Padding(
               key: const Key('board_canvas_measure_context_section'),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 9),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -3801,12 +3809,12 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'From -> To display does not confirm connectivity.',
+                    'Display only; no confirmed connectivity.',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   if (contextRows.isEmpty)
                     Text(
                       'No From -> To context for selected component.',
@@ -3815,7 +3823,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   else
                     ...contextRows.map(
                       (row) => Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
+                        padding: const EdgeInsets.only(bottom: 4),
                         child: _MeasureContextRow(row: row),
                       ),
                     ),
@@ -3827,10 +3835,23 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
               color: Colors.transparent,
               child: ExpansionTile(
                 key: const Key('board_canvas_measure_advanced_section'),
-                tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-                childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                title: const Text('Advanced technical details'),
-                subtitle: const Text('read-only provenance'),
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                minTileHeight: 40,
+                tilePadding: const EdgeInsets.symmetric(horizontal: 10),
+                childrenPadding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                title: Text(
+                  'Advanced technical details',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  'read-only provenance',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 children: [
                   if (widget.relatedVisualTraces.isEmpty &&
                       widget.relatedMeasurements.isEmpty) ...[
@@ -3890,6 +3911,9 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
 
   List<_MeasureTargetRowData> _measureTargetRows() {
     final componentId = widget.selectedEntry?.placement.componentId;
+    final componentLabel = widget.selectedEntry == null
+        ? null
+        : _preferredComponentLabel(widget.selectedEntry!);
     final rowsByTarget = <String, _MeasureTargetRowData>{};
 
     for (final measurement in widget.relatedMeasurements) {
@@ -3898,7 +3922,11 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
       final displayUnit = _measurementDisplayUnit(measurement);
       rowsByTarget[target] = _MeasureTargetRowData(
         target: target,
-        displayLabel: _technicianTargetLabel(target),
+        displayLabel: _technicianTargetLabel(
+          target,
+          componentId: componentId,
+          componentLabel: componentLabel,
+        ),
         value: displayValue,
         unit: displayUnit,
         isExistingValue: true,
@@ -3914,7 +3942,11 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
             target,
             () => _MeasureTargetRowData(
               target: target,
-              displayLabel: _technicianTargetLabel(target),
+              displayLabel: _technicianTargetLabel(
+                target,
+                componentId: componentId,
+                componentLabel: componentLabel,
+              ),
               value: '',
               isExistingValue: false,
             ),
@@ -3930,6 +3962,8 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
             widget.selectedEntry?.placement.componentId ?? 'Select component',
         displayLabel: _technicianTargetLabel(
           widget.selectedEntry?.placement.componentId ?? 'Select component',
+          componentId: componentId,
+          componentLabel: componentLabel,
         ),
         value: '',
         isExistingValue: false,
@@ -4019,14 +4053,29 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
     return normalized != null && normalized.isNotEmpty && normalized != 'beep';
   }
 
-  String _technicianTargetLabel(String target) {
+  String _technicianTargetLabel(
+    String target, {
+    String? componentId,
+    String? componentLabel,
+  }) {
     final trimmed = target.trim();
     final separatorIndex = trimmed.lastIndexOf('.');
     if (separatorIndex <= 0 || separatorIndex == trimmed.length - 1) {
+      if (componentId != null &&
+          componentLabel != null &&
+          trimmed == componentId) {
+        return componentLabel;
+      }
       return trimmed;
     }
     final pinLabel = trimmed.substring(separatorIndex + 1);
-    return 'Pin $pinLabel · $trimmed';
+    final targetComponentId = trimmed.substring(0, separatorIndex);
+    final displayTarget = componentId != null &&
+            componentLabel != null &&
+            targetComponentId == componentId
+        ? '$componentLabel.$pinLabel'
+        : trimmed;
+    return 'Pin $pinLabel · $displayTarget';
   }
 
   String _visualTraceDirectionLabel(
@@ -4116,7 +4165,7 @@ class _MeasurePanelDivider extends StatelessWidget {
     return Divider(
       height: 1,
       thickness: 1,
-      color: Theme.of(context).colorScheme.outlineVariant,
+      color: _kMeasurePanelRule,
     );
   }
 }
@@ -4131,8 +4180,8 @@ class _MeasurePanelPill extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: _kMeasurePanelSignalTint,
+        border: Border.all(color: _kMeasurePanelSignal.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Padding(
@@ -4140,6 +4189,7 @@ class _MeasurePanelPill extends StatelessWidget {
         child: Text(
           label,
           style: theme.textTheme.labelSmall?.copyWith(
+            color: _kMeasurePanelNavy,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -4177,48 +4227,44 @@ class _MeasureComponentPreview extends StatelessWidget {
     return DecoratedBox(
       key: const Key('board_canvas_measure_component_preview'),
       decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(10),
-        color: theme.colorScheme.surfaceContainerLowest,
+        border: Border.all(color: _kMeasurePanelRule),
+        borderRadius: BorderRadius.circular(8),
+        color: theme.colorScheme.surface,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(Icons.memory_outlined, size: 18),
-                const SizedBox(width: 8),
+                const Icon(Icons.memory_outlined, size: 16),
+                const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     selectedName == null
                         ? 'No component selected.'
                         : '$selectedName footprint preview',
                     style: theme.textTheme.bodySmall?.copyWith(
+                      color: _kMeasurePanelNavy,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                Text(
-                  'renderer writes: none',
-                  style: theme.textTheme.labelSmall,
-                ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             DecoratedBox(
               key: const Key('board_canvas_measure_component_visual_stage'),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.42),
-                border: Border.all(color: theme.colorScheme.outlineVariant),
-                borderRadius: BorderRadius.circular(10),
+                color: _kMeasurePanelNavy.withValues(alpha: 0.08),
+                border: Border.all(color: _kMeasurePanelRule),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 10,
+                  horizontal: 6,
+                  vertical: 8,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -4232,18 +4278,17 @@ class _MeasureComponentPreview extends StatelessWidget {
                     Expanded(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer
-                              .withValues(alpha: 0.26),
+                          color: _kMeasurePanelBodyFill,
                           border: Border.all(
-                            color: theme.colorScheme.primary,
+                            color: _kMeasurePanelNavy,
                             width: 1.4,
                           ),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(9),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 18,
+                            horizontal: 7,
+                            vertical: 13,
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -4255,7 +4300,7 @@ class _MeasureComponentPreview extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.labelLarge?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer,
+                                  color: _kMeasurePanelNavy,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -4267,7 +4312,7 @@ class _MeasureComponentPreview extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.labelSmall?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer,
+                                  color: _kMeasurePanelNavy,
                                 ),
                               ),
                             ],
@@ -4318,7 +4363,7 @@ class _MeasureVisualPadColumn extends StatelessWidget {
       children: [
         for (final row in rows)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(vertical: 2),
             child: _MeasureVisualPad(
               row: row,
               selected: row.target == selectedTarget,
@@ -4348,38 +4393,35 @@ class _MeasureVisualPad extends StatelessWidget {
       key: Key('board_canvas_measure_visual_pad_${row.target}'),
       decoration: BoxDecoration(
         color: selected
-            ? theme.colorScheme.tertiaryContainer
+            ? _kMeasurePanelSignalTint
             : row.isExistingValue
-                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.45)
+                ? _kMeasurePanelSignal.withValues(alpha: 0.22)
                 : theme.colorScheme.surface,
         border: Border.all(
-          color: selected
-              ? theme.colorScheme.tertiary
-              : theme.colorScheme.outlineVariant,
+          color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
           width: selected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(6),
         boxShadow: selected
             ? [
                 BoxShadow(
-                  color: theme.colorScheme.tertiary.withValues(alpha: 0.18),
+                  color: _kMeasurePanelSignal.withValues(alpha: 0.18),
                   blurRadius: 8,
                 ),
               ]
             : null,
       ),
       child: SizedBox(
-        width: 38,
-        height: 28,
+        width: 34,
+        height: 24,
         child: Center(
           child: Text(
             _MeasureComponentPreview._targetVisualLabel(row.target),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: selected
-                  ? theme.colorScheme.onTertiaryContainer
-                  : theme.colorScheme.onSurface,
+              color:
+                  selected ? _kMeasurePanelNavy : theme.colorScheme.onSurface,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -4438,15 +4480,11 @@ class _MeasureTargetRow extends StatelessWidget {
         width: 9,
         height: 9,
         decoration: BoxDecoration(
-          color: selected
-              ? theme.colorScheme.primary
-              : row.isExistingValue
-                  ? theme.colorScheme.tertiary
-                  : Colors.transparent,
+          color: selected || row.isExistingValue
+              ? _kMeasurePanelSignal
+              : Colors.transparent,
           border: Border.all(
-            color: selected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.outline,
+            color: selected ? _kMeasurePanelSignal : theme.colorScheme.outline,
           ),
           shape: BoxShape.circle,
         ),
@@ -4456,7 +4494,7 @@ class _MeasureTargetRow extends StatelessWidget {
     Widget targetLabel() {
       return Text(
         row.displayLabel,
-        maxLines: 2,
+        maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: theme.textTheme.bodySmall?.copyWith(
           fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
@@ -4491,52 +4529,62 @@ class _MeasureTargetRow extends StatelessWidget {
 
     Widget draftControls() {
       return SizedBox(
-        width: 164,
+        width: 146,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              child: TextFormField(
-                key: Key(
-                  'board_canvas_measure_row_value_input_${row.target}',
-                ),
-                initialValue: draftValue,
-                decoration: const InputDecoration(
-                  isDense: true,
-                  hintText: 'lisa väärtus',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
+              child: SizedBox(
+                height: 32,
+                child: TextFormField(
+                  key: Key(
+                    'board_canvas_measure_row_value_input_${row.target}',
                   ),
+                  initialValue: draftValue,
+                  style: theme.textTheme.labelMedium,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    isCollapsed: true,
+                    hintText: 'lisa väärtus',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 8,
+                    ),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  onTap: onSelected,
+                  onChanged: onDraftValueChanged,
                 ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-                onTap: onSelected,
-                onChanged: onDraftValueChanged,
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 5),
             DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: theme.colorScheme.outlineVariant,
+                  color: _kMeasurePanelRule,
                 ),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: SizedBox(
-                width: 62,
-                height: 38,
+                width: 54,
+                height: 32,
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     key: Key(
                       'board_canvas_measure_row_unit_select_${row.target}',
                     ),
                     value: unitValue,
+                    isDense: true,
                     isExpanded: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    iconSize: 16,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     items: unitOptions
                         .map(
                           (unit) => DropdownMenuItem<String>(
@@ -4567,7 +4615,7 @@ class _MeasureTargetRow extends StatelessWidget {
     Widget targetRowContent(BoxConstraints constraints) {
       final controls =
           row.isExistingValue ? existingValueControls() : draftControls();
-      final isCompact = constraints.maxWidth < 300;
+      final isCompact = constraints.maxWidth < 320;
       if (isCompact) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -4579,7 +4627,7 @@ class _MeasureTargetRow extends StatelessWidget {
                 Expanded(child: targetLabel()),
               ],
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerRight,
               child: controls,
@@ -4608,7 +4656,7 @@ class _MeasureTargetRow extends StatelessWidget {
       onEnter: (_) => onSelected(),
       child: InkWell(
         key: Key('board_canvas_measure_target_row_${row.target}'),
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(8),
         onTap: onSelected,
         onHover: (hovering) {
           if (hovering) {
@@ -4621,21 +4669,18 @@ class _MeasureTargetRow extends StatelessWidget {
               : null,
           decoration: BoxDecoration(
             color: selected
-                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.28)
+                ? _kMeasurePanelSignalTint
                 : row.isExistingValue
-                    ? theme.colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.34)
+                    ? _kMeasurePanelCoolSurface
                     : theme.colorScheme.surface,
             border: Border.all(
-              color: selected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outlineVariant,
+              color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
               width: selected ? 1.6 : 1,
             ),
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -4643,31 +4688,18 @@ class _MeasureTargetRow extends StatelessWidget {
                   builder: (context, constraints) =>
                       targetRowContent(constraints),
                 ),
-                if (!row.isExistingValue) ...[
-                  const SizedBox(height: 5),
+                if (!row.isExistingValue && trimmedDraft.isNotEmpty) ...[
+                  const SizedBox(height: 3),
                   Text(
-                    trimmedDraft.isEmpty
-                        ? 'Local draft only — not saved to project.'
-                        : 'Local draft: ${row.displayLabel} = $trimmedDraft $unitValue',
+                    'Draft: ${row.displayLabel} = $trimmedDraft $unitValue',
                     key: Key(
                       'board_canvas_measure_local_draft_summary_${row.target}',
                     ),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: trimmedDraft.isEmpty
-                          ? FontWeight.w500
-                          : FontWeight.w800,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  if (trimmedDraft.isNotEmpty) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      'Local draft only — not saved to project.',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
                 ],
               ],
             ),
@@ -4688,16 +4720,16 @@ class _MeasureContextRow extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: theme.colorScheme.surface,
+        border: Border.all(color: _kMeasurePanelRule),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
         child: Row(
           children: [
-            const Icon(Icons.alt_route_rounded, size: 16),
-            const SizedBox(width: 8),
+            const Icon(Icons.alt_route_rounded, size: 15),
+            const SizedBox(width: 6),
             Expanded(
               child: Text(
                 row.label,
@@ -4708,7 +4740,7 @@ class _MeasureContextRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Flexible(
               child: Text(
                 row.detail,
@@ -4742,18 +4774,18 @@ class _MeasureInlineReadonlyBox extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: theme.colorScheme.surface,
+        border: Border.all(color: _kMeasurePanelRule),
         borderRadius: BorderRadius.circular(5),
       ),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          minWidth: compact ? 52 : 64,
-          maxWidth: compact ? 72 : 84,
-          minHeight: 36,
+          minWidth: compact ? 46 : 58,
+          maxWidth: compact ? 64 : 74,
+          minHeight: 32,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 7),
           child: Text(
             value,
             textAlign: TextAlign.center,

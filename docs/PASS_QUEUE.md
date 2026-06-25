@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -38,5 +38,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_POLISH | accepted/pushed as `3ff38fe` (`docs: lock Board Canvas app visual polish scope`) | Locks a future narrow Board Canvas/app visual-language polish slice using inspected Board Canvas HTML as design input only; no runtime/test implementation, no write/canonical semantics, no `_incoming` runtime dependency, and route after acceptance to active-lock sync. |
 | V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | accepted/pushed as `fb7067e` (`docs: arm Board Canvas app visual polish implementation`) | Armed `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` with exact future implementation allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation and no implementation accepted/pushed hash claim. |
 | V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | accepted/pushed as `f7dec73` (`feat(board-canvas): polish app visual language`) | Manual smoke evidence supplied by user: `all passed`. Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; changed exactly Board Canvas screen and Board Canvas widget tests, polished Board Canvas/app visual language, improved shell/chrome/status/read-only presentation, kept Board Canvas dominant and right panel contextual/secondary, preserved local UI-only state, and did not add Board Canvas save/write or global redesign/theme behavior. |
-| V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | current docs-only closeout | Records accepted/pushed implementation `f7dec73`, supplied manual-smoke evidence, Claude acceptance, exact implementation files, design-input-only Board Canvas HTML usage, releases the implementation active lock, and routes to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
+| V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | accepted/pushed as `7a84dcb` (`docs: record Board Canvas app visual polish`) | Records accepted/pushed implementation `f7dec73`, supplied manual-smoke evidence, Claude acceptance, exact implementation files, design-input-only Board Canvas HTML usage, releases the implementation active lock, and routes to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
+| V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_MEASURE_PANEL | current docs-only scope-lock | Locks a future local UI-only visual pin/leg selector UX slice inside the integrated Board Canvas Measure panel; preserves Board Canvas read-only/non-writing boundaries, measured-value local draft behavior, From -> To display/provenance-only context, visual traces as visual-only, and routes to active-lock sync before implementation. |
+| V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | next recommended after scope-lock acceptance | Must inspect live repo files and arm the smallest exact future implementation allowlist, likely `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart` if still sufficient; no runtime/test implementation and no Board Canvas write/canonical behavior. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

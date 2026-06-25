@@ -2,35 +2,59 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Type
 
-CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_POLISH
+CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT
 
 ## Scope
 
-Docs-only scope-lock for the next narrow integrated Board Canvas Measure panel visual-density polish slice.
+Docs-only active-lock sync for the next integrated Board Canvas Measure panel visual-density polish implementation pass.
 
-This pass records that `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` closed the previous target-capture lifecycle at `d39db25` (`docs: record measurement target capture`) and that the route before this new decision was `NEEDS_USER_DECISION`.
+This pass records accepted/pushed scope-lock `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594` (`docs: lock measurement panel visual density scope`) and arms the future implementation pass with an exact runtime/test allowlist.
 
-This pass does not implement runtime behavior and does not arm implementation directly.
+This pass does not implement runtime behavior and does not claim the future implementation is accepted/pushed.
 
-## Allowed files for this scope-lock
+## Armed future implementation pass
 
-This docs-only scope-lock may edit only:
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`
+
+## Future implementation allowlist
+
+The future implementation pass may edit only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+If the future implementation requires any file outside this exact allowlist, stop and request a new scope decision before editing it.
+
+## Allowed files for this active-lock sync
+
+This docs-only active-lock sync may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-If any runtime, test, schema, writer, materializer, validator, projection, Project ZIP, event, fact, asset, sample, platform, generated, or untracked scratch file appears necessary, stop and request a new scope decision before editing it.
+If any runtime, test, schema, writer, materializer, validator, projection, Project ZIP, event, fact, asset, sample, platform, generated, or untracked scratch file appears necessary in this sync pass, stop and request a new scope decision before editing it.
 
-## Future implementation intent
+## Future allowed polish behavior
 
-A later implementation pass may polish only the accepted integrated Board Canvas Measure panel presentation so it remains technician-facing, compact, and readable.
+Future implementation may only:
+
+- improve right-panel visual density;
+- reduce vertical spacing and row height where safe;
+- improve label hierarchy and technician-facing copy;
+- improve measured-value row readability;
+- make value/unit controls more compact;
+- prevent awkward wrapping or overflow;
+- make Continue in Measure Sheet visually secondary;
+- keep Advanced technical details collapsed, quiet, and last;
+- compact From -> To context presentation;
+- add or update widget tests for UI structure and the non-writing boundary.
 
 Future implementation must preserve the accepted hierarchy:
 
@@ -39,40 +63,6 @@ Future implementation must preserve the accepted hierarchy:
 3. Measured values
 4. From -> To context
 5. Advanced technical details
-
-Future implementation may improve only:
-
-- right-panel visual density;
-- vertical spacing;
-- row height;
-- label hierarchy;
-- measured-value row readability;
-- unit/value control compactness;
-- prevention of awkward wrapping or overflow;
-- secondary styling of Continue in Measure Sheet;
-- collapsed or quiet Advanced section behavior;
-- compact From -> To context presentation;
-- small technician-facing copy improvements;
-- widget tests covering the UI structure and non-writing boundary.
-
-## Future implementation gate
-
-Runtime implementation may begin only after a later docs-only active-lock sync is accepted/pushed.
-
-Required next pass:
-
-- `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
-
-That future active-lock sync should arm:
-
-- `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`
-
-Expected future implementation allowlist:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-The active-lock sync must inspect the live repo structure before finalizing the allowlist, must not invent files, and must not authorize broad directories.
 
 ## Required preservation
 
@@ -92,9 +82,9 @@ The active-lock sync must inspect the live repo structure before finalizing the 
 
 ## Forbidden surfaces preserved
 
-- No runtime/test edits in this scope-lock pass.
+- No runtime/test edits in this active-lock sync pass.
 - No implementation accepted/pushed hash claim for `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`.
-- No edits to router, Project Overview, Measure Sheet screen, Measure Sheet writer/service, schema, writer, validator, materializer, projection, Project ZIP, event, fact, platform, generated, sample, asset, or unlisted docs files are authorized.
+- No edits to router, Project Overview, Measure Sheet screen, Measure Sheet writer/service, schema, writer, validator, materializer, projection, Project ZIP, event, fact, platform, generated, sample, asset, or unlisted docs files are authorized for the future implementation.
 - No import, call, route to, or other wiring of `v2_save_measurement_writer.dart` from Board Canvas is authorized.
 - No canonical event/fact writes from Board Canvas.
 - No `events.jsonl` writes, `known_facts` mutation, canonical fact creation, or canonical measurement creation from Board Canvas.
@@ -108,5 +98,5 @@ The active-lock sync must inspect the live repo structure before finalizing the 
 
 ## Route
 
-- Current pass: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
-- Route after accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Current pass: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Route after accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`

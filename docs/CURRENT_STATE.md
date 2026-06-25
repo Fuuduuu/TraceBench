@@ -2,25 +2,25 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `d39db25` (`docs: record measurement target capture`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this active-lock sync: `42c3594` (`docs: lock measurement panel visual density scope`), aligned with `origin/main`.
+- Latest accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594`.
 - Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
 - Latest accepted/pushed implementation pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` at `80c9bff`.
 - Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS` at `ff271db` (`docs: arm measurement target capture implementation`).
 - Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS` at `375adbe` (`docs: lock measurement target capture scope`).
 - Prior integrated panel shell closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS` at `934a5a4` (`docs: record integrated measurement panel shell`).
-- Current route is this docs-only scope-lock for the next integrated Measure panel visual-density polish slice.
-- Route before this new decision was `NEEDS_USER_DECISION`.
-- Route after this scope-lock is accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current route is this docs-only active-lock sync for the next integrated Measure panel visual-density polish slice.
+- Route after this active-lock sync is accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`.
 
 ## Current accepted product state
 
@@ -64,9 +64,7 @@
 
 ## Active constraints
 
-- No implementation pass is armed by this scope-lock.
-- `docs/ACTIVE_SCOPE_LOCK.md` authorizes only this docs-only scope-lock allowlist.
-- The next active-lock sync, if accepted/pushed, should arm only the narrow visual-density implementation allowlist for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- `docs/ACTIVE_SCOPE_LOCK.md` arms only the narrow visual-density implementation allowlist for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Future implementation remains local UI-only and non-writing.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;

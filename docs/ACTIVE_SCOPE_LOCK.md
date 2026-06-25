@@ -2,40 +2,54 @@
 
 ## Current pass
 
-`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS`
+`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_MEASURE_PANEL
+CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT
 
 ## Goal
 
-Lock the next narrow non-writing Measure panel UX slice: a visual pin/leg selector inside the accepted integrated Board Canvas Measure panel.
+Arm the narrow future implementation pass for a local UI-only visual pin/leg selector inside the accepted integrated Board Canvas Measure panel.
 
-No runtime/test implementation is currently armed. This pass only records scope, boundaries, and the next route to an active-lock sync before any implementation.
+This pass is docs-only. It records the accepted/pushed scope-lock, updates live route ownership, and arms the smallest exact future implementation allowlist. It does not implement runtime behavior, edit tests, or claim the future implementation is accepted/pushed.
 
 ## Baseline
 
-- Latest pushed HEAD verified before this scope-lock: `7a84dcb` (`docs: record Board Canvas app visual polish`), aligned with `origin/main`.
-- Latest accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
-- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` at `f7dec73` (`feat(board-canvas): polish app visual language`).
+- Latest pushed HEAD verified before this active-lock sync: `521e5e4` (`docs: lock Measure panel pin leg selector scope`), aligned with `origin/main`.
+- Accepted/pushed scope-lock: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS` at `521e5e4` (`docs: lock Measure panel pin leg selector scope`).
+- Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
+- Prior accepted/pushed implementation: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` at `f7dec73` (`feat(board-canvas): polish app visual language`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
 - Accepted Board Canvas baseline remains read-only with `renderer writes: none`.
 
-## Allowed files for this scope-lock
+## Allowed files for this active-lock sync
 
-This scope-lock may edit only:
+This active-lock sync may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-If any runtime, test, route, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, unlisted docs, or untracked scratch file appears necessary, stop and report the exact required file and rationale before editing it.
+If any runtime, test, route, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, unlisted docs, or untracked scratch file appears necessary for this sync pass, stop and report the exact required file and rationale before editing it.
 
-## Scope locked for future implementation
+## Armed future implementation pass
+
+`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS`
+
+## Future implementation allowlist
+
+The future implementation pass may edit only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+If the implementation requires any file outside this allowlist, stop before editing and request a separate active-lock sync.
+
+## Future allowed behavior
 
 Future implementation may only improve the integrated Board Canvas Measure panel pin/leg selection UX.
 
@@ -48,21 +62,6 @@ Future implementation may allow:
 - tighter link between selected measured-value row and visual pin/leg cue;
 - local UI-only highlight/focus behavior;
 - widget tests proving visual selection state and the no-write boundary.
-
-This scope-lock does not arm implementation directly.
-
-## Future active-lock sync requirement
-
-After this scope-lock is accepted/pushed, route to:
-
-`V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS`
-
-That active-lock sync must inspect live repo files and arm the smallest exact future implementation allowlist. Likely files, if still sufficient:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-The active-lock sync must not implement runtime behavior and must not claim the future implementation is accepted/pushed.
 
 ## Required preservation
 
@@ -78,8 +77,7 @@ The active-lock sync must not implement runtime behavior and must not claim the 
 
 ## Explicitly forbidden
 
-- Runtime/test edits in this scope-lock.
-- Direct runtime implementation or arming implementation directly in this scope-lock.
+- Runtime/test edits in this active-lock sync.
 - Board Canvas canonical save/write behavior.
 - Importing, calling, routing to, or otherwise wiring `v2_save_measurement_writer.dart` from Board Canvas.
 - `events.jsonl` writes, `known_facts` mutation, or canonical measurement/fact creation from Board Canvas.
@@ -96,5 +94,5 @@ The active-lock sync must not implement runtime behavior and must not claim the 
 
 ## Route
 
-- Current pass: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS`
-- Route after accepted/pushed: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Current pass: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Route after accepted/pushed: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS`

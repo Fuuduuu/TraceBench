@@ -27,6 +27,14 @@ const Color _kMeasurePanelSignalTint = Color(0xFFFCEEE1);
 const Color _kMeasurePanelCoolSurface = Color(0xFFF8FAFC);
 const Color _kMeasurePanelBodyFill = Color(0xFFCDD9E6);
 const Color _kMeasurePanelRule = Color(0xFFC7D2DC);
+const Color _kBoardCanvasShell = Color(0xFFEAEFF4);
+const Color _kBoardCanvasPaper = Color(0xFFFFFFFF);
+const Color _kBoardCanvasNavy = Color(0xFF173A5E);
+const Color _kBoardCanvasNavyDeep = Color(0xFF0F2A45);
+const Color _kBoardCanvasSignal = Color(0xFFE8742B);
+const Color _kBoardCanvasSignalTint = Color(0xFFFCEEE1);
+const Color _kBoardCanvasRule = Color(0xFFDCE3EA);
+const Color _kBoardCanvasRuleStrong = Color(0xFFC7D2DC);
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -1020,25 +1028,136 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   }
 
   Widget _buildScaffold(BuildContext context, Widget content) {
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: _kBoardCanvasShell,
       appBar: AppBar(
         toolbarHeight: _kCompactBoardCanvasAppBarHeight,
+        backgroundColor: _kBoardCanvasPaper,
+        foregroundColor: _kBoardCanvasNavy,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         leadingWidth: 36,
         titleSpacing: 0,
-        title: const Text('Board Canvas'),
+        title: Text(
+          'Board Canvas',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: _kBoardCanvasNavyDeep,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Center(
+              child: Container(
+                key: const Key('board_canvas_read_only_status_pill'),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _kBoardCanvasSignalTint,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: _kBoardCanvasSignal.withValues(alpha: 0.62),
+                  ),
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 164),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: _kBoardCanvasSignal,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'Read-only · no writes',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: _kBoardCanvasSignal,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: _kBoardCanvasRule),
+        ),
       ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(child: content),
             Container(
+              key: const Key('board_canvas_status_bar'),
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: const Text(
-                'renderer writes: none',
-                key: Key('renderer_writes_none'),
-                textAlign: TextAlign.center,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+              decoration: const BoxDecoration(
+                color: _kBoardCanvasPaper,
+                border: Border(
+                  top: BorderSide(color: _kBoardCanvasRule),
+                ),
+              ),
+              child: DefaultTextStyle(
+                style: (theme.textTheme.labelSmall ??
+                        const TextStyle(fontSize: 11))
+                    .copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF2F8F6B),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    const Text('Ready'),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          'renderer writes: none',
+                          key: Key('renderer_writes_none'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'BenchBeep · TraceBench platform',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -1205,9 +1324,16 @@ class _WorkbenchToolRail extends StatelessWidget {
       width: _kWorkbenchRailWidth,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLow,
+          color: _kBoardCanvasPaper,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: theme.colorScheme.outlineVariant),
+          border: Border.all(color: _kBoardCanvasRule),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x1F0F2A45),
+              blurRadius: 18,
+              offset: Offset(0, 8),
+            ),
+          ],
         ),
         child: Padding(
           padding: _kWorkbenchRailPadding,
@@ -1229,7 +1355,7 @@ class _WorkbenchToolRail extends StatelessWidget {
               Divider(
                 height: 1,
                 thickness: 1,
-                color: theme.colorScheme.outlineVariant,
+                color: _kBoardCanvasRule,
               ),
               const SizedBox(height: 6),
               const _WorkbenchSectionHeader(label: 'Future tools'),
@@ -1337,13 +1463,12 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tileColor = selected
-        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.30)
-        : theme.colorScheme.surfaceContainerLow;
+    final tileColor = selected ? _kBoardCanvasPaper : const Color(0xFFF7F9FC);
     final borderColor =
-        selected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant;
+        selected ? _kBoardCanvasSignal : _kBoardCanvasRuleStrong;
     final labelStyle = theme.textTheme.labelSmall?.copyWith(
       fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+      color: selected ? _kBoardCanvasNavy : theme.colorScheme.onSurfaceVariant,
     );
     final tooltipText = selected ? '$tooltip • active' : tooltip;
 
@@ -1358,9 +1483,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
           minimumSize: const Size.square(_kCompactControlTileHeight),
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          foregroundColor: selected
-              ? theme.colorScheme.onPrimaryContainer
-              : theme.colorScheme.onSurfaceVariant,
+          foregroundColor: selected ? _kBoardCanvasSignal : _kBoardCanvasNavy,
         ),
         icon: Icon(icon),
         onPressed: onPressed,
@@ -1393,7 +1516,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
                       child: Icon(
                         Icons.keyboard_arrow_right_rounded,
                         size: 10,
-                        color: theme.colorScheme.onPrimaryContainer,
+                        color: _kBoardCanvasSignal,
                         key: Key('board_canvas_rail_${modeKey}_active'),
                       ),
                     ),
@@ -1429,7 +1552,11 @@ class _WorkbenchSectionHeader extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.labelSmall,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.8,
+        ),
       ),
     );
   }
@@ -1453,9 +1580,14 @@ class _InactiveRailToolButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final button = SizedBox(
+    final button = Container(
       width: _kCompactControlTileHeight,
       height: _kCompactControlTileHeight,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F5F8),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
       child: IconButton(
         key: buttonKey,
         tooltip: tooltip,
@@ -1464,7 +1596,7 @@ class _InactiveRailToolButton extends StatelessWidget {
           minimumSize: const Size.square(_kCompactControlTileHeight),
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          foregroundColor: theme.disabledColor,
+          foregroundColor: theme.colorScheme.onSurfaceVariant,
         ),
         icon: Icon(icon),
         onPressed: null,
@@ -1769,10 +1901,11 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         .toList(growable: false);
     return Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasPaper,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_add_component_template_list'),
@@ -1786,7 +1919,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         title: _CompactDisclosureTitle(
           label: 'Add Component',
           detail: selectedTemplate == null
-              ? 'Starter visual template families'
+              ? 'Starter visual templates'
               : 'Active template',
         ),
         children: [
@@ -1797,15 +1930,35 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (selectedTemplate == null)
-                    Padding(
-                      padding: EdgeInsets.zero,
-                      key: const Key(
-                        'board_canvas_add_component_template_list_rows',
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: templateRows,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 0, 2, 6),
+                          child: Text(
+                            'Pick a footprint',
+                            key: const Key(
+                              'board_canvas_add_component_template_picker_label',
+                            ),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: _kBoardCanvasSignal,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.zero,
+                          key: const Key(
+                            'board_canvas_add_component_template_list_rows',
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: templateRows,
+                          ),
+                        ),
+                      ],
                     )
                   else ...[
                     _AddComponentTemplateSelectedSummary(
@@ -1866,7 +2019,6 @@ Widget _buildTemplateMiniShape(
   double width = 22,
   double height = 14,
 }) {
-  final theme = Theme.of(context);
   final isRadialRound = template.isRoundTemplateBody;
   final isConnector = template.isConnectorStripTemplateBody;
   final isGenericBlank =
@@ -1903,9 +2055,7 @@ Widget _buildTemplateMiniShape(
       borderRadius: isRadialRound ? null : BorderRadius.circular(4),
       shape: isRadialRound ? BoxShape.circle : BoxShape.rectangle,
       border: Border.all(
-        color: isGenericBlank
-            ? theme.colorScheme.outlineVariant
-            : theme.colorScheme.outline,
+        color: isGenericBlank ? _kBoardCanvasRuleStrong : _kBoardCanvasNavy,
       ),
     ),
     child: isRadialRound
@@ -1917,7 +2067,7 @@ Widget _buildTemplateMiniShape(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(isGenericBlank ? 1 : 2),
                 border: Border.all(
-                  color: theme.colorScheme.primary,
+                  color: _kBoardCanvasSignal,
                   width: isConnector ? 0.8 : 1,
                 ),
               ),
@@ -2625,10 +2775,9 @@ class _AddComponentTemplateListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final baseColor = selected
-        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.30)
-        : theme.colorScheme.surface;
-    final borderColor =
-        selected ? theme.colorScheme.primary : theme.colorScheme.outlineVariant;
+        ? _kBoardCanvasSignalTint.withValues(alpha: 0.68)
+        : _kBoardCanvasPaper;
+    final borderColor = selected ? _kBoardCanvasSignal : _kBoardCanvasRule;
     final shortShapeName = entry.shortTemplateShapeName;
     final contactCountText = entry.contactMarkerSummaryShort;
 
@@ -2651,7 +2800,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                   ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
               color: selected
-                  ? theme.colorScheme.primary
+                  ? _kBoardCanvasSignal
                   : theme.colorScheme.onSurfaceVariant,
               size: 16,
             ),
@@ -2789,10 +2938,11 @@ class _CanvasStatusPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return DecoratedBox(
+      key: const Key('board_canvas_projection_overlay'),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.9),
+        color: _kBoardCanvasNavyDeep.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        border: Border.all(color: _kBoardCanvasPaper.withValues(alpha: 0.10)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -2802,11 +2952,16 @@ class _CanvasStatusPill extends StatelessWidget {
           children: [
             Text(
               'Board projection canvas',
-              style: theme.textTheme.labelLarge,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: const Color(0xFFEAF1F7),
+                fontWeight: FontWeight.w700,
+              ),
             ),
             Text(
               'Existing board-normalized placements only',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: const Color(0xFF9FB6CC),
+              ),
             ),
           ],
         ),
@@ -3217,13 +3372,15 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   }
 
   Widget _buildCornerControls(BuildContext context) {
-    final theme = Theme.of(context);
     final measurementValueBadgeToggle = TextButton.icon(
       key: const Key('board_canvas_measurement_value_badge_global_toggle'),
       style: TextButton.styleFrom(
-        backgroundColor:
-            theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.9),
-        foregroundColor: theme.colorScheme.onSurface,
+        backgroundColor: widget.allMeasurementValueBadgesVisible
+            ? _kBoardCanvasSignal
+            : _kBoardCanvasPaper.withValues(alpha: 0.92),
+        foregroundColor: widget.allMeasurementValueBadgesVisible
+            ? _kBoardCanvasPaper
+            : _kBoardCanvasNavy,
         minimumSize: const Size(92, _kCompactControlTileHeight),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -3244,7 +3401,12 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       key: const Key('board_canvas_fit_view_button'),
       tooltip: 'Fit board view',
       icon: const Icon(Icons.center_focus_strong),
-      color: theme.colorScheme.onSurface,
+      color: _kBoardCanvasNavy,
+      style: IconButton.styleFrom(
+        backgroundColor: _kBoardCanvasPaper.withValues(alpha: 0.92),
+        minimumSize: const Size.square(_kCompactControlTileHeight),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
       onPressed: _fitCanvasView,
     );
 
@@ -3275,12 +3437,12 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasNavyDeep,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasNavyDeep),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -5548,10 +5710,10 @@ class _BoardPlacementPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    const boardBase = Color(0xFF101A17);
-    const boardInset = Color(0xFF172722);
-    const boardBorder = Color(0xFF325247);
-    const gridColor = Color(0x2F4D7A65);
+    const boardBase = Color(0xFF0C1D30);
+    const boardInset = Color(0xFF11263D);
+    const boardBorder = Color(0xFF0F2A45);
+    const gridColor = Color(0x2A7FA0C8);
 
     final boardPaint = Paint()
       ..color = boardBase
@@ -5589,28 +5751,26 @@ class _BoardPlacementPainter extends CustomPainter {
 
       final fillPaint = Paint()
         ..color = selected
-            ? colorScheme.primary.withValues(alpha: 0.28)
-            : const Color(0xFFE5DDC5).withValues(alpha: 0.88)
+            ? _kBoardCanvasSignalTint.withValues(alpha: 0.92)
+            : _kMeasurePanelBodyFill.withValues(alpha: 0.92)
         ..style = PaintingStyle.fill;
 
       final strokePaint = Paint()
-        ..color = selected ? colorScheme.primary : const Color(0xFF222821)
+        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavy
         ..style = PaintingStyle.stroke
         ..strokeWidth = selected ? 2.4 : 1.3;
 
       final padFillPaint = Paint()
-        ..color = selected
-            ? colorScheme.primaryContainer.withValues(alpha: 0.95)
-            : const Color(0xFFD8B36A)
+        ..color = selected ? _kBoardCanvasSignal : const Color(0xFFE8A764)
         ..style = PaintingStyle.fill;
 
       final padStrokePaint = Paint()
-        ..color = selected ? colorScheme.primary : const Color(0xFF312817)
+        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavyDeep
         ..style = PaintingStyle.stroke
         ..strokeWidth = selected ? 1.1 : 0.8;
 
       final markerPaint = Paint()
-        ..color = selected ? colorScheme.primary : const Color(0xFF161914)
+        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavyDeep
         ..style = PaintingStyle.fill;
 
       canvas.save();
@@ -5652,7 +5812,8 @@ class _BoardPlacementPainter extends CustomPainter {
           text: TextSpan(
             text: designator,
             style: TextStyle(
-              color: colorScheme.onSurface,
+              color:
+                  selected ? _kBoardCanvasSignalTint : const Color(0xFF9FB6CC),
               fontSize: 11,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             ),
@@ -5802,10 +5963,10 @@ class _BoardPlacementPainter extends CustomPainter {
     );
 
     final badgePaint = Paint()
-      ..color = colorScheme.primary.withValues(alpha: 0.95)
+      ..color = _kBoardCanvasSignal.withValues(alpha: 0.95)
       ..style = PaintingStyle.fill;
     final badgeBorderPaint = Paint()
-      ..color = colorScheme.onPrimary.withValues(alpha: 0.85)
+      ..color = _kBoardCanvasPaper.withValues(alpha: 0.85)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.2;
 

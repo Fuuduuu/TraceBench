@@ -360,8 +360,16 @@ void main() {
 
     final appBarSize = tester.getSize(find.byType(AppBar));
 
-    expect(appBarSize.height, lessThanOrEqualTo(36));
+    expect(appBarSize.height, lessThanOrEqualTo(40));
     expect(find.text('Board Canvas'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_read_only_status_pill')),
+      findsOneWidget,
+    );
+    expect(find.text('Read-only · no writes'), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_status_bar')), findsOneWidget);
+    expect(find.text('Ready'), findsOneWidget);
+    expect(find.text('BenchBeep · TraceBench platform'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
@@ -1159,9 +1167,14 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Starter visual template families'),
+      find.text('Starter visual templates'),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_picker_label')),
+      findsOneWidget,
+    );
+    expect(find.text('Pick a footprint'), findsOneWidget);
     const forbiddenTemplateText = [
       'SOT-23',
       'SOIC',

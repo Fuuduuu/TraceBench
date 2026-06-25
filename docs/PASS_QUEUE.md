@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -35,6 +35,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | accepted/pushed as `6b919fa` (`docs: arm measurement panel visual density implementation`) | Armed `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS` with exact allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation in the sync pass and no implementation accepted/pushed hash claim. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | accepted/pushed as `8b140d6` (`feat(board-canvas): polish measurement panel density`) | Manual smoke evidence supplied by user: `all passed`. Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; polished integrated Measure panel visual density, compacted header and copy, improved measured-value row readability, compacted value/unit controls, made Continue in Measure Sheet secondary, kept From -> To display/provenance-only, preserved quiet Advanced details, and did not add Board Canvas save/write behavior. |
 | V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT | accepted/pushed as `a80fb7d` (`docs: record measurement panel visual density`) | Records accepted/pushed implementation `8b140d6`, supplied manual-smoke evidence, Claude acceptance, exact implementation files, design-reference-only HTML usage, releases the implementation active lock, and routes to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
-| V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_POLISH | current docs-only scope-lock | Locks a future narrow Board Canvas/app visual-language polish slice using inspected Board Canvas HTML as design input only; no runtime/test implementation, no write/canonical semantics, no `_incoming` runtime dependency, and route after acceptance to active-lock sync. |
-| V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | next recommended after scope-lock acceptance | Future docs-only sync should inspect live Board Canvas structure and arm the exact runtime/test allowlist for `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`; it must not implement runtime behavior. |
+| V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / PROTECTED_UI_POLISH | accepted/pushed as `3ff38fe` (`docs: lock Board Canvas app visual polish scope`) | Locks a future narrow Board Canvas/app visual-language polish slice using inspected Board Canvas HTML as design input only; no runtime/test implementation, no write/canonical semantics, no `_incoming` runtime dependency, and route after acceptance to active-lock sync. |
+| V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT | current docs-only active-lock sync | Arms `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` with exact Board Canvas runtime/test allowlist; no runtime/test implementation in the sync pass and no implementation accepted/pushed hash claim. |
+| V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | next recommended after active-lock sync acceptance | Future product/UI implementation may polish only existing Board Canvas/app visual language inside the exact allowlist; manual smoke is required before Claude audit and no Board Canvas save/write behavior is authorized. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

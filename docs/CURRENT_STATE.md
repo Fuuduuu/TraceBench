@@ -2,24 +2,25 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `a80fb7d` (`docs: record measurement panel visual density`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this active-lock sync: `3ff38fe` (`docs: lock Board Canvas app visual polish scope`), aligned with `origin/main`.
+- Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS` at `3ff38fe` (`docs: lock Board Canvas app visual polish scope`).
 - Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Latest accepted/pushed implementation: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS` at `8b140d6`.
 - Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `6b919fa` (`docs: arm measurement panel visual density implementation`).
 - Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594` (`docs: lock measurement panel visual density scope`).
 - Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
-- Current route is this docs-only scope-lock for a future narrow Board Canvas/app visual-language polish slice.
-- Route after this scope-lock is accepted/pushed: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current route is this docs-only active-lock sync for the future narrow Board Canvas/app visual-language polish implementation slice.
+- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS`.
 
 ## Current accepted product state
 
@@ -69,9 +70,9 @@
 
 ## Active constraints
 
-- This scope-lock is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This pass does not implement runtime behavior, does not edit tests, and does not arm implementation directly.
-- Future implementation requires a separate docs-only active-lock sync naming the exact runtime/test allowlist before any `lib/` or `test/` edits.
+- This active-lock sync is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This pass does not implement runtime behavior and does not edit tests.
+- This pass arms `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_PASS` with the exact future implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

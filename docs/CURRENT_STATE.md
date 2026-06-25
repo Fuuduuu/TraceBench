@@ -2,23 +2,24 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this closeout: `8b140d6` (`feat(board-canvas): polish measurement panel density`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `a80fb7d` (`docs: record measurement panel visual density`), aligned with `origin/main`.
+- Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Latest accepted/pushed implementation: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS` at `8b140d6`.
 - Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `6b919fa` (`docs: arm measurement panel visual density implementation`).
 - Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594` (`docs: lock measurement panel visual density scope`).
 - Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
-- Current route is this docs-only post-audit closeout for the accepted/pushed visual-density implementation.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- Current route is this docs-only scope-lock for a future narrow Board Canvas/app visual-language polish slice.
+- Route after this scope-lock is accepted/pushed: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 
 ## Current accepted product state
 
@@ -59,6 +60,7 @@
 - Functional Board Canvas measurement save/write remains deferred unless a later separate writer scope explicitly authorizes it.
 - Any future Board Canvas measurement write path must preserve human-authored append-only event semantics and must not add schema, writer, materializer, validator, projection, Project ZIP, event, or fact behavior unless separately scoped.
 - Visual trace context remains visual-only and must not imply electrical proof or connectivity.
+- Future Board Canvas/app visual polish may use the inspected Board Canvas HTML as design input only; that scratch HTML has `RUNTIME_AUTHORITY: NONE`, `CANONICAL_SEMANTICS: NONE`, and `IMPLEMENTATION_AUTHORIZATION: NONE`.
 - Component focus, hover, preview, pin/leg selection, and value/unit/save-looking controls in Board Canvas remain local UI state unless separately scoped.
 - Command menu / Ctrl-K, context menus, audio/save beep, canvas token consumer migration, full redesign, logo polish, high-pin selector UX, new project creation, and broader menu behavior remain deferred unless separately scoped.
 - Canonical board/write behavior, placement writes, Confirm/write, Edit Layout, schema, writer, materializer, validator, projection, Project ZIP, event, and fact changes remain protected surfaces.
@@ -67,9 +69,9 @@
 
 ## Active constraints
 
-- This closeout releases the prior Board Canvas runtime/test implementation active lock.
-- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- No new implementation pass is armed.
+- This scope-lock is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This pass does not implement runtime behavior, does not edit tests, and does not arm implementation directly.
+- Future implementation requires a separate docs-only active-lock sync naming the exact runtime/test allowlist before any `lib/` or `test/` edits.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

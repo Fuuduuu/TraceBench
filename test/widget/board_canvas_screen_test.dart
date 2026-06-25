@@ -617,6 +617,23 @@ void main() {
       find.byKey(const Key('board_canvas_measure_component_visual_stage')),
       findsOneWidget,
     );
+    expect(find.text('Local visual selector'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_measure_visual_selector')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_target_cmp_r101.1'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_selected_cmp_r101.1'),
+      ),
+      findsOneWidget,
+    );
     expect(
       find.byKey(const Key('board_canvas_measure_visual_pad_cmp_r101.2')),
       findsOneWidget,
@@ -630,6 +647,12 @@ void main() {
     expect(
       find.byKey(
         const Key('board_canvas_measure_visual_target_selected_cmp_r101.2'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_selected_cmp_r101.2'),
       ),
       findsNothing,
     );
@@ -648,6 +671,13 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_selected_cmp_r101.2'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('selected Pin 2'), findsOneWidget);
     expect(find.text('Visual only; no connectivity proof.'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsAtLeastNWidgets(1));
     expect(find.text('From -> To context'), findsOneWidget);
@@ -786,6 +816,12 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_selected_cmp_r101.2'),
+      ),
+      findsOneWidget,
+    );
 
     final valueInput = find.byKey(
       const Key('board_canvas_measure_row_value_input_cmp_r101.2'),
@@ -820,6 +856,51 @@ void main() {
         findsNothing);
     expect(find.byKey(const Key('board_canvas_measure_save_placeholder')),
         findsNothing);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'integrated Measure panel visual selector degrades without pin data',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('board_canvas_measure_sheet_button')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Local visual selector'), findsOneWidget);
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_selected_cmp_r101'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('selected Component'), findsOneWidget);
+    expect(find.text('Pin 1'), findsNothing);
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_selector_target_cmp_r101.1'),
+      ),
+      findsNothing,
+    );
+    expect(find.text('Visual only; no connectivity proof.'), findsOneWidget);
     expect(state.events, isEmpty);
   });
 

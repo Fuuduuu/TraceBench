@@ -4089,6 +4089,10 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
           componentId: componentId,
           componentLabel: componentLabel,
         ),
+        visualLabel: _visualPointLabel(
+          target,
+          componentId: componentId,
+        ),
         value: displayValue,
         unit: displayUnit,
         isExistingValue: true,
@@ -4109,6 +4113,10 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                 componentId: componentId,
                 componentLabel: componentLabel,
               ),
+              visualLabel: _visualPointLabel(
+                target,
+                componentId: componentId,
+              ),
               value: '',
               isExistingValue: false,
             ),
@@ -4126,6 +4134,10 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
           widget.selectedEntry?.placement.componentId ?? 'Select component',
           componentId: componentId,
           componentLabel: componentLabel,
+        ),
+        visualLabel: _visualPointLabel(
+          widget.selectedEntry?.placement.componentId ?? 'Select component',
+          componentId: componentId,
         ),
         value: '',
         isExistingValue: false,
@@ -4240,6 +4252,21 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
     return 'Pin $pinLabel · $displayTarget';
   }
 
+  String _visualPointLabel(
+    String target, {
+    String? componentId,
+  }) {
+    final trimmed = target.trim();
+    if (componentId != null && trimmed == componentId) {
+      return 'Component';
+    }
+    final separatorIndex = trimmed.lastIndexOf('.');
+    if (separatorIndex <= 0 || separatorIndex == trimmed.length - 1) {
+      return trimmed;
+    }
+    return 'Pin ${trimmed.substring(separatorIndex + 1)}';
+  }
+
   String _visualTraceDirectionLabel(
     VisualTraceFact trace,
     String fallbackTarget,
@@ -4293,6 +4320,7 @@ class _MeasureTargetRowData {
   const _MeasureTargetRowData({
     required this.target,
     required this.displayLabel,
+    required this.visualLabel,
     required this.value,
     required this.isExistingValue,
     this.unit,
@@ -4302,6 +4330,7 @@ class _MeasureTargetRowData {
 
   final String target;
   final String displayLabel;
+  final String visualLabel;
   final String value;
   final bool isExistingValue;
   final String? unit;
@@ -4376,6 +4405,7 @@ class _MeasureComponentPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final selectedRow = _selectedRow;
     final leftPads = <_MeasureTargetRowData>[];
     final rightPads = <_MeasureTargetRowData>[];
     for (var index = 0; index < targetRows.length; index++) {
@@ -4469,8 +4499,8 @@ class _MeasureComponentPreview extends StatelessWidget {
                               const SizedBox(height: 2),
                               Text(
                                 selectedTarget == null
-                                    ? 'select pad'
-                                    : 'selected ${_targetVisualLabel(selectedTarget!)}',
+                                    ? 'select a local point'
+                                    : 'selected ${selectedRow?.visualLabel ?? _targetVisualLabel(selectedTarget!)}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.labelSmall?.copyWith(
@@ -4492,10 +4522,43 @@ class _MeasureComponentPreview extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 6),
+            Text(
+              'Local visual selector',
+              key: const Key('board_canvas_measure_visual_selector_label'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Wrap(
+              key: const Key('board_canvas_measure_visual_selector'),
+              spacing: 5,
+              runSpacing: 5,
+              children: [
+                for (final row in targetRows)
+                  _MeasureVisualSelectorChip(
+                    row: row,
+                    selected: row.target == selectedTarget,
+                    enabled: selectedName != null,
+                    onSelected: () => onTargetSelected(row.target),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  _MeasureTargetRowData? get _selectedRow {
+    for (final row in targetRows) {
+      if (row.target == selectedTarget) {
+        return row;
+      }
+    }
+    return null;
   }
 
   static String _targetVisualLabel(String target) {
@@ -4607,6 +4670,97 @@ class _MeasureVisualPad extends StatelessWidget {
       );
     }
     return keyedPad;
+  }
+}
+
+class _MeasureVisualSelectorChip extends StatelessWidget {
+  const _MeasureVisualSelectorChip({
+    required this.row,
+    required this.selected,
+    required this.enabled,
+    required this.onSelected,
+  });
+
+  final _MeasureTargetRowData row;
+  final bool selected;
+  final bool enabled;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final statusLabel = row.isExistingValue ? 'measured' : 'local draft';
+    final foreground = selected
+        ? _kMeasurePanelNavy
+        : enabled
+            ? theme.colorScheme.onSurface
+            : theme.colorScheme.onSurfaceVariant;
+    Widget chip = DecoratedBox(
+      decoration: BoxDecoration(
+        color: selected
+            ? _kMeasurePanelSignalTint
+            : enabled
+                ? theme.colorScheme.surface
+                : theme.colorScheme.surfaceContainerHighest,
+        border: Border.all(
+          color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
+          width: selected ? 1.5 : 1,
+        ),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              selected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              size: 13,
+              color: selected ? _kMeasurePanelSignal : foreground,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              row.visualLabel,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: foreground,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              statusLabel,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: selected ? _kMeasurePanelNavy : foreground,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    chip = InkWell(
+      key: Key('board_canvas_measure_visual_selector_target_${row.target}'),
+      borderRadius: BorderRadius.circular(999),
+      onTap: enabled ? onSelected : null,
+      child: chip,
+    );
+
+    if (selected) {
+      chip = KeyedSubtree(
+        key: Key('board_canvas_measure_visual_selector_selected_${row.target}'),
+        child: chip,
+      );
+    }
+    if (!enabled) {
+      chip = KeyedSubtree(
+        key: Key('board_canvas_measure_visual_selector_disabled_${row.target}'),
+        child: chip,
+      );
+    }
+    return chip;
   }
 }
 

@@ -2,25 +2,23 @@
 
 ## Current pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `42c3594` (`docs: lock measurement panel visual density scope`), aligned with `origin/main`.
-- Latest accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594`.
-- Latest accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
-- Latest accepted/pushed implementation pass: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_PASS` at `80c9bff`.
-- Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_ACTIVE_LOCK_SYNC_PASS` at `ff271db` (`docs: arm measurement target capture implementation`).
-- Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_SCOPE_LOCK_PASS` at `375adbe` (`docs: lock measurement target capture scope`).
-- Prior integrated panel shell closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_IMPL_POST_AUDIT_PASS` at `934a5a4` (`docs: record integrated measurement panel shell`).
-- Current route is this docs-only active-lock sync for the next integrated Measure panel visual-density polish slice.
-- Route after this active-lock sync is accepted/pushed: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS`.
+- Latest pushed HEAD verified before this closeout: `8b140d6` (`feat(board-canvas): polish measurement panel density`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_PASS` at `8b140d6`.
+- Prior accepted/pushed active-lock sync: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `6b919fa` (`docs: arm measurement panel visual density implementation`).
+- Prior accepted/pushed scope-lock: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_SCOPE_LOCK_PASS` at `42c3594` (`docs: lock measurement panel visual density scope`).
+- Prior accepted/pushed closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25`.
+- Current route is this docs-only post-audit closeout for the accepted/pushed visual-density implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 
 ## Current accepted product state
 
@@ -38,11 +36,16 @@
 - Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow.
 - Board Canvas Measure entry opens an integrated right-side contextual Measure panel in the workbench-shell UI.
 - Canvas stays visible while the integrated Measure panel is open.
-- Integrated Board Canvas Measure panel now supports local UI-only target selection.
+- Integrated Board Canvas Measure panel supports local UI-only target selection.
 - Component visual appears before measured values.
 - Measured values are shown as pin/leg rows with inline local draft value/unit controls.
-- From -> To context is separate, secondary, and display/provenance-only.
-- Advanced technical/provenance details remain last and secondary.
+- Integrated Measure panel visual density is polished: header is more compact, local/no-write copy is reduced, measured-value rows are denser and more readable, value/unit controls are more compact, and Continue in Measure Sheet is visually secondary.
+- Pin/leg labels are more technician-facing where existing data supports it.
+- From -> To context is separate, compact, lower priority, and display/provenance-only.
+- Advanced technical/provenance details remain last, quiet, and secondary.
+- Measure HTML was used as the primary right-panel workflow reference for the visual-density implementation.
+- Board Canvas/app visual HTML was used only as visual-language reference.
+- `_incoming` HTML/design files are not runtime dependencies and are not canonical repo truth.
 - Continue in Measure Sheet compatibility remains preserved.
 - Board Canvas does not provide canonical save/write behavior.
 - Board Canvas does not write `events.jsonl` or mutate `known_facts`.
@@ -64,8 +67,9 @@
 
 ## Active constraints
 
-- `docs/ACTIVE_SCOPE_LOCK.md` arms only the narrow visual-density implementation allowlist for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Future implementation remains local UI-only and non-writing.
+- This closeout releases the prior Board Canvas runtime/test implementation active lock.
+- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- No new implementation pass is armed.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;

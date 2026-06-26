@@ -1,47 +1,40 @@
-# Active Scope Lock
+# V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS
 
-## Current pass
+## Lane and type
 
-`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS`
-
-## Type
-
-LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_MEASURE_PANEL
-
-## Goal
-
-Lock the next narrow non-writing Measure panel UX cleanup slice: remove duplicated pin/leg selection surfaces so the component visual preview and measured-value rows remain the primary selection UI.
-
-This pass is docs-only. It does not implement runtime behavior, edit tests, arm Board Canvas save/write behavior, or arm implementation directly.
+- Lane: `LANE_B_ADJACENT`.
+- Type: `DOCS_SCOPE_LOCK / PROTECTED_UI_MEASURE_PANEL`.
+- Scope: docs-only route/scope-lock for a future non-writing pin/leg selector deduplication UX slice inside the accepted integrated Board Canvas Measure panel.
 
 ## Temporary audit mode
 
 - Claude Code is temporarily unavailable for this pass.
-- This pass must not claim Claude audit or output a Claude `AUDIT_VERDICT`.
-- Codex output must use `NO_CLAUDE_REVIEW_PACKET`.
+- This artifact does not claim Claude audit and does not record a Claude `AUDIT_VERDICT`.
+- Codex output for this pass uses `NO_CLAUDE_REVIEW_PACKET`.
 - Do not stage until ChatGPT temporary secondary review or Claude Code becomes available.
 
-## Baseline
+## Baseline git state
 
-- Latest pushed HEAD verified before this scope-lock: `564582d` (`docs: record Measure panel pin leg selector`), aligned with `origin/main`.
+- Git HEAD at pass start: `564582d` (`docs: record Measure panel pin leg selector`), aligned with `origin/main`.
+- Tracked diff at pass start: none.
+- Cached/staged diff at pass start: none.
+- `git diff --check` at pass start: passed.
+- Live route docs before this scope-lock recorded `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS` as the just-pushed closeout and `NEEDS_USER_DECISION` as the after-closeout route; this scope-lock advances from that decision state.
 - Latest accepted/pushed closeout: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS` at `564582d` (`docs: record Measure panel pin leg selector`).
 - Latest accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS` at `d573933` (`feat(board-canvas): add visual pin leg selector`).
-- Prior accepted/pushed active-lock sync: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS` at `aed1698` (`docs: arm Measure panel pin leg selector implementation`).
-- Prior accepted/pushed scope-lock: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS` at `521e5e4` (`docs: lock Measure panel pin leg selector scope`).
-- Accepted Board Canvas baseline remains read-only with `renderer writes: none`.
-- Live route docs before this scope-lock recorded the accepted closeout with route after acceptance to `NEEDS_USER_DECISION`; this scope-lock advances from that decision state.
+- Known untracked scratch files/directories existed and were left untouched.
 
-## Allowed files for this scope-lock
+## Tool / skill check
 
-This scope-lock may edit only:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS.md`
-
-If any runtime, test, route, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, unlisted docs, or untracked scratch file appears necessary for this scope-lock, stop and report the exact required file and rationale before editing it.
+- Used the local `androbuss-pass-runner` skill for pass discipline and report structure.
+- Inspected repo-local route docs: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, and `docs/AUDIT_INDEX.md`.
+- Inspected relevant pin/leg selector artifacts:
+  - `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS.md`
+  - `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+  - `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS.md`
+- Inspected repo-local protected-surface and prompt/audit contracts, including `docs/TRUTH_INDEX.md`, `docs/PROJECT_MEMORY.md`, `docs/PROTECTED_SURFACES.md`, `docs/PROMPTING_PROTOCOL.md`, `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, and `docs/PASS_LIFECYCLE.md`.
+- Inspected git evidence for `564582d`, which changed the expected closeout docs and added `docs/audit/V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS.md`.
+- Used repo-local validation tools only; no external plugins, online sources, or `_incoming` design files were used.
 
 ## Scope locked
 
@@ -89,7 +82,7 @@ Do not stage, edit, copy, bundle, import, or runtime-depend on:
 - `_incoming/ui_redesign/BenchBeep Project Home (dark).html`
 - `_incoming/ui_redesign/home-dark.css`
 
-Do not scope dark Project Home, global theme, EDA net colors, or Project Home redesign in this pass.
+Dark Project Home, global dark theme, EDA net colors, and Project Home redesign are not scoped by this pass.
 
 ## Explicitly forbidden
 
@@ -115,3 +108,33 @@ Do not scope dark Project Home, global theme, EDA net colors, or Project Home re
   - `lib/features/board_canvas/screens/board_canvas_screen.dart`
   - `test/widget/board_canvas_screen_test.dart`
 - The future active-lock sync must not implement runtime behavior and must not claim the future implementation is accepted/pushed.
+
+## Work performed
+
+- Updated `docs/CURRENT_STATE.md` to make this scope-lock current, record latest accepted/pushed closeout `564582d`, and route next to the dedup active-lock sync.
+- Updated `docs/PASS_QUEUE.md` to mark the prior closeout accepted/pushed and add this scope-lock plus the next active-lock sync route.
+- Updated `docs/ACTIVE_SCOPE_LOCK.md` to authorize only this docs-only scope-lock and preserve no-write Measure panel/Board Canvas boundaries.
+- Updated `docs/AUDIT_INDEX.md` to mark the prior closeout accepted/pushed and point to this new audit artifact.
+- Added this audit artifact.
+
+## Changed files in this pass
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS.md`
+
+## Validation
+
+- `git status --short --branch`: branch `main...origin/main`; modified route docs are `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/CURRENT_STATE.md`, and `docs/PASS_QUEUE.md`; this new audit artifact is untracked until exact staging; known untracked scratch remains untouched.
+- `git diff --name-status`: modified tracked files are `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, `docs/CURRENT_STATE.md`, and `docs/PASS_QUEUE.md`; Git reported existing LF-to-CRLF checkout warnings for edited Markdown files.
+- `git diff --cached --name-status`: no staged files.
+- `git diff --check`: passed with no whitespace errors; Git reported existing LF-to-CRLF checkout warnings for edited Markdown files.
+- `python tools/validate_all.py`: passed (`Ran 273 tests`, `OK`) with existing optional missing-photo warnings.
+
+## Staging state
+
+- Staged: no.
+- Committed: no.
+- Pushed: no.

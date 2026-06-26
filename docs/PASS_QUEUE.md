@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS`
+`V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -48,5 +48,6 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS | CODEX / FLUTTER_UI_PROTECTED_IMPLEMENTATION | accepted/pushed as `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`) | Manual smoke before staging: user-reported PASS; duplicate Local visual selector was removed, measured-value rows remained primary, component preview still followed selected pin/leg row, missing pin data degraded safely, and no Board Canvas write/canonical behavior appeared. Claude Code was unavailable, so status is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`; ChatGPT temporary secondary review allowed staging because manual smoke passed, validation passed, and changed files matched the active-lock allowlist. |
 | V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_MEASURE_PANEL | accepted/pushed as `2b17f68` (`docs: record Measure panel pin leg selector dedup`) | Records accepted/pushed implementation `7a5994f`, exact implementation files, supplied manual-smoke evidence, temporary secondary-review evidence, and no-write/no-pin-mapping boundaries; released the implementation active lock and routed after acceptance to `NEEDS_USER_DECISION`. |
 | V2_PROJECT_HOME_DARK_EDA_DESIGN_SOURCE_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / DESIGN_SOURCE_INTAKE / PROTECTED_UI_DIRECTION | accepted/pushed as `487c691` (`docs: lock Project Home dark EDA design source`) | Records the dark EDA Project Home / Board Canvas HTML/CSS as `DESIGN_INPUT_ONLY` with no runtime authority, no canonical semantics, and no implementation authorization; locks future design-direction boundaries only and keeps next route at `NEEDS_USER_DECISION`. |
-| V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_PROJECT_HOME | current docs-only scope-lock; `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING` | Locks a future first narrow implementation slice for Project Home dark EDA shell visual presentation only; preserves existing Home launcher, Open existing, Import project, Back/Home, Menu System, Board Canvas, Project Overview, and Measure Sheet behavior; routes after acceptance to `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS` before any implementation allowlist is armed. |
+| V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_PROJECT_HOME | accepted/pushed as `675412d` (`docs: lock Project Home dark EDA shell scope`) | Locked a future first narrow implementation slice for Project Home dark EDA shell visual presentation only; preserved existing Home launcher, Open existing, Import project, Back/Home, Menu System, Board Canvas, Project Overview, and Measure Sheet behavior; routed after acceptance to `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS` before any implementation allowlist was armed. |
+| V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS | LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_PROJECT_HOME | current docs-only active-lock sync; `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING` | Records accepted/pushed scope-lock `675412d`, chooses Project Overview / Workbench Home as the exact target surface, and arms `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` with exact future allowlist `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`; no runtime/test implementation in this sync pass. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

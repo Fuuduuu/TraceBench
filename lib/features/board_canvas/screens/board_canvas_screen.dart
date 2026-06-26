@@ -4522,30 +4522,6 @@ class _MeasureComponentPreview extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 6),
-            Text(
-              'Local visual selector',
-              key: const Key('board_canvas_measure_visual_selector_label'),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Wrap(
-              key: const Key('board_canvas_measure_visual_selector'),
-              spacing: 5,
-              runSpacing: 5,
-              children: [
-                for (final row in targetRows)
-                  _MeasureVisualSelectorChip(
-                    row: row,
-                    selected: row.target == selectedTarget,
-                    enabled: selectedName != null,
-                    onSelected: () => onTargetSelected(row.target),
-                  ),
-              ],
-            ),
           ],
         ),
       ),
@@ -4670,97 +4646,6 @@ class _MeasureVisualPad extends StatelessWidget {
       );
     }
     return keyedPad;
-  }
-}
-
-class _MeasureVisualSelectorChip extends StatelessWidget {
-  const _MeasureVisualSelectorChip({
-    required this.row,
-    required this.selected,
-    required this.enabled,
-    required this.onSelected,
-  });
-
-  final _MeasureTargetRowData row;
-  final bool selected;
-  final bool enabled;
-  final VoidCallback onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final statusLabel = row.isExistingValue ? 'measured' : 'local draft';
-    final foreground = selected
-        ? _kMeasurePanelNavy
-        : enabled
-            ? theme.colorScheme.onSurface
-            : theme.colorScheme.onSurfaceVariant;
-    Widget chip = DecoratedBox(
-      decoration: BoxDecoration(
-        color: selected
-            ? _kMeasurePanelSignalTint
-            : enabled
-                ? theme.colorScheme.surface
-                : theme.colorScheme.surfaceContainerHighest,
-        border: Border.all(
-          color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
-          width: selected ? 1.5 : 1,
-        ),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              selected
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_unchecked_rounded,
-              size: 13,
-              color: selected ? _kMeasurePanelSignal : foreground,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              row.visualLabel,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              statusLabel,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: selected ? _kMeasurePanelNavy : foreground,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    chip = InkWell(
-      key: Key('board_canvas_measure_visual_selector_target_${row.target}'),
-      borderRadius: BorderRadius.circular(999),
-      onTap: enabled ? onSelected : null,
-      child: chip,
-    );
-
-    if (selected) {
-      chip = KeyedSubtree(
-        key: Key('board_canvas_measure_visual_selector_selected_${row.target}'),
-        child: chip,
-      );
-    }
-    if (!enabled) {
-      chip = KeyedSubtree(
-        key: Key('board_canvas_measure_visual_selector_disabled_${row.target}'),
-        child: chip,
-      );
-    }
-    return chip;
   }
 }
 

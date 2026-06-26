@@ -617,22 +617,22 @@ void main() {
       find.byKey(const Key('board_canvas_measure_component_visual_stage')),
       findsOneWidget,
     );
-    expect(find.text('Local visual selector'), findsOneWidget);
+    expect(find.text('Local visual selector'), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_measure_visual_selector')),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(
         const Key('board_canvas_measure_visual_selector_target_cmp_r101.1'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(
         const Key('board_canvas_measure_visual_selector_selected_cmp_r101.1'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_measure_visual_pad_cmp_r101.2')),
@@ -675,7 +675,7 @@ void main() {
       find.byKey(
         const Key('board_canvas_measure_visual_selector_selected_cmp_r101.2'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
     expect(find.text('selected Pin 2'), findsOneWidget);
     expect(find.text('Visual only; no connectivity proof.'), findsOneWidget);
@@ -820,7 +820,7 @@ void main() {
       find.byKey(
         const Key('board_canvas_measure_visual_selector_selected_cmp_r101.2'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
 
     final valueInput = find.byKey(
@@ -879,7 +879,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Local visual selector'), findsOneWidget);
+    expect(find.text('Local visual selector'), findsNothing);
     expect(
       find.byKey(
         const Key('board_canvas_measure_visual_target_selected_cmp_r101'),
@@ -890,7 +890,7 @@ void main() {
       find.byKey(
         const Key('board_canvas_measure_visual_selector_selected_cmp_r101'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
     expect(find.text('selected Component'), findsOneWidget);
     expect(find.text('Pin 1'), findsNothing);

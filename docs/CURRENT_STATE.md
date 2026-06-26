@@ -2,17 +2,18 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_DESIGN_SOURCE_SCOPE_LOCK_PASS`
+`V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `2b17f68` (`docs: record Measure panel pin leg selector dedup`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `487c691` (`docs: lock Project Home dark EDA design source`), aligned with `origin/main`.
+- Latest accepted/pushed design-source scope-lock: `V2_PROJECT_HOME_DARK_EDA_DESIGN_SOURCE_SCOPE_LOCK_PASS` at `487c691` (`docs: lock Project Home dark EDA design source`).
 - Latest accepted/pushed closeout: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS` at `2b17f68` (`docs: record Measure panel pin leg selector dedup`).
 - Latest accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS` at `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`).
 - Full implementation SHA: `7a5994fbafe15572aee36c39b1a56f5bb4a194a1`.
@@ -25,8 +26,8 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only design-source scope-lock for the dark EDA Project Home / Board Canvas design source.
-- Route after this scope-lock is accepted/pushed: `NEEDS_USER_DECISION`.
+- Current route is this docs-only scope-lock for the first narrow Project Home dark EDA shell visual slice.
+- Route after this scope-lock is accepted/pushed: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 
 ## Current accepted product state
 
@@ -93,6 +94,7 @@
 - Future pin/leg selector work may only remain local UI-only unless separately scoped; the accepted deduplication removed the duplicate local selector surface while keeping measured-value rows primary and component visual preview as the physical cue surface.
 - Visual pin/leg selection must not become confirmed pin mapping, a confirmed net, electrical relation, placement/coordinate semantics, package identity, or canonical fact.
 - Future dark EDA / bench-instrument visual direction may use the inspected dark Project Home HTML/CSS only as design input: dominant board/canvas working surface, compact left rail/project navigation direction, contextual right Measure panel direction, read-only/no-write status visibility, technical typography and restrained chrome, dark canvas with clear board/footprint contrast, and preserved BenchBeep user-facing identity.
+- Future Project Home dark EDA shell implementation may be considered only as a narrow local visual shell polish for the existing Project Home / project landing surface after active-lock sync identifies the exact live owner files and tests.
 - Project Home dark implementation, global dark theme, Board Canvas dark EDA visual migration, color-coded net rendering, board-level legend implementation, logo asset/runtime asset changes, Google Fonts/font asset changes, new route/navigation behavior, and runtime CSS/HTML reuse are future/deferred unless separately scoped.
 - 5V/220V/GND/Signal labels in design-source files are visual prototype labels only and do not confirm nets, connectivity, electrical proof, measurements, pins, components, facts, coordinates, or Board Canvas write behavior.
 - Any future implementation requires a separate route decision and active-lock sync that inspects live repo files and lists the smallest exact runtime/test allowlist.
@@ -104,7 +106,8 @@
 ## Active constraints
 
 - This scope-lock is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This pass does not implement runtime behavior, edit tests, arm implementation, or authorize design-source runtime use.
+- This pass does not implement runtime behavior, edit tests, arm implementation directly, or authorize design-source runtime use.
+- The next route is a docs-only active-lock sync that must inspect live repo files and arm the smallest exact future implementation allowlist before any runtime/test work.
 - This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
 - Review status for this scope-lock is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
 - The prompt-listed external `TraceBench_incoming` design paths were not present; matching repo scratch design files were inspected under `_incoming/ui_redesign/` as design input only.

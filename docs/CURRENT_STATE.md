@@ -2,27 +2,30 @@
 
 ## Current pass
 
-`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `0575545` (`docs: lock Measure panel pin leg selector dedup scope`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS` at `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`).
+- Full implementation SHA: `7a5994fbafe15572aee36c39b1a56f5bb4a194a1`.
+- Latest accepted/pushed active-lock sync: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS` at `a2f59b0` (`docs: arm Measure panel pin leg selector dedup implementation`).
 - Latest accepted/pushed scope-lock: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS` at `0575545` (`docs: lock Measure panel pin leg selector dedup scope`).
 - Latest accepted/pushed closeout: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS` at `564582d` (`docs: record Measure panel pin leg selector`).
-- Latest accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS` at `d573933` (`feat(board-canvas): add visual pin leg selector`).
+- Prior accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS` at `d573933` (`feat(board-canvas): add visual pin leg selector`).
 - Prior accepted/pushed active-lock sync: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS` at `aed1698` (`docs: arm Measure panel pin leg selector implementation`).
 - Prior accepted/pushed scope-lock: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS` at `521e5e4` (`docs: lock Measure panel pin leg selector scope`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only active-lock sync that arms the future non-writing pin/leg selector deduplication implementation pass.
-- Route after this active-lock sync is accepted/pushed: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS`.
+- Current route is this docs-only closeout that records the accepted/pushed pin/leg selector deduplication implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 
 ## Current accepted product state
 
@@ -56,6 +59,9 @@
 - Right panel remains contextual and secondary.
 - Existing Add Component and Measure panel visual alignment was polished only where owned by Board Canvas screen.
 - Integrated Board Canvas Measure panel now has a local UI-only visual pin/leg selector.
+- Duplicate standalone Local visual selector section was removed.
+- Measured-value rows remain the primary row/value/unit interaction surface.
+- Component visual preview remains the physical visual cue surface.
 - Selected measured-value row and visual selector cue stay linked.
 - Selected pin/leg state is clearer in the component preview.
 - Technician-facing visual labels are improved.
@@ -63,6 +69,7 @@
 - Visual selector remains local UI-only.
 - No visual pin/leg selection becomes confirmed pin mapping.
 - Existing Board Canvas UI state remains local UI-only.
+- Dark Project Home HTML/CSS remains `DESIGN_INPUT_ONLY` and has no runtime authority.
 - No disabled/future tool became functional.
 - No global redesign or theme migration was introduced.
 - Home, Project Overview, router, Measure Sheet, and canonical writer behavior remain unchanged.
@@ -82,9 +89,9 @@
 - Future Board Canvas/app visual polish may use the inspected Board Canvas HTML as design input only; that scratch HTML has `RUNTIME_AUTHORITY: NONE`, `CANONICAL_SEMANTICS: NONE`, and `IMPLEMENTATION_AUTHORIZATION: NONE`.
 - Component focus, hover, preview, pin/leg selection, and value/unit/save-looking controls in Board Canvas remain local UI state unless separately scoped.
 - Future visual pin/leg selector work may only be scoped as local UI-only selection/highlight/focus behavior inside the accepted integrated Board Canvas Measure panel.
-- Future pin/leg selector deduplication may only remove or collapse duplicated local selector surfaces while keeping measured-value rows as the primary row/value/unit interaction surface and component visual preview as the primary physical cue surface.
+- Future pin/leg selector work may only remain local UI-only unless separately scoped; the accepted deduplication removed the duplicate local selector surface while keeping measured-value rows primary and component visual preview as the physical cue surface.
 - Visual pin/leg selection must not become confirmed pin mapping, a confirmed net, electrical relation, placement/coordinate semantics, package identity, or canonical fact.
-- A future implementation requires a separate active-lock sync that inspects live repo files and lists the smallest exact runtime/test allowlist.
+- Any future implementation requires a separate route decision and active-lock sync that inspects live repo files and lists the smallest exact runtime/test allowlist.
 - Command menu / Ctrl-K, context menus, audio/save beep, canvas token consumer migration, full redesign, logo polish, high-pin selector UX, new project creation, and broader menu behavior remain deferred unless separately scoped.
 - Canonical board/write behavior, placement writes, Confirm/write, Edit Layout, schema, writer, materializer, validator, projection, Project ZIP, event, and fact changes remain protected surfaces.
 - `_incoming`, screenshots, docs/sources, and mockups are design/reference input only, never runtime truth.
@@ -92,15 +99,15 @@
 
 ## Active constraints
 
-- This active-lock sync is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
 - This pass does not implement runtime behavior and does not edit tests.
-- This pass arms only `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS` with exact future implementation allowlist:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- This pass records no Claude audit verdict because Claude Code is temporarily unavailable; it requires temporary secondary review before any staging decision.
-- This pass does not claim the future implementation is accepted/pushed.
+- This pass releases the prior implementation active lock and does not arm a new implementation pass.
+- This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
+- Implementation review status is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- Manual smoke before staging: user-reported PASS; duplicate Local visual selector was removed, measured-value rows remained primary, component preview still followed selected pin/leg row, missing pin data degraded safely, and no Board Canvas write/canonical behavior appeared.
+- ChatGPT temporary secondary review allowed staging because manual smoke passed, validation passed, and changed files matched the active-lock allowlist.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
-  - Codex final responses for pass work must include a clearly separated `CLAUDE_AUDIT_PACKET`;
+  - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;
   - visual/product-surface work requires manual smoke before Claude audit and packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`;
   - `Accepted` shorthand is valid only for clean `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and exact expected staging set;
   - protected implementation requires active-lock sync before runtime/test work when the live active lock does not name the implementation pass and exact allowlist;

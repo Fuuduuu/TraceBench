@@ -2,111 +2,84 @@
 
 ## Current pass
 
-`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS`
 
 ## Type
 
-CODEX / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_LANE_B_ADJACENT
+CODEX / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_MEASURE_PANEL
 
 ## Goal
 
-Arm the next narrow implementation pass for integrated Board Canvas Measure panel pin/leg selector deduplication.
+Record the accepted/pushed Measure panel pin/leg selector deduplication implementation and route back to `NEEDS_USER_DECISION`.
 
-This pass is docs-only. It does not implement runtime behavior, edit tests, arm Board Canvas save/write behavior, or claim the future implementation is accepted/pushed.
+This pass is docs-only. It does not implement runtime behavior, edit tests, arm Board Canvas save/write behavior, or arm a new implementation pass.
 
 ## Temporary audit mode
 
 - Claude Code is temporarily unavailable for this pass.
 - This pass must not claim Claude audit or output a Claude `AUDIT_VERDICT`.
+- Implementation review status is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- ChatGPT temporary secondary review is recorded as temporary governance evidence, not as Claude audit.
 - Codex output must use `NO_CLAUDE_REVIEW_PACKET`.
-- Do not stage until ChatGPT temporary secondary review or Claude Code becomes available.
 
 ## Baseline
 
-- Latest pushed HEAD verified before this active-lock sync: `0575545` (`docs: lock Measure panel pin leg selector dedup scope`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`), aligned with `origin/main`.
+- Accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS` at `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`).
+- Full implementation SHA: `7a5994fbafe15572aee36c39b1a56f5bb4a194a1`.
+- Accepted/pushed active-lock sync: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS` at `a2f59b0` (`docs: arm Measure panel pin leg selector dedup implementation`).
 - Accepted/pushed scope-lock: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_SCOPE_LOCK_PASS` at `0575545` (`docs: lock Measure panel pin leg selector dedup scope`).
 - Prior accepted/pushed closeout: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_POST_AUDIT_PASS` at `564582d` (`docs: record Measure panel pin leg selector`).
-- Prior accepted/pushed implementation: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_PASS` at `d573933` (`feat(board-canvas): add visual pin leg selector`).
-- Prior accepted/pushed active-lock sync: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_IMPL_ACTIVE_LOCK_SYNC_PASS` at `aed1698` (`docs: arm Measure panel pin leg selector implementation`).
-- Prior accepted/pushed pin/leg selector scope-lock: `V2_MEASURE_PANEL_PIN_LEG_VISUAL_SELECTOR_SCOPE_LOCK_PASS` at `521e5e4` (`docs: lock Measure panel pin leg selector scope`).
 - Accepted Board Canvas baseline remains read-only with `renderer writes: none`.
 
-## Allowed files for this active-lock sync
+## Allowed files for this closeout
 
-This active-lock sync may edit only:
+This closeout may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+- `docs/audit/V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS.md`
 
-If any runtime, test, route, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, unlisted docs, or untracked scratch file appears necessary for this sync, stop and report the exact required file and rationale before editing it.
+If any runtime, test, route, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, event/fact, platform, asset, sample, generated, unlisted docs, or untracked scratch file appears necessary for this closeout, stop and report the exact required file and rationale before editing it.
 
-## Armed future implementation pass
+## Implementation evidence to record
 
-`V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS`
+- Implementation pass: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS`.
+- Implementation commit: `7a5994f` (`feat(board-canvas): deduplicate measure pin leg selector`).
+- Full implementation SHA: `7a5994fbafe15572aee36c39b1a56f5bb4a194a1`.
+- Implementation files changed:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- Manual smoke before staging: user-reported PASS; duplicate Local visual selector was removed, measured-value rows remained primary, component preview still followed selected pin/leg row, missing pin data degraded safely, and no Board Canvas write/canonical behavior appeared.
+- Temporary secondary review: ChatGPT temporary secondary review allowed staging because manual smoke passed, validation passed, and changed files matched the active-lock allowlist.
+- Claude Code was unavailable; no Claude audit verdict is recorded.
 
-## Future implementation allowlist
+## Accepted behavior to record
 
-The future implementation may edit only:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-If the future implementation requires any additional file, stop and report:
-
-- the exact required file;
-- why the deduplication cannot be completed without it;
-- the smallest proposed follow-up active-lock sync.
-
-## Future implementation may allow
-
-- Removing or collapsing the separate "Local visual selector" section if it duplicates measured-value row selection and component visual preview.
-- Keeping measured-value rows as the primary row/value/unit interaction surface.
-- Keeping component visual preview as the primary physical visual cue surface.
-- Preserving selected measured-value row -> visual pin/leg cue linkage.
-- Improving local UI-only copy so selection does not look like confirmed pin mapping.
-- Reducing repeated "local", "draft", and "visual selector" wording where safe.
-- Preserving graceful degradation when pin/leg data is missing.
-- Adding or updating widget tests for deduped UI structure, selected-state linkage, and the no-write boundary.
-
-## Future implementation must preserve
-
-- Board Canvas remains read-only.
-- Integrated Measure panel remains non-writing.
+- Duplicate standalone Local visual selector section was removed.
+- Measured-value rows remain the primary row/value/unit interaction surface.
+- Component visual preview remains the physical visual cue surface.
+- Selected measured-value row and visual pin/leg cue stay linked.
+- Missing pin/leg data degrades gracefully without inventing pins.
 - Visual pin/leg selection remains local UI-only.
-- Visual pin/leg selection must not become confirmed pin mapping.
-- Existing measured-value rows and local draft value/unit behavior remain local UI-only.
+- No visual pin/leg selection becomes confirmed pin mapping.
+- Board Canvas remains read-only and non-writing.
 - Functional Save remains in the accepted Measure Sheet path.
 - From -> To context remains display/provenance-only.
 - Visual traces remain visual-only and never become nets.
 - Existing Add Component, Board Canvas navigation, Home, Project Overview, Measure Sheet, and Menu System behavior remain preserved.
-- `_incoming`, screenshots, docs/sources, and mockups remain design/reference input only, never runtime truth.
-
-## Optional design context
-
-The dark Project Home / EDA HTML and CSS remain design input only for possible future direction.
-
-They are treated as:
-
-- `DESIGN_INPUT_ONLY`
-- `RUNTIME_AUTHORITY: NONE`
-- `CANONICAL_SEMANTICS: NONE`
-- `IMPLEMENTATION_AUTHORIZATION: NONE`
-
-Do not stage, edit, copy, bundle, import, or runtime-depend on:
-
-- `_incoming/ui_redesign/BenchBeep Project Home (dark).html`
-- `_incoming/ui_redesign/home-dark.css`
-
-Do not scope dark Project Home, global theme, EDA net colors, or Project Home redesign in this active-lock sync.
+- Dark Project Home HTML/CSS remains `DESIGN_INPUT_ONLY` and has no runtime authority.
 
 ## Explicitly forbidden
 
-- Runtime/test edits in this active-lock sync.
-- Runtime implementation during this active-lock sync.
+- Runtime/test edits in this closeout.
+- A new implementation pass armed by this closeout.
 - Board Canvas canonical save/write behavior.
+- Claiming Board Canvas save/write or canonical measurement writing is accepted.
+- Claiming visual pin/leg selection is confirmed pin mapping.
+- Claiming Claude audit occurred.
 - Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart` from Board Canvas.
 - `events.jsonl` writes, `known_facts` mutation, or canonical measurement/fact creation from Board Canvas.
 - Creating canonical measurements, facts, nets, pin mappings, placement semantics, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
@@ -120,6 +93,6 @@ Do not scope dark Project Home, global theme, EDA net colors, or Project Home re
 
 ## Route
 
-- Current pass: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Route after accepted/pushed: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_PASS`.
-- The future implementation is product/UI surface work and must require manual smoke before any final audit.
+- Current pass: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS`.
+- Route after accepted/pushed: `NEEDS_USER_DECISION`.
+- The implementation active lock is released by this closeout.

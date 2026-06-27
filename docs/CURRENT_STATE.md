@@ -2,17 +2,25 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `df38722` (`docs: lock Board Canvas dark EDA style alignment`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `725b8b8` (`feat(board-canvas): align dark EDA shell`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_PASS` at `725b8b8` (`feat(board-canvas): align dark EDA shell`).
+- Full implementation SHA: `725b8b86986bb419c35801b84dbdd9d18227af68`.
+- Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Manual smoke: PASS.
+- Manual smoke evidence: Board Canvas opens normally; Board Canvas visually aligns better with Project Overview / Workbench Home dark EDA family; Board Canvas no longer feels overly green; shell/rail/footer are dark-neutral and coherent; Canvas/grid remains green EDA family and readable; right/context panel sections are clearly separated; measured pin/value rows are easy to distinguish; selected pin row is visually distinct; inactive pin rows are readable but secondary; input controls and unit dropdowns have visible boundaries; Beep action is readable; left rail active/disabled/menu states are clear; Add Component remains local/UI-only; selected pin remains visibly active after tap/click; hover does not steal active state from the selected pin; selecting another pin moves active state to the new pin; right/context panel shows selected pin context correctly; pan/zoom/fit/reset still work; tap-to-select still works; Inspector still works; measurement markers/summary still work; Measure Sheet route/save path is unchanged; Project Overview still opens and looks unchanged; no Board Canvas save/write/canonical behavior appears.
+- Temporary secondary review: ChatGPT Pro temporary secondary review accepted staging after validation and user manual smoke PASS.
+- Claude status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS` at `bb35cc2` (`docs: arm Board Canvas dark EDA style alignment implementation`).
 - Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS` at `df38722` (`docs: lock Board Canvas dark EDA style alignment`).
 - Scope-lock full SHA: `df38722b774f2d8db9a0d0f64715f4c2cff95c65`.
 - Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `7f11471` (`docs: record Project Home dark EDA copy polish`).
@@ -42,10 +50,10 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only active-lock sync for future Board Canvas dark EDA style alignment with the accepted Project Overview / Workbench Home BenchBeep dark EDA style.
-- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_PASS`.
-- This sync pass arms the future implementation with the exact allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation is performed in this sync pass.
-- Target surface decision: Board Canvas visual shell/style is owned by the Board Canvas screen and focused Board Canvas widget tests; Project Overview / Workbench Home remains reference surface only and is not authorized for the future implementation.
+- Current route is this docs-only closeout for the accepted/pushed Board Canvas dark EDA style alignment implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- This closeout releases the implementation active lock and does not arm a new implementation pass.
+- Target surface decision preserved: Board Canvas visual shell/style was owned by the Board Canvas screen and focused Board Canvas widget tests; Project Overview / Workbench Home remained reference surface only and was not edited by the implementation.
 - The latest accepted Project Home implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -105,6 +113,16 @@
 - Board Canvas remains the dominant visual surface.
 - Right panel remains contextual and secondary.
 - Existing Add Component and Measure panel visual alignment was polished only where owned by Board Canvas screen.
+- Board Canvas dark EDA shell/style alignment is accepted.
+- Scope stayed on `BoardCanvasScreen` and focused Board Canvas widget tests.
+- Board Canvas shell, rail/panels, footer/status strip, canvas/grid palette, badges, row/panel hierarchy, and selected-pin feedback were refined toward the accepted Project Overview / Workbench Home dark EDA family.
+- Board Canvas copy was polished where local and safe, including read-only/no-write language and selected shell labels.
+- Selected pin state remains visibly active after explicit selection.
+- Hover no longer steals selected pin state.
+- Board Canvas read-only/no-write meaning remains visible and preserved.
+- Existing pan/zoom/fit/reset, tap-to-select, Inspector, placement rendering, measurement marker/summary, visual-trace/provenance, Add Component local UI, route/navigation, and Measure Sheet save path remain preserved.
+- No Project Overview runtime files were changed by Board Canvas dark EDA style alignment.
+- No logo/runtime assets were added.
 - Integrated Board Canvas Measure panel now has a local UI-only visual pin/leg selector.
 - Duplicate standalone Local visual selector section was removed.
 - Measured-value rows remain the primary row/value/unit interaction surface.
@@ -130,9 +148,8 @@
 
 ## Protected future direction carried forward
 
-- Future Board Canvas dark EDA style alignment may align the Board Canvas shell/chrome/left rail/panels/footer/status strip, toolbar button chrome, grid/canvas color family, read-only badge treatment, and scoped Board Canvas shell copy with the accepted Project Overview / Workbench Home BenchBeep dark EDA style.
-- Future Board Canvas style alignment should keep Board Canvas as the dominant working surface, keep the right panel contextual/secondary, preserve clear read-only/no-write status, and prefer Board Canvas-only runtime edits unless a later active-lock sync authorizes a tiny focused test/helper.
-- Future candidate implementation files, if still sufficient after active-lock sync inspection: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Future Board Canvas dark EDA follow-up refinements, if separately scoped, must keep Board Canvas as the dominant working surface, keep the right panel contextual/secondary, preserve clear read-only/no-write status, and prefer Board Canvas-only runtime edits unless a later active-lock sync authorizes a tiny focused test/helper.
+- Future candidate Board Canvas visual-refinement implementation files, if still sufficient after a later active-lock sync inspection: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Functional Board Canvas measurement save/write remains deferred unless a later separate writer scope explicitly authorizes it.
 - Any future Board Canvas measurement write path must preserve human-authored append-only event semantics and must not add schema, writer, materializer, validator, projection, Project ZIP, event, or fact behavior unless separately scoped.
 - Visual trace context remains visual-only and must not imply electrical proof or connectivity.
@@ -159,10 +176,10 @@
 - The accepted Project Home copy-polish closeout was docs-only, released its prior implementation active lock, and did not arm a new implementation pass.
 - The accepted Project Home copy-polish closeout recorded no Claude audit verdict because Claude Code was temporarily unavailable.
 - Review status for that accepted closeout remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.
-- This current active-lock sync does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
-- Future implementation is authorized only for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; if additional files are required, stop and route a new active-lock sync.
-- This current active-lock sync uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
+- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_POST_AUDIT_PASS.md`.
+- This current closeout does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
+- No runtime/test implementation pass is currently armed after this closeout is accepted/pushed.
+- This current closeout uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

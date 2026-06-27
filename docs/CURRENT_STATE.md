@@ -2,17 +2,18 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `0e59ce9` (`docs: intake standalone dark EDA design source`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this active-lock sync: `10c4561` (`docs: lock Project Home dark EDA copy polish`), aligned with `origin/main`.
+- Latest accepted/pushed copy-polish scope-lock: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS` at `10c4561` (`docs: lock Project Home dark EDA copy polish`).
 - Latest accepted/pushed design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
 - Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
 - Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
@@ -36,8 +37,8 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only scope-lock for future Project Overview / Workbench Home dark EDA copy polish.
-- Route after this scope-lock is accepted/pushed: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current route is this docs-only active-lock sync for future Project Overview / Workbench Home dark EDA copy polish.
+- Route after this active-lock sync is accepted/pushed: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS`.
 - The implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -136,11 +137,11 @@
 
 ## Active constraints
 
-- This scope-lock is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This scope-lock does not implement runtime behavior, edit tests, arm implementation directly, or authorize design-source runtime/asset use.
-- `docs/ACTIVE_SCOPE_LOCK.md` now authorizes only this docs-only Project Home dark EDA copy-polish scope lock.
+- This active-lock sync is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This active-lock sync does not implement runtime behavior, edit tests, or authorize design-source runtime/asset use.
+- `docs/ACTIVE_SCOPE_LOCK.md` now arms `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` with the exact future implementation allowlist: `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`.
 - This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
-- Review status for this scope-lock is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- Review status for this active-lock sync is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

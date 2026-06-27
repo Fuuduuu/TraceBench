@@ -21,20 +21,25 @@ const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
 const int _kAddComponentContactMarkerWarningLimit = 8;
-const Color _kMeasurePanelNavy = Color(0xFF173A5E);
-const Color _kMeasurePanelSignal = Color(0xFFE8742B);
-const Color _kMeasurePanelSignalTint = Color(0xFFFCEEE1);
-const Color _kMeasurePanelCoolSurface = Color(0xFFF8FAFC);
-const Color _kMeasurePanelBodyFill = Color(0xFFCDD9E6);
-const Color _kMeasurePanelRule = Color(0xFFC7D2DC);
-const Color _kBoardCanvasShell = Color(0xFFEAEFF4);
-const Color _kBoardCanvasPaper = Color(0xFFFFFFFF);
-const Color _kBoardCanvasNavy = Color(0xFF173A5E);
-const Color _kBoardCanvasNavyDeep = Color(0xFF0F2A45);
-const Color _kBoardCanvasSignal = Color(0xFFE8742B);
-const Color _kBoardCanvasSignalTint = Color(0xFFFCEEE1);
-const Color _kBoardCanvasRule = Color(0xFFDCE3EA);
-const Color _kBoardCanvasRuleStrong = Color(0xFFC7D2DC);
+const Color _kMeasurePanelNavy = Color(0xFFE9EEF4);
+const Color _kMeasurePanelSignal = Color(0xFF2DD4BF);
+const Color _kMeasurePanelSignalTint = Color(0xFF0E2623);
+const Color _kMeasurePanelCoolSurface = Color(0xFF161B22);
+const Color _kMeasurePanelBodyFill = Color(0xFF1D252D);
+const Color _kMeasurePanelRowFill = Color(0xFF101820);
+const Color _kMeasurePanelRowRaised = Color(0xFF202A32);
+const Color _kMeasurePanelRule = Color(0xFF2A3D38);
+const Color _kBoardCanvasShell = Color(0xFF0A0D11);
+const Color _kBoardCanvasPaper = Color(0xFF161B22);
+const Color _kBoardCanvasTile = Color(0xFF11161C);
+const Color _kBoardCanvasNavy = Color(0xFFE9EEF4);
+const Color _kBoardCanvasNavyDeep = Color(0xFF080B0F);
+const Color _kBoardCanvasMuted = Color(0xFFABB7C4);
+const Color _kBoardCanvasDim = Color(0xFF7C8A98);
+const Color _kBoardCanvasSignal = Color(0xFF2DD4BF);
+const Color _kBoardCanvasSignalTint = Color(0xFF0E2623);
+const Color _kBoardCanvasRule = Color(0xFF252D37);
+const Color _kBoardCanvasRuleStrong = Color(0xFF36404D);
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -567,398 +572,434 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return _buildScaffold(
       context,
       Padding(
-        padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final useWorkbenchShell = constraints.maxWidth >= 900;
-            final selector = _PlacementSelector(
-              entries: entries,
-              selectedKey: selectedKey,
-              selectedLabel: selectedEntry?.selectorLabel,
-              onSelected: (value) {
-                setState(() {
-                  _selectedPlacementKey = value;
-                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
-                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
-                  }
-                  _inspectorVisible = true;
-                });
-              },
-            );
-            final focusToggle = _CanvasFocusButton(
-              showLabel: false,
-              onPressed: () {
-                setState(() {
-                  _canvasFocusMode = true;
-                  _inspectorVisible = false;
-                });
-              },
-            );
-            final canvas = _CanvasPanel(
-              entries: entries,
-              selectedKey: selectedKey,
-              measurementCountsByComponentId: measurementCountByComponent,
-              measurementValueBadgesByComponentId:
-                  measurementValueBadgesByComponent,
-              visibleMeasurementValueBadgeComponentIds:
-                  visibleMeasurementValueBadgeComponentIds,
-              hasEligibleMeasurementValueBadges:
-                  eligibleMeasurementValueBadgeComponentIds.isNotEmpty,
-              allMeasurementValueBadgesVisible:
-                  allMeasurementValueBadgesVisible,
-              onToggleAllMeasurementValueBadges: () {
-                setState(() {
-                  _visibleMeasurementValueBadgeComponentIds.clear();
-                  if (!allMeasurementValueBadgesVisible) {
-                    _visibleMeasurementValueBadgeComponentIds.addAll(
-                      eligibleMeasurementValueBadgeComponentIds,
-                    );
-                  }
-                });
-              },
-              cornerFocusAction:
-                  useWorkbenchShell && !_canvasFocusMode ? focusToggle : null,
-              onPlacementSelected: (value) {
-                setState(() {
-                  _selectedPlacementKey = value;
-                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
-                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
-                  }
-                  _inspectorVisible = true;
-                });
-              },
-              onCanvasTapEmpty: () {
-                setState(() {
-                  _selectedPlacementKey = null;
-                  if (_contextPanelMode != _WorkbenchContextPanelMode.measure) {
-                    _contextPanelMode = _WorkbenchContextPanelMode.hidden;
-                  }
-                });
-              },
-              showAddComponentTemplateGhost: _contextPanelMode ==
-                      _WorkbenchContextPanelMode.addComponentTemplates &&
-                  _selectedAddComponentTemplateId != null,
-              addComponentTemplateGhostTopContactMarkers:
-                  _addComponentTemplateTopContactMarkers,
-              addComponentTemplateGhostRightContactMarkers:
-                  _addComponentTemplateRightContactMarkers,
-              addComponentTemplateGhostBottomContactMarkers:
-                  _addComponentTemplateBottomContactMarkers,
-              addComponentTemplateGhostLeftContactMarkers:
-                  _addComponentTemplateLeftContactMarkers,
-              addComponentTemplateGhostDraftLabel:
-                  _addComponentTemplateDraftLabel,
-              addComponentTemplateGhostDraftAnchor:
-                  _addComponentTemplateGhostDraftAnchor,
-              selectedAddComponentTemplate: selectedAddComponentTemplate,
-              onAddComponentTemplateGhostDraftAnchorChanged: (value) {
-                setState(() {
-                  _addComponentTemplateGhostDraftAnchor = value;
-                });
-              },
-            );
-            final metadata = _InspectorPanel(
-              selectedEntry: selectedEntry,
-              selectedMeasurementCount: selectedMeasurementCount,
-              selectedMeasurementValueBadgeCount:
-                  selectedMeasurementValueBadgeCount,
-              selectedMeasurementValueBadgesVisible:
-                  selectedMeasurementValueBadgesVisible,
-              onToggleSelectedMeasurementValueBadges: selectedEntry == null ||
-                      selectedMeasurementValueBadgeCount == 0
-                  ? null
-                  : () {
-                      final componentId = selectedEntry!.placement.componentId;
-                      setState(() {
-                        if (_visibleMeasurementValueBadgeComponentIds
-                            .contains(componentId)) {
-                          _visibleMeasurementValueBadgeComponentIds
-                              .remove(componentId);
-                        } else {
-                          _visibleMeasurementValueBadgeComponentIds
-                              .add(componentId);
-                        }
-                      });
-                    },
-              relatedMeasurements: relatedMeasurements,
-              relatedVisualTraces: relatedVisualTraces,
-              photoToBoardAlignments: photoToBoardAlignments,
-            );
-            final controlBand = useWorkbenchShell
-                ? const SizedBox.shrink(key: Key('board_canvas_control_band'))
-                : _BoardCanvasControlBand(
-                    selector: selector,
-                    safetyEvidence:
-                        const _BoardCanvasSafetyEvidenceDisclosure(),
-                    trailingActions: <Widget>[
-                      _MeasureSheetNavigationButton(
-                        onPressed: () {
-                          context.push('/project/measure-sheet');
-                        },
-                      ),
-                      focusToggle,
-                      _InspectorChromeToggle(
-                        inspectorVisible: _inspectorVisible,
-                        showLabel: false,
-                        onPressed: () {
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+        child: DecoratedBox(
+          key: const Key('board_canvas_workspace_frame'),
+          decoration: BoxDecoration(
+            color: _kBoardCanvasPaper.withValues(alpha: 0.72),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: _kBoardCanvasRule),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x52080B0F),
+                blurRadius: 22,
+                offset: Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final useWorkbenchShell = constraints.maxWidth >= 900;
+                final selector = _PlacementSelector(
+                  entries: entries,
+                  selectedKey: selectedKey,
+                  selectedLabel: selectedEntry?.selectorLabel,
+                  onSelected: (value) {
+                    setState(() {
+                      _selectedPlacementKey = value;
+                      if (_contextPanelMode !=
+                          _WorkbenchContextPanelMode.measure) {
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.inspector;
+                      }
+                      _inspectorVisible = true;
+                    });
+                  },
+                );
+                final focusToggle = _CanvasFocusButton(
+                  showLabel: false,
+                  onPressed: () {
+                    setState(() {
+                      _canvasFocusMode = true;
+                      _inspectorVisible = false;
+                    });
+                  },
+                );
+                final canvas = _CanvasPanel(
+                  entries: entries,
+                  selectedKey: selectedKey,
+                  measurementCountsByComponentId: measurementCountByComponent,
+                  measurementValueBadgesByComponentId:
+                      measurementValueBadgesByComponent,
+                  visibleMeasurementValueBadgeComponentIds:
+                      visibleMeasurementValueBadgeComponentIds,
+                  hasEligibleMeasurementValueBadges:
+                      eligibleMeasurementValueBadgeComponentIds.isNotEmpty,
+                  allMeasurementValueBadgesVisible:
+                      allMeasurementValueBadgesVisible,
+                  onToggleAllMeasurementValueBadges: () {
+                    setState(() {
+                      _visibleMeasurementValueBadgeComponentIds.clear();
+                      if (!allMeasurementValueBadgesVisible) {
+                        _visibleMeasurementValueBadgeComponentIds.addAll(
+                          eligibleMeasurementValueBadgeComponentIds,
+                        );
+                      }
+                    });
+                  },
+                  cornerFocusAction: useWorkbenchShell && !_canvasFocusMode
+                      ? focusToggle
+                      : null,
+                  onPlacementSelected: (value) {
+                    setState(() {
+                      _selectedPlacementKey = value;
+                      if (_contextPanelMode !=
+                          _WorkbenchContextPanelMode.measure) {
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.inspector;
+                      }
+                      _inspectorVisible = true;
+                    });
+                  },
+                  onCanvasTapEmpty: () {
+                    setState(() {
+                      _selectedPlacementKey = null;
+                      if (_contextPanelMode !=
+                          _WorkbenchContextPanelMode.measure) {
+                        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                      }
+                    });
+                  },
+                  showAddComponentTemplateGhost: _contextPanelMode ==
+                          _WorkbenchContextPanelMode.addComponentTemplates &&
+                      _selectedAddComponentTemplateId != null,
+                  addComponentTemplateGhostTopContactMarkers:
+                      _addComponentTemplateTopContactMarkers,
+                  addComponentTemplateGhostRightContactMarkers:
+                      _addComponentTemplateRightContactMarkers,
+                  addComponentTemplateGhostBottomContactMarkers:
+                      _addComponentTemplateBottomContactMarkers,
+                  addComponentTemplateGhostLeftContactMarkers:
+                      _addComponentTemplateLeftContactMarkers,
+                  addComponentTemplateGhostDraftLabel:
+                      _addComponentTemplateDraftLabel,
+                  addComponentTemplateGhostDraftAnchor:
+                      _addComponentTemplateGhostDraftAnchor,
+                  selectedAddComponentTemplate: selectedAddComponentTemplate,
+                  onAddComponentTemplateGhostDraftAnchorChanged: (value) {
+                    setState(() {
+                      _addComponentTemplateGhostDraftAnchor = value;
+                    });
+                  },
+                );
+                final metadata = _InspectorPanel(
+                  selectedEntry: selectedEntry,
+                  selectedMeasurementCount: selectedMeasurementCount,
+                  selectedMeasurementValueBadgeCount:
+                      selectedMeasurementValueBadgeCount,
+                  selectedMeasurementValueBadgesVisible:
+                      selectedMeasurementValueBadgesVisible,
+                  onToggleSelectedMeasurementValueBadges:
+                      selectedEntry == null ||
+                              selectedMeasurementValueBadgeCount == 0
+                          ? null
+                          : () {
+                              final componentId =
+                                  selectedEntry!.placement.componentId;
+                              setState(() {
+                                if (_visibleMeasurementValueBadgeComponentIds
+                                    .contains(componentId)) {
+                                  _visibleMeasurementValueBadgeComponentIds
+                                      .remove(componentId);
+                                } else {
+                                  _visibleMeasurementValueBadgeComponentIds
+                                      .add(componentId);
+                                }
+                              });
+                            },
+                  relatedMeasurements: relatedMeasurements,
+                  relatedVisualTraces: relatedVisualTraces,
+                  photoToBoardAlignments: photoToBoardAlignments,
+                );
+                final controlBand = useWorkbenchShell
+                    ? const SizedBox.shrink(
+                        key: Key('board_canvas_control_band'))
+                    : _BoardCanvasControlBand(
+                        selector: selector,
+                        safetyEvidence:
+                            const _BoardCanvasSafetyEvidenceDisclosure(),
+                        trailingActions: <Widget>[
+                          _MeasureSheetNavigationButton(
+                            onPressed: () {
+                              context.push('/project/measure-sheet');
+                            },
+                          ),
+                          focusToggle,
+                          _InspectorChromeToggle(
+                            inspectorVisible: _inspectorVisible,
+                            showLabel: false,
+                            onPressed: () {
+                              setState(() {
+                                _inspectorVisible = !_inspectorVisible;
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                final restoreBar = _CanvasFocusRestoreBar(
+                  onRestore: () {
+                    setState(() {
+                      _canvasFocusMode = false;
+                      _inspectorVisible = true;
+                      if (selectedKey == null &&
+                          _contextPanelMode ==
+                              _WorkbenchContextPanelMode.inspector) {
+                        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                      }
+                    });
+                  },
+                );
+
+                if (useWorkbenchShell) {
+                  Widget? contextPanel;
+                  switch (_contextPanelMode) {
+                    case _WorkbenchContextPanelMode.hidden:
+                      contextPanel = null;
+                      break;
+                    case _WorkbenchContextPanelMode.inspector:
+                      contextPanel = metadata;
+                      break;
+                    case _WorkbenchContextPanelMode.placements:
+                      contextPanel = _PlacementSelector(
+                        entries: entries,
+                        selectedKey: selectedKey,
+                        selectedLabel: selectedEntry?.selectorLabel,
+                        initiallyExpanded: true,
+                        onSelected: (value) {
                           setState(() {
-                            _inspectorVisible = !_inspectorVisible;
+                            _selectedPlacementKey = value;
+                            _contextPanelMode =
+                                _WorkbenchContextPanelMode.inspector;
+                            _inspectorVisible = true;
                           });
                         },
-                      ),
-                    ],
-                  );
-            final restoreBar = _CanvasFocusRestoreBar(
-              onRestore: () {
-                setState(() {
-                  _canvasFocusMode = false;
-                  _inspectorVisible = true;
-                  if (selectedKey == null &&
-                      _contextPanelMode ==
-                          _WorkbenchContextPanelMode.inspector) {
-                    _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                      );
+                      break;
+                    case _WorkbenchContextPanelMode.measure:
+                      contextPanel = _IntegratedMeasurePanel(
+                        selectedEntry: selectedEntry,
+                        relatedMeasurements: relatedMeasurements,
+                        relatedVisualTraces: relatedVisualTraces,
+                        onContinueToMeasureSheet: () {
+                          context.push('/project/measure-sheet');
+                        },
+                      );
+                      break;
+                    case _WorkbenchContextPanelMode.addComponentTemplates:
+                      contextPanel = _AddComponentTemplateListPanel(
+                        entries: _kStarterAddComponentTemplates,
+                        selectedTemplateId: _selectedAddComponentTemplateId,
+                        selectedTemplate: selectedAddComponentTemplate,
+                        topContactMarkers:
+                            _addComponentTemplateTopContactMarkers,
+                        rightContactMarkers:
+                            _addComponentTemplateRightContactMarkers,
+                        bottomContactMarkers:
+                            _addComponentTemplateBottomContactMarkers,
+                        leftContactMarkers:
+                            _addComponentTemplateLeftContactMarkers,
+                        hasZeroContactMarkers:
+                            _addComponentTemplateHasZeroMarkers,
+                        hasExcessiveContactMarkers:
+                            _addComponentTemplateHasExcessiveCounts,
+                        onTemplateSelected: _setAddComponentTemplateSelection,
+                        draftLabel: _addComponentTemplateDraftLabel,
+                        onDraftLabelChanged: (value) {
+                          setState(() {
+                            _addComponentTemplateDraftLabel = value;
+                          });
+                        },
+                        onTopContactMarkersChanged: (value) {
+                          setState(() =>
+                              _addComponentTemplateTopContactMarkers = value);
+                        },
+                        onRightContactMarkersChanged: (value) {
+                          setState(() =>
+                              _addComponentTemplateRightContactMarkers = value);
+                        },
+                        onBottomContactMarkersChanged: (value) {
+                          setState(() =>
+                              _addComponentTemplateBottomContactMarkers =
+                                  value);
+                        },
+                        onLeftContactMarkersChanged: (value) {
+                          setState(() =>
+                              _addComponentTemplateLeftContactMarkers = value);
+                        },
+                        onChangeTemplateSelection: () {
+                          setState(() {
+                            _selectedAddComponentTemplateId = null;
+                            _addComponentTemplateGhostDraftAnchor = null;
+                          });
+                        },
+                        onResetToTemplateDefaults:
+                            selectedAddComponentTemplate == null
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _seedAddComponentTemplateContactCounts(
+                                          selectedAddComponentTemplate);
+                                      _addComponentTemplateGhostDraftAnchor =
+                                          null;
+                                    });
+                                  },
+                      );
+                      break;
+                    case _WorkbenchContextPanelMode.safetyEvidence:
+                      contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
+                        initiallyExpanded: true,
+                      );
+                      break;
                   }
-                });
-              },
-            );
-
-            if (useWorkbenchShell) {
-              Widget? contextPanel;
-              switch (_contextPanelMode) {
-                case _WorkbenchContextPanelMode.hidden:
-                  contextPanel = null;
-                  break;
-                case _WorkbenchContextPanelMode.inspector:
-                  contextPanel = metadata;
-                  break;
-                case _WorkbenchContextPanelMode.placements:
-                  contextPanel = _PlacementSelector(
-                    entries: entries,
-                    selectedKey: selectedKey,
-                    selectedLabel: selectedEntry?.selectorLabel,
-                    initiallyExpanded: true,
-                    onSelected: (value) {
+                  final contextPanelWidth = constraints.maxWidth >= 1180
+                      ? _kWideContextPanelWidth
+                      : _kMediumContextPanelWidth;
+                  final showContextPanel = _inspectorVisible &&
+                      !_canvasFocusMode &&
+                      contextPanel != null;
+                  final measurePanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey: const Key('board_canvas_measure_sheet_button'),
+                    icon: Icons.science_outlined,
+                    tooltip: 'Open measurement context panel',
+                    label: 'Measure',
+                    modeKey: 'measure',
+                    selected:
+                        _contextPanelMode == _WorkbenchContextPanelMode.measure,
+                    onPressed: () {
                       setState(() {
-                        _selectedPlacementKey = value;
+                        _selectedPlacementKey ??=
+                            entries.isEmpty ? null : entries.first.key;
+                        _contextPanelMode = _WorkbenchContextPanelMode.measure;
+                        _inspectorVisible = true;
+                        _canvasFocusMode = false;
+                      });
+                    },
+                  );
+                  final focusPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey: const Key('board_canvas_rail_placements_tool'),
+                    icon: Icons.format_list_bulleted_rounded,
+                    tooltip: 'Show placements in right contextual panel',
+                    label: 'Placements',
+                    modeKey: 'placements',
+                    selected: _contextPanelMode ==
+                        _WorkbenchContextPanelMode.placements,
+                    onPressed: () {
+                      setState(() {
+                        _selectedPlacementKey = null;
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.placements;
+                        _inspectorVisible = true;
+                      });
+                    },
+                  );
+                  final addComponentPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey:
+                        const Key('board_canvas_rail_add_component_tool'),
+                    icon: Icons.add_box_outlined,
+                    tooltip: 'Open Add Component template-list mode',
+                    label: 'Add Component',
+                    modeKey: 'add_component',
+                    selected: _contextPanelMode ==
+                        _WorkbenchContextPanelMode.addComponentTemplates,
+                    onPressed: () {
+                      setState(() {
+                        _selectedPlacementKey = null;
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.addComponentTemplates;
+                        _inspectorVisible = true;
+                      });
+                    },
+                  );
+                  final safetyPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey:
+                        const Key('board_canvas_rail_safety_evidence_tool'),
+                    icon: Icons.shield_outlined,
+                    tooltip: 'Show safety/evidence read-only details',
+                    label: 'Safety',
+                    modeKey: 'safety',
+                    selected: _contextPanelMode ==
+                        _WorkbenchContextPanelMode.safetyEvidence,
+                    onPressed: () {
+                      setState(() {
+                        _selectedPlacementKey = null;
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.safetyEvidence;
+                        _inspectorVisible = true;
+                      });
+                    },
+                  );
+                  final inspectorPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey: const Key('board_canvas_rail_inspector_tool'),
+                    icon: Icons.info_outline,
+                    tooltip: 'Show inspector context panel',
+                    label: 'Inspector',
+                    modeKey: 'inspector',
+                    selected: _contextPanelMode ==
+                        _WorkbenchContextPanelMode.inspector,
+                    onPressed: () {
+                      setState(() {
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.inspector;
                         _inspectorVisible = true;
                       });
                     },
                   );
-                  break;
-                case _WorkbenchContextPanelMode.measure:
-                  contextPanel = _IntegratedMeasurePanel(
-                    selectedEntry: selectedEntry,
-                    relatedMeasurements: relatedMeasurements,
-                    relatedVisualTraces: relatedVisualTraces,
-                    onContinueToMeasureSheet: () {
-                      context.push('/project/measure-sheet');
-                    },
-                  );
-                  break;
-                case _WorkbenchContextPanelMode.addComponentTemplates:
-                  contextPanel = _AddComponentTemplateListPanel(
-                    entries: _kStarterAddComponentTemplates,
-                    selectedTemplateId: _selectedAddComponentTemplateId,
-                    selectedTemplate: selectedAddComponentTemplate,
-                    topContactMarkers: _addComponentTemplateTopContactMarkers,
-                    rightContactMarkers:
-                        _addComponentTemplateRightContactMarkers,
-                    bottomContactMarkers:
-                        _addComponentTemplateBottomContactMarkers,
-                    leftContactMarkers: _addComponentTemplateLeftContactMarkers,
-                    hasZeroContactMarkers: _addComponentTemplateHasZeroMarkers,
-                    hasExcessiveContactMarkers:
-                        _addComponentTemplateHasExcessiveCounts,
-                    onTemplateSelected: _setAddComponentTemplateSelection,
-                    draftLabel: _addComponentTemplateDraftLabel,
-                    onDraftLabelChanged: (value) {
-                      setState(() {
-                        _addComponentTemplateDraftLabel = value;
-                      });
-                    },
-                    onTopContactMarkersChanged: (value) {
-                      setState(
-                          () => _addComponentTemplateTopContactMarkers = value);
-                    },
-                    onRightContactMarkersChanged: (value) {
-                      setState(() =>
-                          _addComponentTemplateRightContactMarkers = value);
-                    },
-                    onBottomContactMarkersChanged: (value) {
-                      setState(() =>
-                          _addComponentTemplateBottomContactMarkers = value);
-                    },
-                    onLeftContactMarkersChanged: (value) {
-                      setState(() =>
-                          _addComponentTemplateLeftContactMarkers = value);
-                    },
-                    onChangeTemplateSelection: () {
-                      setState(() {
-                        _selectedAddComponentTemplateId = null;
-                        _addComponentTemplateGhostDraftAnchor = null;
-                      });
-                    },
-                    onResetToTemplateDefaults:
-                        selectedAddComponentTemplate == null
-                            ? null
-                            : () {
-                                setState(() {
-                                  _seedAddComponentTemplateContactCounts(
-                                      selectedAddComponentTemplate);
-                                  _addComponentTemplateGhostDraftAnchor = null;
-                                });
-                              },
-                  );
-                  break;
-                case _WorkbenchContextPanelMode.safetyEvidence:
-                  contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
-                    initiallyExpanded: true,
-                  );
-                  break;
-              }
-              final contextPanelWidth = constraints.maxWidth >= 1180
-                  ? _kWideContextPanelWidth
-                  : _kMediumContextPanelWidth;
-              final showContextPanel = _inspectorVisible &&
-                  !_canvasFocusMode &&
-                  contextPanel != null;
-              final measurePanelToggle = _WorkbenchPanelModeButton(
-                buttonKey: const Key('board_canvas_measure_sheet_button'),
-                icon: Icons.science_outlined,
-                tooltip: 'Open measurement context panel',
-                label: 'Measure',
-                modeKey: 'measure',
-                selected:
-                    _contextPanelMode == _WorkbenchContextPanelMode.measure,
-                onPressed: () {
-                  setState(() {
-                    _selectedPlacementKey ??=
-                        entries.isEmpty ? null : entries.first.key;
-                    _contextPanelMode = _WorkbenchContextPanelMode.measure;
-                    _inspectorVisible = true;
-                    _canvasFocusMode = false;
-                  });
-                },
-              );
-              final focusPanelToggle = _WorkbenchPanelModeButton(
-                buttonKey: const Key('board_canvas_rail_placements_tool'),
-                icon: Icons.format_list_bulleted_rounded,
-                tooltip: 'Show placements in right contextual panel',
-                label: 'Placements',
-                modeKey: 'placements',
-                selected:
-                    _contextPanelMode == _WorkbenchContextPanelMode.placements,
-                onPressed: () {
-                  setState(() {
-                    _selectedPlacementKey = null;
-                    _contextPanelMode = _WorkbenchContextPanelMode.placements;
-                    _inspectorVisible = true;
-                  });
-                },
-              );
-              final addComponentPanelToggle = _WorkbenchPanelModeButton(
-                buttonKey: const Key('board_canvas_rail_add_component_tool'),
-                icon: Icons.add_box_outlined,
-                tooltip: 'Open Add Component template-list mode',
-                label: 'Add Component',
-                modeKey: 'add_component',
-                selected: _contextPanelMode ==
-                    _WorkbenchContextPanelMode.addComponentTemplates,
-                onPressed: () {
-                  setState(() {
-                    _selectedPlacementKey = null;
-                    _contextPanelMode =
-                        _WorkbenchContextPanelMode.addComponentTemplates;
-                    _inspectorVisible = true;
-                  });
-                },
-              );
-              final safetyPanelToggle = _WorkbenchPanelModeButton(
-                buttonKey: const Key('board_canvas_rail_safety_evidence_tool'),
-                icon: Icons.shield_outlined,
-                tooltip: 'Show safety/evidence read-only details',
-                label: 'Safety',
-                modeKey: 'safety',
-                selected: _contextPanelMode ==
-                    _WorkbenchContextPanelMode.safetyEvidence,
-                onPressed: () {
-                  setState(() {
-                    _selectedPlacementKey = null;
-                    _contextPanelMode =
-                        _WorkbenchContextPanelMode.safetyEvidence;
-                    _inspectorVisible = true;
-                  });
-                },
-              );
-              final inspectorPanelToggle = _WorkbenchPanelModeButton(
-                buttonKey: const Key('board_canvas_rail_inspector_tool'),
-                icon: Icons.info_outline,
-                tooltip: 'Show inspector context panel',
-                label: 'Inspector',
-                modeKey: 'inspector',
-                selected:
-                    _contextPanelMode == _WorkbenchContextPanelMode.inspector,
-                onPressed: () {
-                  setState(() {
-                    _contextPanelMode = _WorkbenchContextPanelMode.inspector;
-                    _inspectorVisible = true;
-                  });
-                },
-              );
-              return Row(
-                key: const Key('board_canvas_workbench_shell'),
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (!_canvasFocusMode) ...[
-                    _WorkbenchToolRail(
-                      addComponentTool: addComponentPanelToggle,
-                      inspectorTool: inspectorPanelToggle,
-                      measureSheetTool: measurePanelToggle,
-                      placementTool: focusPanelToggle,
-                      safetyEvidenceTool: safetyPanelToggle,
-                    ),
-                    const SizedBox(width: 6),
-                  ],
-                  Expanded(
-                    child: Column(
-                      key: const Key('board_canvas_workbench_canvas_zone'),
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (_canvasFocusMode) restoreBar,
-                        Expanded(child: canvas),
+                  return Row(
+                    key: const Key('board_canvas_workbench_shell'),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (!_canvasFocusMode) ...[
+                        _WorkbenchToolRail(
+                          addComponentTool: addComponentPanelToggle,
+                          inspectorTool: inspectorPanelToggle,
+                          measureSheetTool: measurePanelToggle,
+                          placementTool: focusPanelToggle,
+                          safetyEvidenceTool: safetyPanelToggle,
+                        ),
+                        const SizedBox(width: 6),
                       ],
-                    ),
-                  ),
-                  if (showContextPanel) ...[
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      key: const Key('board_canvas_context_panel'),
-                      width: contextPanelWidth,
-                      child: contextPanel,
-                    ),
-                  ],
-                ],
-              );
-            }
+                      Expanded(
+                        child: Column(
+                          key: const Key('board_canvas_workbench_canvas_zone'),
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (_canvasFocusMode) restoreBar,
+                            Expanded(child: canvas),
+                          ],
+                        ),
+                      ),
+                      if (showContextPanel) ...[
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          key: const Key('board_canvas_context_panel'),
+                          width: contextPanelWidth,
+                          child: contextPanel,
+                        ),
+                      ],
+                    ],
+                  );
+                }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_canvasFocusMode) restoreBar else controlBand,
-                const SizedBox(height: 4),
-                Expanded(
-                  flex: _inspectorVisible && !_canvasFocusMode ? 4 : 1,
-                  child: canvas,
-                ),
-                if (_inspectorVisible && !_canvasFocusMode) ...[
-                  const SizedBox(height: 4),
-                  Expanded(flex: 2, child: metadata),
-                ],
-              ],
-            );
-          },
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_canvasFocusMode) restoreBar else controlBand,
+                    const SizedBox(height: 4),
+                    Expanded(
+                      flex: _inspectorVisible && !_canvasFocusMode ? 4 : 1,
+                      child: canvas,
+                    ),
+                    if (_inspectorVisible && !_canvasFocusMode) ...[
+                      const SizedBox(height: 4),
+                      Expanded(flex: 2, child: metadata),
+                    ],
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -1042,7 +1083,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         title: Text(
           'Board Canvas',
           style: theme.textTheme.titleMedium?.copyWith(
-            color: _kBoardCanvasNavyDeep,
+            color: _kBoardCanvasNavy,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -1057,11 +1098,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   color: _kBoardCanvasSignalTint,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: _kBoardCanvasSignal.withValues(alpha: 0.62),
+                    color: _kBoardCanvasSignal.withValues(alpha: 0.46),
                   ),
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 164),
+                  constraints: const BoxConstraints(maxWidth: 222),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -1076,11 +1117,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
-                          'Read-only · no writes',
+                          'Ainult vaatamine · kirjutusi pole',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: _kBoardCanvasSignal,
+                            color: _kBoardCanvasNavy,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.4,
                           ),
@@ -1116,9 +1157,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 style: (theme.textTheme.labelSmall ??
                         const TextStyle(fontSize: 11))
                     .copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
+                  color: _kBoardCanvasMuted,
                 ),
                 child: Row(
                   children: [
@@ -1126,7 +1167,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       width: 6,
                       height: 6,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF2F8F6B),
+                        color: _kBoardCanvasSignal,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -1210,36 +1251,42 @@ class _PhotoAlignmentReadinessPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 220),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _SectionHeader(
-                title: 'Photo alignment readiness — metadata only',
-                tag: 'READINESS',
-              ),
-              const SizedBox(height: 6),
-              const Text('Stores alignment reference points only.'),
-              const Text(
-                'Does not confirm identity, nets, measurements, or faults.',
-              ),
-              const Text(
-                  'No photo-local evidence is rendered on board canvas.'),
-              const Text('No transform is computed.'),
-              const Text('Not electrical proof.'),
-              const SizedBox(height: 8),
-              ...alignments.map(
-                (alignment) => _PhotoAlignmentSummaryTile(alignment: alignment),
-              ),
-            ],
+        child: DefaultTextStyle.merge(
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _SectionHeader(
+                  title: 'Photo alignment readiness — metadata only',
+                  tag: 'READINESS',
+                ),
+                const SizedBox(height: 6),
+                const Text('Stores alignment reference points only.'),
+                const Text(
+                  'Does not confirm identity, nets, measurements, or faults.',
+                ),
+                const Text(
+                    'No photo-local evidence is rendered on board canvas.'),
+                const Text('No transform is computed.'),
+                const Text('Not electrical proof.'),
+                const SizedBox(height: 8),
+                ...alignments.map(
+                  (alignment) =>
+                      _PhotoAlignmentSummaryTile(alignment: alignment),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1324,14 +1371,16 @@ class _WorkbenchToolRail extends StatelessWidget {
       width: _kWorkbenchRailWidth,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: _kBoardCanvasPaper,
+          color: _kBoardCanvasNavyDeep,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: _kBoardCanvasRule),
+          border: Border.all(
+            color: _kBoardCanvasRuleStrong.withValues(alpha: 0.72),
+          ),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x1F0F2A45),
-              blurRadius: 18,
-              offset: Offset(0, 8),
+              color: Color(0x3D080B0F),
+              blurRadius: 12,
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -1340,7 +1389,7 @@ class _WorkbenchToolRail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _WorkbenchSectionHeader(label: 'Panels'),
+              const _WorkbenchSectionHeader(label: 'Paneelid'),
               const SizedBox(height: _kWorkbenchToolTileGap),
               measureSheetTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -1358,7 +1407,7 @@ class _WorkbenchToolRail extends StatelessWidget {
                 color: _kBoardCanvasRule,
               ),
               const SizedBox(height: 6),
-              const _WorkbenchSectionHeader(label: 'Future tools'),
+              const _WorkbenchSectionHeader(label: 'Tulevased tööriistad'),
               const SizedBox(height: 4),
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_trace_tool'),
@@ -1397,10 +1446,10 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
     final theme = Theme.of(context);
     final button = Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: SizedBox(
         width: _kCompactControlTileHeight,
@@ -1413,6 +1462,7 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
             minimumSize: const Size.square(_kCompactControlTileHeight),
             padding: EdgeInsets.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            foregroundColor: _kBoardCanvasMuted,
           ),
           icon: const Icon(Icons.science_outlined),
           onPressed: onPressed,
@@ -1434,7 +1484,9 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
         ),
       ],
     );
@@ -1463,12 +1515,12 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tileColor = selected ? _kBoardCanvasPaper : const Color(0xFFF7F9FC);
+    final tileColor = selected ? _kBoardCanvasSignalTint : _kBoardCanvasTile;
     final borderColor =
         selected ? _kBoardCanvasSignal : _kBoardCanvasRuleStrong;
     final labelStyle = theme.textTheme.labelSmall?.copyWith(
       fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
-      color: selected ? _kBoardCanvasNavy : theme.colorScheme.onSurfaceVariant,
+      color: selected ? _kBoardCanvasNavy : _kBoardCanvasMuted,
     );
     final tooltipText = selected ? '$tooltip • active' : tooltip;
 
@@ -1503,7 +1555,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
             color: tileColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: borderColor),
+              side: BorderSide(color: borderColor, width: selected ? 1.4 : 1),
             ),
             child: Stack(
               children: [
@@ -1547,16 +1599,29 @@ class _WorkbenchSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(left: 2, bottom: 2),
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-        ),
+      padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasMuted,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Container(
+              height: 1,
+              color: _kBoardCanvasRuleStrong.withValues(alpha: 0.55),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1584,9 +1649,11 @@ class _InactiveRailToolButton extends StatelessWidget {
       width: _kCompactControlTileHeight,
       height: _kCompactControlTileHeight,
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F5F8),
+        color: _kBoardCanvasNavyDeep,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _kBoardCanvasRule),
+        border: Border.all(
+          color: _kBoardCanvasRuleStrong.withValues(alpha: 0.65),
+        ),
       ),
       child: IconButton(
         key: buttonKey,
@@ -1596,7 +1663,8 @@ class _InactiveRailToolButton extends StatelessWidget {
           minimumSize: const Size.square(_kCompactControlTileHeight),
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          foregroundColor: theme.colorScheme.onSurfaceVariant,
+          foregroundColor: _kBoardCanvasMuted,
+          disabledForegroundColor: _kBoardCanvasDim,
         ),
         icon: Icon(icon),
         onPressed: null,
@@ -1617,7 +1685,10 @@ class _InactiveRailToolButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasDim,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -1644,7 +1715,10 @@ class _CompactDisclosureTitle extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelLarge,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         const SizedBox(width: 6),
@@ -1654,7 +1728,9 @@ class _CompactDisclosureTitle extends StatelessWidget {
             detail,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
           ),
         ),
       ],
@@ -1676,10 +1752,10 @@ class _CanvasFocusButton extends StatelessWidget {
     final theme = Theme.of(context);
     final button = Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: SizedBox(
         width: _kCompactControlTileHeight,
@@ -1692,6 +1768,7 @@ class _CanvasFocusButton extends StatelessWidget {
             minimumSize: const Size.square(_kCompactControlTileHeight),
             padding: EdgeInsets.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            foregroundColor: _kBoardCanvasMuted,
           ),
           icon: const Icon(Icons.fullscreen),
           onPressed: onPressed,
@@ -1713,7 +1790,9 @@ class _CanvasFocusButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
         ),
       ],
     );
@@ -1741,10 +1820,10 @@ class _InspectorChromeToggle extends StatelessWidget {
     final label = inspectorVisible ? 'Hide inspector' : 'Show inspector';
     final button = Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: SizedBox(
         width: _kCompactControlTileHeight,
@@ -1757,6 +1836,7 @@ class _InspectorChromeToggle extends StatelessWidget {
             minimumSize: const Size.square(_kCompactControlTileHeight),
             padding: EdgeInsets.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            foregroundColor: _kBoardCanvasMuted,
           ),
           icon: Icon(icon),
           onPressed: onPressed,
@@ -1778,7 +1858,9 @@ class _InspectorChromeToggle extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
         ),
       ],
     );
@@ -1796,10 +1878,10 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
     return Card(
       key: const Key('board_canvas_focus_restore_bar'),
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1808,7 +1890,7 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
             Icon(
               Icons.fullscreen_exit,
               size: _kCompactControlIconSize,
-              color: theme.colorScheme.onSurfaceVariant,
+              color: _kBoardCanvasMuted,
             ),
             const SizedBox(width: 6),
             Expanded(
@@ -1816,7 +1898,9 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
                 'Canvas focus mode. Controls and read-only details are recoverable.',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: _kBoardCanvasMuted,
+                ),
               ),
             ),
             const SizedBox(width: 8),
@@ -1971,11 +2055,23 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                         'board_canvas_add_component_template_draft_label_input',
                       ),
                       initialValue: draftLabel,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         isDense: true,
                         labelText: 'Draft label',
                         hintText: 'e.g. AGH789',
-                        contentPadding: EdgeInsets.symmetric(
+                        labelStyle: theme.textTheme.labelSmall?.copyWith(
+                          color: _kBoardCanvasMuted,
+                        ),
+                        hintStyle: theme.textTheme.bodySmall?.copyWith(
+                          color: _kBoardCanvasDim,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: _kBoardCanvasRule),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: _kBoardCanvasSignal),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 6,
                         ),
@@ -1983,7 +2079,9 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                       maxLength: 16,
                       onChanged: onDraftLabelChanged,
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 12),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: _kBoardCanvasNavy,
+                      ),
                     ),
                     _AddComponentTemplateBuilderPanel(
                       key: const Key(
@@ -2094,8 +2192,8 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: theme.colorScheme.surfaceContainerHighest,
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: _kBoardCanvasTile,
+        border: Border.all(color: _kBoardCanvasRule),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2122,12 +2220,15 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
+                    color: _kBoardCanvasNavy,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   template.contactMarkerSummaryShort,
-                  style: theme.textTheme.labelSmall,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasMuted,
+                  ),
                 ),
               ],
             ),
@@ -2144,6 +2245,7 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
               ),
               minimumSize: const Size(0, 24),
               textStyle: theme.textTheme.labelSmall,
+              foregroundColor: _kBoardCanvasMuted,
             ),
             child: const Text('Change template'),
           ),
@@ -2151,7 +2253,7 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
           Icon(
             Icons.check_circle_rounded,
             size: 16,
-            color: theme.colorScheme.primary,
+            color: _kBoardCanvasSignal,
             key: Key(
               'board_canvas_add_component_template_${template.id}_selected',
             ),
@@ -2199,10 +2301,10 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
     return Card(
       key: const Key('board_canvas_add_component_builder_card'),
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surface,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -2215,6 +2317,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                   child: Text(
                     'Visual-contact builder',
                     style: theme.textTheme.titleSmall?.copyWith(
+                      color: _kBoardCanvasNavy,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -2222,7 +2325,9 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   'Contact markers',
-                  style: theme.textTheme.labelSmall,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasMuted,
+                  ),
                 ),
               ],
             ),
@@ -2380,6 +2485,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                       ),
                       minimumSize: const Size(0, 24),
                       textStyle: theme.textTheme.labelSmall,
+                      foregroundColor: _kBoardCanvasMuted,
                     ),
                     child: const Text('Reset to template defaults'),
                   ),
@@ -2446,6 +2552,7 @@ class _ContactMarkerCountRow extends StatelessWidget {
     final label = Text(
       side,
       style: theme.textTheme.labelSmall?.copyWith(
+        color: _kBoardCanvasMuted,
         fontSize: 10,
       ),
     );
@@ -2462,6 +2569,8 @@ class _ContactMarkerCountRow extends StatelessWidget {
             visualDensity: VisualDensity.compact,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             minimumSize: const Size(16, 16),
+            foregroundColor: _kBoardCanvasMuted,
+            disabledForegroundColor: _kBoardCanvasDim,
           ),
           onPressed: value <= 0 ? null : () => onChanged(value - 1),
           icon: const Icon(Icons.remove_circle_outline),
@@ -2479,6 +2588,7 @@ class _ContactMarkerCountRow extends StatelessWidget {
               'board_canvas_add_component_template_builder_${sideKey}_value',
             ),
             style: theme.textTheme.bodyMedium?.copyWith(
+              color: _kBoardCanvasNavy,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -2491,6 +2601,7 @@ class _ContactMarkerCountRow extends StatelessWidget {
             visualDensity: VisualDensity.compact,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             minimumSize: const Size(16, 16),
+            foregroundColor: _kBoardCanvasMuted,
           ),
           onPressed: () => onChanged(value + 1),
           icon: const Icon(Icons.add_circle_outline),
@@ -2775,9 +2886,11 @@ class _AddComponentTemplateListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final baseColor = selected
-        ? _kBoardCanvasSignalTint.withValues(alpha: 0.68)
-        : _kBoardCanvasPaper;
-    final borderColor = selected ? _kBoardCanvasSignal : _kBoardCanvasRule;
+        ? _kBoardCanvasSignalTint.withValues(alpha: 0.82)
+        : _kBoardCanvasTile;
+    final borderColor = selected
+        ? _kBoardCanvasSignal
+        : _kBoardCanvasRuleStrong.withValues(alpha: 0.72);
     final shortShapeName = entry.shortTemplateShapeName;
     final contactCountText = entry.contactMarkerSummaryShort;
 
@@ -2790,7 +2903,16 @@ class _AddComponentTemplateListTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: baseColor,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: borderColor),
+          border: Border.all(color: borderColor, width: selected ? 1.4 : 1),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: _kBoardCanvasSignal.withValues(alpha: 0.14),
+                    blurRadius: 9,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -2799,9 +2921,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
               selected
                   ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
-              color: selected
-                  ? _kBoardCanvasSignal
-                  : theme.colorScheme.onSurfaceVariant,
+              color: selected ? _kBoardCanvasSignal : _kBoardCanvasMuted,
               size: 16,
             ),
             const SizedBox(width: 6),
@@ -2833,6 +2953,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w500,
+                            color: _kBoardCanvasNavy,
                           ),
                         ),
                       ),
@@ -2843,7 +2964,7 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                           key: Key(
                             'board_canvas_add_component_template_${entry.id}_selected',
                           ),
-                          color: theme.colorScheme.onPrimaryContainer,
+                          color: _kBoardCanvasSignal,
                           semanticLabel: 'selected',
                         ),
                     ],
@@ -2851,7 +2972,9 @@ class _AddComponentTemplateListTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     contactCountText,
-                    style: theme.textTheme.labelSmall,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: _kBoardCanvasMuted,
+                    ),
                   ),
                 ],
               ),
@@ -2885,10 +3008,10 @@ class _PlacementSelector extends StatelessWidget {
         '${entries.length} placement${entries.length == 1 ? '' : 's'} available';
     return Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_placement_selector_disclosure'),
@@ -2942,7 +3065,7 @@ class _CanvasStatusPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: _kBoardCanvasNavyDeep.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _kBoardCanvasPaper.withValues(alpha: 0.10)),
+        border: Border.all(color: _kBoardCanvasRule.withValues(alpha: 0.72)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -2951,16 +3074,16 @@ class _CanvasStatusPill extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Board projection canvas',
+              'Plaadi projektsioonivaade',
               style: theme.textTheme.labelLarge?.copyWith(
-                color: const Color(0xFFEAF1F7),
+                color: _kBoardCanvasNavy,
                 fontWeight: FontWeight.w700,
               ),
             ),
             Text(
-              'Existing board-normalized placements only',
+              'Ainult olemasolevad plaadinormaliseeritud paigutused',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: const Color(0xFF9FB6CC),
+                color: _kBoardCanvasMuted,
               ),
             ),
           ],
@@ -3316,7 +3439,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
+                          color: _kBoardCanvasNavy,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -3332,16 +3455,16 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHigh,
+                      color: _kBoardCanvasTile,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: theme.colorScheme.outlineVariant,
+                        color: _kBoardCanvasRule,
                       ),
                     ),
                     child: Text(
                       'Draft / unsaved',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurface,
+                        color: _kBoardCanvasNavy,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -3359,11 +3482,10 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         key: const Key('board_canvas_add_component_template_ghost_preview'),
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color:
-              theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.34),
+          color: _kBoardCanvasTile.withValues(alpha: 0.72),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: theme.colorScheme.outlineVariant,
+            color: _kBoardCanvasRule,
           ),
         ),
         child: ghostPreview,
@@ -3393,7 +3515,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         size: _kCompactControlIconSize,
       ),
       label: Text(
-        widget.allMeasurementValueBadgesVisible ? 'Hide All' : 'Show All',
+        widget.allMeasurementValueBadgesVisible ? 'Hide All' : 'Näita kõiki',
       ),
       onPressed: widget.onToggleAllMeasurementValueBadges,
     );
@@ -3438,15 +3560,15 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: _kBoardCanvasNavyDeep,
+      color: _kBoardCanvasTile,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: _kBoardCanvasNavyDeep),
+        side: const BorderSide(color: _kBoardCanvasRuleStrong),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
@@ -3486,13 +3608,12 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       margin: EdgeInsets.zero,
-      color: theme.colorScheme.surfaceContainerLow,
+      color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+        side: const BorderSide(color: _kBoardCanvasRule),
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_safety_evidence_disclosure'),
@@ -3523,10 +3644,9 @@ class _BoardCanvasLegend extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color:
-            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.72),
+        color: _kBoardCanvasPaper,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        border: Border.all(color: _kBoardCanvasRule),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -3547,32 +3667,46 @@ class _BoardCanvasLegend extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Footprint geometry is read-only display metadata.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             Text(
               'Template family is not electrical identity; visual metadata does not establish a net.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
               'Measurement badge: component has related measurement(s).',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             Text(
               'Value badges are optional and show projected value plus unit only.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             Text(
               'Component-level only.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             Text(
               'No measurement board coordinate is available.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             Text(
               'Does not create or confirm a net.',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
           ],
         ),
@@ -3596,15 +3730,17 @@ class _LegendItem extends StatelessWidget {
           width: 9,
           height: 9,
           decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer,
-            border: Border.all(color: theme.colorScheme.primary),
+            color: _kBoardCanvasSignalTint,
+            border: Border.all(color: _kBoardCanvasSignal),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
         const SizedBox(width: 5),
         Text(
           label,
-          style: theme.textTheme.bodySmall,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
         ),
       ],
     );
@@ -3626,8 +3762,8 @@ class _PhotoAlignmentSummaryTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border:
-              Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          border: Border.all(color: _kBoardCanvasRule),
+          color: _kBoardCanvasTile,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Padding(
@@ -3700,12 +3836,22 @@ class _InspectorPanel extends StatelessWidget {
 
     if (selectedEntry == null) {
       children.add(
-        const Card(
+        Card(
+          color: _kBoardCanvasPaper,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: const BorderSide(color: _kBoardCanvasRule),
+          ),
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Align(
               alignment: Alignment.topLeft,
-              child: Text('Select a placement to view read-only details.'),
+              child: Text(
+                'Select a placement to view read-only details.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: _kBoardCanvasMuted,
+                    ),
+              ),
             ),
           ),
         ),
@@ -3817,6 +3963,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                         Text(
                           'Measure',
                           style: theme.textTheme.titleMedium?.copyWith(
+                            color: _kMeasurePanelNavy,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -3826,6 +3973,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall?.copyWith(
+                            color: _kBoardCanvasMuted,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -3847,6 +3995,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   Text(
                     'Component visual',
                     style: theme.textTheme.titleSmall?.copyWith(
+                      color: _kMeasurePanelNavy,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -3865,7 +4014,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   Text(
                     'Visual only; no connectivity proof.',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: _kBoardCanvasMuted,
                     ),
                   ),
                 ],
@@ -3885,6 +4034,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                         child: Text(
                           'Measured values',
                           style: theme.textTheme.titleSmall?.copyWith(
+                            color: _kMeasurePanelNavy,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -3900,37 +4050,54 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   Text(
                     'inline values · local drafts',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: _kBoardCanvasMuted,
                     ),
                   ),
                   const SizedBox(height: 7),
-                  ...targetRows.map(
-                    (row) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: _MeasureTargetRow(
-                        row: row,
-                        selected: row.target == selectedTarget,
-                        draftValue: _draftValuesByTarget[row.target] ?? '',
-                        draftUnit: _draftUnitsByTarget[row.target] ??
-                            _defaultDraftUnit(row),
-                        unitOptions: _draftUnitOptions,
-                        onSelected: () {
-                          setState(() {
-                            _selectedTarget = row.target;
-                          });
-                        },
-                        onDraftValueChanged: (value) {
-                          setState(() {
-                            _selectedTarget = row.target;
-                            _draftValuesByTarget[row.target] = value;
-                          });
-                        },
-                        onDraftUnitChanged: (value) {
-                          setState(() {
-                            _selectedTarget = row.target;
-                            _draftUnitsByTarget[row.target] = value;
-                          });
-                        },
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: _kMeasurePanelBodyFill.withValues(alpha: 0.62),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: _kMeasurePanelRule.withValues(alpha: 0.88),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Column(
+                        children: [
+                          ...targetRows.map(
+                            (row) => Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: _MeasureTargetRow(
+                                row: row,
+                                selected: row.target == selectedTarget,
+                                draftValue:
+                                    _draftValuesByTarget[row.target] ?? '',
+                                draftUnit: _draftUnitsByTarget[row.target] ??
+                                    _defaultDraftUnit(row),
+                                unitOptions: _draftUnitOptions,
+                                onSelected: () {
+                                  setState(() {
+                                    _selectedTarget = row.target;
+                                  });
+                                },
+                                onDraftValueChanged: (value) {
+                                  setState(() {
+                                    _selectedTarget = row.target;
+                                    _draftValuesByTarget[row.target] = value;
+                                  });
+                                },
+                                onDraftUnitChanged: (value) {
+                                  setState(() {
+                                    _selectedTarget = row.target;
+                                    _draftUnitsByTarget[row.target] = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -3943,7 +4110,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       ),
                       onPressed: widget.onContinueToMeasureSheet,
                       style: TextButton.styleFrom(
-                        foregroundColor: theme.colorScheme.onSurfaceVariant,
+                        foregroundColor: _kBoardCanvasMuted,
                         visualDensity: VisualDensity.compact,
                         minimumSize: const Size(0, 30),
                         padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -3966,6 +4133,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   Text(
                     'From -> To context',
                     style: theme.textTheme.titleSmall?.copyWith(
+                      color: _kMeasurePanelNavy,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -3973,14 +4141,16 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   Text(
                     'Display only; no confirmed connectivity.',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: _kBoardCanvasMuted,
                     ),
                   ),
                   const SizedBox(height: 6),
                   if (contextRows.isEmpty)
                     Text(
                       'No From -> To context for selected component.',
-                      style: theme.textTheme.bodySmall,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: _kBoardCanvasMuted,
+                      ),
                     )
                   else
                     ...contextRows.map(
@@ -4005,22 +4175,27 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                 title: Text(
                   'Advanced technical details',
                   style: theme.textTheme.labelLarge?.copyWith(
+                    color: _kMeasurePanelNavy,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 subtitle: Text(
                   'read-only provenance',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                    color: _kBoardCanvasMuted,
                   ),
                 ),
                 children: [
                   if (widget.relatedVisualTraces.isEmpty &&
                       widget.relatedMeasurements.isEmpty) ...[
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
-                      child:
-                          Text('No advanced details for selected component.'),
+                      child: Text(
+                        'No advanced details for selected component.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: _kBoardCanvasMuted,
+                        ),
+                      ),
                     ),
                   ] else ...[
                     if (widget.relatedVisualTraces.isNotEmpty) ...[
@@ -4371,8 +4546,8 @@ class _MeasurePanelPill extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: _kMeasurePanelSignalTint,
-        border: Border.all(color: _kMeasurePanelSignal.withValues(alpha: 0.5)),
+        color: _kMeasurePanelSignalTint.withValues(alpha: 0.88),
+        border: Border.all(color: _kMeasurePanelSignal.withValues(alpha: 0.72)),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Padding(
@@ -4421,7 +4596,7 @@ class _MeasureComponentPreview extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: _kMeasurePanelRule),
         borderRadius: BorderRadius.circular(8),
-        color: theme.colorScheme.surface,
+        color: _kBoardCanvasTile,
       ),
       child: Padding(
         padding: const EdgeInsets.all(6),
@@ -4594,20 +4769,21 @@ class _MeasureVisualPad extends StatelessWidget {
       key: Key('board_canvas_measure_visual_pad_${row.target}'),
       decoration: BoxDecoration(
         color: selected
-            ? _kMeasurePanelSignalTint
+            ? _kMeasurePanelSignal
             : row.isExistingValue
                 ? _kMeasurePanelSignal.withValues(alpha: 0.22)
-                : theme.colorScheme.surface,
+                : _kBoardCanvasTile,
         border: Border.all(
-          color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
-          width: selected ? 2 : 1,
+          color: selected ? _kMeasurePanelNavy : _kMeasurePanelRule,
+          width: selected ? 2.4 : 1,
         ),
         borderRadius: BorderRadius.circular(6),
         boxShadow: selected
             ? [
                 BoxShadow(
-                  color: _kMeasurePanelSignal.withValues(alpha: 0.18),
-                  blurRadius: 8,
+                  color: _kMeasurePanelSignal.withValues(alpha: 0.34),
+                  blurRadius: 11,
+                  spreadRadius: 1,
                 ),
               ]
             : null,
@@ -4621,8 +4797,7 @@ class _MeasureVisualPad extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelSmall?.copyWith(
-              color:
-                  selected ? _kMeasurePanelNavy : theme.colorScheme.onSurface,
+              color: selected ? _kBoardCanvasNavyDeep : _kBoardCanvasMuted,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -4685,7 +4860,7 @@ class _MeasureTargetRow extends StatelessWidget {
               ? _kMeasurePanelSignal
               : Colors.transparent,
           border: Border.all(
-            color: selected ? _kMeasurePanelSignal : theme.colorScheme.outline,
+            color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
           ),
           shape: BoxShape.circle,
         ),
@@ -4698,6 +4873,7 @@ class _MeasureTargetRow extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: theme.textTheme.bodySmall?.copyWith(
+          color: selected ? _kMeasurePanelNavy : _kBoardCanvasNavy,
           fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
         ),
       );
@@ -4730,85 +4906,126 @@ class _MeasureTargetRow extends StatelessWidget {
 
     Widget draftControls() {
       return SizedBox(
-        width: 146,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 32,
-                child: TextFormField(
-                  key: Key(
-                    'board_canvas_measure_row_value_input_${row.target}',
-                  ),
-                  initialValue: draftValue,
-                  style: theme.textTheme.labelMedium,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    isCollapsed: true,
-                    hintText: 'lisa väärtus',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 8,
-                    ),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                    signed: true,
-                  ),
-                  onTap: onSelected,
-                  onChanged: onDraftValueChanged,
-                ),
-              ),
+        width: 152,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: _kMeasurePanelCoolSurface,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(
+              color: selected
+                  ? _kMeasurePanelSignal.withValues(alpha: 0.7)
+                  : _kMeasurePanelRule,
             ),
-            const SizedBox(width: 5),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: _kMeasurePanelRule,
-                ),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: SizedBox(
-                width: 54,
-                height: 32,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    key: Key(
-                      'board_canvas_measure_row_unit_select_${row.target}',
-                    ),
-                    value: unitValue,
-                    isDense: true,
-                    isExpanded: true,
-                    iconSize: 16,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    items: unitOptions
-                        .map(
-                          (unit) => DropdownMenuItem<String>(
-                            value: unit,
-                            child: Text(
-                              unit,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: TextFormField(
+                      key: Key(
+                        'board_canvas_measure_row_value_input_${row.target}',
+                      ),
+                      initialValue: draftValue,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: _kMeasurePanelNavy,
+                      ),
+                      cursorColor: _kMeasurePanelSignal,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        isCollapsed: true,
+                        filled: true,
+                        fillColor: _kMeasurePanelRowFill,
+                        hintText: 'lisa väärtus',
+                        hintStyle: theme.textTheme.labelMedium?.copyWith(
+                          color: _kBoardCanvasDim,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: const BorderSide(
+                            color: _kMeasurePanelRule,
                           ),
-                        )
-                        .toList(growable: false),
-                    onChanged: (value) {
-                      if (value == null) {
-                        return;
-                      }
-                      onSelected();
-                      onDraftUnitChanged(value);
-                    },
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: const BorderSide(
+                            color: _kMeasurePanelSignal,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 7,
+                        ),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: true,
+                      ),
+                      onTap: onSelected,
+                      onChanged: onDraftValueChanged,
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(width: 4),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: _kMeasurePanelRowFill,
+                    border: Border.all(
+                      color: _kMeasurePanelRule,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: SizedBox(
+                    width: 54,
+                    height: 30,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        key: Key(
+                          'board_canvas_measure_row_unit_select_${row.target}',
+                        ),
+                        value: unitValue,
+                        isDense: true,
+                        isExpanded: true,
+                        iconSize: 16,
+                        dropdownColor: _kMeasurePanelRowRaised,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: _kMeasurePanelNavy,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        items: unitOptions
+                            .map(
+                              (unit) => DropdownMenuItem<String>(
+                                value: unit,
+                                child: Text(
+                                  unit,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: _kMeasurePanelNavy,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(growable: false),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          onSelected();
+                          onDraftUnitChanged(value);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
     }
@@ -4853,57 +5070,62 @@ class _MeasureTargetRow extends StatelessWidget {
       );
     }
 
-    return MouseRegion(
-      onEnter: (_) => onSelected(),
-      child: InkWell(
-        key: Key('board_canvas_measure_target_row_${row.target}'),
-        borderRadius: BorderRadius.circular(8),
-        onTap: onSelected,
-        onHover: (hovering) {
-          if (hovering) {
-            onSelected();
-          }
-        },
-        child: DecoratedBox(
-          key: selected
-              ? Key('board_canvas_measure_target_row_selected_${row.target}')
-              : null,
-          decoration: BoxDecoration(
+    return InkWell(
+      key: Key('board_canvas_measure_target_row_${row.target}'),
+      borderRadius: BorderRadius.circular(8),
+      onTap: onSelected,
+      child: DecoratedBox(
+        key: selected
+            ? Key('board_canvas_measure_target_row_selected_${row.target}')
+            : null,
+        decoration: BoxDecoration(
+          color: selected
+              ? _kMeasurePanelSignalTint
+              : row.isExistingValue
+                  ? _kMeasurePanelRowRaised
+                  : _kMeasurePanelRowFill,
+          border: Border.all(
             color: selected
-                ? _kMeasurePanelSignalTint
+                ? _kMeasurePanelSignal
                 : row.isExistingValue
-                    ? _kMeasurePanelCoolSurface
-                    : theme.colorScheme.surface,
-            border: Border.all(
-              color: selected ? _kMeasurePanelSignal : _kMeasurePanelRule,
-              width: selected ? 1.6 : 1,
-            ),
-            borderRadius: BorderRadius.circular(8),
+                    ? _kMeasurePanelRule.withValues(alpha: 0.95)
+                    : _kMeasurePanelRule.withValues(alpha: 0.72),
+            width: selected ? 2 : 1,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LayoutBuilder(
-                  builder: (context, constraints) =>
-                      targetRowContent(constraints),
-                ),
-                if (!row.isExistingValue && trimmedDraft.isNotEmpty) ...[
-                  const SizedBox(height: 3),
-                  Text(
-                    'Draft: ${row.displayLabel} = $trimmedDraft $unitValue',
-                    key: Key(
-                      'board_canvas_measure_local_draft_summary_${row.target}',
-                    ),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w800,
-                    ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: _kMeasurePanelSignal.withValues(alpha: 0.24),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
                   ),
-                ],
+                ]
+              : null,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) =>
+                    targetRowContent(constraints),
+              ),
+              if (!row.isExistingValue && trimmedDraft.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  'Draft: ${row.displayLabel} = $trimmedDraft $unitValue',
+                  key: Key(
+                    'board_canvas_measure_local_draft_summary_${row.target}',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasMuted,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -4921,15 +5143,21 @@ class _MeasureContextRow extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border.all(color: _kMeasurePanelRule),
+        color: _kMeasurePanelRowFill,
+        border: Border.all(
+          color: _kMeasurePanelRule.withValues(alpha: 0.82),
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
         child: Row(
           children: [
-            const Icon(Icons.alt_route_rounded, size: 15),
+            const Icon(
+              Icons.alt_route_rounded,
+              size: 15,
+              color: _kBoardCanvasMuted,
+            ),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -4937,6 +5165,7 @@ class _MeasureContextRow extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
+                  color: _kBoardCanvasNavy,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -4949,7 +5178,7 @@ class _MeasureContextRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.right,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: _kBoardCanvasMuted,
                 ),
               ),
             ),
@@ -4975,7 +5204,7 @@ class _MeasureInlineReadonlyBox extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: _kMeasurePanelRowRaised,
         border: Border.all(color: _kMeasurePanelRule),
         borderRadius: BorderRadius.circular(5),
       ),
@@ -4993,6 +5222,7 @@ class _MeasureInlineReadonlyBox extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelMedium?.copyWith(
+              color: _kMeasurePanelNavy,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -5031,137 +5261,150 @@ class _PlacementInspectorCard extends StatelessWidget {
     final valueBadgeCountLabel = selectedMeasurementValueBadgeCount == 1
         ? 'Eligible value badge: 1'
         : 'Eligible value badges: $selectedMeasurementValueBadgeCount';
+    final theme = Theme.of(context);
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _SectionHeader(
-              title: 'Placement inspector (read-only)',
-              tag: identityStatus == 'unknown' ? 'UNKNOWN' : null,
-              subtitle: 'read-only · projection view',
-            ),
-            const SizedBox(height: 12),
-            _InspectorField(
-                label: 'Component ID', value: placement.componentId),
-            if ((component?.designator ?? '').isNotEmpty)
-              _InspectorField(
-                label: 'Designator',
-                value: component!.designator!,
+      color: _kBoardCanvasPaper,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: _kBoardCanvasRule),
+      ),
+      child: DefaultTextStyle.merge(
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: _kBoardCanvasMuted,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SectionHeader(
+                title: 'Placement inspector (read-only)',
+                tag: identityStatus == 'unknown' ? 'UNKNOWN' : null,
+                subtitle: 'read-only · projection view',
               ),
-            _InspectorField(label: 'Template ID', value: templateId),
-            _InspectorField(
-              label: 'Package',
-              value: '$packageLabel (package geometry)',
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 6),
-              child: Text('template family — not a part identity'),
-            ),
-            _InspectorField(
-              label: 'Identity status',
-              value: identityStatus,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 6),
-              child: Text('identity not confirmed in this projection'),
-            ),
-            const _InspectorField(
-              label: 'Electrical role',
-              value: 'not confirmed',
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 6),
-              child: Text('Template does not prove electrical identity.'),
-            ),
-            _InspectorField(label: 'Placement status', value: placement.status),
-            _InspectorField(
-              label: 'Coordinate space',
-              value: placement.coordinateSpace,
-            ),
-            _InspectorField(label: 'Board side', value: placement.boardSide),
-            _InspectorField(
-                label: 'Center X', value: placement.centerX.toString()),
-            _InspectorField(
-                label: 'Center Y', value: placement.centerY.toString()),
-            _InspectorField(
-              label: 'Rotation (deg)',
-              value: placement.rotationDeg.toString(),
-            ),
-            if (placement.scale != null)
-              _InspectorField(label: 'Scale', value: placement.scale.toString())
-            else ...[
-              if (placement.width != null)
-                _InspectorField(
-                  label: 'Width',
-                  value: placement.width.toString(),
-                ),
-              if (placement.height != null)
-                _InspectorField(
-                  label: 'Height',
-                  value: placement.height.toString(),
-                ),
-            ],
-            _InspectorField(
-              label: 'Source event ID',
-              value: placement.sourceEventId,
-            ),
-            _InspectorField(label: 'Status', value: placement.status),
-            if (selectedMeasurementCount > 0) ...[
               const SizedBox(height: 12),
-              const _SectionHeader(
-                title: 'Measurement badge',
-                tag: 'MARKER',
-              ),
-              const SizedBox(height: 6),
-              Text(badgeCountLabel),
-              const Text('Component-level presence only.'),
-              const Text('No board-coordinate interpretation is claimed.'),
-              const Text(
-                  'No probe, pin/anchor, or endpoint line semantics are shown.'),
-              const Text('Does not create or confirm a net.'),
-              if (selectedMeasurementValueBadgeCount > 0) ...[
-                const SizedBox(height: 8),
-                Text(valueBadgeCountLabel),
-                TextButton.icon(
-                  key: const Key(
-                    'board_canvas_selected_measurement_value_badge_toggle',
-                  ),
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(148, _kCompactControlTileHeight),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  icon: Icon(
-                    selectedMeasurementValueBadgesVisible
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    size: _kCompactControlIconSize,
-                  ),
-                  label: Text(
-                    selectedMeasurementValueBadgesVisible
-                        ? 'Hide measurement badge'
-                        : 'Show measurement badge',
-                  ),
-                  onPressed: onToggleSelectedMeasurementValueBadges,
+              _InspectorField(
+                  label: 'Component ID', value: placement.componentId),
+              if ((component?.designator ?? '').isNotEmpty)
+                _InspectorField(
+                  label: 'Designator',
+                  value: component!.designator!,
                 ),
+              _InspectorField(label: 'Template ID', value: templateId),
+              _InspectorField(
+                label: 'Package',
+                value: '$packageLabel (package geometry)',
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('template family — not a part identity'),
+              ),
+              _InspectorField(
+                label: 'Identity status',
+                value: identityStatus,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('identity not confirmed in this projection'),
+              ),
+              const _InspectorField(
+                label: 'Electrical role',
+                value: 'not confirmed',
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text('Template does not prove electrical identity.'),
+              ),
+              _InspectorField(
+                  label: 'Placement status', value: placement.status),
+              _InspectorField(
+                label: 'Coordinate space',
+                value: placement.coordinateSpace,
+              ),
+              _InspectorField(label: 'Board side', value: placement.boardSide),
+              _InspectorField(
+                  label: 'Center X', value: placement.centerX.toString()),
+              _InspectorField(
+                  label: 'Center Y', value: placement.centerY.toString()),
+              _InspectorField(
+                label: 'Rotation (deg)',
+                value: placement.rotationDeg.toString(),
+              ),
+              if (placement.scale != null)
+                _InspectorField(
+                    label: 'Scale', value: placement.scale.toString())
+              else ...[
+                if (placement.width != null)
+                  _InspectorField(
+                    label: 'Width',
+                    value: placement.width.toString(),
+                  ),
+                if (placement.height != null)
+                  _InspectorField(
+                    label: 'Height',
+                    value: placement.height.toString(),
+                  ),
               ],
-              const SizedBox(height: 8),
+              _InspectorField(
+                label: 'Source event ID',
+                value: placement.sourceEventId,
+              ),
+              _InspectorField(label: 'Status', value: placement.status),
+              if (selectedMeasurementCount > 0) ...[
+                const SizedBox(height: 12),
+                const _SectionHeader(
+                  title: 'Measurement badge',
+                  tag: 'MARKER',
+                ),
+                const SizedBox(height: 6),
+                Text(badgeCountLabel),
+                const Text('Component-level presence only.'),
+                const Text('No board-coordinate interpretation is claimed.'),
+                const Text(
+                    'No probe, pin/anchor, or endpoint line semantics are shown.'),
+                const Text('Does not create or confirm a net.'),
+                if (selectedMeasurementValueBadgeCount > 0) ...[
+                  const SizedBox(height: 8),
+                  Text(valueBadgeCountLabel),
+                  TextButton.icon(
+                    key: const Key(
+                      'board_canvas_selected_measurement_value_badge_toggle',
+                    ),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(148, _kCompactControlTileHeight),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    icon: Icon(
+                      selectedMeasurementValueBadgesVisible
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: _kCompactControlIconSize,
+                    ),
+                    label: Text(
+                      selectedMeasurementValueBadgesVisible
+                          ? 'Hide measurement badge'
+                          : 'Show measurement badge',
+                    ),
+                    onPressed: onToggleSelectedMeasurementValueBadges,
+                  ),
+                ],
+                const SizedBox(height: 8),
+              ],
+              if (component?.installationStatus != null)
+                _InspectorField(
+                  label: 'Installation status',
+                  value: component!.installationStatus!,
+                ),
+              if (component?.removedByEventId != null)
+                _InspectorField(
+                  label: 'Removed by event ID',
+                  value: component!.removedByEventId!,
+                ),
             ],
-            if (component?.installationStatus != null)
-              _InspectorField(
-                label: 'Installation status',
-                value: component!.installationStatus!,
-              ),
-            if (component?.removedByEventId != null)
-              _InspectorField(
-                label: 'Removed by event ID',
-                value: component!.removedByEventId!,
-              ),
-          ],
+          ),
         ),
       ),
     );
@@ -5175,33 +5418,44 @@ class _MeasurementSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _SectionHeader(
-              title: 'Measurement — read-only summary',
-              tag: 'MEASURED',
-            ),
-            const SizedBox(height: 6),
-            const Text('measured value — shown verbatim'),
-            const Text('Value shown verbatim'),
-            const Text('Does not create or confirm a net'),
-            const Text('No board coordinate available'),
-            if (relatedMeasurements.isEmpty) ...[
-              const SizedBox(height: 6),
-              const Text('No related measurements for selected component.'),
-            ] else ...[
-              const SizedBox(height: 8),
-              ...relatedMeasurements.map(
-                (measurement) => _MeasurementSummaryTile(
-                  measurement: measurement,
-                ),
+      color: _kBoardCanvasPaper,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: _kBoardCanvasRule),
+      ),
+      child: DefaultTextStyle.merge(
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: _kBoardCanvasMuted,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _SectionHeader(
+                title: 'Measurement — read-only summary',
+                tag: 'MEASURED',
               ),
+              const SizedBox(height: 6),
+              const Text('measured value — shown verbatim'),
+              const Text('Value shown verbatim'),
+              const Text('Does not create or confirm a net'),
+              const Text('No board coordinate available'),
+              if (relatedMeasurements.isEmpty) ...[
+                const SizedBox(height: 6),
+                const Text('No related measurements for selected component.'),
+              ] else ...[
+                const SizedBox(height: 8),
+                ...relatedMeasurements.map(
+                  (measurement) => _MeasurementSummaryTile(
+                    measurement: measurement,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -5215,31 +5469,42 @@ class _VisualTraceMetadataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _SectionHeader(
-              title: 'Visual trace — read-only metadata',
-              tag: 'VISUAL',
-            ),
-            const SizedBox(height: 6),
-            const Text('visual metadata — does not establish a net'),
-            const Text('Visual trace is not a confirmed electrical net'),
-            const Text('Photo-local evidence; no board coordinate available'),
-            const Text('Does not create or confirm connectivity'),
-            if (relatedVisualTraces.isEmpty) ...[
-              const SizedBox(height: 6),
-              const Text('No related visual traces for selected component.'),
-            ] else ...[
-              const SizedBox(height: 8),
-              ...relatedVisualTraces.map(
-                (trace) => _VisualTraceSummaryTile(trace: trace),
+      color: _kBoardCanvasPaper,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: _kBoardCanvasRule),
+      ),
+      child: DefaultTextStyle.merge(
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: _kBoardCanvasMuted,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _SectionHeader(
+                title: 'Visual trace — read-only metadata',
+                tag: 'VISUAL',
               ),
+              const SizedBox(height: 6),
+              const Text('visual metadata — does not establish a net'),
+              const Text('Visual trace is not a confirmed electrical net'),
+              const Text('Photo-local evidence; no board coordinate available'),
+              const Text('Does not create or confirm connectivity'),
+              if (relatedVisualTraces.isEmpty) ...[
+                const SizedBox(height: 6),
+                const Text('No related visual traces for selected component.'),
+              ] else ...[
+                const SizedBox(height: 8),
+                ...relatedVisualTraces.map(
+                  (trace) => _VisualTraceSummaryTile(trace: trace),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -5285,8 +5550,8 @@ class _MeasurementSummaryTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border:
-              Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+          border: Border.all(color: _kBoardCanvasRule),
+          color: _kBoardCanvasTile,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Padding(
@@ -5437,7 +5702,10 @@ class _SectionHeader extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: theme.textTheme.titleSmall,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: _kBoardCanvasNavy,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             if (tag != null) ...[
@@ -5450,7 +5718,9 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             subtitle!,
-            style: theme.textTheme.bodySmall,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
           ),
         ],
       ],
@@ -5468,15 +5738,18 @@ class _EvidenceTag extends StatelessWidget {
     final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
+        color: _kBoardCanvasTile,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        border: Border.all(color: _kBoardCanvasRule),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           label,
-          style: theme.textTheme.labelSmall,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasNavy,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -5495,7 +5768,9 @@ class _InspectorField extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
         '$label: $value',
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
       ),
     );
   }
@@ -5749,10 +6024,10 @@ class _BoardPlacementPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    const boardBase = Color(0xFF0C1D30);
-    const boardInset = Color(0xFF11263D);
-    const boardBorder = Color(0xFF0F2A45);
-    const gridColor = Color(0x2A7FA0C8);
+    const boardBase = Color(0xFF060A08);
+    const boardInset = Color(0xFF0A1712);
+    const boardBorder = Color(0xFF243D35);
+    const gridColor = Color(0x224D7A65);
 
     final boardPaint = Paint()
       ..color = boardBase
@@ -5851,8 +6126,7 @@ class _BoardPlacementPainter extends CustomPainter {
           text: TextSpan(
             text: designator,
             style: TextStyle(
-              color:
-                  selected ? _kBoardCanvasSignalTint : const Color(0xFF9FB6CC),
+              color: selected ? _kBoardCanvasSignal : _kBoardCanvasMuted,
               fontSize: 11,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             ),

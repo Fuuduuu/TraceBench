@@ -366,7 +366,16 @@ void main() {
       find.byKey(const Key('board_canvas_read_only_status_pill')),
       findsOneWidget,
     );
-    expect(find.text('Read-only · no writes'), findsOneWidget);
+    expect(find.text('Ainult vaatamine · kirjutusi pole'), findsOneWidget);
+    expect(find.text('Read-only · no writes'), findsNothing);
+    expect(find.text('Plaadi projektsioonivaade'), findsOneWidget);
+    expect(find.text('Board projection canvas'), findsNothing);
+    expect(
+      find.text('Ainult olemasolevad plaadinormaliseeritud paigutused'),
+      findsOneWidget,
+    );
+    expect(
+        find.text('Existing board-normalized placements only'), findsNothing);
     expect(find.byKey(const Key('board_canvas_status_bar')), findsOneWidget);
     expect(find.text('Ready'), findsOneWidget);
     expect(find.text('BenchBeep · TraceBench platform'), findsOneWidget);
@@ -656,11 +665,26 @@ void main() {
       ),
       findsNothing,
     );
-    await tester.ensureVisible(draftRow);
+    final draftVisualTarget = find.byKey(
+      const Key('board_canvas_measure_visual_target_cmp_r101.2'),
+    );
+    await tester.ensureVisible(draftVisualTarget);
+    await tester.tap(draftVisualTarget);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.2'),
+      ),
+      findsOneWidget,
+    );
+    final existingRow = find.byKey(
+      const Key('board_canvas_measure_target_row_cmp_r101.1'),
+    );
+    await tester.ensureVisible(existingRow);
     await tester.pumpAndSettle();
     tester.binding.handlePointerEvent(
       PointerHoverEvent(
-        position: tester.getCenter(draftRow),
+        position: tester.getCenter(existingRow),
         kind: PointerDeviceKind.mouse,
       ),
     );
@@ -670,6 +694,18 @@ void main() {
         const Key('board_canvas_measure_visual_target_selected_cmp_r101.2'),
       ),
       findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101.1'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.1'),
+      ),
+      findsNothing,
     );
     expect(
       find.byKey(
@@ -823,6 +859,64 @@ void main() {
       findsNothing,
     );
 
+    final existingTargetRow =
+        find.byKey(const Key('board_canvas_measure_target_row_cmp_r101.1'));
+    await tester.ensureVisible(existingTargetRow);
+    await tester.tap(existingTargetRow);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.1'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101.1'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.2'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101.2'),
+      ),
+      findsNothing,
+    );
+
+    await tester.ensureVisible(targetRow);
+    await tester.tap(targetRow);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.2'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101.2'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_target_row_selected_cmp_r101.1'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_visual_target_selected_cmp_r101.1'),
+      ),
+      findsNothing,
+    );
+
     final valueInput = find.byKey(
       const Key('board_canvas_measure_row_value_input_cmp_r101.2'),
     );
@@ -956,7 +1050,7 @@ void main() {
       find.byKey(const Key('board_canvas_measure_panel_surface')),
     );
     final panelDecoration = measurePanelSurface.decoration as BoxDecoration;
-    expect(panelDecoration.color, const Color(0xFFF8FAFC));
+    expect(panelDecoration.color, const Color(0xFF161B22));
 
     expect(find.text('Pin 1 · R101.1'), findsOneWidget);
     expect(find.text('Pin 2 · R101.2'), findsOneWidget);
@@ -1187,8 +1281,9 @@ void main() {
     );
     expect(find.byKey(const Key('board_canvas_focus_toggle_button')),
         findsOneWidget);
-    expect(find.text('Panels'), findsOneWidget);
-    expect(find.text('Future tools'), findsOneWidget);
+    expect(find.text('Paneelid'), findsOneWidget);
+    expect(find.text('Tulevased tööriistad'), findsOneWidget);
+    expect(find.text('Future tools'), findsNothing);
     expect(find.text('Add Component'), findsOneWidget);
     expect(find.text('Placements'), findsOneWidget);
     expect(find.text('Safety'), findsOneWidget);
@@ -4518,7 +4613,7 @@ void main() {
           const Key('board_canvas_measurement_value_badge_global_toggle')),
       findsOneWidget,
     );
-    expect(find.text('Show All'), findsOneWidget);
+    expect(find.text('Näita kõiki'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_measurement_value_badge_M900')),
       findsNothing,
@@ -4659,7 +4754,7 @@ void main() {
       const Key('board_canvas_measurement_value_badge_global_toggle'),
     );
 
-    expect(find.text('Show All'), findsOneWidget);
+    expect(find.text('Näita kõiki'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_measurement_value_badge_M903')),
       findsNothing,

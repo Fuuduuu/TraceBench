@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS`
+`V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS`
 
 ## Next recommended pass
 
@@ -12,7 +12,8 @@
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this closeout: `5691e8d` (`feat(project-overview): polish dark EDA shell`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this intake: `aa4b907` (`docs: record Project Home dark EDA shell`), aligned with `origin/main`.
+- Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
 - Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
 - Full implementation SHA: `5691e8de78b46cb45859337e089b84f206c2831b`.
 - Implementation files changed: `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`.
@@ -34,8 +35,8 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only implementation closeout for the accepted/pushed Project Home dark EDA shell visual slice.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- Current route is this docs-only design-source intake for the standalone dark Project Home HTML bundle.
+- Route after this intake is accepted/pushed: `NEEDS_USER_DECISION`.
 - The implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -62,6 +63,10 @@
 - `_incoming` HTML/CSS and the standalone dark Project Home HTML remain `DESIGN_INPUT_ONLY`.
 - No runtime dependency on `_incoming` exists.
 - No canonical facts, measurements, nets, pin mappings, package identity, electrical proof, fault evidence, AI/OCR/CV facts, or write behavior were introduced.
+- Standalone dark Project Home HTML intake is design input only: `RUNTIME_AUTHORITY: NONE`, `CANONICAL_SEMANTICS: NONE`, `IMPLEMENTATION_AUTHORIZATION: NONE`, and `ASSET_AUTHORIZATION: NONE`.
+- Inspected standalone HTML path: `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html`.
+- Embedded image/font/script/style resources in that standalone HTML are also `DESIGN_INPUT_ONLY` and must not be extracted, copied, staged, converted to Flutter assets, imported, bundled, or used as runtime dependencies.
+- The standalone HTML does not reopen, override, supersede, or invalidate the accepted Project Overview / Workbench Home implementation.
 - Project Overview measurement entry reaches the accepted standalone Measure Sheet flow.
 - Existing standalone Measure Sheet route and `/project/measure-sheet` direct/fallback compatibility remain preserved.
 - Existing Measure Sheet save behavior remains inside the accepted Measure Sheet flow.
@@ -118,7 +123,8 @@
 - Future dark EDA / bench-instrument visual direction may use the inspected dark Project Home HTML/CSS only as design input: dominant board/canvas working surface, compact left rail/project navigation direction, contextual right Measure panel direction, read-only/no-write status visibility, technical typography and restrained chrome, dark canvas with clear board/footprint contrast, and preserved BenchBeep user-facing identity.
 - Future Project Home dark EDA shell follow-up work may be considered only as narrow local visual polish for the Project Overview / Workbench Home surface.
 - Mixed English/Estonian copy remains in some shell labels, such as `Board workspace (read-only)`, `Known facts`, `Not populated`, and `Future tools`; these are deferred copy-polish candidates and are not blockers for the accepted implementation.
-- Any newly supplied standalone dark Project Home HTML is possible future design-source input only and is not part of this implementation closeout.
+- Future separate scopes may consider cleaner Project Home / Workbench Home identity presentation, stronger BenchBeep-branded dark EDA visual direction, copy polish for mixed English/Estonian shell labels, improved project/workbench header hierarchy, more refined dark board/workspace visual composition, future logo/brand asset discussion through a separate explicit asset scope, and future Project Home/Workbench Home visual polish after a separate route decision and active-lock sync.
+- The inspected standalone dark Project Home HTML is possible future design-source input only and does not authorize implementation.
 - Further Project Home dark polish, global dark theme, Board Canvas dark EDA visual migration, color-coded net rendering, board-level legend implementation, logo asset/runtime asset changes, Google Fonts/font asset changes, new route/navigation behavior, and runtime CSS/HTML reuse are future/deferred unless separately scoped.
 - 5V/220V/GND/Signal labels in design-source files are visual prototype labels only and do not confirm nets, connectivity, electrical proof, measurements, pins, components, facts, coordinates, or Board Canvas write behavior.
 - Any future implementation requires a separate route decision and active-lock sync that inspects live repo files and lists the smallest exact runtime/test allowlist.
@@ -129,11 +135,11 @@
 
 ## Active constraints
 
-- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This closeout does not implement runtime behavior, edit tests, or authorize design-source runtime use.
-- `docs/ACTIVE_SCOPE_LOCK.md` releases the prior `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` runtime/test allowlist and now authorizes only this docs-only closeout.
+- This intake is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This intake does not implement runtime behavior, edit tests, arm implementation, or authorize design-source runtime/asset use.
+- `docs/ACTIVE_SCOPE_LOCK.md` now authorizes only this docs-only standalone HTML design-source intake.
 - This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
-- Review status for this closeout is `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Review status for this intake is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

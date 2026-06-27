@@ -2,17 +2,18 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this closeout: `3674a69` (`feat(project-overview): polish dark EDA copy`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `7f11471` (`docs: record Project Home dark EDA copy polish`), aligned with `origin/main`.
+- Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `7f11471` (`docs: record Project Home dark EDA copy polish`).
 - Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` at `3674a69` (`feat(project-overview): polish dark EDA copy`).
 - Full implementation SHA: `3674a69bc2ac44a0e61a1921b2ec6924d2d056fb`.
 - Implementation files changed: `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`.
@@ -39,9 +40,10 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only closeout for the accepted/pushed Project Overview / Workbench Home dark EDA copy-polish implementation.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
-- The implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
+- Current route is this docs-only scope-lock for future Board Canvas dark EDA style alignment with the accepted Project Overview / Workbench Home BenchBeep dark EDA style.
+- Route after this scope-lock is accepted/pushed: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- No runtime/test implementation is armed by this scope-lock; the next active-lock sync must inspect live files and name the smallest exact future runtime/test allowlist before implementation.
+- The latest accepted Project Home implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
 
@@ -125,6 +127,9 @@
 
 ## Protected future direction carried forward
 
+- Future Board Canvas dark EDA style alignment may align the Board Canvas shell/chrome/left rail/panels/footer/status strip, toolbar button chrome, grid/canvas color family, read-only badge treatment, and scoped Board Canvas shell copy with the accepted Project Overview / Workbench Home BenchBeep dark EDA style.
+- Future Board Canvas style alignment should keep Board Canvas as the dominant working surface, keep the right panel contextual/secondary, preserve clear read-only/no-write status, and prefer Board Canvas-only runtime edits unless a later active-lock sync authorizes a tiny focused test/helper.
+- Future candidate implementation files, if still sufficient after active-lock sync inspection: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Functional Board Canvas measurement save/write remains deferred unless a later separate writer scope explicitly authorizes it.
 - Any future Board Canvas measurement write path must preserve human-authored append-only event semantics and must not add schema, writer, materializer, validator, projection, Project ZIP, event, or fact behavior unless separately scoped.
 - Visual trace context remains visual-only and must not imply electrical proof or connectivity.
@@ -148,10 +153,12 @@
 
 ## Active constraints
 
-- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This closeout releases the prior implementation active lock and does not arm a new implementation pass.
-- This closeout records no Claude audit verdict because Claude Code is temporarily unavailable.
-- Review status for this closeout is `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- The accepted Project Home copy-polish closeout was docs-only, released its prior implementation active lock, and did not arm a new implementation pass.
+- The accepted Project Home copy-polish closeout recorded no Claude audit verdict because Claude Code was temporarily unavailable.
+- Review status for that accepted closeout remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- This current pass is docs-only and may edit only route/scope-lock docs plus `docs/audit/V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS.md`.
+- This current scope-lock does not authorize `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs edits.
+- This current scope-lock uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

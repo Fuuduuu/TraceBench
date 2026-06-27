@@ -2,69 +2,107 @@
 
 ## Current docs-only pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS`
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_PROJECT_HOME_COPY
+LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_STYLE
 
-## Implementation lock status
+## Temporary review mode
 
-- The prior implementation active lock for `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` is released by this closeout.
+- Claude Code is temporarily unavailable for this scope-lock.
+- This pass does not claim Claude audit.
+- Review status: `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- Codex output for this pass must use `NO_CLAUDE_REVIEW_PACKET`.
+
+## Baseline source
+
+- Expected and verified HEAD/origin before this scope-lock: `7f11471` (`docs: record Project Home dark EDA copy polish`).
+- Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `7f11471` (`docs: record Project Home dark EDA copy polish`).
+- Latest accepted/pushed Project Home copy-polish implementation: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` at `3674a69` (`feat(project-overview): polish dark EDA copy`).
+- Current route before this scope-lock was the accepted closeout state routing next to `NEEDS_USER_DECISION`.
 - No runtime/test implementation pass is currently armed.
-- No Board Canvas, Measure Sheet, router, asset, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs changes are authorized.
 
-## Closeout source
+## Exact scope-lock allowlist
 
-- Current docs-only closeout: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS`.
-- Accepted/pushed implementation pass: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` at `3674a69` (`feat(project-overview): polish dark EDA copy`).
-- Full implementation SHA: `3674a69bc2ac44a0e61a1921b2ec6924d2d056fb`.
-- Accepted/pushed active-lock sync: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `c169a4a` (`docs: arm Project Home dark EDA copy polish implementation`).
-- Accepted/pushed copy-polish scope-lock: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS` at `10c4561` (`docs: lock Project Home dark EDA copy polish`).
-- Accepted/pushed standalone HTML design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
-- Accepted/pushed Project Home dark EDA shell closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
-- Claude Code is temporarily unavailable for this closeout.
-- Review status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-
-## Exact closeout allowlist
-
-This docs-only closeout may edit only:
+This docs-only scope-lock may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS.md`
 
 No broad directories are authorized.
 
-## Accepted implementation evidence
+## Target surface
 
-- Implementation files changed:
-  - `lib/features/project/screens/project_overview_screen.dart`
-  - `test/widget/project_overview_screen_test.dart`
-- Manual smoke: PASS.
-- Temporary secondary review: ChatGPT Pro secondary review accepted staging after validation and user manual smoke PASS.
-- Claude status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+Future work is limited to Board Canvas visual shell/style alignment.
 
-## Accepted behavior recorded
+Reference surface:
 
-- Project Overview / Workbench Home received narrow dark EDA copy-polish.
-- Scope stayed on `ProjectOverviewScreen` / Workbench Home.
-- Remaining mixed English/Estonian visible shell labels in the scoped cluster were polished toward clearer Estonian copy.
-- Read-only / non-writing meaning remained preserved.
-- Disabled/future tool inertness remained preserved.
-- Existing route/navigation/action behavior was preserved.
-- Board Canvas behavior was not changed.
-- Measure Sheet save behavior was not changed.
-- No logo/runtime assets were added.
-- `_incoming` HTML/CSS and standalone dark Project Home HTML remain `DESIGN_INPUT_ONLY`.
-- No runtime dependency on `_incoming` exists.
-- No canonical facts, measurements, nets, pin mappings, package identity, electrical proof, fault evidence, AI/OCR/CV facts, or write behavior were introduced.
+- Accepted Project Overview / Workbench Home BenchBeep dark EDA style, including compact dark shell, restrained EDA panel/chrome treatment, read-only status presentation, and technician-facing copy direction.
+
+Protected target surface:
+
+- Board Canvas read-only renderer/shell and its existing Board Canvas tests.
+
+## Future implementation route
+
+- This scope-lock does not arm runtime/test writes directly.
+- Route after this scope-lock is accepted/pushed: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- The active-lock sync must inspect live repo files and list the smallest exact future runtime/test allowlist before implementation.
+- Primary future candidate files, if still sufficient after inspection:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+
+## Future implementation may consider
+
+- Aligning Board Canvas shell with the accepted Project Overview / Workbench Home dark EDA shell.
+- Darkening Board Canvas app bar, page chrome, left rail, panels, footer, and status strip.
+- Aligning card/panel borders, backgrounds, radius, spacing, and restrained glow/shadow.
+- Aligning toolbar button chrome.
+- Aligning grid/canvas colors toward the Project Overview green EDA canvas family while preserving board/canvas dominance and contrast.
+- Replacing the orange read-only badge with the BenchBeep dark EDA read-only treatment.
+- Preserving clear read-only/no-write status.
+- Polishing scoped Board Canvas shell copy toward Estonian where safe, such as:
+  - `Read-only · no writes` -> `Ainult vaatamine · kirjutusi pole` or equivalent.
+  - `Board projection canvas` -> `Plaadi projektsioonivaade` or equivalent.
+  - `Existing board-normalized placements only` -> clear Estonian preserving the same meaning.
+  - `Future tools` -> `Tulevased tööriistad`.
+  - `renderer writes: none` may remain as diagnostic copy unless separately scoped later.
+- Adding/updating focused widget tests only when authorized by the future active-lock sync.
+
+## Must preserve
+
+- Board Canvas remains read-only.
+- `renderer writes: none` remains true.
+- Existing pan, zoom, fit, reset, tap-to-select, inspector, placement rendering, measurement markers/summaries, and visual trace/provenance behavior remain preserved.
+- Existing Add Component behavior remains local/UI-only.
+- Existing integrated Measure panel and standalone Measure Sheet behavior remain preserved.
+- Existing Project Overview, BenchBeep Home, router, Measure Sheet save, Menu System, and navigation behavior remain preserved.
+- Visual traces remain visual-only and never become confirmed nets, connectivity, pin mapping, or electrical proof.
+- Board Canvas does not write `events.jsonl` or mutate `known_facts`.
+- Board Canvas does not import, call, route to, or wire `v2_save_measurement_writer.dart`.
+- No canonical facts, measurements, nets, pin mappings, package identity, electrical proof, fault evidence, AI/OCR/CV facts, or write behavior are accepted by this lock.
+
+## Explicitly forbidden
+
+- Editing `lib/` or `test/` in this docs-only scope-lock.
+- Arming runtime implementation directly without the next active-lock sync.
+- Editing `_incoming`, screenshots, mockups, docs/sources, or source indexes.
+- Copying/importing/depending on `_incoming` files at runtime.
+- Editing assets, `pubspec.yaml`, platform files, generated files, samples, schemas, tools, writer/service, validator, materializer, projection, Project ZIP, events, facts, or unrelated docs.
+- Editing Project Overview runtime or combining Project Overview and Board Canvas implementation in one future pass.
+- Starting global dark theme, global theme migration, full redesign, logo/runtime assets, command menu, context menu, audio/save beep, or canvas token migration.
+- Changing route/navigation behavior.
+- Changing Measure Sheet UI or save/write behavior.
+- Adding Board Canvas save/write, Confirm/write, Edit Layout, canonical event/fact writes, or canonical measurement writing.
+- Creating or implying canonical board facts, coordinates, placement semantics, nets, pin mappings, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
 
 ## Design source status preserved
 
-The standalone dark HTML and prior dark EDA HTML/CSS remain `DESIGN_INPUT_ONLY`.
+`_incoming` dark EDA HTML/CSS/design references remain `DESIGN_INPUT_ONLY`.
 
 - `RUNTIME_AUTHORITY: NONE`
 - `CANONICAL_SEMANTICS: NONE`
@@ -73,25 +111,7 @@ The standalone dark HTML and prior dark EDA HTML/CSS remain `DESIGN_INPUT_ONLY`.
 
 Do not edit, stage, copy, import, bundle, or runtime-depend on `_incoming` files.
 
-## Explicitly forbidden
-
-- Editing `lib/` or `test/` in this closeout.
-- Arming a new implementation pass.
-- Editing `_incoming`.
-- Editing assets or `pubspec.yaml`.
-- Editing router, Board Canvas, BenchBeep Home, legacy Home, Measure Sheet, writer/service, schema, validator, materializer, projection, ZIP, events, facts, samples, platform files, generated files, or unrelated docs.
-- Broadening copy-polish into route/navigation behavior.
-- Starting global dark theme.
-- Starting Board Canvas dark EDA migration.
-- Adding runtime dependencies.
-- Adding logo/font/runtime assets.
-- Arming Board Canvas save/write behavior.
-- Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.
-- Writing `events.jsonl`.
-- Mutating `known_facts`.
-- Creating or implying canonical measurements, facts, nets, pin mappings, placement semantics, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
-
 ## Route
 
-- Current docs-only closeout pass: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS`.
-- Route after accepted/pushed: `NEEDS_USER_DECISION`.
+- Current docs-only scope-lock pass: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_SCOPE_LOCK_PASS`.
+- Route after accepted/pushed: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_ACTIVE_LOCK_SYNC_PASS`.

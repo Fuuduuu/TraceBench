@@ -9,29 +9,39 @@ import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
+class _ProjectHomeShellColors {
+  static const background = Color(0xFF0A0D11);
+  static const panel = Color(0xFF161B22);
+  static const panelRaised = Color(0xFF1D252D);
+  static const tile = Color(0xFF11161C);
+  static const boardBase = Color(0xFF080B0F);
+  static const boardSurface = Color(0xFF0F1F18);
+  static const rule = Color(0xFF252D37);
+  static const ruleStrong = Color(0xFF36404D);
+  static const text = Color(0xFFE9EEF4);
+  static const muted = Color(0xFFABB7C4);
+  static const dim = Color(0xFF7C8A98);
+  static const green = Color(0xFF1FA35C);
+  static const greenBright = Color(0xFF2BC06F);
+  static const greenTint = Color(0x261FA35C);
+  static const copper = Color(0xFFD8A24A);
+  static const copperTint = Color(0x26D8A24A);
+  static const silk = Color(0xFFCDC78A);
+}
+
 class ProjectOverviewScreen extends ConsumerWidget {
   const ProjectOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectState = ref.watch(projectStateProvider);
-    final isBeginnerMode = ref.watch(beginnerModeProvider);
-
     if (projectState == null) {
       return const Scaffold(
         body: Center(child: Text('No project loaded')),
       );
     }
 
-    final humanReadableTitle =
-        '${projectState.manifest.deviceType} · ${projectState.manifest.model}';
-    final hasSymptom = projectState.manifest.symptom.isNotEmpty &&
-        projectState.manifest.symptom != 'not_provided';
-    final advancedDetails =
-        'project_id: ${projectState.manifest.projectId} | schema_version: ${projectState.manifest.schemaVersion} | created_at: ${projectState.manifest.createdAt}';
-    final boardContextDetails = isBeginnerMode
-        ? (hasSymptom ? projectState.manifest.symptom : 'PCB-first overview')
-        : advancedDetails;
+    const workbenchDisplaySubtitle = 'Kohalik töölaud · read-only preview';
     final boardPlacements = projectState.knownFacts.componentVisualPlacements
         .where(
           (placement) => placement.coordinateSpace == 'board_normalized',
@@ -39,7 +49,12 @@ class ProjectOverviewScreen extends ConsumerWidget {
         .toList(growable: false);
 
     return Scaffold(
+      backgroundColor: _ProjectHomeShellColors.background,
       appBar: AppBar(
+        backgroundColor: _ProjectHomeShellColors.panel,
+        foregroundColor: _ProjectHomeShellColors.text,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black,
         title: const Text('Project overview'),
         actions: [
           IconButton(
@@ -58,28 +73,29 @@ class ProjectOverviewScreen extends ConsumerWidget {
         bottom: const _WorkbenchMenuBreadcrumb(),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 14),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1320),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ProjectionStaleBanner(
-                    isStale: projectState.isProjectionStale,
-                  ),
-                  const SizedBox(height: 8),
-                  _WorkbenchShellLayout(
-                    boardContextDetails: boardContextDetails,
-                    boardPlacements: boardPlacements,
-                    humanReadableTitle: humanReadableTitle,
-                    hasSymptom: hasSymptom,
-                    isBeginnerMode: isBeginnerMode,
-                    isProjectionStale: projectState.isProjectionStale,
-                    projectState: projectState,
-                  ),
-                ],
+        child: Material(
+          key: const ValueKey('overview-dark-eda-shell'),
+          color: _ProjectHomeShellColors.background,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1320),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ProjectionStaleBanner(
+                      isStale: projectState.isProjectionStale,
+                    ),
+                    const SizedBox(height: 10),
+                    _WorkbenchShellLayout(
+                      boardPlacements: boardPlacements,
+                      isProjectionStale: projectState.isProjectionStale,
+                      projectState: projectState,
+                      workbenchDisplaySubtitle: workbenchDisplaySubtitle,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -99,20 +115,21 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-      fontWeight: FontWeight.w800,
-      letterSpacing: 0.6,
-    );
+          color: _ProjectHomeShellColors.text,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.6,
+        );
     final mutedStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-      letterSpacing: 0.4,
-    );
+          color: _ProjectHomeShellColors.dim,
+          letterSpacing: 0.4,
+        );
 
     return DecoratedBox(
       key: const ValueKey('overview-menu-breadcrumb'),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: _ProjectHomeShellColors.tile,
         border: Border(
-          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+          top: const BorderSide(color: _ProjectHomeShellColors.rule),
         ),
       ),
       child: SizedBox(
@@ -124,12 +141,20 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
               Text('BenchBeep', style: labelStyle),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(Icons.chevron_right, size: 16),
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: _ProjectHomeShellColors.dim,
+                ),
               ),
               Text('Workbench', style: labelStyle),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(Icons.chevron_right, size: 16),
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: _ProjectHomeShellColors.dim,
+                ),
               ),
               Text('Overview', style: mutedStyle),
               const Spacer(),
@@ -137,9 +162,10 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
                 key: const ValueKey('overview-menu-disabled-affordance'),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+                    color: _ProjectHomeShellColors.ruleStrong,
                   ),
                   borderRadius: BorderRadius.circular(999),
+                  color: _ProjectHomeShellColors.panel,
                 ),
                 child: Padding(
                   padding:
@@ -157,22 +183,16 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
 
 class _WorkbenchShellLayout extends StatelessWidget {
   const _WorkbenchShellLayout({
-    required this.boardContextDetails,
     required this.boardPlacements,
-    required this.humanReadableTitle,
-    required this.hasSymptom,
-    required this.isBeginnerMode,
     required this.isProjectionStale,
     required this.projectState,
+    required this.workbenchDisplaySubtitle,
   });
 
-  final String boardContextDetails;
   final List<ComponentVisualPlacementFact> boardPlacements;
-  final String humanReadableTitle;
-  final bool hasSymptom;
-  final bool isBeginnerMode;
   final bool isProjectionStale;
   final ProjectState projectState;
+  final String workbenchDisplaySubtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -182,13 +202,10 @@ class _WorkbenchShellLayout extends StatelessWidget {
 
         final workbenchZone = _WorkbenchZoneCard(
           key: const ValueKey('overview-workbench-zone'),
-          boardContextDetails: boardContextDetails,
           boardPlacements: boardPlacements,
-          humanReadableTitle: humanReadableTitle,
-          hasSymptom: hasSymptom,
-          isBeginnerMode: isBeginnerMode,
           isProjectionStale: isProjectionStale,
           projectState: projectState,
+          workbenchDisplaySubtitle: workbenchDisplaySubtitle,
         );
 
         final actionRail = SizedBox(
@@ -204,7 +221,7 @@ class _WorkbenchShellLayout extends StatelessWidget {
               Expanded(
                 child: workbenchZone,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               actionRail,
             ],
           );
@@ -226,47 +243,62 @@ class _WorkbenchShellLayout extends StatelessWidget {
 class _WorkbenchZoneCard extends StatelessWidget {
   const _WorkbenchZoneCard({
     super.key,
-    required this.boardContextDetails,
     required this.boardPlacements,
-    required this.humanReadableTitle,
-    required this.hasSymptom,
-    required this.isBeginnerMode,
     required this.isProjectionStale,
     required this.projectState,
+    required this.workbenchDisplaySubtitle,
   });
 
-  final String boardContextDetails;
   final List<ComponentVisualPlacementFact> boardPlacements;
-  final String humanReadableTitle;
-  final bool hasSymptom;
-  final bool isBeginnerMode;
   final bool isProjectionStale;
   final ProjectState projectState;
+  final String workbenchDisplaySubtitle;
 
   @override
   Widget build(BuildContext context) {
-    final boardSummary = boardPlacements.isEmpty
-        ? 'No usable board placement is available yet.'
-        : 'Read-only projection: ${boardPlacements.length} placement(s) found';
-    final subtitle = isBeginnerMode
-        ? (hasSymptom
-            ? projectState.manifest.symptom
-            : 'Start from board view first.')
-        : boardContextDetails;
-
-    return Card(
+    final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: _ProjectHomeShellColors.text,
+          fontWeight: FontWeight.w800,
+        );
+    final subtitleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: _ProjectHomeShellColors.muted,
+          fontWeight: FontWeight.w600,
+        );
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _ProjectHomeShellColors.panel,
+        border: Border.all(color: _ProjectHomeShellColors.rule),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x99000000),
+            blurRadius: 28,
+            offset: Offset(0, 14),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
-                  'Töölaud / PCB board',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  'BenchBeep Workbench',
+                  style: titleStyle,
                 ),
-                const Spacer(),
+                const _EvidenceTag(
+                  label: 'Töölaud nr 1',
+                  compact: true,
+                ),
+                const _EvidenceTag(
+                  label: 'READ ONLY',
+                  compact: true,
+                ),
                 if (isProjectionStale)
                   const _EvidenceTag(
                     label: 'PROJECTION STALE',
@@ -276,17 +308,10 @@ class _WorkbenchZoneCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              humanReadableTitle,
-              style: Theme.of(context).textTheme.titleSmall,
+              workbenchDisplaySubtitle,
+              style: subtitleStyle,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
-            Text(
-              boardSummary,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 6),
-            Text(subtitle),
             const SizedBox(height: 8),
             if (projectState.knownFacts.componentVisualPlacements.isEmpty)
               const _WorkbenchPlaceholder()
@@ -334,7 +359,11 @@ class _WorkbenchZoneCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             if (projectState.manifest.projectId == 'prj_pelle_pv20_001')
-              const Chip(label: Text('Bundled sample')),
+              const Chip(
+                backgroundColor: _ProjectHomeShellColors.greenTint,
+                label: Text('Bundled sample'),
+                labelStyle: TextStyle(color: _ProjectHomeShellColors.text),
+              ),
           ],
         ),
       ),
@@ -369,10 +398,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
         return DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: _ProjectHomeShellColors.ruleStrong,
             ),
             borderRadius: BorderRadius.circular(8),
-            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            color: _ProjectHomeShellColors.tile,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -381,7 +410,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
               children: [
                 Text(
                   'Board workspace (read-only)',
-                  style: Theme.of(context).textTheme.titleSmall,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: _ProjectHomeShellColors.text,
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
                 const SizedBox(height: 6),
                 SizedBox(
@@ -396,12 +428,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                       return Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.outlineVariant,
+                            color: _ProjectHomeShellColors.ruleStrong,
                           ),
                           borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHigh,
+                          color: _ProjectHomeShellColors.boardBase,
                         ),
                         child: Stack(
                           children: [
@@ -437,7 +467,13 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                                 padding: const EdgeInsets.all(8),
                                 child: Text(
                                   'renderer writes: none',
-                                  style: Theme.of(context).textTheme.labelSmall,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        color: _ProjectHomeShellColors.dim,
+                                        letterSpacing: 0.4,
+                                      ),
                                 ),
                               ),
                             ),
@@ -450,7 +486,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                 const SizedBox(height: 6),
                 const Text(
                   'Placement summary is read-only and local only.',
-                  style: TextStyle(fontSize: 11.5),
+                  style: TextStyle(
+                    color: _ProjectHomeShellColors.dim,
+                    fontSize: 11.5,
+                  ),
                 ),
               ],
             ),
@@ -472,10 +511,10 @@ class _WorkbenchGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final boardRect = Rect.fromLTWH(4, 4, size.width - 8, size.height - 8);
-    final base = Paint()..color = const Color(0xFF0F1A17);
-    final inner = Paint()..color = const Color(0xFF172722);
+    final base = Paint()..color = _ProjectHomeShellColors.boardBase;
+    final inner = Paint()..color = _ProjectHomeShellColors.boardSurface;
     final border = Paint()
-      ..color = const Color(0xFF5A6863)
+      ..color = _ProjectHomeShellColors.green
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -484,7 +523,7 @@ class _WorkbenchGridPainter extends CustomPainter {
     canvas.drawRect(boardRect, border);
 
     final grid = Paint()
-      ..color = const Color(0x2F4D7A65)
+      ..color = const Color(0x334D7A65)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     const step = 24.0;
@@ -520,17 +559,23 @@ class _WorkbenchPlacementBadge extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isSelected
-              ? Theme.of(context).colorScheme.primaryContainer
-              : const Color(0xFFD4C7A8),
+              ? _ProjectHomeShellColors.greenTint
+              : _ProjectHomeShellColors.silk,
           border: Border.all(
-            color: Theme.of(context).colorScheme.primary,
+            color: isSelected
+                ? _ProjectHomeShellColors.greenBright
+                : _ProjectHomeShellColors.green,
             width: 1.5,
           ),
         ),
         child: Center(
           child: Text(
             _shortLabel(designator),
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              color: Color(0xFF06140C),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -564,27 +609,41 @@ class _WorkbenchPlaceholder extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: _ProjectHomeShellColors.ruleStrong,
             ),
+            color: _ProjectHomeShellColors.boardBase,
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.dashboard_customize_outlined, size: 34),
-                  SizedBox(height: 8),
-                  Text('PCB/workbench placeholder'),
-                  SizedBox(height: 6),
-                  Text(
-                    'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  SizedBox(height: 6),
-                  Text('Context and route behavior are preserved.'),
-                ],
+          child: const DefaultTextStyle(
+            style: TextStyle(color: _ProjectHomeShellColors.muted),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.dashboard_customize_outlined,
+                      color: _ProjectHomeShellColors.greenBright,
+                      size: 34,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'PCB/workbench placeholder',
+                      style: TextStyle(
+                        color: _ProjectHomeShellColors.text,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    SizedBox(height: 6),
+                    Text('Context and route behavior are preserved.'),
+                  ],
+                ),
               ),
             ),
           ),
@@ -602,13 +661,20 @@ class _ActionRailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final outlinedButtonStyle = OutlinedButton.styleFrom(
+      foregroundColor: _ProjectHomeShellColors.muted,
+      disabledForegroundColor: _ProjectHomeShellColors.dim,
+      backgroundColor: _ProjectHomeShellColors.tile,
       visualDensity: VisualDensity.compact,
       minimumSize: const Size(0, 34),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+      side: const BorderSide(color: _ProjectHomeShellColors.ruleStrong),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
-    final sectionTitleStyle = Theme.of(context).textTheme.labelLarge;
+    final sectionTitleStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: _ProjectHomeShellColors.text,
+          fontWeight: FontWeight.w800,
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -617,6 +683,9 @@ class _ActionRailCard extends StatelessWidget {
           key: const ValueKey('overview-measurement-record-button'),
           onPressed: () => context.go('/project/measure-sheet'),
           style: ElevatedButton.styleFrom(
+            backgroundColor: _ProjectHomeShellColors.green,
+            foregroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
             padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
             textStyle: const TextStyle(
               fontSize: 15,
@@ -632,6 +701,12 @@ class _ActionRailCard extends StatelessWidget {
         const SizedBox(height: 6),
         Card(
           margin: const EdgeInsets.symmetric(vertical: 2),
+          color: _ProjectHomeShellColors.panel,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: _ProjectHomeShellColors.rule),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(7),
             child: Column(
@@ -670,6 +745,12 @@ class _ActionRailCard extends StatelessWidget {
         const SizedBox(height: 4),
         Card(
           margin: const EdgeInsets.symmetric(vertical: 2),
+          color: _ProjectHomeShellColors.panel,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: _ProjectHomeShellColors.rule),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(7),
             child: Column(
@@ -712,72 +793,19 @@ class _ActionRailCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        ExpansionTile(
-          title: const Text('Muud tegevused'),
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
-          children: [
-            Wrap(
-              spacing: 5,
-              runSpacing: 5,
-              children: [
-                OutlinedButton(
-                  key: const ValueKey('overview-measurements-button'),
-                  onPressed: () => context.go('/project/measurements'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Mõõtmised'),
-                ),
-                OutlinedButton(
-                  onPressed: () => context.go('/project/known-facts'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Known facts'),
-                ),
-                OutlinedButton(
-                  key: const ValueKey('overview-components-button'),
-                  onPressed: () => context.go('/project/components'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Komponendid'),
-                ),
-                OutlinedButton(
-                  onPressed: () => context.go('/project/pins'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Pinnid'),
-                ),
-                OutlinedButton(
-                  onPressed: () => context.go('/project/events'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Sündmused'),
-                ),
-                OutlinedButton(
-                  onPressed: () => context.go('/project/not-populated'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Not populated'),
-                ),
-                OutlinedButton(
-                  onPressed: () => context.go('/project/report'),
-                  style: outlinedButtonStyle,
-                  child: const Text('Raport'),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Card(
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
+        Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-            key: const ValueKey('overview-future-tools-panel'),
-            tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+            title: const Text('Muud tegevused'),
+            textColor: _ProjectHomeShellColors.text,
+            collapsedTextColor: _ProjectHomeShellColors.muted,
+            iconColor: _ProjectHomeShellColors.greenBright,
+            collapsedIconColor: _ProjectHomeShellColors.dim,
+            tilePadding: EdgeInsets.zero,
             childrenPadding: const EdgeInsets.only(
               bottom: 8,
-              left: 8,
-              right: 8,
-            ),
-            title: Text('Future tools (tulekul)', style: sectionTitleStyle),
-            subtitle: Text(
-              'Disabled',
-              style: Theme.of(context).textTheme.labelSmall,
+              left: 6,
+              right: 6,
             ),
             children: [
               Wrap(
@@ -785,28 +813,41 @@ class _ActionRailCard extends StatelessWidget {
                 runSpacing: 5,
                 children: [
                   OutlinedButton(
-                    key: const ValueKey('overview-future-contour-button'),
-                    onPressed: null,
+                    key: const ValueKey('overview-measurements-button'),
+                    onPressed: () => context.go('/project/measurements'),
                     style: outlinedButtonStyle,
-                    child: const Text('Lisa kontuur'),
+                    child: const Text('Mõõtmised'),
                   ),
                   OutlinedButton(
-                    key: const ValueKey('overview-future-photo-button'),
-                    onPressed: null,
+                    onPressed: () => context.go('/project/known-facts'),
                     style: outlinedButtonStyle,
-                    child: const Text('Tuvasta foto abil'),
+                    child: const Text('Known facts'),
                   ),
                   OutlinedButton(
-                    key: const ValueKey('overview-future-layers-button'),
-                    onPressed: null,
+                    key: const ValueKey('overview-components-button'),
+                    onPressed: () => context.go('/project/components'),
                     style: outlinedButtonStyle,
-                    child: const Text('Layers'),
+                    child: const Text('Komponendid'),
                   ),
                   OutlinedButton(
-                    key: const ValueKey('overview-future-trace-colors-button'),
-                    onPressed: null,
+                    onPressed: () => context.go('/project/pins'),
                     style: outlinedButtonStyle,
-                    child: const Text('Trace colors'),
+                    child: const Text('Pinnid'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => context.go('/project/events'),
+                    style: outlinedButtonStyle,
+                    child: const Text('Sündmused'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => context.go('/project/not-populated'),
+                    style: outlinedButtonStyle,
+                    child: const Text('Not populated'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => context.go('/project/report'),
+                    style: outlinedButtonStyle,
+                    child: const Text('Raport'),
                   ),
                 ],
               ),
@@ -814,10 +855,79 @@ class _ActionRailCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
+        Card(
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          color: _ProjectHomeShellColors.tile,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: _ProjectHomeShellColors.rule),
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              key: const ValueKey('overview-future-tools-panel'),
+              textColor: _ProjectHomeShellColors.text,
+              collapsedTextColor: _ProjectHomeShellColors.muted,
+              iconColor: _ProjectHomeShellColors.greenBright,
+              collapsedIconColor: _ProjectHomeShellColors.dim,
+              tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+              childrenPadding: const EdgeInsets.only(
+                bottom: 8,
+                left: 8,
+                right: 8,
+              ),
+              title: Text('Future tools (tulekul)', style: sectionTitleStyle),
+              subtitle: Text(
+                'Disabled',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: _ProjectHomeShellColors.dim,
+                    ),
+              ),
+              children: [
+                Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  children: [
+                    OutlinedButton(
+                      key: const ValueKey('overview-future-contour-button'),
+                      onPressed: null,
+                      style: outlinedButtonStyle,
+                      child: const Text('Lisa kontuur'),
+                    ),
+                    OutlinedButton(
+                      key: const ValueKey('overview-future-photo-button'),
+                      onPressed: null,
+                      style: outlinedButtonStyle,
+                      child: const Text('Tuvasta foto abil'),
+                    ),
+                    OutlinedButton(
+                      key: const ValueKey('overview-future-layers-button'),
+                      onPressed: null,
+                      style: outlinedButtonStyle,
+                      child: const Text('Layers'),
+                    ),
+                    OutlinedButton(
+                      key: const ValueKey(
+                        'overview-future-trace-colors-button',
+                      ),
+                      onPressed: null,
+                      style: outlinedButtonStyle,
+                      child: const Text('Trace colors'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
         Text(
-          projectState.manifest.projectId,
+          'TraceBench platform · display-only shell',
           key: const ValueKey('overview-project-id'),
-          style: Theme.of(context).textTheme.bodySmall,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: _ProjectHomeShellColors.dim,
+              ),
           overflow: TextOverflow.ellipsis,
         ),
       ],
@@ -836,15 +946,26 @@ class _EvidenceTag extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        border: Border.all(color: _ProjectHomeShellColors.ruleStrong),
+        color: compact
+            ? _ProjectHomeShellColors.greenTint
+            : _ProjectHomeShellColors.panelRaised,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: compact ? 6 : 10,
           vertical: compact ? 2 : 4,
         ),
-        child: Text(label, style: Theme.of(context).textTheme.labelSmall),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: compact
+                    ? _ProjectHomeShellColors.greenBright
+                    : _ProjectHomeShellColors.muted,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+        ),
       ),
     );
   }
@@ -868,9 +989,8 @@ class _OverviewChip extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            border:
-                Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-            color: Theme.of(context).colorScheme.surfaceContainerLowest,
+            border: Border.all(color: _ProjectHomeShellColors.ruleStrong),
+            color: _ProjectHomeShellColors.tile,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -879,14 +999,19 @@ class _OverviewChip extends StatelessWidget {
                 Expanded(
                   child: Text(
                     label,
-                    style: Theme.of(context).textTheme.labelSmall,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: _ProjectHomeShellColors.muted,
+                        ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   value.toString(),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: _ProjectHomeShellColors.copper,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ],
             ),

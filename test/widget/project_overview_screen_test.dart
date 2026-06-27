@@ -15,9 +15,13 @@ ProjectState _inlineProjectState({
   bool isProjectionStale = false,
   List<TraceBenchEvent> events = const [],
   List<Map<String, dynamic>> componentVisualPlacements = const [],
+  String projectId = 'inline_project',
+  String deviceType = 'pelle',
+  String model = 'PV20',
+  String symptom = 'not_provided',
 }) {
   final Map<String, dynamic> knownFactsJson = {
-    'project_id': 'inline_project',
+    'project_id': projectId,
     'components': [
       {'component_id': 'Q2', 'status': 'identified', 'designator': 'Q2'},
     ],
@@ -47,12 +51,12 @@ ProjectState _inlineProjectState({
 
   return ProjectState(
     manifest: ProjectManifest.fromJson({
-      'project_id': 'inline_project',
+      'project_id': projectId,
       'schema_version': '1.0',
       'created_at': '2026-05-22T00:00:00Z',
-      'device_type': 'pelle',
-      'model': 'PV20',
-      'symptom': 'not_provided',
+      'device_type': deviceType,
+      'model': model,
+      'symptom': symptom,
     }),
     knownFacts: KnownFacts.fromJson(knownFactsJson),
     events: events,
@@ -128,6 +132,7 @@ void main() {
 
     final workbenchZone = find.byKey(const ValueKey('overview-workbench-zone'));
     final actionsPanel = find.byKey(const ValueKey('overview-actions-panel'));
+    final darkShell = find.byKey(const ValueKey('overview-dark-eda-shell'));
     final primaryMeasurementAction = find.byKey(
       const ValueKey('overview-measurement-record-button'),
     );
@@ -137,8 +142,14 @@ void main() {
 
     expect(workbenchZone, findsOneWidget);
     expect(actionsPanel, findsOneWidget);
+    expect(darkShell, findsOneWidget);
     expect(primaryMeasurementAction, findsOneWidget);
     expect(secondaryAction, findsOneWidget);
+
+    final shellWidget = tester.widget<Material>(darkShell);
+    expect(shellWidget.color, const Color(0xFF0A0D11));
+    final appBar = tester.widget<AppBar>(find.byType(AppBar));
+    expect(appBar.backgroundColor, const Color(0xFF161B22));
 
     expect(
       tester.getTopLeft(actionsPanel).dy,
@@ -148,7 +159,8 @@ void main() {
       tester.getTopLeft(primaryMeasurementAction).dy,
       lessThan(tester.getTopLeft(secondaryAction).dy),
     );
-    expect(find.text('Töölaud / PCB board'), findsOneWidget);
+    expect(find.text('BenchBeep Workbench'), findsOneWidget);
+    expect(find.text('Töölaud nr 1'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
     expect(
         find.byKey(const ValueKey('overview-menu-breadcrumb')), findsOneWidget);
@@ -164,6 +176,10 @@ void main() {
     expect(find.textContaining('Command menu'), findsNothing);
     expect(find.textContaining('Ctrl-K'), findsNothing);
     expect(find.textContaining('Save beep'), findsNothing);
+    expect(find.textContaining('project_id:'), findsNothing);
+    expect(find.textContaining('schema_version:'), findsNothing);
+    expect(find.textContaining('created_at:'), findsNothing);
+    expect(find.textContaining('Read-only projection:'), findsNothing);
   });
 
   testWidgets('renders compact status strip for board statistics',
@@ -251,8 +267,7 @@ void main() {
           'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.'),
       findsOneWidget,
     );
-    expect(
-        find.text('Read-only projection: 1 placement(s) found'), findsNothing);
+    expect(find.textContaining('Read-only projection:'), findsNothing);
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsNothing);
   });
@@ -271,10 +286,40 @@ void main() {
 
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsOneWidget);
-    expect(find.text('Read-only projection: 1 placement(s) found'),
-        findsOneWidget);
+    expect(find.textContaining('Read-only projection:'), findsNothing);
+    expect(find.text('Töölaud nr 1'), findsOneWidget);
     expect(find.text('PCB/workbench placeholder'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('hides raw fixture identifiers from the visible shell',
+      (tester) async {
+    final projectState = _inlineProjectState(
+      projectId: 'prj_board_canvas_smoke_001',
+      deviceType: 'board_canvas_smoke_fixture',
+      model: 'board_canvas_positive_smoke_rich',
+      symptom: 'integrated_measure_panel_manual_smoke',
+      componentVisualPlacements: _normalizedPlacementFacts(),
+    );
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    expect(find.text('BenchBeep Workbench'), findsOneWidget);
+    expect(find.text('Töölaud nr 1'), findsOneWidget);
+    expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
+        findsOneWidget);
+    expect(find.textContaining('board_canvas_smoke_fixture'), findsNothing);
+    expect(
+        find.textContaining('board_canvas_positive_smoke_rich'), findsNothing);
+    expect(find.textContaining('integrated_measure_panel_manual_smoke'),
+        findsNothing);
+    expect(find.textContaining('prj_board_canvas_smoke_001'), findsNothing);
+    expect(find.textContaining('project_id:'), findsNothing);
+    expect(find.textContaining('schema_version:'), findsNothing);
+    expect(find.textContaining('created_at:'), findsNothing);
   });
 
   testWidgets(

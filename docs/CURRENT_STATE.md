@@ -2,28 +2,30 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `10c4561` (`docs: lock Project Home dark EDA copy polish`), aligned with `origin/main`.
-- Latest accepted/pushed copy-polish scope-lock: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS` at `10c4561` (`docs: lock Project Home dark EDA copy polish`).
-- Latest accepted/pushed design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
-- Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
-- Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
-- Full implementation SHA: `5691e8de78b46cb45859337e089b84f206c2831b`.
+- Latest pushed HEAD verified before this closeout: `3674a69` (`feat(project-overview): polish dark EDA copy`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` at `3674a69` (`feat(project-overview): polish dark EDA copy`).
+- Full implementation SHA: `3674a69bc2ac44a0e61a1921b2ec6924d2d056fb`.
 - Implementation files changed: `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`.
 - Manual smoke: PASS.
-- Manual smoke evidence: Project Overview / Workbench Home opens normally; dark EDA shell visual polish is visible; raw/debug fixture IDs were removed from the main shell; `Töölaud nr 1` appears as display-only UI; board/workbench preview remains dominant; existing action/navigation buttons remained available; Board Canvas opens normally; Measure Sheet save path was unchanged; disabled/future tools remained inert; no Board Canvas save/write/canonical behavior appeared; no canonical nets, pin mappings, electrical proof, or facts were implied by visuals.
+- Manual smoke evidence: Project Overview / Workbench Home opens normally; Estonian copy-polish is visible in the scoped shell labels; `Plaadi tööala (ainult vaatamine)`, `Teadaolevad faktid`, `Täitamata`, `Tulevased tööriistad`, `Kihid`, `Rajajoone värvid`, and `AINULT VAATAMINE` appear; board/workbench preview remains present; existing action/navigation buttons remained available; disabled/future tools remained inert; Board Canvas opens normally; Measure Sheet save path was unchanged; no Board Canvas save/write/canonical behavior appeared; no canonical nets, pin mappings, electrical proof, or facts were implied by copy.
 - Temporary secondary review: ChatGPT Pro secondary review accepted staging after validation and user manual smoke PASS.
 - Claude status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- Latest accepted/pushed active-lock sync: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e6a5329` (`docs: arm Project Home dark EDA shell implementation`).
+- Latest accepted/pushed active-lock sync: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `c169a4a` (`docs: arm Project Home dark EDA copy polish implementation`).
+- Latest accepted/pushed copy-polish scope-lock: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS` at `10c4561` (`docs: lock Project Home dark EDA copy polish`).
+- Latest accepted/pushed design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
+- Prior accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
+- Prior accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
+- Prior accepted/pushed active-lock sync: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e6a5329` (`docs: arm Project Home dark EDA shell implementation`).
 - Latest accepted/pushed Project Home dark EDA shell scope-lock: `V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS` at `675412d` (`docs: lock Project Home dark EDA shell scope`).
 - Prior accepted/pushed design-source scope-lock: `V2_PROJECT_HOME_DARK_EDA_DESIGN_SOURCE_SCOPE_LOCK_PASS` at `487c691` (`docs: lock Project Home dark EDA design source`).
 - Prior accepted/pushed closeout: `V2_MEASURE_PANEL_PIN_LEG_SELECTOR_DEDUP_IMPL_POST_AUDIT_PASS` at `2b17f68` (`docs: record Measure panel pin leg selector dedup`).
@@ -37,8 +39,8 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only active-lock sync for future Project Overview / Workbench Home dark EDA copy polish.
-- Route after this active-lock sync is accepted/pushed: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS`.
+- Current route is this docs-only closeout for the accepted/pushed Project Overview / Workbench Home dark EDA copy-polish implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 - The implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -59,7 +61,16 @@
 - Raw fixture/debug/projection metadata was removed from the visible main shell.
 - Board/workbench preview remained dominant.
 - Existing Project Overview route, navigation, and action behavior was preserved.
+- Project Overview / Workbench Home received narrow dark EDA copy-polish.
+- Scope stayed on `ProjectOverviewScreen` / Workbench Home.
+- Remaining mixed English/Estonian visible shell labels in the scoped cluster were polished toward clearer Estonian copy.
+- `Plaadi tööala (ainult vaatamine)`, `Teadaolevad faktid`, `Täitamata`, `Tulevased tööriistad`, `Kihid`, `Rajajoone värvid`, and `AINULT VAATAMINE` are accepted scoped labels.
+- Read-only / non-writing meaning remained preserved.
+- Disabled/future tool inertness remained preserved.
+- Existing route/navigation/action behavior was preserved.
 - Board Canvas was not migrated.
+- Board Canvas behavior was not changed by Project Home copy-polish.
+- Measure Sheet save behavior was not changed by Project Home copy-polish.
 - Global dark theme was not started.
 - Logo/runtime assets were not added.
 - `_incoming` HTML/CSS and the standalone dark Project Home HTML remain `DESIGN_INPUT_ONLY`.
@@ -124,8 +135,8 @@
 - Visual pin/leg selection must not become confirmed pin mapping, a confirmed net, electrical relation, placement/coordinate semantics, package identity, or canonical fact.
 - Future dark EDA / bench-instrument visual direction may use the inspected dark Project Home HTML/CSS only as design input: dominant board/canvas working surface, compact left rail/project navigation direction, contextual right Measure panel direction, read-only/no-write status visibility, technical typography and restrained chrome, dark canvas with clear board/footprint contrast, and preserved BenchBeep user-facing identity.
 - Future Project Home dark EDA shell follow-up work may be considered only as narrow local visual polish for the Project Overview / Workbench Home surface.
-- Mixed English/Estonian copy remains in some shell labels, such as `Board workspace (read-only)`, `Known facts`, `Not populated`, and `Future tools`; these are the narrow copy-polish candidates for the newly locked future scope and are not blockers for the accepted implementation.
-- Future separate scopes may consider cleaner Project Home / Workbench Home identity presentation, stronger BenchBeep-branded dark EDA visual direction, copy polish for mixed English/Estonian shell labels, improved project/workbench header hierarchy, more refined dark board/workspace visual composition, future logo/brand asset discussion through a separate explicit asset scope, and future Project Home/Workbench Home visual polish after a separate route decision and active-lock sync.
+- Some broader action labels remain English, such as `Measure Sheet`, `Add Component`, `Edit Component`, `Board Canvas`, `Reference Images`, `Project overview` app-bar, `renderer writes: none`, and `display-only shell`; these are deferred broader copy-polish candidates and are not blockers for this narrow accepted implementation.
+- Future separate scopes may consider cleaner Project Home / Workbench Home identity presentation, stronger BenchBeep-branded dark EDA visual direction, broader copy polish, improved project/workbench header hierarchy, more refined dark board/workspace visual composition, future logo/brand asset discussion through a separate explicit asset scope, and future Project Home/Workbench Home visual polish after a separate route decision and active-lock sync.
 - The inspected standalone dark Project Home HTML is possible future design-source input only and does not authorize implementation.
 - Further Project Home dark polish, global dark theme, Board Canvas dark EDA visual migration, color-coded net rendering, board-level legend implementation, logo asset/runtime asset changes, Google Fonts/font asset changes, new route/navigation behavior, and runtime CSS/HTML reuse are future/deferred unless separately scoped.
 - 5V/220V/GND/Signal labels in design-source files are visual prototype labels only and do not confirm nets, connectivity, electrical proof, measurements, pins, components, facts, coordinates, or Board Canvas write behavior.
@@ -137,11 +148,10 @@
 
 ## Active constraints
 
-- This active-lock sync is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This active-lock sync does not implement runtime behavior, edit tests, or authorize design-source runtime/asset use.
-- `docs/ACTIVE_SCOPE_LOCK.md` now arms `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_PASS` with the exact future implementation allowlist: `lib/features/project/screens/project_overview_screen.dart` and `test/widget/project_overview_screen_test.dart`.
-- This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
-- Review status for this active-lock sync is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- This closeout is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This closeout releases the prior implementation active lock and does not arm a new implementation pass.
+- This closeout records no Claude audit verdict because Claude Code is temporarily unavailable.
+- Review status for this closeout is `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

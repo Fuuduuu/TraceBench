@@ -41,7 +41,7 @@ class ProjectOverviewScreen extends ConsumerWidget {
       );
     }
 
-    const workbenchDisplaySubtitle = 'Kohalik töölaud · read-only preview';
+    const workbenchDisplaySubtitle = 'Kohalik töölaud · ainult vaatamine';
     final boardPlacements = projectState.knownFacts.componentVisualPlacements
         .where(
           (placement) => placement.coordinateSpace == 'board_normalized',
@@ -147,7 +147,7 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
                   color: _ProjectHomeShellColors.dim,
                 ),
               ),
-              Text('Workbench', style: labelStyle),
+              Text('Töölaud', style: labelStyle),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(
@@ -156,7 +156,7 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
                   color: _ProjectHomeShellColors.dim,
                 ),
               ),
-              Text('Overview', style: mutedStyle),
+              Text('Ülevaade', style: mutedStyle),
               const Spacer(),
               DecoratedBox(
                 key: const ValueKey('overview-menu-disabled-affordance'),
@@ -170,7 +170,8 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  child: Text('Future menu items disabled', style: mutedStyle),
+                  child:
+                      Text('Tulevased menüüvalikud väljas', style: mutedStyle),
                 ),
               ),
             ],
@@ -296,7 +297,7 @@ class _WorkbenchZoneCard extends StatelessWidget {
                   compact: true,
                 ),
                 const _EvidenceTag(
-                  label: 'READ ONLY',
+                  label: 'AINULT VAATAMINE',
                   compact: true,
                 ),
                 if (isProjectionStale)
@@ -409,7 +410,7 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Board workspace (read-only)',
+                  'Plaadi tööala (ainult vaatamine)',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: _ProjectHomeShellColors.text,
                         fontWeight: FontWeight.w800,
@@ -485,7 +486,7 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Placement summary is read-only and local only.',
+                  'Paigutuste kokkuvõte on ainult vaatamiseks ja lokaalne.',
                   style: TextStyle(
                     color: _ProjectHomeShellColors.dim,
                     fontSize: 11.5,
@@ -628,7 +629,7 @@ class _WorkbenchPlaceholder extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'PCB/workbench placeholder',
+                      'PCB/töölaua kohatäide',
                       style: TextStyle(
                         color: _ProjectHomeShellColors.text,
                         fontWeight: FontWeight.w700,
@@ -636,12 +637,12 @@ class _WorkbenchPlaceholder extends StatelessWidget {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.',
+                      'Kinnitatud plaadipaigutusi veel pole. Töölaud ootab foto- või projektitõendeid.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12),
                     ),
                     SizedBox(height: 6),
-                    Text('Context and route behavior are preserved.'),
+                    Text('Kontekst ja liikumine on säilinud.'),
                   ],
                 ),
               ),
@@ -821,7 +822,7 @@ class _ActionRailCard extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () => context.go('/project/known-facts'),
                     style: outlinedButtonStyle,
-                    child: const Text('Known facts'),
+                    child: const Text('Teadaolevad faktid'),
                   ),
                   OutlinedButton(
                     key: const ValueKey('overview-components-button'),
@@ -842,7 +843,7 @@ class _ActionRailCard extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () => context.go('/project/not-populated'),
                     style: outlinedButtonStyle,
-                    child: const Text('Not populated'),
+                    child: const Text('Täitamata'),
                   ),
                   OutlinedButton(
                     onPressed: () => context.go('/project/report'),
@@ -877,9 +878,9 @@ class _ActionRailCard extends StatelessWidget {
                 left: 8,
                 right: 8,
               ),
-              title: Text('Future tools (tulekul)', style: sectionTitleStyle),
+              title: Text('Tulevased tööriistad', style: sectionTitleStyle),
               subtitle: Text(
-                'Disabled',
+                'Välja lülitatud',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: _ProjectHomeShellColors.dim,
                     ),
@@ -905,7 +906,7 @@ class _ActionRailCard extends StatelessWidget {
                       key: const ValueKey('overview-future-layers-button'),
                       onPressed: null,
                       style: outlinedButtonStyle,
-                      child: const Text('Layers'),
+                      child: const Text('Kihid'),
                     ),
                     OutlinedButton(
                       key: const ValueKey(
@@ -913,7 +914,7 @@ class _ActionRailCard extends StatelessWidget {
                       ),
                       onPressed: null,
                       style: outlinedButtonStyle,
-                      child: const Text('Trace colors'),
+                      child: const Text('Rajajoone värvid'),
                     ),
                   ],
                 ),

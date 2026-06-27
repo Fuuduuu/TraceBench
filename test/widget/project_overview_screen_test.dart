@@ -161,6 +161,7 @@ void main() {
     );
     expect(find.text('BenchBeep Workbench'), findsOneWidget);
     expect(find.text('Töölaud nr 1'), findsOneWidget);
+    expect(find.text('Kohalik töölaud · ainult vaatamine'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
     expect(
         find.byKey(const ValueKey('overview-menu-breadcrumb')), findsOneWidget);
@@ -169,8 +170,12 @@ void main() {
     expect(find.byKey(const ValueKey('overview-menu-disabled-affordance')),
         findsOneWidget);
     expect(find.text('BenchBeep'), findsOneWidget);
-    expect(find.text('Workbench'), findsOneWidget);
-    expect(find.text('Overview'), findsOneWidget);
+    expect(find.text('Töölaud'), findsOneWidget);
+    expect(find.text('Ülevaade'), findsOneWidget);
+    expect(find.text('Tulevased menüüvalikud väljas'), findsOneWidget);
+    expect(find.text('Workbench'), findsNothing);
+    expect(find.text('Overview'), findsNothing);
+    expect(find.text('Future menu items disabled'), findsNothing);
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsNothing);
     expect(find.textContaining('Command menu'), findsNothing);
@@ -180,6 +185,8 @@ void main() {
     expect(find.textContaining('schema_version:'), findsNothing);
     expect(find.textContaining('created_at:'), findsNothing);
     expect(find.textContaining('Read-only projection:'), findsNothing);
+    expect(find.text('READ ONLY'), findsNothing);
+    expect(find.text('AINULT VAATAMINE'), findsOneWidget);
   });
 
   testWidgets('renders compact status strip for board statistics',
@@ -261,12 +268,21 @@ void main() {
       useRouter: false,
     );
 
-    expect(find.text('PCB/workbench placeholder'), findsOneWidget);
+    expect(find.text('PCB/töölaua kohatäide'), findsOneWidget);
+    expect(
+      find.text(
+          'Kinnitatud plaadipaigutusi veel pole. Töölaud ootab foto- või projektitõendeid.'),
+      findsOneWidget,
+    );
+    expect(find.text('Kontekst ja liikumine on säilinud.'), findsOneWidget);
+    expect(find.text('PCB/workbench placeholder'), findsNothing);
     expect(
       find.text(
           'No confirmed board placements yet. The workbench is open and awaiting evidence from photo/project evidence capture.'),
-      findsOneWidget,
+      findsNothing,
     );
+    expect(
+        find.text('Context and route behavior are preserved.'), findsNothing);
     expect(find.textContaining('Read-only projection:'), findsNothing);
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsNothing);
@@ -288,7 +304,15 @@ void main() {
         findsOneWidget);
     expect(find.textContaining('Read-only projection:'), findsNothing);
     expect(find.text('Töölaud nr 1'), findsOneWidget);
-    expect(find.text('PCB/workbench placeholder'), findsNothing);
+    expect(find.text('Plaadi tööala (ainult vaatamine)'), findsOneWidget);
+    expect(
+      find.text('Paigutuste kokkuvõte on ainult vaatamiseks ja lokaalne.'),
+      findsOneWidget,
+    );
+    expect(find.text('Board workspace (read-only)'), findsNothing);
+    expect(find.text('Placement summary is read-only and local only.'),
+        findsNothing);
+    expect(find.text('PCB/töölaua kohatäide'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
 
@@ -341,6 +365,10 @@ void main() {
 
     expect(find.byKey(const ValueKey('overview-future-tools-panel')),
         findsOneWidget);
+    expect(find.text('Tulevased tööriistad'), findsOneWidget);
+    expect(find.text('Välja lülitatud'), findsOneWidget);
+    expect(find.text('Future tools (tulekul)'), findsNothing);
+    expect(find.text('Disabled'), findsNothing);
     for (final button in inertButtons) {
       expect(button, findsNothing);
     }
@@ -358,6 +386,10 @@ void main() {
       final widget = tester.widget<OutlinedButton>(button);
       expect(widget.onPressed, isNull);
     }
+    expect(find.text('Kihid'), findsOneWidget);
+    expect(find.text('Rajajoone värvid'), findsOneWidget);
+    expect(find.text('Layers'), findsNothing);
+    expect(find.text('Trace colors'), findsNothing);
 
     await tester.ensureVisible(futureToolsPanel);
     await tester.pump();
@@ -394,6 +426,28 @@ void main() {
     expect(find.byKey(const ValueKey('overview-reference-images-button')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('overview-project-id')), findsOneWidget);
+  });
+
+  testWidgets('uses polished Estonian copy in secondary shell actions',
+      (tester) async {
+    final projectState = _inlineProjectState();
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    final secondaryActions = find.text('Muud tegevused');
+    expect(secondaryActions, findsOneWidget);
+    await tester.ensureVisible(secondaryActions);
+    await tester.tap(secondaryActions);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(find.text('Teadaolevad faktid'), findsOneWidget);
+    expect(find.text('Täitamata'), findsOneWidget);
+    expect(find.text('Known facts'), findsNothing);
+    expect(find.text('Not populated'), findsNothing);
   });
 
   testWidgets('legacy measurement action routes to measure sheet',

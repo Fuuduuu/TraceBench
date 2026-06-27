@@ -1,90 +1,79 @@
 # Active Scope Lock
 
-## Current docs-only design-source intake pass
+## Current docs-only scope-lock pass
 
-`V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS`
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_SCOPE_LOCK / DESIGN_SOURCE_INTAKE / PROTECTED_UI_DIRECTION
+LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_PROJECT_HOME_COPY
 
-## Intake source
+## Baseline
 
+- Accepted/pushed standalone HTML design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
 - Accepted/pushed Project Home dark EDA shell closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
 - Accepted/pushed implementation pass: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
 - Full implementation SHA: `5691e8de78b46cb45859337e089b84f206c2831b`.
-- Prior accepted/pushed active-lock sync: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e6a5329` (`docs: arm Project Home dark EDA shell implementation`).
-- Prior accepted/pushed scope-lock: `V2_PROJECT_HOME_DARK_EDA_SHELL_SCOPE_LOCK_PASS` at `675412d` (`docs: lock Project Home dark EDA shell scope`).
-- Prior accepted/pushed design-source scope-lock: `V2_PROJECT_HOME_DARK_EDA_DESIGN_SOURCE_SCOPE_LOCK_PASS` at `487c691` (`docs: lock Project Home dark EDA design source`).
-- Claude Code is temporarily unavailable for this intake.
+- Current route before this lock: `NEEDS_USER_DECISION` with no implementation armed.
+- Claude Code is temporarily unavailable for this scope-lock.
 - Review status: `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
 
-## Allowed files for this intake
+## Allowed files for this scope-lock
 
-This intake may edit only:
+This scope-lock may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS.md`
+- `docs/audit/V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS.md`
 
-No runtime, test, asset, schema, writer, materializer, validator, projection, event, fact, sample, platform, generated, `_incoming`, or scratch file is authorized by this intake.
+No runtime, test, asset, schema, writer, materializer, validator, projection, event, fact, sample, platform, generated, `_incoming`, or scratch file is authorized by this scope-lock.
 
-## Standalone HTML design source
+## Future implementation scope to lock
 
-Inspected design-source path:
+Future implementation may only copy-polish visible Project Overview / Workbench Home dark EDA shell labels.
 
-- `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html`
+Future implementation may consider:
 
-The standalone dark Project Home HTML bundle is `DESIGN_INPUT_ONLY`.
+- replacing remaining mixed English/Estonian shell labels with clearer Estonian user-facing copy;
+- keeping technical meaning precise;
+- preserving read-only / non-writing status;
+- preserving disabled/future tool inertness;
+- preserving BenchBeep / TraceBench / BoardFact naming boundaries;
+- updating focused widget tests only after a separate active-lock sync.
+
+Candidate copy areas:
+
+- `Board workspace (read-only)`
+- `Known facts`
+- `Not populated`
+- `Future tools`
+- nearby Project Overview / Workbench Home shell labels that are part of the same visible copy cluster.
+
+## Future implementation must preserve
+
+- No canonical data rename.
+- No project fact change.
+- No board fact change.
+- No route behavior change.
+- No navigation behavior change.
+- No Board Canvas behavior change.
+- No Measure Sheet save behavior change.
+- No logo/runtime assets.
+- No HTML/CSS/JS reuse from `_incoming`.
+- No inference of canonical nets, pins, measurements, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts from copy.
+
+## Design source status
+
+The standalone dark HTML and prior dark EDA HTML/CSS remain `DESIGN_INPUT_ONLY`.
 
 - `RUNTIME_AUTHORITY: NONE`
 - `CANONICAL_SEMANTICS: NONE`
 - `IMPLEMENTATION_AUTHORIZATION: NONE`
 - `ASSET_AUTHORIZATION: NONE`
 
-The standalone bundle may contain embedded image/font/script/style data. Those embedded resources are also `DESIGN_INPUT_ONLY` and must not be extracted, copied, staged, converted to Flutter assets, imported, bundled, or used as runtime dependencies.
-
-Do not infer canonical board facts, nets, pins, measurements, components, coordinates, electrical proof, route behavior, project identity facts, or AI/OCR/CV facts from the standalone HTML.
-
-## Relationship to accepted implementation
-
-- `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` remains accepted/pushed at `5691e8d`.
-- `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` remains accepted/pushed at `aa4b907`.
-- The current implemented Project Overview / Workbench Home dark EDA shell remains accepted as-is.
-- This standalone HTML does not reopen, override, supersede, or invalidate the accepted implementation.
-- This standalone HTML is future reference input only.
-
-## Future design direction allowed only after separate route/scope
-
-Future separate scopes may consider:
-
-- cleaner Project Home / Workbench Home identity presentation;
-- stronger BenchBeep-branded dark EDA visual direction;
-- copy polish for mixed English/Estonian shell labels;
-- improved project/workbench header hierarchy;
-- more refined dark board/workspace visual composition;
-- future logo/brand asset discussion, but only through a separate explicit asset scope;
-- future Project Home/Workbench Home visual-polish scope, but only after a separate route decision and active-lock sync.
-
-## Explicitly deferred
-
-- Runtime implementation from this standalone HTML.
-- Direct HTML/CSS/JS reuse.
-- Embedded PNG/font extraction.
-- Logo/runtime asset import.
-- `pubspec.yaml` asset changes.
-- Global dark theme.
-- Board Canvas dark EDA migration.
-- Color-coded nets.
-- Board-level legend runtime behavior.
-- Command menu.
-- Context menu.
-- Audio/save beep.
-- Route/navigation changes.
-- Canvas token migration.
-- Schema/writer/materializer/validator/projection/event/fact changes.
+Do not edit, stage, copy, import, bundle, or runtime-depend on `_incoming` files.
 
 ## Explicitly forbidden
 
@@ -92,18 +81,21 @@ Future separate scopes may consider:
 - Editing `_incoming`.
 - Editing assets or `pubspec.yaml`.
 - Arming implementation directly.
-- Staging the standalone HTML.
-- Copying the standalone HTML into docs or assets.
-- Pasting large HTML, base64, embedded resource, script, style, image, or font content into docs.
-- Using the standalone HTML as runtime truth.
-- Adding runtime dependency on `_incoming`.
+- Starting runtime implementation in this pass.
+- Starting global dark theme.
+- Starting Board Canvas dark EDA migration.
+- Adding route/navigation behavior.
+- Adding runtime dependencies.
+- Adding logo/font/runtime assets.
+- Changing Board Canvas save/write behavior.
 - Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.
-- Board Canvas save/write behavior changes.
-- `events.jsonl` writes, `known_facts` mutation, or canonical measurement/fact creation.
-- Creating or implying canonical measurements, facts, nets, pin mappings, placement semantics, package identity, electrical proof, fault evidence, route behavior, project identity facts, or AI/OCR/CV facts.
+- Editing schema, writer, materializer, validator, projection, Project ZIP, events, facts, samples, platform files, or generated files.
+- Creating or implying canonical measurements, facts, nets, pin mappings, placement semantics, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
 
-## Route
+## Expected next route
 
-- Current route owner: `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
-- Current docs-only intake pass: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS`.
-- Route after this intake is accepted/pushed: `NEEDS_USER_DECISION`.
+After this scope-lock is accepted/pushed, route to:
+
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+
+That active-lock sync must inspect live repo files and arm the exact future implementation allowlist. This scope-lock does not arm implementation directly.

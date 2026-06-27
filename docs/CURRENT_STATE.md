@@ -2,17 +2,18 @@
 
 ## Current pass
 
-`V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this intake: `aa4b907` (`docs: record Project Home dark EDA shell`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `0e59ce9` (`docs: intake standalone dark EDA design source`), aligned with `origin/main`.
+- Latest accepted/pushed design-source intake: `V2_PROJECT_HOME_DARK_EDA_STANDALONE_HTML_DESIGN_SOURCE_INTAKE_PASS` at `0e59ce9` (`docs: intake standalone dark EDA design source`).
 - Latest accepted/pushed closeout: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_POST_AUDIT_PASS` at `aa4b907` (`docs: record Project Home dark EDA shell`).
 - Latest accepted/pushed implementation: `V2_PROJECT_HOME_DARK_EDA_SHELL_IMPL_PASS` at `5691e8d` (`feat(project-overview): polish dark EDA shell`).
 - Full implementation SHA: `5691e8de78b46cb45859337e089b84f206c2831b`.
@@ -35,8 +36,8 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only design-source intake for the standalone dark Project Home HTML bundle.
-- Route after this intake is accepted/pushed: `NEEDS_USER_DECISION`.
+- Current route is this docs-only scope-lock for future Project Overview / Workbench Home dark EDA copy polish.
+- Route after this scope-lock is accepted/pushed: `V2_PROJECT_HOME_DARK_EDA_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 - The implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -122,7 +123,7 @@
 - Visual pin/leg selection must not become confirmed pin mapping, a confirmed net, electrical relation, placement/coordinate semantics, package identity, or canonical fact.
 - Future dark EDA / bench-instrument visual direction may use the inspected dark Project Home HTML/CSS only as design input: dominant board/canvas working surface, compact left rail/project navigation direction, contextual right Measure panel direction, read-only/no-write status visibility, technical typography and restrained chrome, dark canvas with clear board/footprint contrast, and preserved BenchBeep user-facing identity.
 - Future Project Home dark EDA shell follow-up work may be considered only as narrow local visual polish for the Project Overview / Workbench Home surface.
-- Mixed English/Estonian copy remains in some shell labels, such as `Board workspace (read-only)`, `Known facts`, `Not populated`, and `Future tools`; these are deferred copy-polish candidates and are not blockers for the accepted implementation.
+- Mixed English/Estonian copy remains in some shell labels, such as `Board workspace (read-only)`, `Known facts`, `Not populated`, and `Future tools`; these are the narrow copy-polish candidates for the newly locked future scope and are not blockers for the accepted implementation.
 - Future separate scopes may consider cleaner Project Home / Workbench Home identity presentation, stronger BenchBeep-branded dark EDA visual direction, copy polish for mixed English/Estonian shell labels, improved project/workbench header hierarchy, more refined dark board/workspace visual composition, future logo/brand asset discussion through a separate explicit asset scope, and future Project Home/Workbench Home visual polish after a separate route decision and active-lock sync.
 - The inspected standalone dark Project Home HTML is possible future design-source input only and does not authorize implementation.
 - Further Project Home dark polish, global dark theme, Board Canvas dark EDA visual migration, color-coded net rendering, board-level legend implementation, logo asset/runtime asset changes, Google Fonts/font asset changes, new route/navigation behavior, and runtime CSS/HTML reuse are future/deferred unless separately scoped.
@@ -135,11 +136,11 @@
 
 ## Active constraints
 
-- This intake is docs-only and may edit only the route/ledger docs and its new audit artifact.
-- This intake does not implement runtime behavior, edit tests, arm implementation, or authorize design-source runtime/asset use.
-- `docs/ACTIVE_SCOPE_LOCK.md` now authorizes only this docs-only standalone HTML design-source intake.
+- This scope-lock is docs-only and may edit only the route/ledger docs and its new audit artifact.
+- This scope-lock does not implement runtime behavior, edit tests, arm implementation directly, or authorize design-source runtime/asset use.
+- `docs/ACTIVE_SCOPE_LOCK.md` now authorizes only this docs-only Project Home dark EDA copy-polish scope lock.
 - This pass records no Claude audit verdict because Claude Code is temporarily unavailable.
-- Review status for this intake is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
+- Review status for this scope-lock is `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

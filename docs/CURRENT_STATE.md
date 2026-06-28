@@ -2,28 +2,37 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `c41fc58` (`docs: lock Board Canvas rail label fit`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `e855d5d` (`feat(board-canvas): polish rail label fit`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` at `e855d5d` (`feat(board-canvas): polish rail label fit`).
+- Implementation full SHA: `e855d5d4db8254923cdc1887e6a23b5e29a0c396`.
+- Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Manual visual smoke: PASS.
+- Review status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Claude Code was unavailable; this state does not claim Claude audit or Claude acceptance.
+- GPT Pro secondary review accepted the runtime implementation for staging after user manual visual smoke PASS and recorded validation evidence.
+- Accepted behavior: Board Canvas left rail label fit improved; visible truncation `Pa...` / `Tul...` was removed; compact labels are `Lisa`, `Rajad`, and `Parandus`; visible `Tulevased tööriistad` section header text is hidden while full meaning remains available through tooltip/semantic copy; selected rail icon/tile uses compact glow and no longer stretches into a wide rail-width rectangle; icon-first dark EDA style is preserved.
+- Implementation validation evidence: `dart format` passed; `flutter test test/widget/board_canvas_screen_test.dart` passed (+97); `flutter test test/widget/project_overview_screen_test.dart` passed (+20); `flutter test test/widget/measure_sheet_screen_test.dart` passed (+27); full `flutter test` passed (+341); `python tools/validate_all.py` passed with 273 tests OK and existing optional-photo warnings only; `git diff --check` passed; `rg "v2_save_measurement_writer"` on the two implementation files returned no matches.
+- Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e53ec98` (`docs: arm Board Canvas rail label fit implementation`).
+- Active-lock sync full SHA: `e53ec98fd2ac3746bf8832f295a89b283993b36c`.
 - Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS` at `c41fc58` (`docs: lock Board Canvas rail label fit`).
 - Scope-lock full SHA: `c41fc58593dde2659557b6913b11ca27093cf15d`.
 - Accepted scope-lock review status: `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`; do not treat this as a Claude audit verdict.
-- Current route is this docs-only active-lock sync for the future Board Canvas rail label fit / truncation polish implementation.
-- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
-- Current armed implementation pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
-- Future implementation allowlist: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Target surface decision: future implementation may only target Board Canvas left rail / compact tool rail labels and closely related rail tooltip/semantic copy handling.
-- Latest accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
+- Current route is this docs-only post-audit closeout for the accepted/pushed Board Canvas rail label fit implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- Implementation active lock is released; no new implementation pass is armed.
+- Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
 - Closeout full SHA: `4ed76ef99269e8e3e289ea034850a0f0a47617e5`.
-- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
+- Prior accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
 - Implementation full SHA: `e18c30fc4618cca49d3f2471fb303b21324eee3e`.
 - Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Manual smoke: `PASS_WITH_NITS`.
@@ -31,9 +40,9 @@
 - Accepted nits: some narrow rail labels may still truncate because of rail width; some diagnostic/product labels intentionally remain English, including `Board Canvas`, `BenchBeep · TraceBench platform`, `renderer writes: none`, `Beep`, and other technical provenance/debug labels where precision is safer.
 - Temporary secondary review: ChatGPT Pro temporary secondary review accepted staging after validation and user manual smoke `PASS_WITH_NITS`.
 - Claude status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `3f3b488` (`docs: arm Board Canvas remaining copy polish implementation`).
+- Prior accepted/pushed active-lock sync: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `3f3b488` (`docs: arm Board Canvas remaining copy polish implementation`).
 - Active-lock sync full SHA: `3f3b488b2b2bc0e42cac23d1526ed6d4b4379a19`.
-- Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_SCOPE_LOCK_PASS` at `375b8da` (`docs: lock Board Canvas remaining copy polish`).
+- Prior accepted/pushed scope-lock: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_SCOPE_LOCK_PASS` at `375b8da` (`docs: lock Board Canvas remaining copy polish`).
 - Scope-lock full SHA: `375b8da706b21d0e4cfd1f7a6ed056f43a92ef47`.
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_POST_AUDIT_PASS` at `aa20c78` (`docs: record Board Canvas dark EDA style alignment`).
 - Prior accepted/pushed implementation baseline: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_PASS` at `725b8b8` (`feat(board-canvas): align dark EDA shell`).
@@ -73,9 +82,9 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only active-lock sync for a future Board Canvas rail label fit / truncation polish pass.
-- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
-- This active-lock sync arms only the exact future implementation allowlist in `docs/ACTIVE_SCOPE_LOCK.md`; it does not implement runtime/test behavior.
+- Current route is this docs-only closeout for the accepted/pushed Board Canvas rail label fit implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- The Board Canvas rail label fit implementation active lock is released; no new implementation pass is armed.
 - Design source handling: the standalone dark Project Home HTML remains `DESIGN_INPUT_ONLY`; the repo-local accepted path is `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html`, and it is not runtime truth or an asset/source dependency.
 - The latest accepted Project Home implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
@@ -173,7 +182,7 @@
 - Accepted copy changes include local shell/control labels such as `Mõõtmine`, `Lisa komponent`, `Paigutused`, `Ohutus`, `Inspektor`, `Valmis`, `Näita kõiki` / `Peida kõik`, `Komponendi vaade`, `Mõõdetud väärtused`, `Jätka mõõtelehel`, and related local tooltips/section labels where safe.
 - Product/platform/diagnostic copy was intentionally preserved where precision was safer, including `Board Canvas`, `BenchBeep · TraceBench platform`, `renderer writes: none`, `Beep`, `From -> To context`, provenance/debug field labels, and no-write diagnostic wording where applicable.
 - Accepted remaining-copy polish nits: some narrow rail labels may still truncate because of rail width, and some diagnostic/product labels intentionally remain English.
-- Future Board Canvas rail label fit / truncation polish is now locked as a narrow Board Canvas-only direction for left rail / compact tool rail labels and nearby tooltip/semantic text, not a broad copy migration or layout redesign.
+- Board Canvas rail label fit / truncation polish is accepted: awkward `Pa...` / `Tul...` truncation is gone, compact visible labels are preserved, full meaning remains in tooltip/semantic copy, and selected rail state is a compact glowing icon/tile rather than a wide rail-width rectangle.
 
 ## Protected future direction carried forward
 
@@ -207,10 +216,10 @@
 - The accepted Board Canvas remaining-copy polish closeout was docs-only, released its prior implementation active lock, and did not arm a new implementation pass.
 - The accepted Board Canvas remaining-copy polish closeout recorded no Claude audit verdict because Claude Code was temporarily unavailable.
 - Review status for that accepted closeout remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.
-- This current active-lock sync does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
-- This current active-lock sync arms `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` with exactly `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no other future implementation files are authorized.
-- This current active-lock sync uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
+- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS.md`.
+- This current closeout does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
+- This current closeout releases `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`; no future implementation files are authorized by the active lock.
+- This current closeout uses temporary no-Claude review mode and must not claim Claude audit or Claude acceptance.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

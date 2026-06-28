@@ -2,160 +2,101 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS`
 
 ## Current armed implementation pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`
+None. The `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` implementation active lock is released by this docs-only closeout.
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY
+LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY
 
 ## Baseline
 
-- Expected and verified HEAD/origin before this active-lock sync: `c41fc58` (`docs: lock Board Canvas rail label fit`).
-- Accepted/pushed scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS` at `c41fc58`.
-- Scope-lock full SHA: `c41fc58593dde2659557b6913b11ca27093cf15d`.
-- Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
-- Tracked diff before this active-lock sync: none.
-- Cached/staged diff before this active-lock sync: none.
+- Expected and verified HEAD/origin before this closeout: `e855d5d` (`feat(board-canvas): polish rail label fit`).
+- Full implementation SHA: `e855d5d4db8254923cdc1887e6a23b5e29a0c396`.
+- Accepted/pushed implementation: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` at `e855d5d`.
+- Accepted/pushed active-lock sync: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e53ec98` (`docs: arm Board Canvas rail label fit implementation`).
+- Accepted/pushed scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS` at `c41fc58` (`docs: lock Board Canvas rail label fit`).
+- Tracked diff before this closeout: none.
+- Cached/staged diff before this closeout: none.
 - Known untracked scratch files remain untouched.
 
-## Active-lock sync allowlist
+## Closeout allowlist
 
-This docs-only active-lock sync may edit only:
+This docs-only closeout may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS.md`
 
-No runtime or test implementation is authorized in this active-lock sync.
+No runtime or test implementation is authorized in this closeout.
 
-## Future implementation allowlist
+## Accepted implementation evidence
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` may edit exactly:
+- Implementation pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
+- Implementation commit: `e855d5d` (`feat(board-canvas): polish rail label fit`).
+- Implementation files changed:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- Manual visual smoke: PASS.
+- Review status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Claude Code was unavailable; this closeout does not claim Claude audit or Claude acceptance.
+- GPT Pro secondary review accepted the implementation for staging after manual visual smoke PASS and validation.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Accepted behavior
 
-No other runtime, test, docs, asset, schema, tool, sample, platform, generated, or `_incoming` file is authorized for the future implementation pass.
+- Board Canvas left rail label fit improved.
+- Visible truncation `Pa...` / `Tul...` was removed.
+- Visible labels are compact:
+  - `Lisa komponent` -> `Lisa`
+  - `Rajakaart` -> `Rajad`
+  - `Paranduskaart` -> `Parandus`
+- Visible `Tulevased tööriistad` section header text is hidden.
+- Full meaning is preserved through semantic/tooltip copy.
+- Selected rail icon/tile uses compact glow.
+- Selected state no longer stretches into a wide rail-width rectangle.
+- Icon-first dark EDA style is preserved.
 
-## Target surface decision
-
-Future implementation may only address Board Canvas left rail / compact tool rail label fit and closely related rail tooltip/semantic copy handling.
-
-Candidate labels or visible rail text may include, if present:
-
-- `Lisa komponent`
-- `Mõõtmine`
-- `Paigutused`
-- `Ohutus`
-- `Inspektor`
-- `Tulevased tööriistad`
-- `Rajakaart`
-- `Paranduskaart`
-
-Live inspection confirmed these labels/tooltips live in `lib/features/board_canvas/screens/board_canvas_screen.dart`, and the focused rail assertions live in `test/widget/board_canvas_screen_test.dart`.
-
-## Design source handling
-
-The standalone dark Project Home HTML remains `DESIGN_INPUT_ONLY`.
-
-- Repo-local accepted design path inspected for context only: `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html`.
-- Literal prompt path `C:\Users\Kasutaja\Desktop\TraceBench_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html` was not present on disk.
-- The repo-local path is already recorded by design-source intake docs as the accepted design-source reference location.
-
-Design source status:
-
-- `RUNTIME_AUTHORITY: NONE`
-- `CANONICAL_SEMANTICS: NONE`
-- `IMPLEMENTATION_AUTHORIZATION: NONE`
-- `ASSET_AUTHORIZATION: NONE`
-
-Do not edit, stage, copy, import, bundle, extract, or runtime-depend on the HTML. Do not extract fonts, images, scripts, CSS, colors, classes, assets, or embedded resources.
-
-## Future implementation may consider
-
-- Shortening rail-visible labels while preserving full meaning in tooltips.
-- Keeping full text in tooltip/semantic copy where visible rail text must be compact.
-- Using concise technician-facing labels such as `Lisa`, `Komponent`, `Mõõda`, `Tulekul`, `Rajad`, or `Parandus` only if safe and clear.
-- Adjusting rail label max lines, text scale handling, spacing, or tooltip copy only if local and minimal.
-- Preserving icon-first rail behavior.
-- Preserving Board Canvas canvas dominance.
-- Preserving accepted dark EDA visual styling.
-- Updating focused Board Canvas widget tests only for changed rail label, tooltip, semantic, fit, and protected-behavior assertions.
-
-## Protected boundaries to preserve
+## Protected boundaries preserved
 
 - Board Canvas remains read-only.
 - `renderer writes: none` remains true.
-- No save/write behavior from Board Canvas.
-- Existing pan/zoom/fit/reset behavior remains preserved.
-- Existing tap-to-select behavior remains preserved.
-- Existing selected-pin persistence behavior remains preserved.
-- Existing inspector behavior remains preserved.
-- Existing placement rendering behavior remains preserved.
-- Existing measurement marker/summary behavior remains preserved.
-- Existing visual-trace/provenance behavior remains preserved.
-- Existing Add Component local UI-only behavior remains preserved.
-- Existing Measure Sheet route/save path remains preserved.
-- Existing Project Overview runtime behavior remains preserved.
-- Existing Board Canvas dark EDA styling remains preserved.
-- Existing Board Canvas copy-polish remains preserved except rail-fit-specific copy.
-- Full semantic meaning remains available through tooltip/accessible text where rail label is shortened.
-- BenchBeep / TraceBench / BoardFact naming boundaries remain preserved.
-- No canonical data rename.
-- No project fact changes.
-- No board fact changes.
-- No schema changes.
-- No writer/service changes.
-- No materializer/validator/projection changes.
-- No Project ZIP changes.
+- No Board Canvas save/write behavior.
+- No `v2_save_measurement_writer.dart` import, call, route, or wiring.
 - No `events.jsonl` writes.
 - No `known_facts` mutation.
-- No canonical measurements, facts, nets, pin mappings, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
+- No canonical facts, measurements, nets, pin mappings, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
+- Project Overview unchanged.
+- Measure Sheet route/save path unchanged.
+- Add Component local/UI-only behavior preserved.
+- Pan/zoom/fit/reset, tap-to-select, selected-pin persistence, inspector, and measurement summary preserved.
 
-## Explicitly forbidden in this active-lock sync
+## Explicitly forbidden in this closeout
 
-- Runtime implementation.
 - Editing `lib/`.
 - Editing `test/`.
+- Editing `tools/`.
+- Editing `schemas/`.
+- Editing `assets/`.
 - Editing `_incoming`.
-- Editing the standalone HTML.
-- Extracting/importing/copying/bundling fonts, images, CSS, JS, colors, classes, assets, or embedded resources from the standalone HTML.
-- Adding runtime dependency on `_incoming`.
-- Adding logo/runtime assets.
-- Editing `pubspec.yaml`.
-- Global theme migration.
-- Shared theme/token refactor.
-- Broad app-wide copy migration.
-- Board Canvas redesign.
-- Rail behavior rewrite.
-- Route/navigation rewiring.
-- Project Overview changes.
-- Measure Sheet changes.
-- Board Canvas save/write behavior.
+- Editing runtime, writer, materializer, projection, ZIP, event, fact, schema, or sample files.
+- Arming a new implementation pass.
+- Claiming Claude audit or Claude acceptance.
+- Claiming Board Canvas save/write behavior is accepted.
+- Claiming canonical measurement writing is accepted.
 - Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.
-- Schema/writer/materializer/validator/projection/event/fact/sample/platform/generated changes.
-- Broad staging.
-
-## Explicitly forbidden in the future implementation pass
-
-- Editing outside `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Adding Board Canvas save/write behavior.
-- Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.
-- Writing `events.jsonl`.
-- Mutating `known_facts`.
 - Creating or implying canonical measurements, facts, nets, pin mappings, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
-- Turning shortened labels, tooltips, visual traces, or From -> To context into confirmed connectivity or semantics.
-- Changing router, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, assets, samples, platform files, generated files, or unrelated docs.
+- Turning visual traces, labels, or From -> To context into confirmed connectivity.
+- Command menu, context menu, audio/save beep, full redesign, global theme migration, or canvas token migration.
+- Broad staging.
 
 ## Route
 
-- Current pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Current armed implementation pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
-- Route after accepted/pushed: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
-- This active-lock sync does not implement runtime behavior.
+- Current pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS`.
+- Route after accepted/pushed: `NEEDS_USER_DECISION`.
+- Implementation active lock is released.
+- No new implementation pass is armed.

@@ -3545,17 +3545,30 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       ),
       onPressed: widget.onToggleAllMeasurementValueBadges,
     );
-    final fitButton = IconButton(
-      key: const Key('board_canvas_fit_view_button'),
-      tooltip: 'Sobita plaadivaade',
-      icon: const Icon(Icons.center_focus_strong),
-      color: _kBoardCanvasNavy,
-      style: IconButton.styleFrom(
-        backgroundColor: _kBoardCanvasPaper.withValues(alpha: 0.92),
-        minimumSize: const Size.square(_kCompactControlTileHeight),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    final fitButton = Tooltip(
+      message: 'Sobita / taasta vaade',
+      child: Semantics(
+        label: 'Sobita või taasta plaadivaade',
+        hint: 'Lähtestab suumi ja nihke.',
+        button: true,
+        child: TextButton.icon(
+          key: const Key('board_canvas_fit_view_button'),
+          style: TextButton.styleFrom(
+            backgroundColor: _kBoardCanvasPaper.withValues(alpha: 0.92),
+            foregroundColor: _kBoardCanvasNavy,
+            minimumSize: const Size(74, _kCompactControlTileHeight),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+          icon: const Icon(
+            Icons.center_focus_strong,
+            size: _kCompactControlIconSize,
+          ),
+          label: const Text('Sobita'),
+          onPressed: _fitCanvasView,
+        ),
       ),
-      onPressed: _fitCanvasView,
     );
 
     return Positioned(

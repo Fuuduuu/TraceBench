@@ -3314,6 +3314,14 @@ void main() {
         findsOneWidget);
     expect(
         find.byKey(const Key('board_canvas_fit_view_button')), findsOneWidget);
+    expect(find.byTooltip('Sobita / taasta vaade'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_fit_view_button')),
+        matching: find.text('Sobita'),
+      ),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
 
     expect(

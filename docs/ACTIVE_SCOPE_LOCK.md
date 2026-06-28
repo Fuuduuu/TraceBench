@@ -2,57 +2,52 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current armed implementation pass
 
-None. This docs-only scope-lock does not arm runtime or test implementation directly.
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY
+LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY
 
 ## Baseline
 
-- Expected and verified HEAD/origin before this scope-lock: `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
-- Accepted/pushed Board Canvas remaining-copy polish closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef`.
-- Closeout full SHA: `4ed76ef99269e8e3e289ea034850a0f0a47617e5`.
-- Accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
-- Accepted implementation full SHA: `e18c30fc4618cca49d3f2471fb303b21324eee3e`.
-- Tracked diff before this scope-lock: none.
-- Cached/staged diff before this scope-lock: none.
+- Expected and verified HEAD/origin before this active-lock sync: `c41fc58` (`docs: lock Board Canvas rail label fit`).
+- Accepted/pushed scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS` at `c41fc58`.
+- Scope-lock full SHA: `c41fc58593dde2659557b6913b11ca27093cf15d`.
+- Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
+- Tracked diff before this active-lock sync: none.
+- Cached/staged diff before this active-lock sync: none.
 - Known untracked scratch files remain untouched.
 
-## Scope-lock allowlist
+## Active-lock sync allowlist
 
-This docs-only scope-lock may edit only:
+This docs-only active-lock sync may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-No runtime or test files are authorized by this scope-lock.
+No runtime or test implementation is authorized in this active-lock sync.
 
-## Locked future target surface
+## Future implementation allowlist
 
-Future implementation may only address Board Canvas left rail / compact tool rail label fit and closely related rail tooltip/semantic copy handling after a separate active-lock sync.
-
-Candidate future implementation files, if still sufficient after live repo inspection in the active-lock sync:
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` may edit exactly:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Do not treat this scope-lock as runtime/test authorization.
+No other runtime, test, docs, asset, schema, tool, sample, platform, generated, or `_incoming` file is authorized for the future implementation pass.
 
-## Reason for scope-lock
+## Target surface decision
 
-The accepted Board Canvas remaining-copy polish pass recorded non-blocking nits: some narrow rail labels may still truncate because of rail width. A future narrow polish pass may improve fit/legibility without broad layout redesign or product behavior changes.
+Future implementation may only address Board Canvas left rail / compact tool rail label fit and closely related rail tooltip/semantic copy handling.
 
-## Candidate rail labels
-
-Future implementation may inspect and, if needed, polish compact rail-visible labels such as:
+Candidate labels or visible rail text may include, if present:
 
 - `Lisa komponent`
 - `Mõõtmine`
@@ -63,7 +58,7 @@ Future implementation may inspect and, if needed, polish compact rail-visible la
 - `Rajakaart`
 - `Paranduskaart`
 
-Any shortened visible label must preserve full meaning through tooltip or accessible/semantic text where practical.
+Live inspection confirmed these labels/tooltips live in `lib/features/board_canvas/screens/board_canvas_screen.dart`, and the focused rail assertions live in `test/widget/board_canvas_screen_test.dart`.
 
 ## Design source handling
 
@@ -91,7 +86,7 @@ Do not edit, stage, copy, import, bundle, extract, or runtime-depend on the HTML
 - Preserving icon-first rail behavior.
 - Preserving Board Canvas canvas dominance.
 - Preserving accepted dark EDA visual styling.
-- Updating focused Board Canvas widget tests only after a separate active-lock sync.
+- Updating focused Board Canvas widget tests only for changed rail label, tooltip, semantic, fit, and protected-behavior assertions.
 
 ## Protected boundaries to preserve
 
@@ -110,6 +105,7 @@ Do not edit, stage, copy, import, bundle, extract, or runtime-depend on the HTML
 - Existing Project Overview runtime behavior remains preserved.
 - Existing Board Canvas dark EDA styling remains preserved.
 - Existing Board Canvas copy-polish remains preserved except rail-fit-specific copy.
+- Full semantic meaning remains available through tooltip/accessible text where rail label is shortened.
 - BenchBeep / TraceBench / BoardFact naming boundaries remain preserved.
 - No canonical data rename.
 - No project fact changes.
@@ -122,7 +118,7 @@ Do not edit, stage, copy, import, bundle, extract, or runtime-depend on the HTML
 - No `known_facts` mutation.
 - No canonical measurements, facts, nets, pin mappings, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
 
-## Explicitly forbidden in this scope-lock
+## Explicitly forbidden in this active-lock sync
 
 - Runtime implementation.
 - Editing `lib/`.
@@ -146,8 +142,20 @@ Do not edit, stage, copy, import, bundle, extract, or runtime-depend on the HTML
 - Schema/writer/materializer/validator/projection/event/fact/sample/platform/generated changes.
 - Broad staging.
 
+## Explicitly forbidden in the future implementation pass
+
+- Editing outside `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Adding Board Canvas save/write behavior.
+- Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.
+- Writing `events.jsonl`.
+- Mutating `known_facts`.
+- Creating or implying canonical measurements, facts, nets, pin mappings, coordinates, package identity, electrical proof, fault evidence, or AI/OCR/CV facts.
+- Turning shortened labels, tooltips, visual traces, or From -> To context into confirmed connectivity or semantics.
+- Changing router, Home, Project Overview, Measure Sheet, writer/service, schema, validator, materializer, projection, Project ZIP, assets, samples, platform files, generated files, or unrelated docs.
+
 ## Route
 
-- Current pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS`.
-- Route after accepted/pushed: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Do not arm implementation directly in this scope-lock.
+- Current pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current armed implementation pass: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
+- Route after accepted/pushed: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS`.
+- This active-lock sync does not implement runtime behavior.

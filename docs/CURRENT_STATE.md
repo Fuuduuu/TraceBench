@@ -2,19 +2,28 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`
+`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this route sync: `b2d0a61` (`docs: arm Board Canvas fit reset discoverability`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `6762bdc` (`feat(board-canvas): improve fit reset discoverability`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` at `6762bdc` (`feat(board-canvas): improve fit reset discoverability`).
+- Implementation full SHA: `6762bdcb35287b9d7c393d5b2ec9e21e911df2f3`.
+- Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Manual smoke: PASS.
+- Review status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Claude Code was unavailable for this implementation; this state does not claim Claude audit or Claude acceptance for this pass.
+- Accepted behavior: compact `Sobita` viewport recovery control, clearer tooltip `Sobita / taasta vaade`, semantic label/hint for fit/reset recovery, and preserved existing fit/reset behavior.
+- Implementation validation evidence: `dart format` passed; `flutter test test/widget/board_canvas_screen_test.dart` passed (+97); `flutter test test/widget/project_overview_screen_test.dart` passed (+20); `flutter test test/widget/measure_sheet_screen_test.dart` passed (+27); full `flutter test` passed (+341); `python tools/validate_all.py` passed with 273 tests OK and existing optional-photo warnings only; `git diff --check` passed; `rg "v2_save_measurement_writer"` on the two implementation files returned no matches.
 - Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `b2d0a61` (`docs: arm Board Canvas fit reset discoverability`).
 - Active-lock sync full SHA: `b2d0a61a0cfaed3581725d8dd30d4e1f24b02e9e`.
+- Latest accepted/pushed route sync: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ROUTE_SYNC_PASS` at `8f45065` (`docs: sync Board Canvas fit reset route`).
 - Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS` at `b254d43` (`docs: lock Board Canvas fit reset discoverability`).
 - Scope-lock full SHA: `b254d437e8577bf5cbfd649b4a92dc99893f0fb5`.
 - Latest accepted/pushed closeout before the scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS` at `1740e8a` (`docs: record Board Canvas rail label fit`).
@@ -28,11 +37,9 @@
 - GPT Pro secondary review accepted the rail-label runtime implementation for staging after user manual visual smoke PASS and recorded validation evidence.
 - Accepted behavior: Board Canvas left rail label fit improved; visible truncation `Pa...` / `Tul...` was removed; compact labels are `Lisa`, `Rajad`, and `Parandus`; visible `Tulevased tööriistad` section header text is hidden while full meaning remains available through tooltip/semantic copy; selected rail icon/tile uses compact glow and no longer stretches into a wide rail-width rectangle; icon-first dark EDA style is preserved.
 - Implementation validation evidence: `dart format` passed; `flutter test test/widget/board_canvas_screen_test.dart` passed (+97); `flutter test test/widget/project_overview_screen_test.dart` passed (+20); `flutter test test/widget/measure_sheet_screen_test.dart` passed (+27); full `flutter test` passed (+341); `python tools/validate_all.py` passed with 273 tests OK and existing optional-photo warnings only; `git diff --check` passed; `rg "v2_save_measurement_writer"` on the two implementation files returned no matches.
-- Current route is the Board Canvas Fit / Reset discoverability runtime implementation pass.
-- Current implementation pass: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`.
-- Active implementation write allowlist: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Route after the runtime implementation is accepted/pushed: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS`.
-- This route sync does not complete or implement runtime behavior.
+- Current route is this docs-only closeout for the accepted/pushed Board Canvas Fit / Reset discoverability implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- The Board Canvas Fit / Reset discoverability implementation active lock is released; no new implementation pass is armed.
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
 - Closeout full SHA: `4ed76ef99269e8e3e289ea034850a0f0a47617e5`.
 - Prior accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
@@ -85,9 +92,7 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only closeout for the accepted/pushed Board Canvas rail label fit implementation.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
-- The Board Canvas rail label fit implementation active lock is released; no new implementation pass is armed.
+- Prior Board Canvas rail label fit closeout is accepted/pushed; its implementation active lock remains released.
 - Design source handling: the standalone dark Project Home HTML remains `DESIGN_INPUT_ONLY`; the repo-local accepted path is `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\BenchBeep Project Home (dark, standalone).html`, and it is not runtime truth or an asset/source dependency.
 - The latest accepted Project Home implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
@@ -223,10 +228,10 @@
 - Review status for the accepted rail label fit implementation remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted Board Canvas Fit / Reset discoverability scope-lock was docs-only, did not arm runtime implementation directly, and routed to the active-lock sync.
 - The accepted Board Canvas Fit / Reset discoverability active-lock sync was docs-only, armed `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`, and was pushed at `b2d0a61`.
-- Current runtime implementation is limited to `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Current runtime implementation may only improve discoverability of existing Board Canvas Fit / Reset / viewport recovery affordances and must preserve existing pan/zoom/fit/reset semantics.
-- No runtime implementation is recorded as completed by this docs-only route sync.
-- This route-sync repair uses temporary review context and does not claim Claude audit or Claude acceptance.
+- The accepted Board Canvas Fit / Reset discoverability implementation was pushed at `6762bdc` and changed only `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- This closeout records manual smoke PASS and temporary review mode `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`; it does not claim Claude audit or Claude acceptance.
+- The Board Canvas Fit / Reset discoverability implementation active lock is released by this closeout; no new implementation pass is armed.
+- Current route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

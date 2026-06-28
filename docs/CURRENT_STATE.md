@@ -2,36 +2,35 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `1740e8a` (`docs: record Board Canvas rail label fit`), aligned with `origin/main`.
-- Latest accepted/pushed closeout: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS` at `1740e8a` (`docs: record Board Canvas rail label fit`).
+- Latest pushed HEAD verified before this active-lock sync: `b254d43` (`docs: lock Board Canvas fit reset discoverability`), aligned with `origin/main`.
+- Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS` at `b254d43` (`docs: lock Board Canvas fit reset discoverability`).
+- Scope-lock full SHA: `b254d437e8577bf5cbfd649b4a92dc99893f0fb5`.
+- Latest accepted/pushed closeout before the scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS` at `1740e8a` (`docs: record Board Canvas rail label fit`).
 - Closeout full SHA: `1740e8a541cdb9fb03f3d1c0574fb2322d42810f`.
-- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` at `e855d5d` (`feat(board-canvas): polish rail label fit`).
+- Latest accepted/pushed implementation before the scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` at `e855d5d` (`feat(board-canvas): polish rail label fit`).
 - Implementation full SHA: `e855d5d4db8254923cdc1887e6a23b5e29a0c396`.
 - Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Manual visual smoke: PASS.
 - Review status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- Claude Code was unavailable; this state does not claim Claude audit or Claude acceptance.
-- GPT Pro secondary review accepted the runtime implementation for staging after user manual visual smoke PASS and recorded validation evidence.
+- Claude Code was unavailable for the rail-label implementation; this state does not claim Claude audit or Claude acceptance for that pass.
+- GPT Pro secondary review accepted the rail-label runtime implementation for staging after user manual visual smoke PASS and recorded validation evidence.
 - Accepted behavior: Board Canvas left rail label fit improved; visible truncation `Pa...` / `Tul...` was removed; compact labels are `Lisa`, `Rajad`, and `Parandus`; visible `Tulevased tööriistad` section header text is hidden while full meaning remains available through tooltip/semantic copy; selected rail icon/tile uses compact glow and no longer stretches into a wide rail-width rectangle; icon-first dark EDA style is preserved.
 - Implementation validation evidence: `dart format` passed; `flutter test test/widget/board_canvas_screen_test.dart` passed (+97); `flutter test test/widget/project_overview_screen_test.dart` passed (+20); `flutter test test/widget/measure_sheet_screen_test.dart` passed (+27); full `flutter test` passed (+341); `python tools/validate_all.py` passed with 273 tests OK and existing optional-photo warnings only; `git diff --check` passed; `rg "v2_save_measurement_writer"` on the two implementation files returned no matches.
-- Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS` at `e53ec98` (`docs: arm Board Canvas rail label fit implementation`).
-- Active-lock sync full SHA: `e53ec98fd2ac3746bf8832f295a89b283993b36c`.
-- Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS` at `c41fc58` (`docs: lock Board Canvas rail label fit`).
-- Scope-lock full SHA: `c41fc58593dde2659557b6913b11ca27093cf15d`.
-- Accepted scope-lock review status: `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING`; do not treat this as a Claude audit verdict.
-- Current route is this docs-only scope-lock for future Board Canvas Fit / Reset discoverability polish.
-- Route after this scope-lock is accepted/pushed: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- No runtime implementation is armed by this scope-lock.
+- Current route is this docs-only active-lock sync for future Board Canvas Fit / Reset discoverability polish implementation.
+- Current armed implementation pass: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`.
+- Future implementation write allowlist: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`.
+- This active-lock sync does not complete or implement runtime behavior.
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
 - Closeout full SHA: `4ed76ef99269e8e3e289ea034850a0f0a47617e5`.
 - Prior accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
@@ -220,11 +219,12 @@
 - Review status for that accepted closeout remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
 - The accepted Board Canvas rail label fit closeout was docs-only, released its prior implementation active lock, and did not arm a new implementation pass.
 - Review status for the accepted rail label fit implementation remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS.md`.
-- This current scope-lock does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
-- This current scope-lock does not arm runtime implementation directly; it routes after acceptance to `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Future implementation allowlist to be inspected/armed by that active-lock sync, if still sufficient: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- This current scope-lock uses temporary review context and does not claim Claude audit or Claude acceptance.
+- The accepted Board Canvas Fit / Reset discoverability scope-lock was docs-only, did not arm runtime implementation directly, and routed to this active-lock sync.
+- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.
+- This current active-lock sync does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
+- This current active-lock sync arms `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` with the exact future implementation allowlist: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Future implementation may only improve discoverability of existing Board Canvas Fit / Reset / viewport recovery affordances and must preserve existing pan/zoom/fit/reset semantics.
+- This current active-lock sync uses temporary review context and does not claim Claude audit or Claude acceptance.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

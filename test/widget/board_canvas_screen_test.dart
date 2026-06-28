@@ -335,7 +335,7 @@ void main() {
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
     expect(find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
     expect(
-      find.text('Safety / Evidence'),
+      find.text('Ohutus / tõendid'),
       findsOneWidget,
     );
     expect(find.text('No confirmed visual placements yet.'), findsNothing);
@@ -377,7 +377,8 @@ void main() {
     expect(
         find.text('Existing board-normalized placements only'), findsNothing);
     expect(find.byKey(const Key('board_canvas_status_bar')), findsOneWidget);
-    expect(find.text('Ready'), findsOneWidget);
+    expect(find.text('Valmis'), findsOneWidget);
+    expect(find.text('Ready'), findsNothing);
     expect(find.text('BenchBeep · TraceBench platform'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsOneWidget);
   });
@@ -484,7 +485,8 @@ void main() {
       find.byKey(const Key('board_canvas_rail_measure_active')),
       findsOneWidget,
     );
-    expect(find.text('Measure'), findsAtLeastNWidgets(1));
+    expect(find.text('Mõõtmine'), findsAtLeastNWidgets(1));
+    expect(find.text('Measure'), findsNothing);
     expect(find.text('Component focus'), findsNothing);
     expect(find.text('component'), findsNothing);
     expect(find.text('read-only · local'), findsNothing);
@@ -498,11 +500,13 @@ void main() {
       find.text('No project data is written from this panel.'),
       findsNothing,
     );
-    expect(find.text('Measured values'), findsOneWidget);
+    expect(find.text('Mõõdetud väärtused'), findsOneWidget);
+    expect(find.text('Measured values'), findsNothing);
     expect(
-      find.text('inline values · local drafts'),
+      find.text('rea väärtused · kohalikud mustandid'),
       findsOneWidget,
     );
+    expect(find.text('inline values · local drafts'), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_measure_values_count')),
       findsOneWidget,
@@ -621,7 +625,8 @@ void main() {
         findsNothing);
     expect(find.text('Salvesta placeholder'), findsNothing);
     expect(find.text('Local only'), findsNothing);
-    expect(find.text('Component visual'), findsOneWidget);
+    expect(find.text('Komponendi vaade'), findsOneWidget);
+    expect(find.text('Component visual'), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_measure_component_visual_stage')),
       findsOneWidget,
@@ -724,22 +729,22 @@ void main() {
     expect(find.text('cmp_r101.1 -> GND'), findsOneWidget);
     expect(find.text('cmp_r101.2 -> cmp_u1.2'), findsOneWidget);
     expect(find.textContaining('visual-only context'), findsAtLeastNWidgets(1));
-    expect(find.text('Advanced technical details'), findsOneWidget);
+    expect(find.text('Tehnilised detailid'), findsOneWidget);
+    expect(find.text('Advanced technical details'), findsNothing);
     expect(find.textContaining('Trace ID: tr_measure_r101'), findsNothing);
 
     final componentTop = tester.getTopLeft(find.text('R101 (cmp_r101)')).dy;
-    final visualTop = tester.getTopLeft(find.text('Component visual')).dy;
-    final valuesTop = tester.getTopLeft(find.text('Measured values')).dy;
+    final visualTop = tester.getTopLeft(find.text('Komponendi vaade')).dy;
+    final valuesTop = tester.getTopLeft(find.text('Mõõdetud väärtused')).dy;
     final contextTop = tester.getTopLeft(find.text('From -> To context')).dy;
-    final advancedTop =
-        tester.getTopLeft(find.text('Advanced technical details')).dy;
+    final advancedTop = tester.getTopLeft(find.text('Tehnilised detailid')).dy;
     expect(componentTop, lessThan(visualTop));
     expect(visualTop, lessThan(valuesTop));
     expect(valuesTop, lessThan(contextTop));
     expect(contextTop, lessThan(advancedTop));
 
-    await tester.ensureVisible(find.text('Advanced technical details'));
-    await tester.tap(find.text('Advanced technical details'));
+    await tester.ensureVisible(find.text('Tehnilised detailid'));
+    await tester.tap(find.text('Tehnilised detailid'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Trace ID: tr_measure_r101'), findsOneWidget);
     expect(find.textContaining('Photo ID: ph_measure_r101'), findsOneWidget);
@@ -1080,7 +1085,7 @@ void main() {
     expect(find.byKey(const Key('board_canvas_measure_pin_target_select')),
         findsNothing);
     expect(find.text('From -> To context'), findsOneWidget);
-    expect(find.text('Advanced technical details'), findsOneWidget);
+    expect(find.text('Tehnilised detailid'), findsOneWidget);
     expect(find.text('Trace ID: tr_measure_r101'), findsNothing);
     expect(find.byKey(const Key('board_canvas_measure_continue_sheet_button')),
         findsOneWidget);
@@ -1161,9 +1166,12 @@ void main() {
         tester.getSize(find.byKey(const Key('board_canvas_control_band')));
 
     expect(controlBandSize.height, lessThanOrEqualTo(88));
-    expect(find.text('Placements'), findsOneWidget);
-    expect(find.text('1 placement available'), findsOneWidget);
-    expect(find.text('Safety / Evidence'), findsOneWidget);
+    expect(find.text('Paigutused'), findsOneWidget);
+    expect(find.text('Placements'), findsNothing);
+    expect(find.text('1 paigutus saadaval'), findsOneWidget);
+    expect(find.text('1 placement available'), findsNothing);
+    expect(find.text('Ohutus / tõendid'), findsOneWidget);
+    expect(find.text('Safety / Evidence'), findsNothing);
     expect(find.textContaining('read-only'), findsAtLeastNWidgets(1));
     expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
@@ -1268,10 +1276,11 @@ void main() {
 
     expect(futureTraceTool.onPressed, isNull);
     expect(futureMapTool.onPressed, isNull);
-    expect(futureTraceTool.tooltip, 'Trace map (future/readonly) - inactive');
-    expect(futureMapTool.tooltip, 'Repair map (future) - inactive');
+    expect(futureTraceTool.tooltip,
+        'Rajakaart (tulekul/ainult vaatamine) - passiivne');
+    expect(futureMapTool.tooltip, 'Paranduskaart (tulekul) - passiivne');
     expect(focusButton.onPressed, isNotNull);
-    expect(focusButton.tooltip, 'Focus canvas');
+    expect(focusButton.tooltip, 'Fookusta plaat');
     expect(
       find.descendant(
         of: railFinder,
@@ -1284,12 +1293,18 @@ void main() {
     expect(find.text('Paneelid'), findsOneWidget);
     expect(find.text('Tulevased tööriistad'), findsOneWidget);
     expect(find.text('Future tools'), findsNothing);
-    expect(find.text('Add Component'), findsOneWidget);
-    expect(find.text('Placements'), findsOneWidget);
-    expect(find.text('Safety'), findsOneWidget);
-    expect(find.text('Inspector'), findsOneWidget);
-    expect(find.text('Trace'), findsOneWidget);
-    expect(find.text('Repair map'), findsOneWidget);
+    expect(find.text('Lisa komponent'), findsOneWidget);
+    expect(find.text('Add Component'), findsNothing);
+    expect(find.text('Paigutused'), findsOneWidget);
+    expect(find.text('Placements'), findsNothing);
+    expect(find.text('Ohutus'), findsOneWidget);
+    expect(find.text('Safety'), findsNothing);
+    expect(find.text('Inspektor'), findsOneWidget);
+    expect(find.text('Inspector'), findsNothing);
+    expect(find.text('Rajakaart'), findsOneWidget);
+    expect(find.text('Trace'), findsNothing);
+    expect(find.text('Paranduskaart'), findsOneWidget);
+    expect(find.text('Repair map'), findsNothing);
     await tester
         .tap(find.byKey(const Key('board_canvas_rail_safety_evidence_tool')));
     await tester.pump(const Duration(milliseconds: 16));
@@ -1343,7 +1358,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Starter visual templates'),
+      find.text('Visuaalsed algmallid'),
       findsOneWidget,
     );
     expect(
@@ -2995,7 +3010,7 @@ void main() {
     expect(
       find.descendant(
         of: contextPanelFinder,
-        matching: find.text('Placements'),
+        matching: find.text('Paigutused'),
       ),
       findsOneWidget,
     );
@@ -3010,7 +3025,7 @@ void main() {
     expect(
       find.descendant(
         of: contextPanelFinder,
-        matching: find.text('Safety / Evidence'),
+        matching: find.text('Ohutus / tõendid'),
       ),
       findsOneWidget,
     );
@@ -4737,7 +4752,7 @@ void main() {
       const Key('board_canvas_measurement_value_badge_global_toggle'),
     );
 
-    expect(find.text('Hide All'), findsOneWidget);
+    expect(find.text('Peida kõik'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_measurement_value_badge_M903')),
       findsOneWidget,

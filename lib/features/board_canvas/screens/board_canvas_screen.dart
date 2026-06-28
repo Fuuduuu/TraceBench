@@ -862,8 +862,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final measurePanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_measure_sheet_button'),
                     icon: Icons.science_outlined,
-                    tooltip: 'Open measurement context panel',
-                    label: 'Measure',
+                    tooltip: 'Ava mõõtmise kontekstipaneel',
+                    label: 'Mõõtmine',
                     modeKey: 'measure',
                     selected:
                         _contextPanelMode == _WorkbenchContextPanelMode.measure,
@@ -880,8 +880,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final focusPanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_rail_placements_tool'),
                     icon: Icons.format_list_bulleted_rounded,
-                    tooltip: 'Show placements in right contextual panel',
-                    label: 'Placements',
+                    tooltip: 'Näita paigutusi parempoolses kontekstipaneelis',
+                    label: 'Paigutused',
                     modeKey: 'placements',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.placements,
@@ -898,8 +898,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     buttonKey:
                         const Key('board_canvas_rail_add_component_tool'),
                     icon: Icons.add_box_outlined,
-                    tooltip: 'Open Add Component template-list mode',
-                    label: 'Add Component',
+                    tooltip: 'Ava komponendi lisamise malliloend',
+                    label: 'Lisa komponent',
                     modeKey: 'add_component',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.addComponentTemplates,
@@ -916,8 +916,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     buttonKey:
                         const Key('board_canvas_rail_safety_evidence_tool'),
                     icon: Icons.shield_outlined,
-                    tooltip: 'Show safety/evidence read-only details',
-                    label: 'Safety',
+                    tooltip: 'Näita ohutuse/tõendite kirjutuskaitstud detaile',
+                    label: 'Ohutus',
                     modeKey: 'safety',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.safetyEvidence,
@@ -933,8 +933,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final inspectorPanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_rail_inspector_tool'),
                     icon: Icons.info_outline,
-                    tooltip: 'Show inspector context panel',
-                    label: 'Inspector',
+                    tooltip: 'Näita inspektori kontekstipaneeli',
+                    label: 'Inspektor',
                     modeKey: 'inspector',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.inspector,
@@ -1172,7 +1172,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       ),
                     ),
                     const SizedBox(width: 7),
-                    const Text('Ready'),
+                    const Text('Valmis'),
                     const SizedBox(width: 12),
                     const Expanded(
                       flex: 2,
@@ -1412,16 +1412,16 @@ class _WorkbenchToolRail extends StatelessWidget {
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_trace_tool'),
                 icon: Icons.timeline,
-                tooltip: 'Trace map (future/readonly) - inactive',
-                label: 'Trace',
+                tooltip: 'Rajakaart (tulekul/ainult vaatamine) - passiivne',
+                label: 'Rajakaart',
                 showLabel: true,
               ),
               const SizedBox(height: _kWorkbenchToolTileGap),
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_repair_map_tool'),
                 icon: Icons.map_outlined,
-                tooltip: 'Repair map (future) - inactive',
-                label: 'Repair map',
+                tooltip: 'Paranduskaart (tulekul) - passiivne',
+                label: 'Paranduskaart',
                 showLabel: true,
               ),
             ],
@@ -1456,7 +1456,7 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
         height: _kCompactControlTileHeight,
         child: IconButton(
           key: const Key('board_canvas_measure_sheet_button'),
-          tooltip: 'Open Measure Sheet',
+          tooltip: 'Ava mõõteleht',
           iconSize: _kWorkbenchRailContentIconSize,
           style: IconButton.styleFrom(
             minimumSize: const Size.square(_kCompactControlTileHeight),
@@ -1480,7 +1480,7 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
         button,
         const SizedBox(height: 2),
         Text(
-          'Measure',
+          'Mõõtmine',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -1762,7 +1762,7 @@ class _CanvasFocusButton extends StatelessWidget {
         height: _kCompactControlTileHeight,
         child: IconButton(
           key: const Key('board_canvas_focus_toggle_button'),
-          tooltip: 'Focus canvas',
+          tooltip: 'Fookusta plaat',
           iconSize: _kWorkbenchRailContentIconSize,
           style: IconButton.styleFrom(
             minimumSize: const Size.square(_kCompactControlTileHeight),
@@ -1786,7 +1786,7 @@ class _CanvasFocusButton extends StatelessWidget {
         button,
         const SizedBox(height: 2),
         Text(
-          'Focus canvas',
+          'Fookusta plaat',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -2001,10 +2001,10 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         tilePadding: _kCompactControlTilePadding,
         childrenPadding: _kCompactControlChildrenPadding,
         title: _CompactDisclosureTitle(
-          label: 'Add Component',
+          label: 'Lisa komponent',
           detail: selectedTemplate == null
-              ? 'Starter visual templates'
-              : 'Active template',
+              ? 'Visuaalsed algmallid'
+              : 'Aktiivne mall',
         ),
         children: [
           ConstrainedBox(
@@ -3005,7 +3005,9 @@ class _PlacementSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final summary = selectedLabel ??
-        '${entries.length} placement${entries.length == 1 ? '' : 's'} available';
+        (entries.length == 1
+            ? '1 paigutus saadaval'
+            : '${entries.length} paigutust saadaval');
     return Card(
       margin: EdgeInsets.zero,
       color: _kBoardCanvasTile,
@@ -3023,7 +3025,7 @@ class _PlacementSelector extends StatelessWidget {
         tilePadding: _kCompactControlTilePadding,
         childrenPadding: _kCompactControlChildrenPadding,
         title: _CompactDisclosureTitle(
-          label: 'Placements',
+          label: 'Paigutused',
           detail: summary,
         ),
         children: [
@@ -3515,13 +3517,13 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         size: _kCompactControlIconSize,
       ),
       label: Text(
-        widget.allMeasurementValueBadgesVisible ? 'Hide All' : 'Näita kõiki',
+        widget.allMeasurementValueBadgesVisible ? 'Peida kõik' : 'Näita kõiki',
       ),
       onPressed: widget.onToggleAllMeasurementValueBadges,
     );
     final fitButton = IconButton(
       key: const Key('board_canvas_fit_view_button'),
-      tooltip: 'Fit board view',
+      tooltip: 'Sobita plaadivaade',
       icon: const Icon(Icons.center_focus_strong),
       color: _kBoardCanvasNavy,
       style: IconButton.styleFrom(
@@ -3545,8 +3547,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
           if (widget.hasEligibleMeasurementValueBadges) ...[
             Tooltip(
               message: widget.allMeasurementValueBadgesVisible
-                  ? 'Hide all measurement value badges'
-                  : 'Show all measurement value badges',
+                  ? 'Peida kõik mõõteväärtuse märgid'
+                  : 'Näita kõiki mõõteväärtuse märke',
               child: measurementValueBadgeToggle,
             ),
             const SizedBox(width: 6),
@@ -3625,8 +3627,8 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
         tilePadding: _kCompactControlTilePadding,
         childrenPadding: _kCompactControlChildrenPadding,
         title: _CompactDisclosureTitle(
-          label: 'Safety / Evidence',
-          detail: 'read-only boundaries',
+          label: 'Ohutus / tõendid',
+          detail: 'kirjutuskaitstud piirid',
         ),
         children: [
           _BoardCanvasLegend(),
@@ -3961,7 +3963,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Measure',
+                          'Mõõtmine',
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: _kMeasurePanelNavy,
                             fontWeight: FontWeight.w800,
@@ -3993,7 +3995,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Component visual',
+                    'Komponendi vaade',
                     style: theme.textTheme.titleSmall?.copyWith(
                       color: _kMeasurePanelNavy,
                       fontWeight: FontWeight.w800,
@@ -4032,7 +4034,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Measured values',
+                          'Mõõdetud väärtused',
                           style: theme.textTheme.titleSmall?.copyWith(
                             color: _kMeasurePanelNavy,
                             fontWeight: FontWeight.w800,
@@ -4042,13 +4044,13 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                       _MeasurePanelPill(
                         key: const Key('board_canvas_measure_values_count'),
                         label:
-                            '$measuredTargetCount / ${targetRows.length} measured',
+                            '$measuredTargetCount / ${targetRows.length} mõõdetud',
                       ),
                     ],
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'inline values · local drafts',
+                    'rea väärtused · kohalikud mustandid',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: _kBoardCanvasMuted,
                     ),
@@ -4117,7 +4119,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                         textStyle: theme.textTheme.labelMedium,
                       ),
                       icon: const Icon(Icons.open_in_new_rounded, size: 16),
-                      label: const Text('Continue in Measure Sheet'),
+                      label: const Text('Jätka mõõtelehel'),
                     ),
                   ),
                 ],
@@ -4173,14 +4175,14 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                 tilePadding: const EdgeInsets.symmetric(horizontal: 10),
                 childrenPadding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 title: Text(
-                  'Advanced technical details',
+                  'Tehnilised detailid',
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: _kMeasurePanelNavy,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 subtitle: Text(
-                  'read-only provenance',
+                  'kirjutuskaitstud päritolu',
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: _kBoardCanvasMuted,
                   ),

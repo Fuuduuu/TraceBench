@@ -2,17 +2,27 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this active-lock sync: `375b8da` (`docs: lock Board Canvas remaining copy polish`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this closeout: `e18c30f` (`feat(board-canvas): polish remaining copy`), aligned with `origin/main`.
+- Latest accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
+- Implementation full SHA: `e18c30fc4618cca49d3f2471fb303b21324eee3e`.
+- Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Manual smoke: `PASS_WITH_NITS`.
+- Manual smoke evidence: Board Canvas opens normally; Estonian labels are visible and natural enough for this pass; Board Canvas visible shell/control copy was polished toward Estonian; product/platform identity remains correct; diagnostic copy intentionally preserved where precision is safer; read-only/no-write badge remains visible and clear; Board Canvas still visually matches the accepted dark EDA style; pan/zoom/fit/reset still work; tap-to-select still works; selected pin remains active after selection; hover does not steal selected pin state; Inspector still works; measurement markers/summary still work; Add Component remains local/UI-only; Measure Sheet route/save path is unchanged; Project Overview still opens and looks unchanged; no Board Canvas save/write/canonical behavior appears.
+- Accepted nits: some narrow rail labels may still truncate because of rail width; some diagnostic/product labels intentionally remain English, including `Board Canvas`, `BenchBeep · TraceBench platform`, `renderer writes: none`, `Beep`, and other technical provenance/debug labels where precision is safer.
+- Temporary secondary review: ChatGPT Pro temporary secondary review accepted staging after validation and user manual smoke `PASS_WITH_NITS`.
+- Claude status: `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
+- Latest accepted/pushed active-lock sync: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS` at `3f3b488` (`docs: arm Board Canvas remaining copy polish implementation`).
+- Active-lock sync full SHA: `3f3b488b2b2bc0e42cac23d1526ed6d4b4379a19`.
 - Latest accepted/pushed scope-lock: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_SCOPE_LOCK_PASS` at `375b8da` (`docs: lock Board Canvas remaining copy polish`).
 - Scope-lock full SHA: `375b8da706b21d0e4cfd1f7a6ed056f43a92ef47`.
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_DARK_EDA_STYLE_ALIGNMENT_IMPL_POST_AUDIT_PASS` at `aa20c78` (`docs: record Board Canvas dark EDA style alignment`).
@@ -53,11 +63,10 @@
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_APP_VISUAL_POLISH_IMPL_POST_AUDIT_PASS` at `7a84dcb` (`docs: record Board Canvas app visual polish`).
 - Prior accepted/pushed Measure panel visual-density closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_VISUAL_DENSITY_IMPL_POST_AUDIT_PASS` at `a80fb7d` (`docs: record measurement panel visual density`).
 - Prior accepted/pushed Measure panel target-capture closeout: `V2_INTEGRATED_MEASUREMENT_PANEL_TARGET_CAPTURE_IMPL_POST_AUDIT_PASS` at `d39db25` (`docs: record measurement target capture`).
-- Current route is this docs-only active-lock sync for a future narrow Board Canvas remaining-copy polish implementation pass.
-- Route after this active-lock sync is accepted/pushed: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS`.
-- This active-lock sync arms only the future Board Canvas implementation allowlist and does not implement runtime/test changes.
-- Target surface decision: future implementation is Board Canvas-only visible shell/control copy; Project Overview / Workbench Home remains reference surface only and is not authorized by this active-lock sync.
-- Armed future implementation allowlist: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
+- Current route is this docs-only closeout for the accepted/pushed Board Canvas remaining-copy polish implementation.
+- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- This closeout releases the implementation active lock and does not arm a new implementation pass.
+- Target surface decision: the accepted implementation was Board Canvas-only visible shell/control copy; Project Overview / Workbench Home remained reference surface only.
 - The latest accepted Project Home implementation target surface was Project Overview / Workbench Home in `lib/features/project/screens/project_overview_screen.dart`, with focused tests in `test/widget/project_overview_screen_test.dart`.
 
 ## Current accepted product state
@@ -149,15 +158,18 @@
 - Accepted Menu System remains the narrow instrument-style menu/app-bar/breadcrumb affordance.
 - Add Component catalog, builder, ghost, click-to-place, and drag-to-place behavior remain local/UI-only.
 - Board Canvas renderer remains read-only with `renderer writes: none`.
+- Board Canvas remaining visible English/mixed shell/control copy was polished toward concise Estonian where safe.
+- Scope stayed on `BoardCanvasScreen` and focused Board Canvas widget tests.
+- Accepted copy changes include local shell/control labels such as `Mõõtmine`, `Lisa komponent`, `Paigutused`, `Ohutus`, `Inspektor`, `Valmis`, `Näita kõiki` / `Peida kõik`, `Komponendi vaade`, `Mõõdetud väärtused`, `Jätka mõõtelehel`, and related local tooltips/section labels where safe.
+- Product/platform/diagnostic copy was intentionally preserved where precision was safer, including `Board Canvas`, `BenchBeep · TraceBench platform`, `renderer writes: none`, `Beep`, `From -> To context`, provenance/debug field labels, and no-write diagnostic wording where applicable.
+- Accepted remaining-copy polish nits: some narrow rail labels may still truncate because of rail width, and some diagnostic/product labels intentionally remain English.
 
 ## Protected future direction carried forward
 
 - Future Board Canvas dark EDA follow-up refinements, if separately scoped, must keep Board Canvas as the dominant working surface, keep the right panel contextual/secondary, preserve clear read-only/no-write status, and prefer Board Canvas-only runtime edits unless a later active-lock sync authorizes a tiny focused test/helper.
 - Future candidate Board Canvas visual-refinement implementation files, if still sufficient after a later active-lock sync inspection: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- Future Board Canvas remaining-copy polish may replace remaining visible English/mixed Board Canvas shell/control labels with clearer Estonian user-facing copy where safe, while preserving technical meaning and read-only/no-write boundaries.
-- Candidate Board Canvas copy areas include `Measure`, `Add Component`, `Inspector`, `Placements`, `Safety`, `Ready`, `Beep`, `Board Canvas`, `BenchBeep · TraceBench platform`, `renderer writes: none`, `Panels`, `Show All`, and nearby Board Canvas shell/control labels if still present; diagnostic/platform terms may remain unchanged when precision is safer.
-- Future remaining-copy polish must not translate canonical domain terms blindly or blur BenchBeep / TraceBench / BoardFact naming boundaries.
-- Future remaining-copy polish requires this active-lock sync to be accepted/pushed before runtime/test edits.
+- Future broader copy polish, if separately scoped, must keep diagnostic/product terms precise and must not blur BenchBeep / TraceBench / BoardFact naming boundaries.
+- Any further Board Canvas copy/runtime refinement requires a new route decision and active-lock sync.
 - Functional Board Canvas measurement save/write remains deferred unless a later separate writer scope explicitly authorizes it.
 - Any future Board Canvas measurement write path must preserve human-authored append-only event semantics and must not add schema, writer, materializer, validator, projection, Project ZIP, event, or fact behavior unless separately scoped.
 - Visual trace context remains visual-only and must not imply electrical proof or connectivity.
@@ -184,10 +196,10 @@
 - The accepted Project Home copy-polish closeout was docs-only, released its prior implementation active lock, and did not arm a new implementation pass.
 - The accepted Project Home copy-polish closeout recorded no Claude audit verdict because Claude Code was temporarily unavailable.
 - Review status for that accepted closeout remains `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`.
-- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.
-- This current active-lock sync does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
-- The future implementation pass is armed only for `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; if more files are needed, implementation must stop and route a new active-lock sync.
-- This current active-lock sync uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
+- This current pass is docs-only and may edit only route/active-lock docs plus `docs/audit/V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS.md`.
+- This current closeout does not edit `lib/`, `test/`, `_incoming`, assets, runtime, schema, writer, materializer, validator, projection, Project ZIP, event, fact, sample, platform, generated, or unrelated docs.
+- The implementation active lock is released by this closeout; no new implementation pass is armed.
+- This current closeout uses temporary no-Claude review mode and must output `NO_CLAUDE_REVIEW_PACKET`; it does not claim Claude audit.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

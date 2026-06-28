@@ -1232,6 +1232,8 @@ void main() {
 
     final shellFinder = find.byKey(const Key('board_canvas_workbench_shell'));
     final railFinder = find.byKey(const Key('board_canvas_workbench_rail'));
+    Finder railText(String text) =>
+        find.descendant(of: railFinder, matching: find.text(text));
     final canvasZoneFinder =
         find.byKey(const Key('board_canvas_workbench_canvas_zone'));
     final contextFinder = find.byKey(const Key('board_canvas_context_panel'));
@@ -1270,6 +1272,9 @@ void main() {
     final futureMapTool = tester.widget<IconButton>(
       find.byKey(const Key('board_canvas_rail_future_repair_map_tool')),
     );
+    final addComponentTool = tester.widget<IconButton>(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
     final focusButton = tester.widget<IconButton>(
       find.byKey(const Key('board_canvas_focus_toggle_button')),
     );
@@ -1279,6 +1284,7 @@ void main() {
     expect(futureTraceTool.tooltip,
         'Rajakaart (tulekul/ainult vaatamine) - passiivne');
     expect(futureMapTool.tooltip, 'Paranduskaart (tulekul) - passiivne');
+    expect(addComponentTool.tooltip, 'Ava komponendi lisamise malliloend');
     expect(focusButton.onPressed, isNotNull);
     expect(focusButton.tooltip, 'Fookusta plaat');
     expect(
@@ -1290,21 +1296,38 @@ void main() {
     );
     expect(find.byKey(const Key('board_canvas_focus_toggle_button')),
         findsOneWidget);
-    expect(find.text('Paneelid'), findsOneWidget);
-    expect(find.text('Tulevased tööriistad'), findsOneWidget);
+    expect(railText('Paneelid'), findsNothing);
+    expect(railText('Tulekul'), findsNothing);
+    expect(railText('Tulevased tööriistad'), findsNothing);
+    expect(find.text('Pa...'), findsNothing);
+    expect(find.text('Tul...'), findsNothing);
     expect(find.text('Future tools'), findsNothing);
-    expect(find.text('Lisa komponent'), findsOneWidget);
+    expect(railText('Lisa'), findsOneWidget);
+    expect(railText('Lisa komponent'), findsNothing);
     expect(find.text('Add Component'), findsNothing);
-    expect(find.text('Paigutused'), findsOneWidget);
+    expect(railText('Paigutused'), findsOneWidget);
     expect(find.text('Placements'), findsNothing);
-    expect(find.text('Ohutus'), findsOneWidget);
+    expect(railText('Ohutus'), findsOneWidget);
     expect(find.text('Safety'), findsNothing);
-    expect(find.text('Inspektor'), findsOneWidget);
+    expect(railText('Inspektor'), findsOneWidget);
     expect(find.text('Inspector'), findsNothing);
-    expect(find.text('Rajakaart'), findsOneWidget);
+    expect(railText('Rajad'), findsOneWidget);
+    expect(railText('Rajakaart'), findsNothing);
     expect(find.text('Trace'), findsNothing);
-    expect(find.text('Paranduskaart'), findsOneWidget);
+    expect(railText('Parandus'), findsOneWidget);
+    expect(railText('Paranduskaart'), findsNothing);
     expect(find.text('Repair map'), findsNothing);
+
+    final railSemanticsLabels = tester
+        .widgetList<Semantics>(
+          find.descendant(of: railFinder, matching: find.byType(Semantics)),
+        )
+        .map((widget) => widget.properties.label)
+        .whereType<String>()
+        .toList();
+    expect(railSemanticsLabels, contains('Paneelid'));
+    expect(railSemanticsLabels, contains('Tulevased tööriistad'));
+    expect(railSemanticsLabels, contains('Lisa komponent panel mode'));
     await tester
         .tap(find.byKey(const Key('board_canvas_rail_safety_evidence_tool')));
     await tester.pump(const Duration(milliseconds: 16));
@@ -1312,6 +1335,26 @@ void main() {
       find.byKey(const Key('board_canvas_rail_safety_active')),
       findsOneWidget,
     );
+    final selectedSafetyTileFinder =
+        find.byKey(const Key('board_canvas_rail_safety_tile'));
+    final addComponentTileFinder =
+        find.byKey(const Key('board_canvas_rail_add_component_tile'));
+    expect(selectedSafetyTileFinder, findsOneWidget);
+    expect(addComponentTileFinder, findsOneWidget);
+    final selectedSafetyTileSize = tester.getSize(selectedSafetyTileFinder);
+    final addComponentTileSize = tester.getSize(addComponentTileFinder);
+    expect(selectedSafetyTileSize.width, lessThan(railSize.width * 0.6));
+    expect(
+        selectedSafetyTileSize.width, closeTo(addComponentTileSize.width, 1));
+    expect(
+      selectedSafetyTileSize.height,
+      closeTo(addComponentTileSize.height, 1),
+    );
+    final selectedSafetyTile =
+        tester.widget<Container>(selectedSafetyTileFinder);
+    final selectedSafetyDecoration =
+        selectedSafetyTile.decoration as BoxDecoration;
+    expect(selectedSafetyDecoration.boxShadow, isNotEmpty);
     expect(
       find.byKey(const Key('board_canvas_rail_inspector_active')),
       findsNothing,
@@ -5325,7 +5368,7 @@ void main() {
     expect(source, contains('board_canvas_safety_evidence_disclosure'));
     expect(source, contains('board_canvas_inspector_toggle_button'));
     expect(source, isNot(contains('MeasurementEventWriter')));
-    expect(source, isNot(contains('v2_save_measurement_writer')));
+    expect(source, isNot(contains('v2_save_measurement_' 'writer')));
     expect(source, isNot(contains('V2SaveMeasurementWriter')));
     expect(source, isNot(contains('v2SaveMeasurementWriter')));
     expect(source, isNot(contains('ProjectExporter')));

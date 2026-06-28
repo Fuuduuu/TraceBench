@@ -899,7 +899,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         const Key('board_canvas_rail_add_component_tool'),
                     icon: Icons.add_box_outlined,
                     tooltip: 'Ava komponendi lisamise malliloend',
-                    label: 'Lisa komponent',
+                    label: 'Lisa',
+                    semanticLabel: 'Lisa komponent',
                     modeKey: 'add_component',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.addComponentTemplates,
@@ -1407,13 +1408,17 @@ class _WorkbenchToolRail extends StatelessWidget {
                 color: _kBoardCanvasRule,
               ),
               const SizedBox(height: 6),
-              const _WorkbenchSectionHeader(label: 'Tulevased tööriistad'),
+              const _WorkbenchSectionHeader(
+                label: 'Tulekul',
+                semanticLabel: 'Tulevased tööriistad',
+              ),
               const SizedBox(height: 4),
               const _InactiveRailToolButton(
                 buttonKey: Key('board_canvas_rail_future_trace_tool'),
                 icon: Icons.timeline,
                 tooltip: 'Rajakaart (tulekul/ainult vaatamine) - passiivne',
-                label: 'Rajakaart',
+                label: 'Rajad',
+                semanticLabel: 'Rajakaart',
                 showLabel: true,
               ),
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -1421,7 +1426,8 @@ class _WorkbenchToolRail extends StatelessWidget {
                 buttonKey: Key('board_canvas_rail_future_repair_map_tool'),
                 icon: Icons.map_outlined,
                 tooltip: 'Paranduskaart (tulekul) - passiivne',
-                label: 'Paranduskaart',
+                label: 'Parandus',
+                semanticLabel: 'Paranduskaart',
                 showLabel: true,
               ),
             ],
@@ -1502,12 +1508,14 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
     required this.selected,
     required this.modeKey,
     required this.onPressed,
+    this.semanticLabel,
   });
 
   final Key buttonKey;
   final IconData icon;
   final String tooltip;
   final String label;
+  final String? semanticLabel;
   final bool selected;
   final String modeKey;
   final VoidCallback onPressed;
@@ -1520,7 +1528,7 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
         selected ? _kBoardCanvasSignal : _kBoardCanvasRuleStrong;
     final labelStyle = theme.textTheme.labelSmall?.copyWith(
       fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
-      color: selected ? _kBoardCanvasNavy : _kBoardCanvasMuted,
+      color: selected ? _kBoardCanvasSignal : _kBoardCanvasMuted,
     );
     final tooltipText = selected ? '$tooltip • active' : tooltip;
 
@@ -1548,32 +1556,49 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
         Semantics(
           button: true,
           selected: selected,
-          label: '$label panel mode',
+          label: '${semanticLabel ?? label} panel mode',
           hint: tooltipText,
-          child: Card(
-            margin: EdgeInsets.zero,
-            color: tileColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: borderColor, width: selected ? 1.4 : 1),
-            ),
-            child: Stack(
-              children: [
-                content,
-                if (selected)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 2, right: 2),
-                      child: Icon(
-                        Icons.keyboard_arrow_right_rounded,
-                        size: 10,
-                        color: _kBoardCanvasSignal,
-                        key: Key('board_canvas_rail_${modeKey}_active'),
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              key: Key('board_canvas_rail_${modeKey}_tile'),
+              width: _kCompactControlTileHeight,
+              height: _kCompactControlTileHeight,
+              decoration: BoxDecoration(
+                color: tileColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: borderColor,
+                  width: selected ? 1.4 : 1,
+                ),
+                boxShadow: selected
+                    ? [
+                        BoxShadow(
+                          color: _kBoardCanvasSignal.withValues(alpha: 0.26),
+                          blurRadius: 10,
+                          spreadRadius: 0.6,
+                        ),
+                      ]
+                    : const [],
+              ),
+              child: Stack(
+                children: [
+                  content,
+                  if (selected)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 2, right: 2),
+                        child: Icon(
+                          Icons.keyboard_arrow_right_rounded,
+                          size: 10,
+                          color: _kBoardCanvasSignal,
+                          key: Key('board_canvas_rail_${modeKey}_active'),
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -1591,37 +1616,27 @@ class _WorkbenchPanelModeButton extends StatelessWidget {
 }
 
 class _WorkbenchSectionHeader extends StatelessWidget {
-  const _WorkbenchSectionHeader({required this.label});
+  const _WorkbenchSectionHeader({required this.label, this.semanticLabel});
 
   final String label;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: _kBoardCanvasMuted,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
+    final fullLabel = semanticLabel ?? label;
+    return Tooltip(
+      message: fullLabel,
+      child: Semantics(
+        label: fullLabel,
+        child: ExcludeSemantics(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
             child: Container(
               height: 1,
               color: _kBoardCanvasRuleStrong.withValues(alpha: 0.55),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1633,6 +1648,7 @@ class _InactiveRailToolButton extends StatelessWidget {
     required this.icon,
     required this.tooltip,
     this.label,
+    this.semanticLabel,
     this.showLabel = false,
   });
 
@@ -1640,6 +1656,7 @@ class _InactiveRailToolButton extends StatelessWidget {
   final IconData icon;
   final String tooltip;
   final String? label;
+  final String? semanticLabel;
   final bool showLabel;
 
   @override
@@ -1680,14 +1697,21 @@ class _InactiveRailToolButton extends StatelessWidget {
       children: [
         button,
         const SizedBox(height: 2),
-        Text(
-          label!,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: _kBoardCanvasDim,
-            fontWeight: FontWeight.w600,
+        Semantics(
+          label: semanticLabel ?? label!,
+          hint: tooltip,
+          enabled: false,
+          child: ExcludeSemantics(
+            child: Text(
+              label!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasDim,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ],

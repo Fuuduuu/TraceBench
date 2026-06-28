@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -64,5 +64,6 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_BOARD_CANVAS_REMAINING_COPY_POLISH_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_COPY | accepted/pushed as `375b8da` (`docs: lock Board Canvas remaining copy polish`) | Locked a future narrow Board Canvas-only copy-polish pass for remaining visible English/mixed shell/control labels after accepted dark EDA style alignment; preserves read-only/no-write boundaries, does not edit runtime/tests, does not arm implementation directly, and routes after acceptance to active-lock sync. |
 | V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_ACTIVE_LOCK_SYNC_PASS | LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_BOARD_CANVAS_COPY | accepted/pushed as `3f3b488` (`docs: arm Board Canvas remaining copy polish implementation`) | Recorded accepted/pushed scope-lock `375b8da`, chose Board Canvas visible shell/control copy as the target surface, and armed `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` with exact future allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation in the sync pass. |
 | V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS | LANE_B_ADJACENT / FLUTTER_UI_PROTECTED_IMPLEMENTATION / PROTECTED_UI_BOARD_CANVAS_COPY | accepted/pushed as `e18c30f` (`feat(board-canvas): polish remaining copy`) | Manual smoke `PASS_WITH_NITS`; ChatGPT Pro temporary secondary review accepted staging after validation and manual smoke; Claude Code was unavailable, so status is `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`; changed exactly Board Canvas screen and Board Canvas widget tests, polished remaining Board Canvas shell/control copy toward Estonian where safe, preserved read-only/no-write behavior, and did not add canonical write behavior. |
-| V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_COPY | current docs-only closeout; `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING` | Records accepted/pushed implementation `e18c30f`, exact implementation files, manual-smoke `PASS_WITH_NITS` evidence, accepted nits, temporary secondary-review evidence, no-write/no-canonical behavior boundaries, releases the implementation active lock, and routes after acceptance to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_COPY | accepted/pushed as `4ed76ef` (`docs: record Board Canvas remaining copy polish`) | Records accepted/pushed implementation `e18c30f`, exact implementation files, manual-smoke `PASS_WITH_NITS` evidence, accepted nits, temporary secondary-review evidence, no-write/no-canonical behavior boundaries, releases the implementation active lock, and routes after acceptance to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | current docs-only scope-lock; `NO_CLAUDE_REVIEW / RETRO_CLAUDE_PENDING` | Locks a future narrow Board Canvas-only rail label fit / truncation polish pass for compact left rail labels and related tooltip/semantic text; standalone dark Project Home HTML remains `DESIGN_INPUT_ONLY`; no runtime/test implementation is armed and route after acceptance goes to active-lock sync. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -68,5 +68,6 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_BOARD_CANVAS_RAIL_LABEL_FIT_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | accepted/pushed as `c41fc58` (`docs: lock Board Canvas rail label fit`) | Locked a future narrow Board Canvas-only rail label fit / truncation polish pass for compact left rail labels and related tooltip/semantic text; standalone dark Project Home HTML remains `DESIGN_INPUT_ONLY`; no runtime/test implementation was armed and route after acceptance goes to active-lock sync. |
 | V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_ACTIVE_LOCK_SYNC_PASS | LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | accepted/pushed as `e53ec98` (`docs: arm Board Canvas rail label fit implementation`) | Recorded accepted/pushed scope-lock `c41fc58`, chose Board Canvas left rail label fit / truncation polish as the target surface, and armed `V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS` with exact future allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation in this sync pass. |
 | V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_PASS | LANE_B_ADJACENT / FLUTTER_UI_PROTECTED_IMPLEMENTATION / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | accepted/pushed as `e855d5d` (`feat(board-canvas): polish rail label fit`) | Manual visual smoke PASS; GPT Pro secondary review accepted staging; Claude Code unavailable, so status is `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`; changed exactly Board Canvas screen and Board Canvas widget tests, removed visible `Pa...` / `Tul...` rail truncation, shortened rail labels to `Lisa`, `Rajad`, and `Parandus`, hid the visible `Tulevased tööriistad` section header while preserving full tooltip/semantic meaning, made selected rail state a compact icon/tile glow instead of a wide rail-width rectangle, and did not add Board Canvas save/write or canonical behavior. |
-| V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | current docs-only closeout; `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING` | Records accepted/pushed implementation `e855d5d`, exact implementation files, manual visual smoke PASS, temporary secondary-review evidence, no-write/no-canonical behavior boundaries, implementation active-lock release, and route after acceptance to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_RAIL_LABEL_FIT_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_RAIL_COPY | accepted/pushed as `1740e8a` (`docs: record Board Canvas rail label fit`) | Records accepted/pushed implementation `e855d5d`, exact implementation files, manual visual smoke PASS, temporary secondary-review evidence, no-write/no-canonical behavior boundaries, implementation active-lock release, and route after acceptance to `NEEDS_USER_DECISION`. |
+| V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | current docs-only scope-lock; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Locks future Board Canvas Fit / Reset discoverability polish only: improve noticeability/copy/tooltips/semantics for existing viewport recovery controls, preserve compact dark EDA UI and existing pan/zoom/fit/reset semantics, propose exact future allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` plus `test/widget/board_canvas_screen_test.dart`, and route after acceptance to active-lock sync before runtime implementation. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

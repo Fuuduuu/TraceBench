@@ -2,18 +2,26 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this closeout: `6762bdc` (`feat(board-canvas): improve fit reset discoverability`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this scope-lock: `846e7da` (`docs: record Board Canvas fit reset discoverability`), aligned with `origin/main`.
+- Latest accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Latest accepted/pushed implementation: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` at `6762bdc` (`feat(board-canvas): improve fit reset discoverability`).
+- Current route is this docs-only scope-lock for a future BenchBeep Home / esileht dark-theme parity implementation.
+- This scope-lock does not edit runtime or tests, does not arm implementation directly, and does not claim Claude audit.
+- Future implementation direction: make BenchBeep Home / esileht visually match the existing compact dark BenchBeep/workbench style through visual-only polish such as background, cards, text contrast, dividers, and buttons if needed.
+- Future implementation must preserve Home launcher behavior: `Open existing`, `Import project`, existing navigation, and back/home behavior.
+- Future active-lock sync must inspect the exact live Home screen/widget owners before arming a narrow runtime/test allowlist.
+- Route after this scope-lock is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- No implementation pass is armed by this scope-lock.
 - Implementation full SHA: `6762bdcb35287b9d7c393d5b2ec9e21e911df2f3`.
 - Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Manual smoke: PASS.
@@ -37,9 +45,7 @@
 - GPT Pro secondary review accepted the rail-label runtime implementation for staging after user manual visual smoke PASS and recorded validation evidence.
 - Accepted behavior: Board Canvas left rail label fit improved; visible truncation `Pa...` / `Tul...` was removed; compact labels are `Lisa`, `Rajad`, and `Parandus`; visible `Tulevased tööriistad` section header text is hidden while full meaning remains available through tooltip/semantic copy; selected rail icon/tile uses compact glow and no longer stretches into a wide rail-width rectangle; icon-first dark EDA style is preserved.
 - Implementation validation evidence: `dart format` passed; `flutter test test/widget/board_canvas_screen_test.dart` passed (+97); `flutter test test/widget/project_overview_screen_test.dart` passed (+20); `flutter test test/widget/measure_sheet_screen_test.dart` passed (+27); full `flutter test` passed (+341); `python tools/validate_all.py` passed with 273 tests OK and existing optional-photo warnings only; `git diff --check` passed; `rg "v2_save_measurement_writer"` on the two implementation files returned no matches.
-- Current route is this docs-only closeout for the accepted/pushed Board Canvas Fit / Reset discoverability implementation.
-- Route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
-- The Board Canvas Fit / Reset discoverability implementation active lock is released; no new implementation pass is armed.
+- The Board Canvas Fit / Reset discoverability implementation active lock is released; no new implementation pass remains armed from that line.
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_POST_AUDIT_PASS` at `4ed76ef` (`docs: record Board Canvas remaining copy polish`).
 - Closeout full SHA: `4ed76ef99269e8e3e289ea034850a0f0a47617e5`.
 - Prior accepted/pushed implementation: `V2_BOARD_CANVAS_REMAINING_COPY_POLISH_IMPL_PASS` at `e18c30f` (`feat(board-canvas): polish remaining copy`).
@@ -229,9 +235,10 @@
 - The accepted Board Canvas Fit / Reset discoverability scope-lock was docs-only, did not arm runtime implementation directly, and routed to the active-lock sync.
 - The accepted Board Canvas Fit / Reset discoverability active-lock sync was docs-only, armed `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`, and was pushed at `b2d0a61`.
 - The accepted Board Canvas Fit / Reset discoverability implementation was pushed at `6762bdc` and changed only `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
-- This closeout records manual smoke PASS and temporary review mode `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`; it does not claim Claude audit or Claude acceptance.
-- The Board Canvas Fit / Reset discoverability implementation active lock is released by this closeout; no new implementation pass is armed.
-- Current route after this closeout is accepted/pushed: `NEEDS_USER_DECISION`.
+- The accepted Board Canvas Fit / Reset discoverability closeout was pushed at `846e7da`, recorded manual smoke PASS and temporary review mode `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`, released the implementation active lock, and routed to `NEEDS_USER_DECISION`.
+- This docs-only scope-lock defines the future BenchBeep Home / esileht dark-theme parity scope; it does not arm runtime implementation directly.
+- Future active-lock sync must inspect exact Home screen/widget owners before arming runtime/test files.
+- Current route after this scope-lock is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

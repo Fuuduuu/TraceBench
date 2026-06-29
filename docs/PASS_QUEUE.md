@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -73,5 +73,7 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ACTIVE_LOCK_SYNC_PASS | LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | accepted/pushed as `b2d0a61` (`docs: arm Board Canvas fit reset discoverability`) | Records accepted/pushed scope-lock `b254d43` and arms `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` with exact future allowlist `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`; no runtime/test implementation and no Board Canvas write/canonical behavior. |
 | V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_ROUTE_SYNC_PASS | LANE_B_ADJACENT / DOCS_ROUTE_SYNC / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | accepted/pushed as `8f45065` (`docs: sync Board Canvas fit reset route`) | Records pushed active-lock sync `b2d0a61` and moves `CURRENT_STATE` / `PASS_QUEUE` current route to `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`; no runtime/test implementation, no `ACTIVE_SCOPE_LOCK.md` change, and no Claude audit claim. |
 | V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS | LANE_B_ADJACENT / FLUTTER_UI_PROTECTED_IMPLEMENTATION / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | accepted/pushed as `6762bdc` (`feat(board-canvas): improve fit reset discoverability`) | Manual smoke PASS; temporary review mode `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`; changed exactly Board Canvas screen and Board Canvas widget tests, added compact `Sobita` viewport recovery control with clearer `Sobita / taasta vaade` tooltip and semantic label/hint, preserved existing fit/reset behavior, and did not add Board Canvas save/write or canonical behavior. |
-| V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | current docs-only closeout; `RETRO_CLAUDE_PENDING / DO_NOT_CLAIM_CLAUDE_REVIEW` | Records accepted/pushed implementation `6762bdc`, manual smoke PASS, temporary secondary-review mode, exact implementation files, preserved no-write boundaries, implementation active-lock release, and route after acceptance to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
+| V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_BOARD_CANVAS_VIEWPORT_CONTROLS | accepted/pushed as `846e7da` (`docs: record Board Canvas fit reset discoverability`) | Records accepted/pushed implementation `6762bdc`, manual smoke PASS, temporary secondary-review mode, exact implementation files, preserved no-write boundaries, implementation active-lock release, and route after acceptance to `NEEDS_USER_DECISION`; no runtime/test/protected edits in closeout. |
+| V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS | LANE_B_ADJACENT / DOCS_SCOPE_LOCK / PROTECTED_UI_HOME_STYLE | current docs-only scope-lock; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Locks a future BenchBeep Home / esileht dark-theme parity implementation scope only; preserves Home launcher open/import/navigation behavior, allows only visual-only dark BenchBeep/workbench style parity direction, and routes after acceptance to active-lock sync before runtime/test files are armed. |
+| V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS | LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE | next recommended after scope-lock acceptance | Must inspect exact live Home screen/widget owners before arming the smallest runtime/test allowlist for future dark-theme parity implementation; no runtime/test implementation in the sync pass. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

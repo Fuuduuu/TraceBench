@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
 
 ## Current armed implementation pass
 
@@ -14,7 +14,7 @@ LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Baseline
 
-- Expected and verified HEAD/origin before this active-lock sync: `4094a61` (`docs: sync BenchBeep Home logo target route`).
+- Expected and verified HEAD/origin before this active-lock sync: `dc15e60` (`docs: allow BenchBeep Home logo asset`).
 - Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Tracked diff before this active-lock sync: none.
@@ -23,13 +23,14 @@ LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Docs sync write allowlist
 
-This docs-only allowlist sync may edit only:
+This docs-only route-sync pass may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS.md`
+- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_ROUTE_SYNC_PASS.md`
 
 No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this asset allowlist sync pass.
 
@@ -120,7 +121,7 @@ Future implementation must preserve:
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS`.
+- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - Current armed implementation pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - Route after accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - This pass does not implement runtime behavior; it only records the exact future allowlist and preserves the armed implementation boundaries.

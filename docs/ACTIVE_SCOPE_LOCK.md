@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS`
 
 ## Current armed implementation pass
 
@@ -10,7 +10,7 @@
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
+LANE_B_ADJACENT / DOCS_TARGET_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Baseline
 
@@ -21,17 +21,17 @@ LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 - Cached/staged diff before this active-lock sync: none.
 - Known untracked scratch files remain untouched.
 
-## Active-lock sync write allowlist
+## Target-sync write allowlist
 
-This docs-only active-lock sync may edit only:
+This docs-only target sync may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS.md`
 
-No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this sync pass.
+No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this target-sync pass.
 
 ## Discovered Home owners
 
@@ -53,7 +53,8 @@ No other runtime or test file is armed.
 
 - User-provided design source: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html`.
 - Status: `DESIGN_INPUT_ONLY`.
-- Intended Home visual target: the bottom-most logo variant in that HTML.
+- Intended Home visual target: the first `PRIMARY · dark / combined lockup` variant in that HTML (markPine dark mark + `benchbeep` wordmark + orange beep arcs + `Measurement Data Visualization` subtitle). The earlier bottom-most horizontal lockup is no longer the target; manual visual review found it did not fit the Home hero. Any pulse/live-signal motion in the source is design reference only and is not required runtime behavior.
+- Exact logo parity may require one generated/captured logo asset introduced through a later, separate asset-scope sync. This target sync adds no asset, stages nothing, copies no HTML/CSS into runtime, and creates no `_incoming`/design-source runtime dependency.
 - Future implementation must explicitly map: HTML logo variant -> Flutter widget/method -> focused widget-test assertion.
 - The HTML/CSS must not be copied into runtime.
 - `_incoming` and design-source files must not be staged.
@@ -73,7 +74,7 @@ Future implementation may allow visual-only polish such as:
 - dividers and borders;
 - button styling where needed for dark-theme parity;
 - compact BenchBeep/workbench-style visual language;
-- applying the bottom-most BenchBeep logo design-source variant as Flutter-rendered Home UI inside the armed Home screen owner only;
+- applying the first `PRIMARY · dark / combined lockup` BenchBeep logo design-source variant as Flutter-rendered Home UI inside the armed Home screen owner only;
 - focused widget-test updates proving visible Home structure, launcher actions, inert/deferred affordances, and no forbidden-surface drift.
 
 Future implementation must preserve:
@@ -117,7 +118,7 @@ Future implementation must preserve:
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS`.
 - Current armed implementation pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - Route after accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
-- This pass does not implement runtime behavior.
+- This pass does not implement runtime behavior; it only clarifies the Home logo target and preserves the armed implementation allowlist and boundaries.

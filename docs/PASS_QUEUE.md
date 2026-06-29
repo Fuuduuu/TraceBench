@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -79,4 +79,5 @@ Canonical owner: `docs/MEMORY_MAINTENANCE.md`. This queue only points to the own
 | V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ROUTE_SYNC_PASS | LANE_B_ADJACENT / DOCS_ROUTE_SYNC / PROTECTED_UI_HOME_STYLE | draft route pointer repair; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Records pushed active-lock sync `70bd37e`, moves `CURRENT_STATE` / `PASS_QUEUE` current route to `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`, preserves the exact Home implementation allowlist and logo design-source-only constraints, and does not claim runtime implementation or Claude audit. |
 | V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS | LANE_B_ADJACENT / FLUTTER_UI_PROTECTED_IMPLEMENTATION / PROTECTED_UI_HOME_STYLE | current implementation pass after route-sync acceptance | Future implementation may only polish BenchBeep Home / esileht dark-theme visual parity inside the exact armed Home screen/test allowlist, map the design-source logo variant to Flutter widget/method/test assertion without copying HTML/CSS or depending on `_incoming`, preserve launcher open/import/navigation behavior, and avoid Board Canvas, Measure Sheet, save/write/canonical, schema, writer, materializer, projection, ZIP, sample, `_incoming`, full redesign, and navigation changes. |
 | V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS | LANE_B_ADJACENT / DOCS_POST_AUDIT_CLOSEOUT / PROTECTED_UI_HOME_STYLE | next recommended after implementation acceptance/push | Future closeout route only; record accepted implementation evidence, manual smoke, review state, exact files, preserved Home launcher/import/navigation behavior, logo design-source-only handling, no asset/runtime dependency drift, release implementation active lock, and route onward without runtime/test/protected edits. |
+| V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS | LANE_B_ADJACENT / DOCS_TARGET_SYNC / PROTECTED_UI_HOME_STYLE | current docs-only target sync; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Re-points the BenchBeep Home dark-theme logo target from the bottom-most horizontal lockup to the first `PRIMARY · dark / combined lockup` variant (markPine dark mark + `benchbeep` wordmark + orange beep arcs + `Measurement Data Visualization` subtitle; pulse/live-signal is design reference only); keeps `BenchBeep Logo.html` as `DESIGN_INPUT_ONLY` with no `_incoming` runtime dependency and no HTML/CSS runtime copy; records that exact parity may need one generated/captured asset in a later separate asset-scope sync; preserves the armed Home two-file allowlist and routes back to `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`; no runtime/test edits. |
 | V2_WORKBENCH_DARK_THEME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK | optional later route | Optional theme scope only; do not mix with measurement panel, menu, Home, or write-flow work. |

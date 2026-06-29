@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_ROUTE_SYNC_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS`
 
 ## Current armed implementation pass
 
@@ -10,28 +10,28 @@
 
 ## Type
 
-LANE_B_ADJACENT / DOCS_ROUTE_SYNC / PROTECTED_UI_HOME_STYLE
+LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Baseline
 
-- Expected and verified HEAD/origin before this active-lock sync: `fb04be1` (`docs: sync BenchBeep Home logo target`).
+- Expected and verified HEAD/origin before this active-lock sync: `4094a61` (`docs: sync BenchBeep Home logo target route`).
 - Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Tracked diff before this active-lock sync: none.
 - Cached/staged diff before this active-lock sync: none.
 - Known untracked scratch files remain untouched.
 
-## Route-sync write allowlist
+## Docs sync write allowlist
 
-This docs-only route-sync may edit only:
+This docs-only allowlist sync may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_ROUTE_SYNC_PASS.md`
+- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS.md`
 
-No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this target-sync pass.
+No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this asset allowlist sync pass.
 
 ## Discovered Home owners
 
@@ -46,6 +46,8 @@ No runtime, test, schema, tool, asset, sample, platform, generated, or `_incomin
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/benchbeep_logo_primary_dark.png`
+- `pubspec.yaml` (for asset registration only; implementation may not add dependencies or runtime config beyond this)
 
 No other runtime or test file is armed.
 
@@ -54,12 +56,12 @@ No other runtime or test file is armed.
 - User-provided design source: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html`.
 - Status: `DESIGN_INPUT_ONLY`.
 - Intended Home visual target: the first `PRIMARY · dark / combined lockup` variant in that HTML (markPine dark mark + `benchbeep` wordmark + orange beep arcs + `Measurement Data Visualization` subtitle). The earlier bottom-most horizontal lockup is no longer the target; manual visual review found it did not fit the Home hero. Any pulse/live-signal motion in the source is design reference only and is not required runtime behavior.
-- Exact logo parity may require one generated/captured logo asset introduced through a later, separate asset-scope sync. This route sync adds no asset, stages nothing, copies no HTML/CSS into runtime, and creates no `_incoming`/design-source runtime dependency.
+- Exact logo parity may require one generated/captured logo asset introduced through a later, separate asset-scope sync. This asset allowlist sync adds no asset, stages nothing, copies no HTML/CSS into runtime, and creates no `_incoming`/design-source runtime dependency.
 - Future implementation must explicitly map: HTML logo variant -> Flutter widget/method -> focused widget-test assertion.
 - The HTML/CSS must not be copied into runtime.
 - `_incoming` and design-source files must not be staged.
 - Runtime must not depend on `_incoming`, the HTML file, or any design-source file.
-- No asset file is authorized by this active lock.
+- No runtime `assets/` file edits are authorized by this docs-only sync.
 - If the design source is unavailable during future implementation, stop and report the missing source rather than inventing a logo or expanding the allowlist.
 
 ## Armed implementation scope
@@ -91,7 +93,7 @@ Future implementation must preserve:
 ## Explicitly forbidden
 
 - Editing runtime/test files in this active-lock sync.
-- Editing any implementation file outside the future two-file allowlist.
+- Editing any implementation file outside the future implementation allowlist.
 - Editing `lib/app/app.dart`.
 - Editing `lib/app/router.dart`.
 - Editing `lib/features/project/screens/home_screen.dart`.
@@ -100,10 +102,10 @@ Future implementation must preserve:
 - Editing Measure Sheet.
 - Editing `tools/`.
 - Editing `schemas/`.
-- Editing `assets/`.
+- Editing `assets/` is forbidden in this docs-only sync. The only carve-out is the explicit future target `assets/brand/benchbeep_logo_primary_dark.png`, documented in the future implementation allowlist.
 - Editing `_incoming`.
 - Copying HTML/CSS from the logo design source into runtime.
-- Adding or editing logo/image/font/runtime assets.
+- Adding or editing logo/image/font/runtime assets is forbidden in this docs-only sync, except for the documented future target `assets/brand/benchbeep_logo_primary_dark.png` in the implementation allowlist.
 - Depending on `_incoming`, `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html`, or any design-source file at runtime.
 - Changing Home launcher behavior, open/import behavior, route behavior, or navigation behavior.
 - Adding save/write/canonical behavior.
@@ -118,7 +120,7 @@ Future implementation must preserve:
 
 ## Route
 
-- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_ROUTE_SYNC_PASS`.
+- Current pass: `V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS`.
 - Current armed implementation pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - Route after accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
-- This pass does not implement runtime behavior; it only clarifies the Home logo target and preserves the armed implementation allowlist and boundaries.
+- This pass does not implement runtime behavior; it only records the exact future allowlist and preserves the armed implementation boundaries.

@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS`
 
 ## Next recommended pass
 
@@ -12,23 +12,28 @@
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this route sync: `fb04be1` (`docs: sync BenchBeep Home logo target`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this asset allowlist sync: `4094a61` (`docs: sync BenchBeep Home logo target route`), aligned with `origin/main`.
 - Latest accepted/pushed active-lock sync: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `70bd37e` (`docs: arm BenchBeep Home dark theme parity`).
 - Active-lock sync full SHA: `70bd37eb9f43f8beac4a2da4d1c7412d3e87b022`.
 - Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Latest accepted/pushed implementation: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` at `6762bdc` (`feat(board-canvas): improve fit reset discoverability`).
 - Current route is the BenchBeep Home / esileht dark-theme parity runtime implementation.
-- The logo target route sync was accepted/pushed at `fb04be1`; this route pointer repair does not implement runtime behavior and does not claim Claude audit.
+- The logo target route sync was accepted/pushed at `4094a61`; this logo asset allowlist sync does not implement runtime behavior and does not claim Claude audit.
 - Discovered Home runtime owner: `lib/features/home/screens/benchbeep_home_screen.dart`.
 - Discovered focused Home widget-test owner: `test/widget/benchbeep_home_screen_test.dart`.
 - Context files inspected but not armed: `lib/app/app.dart` only wires the Home callbacks, and `lib/features/project/screens/home_screen.dart` owns the existing import/open-project flow rather than the BenchBeep Home visual shell.
 - Future implementation pass armed by this sync: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
-- Future implementation allowlist: `lib/features/home/screens/benchbeep_home_screen.dart` and `test/widget/benchbeep_home_screen_test.dart`.
+- Future implementation allowlist:
+  - `lib/features/home/screens/benchbeep_home_screen.dart`
+  - `test/widget/benchbeep_home_screen_test.dart`
+  - `assets/brand/benchbeep_logo_primary_dark.png`
+  - `pubspec.yaml`
+- A future implementation edit to `pubspec.yaml` is limited to adding/registering this asset only.
 - Future implementation direction: make BenchBeep Home / esileht visually match the existing compact dark BenchBeep/workbench style through visual-only polish such as background, cards, text contrast, dividers, and buttons if needed.
 - Future implementation design input: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html` is `DESIGN_INPUT_ONLY` for the Home logo treatment; the intended BenchBeep Home / esileht visual target is the first `PRIMARY · dark / combined lockup` variant (markPine dark mark + `benchbeep` wordmark + orange beep arcs + `Measurement Data Visualization` subtitle). Any pulse/live-signal motion in the source is design reference only.
 - Logo target re-pointed by `V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS`: manual visual review found the earlier bottom-most horizontal lockup did not fit the Home hero, so the target moved to the first `PRIMARY · dark / combined lockup`.
-- Exact logo parity may require one generated/captured logo asset introduced through a later, separate asset-scope sync; this target sync adds no asset, stages nothing, copies no HTML/CSS into runtime, and creates no `_incoming`/design-source runtime dependency.
+- Exact logo parity may require one generated/captured logo asset introduced through a later, separate asset-scope sync; this asset allowlist sync adds no asset, stages nothing, copies no HTML/CSS into runtime, and creates no `_incoming`/design-source runtime dependency.
 - Future implementation must map the logo design source explicitly from HTML logo variant to Flutter widget/method to focused test assertion, without copying HTML/CSS into runtime and without creating an `_incoming` or design-source runtime dependency.
 - Future implementation must preserve Home launcher behavior: `Open existing`, `Import project`, existing navigation, and back/home behavior.
 - Route after implementation acceptance/push: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS`.

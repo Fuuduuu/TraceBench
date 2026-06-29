@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_LOGO_TARGET_SYNC_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
 
 ## Next recommended pass
 
@@ -12,14 +12,14 @@
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this route sync: `70bd37e` (`docs: arm BenchBeep Home dark theme parity`), aligned with `origin/main`.
+- Latest pushed HEAD verified before this route sync: `fb04be1` (`docs: sync BenchBeep Home logo target`), aligned with `origin/main`.
 - Latest accepted/pushed active-lock sync: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS` at `70bd37e` (`docs: arm BenchBeep Home dark theme parity`).
 - Active-lock sync full SHA: `70bd37eb9f43f8beac4a2da4d1c7412d3e87b022`.
 - Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Latest accepted/pushed implementation: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` at `6762bdc` (`feat(board-canvas): improve fit reset discoverability`).
 - Current route is the BenchBeep Home / esileht dark-theme parity runtime implementation.
-- The active-lock sync was accepted/pushed at `70bd37e`; this route pointer repair does not implement runtime behavior and does not claim Claude audit.
+- The logo target route sync was accepted/pushed at `fb04be1`; this route pointer repair does not implement runtime behavior and does not claim Claude audit.
 - Discovered Home runtime owner: `lib/features/home/screens/benchbeep_home_screen.dart`.
 - Discovered focused Home widget-test owner: `test/widget/benchbeep_home_screen_test.dart`.
 - Context files inspected but not armed: `lib/app/app.dart` only wires the Home callbacks, and `lib/features/project/screens/home_screen.dart` owns the existing import/open-project flow rather than the BenchBeep Home visual shell.

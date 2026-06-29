@@ -14,7 +14,7 @@ LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Baseline
 
-- Expected and verified HEAD/origin before this active-lock sync: `dc15e60` (`docs: allow BenchBeep Home logo asset`).
+- Expected and verified HEAD/origin before this drop-in allowlist sync: `29b5e22` (`docs: sync BenchBeep Home logo asset route`).
 - Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
 - Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Tracked diff before this active-lock sync: none.
@@ -23,16 +23,15 @@ LANE_B_ADJACENT / DOCS_ACTIVE_LOCK_SYNC / PROTECTED_UI_HOME_STYLE
 
 ## Docs sync write allowlist
 
-This docs-only route-sync pass may edit only:
+This docs-only drop-in allowlist sync pass may edit only:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_SYNC_PASS.md`
-- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_LOGO_ASSET_ALLOWLIST_ROUTE_SYNC_PASS.md`
+- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_DROPIN_ALLOWLIST_SYNC_PASS.md`
 
-No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this asset allowlist sync pass.
+No runtime, test, schema, tool, asset, sample, platform, generated, or `_incoming` file is authorized in this drop-in allowlist sync pass.
 
 ## Discovered Home owners
 
@@ -47,12 +46,27 @@ No runtime, test, schema, tool, asset, sample, platform, generated, or `_incomin
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
-- `assets/brand/benchbeep_logo_primary_dark.png`
-- `pubspec.yaml` (for asset registration only; implementation may not add dependencies or runtime config beyond this)
+- `assets/brand/benchbeep_mark.png`
+- `assets/brand/pcb_board.png`
+- `pubspec.yaml` (for Flutter asset registration only; implementation may not add dependencies or runtime config beyond this)
 
 No other runtime or test file is armed.
 
-## Future logo design input
+## Future drop-in source
+
+- Drop-in source root: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin`.
+- Drop-in source asset folder: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin/assets/brand`.
+- Runtime-relevant drop-in files discovered:
+  - `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin/lib/features/home/screens/benchbeep_home_screen.dart`
+  - `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin/assets/brand/benchbeep_mark.png`
+  - `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin/assets/brand/pcb_board.png`
+- README/package map facts: the replacement keeps the `BenchBeepHomeScreen` public class/constructor compatible; `router.dart` and `home_screen.dart` should not need edits; `pubspec.yaml` is needed only for Flutter asset registration.
+- The prior single-logo target `assets/brand/benchbeep_logo_primary_dark.png` is deprecated for this implementation route.
+- `_incoming` remains `DROPIN_SOURCE_ONLY / DESIGN_INPUT_ONLY`; it must not be staged, copied as a dependency, or referenced at runtime.
+
+## Superseded logo design input
+
+The earlier single-logo target and logo-source workflow are superseded for this implementation route by the TraceBench_final drop-in package recorded above.
 
 - User-provided design source: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html`.
 - Status: `DESIGN_INPUT_ONLY`.
@@ -103,11 +117,11 @@ Future implementation must preserve:
 - Editing Measure Sheet.
 - Editing `tools/`.
 - Editing `schemas/`.
-- Editing `assets/` is forbidden in this docs-only sync. The only carve-out is the explicit future target `assets/brand/benchbeep_logo_primary_dark.png`, documented in the future implementation allowlist.
+- Editing `assets/` is forbidden in this docs-only sync. The only future carve-outs are the explicit drop-in targets `assets/brand/benchbeep_mark.png` and `assets/brand/pcb_board.png`, documented in the future implementation allowlist.
 - Editing `_incoming`.
 - Copying HTML/CSS from the logo design source into runtime.
-- Adding or editing logo/image/font/runtime assets is forbidden in this docs-only sync, except for the documented future target `assets/brand/benchbeep_logo_primary_dark.png` in the implementation allowlist.
-- Depending on `_incoming`, `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html`, or any design-source file at runtime.
+- Adding or editing logo/image/font/runtime assets is forbidden in this docs-only sync, except for the documented future drop-in targets `assets/brand/benchbeep_mark.png` and `assets/brand/pcb_board.png` in the implementation allowlist.
+- Depending on `_incoming`, `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/Starting page/TraceBench_final/tracebench_dropin`, or any design/drop-in source file at runtime.
 - Changing Home launcher behavior, open/import behavior, route behavior, or navigation behavior.
 - Adding save/write/canonical behavior.
 - Importing, calling, routing to, or wiring `v2_save_measurement_writer.dart`.

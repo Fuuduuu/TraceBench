@@ -2,26 +2,32 @@
 
 ## Current pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed HEAD verified before this scope-lock: `846e7da` (`docs: record Board Canvas fit reset discoverability`), aligned with `origin/main`.
-- Latest accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
+- Latest pushed HEAD verified before this active-lock sync: `1af1e51` (`docs: lock BenchBeep Home dark theme parity`), aligned with `origin/main`.
+- Latest accepted/pushed scope-lock: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_SCOPE_LOCK_PASS` at `1af1e51` (`docs: lock BenchBeep Home dark theme parity`).
+- Prior accepted/pushed closeout: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_POST_AUDIT_PASS` at `846e7da` (`docs: record Board Canvas fit reset discoverability`).
 - Latest accepted/pushed implementation: `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS` at `6762bdc` (`feat(board-canvas): improve fit reset discoverability`).
-- Current route is this docs-only scope-lock for a future BenchBeep Home / esileht dark-theme parity implementation.
-- This scope-lock does not edit runtime or tests, does not arm implementation directly, and does not claim Claude audit.
+- Current route is this docs-only active-lock sync for the future BenchBeep Home / esileht dark-theme parity implementation.
+- This active-lock sync does not edit runtime or tests, does not implement dark-theme parity, and does not claim Claude audit.
+- Discovered Home runtime owner: `lib/features/home/screens/benchbeep_home_screen.dart`.
+- Discovered focused Home widget-test owner: `test/widget/benchbeep_home_screen_test.dart`.
+- Context files inspected but not armed: `lib/app/app.dart` only wires the Home callbacks, and `lib/features/project/screens/home_screen.dart` owns the existing import/open-project flow rather than the BenchBeep Home visual shell.
+- Future implementation pass armed by this sync: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
+- Future implementation allowlist: `lib/features/home/screens/benchbeep_home_screen.dart` and `test/widget/benchbeep_home_screen_test.dart`.
 - Future implementation direction: make BenchBeep Home / esileht visually match the existing compact dark BenchBeep/workbench style through visual-only polish such as background, cards, text contrast, dividers, and buttons if needed.
+- Future implementation design input: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html` is `DESIGN_INPUT_ONLY` for the Home logo treatment; use the bottom-most logo variant as the intended BenchBeep Home / esileht visual target.
+- Future implementation must map the logo design source explicitly from HTML logo variant to Flutter widget/method to focused test assertion, without copying HTML/CSS into runtime and without creating an `_incoming` or design-source runtime dependency.
 - Future implementation must preserve Home launcher behavior: `Open existing`, `Import project`, existing navigation, and back/home behavior.
-- Future active-lock sync must inspect the exact live Home screen/widget owners before arming a narrow runtime/test allowlist.
-- Route after this scope-lock is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- No implementation pass is armed by this scope-lock.
+- Route after this active-lock sync is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - Implementation full SHA: `6762bdcb35287b9d7c393d5b2ec9e21e911df2f3`.
 - Implementation files changed: `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - Manual smoke: PASS.
@@ -236,9 +242,10 @@
 - The accepted Board Canvas Fit / Reset discoverability active-lock sync was docs-only, armed `V2_BOARD_CANVAS_FIT_RESET_DISCOVERABILITY_IMPL_PASS`, and was pushed at `b2d0a61`.
 - The accepted Board Canvas Fit / Reset discoverability implementation was pushed at `6762bdc` and changed only `lib/features/board_canvas/screens/board_canvas_screen.dart` and `test/widget/board_canvas_screen_test.dart`.
 - The accepted Board Canvas Fit / Reset discoverability closeout was pushed at `846e7da`, recorded manual smoke PASS and temporary review mode `NO_CLAUDE_REVIEW / GPT_PRO_SECONDARY_REVIEW / RETRO_CLAUDE_PENDING`, released the implementation active lock, and routed to `NEEDS_USER_DECISION`.
-- This docs-only scope-lock defines the future BenchBeep Home / esileht dark-theme parity scope; it does not arm runtime implementation directly.
-- Future active-lock sync must inspect exact Home screen/widget owners before arming runtime/test files.
-- Current route after this scope-lock is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- The accepted BenchBeep Home dark-theme parity scope-lock was pushed at `1af1e51` and routed to `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- This docs-only active-lock sync arms `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS` with the exact future implementation allowlist `lib/features/home/screens/benchbeep_home_screen.dart` and `test/widget/benchbeep_home_screen_test.dart`.
+- This active-lock sync records the provided BenchBeep logo design source `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/logo/BenchBeep Logo.html` as `DESIGN_INPUT_ONLY`; the bottom-most logo variant is the intended Home visual target, but `_incoming`/design-source files must not be staged, copied into runtime, or used as runtime dependencies.
+- Current route after this active-lock sync is accepted/pushed: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
 - The accepted design-source boundaries remain unchanged: `_incoming` dark EDA HTML/CSS are design input only and have no runtime authority, canonical semantics, or implementation authorization.
 - Prompt/audit gate policy from `TRACEBENCH_PROMPT_AUDIT_GATE_SYNC_PASS` remains accepted:
   - Codex final responses for pass work normally include a clearly separated `CLAUDE_AUDIT_PACKET`; temporary no-Claude passes explicitly use `NO_CLAUDE_REVIEW_PACKET` and must not claim Claude audit;

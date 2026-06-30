@@ -2,23 +2,23 @@
 
 ## Current pass
 
-`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS`
 
 ## Current armed implementation pass
 
-None. This route is a docs-only active-lock sync target; runtime/test implementation is not armed by this route-sync pass.
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`
 
 ## Type
 
-CODEX / DOCS_ACTIVE_LOCK_SYNC / Board Canvas visual rendering
+CODEX / FLUTTER_PASS / Board Canvas visual rendering
 
 ## Status
 
-Docs-only route pointer sync has advanced the active route to the active-lock sync pass. The active-lock sync pass must arm the exact implementation allowlist before runtime/test work starts.
+Implementation active lock armed by docs-only pass `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`. Runtime/test work is authorized only inside the exact two-file implementation allowlist below.
 
 ## Active docs write allowlist for the next sync pass
 
@@ -30,14 +30,6 @@ Docs-only route pointer sync has advanced the active route to the active-lock sy
 
 ## Future implementation target
 
-- Future implementation pass: `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`.
-- Future implementation surface: Board Canvas visual rendering only.
-- Replace marker-only placement visuals with real-looking component footprint shapes rendered from existing placement/projection data.
-- Preserve existing selection, inspector, measurement summary, pan/zoom, fit/reset, and read-only Board Canvas behavior.
-- Keep display language explicit: visual-only, no confirmed connectivity, no write, candidate/unconfirmed where relevant.
-- Expected future runtime/test allowlist to be armed by `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`:
-  - lib/features/board_canvas/screens/board_canvas_screen.dart
-  - test/widget/board_canvas_screen_test.dart
 
 ## Design source handling
 
@@ -72,7 +64,25 @@ Docs-only route pointer sync has advanced the active route to the active-lock sy
 
 ## Route handling
 
-- Pushed scope-lock recorded: `8fad35d4398942a64d355f31c8065d384fdbb6e8` (`8fad35d docs: lock Board Canvas real component footprints`).
-- Previous route was `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS` -> `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Current route is `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Next recommended route is `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`.
+- Pushed scope-lock recorded: 8fad35d4398942a64d355f31c8065d384fdbb6e8 (8fad35d docs: lock Board Canvas real component footprints).
+- Pushed route-sync recorded: 32e89f5a1771b67474899d0c77433a98678df043 (32e89f5 docs: sync Board Canvas footprint route).
+- Active-lock-sync pass recorded: V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS.
+- Current route is V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS.
+- Next recommended route is V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS.
+## Board Canvas real component footprints implementation lock
+
+- Current armed pass: V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS.
+- Armed by docs-only active-lock sync: V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS.
+- Pushed route-sync prerequisite: 32e89f5a1771b67474899d0c77433a98678df043 (32e89f5 docs: sync Board Canvas footprint route).
+- Implementation type: Board Canvas visual rendering only.
+- Implementation goal: replace marker-only Board Canvas placement visuals with real-looking component footprint shapes.
+- Runtime/test write allowlist is exactly:
+  - lib/features/board_canvas/screens/board_canvas_screen.dart
+  - test/widget/board_canvas_screen_test.dart
+- If implementation inspection proves additional files are needed, stop and report instead of guessing.
+- Design source: C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/BenchBeep Project Home (dark, standalone).html is DESIGN_INPUT_ONLY; do not stage _incoming, copy HTML/CSS into runtime, or create a runtime dependency on _incoming.
+- Data source: existing placement/projection data only.
+- Preserve: selection, inspector, measurement summary, pan/zoom/fit/reset, and read-only/no-write status language.
+- Truth boundary: confirmed status is not created here; confirmed means human-confirmed canonical event/projection. AI/candidate/visual hints remain unconfirmed until explicit human confirmation.
+- Board Canvas remains visual/read-only until a later explicit writer scope.
+- Forbidden surfaces: no events.jsonl, known_facts, schema/writer/materializer/validator/projection, canonical placement/coordinate/net/electrical semantics, Confirm/write/Edit Layout, AI/OCR/CV fact creation, Measure Sheet, router, Project Home, new assets, or dependency changes.

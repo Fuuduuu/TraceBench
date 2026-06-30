@@ -2,7 +2,11 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS`
+
+## Next recommended pass
+
+`TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS`
 
 ## Current armed implementation pass
 
@@ -10,43 +14,36 @@ None.
 
 ## Type
 
-NO_ACTIVE_LOCK / USER_ROUTE_DECISION_REQUIRED
+CODEX / DOCS_DRIFT_MINI_CLEANUP / cleanup_or_archive_planning
 
 ## Status
 
-No active implementation lock is armed.
+Docs-only compaction lock is active. No product/runtime implementation pass is armed.
 
-## Released lock
+## Active write allowlist
 
-- Released by docs-only closeout pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS`.
-- Closed implementation pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
-- Pushed implementation commit recorded: `398f7682120c468a81459d0e63fbf7b8cf4733bc` (`feat(home): apply BenchBeep black gold drop-in`).
-- Claude/read-only audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Route after closeout: `NEEDS_USER_DECISION`.
+- docs/CURRENT_STATE.md
+- docs/PASS_QUEUE.md
+- docs/PASS_QUEUE_ARCHIVE.md
+- docs/ACTIVE_SCOPE_LOCK.md
+- docs/AUDIT_INDEX.md
+- docs/audit/TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS.md
 
-## Implementation files recorded
+## Boundaries
 
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `pubspec.yaml`
-- `assets/brand/benchbeep_mark.png`
-- `assets/brand/pcb_board.png`
+- Docs only.
+- No runtime edits.
+- No test edits.
+- No schema/tool/asset/pubspec edits.
+- No _incoming staging or runtime dependency.
+- No protected/canonical changes.
+- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics changes.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes.
+- No product/runtime implementation route is selected by this cleanup pass.
 
-## Closeout allowlist
+## Route handling
 
-This docs-only closeout is limited to:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS.md`
-
-## Boundary confirmation
-
-- `_incoming` remained source-only/design-input-only and was not staged.
-- No runtime, test, asset, or `pubspec.yaml` edits are authorized by this closeout.
-- No Board Canvas changes are authorized by this closeout.
-- No Measure Sheet changes are authorized by this closeout.
-- No save/write/canonical/schema/writer/materializer/projection/ZIP/sample changes are authorized by this closeout.
-- No active route should be inferred until the user selects the next pass.
+- Starting route was NEEDS_USER_DECISION across docs/CURRENT_STATE.md, docs/PASS_QUEUE.md, and this lock.
+- Current route is `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS`.
+- Next recommended route is `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS`.
+- Post-audit closeout should release this docs-hygiene lock and return the route to NEEDS_USER_DECISION unless the user explicitly selects another pass.

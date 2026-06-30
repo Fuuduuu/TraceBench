@@ -2,75 +2,48 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS`
 
 ## Repository handoff
 
-- Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
-- Branch: `main`
-- Latest pushed HEAD verified for this closeout: `398f7682120c468a81459d0e63fbf7b8cf4733bc` (`feat(home): apply BenchBeep black gold drop-in`), aligned with `origin/main`.
-- Closed implementation pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_PASS`.
-- Closeout pass: `V2_BENCHBEEP_HOME_DARK_THEME_PARITY_IMPL_POST_AUDIT_PASS`.
-- Current route after this closeout: `NEEDS_USER_DECISION`.
+- Repository: C:\Users\Kasutaja\Desktop\TraceBench
+- Branch: main
+- Latest pushed HEAD verified before this cleanup: `40ef98ae867399444e374ca4f85cc47e645b9867` (`40ef98a (HEAD -> main, origin/main, origin/HEAD) docs: close out BenchBeep Home drop-in`).
+- Route before this cleanup pass: NEEDS_USER_DECISION.
+- Current route state: docs-hygiene compaction is active; no product/runtime implementation pass is selected.
 
-## BenchBeep Home implementation recorded
+## Latest accepted product state
 
-The BenchBeep Home black/gold drop-in implementation has been pushed and recorded.
+- BenchBeep Home black/gold drop-in implementation is implemented, audited, pushed, and closed out.
+- Implementation commit recorded by prior closeout: 398f7682120c468a81459d0e63fbf7b8cf4733bc (eat(home): apply BenchBeep black gold drop-in).
+- Closeout commit now at HEAD: `40ef98ae867399444e374ca4f85cc47e645b9867` (docs: close out BenchBeep Home drop-in).
+- The route returned to NEEDS_USER_DECISION before this docs-hygiene pass was opened.
 
-Implementation files recorded:
+## Current docs-hygiene scope
 
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `pubspec.yaml`
-- `assets/brand/benchbeep_mark.png`
-- `assets/brand/pcb_board.png`
+- Compact oversized operational docs and move completed pass history out of active handoff files.
+- Keep docs/CURRENT_STATE.md short and operational.
+- Keep docs/PASS_QUEUE.md limited to active and immediate near-future routing.
+- Preserve completed-pass provenance in docs/PASS_QUEUE_ARCHIVE.md, docs/AUDIT_INDEX.md, docs/audit/, and git history.
+- Archive before delete: completed queue rows must be present in the archive before removal from the active queue.
 
-Recorded audit result:
+## Canonical owners and evidence ledgers
 
-- `AUDIT_VERDICT: ACCEPT_AS_IS`
-- `SAFE_FOR_STAGING: YES`
+- Stable architecture memory: docs/PROJECT_MEMORY.md.
+- Core invariants and protected truth: docs/TRUTH_INDEX.md.
+- Protected boundaries: docs/PROTECTED_SURFACES.md.
+- Active/near-future route queue: docs/PASS_QUEUE.md.
+- Completed pass provenance: docs/PASS_QUEUE_ARCHIVE.md, docs/AUDIT_INDEX.md, and docs/audit/.
+- Prompt and audit rules: docs/PROMPTING_PROTOCOL.md, docs/AUDIT_CONTRACT.md, and docs/PASS_LIFECYCLE.md.
 
-Recorded validation result from the implementation pass:
+## Binding workflow constraints
 
-- `git diff --check` passed.
-- `python tools/validate_all.py` passed, 273 tests OK.
-- `flutter analyze lib/features/home/screens/benchbeep_home_screen.dart` passed.
-- `flutter test test/widget/benchbeep_home_screen_test.dart` passed.
-- `flutter test test/widget/project_overview_screen_test.dart` passed.
-- `flutter test test/widget/board_canvas_screen_test.dart` passed.
-- `flutter test` passed.
-
-Recorded manual smoke result:
-
-- Black/gold BenchBeep Home visual accepted.
-- Hover polish accepted.
-- PCB image uses narrow edge feather; no broad vignette.
-- No visible hard rectangular PCB contour.
-- Launcher callbacks preserved.
-
-## Source and boundary handling
-
-- `_incoming` remained source-only/design-input-only and was not staged.
-- Runtime does not depend on `_incoming`.
-- No HTML/CSS runtime copy was recorded.
-- No new dependencies were recorded.
-- No Board Canvas changes were recorded.
-- No Measure Sheet changes were recorded.
-- No save/write/canonical/schema/writer/materializer/projection/ZIP/sample changes were recorded.
-
-## Active lock state
-
-- Active implementation lock is released.
-- No current implementation pass is armed.
-- The route is intentionally parked at `NEEDS_USER_DECISION` for the next user-selected pass.
-
-## Standing project constraints
-
-- Repo docs and verified git state outrank handoff text.
-- Do not stage, commit, or push unless explicitly requested.
-- If staging is later requested, stage exact files only; never use `git add .`, `git add -A`, or `git commit -am`.
-- Protected surfaces remain guarded by `docs/TRUTH_INDEX.md`, `docs/PROTECTED_SURFACES.md`, and `docs/ACTIVE_SCOPE_LOCK.md`.
+- Repo docs and verified git state outrank chat handoff text and assistant memory.
+- Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
+- Do not stage _incoming; do not create runtime dependencies on _incoming.
+- No runtime, test, schema, tool, asset, pubspec, protected, canonical, writer, materializer, validator, projection, Project ZIP, fact, or event semantics changes unless separately scoped.
+- No product/runtime implementation route is selected by this cleanup pass.

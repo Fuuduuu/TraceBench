@@ -2,31 +2,38 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Latest pushed HEAD verified for this closeout: `9f7e5ecaf5339b32f1bd3d50fc76e624933b13c9` (`9f7e5ec (HEAD -> main, origin/main, origin/HEAD) docs: compact current state and pass queue`).
-- Closed implementation/docs pass: `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS`.
-- Closeout pass recorded here: `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS`.
-- Current route state after closeout: `NEEDS_USER_DECISION`.
+- Latest pushed HEAD verified for this scope lock: `b0ebd36aff92f65ba33551ecb2fbd558b2f50399` (`b0ebd36 (HEAD -> main, origin/main, origin/HEAD) docs: close out docs compaction`).
+- Route before this scope lock: `NEEDS_USER_DECISION`.
+- Current route state: Board Canvas real-looking component footprint scope lock is active; no runtime implementation has been opened.
 
-## Latest accepted docs state
+## Active scope summary
 
-- Docs compaction pass is accepted, pushed, and closed out.
-- `docs/CURRENT_STATE.md` was compacted to 49 lines during the implementation pass.
-- `docs/PASS_QUEUE.md` was compacted to 32 lines during the implementation pass.
-- 59 completed `docs/PASS_QUEUE.md` rows were moved byte-verbatim into `docs/PASS_QUEUE_ARCHIVE.md`.
-- Archive-before-delete guarantee was satisfied before active queue rows were removed.
-- `docs/ACTIVE_SCOPE_LOCK.md` armed the docs-only compaction lock during the implementation pass.
-- Claude/read-only audit result recorded for the implementation: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Validation recorded for the implementation: `python tools/validate_all.py` passed, 273 tests OK.
+- Scope is docs-only.
+- Target future implementation: replace marker-only Board Canvas placement visuals with real-looking component footprint renderers.
+- Design source: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/BenchBeep Project Home (dark, standalone).html`, used as `DESIGN_INPUT_ONLY`.
+- The HTML mockup may inform visual direction for component geometry, pads, pin rows, chip bodies, connector/passive shapes, dark canvas styling, and visual-only copy.
+- Do not copy HTML/CSS into runtime, stage `_incoming`, or create runtime dependency on `_incoming`.
+- Future implementation must use existing placement/projection data only.
+- Future implementation may visually resemble resistor, capacitor, diode, IC, connector, and passive footprints where existing metadata supports it.
+- Existing selection, inspector, measurement summary, pan/zoom, fit, and Board Canvas read-only behavior must be preserved.
+
+## Confirmed logic
+
+- Confirmed status is not created by this scope or its future implementation.
+- Confirmed means human-confirmed canonical event/projection.
+- AI, candidate, visual, or inferred display hints remain unconfirmed until explicit human confirmation.
+- Future rendering may show candidate/unconfirmed visual context only as display state; it must not imply confirmed connectivity, component identity, placement semantics, or electrical proof.
+- No Confirm, write, or Edit Layout behavior is authorized.
 
 ## Canonical owners and evidence ledgers
 
@@ -41,6 +48,6 @@
 
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
-- Do not stage _incoming; do not create runtime dependencies on _incoming.
-- No runtime, test, schema, tool, asset, pubspec, protected, canonical, writer, materializer, validator, projection, Project ZIP, fact, or event semantics changes unless separately scoped.
-- No product/runtime implementation route is selected; route is parked at `NEEDS_USER_DECISION`.
+- Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
+- No runtime, test, schema, tool, asset, pubspec, protected, canonical, writer, materializer, validator, projection, Project ZIP, fact, or event semantics changes in this docs-only scope lock.
+- Next route is active-lock sync only: `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`.

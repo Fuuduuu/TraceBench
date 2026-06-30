@@ -15,6 +15,7 @@ This file is audit/provenance history, not the active route pointer.
 
 | PASS_ID | File | Status |
 |---|---|---|
+| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS | docs/audit/V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS.md | drafted/pending audit (docs-only scope lock for future Board Canvas visual-only real-looking component footprint renderers; design source `_incoming` HTML is input-only; preserves existing placement/projection data, read-only behavior, selection, inspector, measurement summary, pan/zoom/fit, and confirmed-status semantics; routes to `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`) |
 | V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_PASS.md | completed (docs-only scope lock for first Workbench Home implementation slice; Option C / Hybrid; preserved route/action invariants; next `V2_WORKBENCH_HOME_SHELL_SCOPE_LOCK_POST_AUDIT_PASS`) |
 | V2_WORKBENCH_HOME_SHELL_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_PASS.md | accepted/pushed (implementation slice for board-centered Workbench Home (`overview-workbench-zone`), dominant `Lisa mõõtmine`, inert future tools, preserved routes, and zero-event shell interactions) |
 | V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS | docs/audit/V2_WORKBENCH_HOME_SHELL_CLOSEOUT_PASS.md | completed (docs-only closeout records accepted/pushed implementation, preserved boundaries, `board_graph_end_to_end_test.dart` unchanged, and route return to layout polish) |

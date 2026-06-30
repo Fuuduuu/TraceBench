@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,11 +26,13 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Active / near-future queue
 
-No active or near-future implementation/docs pass is selected. The route is parked at `NEEDS_USER_DECISION`.
+| PASS_ID | Lane/Type | Status | Notes |
+| --- | --- | --- | --- |
+| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / Board Canvas visual rendering | current docs-only scope lock; RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW | Locks future replacement of marker-only Board Canvas placement visuals with real-looking component footprint renderers. Uses existing placement/projection data only; preserves selection, inspector, measurement summary, pan/zoom/fit, and read-only behavior; forbids runtime/test edits in this pass. |
+| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / Board Canvas visual rendering | next recommended | Arm the exact future runtime/test implementation allowlist after this scope lock is audited and accepted. Must not implement rendering during the sync pass. |
 
 ## Recent closeout context
 
 | PASS_ID | Lane/Type | Status | Notes |
 | --- | --- | --- | --- |
-| TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS | CODEX / DOCS_DRIFT_MINI_CLEANUP / cleanup_or_archive_planning | accepted/pushed as `9f7e5ec` (`docs: compact current state and pass queue`) | Compacted docs/CURRENT_STATE.md to 49 lines and docs/PASS_QUEUE.md to 32 lines; moved 59 completed queue rows byte-verbatim into docs/PASS_QUEUE_ARCHIVE.md; no runtime/protected/canonical changes. |
-| TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT / cleanup_or_archive_planning | docs-only closeout drafted; route after closeout `NEEDS_USER_DECISION` | Records audit acceptance, validation, archive-before-delete outcome, and releases the docs-hygiene lock. |
+| TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT_CLOSEOUT / cleanup_or_archive_planning | accepted/pushed as `b0ebd36` (`docs: close out docs compaction`) | Released docs-hygiene lock and returned route to `NEEDS_USER_DECISION` before this Board Canvas scope lock was opened. |

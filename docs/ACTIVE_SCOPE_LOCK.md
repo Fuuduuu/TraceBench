@@ -2,53 +2,79 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current armed implementation pass
 
-None.
+None. This is a docs-only scope lock.
 
 ## Type
 
-NO_ACTIVE_LOCK / USER_ROUTE_DECISION_REQUIRED
+CODEX / DOCS_SCOPE_LOCK / Board Canvas visual rendering
 
 ## Status
 
-No active implementation, runtime, test, or docs lock is armed. Route is parked at `NEEDS_USER_DECISION`.
+Docs-only Board Canvas real-looking component footprint scope lock is active. Runtime implementation is not armed until `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS` completes after audit acceptance.
 
-## Released lock
+## Active write allowlist
 
-- Released docs-hygiene lock: `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_PASS`.
-- Closeout pass: `TRACEBENCH_DOCS_DRIFT_CURRENT_STATE_AND_QUEUE_COMPACTION_POST_AUDIT_PASS`.
-- Pushed compaction commit recorded: `9f7e5ecaf5339b32f1bd3d50fc76e624933b13c9` (`9f7e5ec docs: compact current state and pass queue`).
-- Audit result recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Validation recorded: `python tools/validate_all.py` passed, 273 tests OK.
+- docs/CURRENT_STATE.md
+- docs/PASS_QUEUE.md
+- docs/ACTIVE_SCOPE_LOCK.md
+- docs/AUDIT_INDEX.md
+- docs/audit/V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS.md
 
-## Closed compaction results
+## Future implementation target
 
-- `docs/CURRENT_STATE.md` compacted to 49 lines during the implementation pass.
-- `docs/PASS_QUEUE.md` compacted to 32 lines during the implementation pass.
-- 59 completed `docs/PASS_QUEUE.md` rows moved byte-verbatim into `docs/PASS_QUEUE_ARCHIVE.md`.
-- Archive-before-delete guarantee satisfied.
-- No runtime/test/schema/tool/asset/pubspec/_incoming/protected/canonical changes.
+- Future implementation surface: Board Canvas visual rendering only.
+- Replace marker-only placement visuals with real-looking component footprint shapes rendered from existing placement/projection data.
+- Components may visually resemble resistor, capacitor, diode, IC, connector, and passive footprints where existing metadata supports it.
+- Preserve existing selection, inspector, measurement summary, pan/zoom, fit, and read-only Board Canvas behavior.
+- Future implementation should keep display language explicit: visual-only, no confirmed connectivity, no write, candidate/unconfirmed where relevant.
+- Future implementation must route through `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS` before runtime/test files are armed.
+
+## Design source handling
+
+- Design source: `C:/Users/Kasutaja/Desktop/TraceBench/_incoming/ui_redesign/BenchBeep Project Home (dark, standalone).html`.
+- Use as `DESIGN_INPUT_ONLY`.
+- Do not stage `_incoming`.
+- Do not copy HTML/CSS into runtime.
+- Do not create runtime dependency on `_incoming`.
+- Do not add new assets or dependencies.
+
+## Confirmed logic guard
+
+- Confirmed status is not created by this pass or by the future visual rendering implementation.
+- Confirmed means human-confirmed canonical event/projection.
+- AI, candidate, visual, or inferred hints remain unconfirmed until explicit human confirmation.
+- The renderer must not imply confirmed component identity, connectivity, coordinates, nets, traces, probes, pins, pads, or electrical semantics.
+- No Confirm/write/Edit Layout behavior is authorized.
 
 ## Boundaries
 
-- Docs-only closeout completed.
-- No runtime edits are authorized by the current route.
-- No test edits are authorized by the current route.
-- No schema/tool/asset/pubspec edits are authorized by the current route.
-- No _incoming staging or runtime dependency is authorized.
-- No protected/canonical changes are authorized.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics changes are authorized.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes are authorized.
+- Docs only in this pass.
+- No runtime edits.
+- No test edits.
+- No `_incoming` staging or runtime dependency.
+- No HTML/CSS runtime copy.
+- No new assets.
+- No dependency additions.
+- No events.jsonl write.
+- No known_facts mutation.
+- No schema/writer/materializer/validator/projection changes.
+- No canonical placement/coordinate/net/electrical semantics changes.
+- No Confirm/write/Edit Layout behavior.
+- No AI/OCR/CV fact creation.
+- No Measure Sheet changes.
+- No router changes.
+- No Project Home changes.
 
 ## Route handling
 
-- Current route is `NEEDS_USER_DECISION`.
-- Next recommended route is `NEEDS_USER_DECISION`.
-- User must explicitly select the next pass before any implementation or docs route change.
+- Current route is `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS`.
+- Next recommended route is `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- After this scope lock is audited and accepted, the next pass should arm the implementation allowlist only; implementation remains separate.

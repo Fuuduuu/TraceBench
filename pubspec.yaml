@@ -27,5 +27,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/brand/
     - assets/samples/pelle_pv20_minimal/
     - assets/samples/pelle_pv20_minimal/exports/

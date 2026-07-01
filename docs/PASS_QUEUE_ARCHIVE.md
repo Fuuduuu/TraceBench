@@ -2,9 +2,9 @@
 
 PASS_QUEUE archive for non-operational historical routes preserved during docs-hygiene cleanup.
 
-## Active scope
+## Archive scope
 
-- Current focus: `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`
+- Historical archive snapshot created during `TRACEBENCH_PASS_QUEUE_ARCHIVE_PASS`; this file is not the active route owner.
 - Canonical operational queue is now compact and route-focused; older completed rows remain here for full audit traceability.
 
 # Archived PASS_QUEUE rows

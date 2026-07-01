@@ -406,7 +406,7 @@ For broad UX/design cards:
 - each slice should have its own scope lock and implementation pass;
 - avoid one-pass screen rewrites.
 
-### 7) Technician-first workflow guard
+### 6) Technician-first workflow guard
 
 For measurement, repair-flow, or bench-workflow prompts:
 
@@ -416,7 +416,7 @@ For measurement, repair-flow, or bench-workflow prompts:
 - ensure reference/research/candidate values do not look measured;
 - do not treat visual prototypes as implementation permission or event-writing authorization.
 
-### 6) Model/tool routing reference
+### 7) Model/tool routing reference
 
 Do not duplicate helper/model role ownership blocks in prompts. Reference `docs/MODEL_ROUTING.md` and state only pass-specific routing details:
 

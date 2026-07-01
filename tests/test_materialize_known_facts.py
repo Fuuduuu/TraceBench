@@ -233,6 +233,21 @@ def make_v2_component_payload(**overrides):
     return payload
 
 
+def make_v2_component_visual_placement_payload(**overrides):
+    payload = {
+        "component_id": "Q2",
+        "coordinate_space": "board_normalized",
+        "board_side": "top",
+        "center_x": 0.42,
+        "center_y": 0.33,
+        "rotation_deg": 0.0,
+        "width": 0.12,
+        "height": 0.08,
+    }
+    payload.update(overrides)
+    return payload
+
+
 class MaterializeKnownFactsTests(unittest.TestCase):
     def test_v2_measurement_projection_preserves_provenance_and_context(self):
         context_values = [
@@ -1782,6 +1797,86 @@ class MaterializeKnownFactsTests(unittest.TestCase):
         self.assertEqual(len(data.get("component_visual_placements", [])), 1)
         component = next(item for item in data["components"] if item.get("component_id") == "Q2")
         self.assertEqual(component.get("installation_status"), "removed")
+
+    def test_v2_component_visual_placement_materializes_from_human_confirmation(self):
+        events = [
+            make_v2_event(
+                "evt_200001",
+                "component_created",
+                make_v2_component_payload(),
+                client_operation_id="op_v2_000001",
+            ),
+            make_v2_event(
+                "evt_200002",
+                "component_visual_placement_confirmed",
+                make_v2_component_visual_placement_payload(template_id="sot23_3"),
+                client_operation_id="op_v2_000002",
+            ),
+        ]
+
+        data = run_materialize_events(events)
+
+        placements = data.get("component_visual_placements", [])
+        self.assertEqual(len(placements), 1)
+        placement = placements[0]
+        self.assertEqual(placement.get("component_id"), "Q2")
+        self.assertEqual(placement.get("source_event_id"), "evt_200002")
+        self.assertEqual(placement.get("status"), "user_confirmed_visual")
+        self.assertEqual(placement.get("width"), 0.12)
+        self.assertEqual(placement.get("height"), 0.08)
+        self.assertNotIn("scale", placement)
+        self.assertEqual(placement.get("template_id"), "sot23_3")
+
+    def test_v2_component_visual_placement_latest_confirmation_wins(self):
+        events = [
+            make_v2_event(
+                "evt_200001",
+                "component_created",
+                make_v2_component_payload(),
+                client_operation_id="op_v2_000001",
+            ),
+            make_v2_event(
+                "evt_200002",
+                "component_visual_placement_confirmed",
+                make_v2_component_visual_placement_payload(center_x=0.1, center_y=0.2),
+                client_operation_id="op_v2_000002",
+            ),
+            make_v2_event(
+                "evt_200003",
+                "component_visual_placement_confirmed",
+                make_v2_component_visual_placement_payload(
+                    center_x=0.7,
+                    center_y=0.6,
+                    width=0.2,
+                    height=0.1,
+                ),
+                client_operation_id="op_v2_000003",
+            ),
+        ]
+
+        data = run_materialize_events(events)
+
+        placements = data.get("component_visual_placements", [])
+        self.assertEqual(len(placements), 1)
+        placement = placements[0]
+        self.assertEqual(placement.get("source_event_id"), "evt_200003")
+        self.assertEqual(placement.get("center_x"), 0.7)
+        self.assertEqual(placement.get("center_y"), 0.6)
+        self.assertEqual(placement.get("width"), 0.2)
+        self.assertEqual(placement.get("height"), 0.1)
+
+    def test_v2_component_visual_placement_without_human_confirmation_does_not_materialize(self):
+        event = make_v2_event(
+            "evt_200001",
+            "component_visual_placement_confirmed",
+            make_v2_component_visual_placement_payload(),
+            client_operation_id="op_v2_000001",
+        )
+        event["confirmation"]["confirmed"] = False
+
+        data = run_materialize_events([event])
+
+        self.assertNotIn("component_visual_placements", data)
 
     def test_known_facts_schema_includes_component_visual_placements(self):
         schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))

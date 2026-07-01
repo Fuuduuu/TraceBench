@@ -73,6 +73,21 @@ def _v2_component_created_payload(**overrides):
     return payload
 
 
+def _v2_component_visual_placement_payload(**overrides):
+    payload = {
+        "component_id": "Q2",
+        "coordinate_space": "board_normalized",
+        "board_side": "top",
+        "center_x": 0.42,
+        "center_y": 0.33,
+        "rotation_deg": 0.0,
+        "width": 0.12,
+        "height": 0.08,
+    }
+    payload.update(overrides)
+    return payload
+
+
 def _v2_event(
     event_id="evt_200001",
     event_type="measurement_recorded",
@@ -120,6 +135,118 @@ class ValidateV2EventsJsonlTests(unittest.TestCase):
         result = _run_validator(path)
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_component_visual_placement_confirmed_passes(self):
+        events = [
+            _v2_event(
+                event_id="evt_200001",
+                event_type="component_created",
+                payload=_v2_component_created_payload(),
+                client_operation_id="op_v2_000001",
+            ),
+            _v2_event(
+                event_id="evt_200002",
+                event_type="component_visual_placement_confirmed",
+                payload=_v2_component_visual_placement_payload(
+                    template_id="sot23_3",
+                    source_photo_id="photo_top_001",
+                    notes="visual body only",
+                ),
+                client_operation_id="op_v2_000002",
+                created_at="2026-06-06T10:01:00Z",
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+
+        result = _run_validator(path)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_component_visual_placement_requires_human_confirmation_envelope(self):
+        for field, value, expected in [
+            ("actor_type", "ai", "actor.type must be 'human'"),
+            ("source_type", "automated_import", "source.type must be 'explicit_user_confirmation'"),
+            ("confirmed", False, "confirmation.confirmed must be true"),
+        ]:
+            with self.subTest(field=field):
+                events = [
+                    _v2_event(
+                        event_id="evt_200001",
+                        event_type="component_created",
+                        payload=_v2_component_created_payload(),
+                        client_operation_id="op_v2_000001",
+                    ),
+                    _v2_event(
+                        event_id="evt_200002",
+                        event_type="component_visual_placement_confirmed",
+                        payload=_v2_component_visual_placement_payload(),
+                        client_operation_id="op_v2_000002",
+                        **{field: value},
+                    ),
+                ]
+                path = _events_to_temp_jsonl(events)
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected, result.stdout + result.stderr)
+
+    def test_v2_component_visual_placement_rejects_forbidden_semantic_fields(self):
+        forbidden_fields = [
+            "net_id",
+            "pin_id",
+            "confirmed_visual_contacts",
+            "visual_contact_layout",
+            "pads",
+            "ai_authored_fact",
+            "scale",
+        ]
+        for field in forbidden_fields:
+            with self.subTest(field=field):
+                events = [
+                    _v2_event(
+                        event_id="evt_200001",
+                        event_type="component_created",
+                        payload=_v2_component_created_payload(),
+                        client_operation_id="op_v2_000001",
+                    ),
+                    _v2_event(
+                        event_id="evt_200002",
+                        event_type="component_visual_placement_confirmed",
+                        payload=_v2_component_visual_placement_payload(**{field: "forbidden"}),
+                        client_operation_id="op_v2_000002",
+                    ),
+                ]
+                path = _events_to_temp_jsonl(events)
+
+                result = _run_validator(path)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("semantic field is forbidden", result.stdout + result.stderr)
+
+    def test_v2_component_visual_placement_requires_width_and_height(self):
+        payload = _v2_component_visual_placement_payload()
+        payload.pop("height")
+        events = [
+            _v2_event(
+                event_id="evt_200001",
+                event_type="component_created",
+                payload=_v2_component_created_payload(),
+                client_operation_id="op_v2_000001",
+            ),
+            _v2_event(
+                event_id="evt_200002",
+                event_type="component_visual_placement_confirmed",
+                payload=payload,
+                client_operation_id="op_v2_000002",
+            ),
+        ]
+        path = _events_to_temp_jsonl(events)
+
+        result = _run_validator(path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing payload fields", result.stdout + result.stderr)
 
     def test_v2_valid_component_update_and_invalidation_passes(self):
         events = [

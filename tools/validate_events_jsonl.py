@@ -135,6 +135,7 @@ V2_EVENT_TYPES = {
     "measurement_recorded",
     "component_created",
     "component_updated",
+    "component_visual_placement_confirmed",
     "event_invalidated",
 }
 V2_REJECTED_ALIASES = {
@@ -245,6 +246,61 @@ V2_COMPONENT_CREATED_ALLOWED_FIELDS = {
 V2_COMPONENT_UPDATED_ALLOWED_FIELDS = frozenset(
     V2_COMPONENT_CREATED_ALLOWED_FIELDS - {"component_id"},
 )
+V2_PLACEMENT_REQUIRED_FIELDS = {
+    "component_id",
+    "coordinate_space",
+    "board_side",
+    "center_x",
+    "center_y",
+    "rotation_deg",
+    "width",
+    "height",
+}
+V2_PLACEMENT_ALLOWED_FIELDS = V2_PLACEMENT_REQUIRED_FIELDS | {
+    "template_id",
+    "source_photo_id",
+    "notes",
+}
+V2_PLACEMENT_FORBIDDEN_FIELDS = {
+    "ai_authored_fact",
+    "ai_confidence",
+    "ai_fact_id",
+    "ai_generated",
+    "ai_proposal_id",
+    "confirmedVisualContacts",
+    "confirmed_contact_layout",
+    "confirmed_net",
+    "confirmed_visual_contacts",
+    "connectivity",
+    "contact_layout",
+    "contact_pads",
+    "contacts",
+    "electrical_connectivity",
+    "from_pin",
+    "legs",
+    "measurement_pin_id",
+    "measurement_pin_identity",
+    "net_connection",
+    "net_connections",
+    "net_id",
+    "net_identity",
+    "net_name",
+    "pad_layout",
+    "pads",
+    "pinAnchors",
+    "pin_anchors",
+    "pin_id",
+    "pin_identity",
+    "pin_map",
+    "pins",
+    "scale",
+    "to_pin",
+    "trace_id",
+    "visualContacts",
+    "visual_contact_layout",
+    "visual_contacts",
+    "visual_pad_layout",
+}
 RESOLVABLE_CONFLICT_TYPES = {
     "measurement_contradiction",
     "net_topology_conflict",
@@ -666,6 +722,100 @@ def _validate_v2_component_updated(
             )
 
 
+def _validate_v2_component_visual_placement_confirmed(
+    payload: dict,
+    context: str,
+    errors: list[str],
+    component_ids: set[str],
+) -> None:
+    missing = V2_PLACEMENT_REQUIRED_FIELDS - set(payload)
+    if missing:
+        _error(
+            errors,
+            context,
+            f"component_visual_placement_confirmed missing payload fields: {sorted(missing)}",
+        )
+
+    for field in sorted(set(payload) - V2_PLACEMENT_ALLOWED_FIELDS):
+        _error(errors, context, f"component_visual_placement_confirmed unexpected field: {field}")
+    for field in sorted(V2_PLACEMENT_FORBIDDEN_FIELDS.intersection(payload.keys())):
+        _error(
+            errors,
+            context,
+            f"component_visual_placement_confirmed semantic field is forbidden: {field}",
+        )
+
+    component_id = payload.get("component_id")
+    if not isinstance(component_id, str) or not component_id:
+        _error(errors, context, "component_visual_placement_confirmed requires component_id")
+    elif component_id not in component_ids:
+        _error(
+            errors,
+            context,
+            f"component_visual_placement_confirmed component_id {component_id!r} must reference prior component_created",
+        )
+
+    coordinate_space = payload.get("coordinate_space")
+    if coordinate_space not in ALLOWED_PLACEMENT_COORDINATE_SPACES:
+        if coordinate_space == "graph_layout":
+            _error(errors, context, "graph_layout is not allowed as canonical coordinate_space")
+        else:
+            _error(
+                errors,
+                context,
+                f"coordinate_space must be one of {sorted(ALLOWED_PLACEMENT_COORDINATE_SPACES)!r}",
+            )
+
+    board_side = payload.get("board_side")
+    if board_side not in ALLOWED_PLACEMENT_BOARD_SIDES:
+        _error(errors, context, f"board_side must be one of {sorted(ALLOWED_PLACEMENT_BOARD_SIDES)!r}")
+
+    center_x = payload.get("center_x")
+    center_y = payload.get("center_y")
+    if not isinstance(center_x, (int, float)):
+        _error(errors, context, "center_x must be numeric")
+    if not isinstance(center_y, (int, float)):
+        _error(errors, context, "center_y must be numeric")
+
+    rotation_deg = payload.get("rotation_deg")
+    if not isinstance(rotation_deg, (int, float)):
+        _error(errors, context, "rotation_deg must be numeric")
+    elif rotation_deg < -180 or rotation_deg >= 180:
+        _error(errors, context, "rotation_deg must satisfy -180 <= rotation_deg < 180")
+
+    width = payload.get("width")
+    height = payload.get("height")
+    if not isinstance(width, (int, float)) or width <= 0:
+        _error(errors, context, "width must be numeric > 0")
+    if not isinstance(height, (int, float)) or height <= 0:
+        _error(errors, context, "height must be numeric > 0")
+
+    if coordinate_space == "photo_local":
+        if isinstance(center_x, (int, float)) and center_x < 0:
+            _error(errors, context, "photo_local center_x must be >= 0")
+        if isinstance(center_y, (int, float)) and center_y < 0:
+            _error(errors, context, "photo_local center_y must be >= 0")
+    elif coordinate_space == "board_normalized":
+        if isinstance(center_x, (int, float)) and (center_x < 0 or center_x > 1):
+            _error(errors, context, "board_normalized center_x must be within 0..1")
+        if isinstance(center_y, (int, float)) and (center_y < 0 or center_y > 1):
+            _error(errors, context, "board_normalized center_y must be within 0..1")
+        if isinstance(width, (int, float)) and width > 1:
+            _error(errors, context, "board_normalized width must be <= 1")
+        if isinstance(height, (int, float)) and height > 1:
+            _error(errors, context, "board_normalized height must be <= 1")
+
+    template_id = payload.get("template_id")
+    if template_id is not None and (not isinstance(template_id, str) or not template_id):
+        _error(errors, context, "template_id must be non-empty string when present")
+    source_photo_id = payload.get("source_photo_id")
+    if source_photo_id is not None and (not isinstance(source_photo_id, str) or not source_photo_id):
+        _error(errors, context, "source_photo_id must be non-empty string when present")
+    notes = payload.get("notes")
+    if notes is not None and not isinstance(notes, str):
+        _error(errors, context, "notes must be string when present")
+
+
 def _validate_v2_event_invalidated(
     payload: dict,
     context: str,
@@ -772,6 +922,8 @@ def _validate_v2_event(
         _validate_v2_component_created(payload, context, errors, component_ids)
     elif event_type == "component_updated":
         _validate_v2_component_updated(payload, context, errors, component_ids)
+    elif event_type == "component_visual_placement_confirmed":
+        _validate_v2_component_visual_placement_confirmed(payload, context, errors, component_ids)
     elif event_type == "event_invalidated":
         _validate_v2_event_invalidated(payload, context, errors, prior_event_ids)
 

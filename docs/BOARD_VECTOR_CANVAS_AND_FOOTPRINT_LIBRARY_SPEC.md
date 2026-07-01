@@ -45,22 +45,25 @@ Locked before any renderer/UI implementation:
 - Board Canvas local builder/ghost remains UI-local draft until a future placement editor implementation.
 - The Board Canvas right-panel / ghost draft is the intended first owner for the official UI-local placement editor.
 - Future placement Confirm must use a dedicated placement writer service; renderer/painter code remains read-only.
-- `component_visual_placement_confirmed` must be aligned to the V2 event regime before writer/UI implementation: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- `component_visual_placement_confirmed` validator/materializer support is aligned to the V2 event regime before writer/UI implementation: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
 - Confirmed visual placement size uses `width` + `height`; `scale` is import/backward compatibility only unless later scoped.
 - VectorFootprintLibrary / footprint recipe model owns canonical visual vocabulary; Board Canvas starter templates are UI presets only.
 - Visual contact layout is a separate future event/projection and must not be folded into `component_visual_placement_confirmed`.
 - AI marker conversion remains future scope: AI proposal/sidecar/UI-local candidate only until human confirmation through the placement editor path.
 
-## 2.4 Placement event V2 regime scope-lock (`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`)
+## 2.4 Placement event V2 regime implementation (`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`)
 
-- `component_visual_placement_confirmed` must align to the V2 event regime before placement writer/editor implementation.
-- Future protected implementation target: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
+- `component_visual_placement_confirmed` validator/materializer support now aligns to the V2 event regime for human-authored placement events.
+- V2 placement validation requires `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, `client_operation_id`, and `width` + `height` as the primary visual envelope model.
+- V2 placement validation rejects forbidden semantic fields such as nets, pins, contacts, pads, AI-authored facts, visual-contact/pad layout, and `scale`.
+- `tools/materialize_known_facts.py` materializes V2 human-confirmed placement events into `component_visual_placements`.
+- `schemas/events.schema.json` remains V1-envelope-only by design/current state; V2 draft placement validation is owned by `tools/validate_events_jsonl.py`.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Current repo scaffold remains V1-shaped until separately implemented: schema/validator/materializer paths currently carry the V1 envelope and accepted user-authored placement expectations.
-- The future protected implementation must reconcile `schemas/events.schema.json`, `tools/validate_events_jsonl.py`, `tools/materialize_known_facts.py`, V2 event-type ownership, and focused tests/samples as explicitly scoped.
-- Materializer must not silently drop V2 human-authored placement events after migration.
-- This scope-lock does not implement the migration.
+- No Dart placement writer exists yet, no placement Confirm/Edit UI exists yet, and Board Canvas remains read-only.
+- Open protected risk: mixed V1/V2 placement latest-wins ordering can drop a newer V2 human-authored placement when an older V1 placement has a higher `sequence`.
+- Open protected decision: `event_invalidated` currently does not retract `component_visual_placements`; future protected scope must decide whether placement invalidation is supported or correction is only by writing a newer placement confirmation.
+- Visual contact layout remains a separate future event/projection and must not be folded into `component_visual_placement_confirmed`.
 
 ## 3. Hard evidence boundaries
 

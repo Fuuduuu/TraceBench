@@ -144,7 +144,7 @@ Stable decisions:
 
 - Future placement events align to the V2/human regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Current schema/validator/materializer scaffolding remains V1-shaped until a separately scoped protected implementation changes it.
+- Validator/materializer are now V2-capable for human-authored `component_visual_placement_confirmed`; `schemas/events.schema.json` remains V1-envelope-only by design/current state.
 - Future protected implementation must reconcile schema, validator, materializer, V2 event-type ownership, focused tests, and samples only when explicitly scoped.
 - Materializer must not silently drop V2 human-authored placement events after migration.
 - `component_visual_placement_confirmed` represents visual placement envelope data only: component, board side, coordinate space, center position, rotation, width/height, optional template/family reference, and human confirmation metadata.

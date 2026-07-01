@@ -16,6 +16,8 @@ import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
 ProjectState _inlineProjectState({
   required List<ComponentFact> components,
   required List<ComponentVisualPlacementFact> placements,
+  List<PinFact> pins = const [],
+  Map<String, List<String>> componentPinIndex = const {},
   List<MeasurementFact> measurements = const [],
   List<VisualTraceFact> visualTraces = const [],
   List<PhotoToBoardAlignmentFact> photoToBoardAlignments = const [],
@@ -32,11 +34,11 @@ ProjectState _inlineProjectState({
     knownFacts: KnownFacts(
       projectId: 'proj_001',
       components: components,
-      pins: const [],
+      pins: pins,
       measurements: measurements,
       nets: const [],
       excludedFromFaultCandidates: const [],
-      componentPinIndex: const {},
+      componentPinIndex: componentPinIndex,
       photos: const [],
       damageRegions: const [],
       suspectRegions: const [],
@@ -158,6 +160,39 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
   await tester.pump();
   await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 16));
+}
+
+double _previewCenterSlotDx(WidgetTester tester) {
+  return tester
+      .getRect(
+        find.byKey(const Key('board_canvas_measure_component_center_slot')),
+      )
+      .center
+      .dx;
+}
+
+void _expectStableComponentPreviewGeometry(WidgetTester tester) {
+  final stageFinder =
+      find.byKey(const Key('board_canvas_measure_component_visual_stage'));
+  final leftGutterFinder =
+      find.byKey(const Key('board_canvas_measure_component_left_gutter'));
+  final centerSlotFinder =
+      find.byKey(const Key('board_canvas_measure_component_center_slot'));
+  final rightGutterFinder =
+      find.byKey(const Key('board_canvas_measure_component_right_gutter'));
+
+  expect(stageFinder, findsOneWidget);
+  expect(leftGutterFinder, findsOneWidget);
+  expect(centerSlotFinder, findsOneWidget);
+  expect(rightGutterFinder, findsOneWidget);
+
+  final stageRect = tester.getRect(stageFinder);
+  final leftGutterRect = tester.getRect(leftGutterFinder);
+  final centerSlotRect = tester.getRect(centerSlotFinder);
+  final rightGutterRect = tester.getRect(rightGutterFinder);
+
+  expect(leftGutterRect.width, rightGutterRect.width);
+  expect(centerSlotRect.center.dx, closeTo(stageRect.center.dx, 0.5));
 }
 
 void main() {
@@ -340,6 +375,392 @@ void main() {
     );
     expect(find.text('No confirmed visual placements yet.'), findsNothing);
     expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('renders visual footprint forms for board placements',
+      (tester) async {
+    const chipPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_u1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.2,
+      centerY: 0.28,
+      rotationDeg: 0,
+      width: 0.12,
+      height: 0.08,
+      templateId: 'soic_8',
+      sourceEventId: 'evt_fp_chip',
+      status: 'user_confirmed_visual',
+    );
+    const resistorPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_r1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.42,
+      centerY: 0.38,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.03,
+      sourceEventId: 'evt_fp_resistor',
+      status: 'user_confirmed_visual',
+    );
+    const capacitorPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_c1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.62,
+      centerY: 0.48,
+      rotationDeg: 90,
+      width: 0.06,
+      height: 0.04,
+      sourceEventId: 'evt_fp_capacitor',
+      status: 'user_confirmed_visual',
+    );
+    const connectorPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_jp1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.78,
+      centerY: 0.62,
+      rotationDeg: 0,
+      width: 0.1,
+      height: 0.03,
+      templateId: 'pin_header_4',
+      sourceEventId: 'evt_fp_connector',
+      status: 'user_confirmed_visual',
+    );
+    const genericPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_x9',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.32,
+      centerY: 0.72,
+      rotationDeg: 0,
+      width: 0.02,
+      height: 0.02,
+      sourceEventId: 'evt_fp_generic',
+      status: 'user_confirmed_visual',
+    );
+    const diodePlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_d1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.5,
+      centerY: 0.72,
+      rotationDeg: 180,
+      width: 0.05,
+      height: 0.02,
+      sourceEventId: 'evt_fp_diode',
+      status: 'user_confirmed_visual',
+    );
+    const transistorPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_q1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.68,
+      centerY: 0.25,
+      rotationDeg: 45,
+      width: 0.04,
+      height: 0.04,
+      sourceEventId: 'evt_fp_transistor',
+      status: 'user_confirmed_visual',
+    );
+    const testPointPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_tp1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.18,
+      centerY: 0.62,
+      rotationDeg: 270,
+      width: 0.01,
+      height: 0.01,
+      sourceEventId: 'evt_fp_testpoint',
+      status: 'user_confirmed_visual',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+            ComponentFact(componentId: 'cmp_r1', designator: 'R1'),
+            ComponentFact(componentId: 'cmp_c1', designator: 'C1'),
+            ComponentFact(componentId: 'cmp_jp1', designator: 'JP1'),
+            ComponentFact(componentId: 'cmp_x9', designator: 'X9'),
+            ComponentFact(componentId: 'cmp_d1', designator: 'D1'),
+            ComponentFact(componentId: 'cmp_q1', designator: 'Q1'),
+            ComponentFact(componentId: 'cmp_tp1', designator: 'TP1'),
+          ],
+          placements: const [
+            chipPlacement,
+            resistorPlacement,
+            capacitorPlacement,
+            connectorPlacement,
+            genericPlacement,
+            diodePlacement,
+            transistorPlacement,
+            testPointPlacement,
+          ],
+        ),
+      ),
+    );
+
+    final painterFinder = find.byKey(const Key('board_canvas_painter'));
+    expect(painterFinder, findsOneWidget);
+    final customPaint = tester.widget<CustomPaint>(painterFinder);
+    final semanticsBuilder = customPaint.painter?.semanticsBuilder;
+    expect(semanticsBuilder, isNotNull);
+    final semanticsEntries = semanticsBuilder!(tester.getSize(painterFinder));
+    final footprintLabels =
+        semanticsEntries.map((entry) => entry.properties.label).toSet();
+    final rectsByLabel = <String, Rect>{
+      for (final entry in semanticsEntries)
+        if (entry.properties.label != null) entry.properties.label!: entry.rect,
+    };
+    const chipLabel =
+        'Board Canvas footprint visual U1 (cmp_u1): IC / dual-side package footprint, visual only; contacts not added';
+    const resistorLabel =
+        'Board Canvas footprint visual R1 (cmp_r1): passive 2-terminal footprint, visual only; contacts not added';
+    const capacitorLabel =
+        'Board Canvas footprint visual C1 (cmp_c1): capacitor footprint, visual only; contacts not added';
+    const connectorLabel =
+        'Board Canvas footprint visual JP1 (cmp_jp1): connector / header footprint, visual only; contacts not added';
+    const genericLabel =
+        'Board Canvas footprint visual X9 (cmp_x9): generic component footprint, visual only; contacts not added';
+    const diodeLabel =
+        'Board Canvas footprint visual D1 (cmp_d1): diode footprint, visual only; contacts not added';
+    const transistorLabel =
+        'Board Canvas footprint visual Q1 (cmp_q1): transistor 3-terminal footprint, visual only; contacts not added';
+    const testPointLabel =
+        'Board Canvas footprint visual TP1 (cmp_tp1): test point / ground footprint, visual only; contacts not added';
+    expect(
+        footprintLabels,
+        containsAll(<String>{
+          chipLabel,
+          resistorLabel,
+          capacitorLabel,
+          connectorLabel,
+          genericLabel,
+          diodeLabel,
+          transistorLabel,
+          testPointLabel,
+        }));
+    expect(
+      rectsByLabel[chipLabel]!.width,
+      greaterThanOrEqualTo(56),
+    );
+    expect(
+      rectsByLabel[resistorLabel]!.height,
+      greaterThanOrEqualTo(18),
+    );
+    expect(
+      rectsByLabel[capacitorLabel]!.height,
+      greaterThanOrEqualTo(40),
+    );
+    expect(
+      rectsByLabel[connectorLabel]!.width,
+      greaterThanOrEqualTo(60),
+    );
+    expect(
+      rectsByLabel[diodeLabel]!.width,
+      greaterThanOrEqualTo(44),
+    );
+    expect(
+      rectsByLabel[transistorLabel]!.height,
+      greaterThanOrEqualTo(40),
+    );
+    expect(
+      rectsByLabel[testPointLabel]!.width,
+      greaterThanOrEqualTo(22),
+    );
+    expect(
+      rectsByLabel[genericLabel]!.width,
+      greaterThanOrEqualTo(32),
+    );
+    expect(find.text('renderer writes: none'), findsOneWidget);
+  });
+
+  testWidgets('footprint pin visuals stay faithful to projected pin sources',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const onePinPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_gnd',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.18,
+      centerY: 0.3,
+      rotationDeg: 0,
+      templateId: 'sot23_3',
+      sourceEventId: 'evt_pin_one',
+      status: 'user_confirmed_visual',
+    );
+    const twoPinPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_r2',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.42,
+      centerY: 0.42,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.03,
+      sourceEventId: 'evt_pin_two',
+      status: 'user_confirmed_visual',
+    );
+    const unknownPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_unknown_pins',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.64,
+      centerY: 0.54,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.04,
+      sourceEventId: 'evt_pin_unknown',
+      status: 'user_confirmed_visual',
+    );
+    const multiPinPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_u8',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.78,
+      centerY: 0.66,
+      rotationDeg: 0,
+      width: 0.1,
+      height: 0.05,
+      sourceEventId: 'evt_pin_multi',
+      status: 'user_confirmed_visual',
+    );
+    const onePinMeasurement = MeasurementFact(
+      measurementId: 'M_pin_gnd',
+      mode: 'continuity',
+      from: 'cmp_gnd.1',
+      to: 'GND',
+      reading: 'true',
+      validityStatus: 'active',
+      powerState: 'off',
+      unit: 'Beep',
+      originEventId: 'evt_pin_measure',
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'cmp_gnd', designator: 'GND'),
+            ComponentFact(componentId: 'cmp_r2', designator: 'R2'),
+            ComponentFact(componentId: 'cmp_unknown_pins', designator: 'X1'),
+            ComponentFact(componentId: 'cmp_u8', designator: 'U8'),
+          ],
+          placements: const [
+            onePinPlacement,
+            twoPinPlacement,
+            unknownPlacement,
+            multiPinPlacement,
+          ],
+          pins: const [
+            PinFact(componentId: 'cmp_gnd', pinId: 'cmp_gnd.1'),
+            PinFact(componentId: 'cmp_r2', pinId: 'cmp_r2.1'),
+            PinFact(componentId: 'cmp_r2', pinId: 'cmp_r2.2'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.1'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.2'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.3'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.4'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.5'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.6'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.7'),
+            PinFact(componentId: 'cmp_u8', pinId: 'cmp_u8.8'),
+          ],
+          componentPinIndex: const {
+            'cmp_gnd': ['cmp_gnd.1'],
+            'cmp_r2': ['cmp_r2.1', 'cmp_r2.2'],
+            'cmp_u8': [
+              'cmp_u8.1',
+              'cmp_u8.2',
+              'cmp_u8.3',
+              'cmp_u8.4',
+              'cmp_u8.5',
+              'cmp_u8.6',
+              'cmp_u8.7',
+              'cmp_u8.8',
+            ],
+          },
+          measurements: const [onePinMeasurement],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final painterFinder = find.byKey(const Key('board_canvas_painter'));
+    final customPaint = tester.widget<CustomPaint>(painterFinder);
+    final semanticsBuilder = customPaint.painter?.semanticsBuilder;
+    expect(semanticsBuilder, isNotNull);
+    final labels = semanticsBuilder!(tester.getSize(painterFinder))
+        .map((entry) => entry.properties.label)
+        .whereType<String>()
+        .toSet();
+
+    expect(
+      labels,
+      contains(
+        'Board Canvas footprint visual GND (cmp_gnd): test point / ground footprint, visual only; 1 known pin identity listed separately; contacts not added',
+      ),
+    );
+    expect(
+      labels,
+      contains(
+        'Board Canvas footprint visual R2 (cmp_r2): passive 2-terminal footprint, visual only; 2 known pin identities listed separately; contacts not added',
+      ),
+    );
+    expect(
+      labels,
+      contains(
+        'Board Canvas footprint visual X1 (cmp_unknown_pins): generic component footprint, visual only; contacts not added',
+      ),
+    );
+    expect(
+      labels,
+      contains(
+        'Board Canvas footprint visual U8 (cmp_u8): IC / dual-side package footprint, visual only; 8 known pin identities listed separately; contacts not added',
+      ),
+    );
+    expect(find.text('renderer writes: none'), findsOneWidget);
+
+    final measureSheetAction = find.byKey(
+      const Key('board_canvas_measure_sheet_button'),
+    );
+    expect(measureSheetAction, findsOneWidget);
+    await tester.tap(measureSheetAction);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_component_footprint_preview'),
+      ),
+      findsOneWidget,
+    );
+    _expectStableComponentPreviewGeometry(tester);
+    expect(
+      find.bySemanticsLabel(
+        'Component preview footprint visual GND (cmp_gnd): test point / ground footprint, visual only; 1 known pin identity listed separately; contacts not added',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('selected Pin 1'), findsOneWidget);
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_component_contacts_not_added'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Visual only; contacts not added.'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_component_visual_edit_button')),
+      findsNothing,
+    );
+    expect(find.text('Confirm'), findsNothing);
+    expect(find.text('Edit Layout'), findsNothing);
   });
 
   testWidgets('Board Canvas app bar keeps compact title chrome',
@@ -631,6 +1052,25 @@ void main() {
       find.byKey(const Key('board_canvas_measure_component_visual_stage')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_measure_component_footprint_preview'),
+      ),
+      findsOneWidget,
+    );
+    final previewSizeBeforePinSelection = tester.getSize(
+      find.byKey(
+        const Key('board_canvas_measure_component_footprint_preview'),
+      ),
+    );
+    _expectStableComponentPreviewGeometry(tester);
+    final previewCenterSlotDxBeforePinSelection = _previewCenterSlotDx(tester);
+    expect(
+      find.byKey(const Key('board_canvas_component_visual_edit_button')),
+      findsNothing,
+    );
+    expect(find.text('Edit'), findsNothing);
+    expect(find.text('Edit Layout'), findsNothing);
     expect(find.text('Local visual selector'), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_measure_visual_selector')),
@@ -694,6 +1134,19 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    _expectStableComponentPreviewGeometry(tester);
+    expect(
+      _previewCenterSlotDx(tester),
+      closeTo(previewCenterSlotDxBeforePinSelection, 0.5),
+    );
+    expect(
+      tester.getSize(
+        find.byKey(
+          const Key('board_canvas_measure_component_footprint_preview'),
+        ),
+      ),
+      previewSizeBeforePinSelection,
+    );
     expect(
       find.byKey(
         const Key('board_canvas_measure_visual_target_selected_cmp_r101.2'),
@@ -719,7 +1172,21 @@ void main() {
       findsNothing,
     );
     expect(find.text('selected Pin 2'), findsOneWidget);
-    expect(find.text('Visual only; no connectivity proof.'), findsOneWidget);
+    expect(find.text('Visual only; no connectivity proof.'),
+        findsAtLeastNWidgets(1));
+    expect(find.text('Visual only; contacts not added.'), findsOneWidget);
+    final leftVisualTarget = find.byKey(
+      const Key('board_canvas_measure_visual_target_cmp_r101.1'),
+    );
+    await tester.ensureVisible(leftVisualTarget);
+    await tester.tap(leftVisualTarget);
+    await tester.pumpAndSettle();
+    _expectStableComponentPreviewGeometry(tester);
+    expect(
+      _previewCenterSlotDx(tester),
+      closeTo(previewCenterSlotDxBeforePinSelection, 0.5),
+    );
+    expect(find.text('selected Pin 1'), findsOneWidget);
     expect(find.text('renderer writes: none'), findsAtLeastNWidgets(1));
     expect(find.text('From -> To context'), findsOneWidget);
     expect(
@@ -999,7 +1466,8 @@ void main() {
       ),
       findsNothing,
     );
-    expect(find.text('Visual only; no connectivity proof.'), findsOneWidget);
+    expect(find.text('Visual only; no connectivity proof.'),
+        findsAtLeastNWidgets(1));
     expect(state.events, isEmpty);
   });
 
@@ -5366,6 +5834,98 @@ void main() {
     expect(source, contains('_entriesEquivalent('));
     expect(source, contains('template.pinAnchors'));
     expect(source, contains('template.orientationMarker'));
+    expect(source, contains('_footprintVisualKind('));
+    expect(source, contains('knownFacts.pins'));
+    expect(source, contains('knownFacts.componentPinIndex'));
+    expect(source, contains('_knownPinVisualRefsByComponentId'));
+    expect(source, contains('_footprintPinRenderPlan'));
+    expect(source, contains('_FootprintPinRenderMode.templateGeometry'));
+    expect(source, contains('_FootprintPinRenderMode.knownPinList'));
+    expect(source, contains('_FootprintPinRenderMode.none'));
+    expect(source, contains('_drawDecorativePackagePads'));
+    expect(source, isNot(contains('_drawLogicalPinTokens')));
+    expect(source, isNot(contains('_drawLogicalPinToken')));
+    expect(source, isNot(contains('_drawLogicalPinCountCue')));
+    expect(source, isNot(contains('_logicalPinTokenLayout')));
+    expect(source, isNot(contains('_logicalPinTokenLabel')));
+    expect(source, contains('_renderedFootprintVisualSize'));
+    expect(source, contains('_minimumFootprintVisualEnvelope'));
+    expect(source, contains('return const Size(56, 40);'));
+    expect(source, contains('return const Size(44, 18);'));
+    expect(source, contains('return const Size(40, 40);'));
+    expect(source, contains('return const Size(52, 40);'));
+    expect(source, contains('return const Size(44, 22);'));
+    expect(source, contains('return const Size(22, 22);'));
+    expect(source, contains('return const Size(32, 22);'));
+    expect(source, contains('_drawFootprintSurfaceDetails'));
+    expect(source, isNot(contains('_drawFallbackPads')));
+    expect(source, contains('_drawSelectionRing'));
+    expect(source, contains('_drawDashedRRect'));
+    expect(source, contains('selectedEntry: widget.selectedEntry'));
+    expect(source, contains('_FootprintPreviewPainter'));
+    expect(source, contains('_reservedPinControlGutterWidth'));
+    expect(source, contains('_kPreviewFootprintVerticalCenterOffset'));
+    expect(source, contains('board_canvas_measure_component_left_gutter'));
+    expect(source, contains('board_canvas_measure_component_center_slot'));
+    expect(source, contains('board_canvas_measure_component_right_gutter'));
+    expect(source, contains('_previewFootprintBodyRect'));
+    expect(source, contains('fixedSlotBodyRect'));
+    expect(
+        source, contains('board_canvas_measure_component_footprint_preview'));
+    expect(source, contains('Component preview footprint visual'));
+    expect(source, contains('_footprintVisualKind(entry!)'));
+    expect(source, contains('_BoardPlacementPainter._drawFootprintBody'));
+    expect(source,
+        contains('_BoardPlacementPainter._drawFootprintSurfaceDetails'));
+    expect(
+        source, contains('_BoardPlacementPainter._drawDecorativePackagePads'));
+    expect(source, contains('_ContactVisibilityState'));
+    expect(source, contains('_ContactVisibilityState.bodyOnly'));
+    expect(source, contains('_contactVisibilityStateForEntry'));
+    expect(source, contains('_shouldDrawFootprintContacts'));
+    expect(source, contains('confirmedVisualContacts'));
+    expect(source, contains('return _ContactVisibilityState.bodyOnly;'));
+    expect(source, contains('_FootprintVisualKind.transistor3'));
+    expect(source, contains('_FootprintVisualKind.testPoint'));
+    expect(source, contains('transistor 3-terminal footprint'));
+    expect(source, contains('test point / ground footprint'));
+    expect(source, contains('Visual only; contacts not added.'));
+    expect(source, contains('contacts not added'));
+    expect(source, contains('Visual only; no connectivity proof.'));
+    expect(source, isNot(contains('Visual only; pin locations not verified.')));
+    expect(source, isNot(contains('visual package pads are decorative')));
+    expect(source, isNot(contains('logical pin token')));
+    expect(source, contains('_templatePinMatchesTarget'));
+    expect(
+      source,
+      contains(
+        'Component visual editing entry is deferred to a later explicit scope.',
+      ),
+    );
+    expect(
+        source, isNot(contains('board_canvas_component_visual_edit_button')));
+    expect(source, contains('_kFootprintCopper'));
+    expect(
+      source,
+      contains(
+        'Rotation visual support is intentionally deferred to a later explicit rotation scope.',
+      ),
+    );
+    expect(source, isNot(contains('canvas.rotate(')));
+    expect(source, isNot(contains('_paintMeasurementPresenceBadge')));
+    expect(
+      source,
+      isNot(contains(r"final badgeText = measurementCount == 1 ? 'm'")),
+    );
+    expect(source, isNot(contains('badgeCenter')));
+    expect(source, isNot(contains('canvas.drawRRect(badgeRect')));
+    expect(
+      source,
+      isNot(contains(
+          r"final badgeText = measurementCount == 1 ? 'M' : 'M$measurementCount';")),
+    );
+    expect(source, contains('CustomPainterSemantics'));
+    expect(source, contains('SemanticsProperties'));
     expect(source, isNot(contains('width: 260')));
     expect(source, contains('_BoardCanvasControlBand'));
     expect(source, contains('_BoardCanvasSafetyEvidenceDisclosure'));
@@ -5400,7 +5960,6 @@ void main() {
     expect(source, isNot(contains('DecorationImage(')));
     expect(source, isNot(contains('RawImage(')));
     expect(source, isNot(contains('Promote to net')));
-    expect(source, isNot(contains('drawMeasurement')));
     expect(source, isNot(contains('measurementOverlay')));
     expect(source, isNot(contains('measurementAnchor')));
     expect(source, isNot(contains('measurementCoordinate')));

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,6 +22,8 @@ const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
 const int _kAddComponentContactMarkerWarningLimit = 8;
+const double _reservedPinControlGutterWidth = 40;
+const double _kPreviewFootprintVerticalCenterOffset = 2;
 const Color _kMeasurePanelNavy = Color(0xFFE9EEF4);
 const Color _kMeasurePanelSignal = Color(0xFF2DD4BF);
 const Color _kMeasurePanelSignalTint = Color(0xFF0E2623);
@@ -499,6 +502,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       for (final component in knownFacts.components)
         component.componentId: component,
     };
+    final knownPinsByComponentId = _knownPinVisualRefsByComponentId(knownFacts);
 
     final entries = renderable
         .map(
@@ -508,6 +512,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             template: placement.templateId == null
                 ? null
                 : VectorFootprintLibrary.templateById(placement.templateId!),
+            knownPins:
+                knownPinsByComponentId[placement.componentId] ?? const [],
           ),
         )
         .toList(growable: false);
@@ -1019,11 +1025,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }).toList(growable: false);
   }
 
-  bool _measurementEndpointMatchesComponent(
-      String endpoint, String componentId) {
-    return measurementEndpointMatchesComponent(endpoint, componentId);
-  }
-
   List<VisualTraceFact> _visualTracesForComponent(
     List<VisualTraceFact> visualTraces,
     String componentId,
@@ -1366,7 +1367,6 @@ class _WorkbenchToolRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SizedBox(
       key: const Key('board_canvas_workbench_rail'),
       width: _kWorkbenchRailWidth,
@@ -1402,7 +1402,7 @@ class _WorkbenchToolRail extends StatelessWidget {
               const SizedBox(height: _kWorkbenchToolTileGap),
               safetyEvidenceTool,
               const SizedBox(height: 6),
-              Divider(
+              const Divider(
                 height: 1,
                 thickness: 1,
                 color: _kBoardCanvasRule,
@@ -1441,16 +1441,13 @@ class _WorkbenchToolRail extends StatelessWidget {
 class _MeasureSheetNavigationButton extends StatelessWidget {
   const _MeasureSheetNavigationButton({
     required this.onPressed,
-    this.showLabel = false,
   });
 
   final VoidCallback onPressed;
-  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final button = Card(
+    return Card(
       margin: EdgeInsets.zero,
       color: _kBoardCanvasTile,
       shape: RoundedRectangleBorder(
@@ -1474,27 +1471,6 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
           onPressed: onPressed,
         ),
       ),
-    );
-
-    if (!showLabel) {
-      return button;
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        button,
-        const SizedBox(height: 2),
-        Text(
-          'Mõõtmine',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: _kBoardCanvasMuted,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -1911,7 +1887,7 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Row(
           children: [
-            Icon(
+            const Icon(
               Icons.fullscreen_exit,
               size: _kCompactControlIconSize,
               color: _kBoardCanvasMuted,
@@ -1966,7 +1942,6 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.draftLabel,
     required this.onDraftLabelChanged,
     this.onResetToTemplateDefaults,
-    this.initiallyExpanded = true,
   });
 
   final List<_AddComponentTemplateDefinition> entries;
@@ -1987,7 +1962,6 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final String draftLabel;
   final ValueChanged<String> onDraftLabelChanged;
   final VoidCallback? onResetToTemplateDefaults;
-  final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -2017,7 +1991,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_add_component_template_list'),
-        initiallyExpanded: initiallyExpanded,
+        initiallyExpanded: true,
         maintainState: true,
         dense: true,
         visualDensity: VisualDensity.compact,
@@ -2700,7 +2674,7 @@ class _RectangularPerimeterTemplatePreviewPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rectInsets = const EdgeInsets.all(12.0);
+    const rectInsets = EdgeInsets.all(12.0);
     final paintArea = Offset.zero & size;
     final previewRect = Rect.fromLTWH(
       rectInsets.left,
@@ -3027,7 +3001,6 @@ class _PlacementSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final summary = selectedLabel ??
         (entries.length == 1
             ? '1 paigutus saadaval'
@@ -3663,11 +3636,11 @@ class _BoardCanvasSafetyEvidenceDisclosure extends StatelessWidget {
         minTileHeight: _kCompactControlTileHeight,
         tilePadding: _kCompactControlTilePadding,
         childrenPadding: _kCompactControlChildrenPadding,
-        title: _CompactDisclosureTitle(
+        title: const _CompactDisclosureTitle(
           label: 'Ohutus / tõendid',
           detail: 'kirjutuskaitstud piirid',
         ),
-        children: [
+        children: const [
           _BoardCanvasLegend(),
         ],
       ),
@@ -4040,9 +4013,11 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   ),
                   const SizedBox(height: 5),
                   _MeasureComponentPreview(
+                    selectedEntry: widget.selectedEntry,
                     selectedName: selectedName,
                     selectedTarget: selectedTarget,
                     targetRows: targetRows,
+                    measurementCount: measuredTargetCount,
                     onTargetSelected: (target) {
                       setState(() {
                         _selectedTarget = target;
@@ -4567,7 +4542,7 @@ class _MeasurePanelDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
+    return const Divider(
       height: 1,
       thickness: 1,
       color: _kMeasurePanelRule,
@@ -4605,15 +4580,19 @@ class _MeasurePanelPill extends StatelessWidget {
 
 class _MeasureComponentPreview extends StatelessWidget {
   const _MeasureComponentPreview({
+    required this.selectedEntry,
     required this.selectedName,
     required this.selectedTarget,
     required this.targetRows,
+    required this.measurementCount,
     required this.onTargetSelected,
   });
 
+  final _PlacementEntry? selectedEntry;
   final String? selectedName;
   final String? selectedTarget;
   final List<_MeasureTargetRowData> targetRows;
+  final int measurementCount;
   final ValueChanged<String> onTargetSelected;
 
   @override
@@ -4642,6 +4621,7 @@ class _MeasureComponentPreview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Component visual editing entry is deferred to a later explicit scope.
             Row(
               children: [
                 const Icon(Icons.memory_outlined, size: 16),
@@ -4675,67 +4655,113 @@ class _MeasureComponentPreview extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _MeasureVisualPadColumn(
-                      rows: leftPads,
-                      selectedTarget: selectedTarget,
-                      onTargetSelected: onTargetSelected,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: _kMeasurePanelBodyFill,
-                          border: Border.all(
-                            color: _kMeasurePanelNavy,
-                            width: 1.4,
-                          ),
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 13,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                selectedName == null
-                                    ? 'component'
-                                    : '$selectedName body',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  color: _kMeasurePanelNavy,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                selectedTarget == null
-                                    ? 'select a local point'
-                                    : 'selected ${selectedRow?.visualLabel ?? _targetVisualLabel(selectedTarget!)}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: _kMeasurePanelNavy,
-                                ),
-                              ),
-                            ],
-                          ),
+                    SizedBox(
+                      key: const Key(
+                        'board_canvas_measure_component_left_gutter',
+                      ),
+                      width: _reservedPinControlGutterWidth,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: _MeasureVisualPadColumn(
+                          rows: leftPads,
+                          selectedTarget: selectedTarget,
+                          onTargetSelected: onTargetSelected,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    _MeasureVisualPadColumn(
-                      rows: rightPads,
-                      selectedTarget: selectedTarget,
-                      onTargetSelected: onTargetSelected,
+                    Expanded(
+                      child: SizedBox(
+                        key: const Key(
+                          'board_canvas_measure_component_center_slot',
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              height: 82,
+                              child: Semantics(
+                                label: _componentPreviewSemanticsLabel(
+                                  selectedEntry,
+                                ),
+                                child: CustomPaint(
+                                  key: const Key(
+                                    'board_canvas_measure_component_footprint_preview',
+                                  ),
+                                  painter: _FootprintPreviewPainter(
+                                    entry: selectedEntry,
+                                    selectedTarget: selectedTarget,
+                                    selectedTargetLabel: selectedRow
+                                                ?.visualLabel ==
+                                            null
+                                        ? null
+                                        : 'selected ${selectedRow!.visualLabel}',
+                                    measurementCount: measurementCount,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              selectedTarget == null
+                                  ? 'select a local point'
+                                  : 'selected ${selectedRow?.visualLabel ?? _targetVisualLabel(selectedTarget!)}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: _kMeasurePanelNavy,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      key: const Key(
+                        'board_canvas_measure_component_right_gutter',
+                      ),
+                      width: _reservedPinControlGutterWidth,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: _MeasureVisualPadColumn(
+                          rows: rightPads,
+                          selectedTarget: selectedTarget,
+                          onTargetSelected: onTargetSelected,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
+            if (selectedEntry != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                  'Visual only; contacts not added.',
+                  key: const Key(
+                    'board_canvas_measure_component_contacts_not_added',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            if (selectedEntry != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(
+                  'Visual only; no connectivity proof.',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -4757,6 +4783,224 @@ class _MeasureComponentPreview extends StatelessWidget {
       return target;
     }
     return target.substring(dotIndex + 1);
+  }
+}
+
+String _componentPreviewSemanticsLabel(_PlacementEntry? entry) {
+  if (entry == null) {
+    return 'Component preview footprint visual: generic component footprint, visual only';
+  }
+  final kind = _footprintVisualKind(entry);
+  final pinRenderPlan = _footprintPinRenderPlan(entry);
+  return 'Component preview footprint visual ${_footprintDisplayLabel(entry)}: '
+      '${_footprintVisualKindLabel(kind)}, visual only'
+      '${pinRenderPlan.semanticsSuffix}';
+}
+
+class _FootprintPreviewPainter extends CustomPainter {
+  const _FootprintPreviewPainter({
+    required this.entry,
+    required this.selectedTarget,
+    required this.selectedTargetLabel,
+    required this.measurementCount,
+  });
+
+  final _PlacementEntry? entry;
+  final String? selectedTarget;
+  final String? selectedTargetLabel;
+  final int measurementCount;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stageRect = Offset.zero & size;
+    final stageFillPaint = Paint()
+      ..color = _kMeasurePanelBodyFill.withValues(alpha: 0.48)
+      ..style = PaintingStyle.fill;
+    final stageStrokePaint = Paint()
+      ..color = _kMeasurePanelRule.withValues(alpha: 0.78)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    final stageRRect = RRect.fromRectAndRadius(
+      stageRect.deflate(0.5),
+      const Radius.circular(9),
+    );
+    canvas.drawRRect(stageRRect, stageFillPaint);
+    canvas.drawRRect(stageRRect, stageStrokePaint);
+
+    final visualKind = entry == null
+        ? _FootprintVisualKind.generic
+        : _footprintVisualKind(entry!);
+    final pinRenderPlan = _footprintPinRenderPlan(entry);
+    final contactVisibilityState = _contactVisibilityStateForEntry(entry);
+    final fixedSlotBodyRect = _previewFootprintBodyRect(visualKind, size);
+    final bodySize = fixedSlotBodyRect.size;
+    final bodyRect = Rect.fromCenter(
+      center: Offset.zero,
+      width: bodySize.width,
+      height: bodySize.height,
+    );
+    final fillPaint = Paint()
+      ..color = _kBoardCanvasSignalTint.withValues(alpha: 0.78)
+      ..style = PaintingStyle.fill;
+    final strokePaint = Paint()
+      ..color = _kFootprintSelected
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    final padFillPaint = Paint()
+      ..color = _kFootprintPad
+      ..style = PaintingStyle.fill;
+    final padStrokePaint = Paint()
+      ..color = _kBoardCanvasSignal
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    final markerPaint = Paint()
+      ..color = _kFootprintSelected
+      ..style = PaintingStyle.fill;
+
+    canvas.save();
+    canvas.translate(fixedSlotBodyRect.center.dx, fixedSlotBodyRect.center.dy);
+    // Rotation visual support is intentionally deferred to a later explicit rotation scope.
+    // Preview painting stays upright so it matches the Board Canvas footprint renderer.
+    _BoardPlacementPainter._drawFootprintBody(
+      canvas,
+      bodyRect,
+      visualKind,
+      entry?.template,
+      fillPaint,
+      strokePaint,
+    );
+    _BoardPlacementPainter._drawFootprintSurfaceDetails(
+      canvas: canvas,
+      rect: bodyRect,
+      kind: visualKind,
+      selected: true,
+    );
+
+    if (_shouldDrawFootprintContacts(contactVisibilityState)) {
+      if (pinRenderPlan.mode == _FootprintPinRenderMode.templateGeometry) {
+        _BoardPlacementPainter._drawTemplatePins(
+          canvas: canvas,
+          template: pinRenderPlan.template!,
+          bodySize: bodySize,
+          selectedTarget: selectedTarget,
+          fillPaint: padFillPaint,
+          strokePaint: padStrokePaint,
+        );
+        _BoardPlacementPainter._drawOrientationMarker(
+          canvas: canvas,
+          template: pinRenderPlan.template!,
+          bodySize: bodySize,
+          markerPaint: markerPaint,
+        );
+      } else {
+        _BoardPlacementPainter._drawDecorativePackagePads(
+          canvas: canvas,
+          kind: visualKind,
+          bodySize: bodySize,
+          fillPaint: padFillPaint,
+          strokePaint: padStrokePaint,
+        );
+      }
+    }
+    _BoardPlacementPainter._drawSelectionRing(
+      canvas,
+      bodyRect.inflate(_kFootprintSelectionOutset * 0.62),
+    );
+    _BoardPlacementPainter._drawMeasurementEvidenceCue(
+      canvas: canvas,
+      bodyRect: bodyRect,
+      measurementCount: measurementCount,
+      selected: true,
+    );
+    canvas.restore();
+
+    final label = entry == null
+        ? 'component'
+        : entry!.component?.designator?.trim().isNotEmpty == true
+            ? entry!.component!.designator!.trim()
+            : entry!.placement.componentId;
+    _paintCenteredPreviewLabel(
+      canvas: canvas,
+      size: size,
+      text: label,
+      dy: size.height / 2 - 7,
+      color: _kFootprintSelected,
+      fontSize: 11,
+      fontWeight: FontWeight.w800,
+    );
+
+    if (selectedTargetLabel != null) {
+      _paintCenteredPreviewLabel(
+        canvas: canvas,
+        size: size,
+        text: selectedTargetLabel!,
+        dy: size.height - 18,
+        color: _kMeasurePanelNavy,
+        fontSize: 9.5,
+        fontWeight: FontWeight.w700,
+      );
+    }
+  }
+
+  Size _previewFootprintBodySize(_FootprintVisualKind kind, Size size) {
+    final minimumSize = _minimumFootprintVisualEnvelope(kind);
+    final availableWidth = math.max(28.0, size.width - 44);
+    final availableHeight = math.max(18.0, size.height - 30);
+    final scale = math
+        .min(
+          availableWidth / minimumSize.width,
+          availableHeight / minimumSize.height,
+        )
+        .clamp(1.05, 2.2);
+    return Size(minimumSize.width * scale, minimumSize.height * scale);
+  }
+
+  Rect _previewFootprintBodyRect(_FootprintVisualKind kind, Size size) {
+    final bodySize = _previewFootprintBodySize(kind, size);
+    return Rect.fromCenter(
+      center: Offset(
+        size.width / 2,
+        size.height / 2 + _kPreviewFootprintVerticalCenterOffset,
+      ),
+      width: bodySize.width,
+      height: bodySize.height,
+    );
+  }
+
+  void _paintCenteredPreviewLabel({
+    required Canvas canvas,
+    required Size size,
+    required String text,
+    required double dy,
+    required Color color,
+    required double fontSize,
+    required FontWeight fontWeight,
+  }) {
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          letterSpacing: 0.3,
+        ),
+      ),
+    )..layout(maxWidth: math.max(1, size.width - 10));
+    textPainter.paint(
+      canvas,
+      Offset((size.width - textPainter.width) / 2, dy),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _FootprintPreviewPainter oldDelegate) {
+    return oldDelegate.entry?.key != entry?.key ||
+        oldDelegate.selectedTarget != selectedTarget ||
+        oldDelegate.selectedTargetLabel != selectedTargetLabel ||
+        oldDelegate.measurementCount != measurementCount;
   }
 }
 
@@ -5815,16 +6059,76 @@ class _InspectorField extends StatelessWidget {
   }
 }
 
+class _KnownPinVisualRef {
+  const _KnownPinVisualRef({
+    required this.pinId,
+    required this.visualLabel,
+  });
+
+  final String pinId;
+  final String visualLabel;
+}
+
+Map<String, List<_KnownPinVisualRef>> _knownPinVisualRefsByComponentId(
+  KnownFacts knownFacts,
+) {
+  final refsByComponentId = <String, List<_KnownPinVisualRef>>{};
+  final seenByComponentId = <String, Set<String>>{};
+
+  void addRef(String componentId, String pinId) {
+    final trimmedComponentId = componentId.trim();
+    final trimmedPinId = pinId.trim();
+    if (trimmedComponentId.isEmpty || trimmedPinId.isEmpty) {
+      return;
+    }
+    final seen = seenByComponentId.putIfAbsent(trimmedComponentId, () => {});
+    if (!seen.add(trimmedPinId)) {
+      return;
+    }
+    refsByComponentId.putIfAbsent(trimmedComponentId, () => []).add(
+          _KnownPinVisualRef(
+            pinId: trimmedPinId,
+            visualLabel: _knownPinVisualLabel(trimmedPinId),
+          ),
+        );
+  }
+
+  for (final entry in knownFacts.componentPinIndex.entries) {
+    for (final pinId in entry.value) {
+      addRef(entry.key, pinId);
+    }
+  }
+
+  for (final pin in knownFacts.pins) {
+    addRef(pin.componentId, pin.pinId);
+  }
+
+  return {
+    for (final entry in refsByComponentId.entries)
+      entry.key: List.unmodifiable(entry.value),
+  };
+}
+
+String _knownPinVisualLabel(String pinId) {
+  final dotIndex = pinId.lastIndexOf('.');
+  if (dotIndex <= 0 || dotIndex == pinId.length - 1) {
+    return pinId;
+  }
+  return 'Pin ${pinId.substring(dotIndex + 1)}';
+}
+
 class _PlacementEntry {
   const _PlacementEntry({
     required this.placement,
     required this.component,
     required this.template,
+    required this.knownPins,
   });
 
   final ComponentVisualPlacementFact placement;
   final ComponentFact? component;
   final FootprintTemplate? template;
+  final List<_KnownPinVisualRef> knownPins;
 
   String get key => '${placement.componentId}|${placement.sourceEventId}';
 
@@ -6030,20 +6334,391 @@ bool _renderedPlacementContains({
   required Size size,
 }) {
   final center = _renderedPlacementCenter(entry, size);
-  final bodySize = _renderedPlacementBodySize(entry);
+  final bodySize = _renderedFootprintVisualSize(entry);
   final translated = position - center;
-  final rotation = -entry.placement.rotationDeg.toDouble() * math.pi / 180.0;
-  final cosTheta = math.cos(rotation);
-  final sinTheta = math.sin(rotation);
-  final localPosition = Offset(
-    translated.dx * cosTheta - translated.dy * sinTheta,
-    translated.dx * sinTheta + translated.dy * cosTheta,
-  );
+  // Rotation visual support is intentionally deferred to a later explicit rotation scope.
+  // Keep hit testing aligned with the upright footprint rendered in this pass.
+  final localPosition = translated;
   return Rect.fromCenter(
     center: Offset.zero,
     width: bodySize.width,
     height: bodySize.height,
   ).contains(localPosition);
+}
+
+enum _FootprintVisualKind {
+  testPoint,
+  passive2,
+  capacitor,
+  diode,
+  transistor3,
+  icDualSide,
+  icQuadSide,
+  smallMultiPin,
+  connector,
+  switchPackage,
+  moduleBlock,
+  mechanical,
+  denseGrid,
+  generic,
+}
+
+const Color _kFootprintSilk = Color(0xFFD3CD9A);
+const Color _kFootprintPad = Color(0xFF74E0A6);
+const Color _kFootprintCopper = Color(0xFFD8A24A);
+const Color _kFootprintSelected = Color(0xFF2BC06F);
+const Color _kFootprintFallback = Color(0xFF93A3B3);
+const double _kFootprintSelectionOutset = 8;
+
+enum _FootprintPinRenderMode {
+  templateGeometry,
+  knownPinList,
+  none,
+}
+
+enum _ContactVisibilityState {
+  bodyOnly,
+  draftContacts,
+  confirmedVisualContacts,
+  verifiedAnchorsAvailable,
+}
+
+_ContactVisibilityState _contactVisibilityStateForEntry(_PlacementEntry? _) {
+  // Current projection data has no confirmed visual-contact layout field.
+  // Template pins, measurement pins, and user_confirmed_visual placement status
+  // stay body-only until a future explicit visual-contact confirmation flow.
+  return _ContactVisibilityState.bodyOnly;
+}
+
+bool _shouldDrawFootprintContacts(_ContactVisibilityState state) {
+  switch (state) {
+    case _ContactVisibilityState.bodyOnly:
+    case _ContactVisibilityState.draftContacts:
+      return false;
+    case _ContactVisibilityState.confirmedVisualContacts:
+    case _ContactVisibilityState.verifiedAnchorsAvailable:
+      return true;
+  }
+}
+
+class _FootprintPinRenderPlan {
+  const _FootprintPinRenderPlan({
+    required this.mode,
+    required this.template,
+    required this.knownPins,
+  });
+
+  const _FootprintPinRenderPlan.none()
+      : mode = _FootprintPinRenderMode.none,
+        template = null,
+        knownPins = const [];
+
+  final _FootprintPinRenderMode mode;
+  final FootprintTemplate? template;
+  final List<_KnownPinVisualRef> knownPins;
+
+  int get pinCount {
+    switch (mode) {
+      case _FootprintPinRenderMode.templateGeometry:
+        return template?.pinAnchors.length ?? 0;
+      case _FootprintPinRenderMode.knownPinList:
+        return knownPins.length;
+      case _FootprintPinRenderMode.none:
+        return 0;
+    }
+  }
+
+  bool get hasVerifiedGeometry => false;
+
+  String get semanticsSuffix {
+    switch (mode) {
+      case _FootprintPinRenderMode.templateGeometry:
+        return '; contacts not added; template pins are not rendered before confirmed visual contacts';
+      case _FootprintPinRenderMode.knownPinList:
+        return '; $pinCount known pin ${pinCount == 1 ? 'identity' : 'identities'} listed separately; contacts not added';
+      case _FootprintPinRenderMode.none:
+        return '; contacts not added';
+    }
+  }
+}
+
+_FootprintPinRenderPlan _footprintPinRenderPlan(_PlacementEntry? entry) {
+  if (entry == null) {
+    return const _FootprintPinRenderPlan.none();
+  }
+  final knownPinCount = entry.knownPins.length;
+
+  if (knownPinCount > 0) {
+    return _FootprintPinRenderPlan(
+      mode: _FootprintPinRenderMode.knownPinList,
+      template: null,
+      knownPins: entry.knownPins,
+    );
+  }
+
+  return const _FootprintPinRenderPlan.none();
+}
+
+bool _templatePinMatchesTarget(FootprintPinAnchor pin, String? selectedTarget) {
+  if (selectedTarget == null || selectedTarget.trim().isEmpty) {
+    return false;
+  }
+  final pinNumber = pin.pinNumber.toString();
+  final trimmed = selectedTarget.trim();
+  return trimmed == pinNumber ||
+      trimmed.endsWith('.$pinNumber') ||
+      trimmed.toLowerCase() == 'pin $pinNumber';
+}
+
+Size _renderedFootprintVisualSize(_PlacementEntry entry) {
+  final bodySize = _renderedPlacementBodySize(entry);
+  final minimumSize =
+      _minimumFootprintVisualEnvelope(_footprintVisualKind(entry));
+  return Size(
+    math.max(bodySize.width, minimumSize.width),
+    math.max(bodySize.height, minimumSize.height),
+  );
+}
+
+Size _minimumFootprintVisualEnvelope(_FootprintVisualKind visualKind) {
+  switch (visualKind) {
+    case _FootprintVisualKind.icDualSide:
+      return const Size(56, 40);
+    case _FootprintVisualKind.icQuadSide:
+      return const Size(60, 44);
+    case _FootprintVisualKind.smallMultiPin:
+      return const Size(34, 24);
+    case _FootprintVisualKind.passive2:
+    case _FootprintVisualKind.diode:
+      return const Size(44, 18);
+    case _FootprintVisualKind.capacitor:
+      return const Size(40, 40);
+    case _FootprintVisualKind.transistor3:
+      return const Size(52, 40);
+    case _FootprintVisualKind.connector:
+      return const Size(44, 22);
+    case _FootprintVisualKind.testPoint:
+      return const Size(22, 22);
+    case _FootprintVisualKind.switchPackage:
+      return const Size(36, 24);
+    case _FootprintVisualKind.moduleBlock:
+      return const Size(56, 40);
+    case _FootprintVisualKind.mechanical:
+      return const Size(20, 20);
+    case _FootprintVisualKind.denseGrid:
+      return const Size(48, 48);
+    case _FootprintVisualKind.generic:
+      return const Size(32, 22);
+  }
+}
+
+_FootprintVisualKind _footprintVisualKind(_PlacementEntry entry) {
+  final designator = (entry.component?.designator ?? '').trim().toUpperCase();
+  final componentId = entry.placement.componentId.trim().toUpperCase();
+  final templateId = (entry.placement.templateId ?? '').trim().toLowerCase();
+  final templateName = (entry.template?.templateId ?? '').trim().toLowerCase();
+  final marker = '$designator $componentId $templateId $templateName';
+  final markerLower = marker.toLowerCase();
+  final componentIdTokens = componentId
+      .split(RegExp(r'[^A-Z0-9]+'))
+      .where((token) => token.isNotEmpty)
+      .toList(growable: false);
+  final componentRef =
+      componentIdTokens.isEmpty ? componentId : componentIdTokens.last;
+
+  bool hasReferencePrefix(String prefix) {
+    final upperPrefix = prefix.toUpperCase();
+    return designator.startsWith(upperPrefix) ||
+        componentRef.startsWith(upperPrefix);
+  }
+
+  final templateVisualKind = _footprintVisualKindByTemplateId(templateId) ??
+      _footprintVisualKindByTemplateId(templateName);
+
+  if (hasReferencePrefix('TP') ||
+      designator == 'GND' ||
+      componentRef == 'GND' ||
+      markerLower.contains('testpoint') ||
+      markerLower.contains('test point') ||
+      markerLower.contains('test-point') ||
+      markerLower.contains('ground') ||
+      markerLower.contains('gnd')) {
+    return _FootprintVisualKind.testPoint;
+  }
+  if (hasReferencePrefix('J') ||
+      hasReferencePrefix('JP') ||
+      hasReferencePrefix('CN')) {
+    return _FootprintVisualKind.connector;
+  }
+  if (templateVisualKind != null) {
+    return templateVisualKind;
+  }
+  if (hasReferencePrefix('Q') ||
+      markerLower.contains('mosfet') ||
+      markerLower.contains('transistor')) {
+    final pinCount = entry.template?.pinAnchors.length ?? 0;
+    if (pinCount > 4) {
+      return _FootprintVisualKind.icDualSide;
+    }
+    return _FootprintVisualKind.transistor3;
+  }
+  if (hasReferencePrefix('U') || hasReferencePrefix('IC')) {
+    final markerHasSoic = markerLower.contains('soic') ||
+        markerLower.contains('dip') ||
+        markerLower.contains('tssop') ||
+        markerLower.contains('so-ic');
+    final markerHasQfn = markerLower.contains('qfp') ||
+        markerLower.contains('qfn') ||
+        markerLower.contains('densegrid') ||
+        markerLower.contains('bga');
+    if (markerHasQfn) {
+      return _FootprintVisualKind.icQuadSide;
+    }
+    if (markerHasSoic) {
+      return _FootprintVisualKind.icDualSide;
+    }
+    final pinCount = entry.template?.pinAnchors.length ?? 0;
+    if (pinCount >= 8) {
+      return _FootprintVisualKind.icDualSide;
+    }
+    if (pinCount == 5 || pinCount == 6) {
+      return _FootprintVisualKind.smallMultiPin;
+    }
+    return _FootprintVisualKind.icDualSide;
+  }
+  if (hasReferencePrefix('R')) {
+    return _FootprintVisualKind.passive2;
+  }
+  if (hasReferencePrefix('C')) {
+    return _FootprintVisualKind.capacitor;
+  }
+  if (hasReferencePrefix('D')) {
+    return _FootprintVisualKind.diode;
+  }
+  if (hasReferencePrefix('SW') || hasReferencePrefix('S')) {
+    return _FootprintVisualKind.switchPackage;
+  }
+  if (hasReferencePrefix('MH') || hasReferencePrefix('FID')) {
+    return _FootprintVisualKind.mechanical;
+  }
+  if (hasReferencePrefix('K')) {
+    return _FootprintVisualKind.moduleBlock;
+  }
+
+  final pinCount = entry.template?.pinAnchors.length ?? 0;
+  if (markerLower.contains('connector') || markerLower.contains('header')) {
+    return _FootprintVisualKind.connector;
+  }
+  if (markerLower.contains('capacitor') ||
+      markerLower.contains('cap_') ||
+      markerLower.contains('cap-')) {
+    return _FootprintVisualKind.capacitor;
+  }
+  if (markerLower.contains('resistor') || markerLower.contains('passive')) {
+    return _FootprintVisualKind.passive2;
+  }
+  if (markerLower.contains('diode')) {
+    return _FootprintVisualKind.diode;
+  }
+  if (pinCount >= 3 ||
+      markerLower.contains('sot') ||
+      markerLower.contains('soic') ||
+      markerLower.contains('qfp') ||
+      markerLower.contains('qfn') ||
+      markerLower.contains('dip')) {
+    return markerLower.contains('qfp') || markerLower.contains('qfn')
+        ? _FootprintVisualKind.icQuadSide
+        : _FootprintVisualKind.icDualSide;
+  }
+
+  return _FootprintVisualKind.generic;
+}
+
+_FootprintVisualKind? _footprintVisualKindByTemplateId(String templateId) {
+  if (templateId.trim().isEmpty) {
+    return null;
+  }
+  switch (templateId) {
+    case 'unknown_rect':
+      return _FootprintVisualKind.generic;
+    case 'unknown_2pin':
+      return _FootprintVisualKind.passive2;
+    case 'unknown_3pin':
+      return _FootprintVisualKind.transistor3;
+    case 'unknown_multi_pin':
+      return _FootprintVisualKind.smallMultiPin;
+    case 'chip_0402':
+    case 'chip_0603':
+    case 'chip_0805':
+    case 'chip_1206':
+    case 'two_pin_smd':
+    case 'two_pin_axial':
+      return _FootprintVisualKind.passive2;
+    case 'sot23_3':
+      return _FootprintVisualKind.transistor3;
+    case 'sot23_5':
+    case 'sot223':
+      return _FootprintVisualKind.smallMultiPin;
+    case 'soic_8':
+    case 'soic_14':
+    case 'soic_16':
+      return _FootprintVisualKind.icDualSide;
+    case 'header_1xn':
+    case 'header_2xn':
+      return _FootprintVisualKind.connector;
+    default:
+      return null;
+  }
+}
+
+String _footprintVisualKindLabel(_FootprintVisualKind kind) {
+  switch (kind) {
+    case _FootprintVisualKind.testPoint:
+      return 'test point / ground footprint';
+    case _FootprintVisualKind.passive2:
+      return 'passive 2-terminal footprint';
+    case _FootprintVisualKind.capacitor:
+      return 'capacitor footprint';
+    case _FootprintVisualKind.diode:
+      return 'diode footprint';
+    case _FootprintVisualKind.transistor3:
+      return 'transistor 3-terminal footprint';
+    case _FootprintVisualKind.icDualSide:
+      return 'IC / dual-side package footprint';
+    case _FootprintVisualKind.icQuadSide:
+      return 'IC / quad-side package footprint';
+    case _FootprintVisualKind.smallMultiPin:
+      return 'small multi-pin package footprint';
+    case _FootprintVisualKind.connector:
+      return 'connector / header footprint';
+    case _FootprintVisualKind.switchPackage:
+      return 'switch package footprint';
+    case _FootprintVisualKind.moduleBlock:
+      return 'module / relay / transformer footprint';
+    case _FootprintVisualKind.mechanical:
+      return 'mechanical / mounting footprint';
+    case _FootprintVisualKind.denseGrid:
+      return 'dense grid footprint';
+    case _FootprintVisualKind.generic:
+      return 'generic component footprint';
+  }
+}
+
+String _footprintDisplayLabel(_PlacementEntry entry) {
+  final designator = entry.component?.designator?.trim();
+  final componentId = entry.placement.componentId;
+  if (designator != null && designator.isNotEmpty) {
+    return '$designator ($componentId)';
+  }
+  return componentId;
+}
+
+String _footprintSemanticsLabel(_PlacementEntry entry) {
+  final kind = _footprintVisualKind(entry);
+  final pinRenderPlan = _footprintPinRenderPlan(entry);
+  return 'Board Canvas footprint visual ${_footprintDisplayLabel(entry)}: '
+      '${_footprintVisualKindLabel(kind)}, visual only'
+      '${pinRenderPlan.semanticsSuffix}';
 }
 
 class _BoardPlacementPainter extends CustomPainter {
@@ -6097,24 +6772,29 @@ class _BoardPlacementPainter extends CustomPainter {
     canvas.drawRect(boardRect.deflate(0.5), borderPaint);
 
     for (final entry in entries) {
-      final placement = entry.placement;
       final center = _renderedPlacementCenter(entry, size);
-      final bodySize = _renderedPlacementBodySize(entry);
+      final bodySize = _renderedFootprintVisualSize(entry);
       final selected = entry.key == selectedKey;
+      final visualKind = _footprintVisualKind(entry);
+      final pinRenderPlan = _footprintPinRenderPlan(entry);
+      final contactVisibilityState = _contactVisibilityStateForEntry(entry);
 
       final fillPaint = Paint()
         ..color = selected
-            ? _kBoardCanvasSignalTint.withValues(alpha: 0.92)
-            : _kMeasurePanelBodyFill.withValues(alpha: 0.92)
+            ? _kBoardCanvasSignalTint.withValues(alpha: 0.78)
+            : _kFootprintSilk.withValues(alpha: 0.07)
         ..style = PaintingStyle.fill;
 
       final strokePaint = Paint()
-        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavy
+        ..color = selected
+            ? _kFootprintSelected
+            : _kFootprintSilk.withValues(alpha: 0.82)
         ..style = PaintingStyle.stroke
         ..strokeWidth = selected ? 2.4 : 1.3;
 
       final padFillPaint = Paint()
-        ..color = selected ? _kBoardCanvasSignal : const Color(0xFFE8A764)
+        ..color =
+            selected ? _kFootprintPad : _kFootprintPad.withValues(alpha: 0.88)
         ..style = PaintingStyle.fill;
 
       final padStrokePaint = Paint()
@@ -6123,40 +6803,77 @@ class _BoardPlacementPainter extends CustomPainter {
         ..strokeWidth = selected ? 1.1 : 0.8;
 
       final markerPaint = Paint()
-        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavyDeep
+        ..color = selected
+            ? _kFootprintSelected
+            : _kFootprintSilk.withValues(alpha: 0.74)
         ..style = PaintingStyle.fill;
 
       canvas.save();
       canvas.translate(center.dx, center.dy);
-      canvas.rotate(placement.rotationDeg.toDouble() * math.pi / 180.0);
+      // Rotation visual support is intentionally deferred to a later explicit rotation scope.
+      // The stored rotationDeg metadata remains available to inspector/projection code,
+      // but footprint painting stays upright in this pass.
 
       final rect = Rect.fromCenter(
         center: Offset.zero,
         width: bodySize.width,
         height: bodySize.height,
       );
-      _drawFootprintBody(canvas, rect, entry.template, fillPaint, strokePaint);
+      final measurementCount =
+          measurementCountsByComponentId[entry.placement.componentId] ?? 0;
+      _drawFootprintBody(
+        canvas,
+        rect,
+        visualKind,
+        entry.template,
+        fillPaint,
+        strokePaint,
+      );
+      _drawFootprintSurfaceDetails(
+        canvas: canvas,
+        rect: rect,
+        kind: visualKind,
+        selected: selected,
+      );
 
-      final template = entry.template;
-      if (template != null) {
-        _drawTemplatePins(
-          canvas: canvas,
-          template: template,
-          bodySize: bodySize,
-          fillPaint: padFillPaint,
-          strokePaint: padStrokePaint,
-        );
-        _drawOrientationMarker(
-          canvas: canvas,
-          template: template,
-          bodySize: bodySize,
-          markerPaint: markerPaint,
-        );
+      if (_shouldDrawFootprintContacts(contactVisibilityState)) {
+        if (pinRenderPlan.mode == _FootprintPinRenderMode.templateGeometry) {
+          _drawTemplatePins(
+            canvas: canvas,
+            template: pinRenderPlan.template!,
+            bodySize: bodySize,
+            selectedTarget: null,
+            fillPaint: padFillPaint,
+            strokePaint: padStrokePaint,
+          );
+          _drawOrientationMarker(
+            canvas: canvas,
+            template: pinRenderPlan.template!,
+            bodySize: bodySize,
+            markerPaint: markerPaint,
+          );
+        } else {
+          _drawDecorativePackagePads(
+            canvas: canvas,
+            kind: visualKind,
+            bodySize: bodySize,
+            fillPaint: padFillPaint,
+            strokePaint: padStrokePaint,
+          );
+        }
+      }
+      _drawMeasurementEvidenceCue(
+        canvas: canvas,
+        bodyRect: rect,
+        measurementCount: measurementCount,
+        selected: selected,
+      );
+
+      if (selected) {
+        _drawSelectionRing(canvas, rect.inflate(_kFootprintSelectionOutset));
       }
 
       canvas.restore();
-      final measurementCount =
-          measurementCountsByComponentId[placement.componentId] ?? 0;
 
       final designator = entry.component?.designator;
       if (designator != null && designator.trim().isNotEmpty) {
@@ -6165,44 +6882,79 @@ class _BoardPlacementPainter extends CustomPainter {
           text: TextSpan(
             text: designator,
             style: TextStyle(
-              color: selected ? _kBoardCanvasSignal : _kBoardCanvasMuted,
-              fontSize: 11,
-              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: selected
+                  ? _kFootprintSelected
+                  : _kFootprintSilk.withValues(alpha: 0.9),
+              fontSize: selected ? 11 : 10.5,
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+              letterSpacing: 0.5,
             ),
           ),
         )..layout(maxWidth: 120);
         textPainter.paint(
           canvas,
           Offset(
-            (center.dx + 6)
+            (center.dx - textPainter.width / 2)
                 .clamp(0.0, math.max(0.0, size.width - textPainter.width)),
-            (center.dy + 6)
+            (center.dy - textPainter.height / 2)
                 .clamp(0.0, math.max(0.0, size.height - textPainter.height)),
           ),
-        );
-      }
-
-      if (measurementCount > 0) {
-        _paintMeasurementPresenceBadge(
-          canvas: canvas,
-          center: center,
-          bodySize: bodySize,
-          measurementCount: measurementCount,
-          colorScheme: colorScheme,
-          size: size,
         );
       }
     }
   }
 
-  void _drawFootprintBody(
+  static void _drawFootprintBody(
     Canvas canvas,
     Rect rect,
+    _FootprintVisualKind visualKind,
     FootprintTemplate? template,
     Paint fillPaint,
     Paint strokePaint,
   ) {
-    final bodyShape = template?.body.shape ?? FootprintBodyShape.roundedRect;
+    if (visualKind == _FootprintVisualKind.generic) {
+      final genericStroke = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.1
+        ..strokeJoin = StrokeJoin.round
+        ..color = _kFootprintFallback.withValues(alpha: 0.78);
+      _drawDashedRRect(
+        canvas,
+        RRect.fromRectAndRadius(rect, const Radius.circular(8)),
+        genericStroke,
+        dash: 4.6,
+        gap: 3.2,
+      );
+      return;
+    }
+
+    if (visualKind == _FootprintVisualKind.testPoint) {
+      final center = rect.center;
+      final radius = math.min(rect.width, rect.height) / 2;
+      final ringFillPaint = Paint()
+        ..style = PaintingStyle.fill
+        ..color = fillPaint.color.withValues(alpha: 0.62);
+      final innerStrokePaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.9
+        ..color = strokePaint.color.withValues(alpha: 0.72);
+      canvas.drawCircle(center, radius * 0.82, ringFillPaint);
+      canvas.drawCircle(center, radius * 0.82, strokePaint);
+      canvas.drawCircle(center, radius * 0.42, innerStrokePaint);
+      return;
+    }
+
+    if (visualKind == _FootprintVisualKind.capacitor &&
+        (rect.width - rect.height).abs() <=
+            math.max(rect.width, rect.height) * 0.35) {
+      canvas.drawOval(rect, fillPaint);
+      canvas.drawOval(rect, strokePaint);
+      return;
+    }
+
+    final bodyShape = visualKind == _FootprintVisualKind.connector
+        ? FootprintBodyShape.rect
+        : template?.body.shape ?? FootprintBodyShape.roundedRect;
     switch (bodyShape) {
       case FootprintBodyShape.oval:
         canvas.drawOval(rect, fillPaint);
@@ -6221,14 +6973,416 @@ class _BoardPlacementPainter extends CustomPainter {
     }
   }
 
-  void _drawTemplatePins({
+  static void _drawSelectionRing(Canvas canvas, Rect rect) {
+    final ringPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = _kFootprintSelected.withValues(alpha: 0.88);
+    _drawDashedRRect(
+      canvas,
+      RRect.fromRectAndRadius(rect, const Radius.circular(10)),
+      ringPaint,
+      dash: 5,
+      gap: 3.5,
+    );
+  }
+
+  static void _drawMeasurementEvidenceCue({
     required Canvas canvas,
-    required FootprintTemplate template,
+    required Rect bodyRect,
+    required int measurementCount,
+    required bool selected,
+  }) {
+    if (measurementCount < 1) {
+      return;
+    }
+
+    final cueFill = Paint()
+      ..color = _kFootprintCopper.withValues(alpha: selected ? 0.95 : 0.74)
+      ..style = PaintingStyle.fill;
+    final cueStroke = Paint()
+      ..color = _kBoardCanvasPaper.withValues(alpha: selected ? 0.96 : 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+    const cueHeight = 7.0;
+    final cueWidth = math.min(18.0, 7.0 + measurementCount * 2.2);
+    final cueRect = Rect.fromLTWH(
+      (bodyRect.right - cueWidth * 0.88).clamp(0.0, double.infinity),
+      (bodyRect.top - cueHeight * 0.6).clamp(0.0, double.infinity),
+      cueWidth,
+      cueHeight,
+    );
+    final cueRRect = RRect.fromRectAndRadius(
+      cueRect,
+      const Radius.circular(cueHeight / 2),
+    );
+    canvas.drawRRect(cueRRect, cueFill);
+    canvas.drawRRect(cueRRect, cueStroke);
+
+    if (measurementCount == 1) {
+      canvas.drawCircle(
+        Offset(bodyRect.right - (cueWidth * 0.45), bodyRect.top + 0.2),
+        1.8,
+        Paint()
+          ..color = selected
+              ? Colors.white
+              : _kBoardCanvasNavy.withValues(alpha: 0.78)
+          ..style = PaintingStyle.fill,
+      );
+      return;
+    }
+
+    final cueTextPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: measurementCount.toString(),
+        style: TextStyle(
+          color: selected ? _kBoardCanvasNavy : const Color(0xFF0F1F1F),
+          fontSize: 5.2,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.1,
+        ),
+      ),
+    )..layout(maxWidth: cueWidth - 2);
+    cueTextPainter.paint(
+      canvas,
+      Offset(
+        cueRect.left + (cueWidth - cueTextPainter.width) / 2,
+        cueRect.center.dy - cueTextPainter.height / 2 + 0.2,
+      ),
+    );
+    canvas.drawCircle(
+      Offset(bodyRect.right - cueWidth / 5, bodyRect.top - cueHeight * 0.32),
+      0.8,
+      Paint()
+        ..color =
+            selected ? Colors.white : _kBoardCanvasNavy.withValues(alpha: 0.78)
+        ..style = PaintingStyle.fill,
+    );
+  }
+
+  static void _drawDashedRRect(
+    Canvas canvas,
+    RRect rrect,
+    Paint paint, {
+    required double dash,
+    required double gap,
+  }) {
+    final path = Path()..addRRect(rrect);
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = math.min(distance + dash, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance += dash + gap;
+      }
+    }
+  }
+
+  static void _drawFootprintSurfaceDetails({
+    required Canvas canvas,
+    required Rect rect,
+    required _FootprintVisualKind kind,
+    required bool selected,
+  }) {
+    final detailPaint = Paint()
+      ..color = (selected ? _kFootprintSelected : _kFootprintSilk)
+          .withValues(alpha: selected ? 0.72 : 0.52)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = selected ? 1.4 : 1.0;
+    final mutedDetailPaint = Paint()
+      ..color = _kFootprintCopper.withValues(alpha: selected ? 0.42 : 0.28)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+
+    switch (kind) {
+      case _FootprintVisualKind.icDualSide:
+      case _FootprintVisualKind.icQuadSide:
+        final notchRadius =
+            math.min(rect.width, rect.height).clamp(4.0, 12.0) / 2;
+        canvas.drawArc(
+          Rect.fromCenter(
+            center: Offset(rect.left + rect.width / 2, rect.top),
+            width: notchRadius * 3,
+            height: notchRadius * 2,
+          ),
+          0,
+          math.pi,
+          false,
+          detailPaint,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            rect.deflate(math.min(rect.width, rect.height) * 0.18),
+            const Radius.circular(2),
+          ),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.passive2:
+      case _FootprintVisualKind.smallMultiPin:
+      case _FootprintVisualKind.switchPackage:
+      case _FootprintVisualKind.denseGrid:
+      case _FootprintVisualKind.mechanical:
+      case _FootprintVisualKind.moduleBlock:
+        for (final fraction in const [0.36, 0.5, 0.64]) {
+          final x = rect.left + rect.width * fraction;
+          canvas.drawLine(
+            Offset(x, rect.top + rect.height * 0.18),
+            Offset(x, rect.bottom - rect.height * 0.18),
+            fraction == 0.5 ? detailPaint : mutedDetailPaint,
+          );
+        }
+        break;
+      case _FootprintVisualKind.capacitor:
+        final centerX = rect.center.dx;
+        canvas.drawLine(
+          Offset(centerX - 2, rect.top + rect.height * 0.18),
+          Offset(centerX - 2, rect.bottom - rect.height * 0.18),
+          detailPaint,
+        );
+        canvas.drawLine(
+          Offset(centerX + 4, rect.top + rect.height * 0.18),
+          Offset(centerX + 4, rect.bottom - rect.height * 0.18),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.diode:
+        final stripeX = rect.right - rect.width * 0.22;
+        canvas.drawLine(
+          Offset(stripeX, rect.top + rect.height * 0.16),
+          Offset(stripeX, rect.bottom - rect.height * 0.16),
+          detailPaint,
+        );
+        canvas.drawLine(
+          Offset(rect.left + rect.width * 0.24, rect.center.dy),
+          Offset(stripeX - rect.width * 0.08, rect.center.dy),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.transistor3:
+        final centerX = rect.center.dx;
+        final topY = rect.top + rect.height * 0.2;
+        final bottomY = rect.bottom - rect.height * 0.2;
+        canvas.drawLine(
+          Offset(centerX, topY),
+          Offset(centerX, bottomY),
+          detailPaint,
+        );
+        canvas.drawLine(
+          Offset(rect.left + rect.width * 0.24, rect.center.dy),
+          Offset(centerX, rect.center.dy),
+          mutedDetailPaint,
+        );
+        canvas.drawLine(
+          Offset(centerX, rect.center.dy),
+          Offset(rect.right - rect.width * 0.22, topY),
+          mutedDetailPaint,
+        );
+        canvas.drawLine(
+          Offset(centerX, rect.center.dy),
+          Offset(rect.right - rect.width * 0.22, bottomY),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.connector:
+        final slotRect = rect.deflate(math.min(rect.width, rect.height) * 0.22);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(slotRect, const Radius.circular(2)),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.testPoint:
+        canvas.drawLine(
+          Offset(rect.center.dx, rect.top + rect.height * 0.22),
+          Offset(rect.center.dx, rect.bottom - rect.height * 0.22),
+          mutedDetailPaint,
+        );
+        canvas.drawLine(
+          Offset(rect.left + rect.width * 0.22, rect.center.dy),
+          Offset(rect.right - rect.width * 0.22, rect.center.dy),
+          mutedDetailPaint,
+        );
+        break;
+      case _FootprintVisualKind.generic:
+        canvas.drawLine(rect.topLeft, rect.bottomRight, mutedDetailPaint);
+        canvas.drawLine(rect.topRight, rect.bottomLeft, mutedDetailPaint);
+        break;
+    }
+  }
+
+  static void _drawDecorativePackagePads({
+    required Canvas canvas,
+    required _FootprintVisualKind kind,
     required Size bodySize,
     required Paint fillPaint,
     required Paint strokePaint,
   }) {
+    final decorativeFillPaint = Paint()
+      ..color = fillPaint.color.withValues(alpha: 0.86)
+      ..style = PaintingStyle.fill;
+    final decorativeStrokePaint = Paint()
+      ..color = strokePaint.color.withValues(alpha: 0.82)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+
+    void drawPad(Rect rect, {bool oval = false}) {
+      if (oval) {
+        canvas.drawOval(rect, decorativeFillPaint);
+        canvas.drawOval(rect, decorativeStrokePaint);
+        return;
+      }
+      final rrect = RRect.fromRectAndRadius(
+        rect,
+        Radius.circular(math.min(rect.width, rect.height) * 0.3),
+      );
+      canvas.drawRRect(rrect, decorativeFillPaint);
+      canvas.drawRRect(rrect, decorativeStrokePaint);
+    }
+
+    void drawEndPads({bool oval = false}) {
+      final padWidth = math.min(7.0, math.max(4.0, bodySize.width * 0.16));
+      final padHeight = math.min(11.0, math.max(5.0, bodySize.height * 0.64));
+      for (final side in const [-1.0, 1.0]) {
+        drawPad(
+          Rect.fromCenter(
+            center: Offset(side * (bodySize.width / 2 + padWidth * 0.24), 0),
+            width: padWidth,
+            height: padHeight,
+          ),
+          oval: oval,
+        );
+      }
+    }
+
+    switch (kind) {
+      case _FootprintVisualKind.icDualSide:
+      case _FootprintVisualKind.icQuadSide:
+        final legCount = math.max(
+          3,
+          math.min(6, (bodySize.height / 8.5).round()),
+        );
+        final legWidth = math.min(6.0, math.max(3.8, bodySize.width * 0.08));
+        final legHeight = math.min(
+          7.0,
+          math.max(3.4, bodySize.height / (legCount * 2.4)),
+        );
+        for (var index = 0; index < legCount; index++) {
+          final y = -bodySize.height / 2 +
+              bodySize.height * (index + 1) / (legCount + 1);
+          for (final side in const [-1.0, 1.0]) {
+            drawPad(
+              Rect.fromCenter(
+                center: Offset(
+                  side * (bodySize.width / 2 + legWidth * 0.22),
+                  y,
+                ),
+                width: legWidth,
+                height: legHeight,
+              ),
+            );
+          }
+        }
+        break;
+      case _FootprintVisualKind.passive2:
+      case _FootprintVisualKind.switchPackage:
+      case _FootprintVisualKind.smallMultiPin:
+      case _FootprintVisualKind.diode:
+      case _FootprintVisualKind.denseGrid:
+      case _FootprintVisualKind.mechanical:
+      case _FootprintVisualKind.moduleBlock:
+        drawEndPads();
+        break;
+      case _FootprintVisualKind.capacitor:
+        drawEndPads(oval: true);
+        break;
+      case _FootprintVisualKind.transistor3:
+        final leadWidth = math.min(6.0, math.max(3.8, bodySize.width * 0.1));
+        final leadHeight = math.min(7.0, math.max(3.8, bodySize.height * 0.18));
+        for (final fraction in const [-0.28, 0.0, 0.28]) {
+          drawPad(
+            Rect.fromCenter(
+              center: Offset(
+                bodySize.width * fraction,
+                bodySize.height / 2 + leadHeight * 0.24,
+              ),
+              width: leadWidth,
+              height: leadHeight,
+            ),
+          );
+        }
+        break;
+      case _FootprintVisualKind.connector:
+        final padCount = math.max(
+          3,
+          math.min(5, (bodySize.width / 12).round()),
+        );
+        final diameter = math.min(6.0, math.max(3.5, bodySize.height * 0.28));
+        final spacing = bodySize.width / (padCount + 1);
+        for (var index = 0; index < padCount; index++) {
+          final x = -bodySize.width / 2 + spacing * (index + 1);
+          drawPad(
+            Rect.fromCenter(
+              center: Offset(x, 0),
+              width: diameter,
+              height: diameter,
+            ),
+            oval: true,
+          );
+        }
+        break;
+      case _FootprintVisualKind.testPoint:
+        // Testpoint/ground footprints use the body ring as the package cue;
+        // extra decorative pads would look like invented pin geometry.
+        break;
+      case _FootprintVisualKind.generic:
+        final tabWidth = math.min(7.0, math.max(4.0, bodySize.width * 0.16));
+        final tabHeight = math.min(6.0, math.max(3.5, bodySize.height * 0.22));
+        for (final corner in const [
+          Offset(-1, -1),
+          Offset(1, -1),
+          Offset(-1, 1),
+          Offset(1, 1),
+        ]) {
+          drawPad(
+            Rect.fromCenter(
+              center: Offset(
+                corner.dx * (bodySize.width / 2 - tabWidth * 0.38),
+                corner.dy * (bodySize.height / 2 - tabHeight * 0.38),
+              ),
+              width: tabWidth,
+              height: tabHeight,
+            ),
+          );
+        }
+        break;
+    }
+  }
+
+  static void _drawTemplatePins({
+    required Canvas canvas,
+    required FootprintTemplate template,
+    required Size bodySize,
+    required String? selectedTarget,
+    required Paint fillPaint,
+    required Paint strokePaint,
+  }) {
     for (final pin in template.pinAnchors) {
+      final selected = _templatePinMatchesTarget(pin, selectedTarget);
+      final effectiveFillPaint = selected
+          ? (Paint()
+            ..color = _kFootprintSelected.withValues(alpha: 0.95)
+            ..style = PaintingStyle.fill)
+          : fillPaint;
+      final effectiveStrokePaint = selected
+          ? (Paint()
+            ..color = _kFootprintSelected
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5)
+          : strokePaint;
       final center = _templatePointToCanvas(pin.anchor, template, bodySize);
       final pinSize = _pinSize(pin, template, bodySize);
       final pinRect = Rect.fromCenter(
@@ -6240,20 +7394,20 @@ class _BoardPlacementPainter extends CustomPainter {
       switch (pin.shape) {
         case FootprintPinShape.circle:
         case FootprintPinShape.oval:
-          canvas.drawOval(pinRect, fillPaint);
-          canvas.drawOval(pinRect, strokePaint);
+          canvas.drawOval(pinRect, effectiveFillPaint);
+          canvas.drawOval(pinRect, effectiveStrokePaint);
           break;
         case FootprintPinShape.rect:
           final pad =
               RRect.fromRectAndRadius(pinRect, const Radius.circular(1.5));
-          canvas.drawRRect(pad, fillPaint);
-          canvas.drawRRect(pad, strokePaint);
+          canvas.drawRRect(pad, effectiveFillPaint);
+          canvas.drawRRect(pad, effectiveStrokePaint);
           break;
       }
     }
   }
 
-  void _drawOrientationMarker({
+  static void _drawOrientationMarker({
     required Canvas canvas,
     required FootprintTemplate template,
     required Size bodySize,
@@ -6270,77 +7424,7 @@ class _BoardPlacementPainter extends CustomPainter {
     canvas.drawCircle(markerCenter, markerRadius, markerPaint);
   }
 
-  void _paintMeasurementPresenceBadge({
-    required Canvas canvas,
-    required Offset center,
-    required Size bodySize,
-    required int measurementCount,
-    required ColorScheme colorScheme,
-    required Size size,
-  }) {
-    if (measurementCount < 1) {
-      return;
-    }
-
-    final badgeText = measurementCount == 1 ? 'M' : 'M$measurementCount';
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-      text: TextSpan(
-        text: badgeText,
-        style: TextStyle(
-          color: colorScheme.onPrimary,
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    )..layout();
-
-    final minBadgeDimension = 18.0;
-    final badgeHeight = 16.0;
-    final badgeWidth =
-        math.max(minBadgeDimension, textPainter.width + 6.0).clamp(16.0, 34.0);
-    final badgeCenter = Offset(
-      (center.dx + bodySize.width / 2 + badgeWidth / 2 + 2)
-          .clamp(0.0, size.width),
-      (center.dy - bodySize.height / 2 - badgeHeight / 2 - 4)
-          .clamp(0.0, size.height),
-    );
-    final badgeRect = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: badgeCenter,
-        width: badgeWidth,
-        height: badgeHeight,
-      ),
-      Radius.circular(badgeHeight / 2),
-    );
-
-    final badgePaint = Paint()
-      ..color = _kBoardCanvasSignal.withValues(alpha: 0.95)
-      ..style = PaintingStyle.fill;
-    final badgeBorderPaint = Paint()
-      ..color = _kBoardCanvasPaper.withValues(alpha: 0.85)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2;
-
-    canvas.drawRRect(badgeRect, badgePaint);
-    canvas.drawRRect(badgeRect, badgeBorderPaint);
-
-    textPainter.paint(
-      canvas,
-      Offset(
-        (badgeCenter.dx - textPainter.width / 2).clamp(
-          0.0,
-          math.max(0.0, size.width - textPainter.width),
-        ),
-        (badgeCenter.dy - textPainter.height / 2).clamp(
-          0.0,
-          math.max(0.0, size.height - textPainter.height),
-        ),
-      ),
-    );
-  }
-
-  Size _pinSize(
+  static Size _pinSize(
     FootprintPinAnchor pin,
     FootprintTemplate template,
     Size bodySize,
@@ -6356,7 +7440,7 @@ class _BoardPlacementPainter extends CustomPainter {
     return Size(width, height);
   }
 
-  Offset _templatePointToCanvas(
+  static Offset _templatePointToCanvas(
     FootprintPoint point,
     FootprintTemplate template,
     Size bodySize,
@@ -6367,7 +7451,7 @@ class _BoardPlacementPainter extends CustomPainter {
     );
   }
 
-  double _templateLengthToCanvas(
+  static double _templateLengthToCanvas(
     double value,
     FootprintTemplate template,
     Size bodySize,
@@ -6375,10 +7459,41 @@ class _BoardPlacementPainter extends CustomPainter {
     return value * _templateScale(template, bodySize);
   }
 
-  double _templateScale(FootprintTemplate template, Size bodySize) {
+  static double _templateScale(FootprintTemplate template, Size bodySize) {
     final scaleX = bodySize.width / template.body.width;
     final scaleY = bodySize.height / template.body.height;
     return math.min(scaleX, scaleY);
+  }
+
+  @override
+  SemanticsBuilderCallback get semanticsBuilder {
+    return (Size size) {
+      final canvasRect = Offset.zero & size;
+      return entries.map<CustomPainterSemantics>((entry) {
+        final center = _renderedPlacementCenter(entry, size);
+        final bodySize = _renderedFootprintVisualSize(entry);
+        final rawRect = Rect.fromCenter(
+          center: center,
+          width: bodySize.width,
+          height: bodySize.height,
+        ).inflate(8);
+        final rect = rawRect.overlaps(canvasRect)
+            ? rawRect.intersect(canvasRect)
+            : Rect.fromCenter(center: center, width: 1, height: 1);
+        return CustomPainterSemantics(
+          rect: rect,
+          properties: SemanticsProperties(
+            label: _footprintSemanticsLabel(entry),
+            textDirection: TextDirection.ltr,
+          ),
+        );
+      }).toList(growable: false);
+    };
+  }
+
+  @override
+  bool shouldRebuildSemantics(covariant _BoardPlacementPainter oldDelegate) {
+    return shouldRepaint(oldDelegate);
   }
 
   @override

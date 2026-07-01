@@ -131,6 +131,22 @@ It must not represent:
 - `git diff --check`
 - `python tools/validate_all.py`
 
+## Claude audit record
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+- Pushed commit: `df6a64329544e5966847ff9c8b56818046259885` (`docs: lock placement event V2 regime`)
+- Safe staging set from Claude:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/TRUTH_INDEX.md`
+  - `docs/PROJECT_MEMORY.md`
+  - `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
+  - `docs/audit/BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS.md`
+- `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW`
+
 ## Audit marker
 
 `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW`

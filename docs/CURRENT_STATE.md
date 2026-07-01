@@ -2,44 +2,47 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Baseline HEAD verified for this scope-lock: `c2da8fd` (`docs: close out Board Canvas footprints`).
-- Route before this pass: `NEEDS_USER_DECISION`.
-- This pass records a docs-only architecture decision for integrating Add Component, Board Canvas ghost/draft, placement editor, `component_visual_placement_confirmed`, visual contact layout, and future AI marker conversion into one safe product model.
-- Source review recorded as: `ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`.
+- HEAD / origin/main verified for closeout: `1f0438ad53bf7a1c4712079382819cc23d5593a2` (`docs: lock placement editor architecture decision`).
+- Closed scope-lock pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`.
+- Closeout pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`.
+- Route before closeout: current `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`, next `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`.
+- Route after closeout: `NEEDS_USER_DECISION`.
 
-## Placement editor architecture decision
+## Placement editor architecture decision closeout
 
-- Add Component remains the human-entered identity/existence flow and writes `component_created` only.
-- `component_created` does not confirm board position, board side, rotation, size, shape, contacts, pads, legs, nets, or electrical identity beyond the accepted component identity/existence fields.
-- Board Canvas renderer remains bodyOnly and read-only: `renderer writes: none`.
-- Board Canvas local builder/ghost remains UI-local draft only until a future scoped implementation changes it.
-- The Board Canvas right-panel and ghost draft should evolve into the official UI-local placement editor before creating a separate placement editor screen.
-- Future Confirm must call a dedicated placement writer service; painter/renderer code must not write canonical events.
-- `component_visual_placement_confirmed` must be aligned to the V2 event regime in a later protected implementation pass.
+- Pushed scope-lock commit recorded: `1f0438ad53bf7a1c4712079382819cc23d5593a2` (`docs: lock placement editor architecture decision`).
+- Audit result recorded: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
+- The active scope lock is released.
+- No implementation pass is armed.
 
-## Locked human decisions
+## Closed decisions
 
-- Placement events should use the V2 event regime: `schema_version: 2.0-draft`, `actor.type: human`, a source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Placement events should align to the V2/human regime in future protected P2.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Primary placement size model is confirmed visual envelope `width` + `height`; `scale` may remain import/backward compatibility only unless a later scope changes it.
-- VectorFootprintLibrary / footprint recipe model is the canonical visual vocabulary owner.
-- Board Canvas starter templates are UI presets, not final canonical vocabulary ownership.
-- Visual contact layout is future separate event/projection scope and must not be folded into `component_visual_placement_confirmed`.
-- AI marker conversion remains a future human-confirmed conversion through the same placement editor path; AI never authors canonical placement events.
+- Board Canvas right-panel / ghost draft is the future UI-local placement editor seed.
+- Renderer remains read-only; future Confirm calls a dedicated placement writer service.
+- `width` + `height` is the primary placement size model.
+- VectorFootprintLibrary / recipe model owns visual vocabulary.
+- Visual contact layout is separate future scope.
+- AI markers remain unconfirmed until human conversion.
 
-## Recommended sequence
+## Recorded non-blocking nits
 
-- P1: docs-only closeout for this architecture decision.
+- Future P2 should clarify current V1 scaffold versus pending V2 migration in `docs/TRUTH_INDEX.md`.
+- Eventual P6 writer will test the renderer/writer boundary and needs a protected pass.
+
+## Recommended sequence for later user decision
+
 - P2: protected docs scope-lock for V2 placement event envelope/schema/materializer/validator alignment.
 - P3: placement editor + writer scope-lock.
 - P4: active-lock sync.
@@ -65,4 +68,4 @@
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- No runtime, tests, schema, writer, materializer, validator, projection, router, samples, assets, pubspec, Project ZIP, events.jsonl, known_facts.json, Confirm/write/Edit Layout, or AI/OCR/CV fact-creation changes are authorized by this docs-only scope-lock.
+- No runtime, tests, schema, writer, materializer, validator, projection, router, samples, assets, pubspec, Project ZIP, events.jsonl, known_facts.json, Confirm/write/Edit Layout, or AI/OCR/CV fact-creation changes are authorized by this closeout.

@@ -2,58 +2,47 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`
+`NEEDS_USER_DECISION`
 
 ## Status
 
-Docs-only architecture decision scope-lock is active.
+No active scope lock is armed.
 
-This pass records human decisions for the future placement editor architecture. It does not authorize runtime, test, schema, writer, materializer, validator, projection, router, sample, asset, pubspec, Confirm/write/Edit Layout, or AI marker implementation.
+The pushed placement editor architecture decision scope-lock has been closed out. No implementation pass, runtime/test allowlist, schema/writer/materializer/validator/projection allowlist, Confirm/write/Edit Layout path, or AI marker implementation is authorized until a future user-selected scope lock arms it.
 
-## Write allowlist for this pass
+## Last released lock
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/TRUTH_INDEX.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-- `docs/audit/BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md`
+- Scope-lock pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`.
+- Scope-lock commit: `1f0438ad53bf7a1c4712079382819cc23d5593a2` (`docs: lock placement editor architecture decision`).
+- Closeout pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`.
+- Audit result: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
+- Closeout result: active lock released; route set to `NEEDS_USER_DECISION`.
 
-## Source review recorded
+## Released decision summary
 
-`ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`
-
-Recorded findings:
-
-- Add Component currently writes `component_created` only.
-- `component_created` confirms identity/existence only and carries no position, side, rotation, size, shape, or contacts.
-- Board Canvas renderer is bodyOnly/read-only.
-- Board Canvas local builder/ghost is UI-local only and has no confirm/save/write path.
-- `component_visual_placement_confirmed` is scaffolded in schema/materializer/validator but has no Dart writer/sample.
-- Existing V2 writers use `actor.type = human`; existing placement materializer path expects `actor.type = user`.
-- Visual contact layout is separate future scope from placement.
-- Contacts, pads, and legs on component image remain future confirmed visual-contact layout scope.
-
-## Human decisions locked
-
-- Placement events should align to the V2 event regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Placement events should align to the V2/human regime in future protected P2.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Evolve the Board Canvas right-panel / ghost draft into the official UI-local placement editor.
-- Do not create a standalone placement editor screen first unless a later scope overturns this decision.
-- Painter/renderer remains read-only; future Confirm calls a dedicated placement writer service.
-- Primary confirmed visual placement size model is `width` + `height`; `scale` may remain import/backward compatibility only unless later scoped.
-- VectorFootprintLibrary / footprint recipe model owns the canonical visual vocabulary.
-- Board Canvas starter templates are UI presets only.
-- Visual contact layout is a separate future event/projection and is not electrical confirmation.
-- AI marker remains an unconfirmed proposal/sidecar/UI-local candidate until a human converts it through the same placement editor path.
+- Board Canvas right-panel / ghost draft is the future UI-local placement editor seed.
+- Renderer remains read-only; future Confirm calls a dedicated placement writer service.
+- `width` + `height` is the primary placement size model.
+- VectorFootprintLibrary / recipe model owns visual vocabulary.
+- Visual contact layout is separate future scope.
+- AI markers remain unconfirmed until human conversion.
 
-## Standing forbidden surfaces for this pass
+## Recorded non-blocking nits
+
+- Future P2 should clarify current V1 scaffold versus pending V2 migration in `docs/TRUTH_INDEX.md`.
+- Eventual P6 writer will test the renderer/writer boundary and needs a protected pass.
+
+## Write allowlist status
+
+No current write allowlist is active. Future work must open a new scope lock or user-selected pass before editing docs, runtime, tests, schema, writer, materializer, validator, projection, samples, or assets.
+
+## Standing forbidden surfaces until separately scoped
 
 - No runtime or test edits.
 - No schema, writer, materializer, validator, projection, router, sample, asset, or pubspec edits.

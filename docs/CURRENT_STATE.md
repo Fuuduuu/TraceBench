@@ -2,61 +2,47 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Baseline HEAD verified for this active-lock sync: `62853c674790bb82469d65497a7b6e7d569e22ce` (`docs: record placement event V2 regime audit`).
-- Accepted scope-lock commit: `df6a64329544e5966847ff9c8b56818046259885` (`docs: lock placement event V2 regime`).
-- Scope-lock audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Route before this pass: current `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`, next `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- This pass arms the protected implementation allowlist for `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`.
+- Latest pushed implementation commit verified for closeout: `fa85231045c8dadc3543a914ca173829a3272c4d` (`feat: support V2 placement event regime`).
+- Route before closeout: current `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`, next `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`.
+- Implementation audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Route after closeout: `NEEDS_USER_DECISION`.
 
-## Implementation pass armed
+## Closed implementation summary
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS` is accepted, pushed, and closed out.
 
-## Implementation goal
+- V2 validator now accepts `component_visual_placement_confirmed`.
+- V2 placement requires human actor / explicit user confirmation source / `confirmation.confirmed: true`.
+- V2 placement uses width + height as the primary visual envelope model.
+- V2 placement rejects forbidden semantic fields such as nets, pins, contacts, pads, AI-authored facts, and scale.
+- Materializer now materializes V2 human-confirmed placement events into `component_visual_placements`.
+- Latest-wins semantics are preserved.
+- Focused validator/materializer tests were added.
+- `schemas/events.schema.json` was not changed.
 
-Migrate `component_visual_placement_confirmed` to the V2/human event regime and prevent materializer drop of V2 human-authored placement events.
+## Boundary confirmation
 
-## Implementation allowlist
-
-- `schemas/events.schema.json`
-- `tools/validate_events_jsonl.py`
-- `tools/materialize_known_facts.py`
-- `tests/test_validate_events_jsonl.py`
-- `tests/test_materialize_known_facts.py`
-
-## Implementation boundaries
-
-- Event-regime/projection plumbing only.
-- No placement writer service.
-- No placement Confirm UI.
-- No Board Canvas renderer behavior change.
-- Visual contact layout remains separate future scope.
-- AI never authors canonical placement events.
-- `component_visual_placement_confirmed` must not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored fact, or visual contact/pad layout.
-
-## Forbidden surfaces
-
-- No Dart runtime edits.
-- No Board Canvas UI edits.
-- No Add Component writer edits.
-- No placement writer service.
-- No Confirm/Edit UI.
+- No Dart runtime files changed.
+- No Board Canvas UI files changed.
+- No Add Component writer changed.
+- No placement writer service created.
+- No Confirm/Edit UI added.
 - No router edits.
-- No visual contact layout.
-- No AI marker implementation.
-- No `_incoming` staging.
-- No sample/project fixture edits unless separately approved.
-- No `known_facts` schema change unless separately justified and stopped for human approval.
+- No visual contact layout event/projection added.
+- No AI marker implementation added.
+- No sample/project fixture edits.
+- No `_incoming` edits or staging.
+- No broad staging, commit, or push by this closeout pass.
 
 ## Canonical owners and evidence ledgers
 
@@ -74,4 +60,4 @@ Migrate `component_visual_placement_confirmed` to the V2/human event regime and 
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- No runtime, Board Canvas UI, Add Component writer, placement writer service, Confirm/Edit UI, router, sample, asset, pubspec, Project ZIP, events.jsonl, known_facts.json schema, visual contact layout, or AI marker implementation changes are authorized by this active-lock sync.
+- Next work requires a new explicit user decision and scoped pass.

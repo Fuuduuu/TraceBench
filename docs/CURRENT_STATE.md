@@ -2,55 +2,54 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- HEAD / origin/main verified for closeout: `1f0438ad53bf7a1c4712079382819cc23d5593a2` (`docs: lock placement editor architecture decision`).
-- Closed scope-lock pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`.
-- Closeout pass: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`.
-- Route before closeout: current `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`, next `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`.
-- Route after closeout: `NEEDS_USER_DECISION`.
+- Baseline latest closeout verified from git log: `b059278` (`docs: close out placement editor architecture decision`).
+- Route before this pass: `NEEDS_USER_DECISION`.
+- This pass is a docs-only protected-surface scope-lock for the future `component_visual_placement_confirmed` V2 event-envelope regime.
+- Source review recorded as: `ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`.
 
-## Placement editor architecture decision closeout
+## V2 placement event regime decision
 
-- Pushed scope-lock commit recorded: `1f0438ad53bf7a1c4712079382819cc23d5593a2` (`docs: lock placement editor architecture decision`).
-- Audit result recorded: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
-- The active scope lock is released.
-- No implementation pass is armed.
-
-## Closed decisions
-
-- Placement events should align to the V2/human regime in future protected P2.
+- Future `component_visual_placement_confirmed` implementation must align to the V2 event regime.
+- Use `schema_version: 2.0-draft`.
+- Use `actor.type: human`.
+- Use a source block.
+- Use `confirmation.confirmed: true`.
+- Use `client_operation_id` / idempotency precedent where applicable.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Board Canvas right-panel / ghost draft is the future UI-local placement editor seed.
-- Renderer remains read-only; future Confirm calls a dedicated placement writer service.
-- `width` + `height` is the primary placement size model.
-- VectorFootprintLibrary / recipe model owns visual vocabulary.
-- Visual contact layout is separate future scope.
-- AI markers remain unconfirmed until human conversion.
+- This pass does not implement the migration.
 
-## Recorded non-blocking nits
+## Current V1 scaffold clarification
 
-- Future P2 should clarify current V1 scaffold versus pending V2 migration in `docs/TRUTH_INDEX.md`.
-- Eventual P6 writer will test the renderer/writer boundary and needs a protected pass.
+- `component_visual_placement_confirmed` is currently scaffolded in schema/materializer/validator paths.
+- Current scaffold reality is V1-shaped: `schemas/events.schema.json` still declares `schema_version: 1.0` with required `sequence` and `status` envelope fields.
+- Existing placement materializer behavior currently expects accepted user-authored placement events.
+- Existing V2 writers use human actor/source/confirmation envelope patterns.
+- This actor/envelope contradiction must be resolved in a future protected implementation before any placement writer/editor Confirm path is built.
+- Materializer must not silently drop V2 human-authored placement events after the migration.
 
-## Recommended sequence for later user decision
+## Placement event semantics to preserve
 
-- P2: protected docs scope-lock for V2 placement event envelope/schema/materializer/validator alignment.
-- P3: placement editor + writer scope-lock.
-- P4: active-lock sync.
-- P5: UI-local placement editor shell.
-- P6: placement writer implementation.
-- P7: edit-placement flow.
-- P8: future visual-contact layout.
-- P9: future AI marker conversion.
+- `component_visual_placement_confirmed` represents component ID, board side, coordinate space, center position, `rotation_deg`, confirmed visual envelope `width` + `height`, optional `template_id` / visual family reference, and human confirmation metadata.
+- It does not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored facts, or visual contact/pad layout.
+
+## Boundaries
+
+- Visual contact layout remains a separate future scope/event/projection.
+- Visual contact confirmation is not electrical confirmation.
+- AI/photo markers remain unconfirmed proposals only until human conversion through the placement editor.
+- Board Canvas bodyOnly renderer is preserved.
+- Board Canvas remains read-only: `renderer writes: none`.
+- Add Component identity writer behavior is preserved.
 
 ## Canonical owners and evidence ledgers
 
@@ -68,4 +67,4 @@
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- No runtime, tests, schema, writer, materializer, validator, projection, router, samples, assets, pubspec, Project ZIP, events.jsonl, known_facts.json, Confirm/write/Edit Layout, or AI/OCR/CV fact-creation changes are authorized by this closeout.
+- No runtime, tests, schema, writer, materializer, validator, projection, router, samples, assets, pubspec, Project ZIP, events.jsonl, known_facts.json, Confirm/write/Edit Layout, or AI/OCR/CV fact-creation changes are authorized by this docs-only scope-lock.

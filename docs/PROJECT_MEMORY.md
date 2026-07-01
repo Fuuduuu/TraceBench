@@ -135,3 +135,19 @@ Current accepted snapshot lives in [docs/CURRENT_STATE.md](CURRENT_STATE.md).
 
 Full pass history and evidence live in [docs/PASS_QUEUE.md](PASS_QUEUE.md) and `docs/audit/**/*.md`.
 - V2 event-writing architecture, schema/spec, validator, materializer, writer service, and Save Measurement UI write-flow are accepted through separately scoped/audited passes; other UI write flows remain blocked until separately scoped/audited, and canonical writes remain human-authored append-only events.
+
+## Placement event V2 regime scope lock
+
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS` locks the future `component_visual_placement_confirmed` migration direction before placement writer/editor implementation.
+
+Stable decisions:
+
+- Future placement events align to the V2/human regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
+- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
+- Current schema/validator/materializer scaffolding remains V1-shaped until a separately scoped protected implementation changes it.
+- Future protected implementation must reconcile schema, validator, materializer, V2 event-type ownership, focused tests, and samples only when explicitly scoped.
+- Materializer must not silently drop V2 human-authored placement events after migration.
+- `component_visual_placement_confirmed` represents visual placement envelope data only: component, board side, coordinate space, center position, rotation, width/height, optional template/family reference, and human confirmation metadata.
+- It does not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored facts, or visual contact/pad layout.
+- Visual contact layout remains separate future scope; AI/photo markers remain unconfirmed until human conversion.
+- Board Canvas renderer remains bodyOnly/read-only: `renderer writes: none`.

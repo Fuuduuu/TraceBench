@@ -19,6 +19,8 @@ Core invariants (semantics unchanged):
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
 - Placement editor architecture decision: Add Component creates identity/existence only; Board Canvas ghost/template placement remains UI-local draft only until a separately scoped placement editor/writer implementation.
 - Future `component_visual_placement_confirmed` work must align to the V2 event regime before Dart writer or Confirm UI implementation.
+- Current `component_visual_placement_confirmed` scaffold remains V1-shaped until a separately scoped protected implementation changes it: the current schema/validator/materializer path still carries `schema_version: 1.0`, `sequence`, `status`, and accepted user-authored placement expectations.
+- The current V1 scaffold versus pending V2/human migration is a known actor/envelope contradiction to resolve before implementation; materializer must not silently drop V2 human-authored placement events after migration.
 - Visual contact layout is separate from visual placement and is not electrical confirmation.
 
 Product identity owner:

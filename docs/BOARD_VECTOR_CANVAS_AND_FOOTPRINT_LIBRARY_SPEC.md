@@ -52,6 +52,16 @@ Locked before any renderer/UI implementation:
 - Visual contact layout is a separate future event/projection and must not be folded into `component_visual_placement_confirmed`.
 - AI marker conversion remains future scope: AI proposal/sidecar/UI-local candidate only until human confirmation through the placement editor path.
 
+## 2.4 Placement event V2 regime scope-lock (`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`)
+
+- `component_visual_placement_confirmed` must align to the V2 event regime before placement writer/editor implementation.
+- Future protected implementation target: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
+- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
+- Current repo scaffold remains V1-shaped until separately implemented: schema/validator/materializer paths currently carry the V1 envelope and accepted user-authored placement expectations.
+- The future protected implementation must reconcile `schemas/events.schema.json`, `tools/validate_events_jsonl.py`, `tools/materialize_known_facts.py`, V2 event-type ownership, and focused tests/samples as explicitly scoped.
+- Materializer must not silently drop V2 human-authored placement events after migration.
+- This scope-lock does not implement the migration.
+
 ## 3. Hard evidence boundaries
 
 - Human is the sensor. AI is the graph engine.

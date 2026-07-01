@@ -2,54 +2,61 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Baseline latest closeout verified from git log: `b059278` (`docs: close out placement editor architecture decision`).
-- Route before this pass: `NEEDS_USER_DECISION`.
-- This pass is a docs-only protected-surface scope-lock for the future `component_visual_placement_confirmed` V2 event-envelope regime.
-- Source review recorded as: `ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`.
+- Baseline HEAD verified for this active-lock sync: `62853c674790bb82469d65497a7b6e7d569e22ce` (`docs: record placement event V2 regime audit`).
+- Accepted scope-lock commit: `df6a64329544e5966847ff9c8b56818046259885` (`docs: lock placement event V2 regime`).
+- Scope-lock audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Route before this pass: current `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`, next `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- This pass arms the protected implementation allowlist for `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`.
 
-## V2 placement event regime decision
+## Implementation pass armed
 
-- Future `component_visual_placement_confirmed` implementation must align to the V2 event regime.
-- Use `schema_version: 2.0-draft`.
-- Use `actor.type: human`.
-- Use a source block.
-- Use `confirmation.confirmed: true`.
-- Use `client_operation_id` / idempotency precedent where applicable.
-- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- This pass does not implement the migration.
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
 
-## Current V1 scaffold clarification
+## Implementation goal
 
-- `component_visual_placement_confirmed` is currently scaffolded in schema/materializer/validator paths.
-- Current scaffold reality is V1-shaped: `schemas/events.schema.json` still declares `schema_version: 1.0` with required `sequence` and `status` envelope fields.
-- Existing placement materializer behavior currently expects accepted user-authored placement events.
-- Existing V2 writers use human actor/source/confirmation envelope patterns.
-- This actor/envelope contradiction must be resolved in a future protected implementation before any placement writer/editor Confirm path is built.
-- Materializer must not silently drop V2 human-authored placement events after the migration.
+Migrate `component_visual_placement_confirmed` to the V2/human event regime and prevent materializer drop of V2 human-authored placement events.
 
-## Placement event semantics to preserve
+## Implementation allowlist
 
-- `component_visual_placement_confirmed` represents component ID, board side, coordinate space, center position, `rotation_deg`, confirmed visual envelope `width` + `height`, optional `template_id` / visual family reference, and human confirmation metadata.
-- It does not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored facts, or visual contact/pad layout.
+- `schemas/events.schema.json`
+- `tools/validate_events_jsonl.py`
+- `tools/materialize_known_facts.py`
+- `tests/test_validate_events_jsonl.py`
+- `tests/test_materialize_known_facts.py`
 
-## Boundaries
+## Implementation boundaries
 
-- Visual contact layout remains a separate future scope/event/projection.
-- Visual contact confirmation is not electrical confirmation.
-- AI/photo markers remain unconfirmed proposals only until human conversion through the placement editor.
-- Board Canvas bodyOnly renderer is preserved.
-- Board Canvas remains read-only: `renderer writes: none`.
-- Add Component identity writer behavior is preserved.
+- Event-regime/projection plumbing only.
+- No placement writer service.
+- No placement Confirm UI.
+- No Board Canvas renderer behavior change.
+- Visual contact layout remains separate future scope.
+- AI never authors canonical placement events.
+- `component_visual_placement_confirmed` must not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored fact, or visual contact/pad layout.
+
+## Forbidden surfaces
+
+- No Dart runtime edits.
+- No Board Canvas UI edits.
+- No Add Component writer edits.
+- No placement writer service.
+- No Confirm/Edit UI.
+- No router edits.
+- No visual contact layout.
+- No AI marker implementation.
+- No `_incoming` staging.
+- No sample/project fixture edits unless separately approved.
+- No `known_facts` schema change unless separately justified and stopped for human approval.
 
 ## Canonical owners and evidence ledgers
 
@@ -67,4 +74,4 @@
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- No runtime, tests, schema, writer, materializer, validator, projection, router, samples, assets, pubspec, Project ZIP, events.jsonl, known_facts.json, Confirm/write/Edit Layout, or AI/OCR/CV fact-creation changes are authorized by this docs-only scope-lock.
+- No runtime, Board Canvas UI, Add Component writer, placement writer service, Confirm/Edit UI, router, sample, asset, pubspec, Project ZIP, events.jsonl, known_facts.json schema, visual contact layout, or AI marker implementation changes are authorized by this active-lock sync.

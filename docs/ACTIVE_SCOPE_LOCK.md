@@ -2,104 +2,74 @@
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
 
 ## Status
 
-Docs-only protected-surface scope-lock is active.
+Docs-only active-lock sync is active. It arms the protected implementation pass and exact implementation allowlist.
 
-This pass locks the future `component_visual_placement_confirmed` V2 event-envelope regime before any placement writer/editor implementation. It does not authorize runtime, test, schema, writer, materializer, validator, projection, router, sample, asset, pubspec, Confirm/Edit UI, event implementation, placement writer, or AI marker implementation changes.
+Accepted scope-lock evidence:
 
-## Write allowlist for this pass
+- Scope-lock pass: `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`
+- Scope-lock commit: `df6a64329544e5966847ff9c8b56818046259885` (`docs: lock placement event V2 regime`)
+- Audit record: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
+- Audit-record sync commit baseline: `62853c674790bb82469d65497a7b6e7d569e22ce` (`docs: record placement event V2 regime audit`)
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/TRUTH_INDEX.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
-- `docs/audit/BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS.md`
+## Implementation pass armed
 
-## Source review recorded
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
 
-`ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`
+## Implementation write allowlist
 
-Recorded findings:
+- `schemas/events.schema.json`
+- `tools/validate_events_jsonl.py`
+- `tools/materialize_known_facts.py`
+- `tests/test_validate_events_jsonl.py`
+- `tests/test_materialize_known_facts.py`
 
-- `component_created` exists and confirms identity/existence only.
-- `component_visual_placement_confirmed` is scaffolded in schema/materializer/validator.
-- There is no Dart placement writer and no sample event.
-- Existing V2 writers use `actor.type = human` with source/confirmation blocks.
-- Existing placement materializer path currently expects `actor.type = user`.
-- This creates an actor/envelope contradiction that must be resolved before implementation.
+## Implementation goal
 
-## Future V2 regime decision locked
+Migrate `component_visual_placement_confirmed` to the V2/human event regime and prevent materializer drop of V2 human-authored placement events.
 
-- `component_visual_placement_confirmed` must align to the V2 event regime in a future protected implementation pass.
-- Use `schema_version: 2.0-draft`.
-- Use `actor.type: human`.
-- Use a source block.
-- Use `confirmation.confirmed: true`.
-- Use `client_operation_id` / idempotency precedent where applicable.
-- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Future protected implementation must reconcile `schemas/events.schema.json`, `tools/validate_events_jsonl.py`, `tools/materialize_known_facts.py`, any V2 event-type owner, and any tests/samples needed.
-- Materializer must not silently drop V2 human-authored placement events.
-- This decision does not implement the migration.
+The implementation pass may:
 
-## Current V1 scaffold clarification
+- add `component_visual_placement_confirmed` to V2 event handling / V2 event-type ownership where that owner is in the allowlisted files
+- validate `schema_version: 2.0-draft`
+- validate `actor.type: human`
+- validate source block
+- validate `confirmation.confirmed: true`
+- validate `client_operation_id` / idempotency shape where applicable
+- preserve payload semantics for `component_id`, `coordinate_space`, `board_side`, `center_x`, `center_y`, `rotation_deg`, `width`, `height`, optional `template_id`, optional `source_photo_id`, and optional `notes`
+- update materializer so V2 human-authored placement events are not silently dropped
+- preserve latest-wins projection semantics for `component_visual_placements`
+- add focused validator/materializer tests
 
-- Current schema/validator/materializer code remains unchanged by this pass.
-- Current `schemas/events.schema.json` still declares V1 envelope shape with required `sequence` and `status` fields.
-- Current placement projection behavior remains the accepted repo behavior until a protected implementation changes it.
-- The V1 scaffold versus pending V2 migration contradiction is recorded as an implementation prerequisite, not resolved here.
+## Forbidden surfaces for implementation
 
-## Placement event semantics locked
-
-`component_visual_placement_confirmed` should represent:
-
-- `component_id`
-- board side
-- coordinate space
-- center position
-- `rotation_deg`
-- `width` + `height` as primary visual envelope size model
-- optional `template_id` / visual family reference
-- human confirmation metadata
-
-It must not represent:
-
-- electrical connectivity
-- net identity
-- measurement pin identity
-- confirmed contact layout
-- AI-authored fact
-- visual contact/pad layout
-
-## Visual contact boundary
-
-- Visual contact layout remains a separate future scope/event/projection.
-- Do not fold contacts/pads/legs into `component_visual_placement_confirmed`.
-- Visual contact confirmation is not electrical confirmation.
-
-## AI marker boundary
-
-- AI/photo marker remains unconfirmed proposal only.
-- Human confirmation through the placement editor creates the canonical placement event.
-- AI never authors canonical placement.
-
-## Standing forbidden surfaces for this pass
-
-- No runtime or test edits.
-- No schema, tool, writer, materializer, validator, projection, router, sample, asset, or pubspec edits.
-- No `events.jsonl` or `known_facts.json` semantic changes.
-- No event implementation.
-- No placement writer.
+- No Dart runtime edits.
+- No Board Canvas UI edits.
+- No Add Component writer edits.
+- No placement writer service.
 - No Confirm/Edit UI.
+- No router edits.
+- No `known_facts` schema change unless separately justified and stopped for human approval.
+- No visual contact layout event/projection.
+- No contacts/pads/legs rendering.
 - No AI marker implementation.
+- No sample/project fixture edits unless stopped and separately approved.
 - No `_incoming` staging or runtime dependency.
 - No broad staging, commit, or push.
+
+## Boundary record
+
+- This implementation is event-regime/projection plumbing only.
+- It does not create a placement writer.
+- It does not expose placement Confirm UI.
+- It does not change Board Canvas renderer behavior.
+- Visual contact layout remains separate future scope.
+- AI never authors canonical placement events.
+- `component_visual_placement_confirmed` must not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored fact, or visual contact/pad layout.

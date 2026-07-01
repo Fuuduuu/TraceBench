@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -28,20 +28,18 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 | PASS_ID | Lane/Type | Status | Write allowlist | Notes |
 | --- | --- | --- | --- | --- |
-| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected-surface event regime | active draft; route after Codex to `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS` | `docs/CURRENT_STATE.md`; `docs/PASS_QUEUE.md`; `docs/ACTIVE_SCOPE_LOCK.md`; `docs/AUDIT_INDEX.md`; `docs/TRUTH_INDEX.md`; `docs/PROJECT_MEMORY.md`; `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`; `docs/audit/BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS.md` | Locks future `component_visual_placement_confirmed` migration to V2/human envelope, records current V1 scaffold contradiction, preserves Board Canvas bodyOnly/read-only renderer, Add Component identity-only writer, visual-contact separation, and AI marker boundary. |
-| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | next | docs-only active-lock sync files, exact allowlist to be set by that pass | If this scope-lock is accepted, arm the future protected implementation allowlist for schema/validator/materializer/projection/writer tests only; do not implement during the sync. |
+| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | active draft; route after Codex to `BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS` | `docs/CURRENT_STATE.md`; `docs/PASS_QUEUE.md`; `docs/ACTIVE_SCOPE_LOCK.md`; `docs/AUDIT_INDEX.md`; `docs/audit/BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS.md` | Arms exact protected implementation allowlist after scope-lock audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; no implementation in this sync. |
+| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS | CODEX / PROTECTED_IMPLEMENTATION / event regime + projection plumbing | next | `schemas/events.schema.json`; `tools/validate_events_jsonl.py`; `tools/materialize_known_facts.py`; `tests/test_validate_events_jsonl.py`; `tests/test_materialize_known_facts.py` | Migrate `component_visual_placement_confirmed` to the V2/human event regime and prevent materializer drop of V2 human-authored placement events. No Dart runtime, Board Canvas UI, Add Component writer, placement writer service, Confirm/Edit UI, router, visual-contact layout, AI marker, `_incoming`, sample/project fixture, or `known_facts` schema change. |
 
 ## Likely future protected implementation surfaces
 
 | Surface | Reason |
 | --- | --- |
 | `schemas/events.schema.json` | Align `component_visual_placement_confirmed` with the V2 event envelope. |
-| `schemas/known_facts.schema.json` | Keep projected placement shape compatible if migration affects projection contract. |
 | `tools/validate_events_jsonl.py` | Accept and validate V2 human-authored placement events without V1 actor/envelope contradiction. |
 | `tools/materialize_known_facts.py` | Materialize accepted V2 human-authored placement events and avoid silent drops. |
-| V2 event-type owner(s) | Keep V2 event registry/allowlist coherent if a central owner is present. |
-| Writer service / future Dart placement writer | Add a dedicated placement writer only after protected implementation scope is armed. |
-| Focused validator/materializer/writer tests and samples | Prove V2 placement acceptance and projection behavior only when separately scoped. |
+| `tests/test_validate_events_jsonl.py` | Add focused validator coverage for V2 human-authored placement events. |
+| `tests/test_materialize_known_facts.py` | Add focused materializer coverage for V2 human-authored placement projection. |
 
 ## Planned follow-up sequence
 

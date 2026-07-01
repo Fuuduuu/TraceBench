@@ -17,6 +17,9 @@ Core invariants (semantics unchanged):
 - Do not add `sequence` to V2 events.
 - No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+- Placement editor architecture decision: Add Component creates identity/existence only; Board Canvas ghost/template placement remains UI-local draft only until a separately scoped placement editor/writer implementation.
+- Future `component_visual_placement_confirmed` work must align to the V2 event regime before Dart writer or Confirm UI implementation.
+- Visual contact layout is separate from visual placement and is not electrical confirmation.
 
 Product identity owner:
 
@@ -41,6 +44,7 @@ Product identity owner:
 | Global event status semantics policy (accepted-only domain fact direction) | PROJECT_MEMORY.md + ACTIVE_SCOPE_LOCK.md + docs/audit/GLOBAL_EVENT_STATUS_SEMANTICS_SCOPE_LOCK_PASS.md | accepted status-semantics scope lock pass | replace stale contradictory wording; keep implementation split routing in PASS_QUEUE and CURRENT_STATE | CURRENT_STATE short summary |
 | Visual placement event boundary (`component_visual_placement_confirmed`) | schemas/events.schema.json + tools/validate_events_jsonl.py + PROJECT_MEMORY.md | accepted schema/validator pass | update schema/validator and stable-boundary pointer; remove stale contradictory wording from docs | CURRENT_STATE short summary |
 | Visual placement projection (`component_visual_placements`) | schemas/known_facts.schema.json + tools/materialize_known_facts.py + PROJECT_MEMORY.md | accepted projection/materializer pass | update projection owner files and stable-boundary pointer; keep history in audit docs | CURRENT_STATE short summary |
+| Placement editor architecture decision | PROJECT_MEMORY.md + docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md + docs/audit/BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md | accepted architecture decision scope-lock | preserve Add Component identity-only boundary, Board Canvas UI-local draft ownership, V2 placement envelope alignment requirement, and visual-contact separation | CURRENT_STATE / PASS_QUEUE short pointer |
 | Footprint registry/template boundary (`template_id` is geometry metadata only) | docs/VECTOR_FOOTPRINT_LIBRARY_SPEC.md + docs/PROJECT_MEMORY.md | accepted footprint scope/spec pass | replace stale wording that implies identity/electrical proof from template metadata | CURRENT_STATE short summary |
 | AI proposal non-canonical boundary (`unconfirmed_ai_proposal`) | PROJECT_MEMORY.md + docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md | accepted design/scope pass | replace stale wording that implies canonicalization | CURRENT_STATE short summary |
 | Active allowed/forbidden surfaces | ACTIVE_SCOPE_LOCK.md | every active pass | replace old lock completely | audit closeout summary |

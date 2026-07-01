@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,14 +26,28 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Active / near-future queue
 
-No active pass is armed. Route is `NEEDS_USER_DECISION`.
+| PASS_ID | Lane/Type | Status | Write allowlist | Notes |
+| --- | --- | --- | --- | --- |
+| BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / architecture decision | active draft; route after Codex to `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS` | `docs/CURRENT_STATE.md`; `docs/PASS_QUEUE.md`; `docs/ACTIVE_SCOPE_LOCK.md`; `docs/AUDIT_INDEX.md`; `docs/TRUTH_INDEX.md`; `docs/PROJECT_MEMORY.md`; `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`; `docs/audit/BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md` | Records human decisions for Add Component identity-only writer, Board Canvas UI-local placement editor ownership, V2 placement event regime alignment, width/height size model, footprint vocabulary ownership, visual-contact separation, and AI marker conversion boundary. |
+| BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS | CLAUDE_CODE_OPUS / AUDIT_ONLY / scope-lock post-audit | next | read-only audit only | Audit this docs-only architecture decision scope-lock before any closeout or implementation route. |
+
+## Planned follow-up sequence
+
+| Phase | Future pass family | Purpose | Implementation authorization |
+| --- | --- | --- | --- |
+| P1 | architecture decision closeout | Close out this decision after post-audit acceptance. | Docs only. |
+| P2 | V2 placement event envelope/schema/materializer/validator alignment scope-lock | Protect and align `component_visual_placement_confirmed` with V2 event regime before writer/UI implementation. | Docs only; later protected implementation required. |
+| P3 | placement editor + writer scope-lock | Lock Board Canvas right-panel / ghost draft as the official UI-local placement editor and define writer boundaries. | Docs only. |
+| P4 | active-lock sync | Arm exact future implementation allowlist after accepted scope-lock. | Docs only. |
+| P5 | UI-local placement editor shell | Add or refine local draft UI without canonical writes. | Runtime/test only after active lock. |
+| P6 | placement writer implementation | Add dedicated V2 placement writer service and tests. | Protected implementation after P2/P3/P4. |
+| P7 | edit-placement flow | Scope and implement editing of confirmed visual placement separately. | Future protected scope. |
+| P8 | visual-contact layout | Separate confirmed visual-contact event/projection/UI; not folded into placement. | Future protected scope. |
+| P9 | AI marker conversion | Human-confirmed conversion of AI marker proposals through placement editor path. | Future protected scope. |
 
 ## Recent Board Canvas footprint implementation context
 
 | PASS_ID | Lane/Type | Status | Notes |
 | --- | --- | --- | --- |
-| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / Board Canvas visual rendering | accepted/pushed as `8fad35d` (`docs: lock Board Canvas real component footprints`) | Locked future Board Canvas visual-only real-looking component footprint rendering scope; design source input-only; no runtime/test/protected changes. |
-| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_SCOPE_LOCK_ROUTE_SYNC_PASS | CODEX / DOCS_ROUTE_SYNC / Board Canvas visual rendering | accepted/pushed as `32e89f5` (`docs: sync Board Canvas footprint route`) | Advanced route from scope-lock current to active-lock-sync current so implementation could be armed; no runtime/test implementation. |
-| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / Board Canvas visual rendering | repaired docs-only active-lock sync; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Recorded route-sync hash `32e89f5a1771b67474899d0c77433a98678df043`, armed exact implementation allowlist, and routed to implementation. |
 | V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS | CODEX / FLUTTER_PASS / Board Canvas visual rendering | accepted/pushed as `02cd557` (`feat(board-canvas): render component footprints`) | Rendered recognizable component footprint bodies, enabled bodyOnly contact visibility, kept contacts/pads/legs off component image until future confirmed visual-contact layout, kept real pin selection in the right-side list, centered right-panel preview parity, removed old standalone M/M3 marker bubble, preserved no visual rotation and `renderer writes: none`. |
-| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT / Board Canvas visual rendering | completed closeout; route set to `NEEDS_USER_DECISION`; `RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW` | Records manual smoke `PASS`, audit `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`, non-blocking nits, validation, protected-surface boundaries, and releases the active lock. |
+| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS | CODEX / DOCS_POST_AUDIT / Board Canvas visual rendering | accepted/pushed as `c2da8fd` (`docs: close out Board Canvas footprints`) | Records manual smoke `PASS`, audit `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`, non-blocking nits, validation, protected-surface boundaries, and releases the active lock. |

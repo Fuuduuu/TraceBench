@@ -15,6 +15,26 @@ Durable owner for product/project/subsystem naming:
 
 Measurement-backed PCB repair documentation and AI-assisted schematic reconstruction.
 
+## Placement editor architecture decision
+
+Accepted scope-lock owner: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`.
+
+- Add Component remains the human-entered identity/existence writer and creates `component_created` only.
+- `component_created` does not confirm board position, board side, rotation, size, shape, visual contacts, pads, legs, pins, nets, or measurements.
+- Board Canvas remains bodyOnly/read-only until separately scoped: `renderer writes: none`.
+- Board Canvas local builder/ghost/template state is UI-local draft only and is not canonical placement/contact proof.
+- Future placement editor ownership starts by evolving the Board Canvas right-panel / ghost draft into the official UI-local placement editor.
+- Do not create a standalone placement editor screen first unless a later scope overturns this decision.
+- Future Confirm calls a dedicated placement writer service; painter/renderer code does not write events.
+- `component_visual_placement_confirmed` must be aligned to the V2 event regime before Dart writer or Confirm UI implementation.
+- The V2 placement regime decision is `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
+- Confirmed visual placement size uses `width` + `height` as the primary visual envelope; `scale` is import/backward compatibility only unless later scoped.
+- VectorFootprintLibrary / footprint recipe model owns canonical visual vocabulary; Board Canvas starter templates are UI presets only.
+- Visual contact layout is separate future event/projection scope and must not be folded into `component_visual_placement_confirmed`.
+- Visual contact confirmation is not electrical confirmation.
+- AI marker conversion remains future scope: AI marker is an unconfirmed proposal/sidecar/UI-local candidate until human confirmation converts it through the placement editor path. AI never authors canonical placement events.
+
 ## Core rule
 
 Human is the sensor. AI is the graph engine.

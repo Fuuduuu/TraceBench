@@ -37,6 +37,21 @@ Locked before any renderer/UI implementation:
 - Template-local coordinate frame/origin/axis/unit convention is locked there.
 - This board-vector document remains the higher-level boardview/AI-boundary design surface.
 
+## 2.3 Placement editor architecture decision (`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`)
+
+- Source review recorded: `ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`.
+- Add Component writes `component_created` only; it confirms identity/existence, not placement, side, rotation, size, shape, or contacts.
+- Board Canvas renderer remains read-only/bodyOnly and does not write events.
+- Board Canvas local builder/ghost remains UI-local draft until a future placement editor implementation.
+- The Board Canvas right-panel / ghost draft is the intended first owner for the official UI-local placement editor.
+- Future placement Confirm must use a dedicated placement writer service; renderer/painter code remains read-only.
+- `component_visual_placement_confirmed` must be aligned to the V2 event regime before writer/UI implementation: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
+- Confirmed visual placement size uses `width` + `height`; `scale` is import/backward compatibility only unless later scoped.
+- VectorFootprintLibrary / footprint recipe model owns canonical visual vocabulary; Board Canvas starter templates are UI presets only.
+- Visual contact layout is a separate future event/projection and must not be folded into `component_visual_placement_confirmed`.
+- AI marker conversion remains future scope: AI proposal/sidecar/UI-local candidate only until human confirmation through the placement editor path.
+
 ## 3. Hard evidence boundaries
 
 - Human is the sensor. AI is the graph engine.
@@ -161,6 +176,7 @@ Confirmation workflow constraints:
 - human confirms one object at a time
 - no initial "confirm all AI suggestions"
 - identity confirmation and placement confirmation are separate actions
+- visual contact layout confirmation is separate from placement confirmation and is not electrical confirmation
 
 ## 10. Trace/routing/color model
 

@@ -2,47 +2,63 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS`
 
 ## Status
 
-No active implementation lock is armed.
+Docs-only architecture decision scope-lock is active.
 
-`V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS` closed the Board Canvas component footprint implementation route and released the `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS` runtime/test lock.
+This pass records human decisions for the future placement editor architecture. It does not authorize runtime, test, schema, writer, materializer, validator, projection, router, sample, asset, pubspec, Confirm/write/Edit Layout, or AI marker implementation.
 
-## Closed Board Canvas footprint implementation lock
+## Write allowlist for this pass
 
-- Implementation pass: `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS`.
-- Pushed implementation commit: `02cd557b062e8da7d7dc6ee0685bcc8459b610dd` (`feat(board-canvas): render component footprints`).
-- Closeout pass: `V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_POST_AUDIT_PASS`.
-- Manual smoke: `PASS`.
-- Audit result: `AUDIT_VERDICT: ACCEPT_WITH_NITS`; `SAFE_FOR_STAGING: YES`.
-- Nits recorded: diff was full uncommitted feature size, behavior-neutral cleanup stayed inside the allowlisted Board Canvas file, and no blocking issues were reported.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/TRUTH_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
+- `docs/audit/BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md`
 
-## Accepted Board Canvas footprint behavior
+## Source review recorded
 
-- Board Canvas renders recognizable component footprint bodies.
-- BodyOnly contact visibility model is active.
-- Contacts, pads, and legs are not drawn on component image until a future confirmed visual-contact layout is separately scoped.
-- Real pin selection remains in the right-side measurement/pin list.
-- Right-panel preview uses the same centered body visual model as canvas.
-- Stable preview body does not shift based on selected pin or side controls.
-- Old standalone `M` / `M3` marker bubble was removed.
-- Measurement evidence is integrated/subordinate.
-- `rotationDeg` is not applied visually.
-- Board Canvas remains read-only: `renderer writes: none`.
+`ROUTE_REVIEW_COMPONENT_ADD_PLACEMENT_VISUAL_CONTACT_LAYOUT`
 
-## Standing forbidden surfaces
+Recorded findings:
 
-Any future work must open a new explicit scope before touching:
+- Add Component currently writes `component_created` only.
+- `component_created` confirms identity/existence only and carries no position, side, rotation, size, shape, or contacts.
+- Board Canvas renderer is bodyOnly/read-only.
+- Board Canvas local builder/ghost is UI-local only and has no confirm/save/write path.
+- `component_visual_placement_confirmed` is scaffolded in schema/materializer/validator but has no Dart writer/sample.
+- Existing V2 writers use `actor.type = human`; existing placement materializer path expects `actor.type = user`.
+- Visual contact layout is separate future scope from placement.
+- Contacts, pads, and legs on component image remain future confirmed visual-contact layout scope.
 
-- events.jsonl, known_facts, schema, writer, materializer, validator, projection, Project ZIP, or sample semantics
-- canonical placement, coordinate, net, electrical, fact, event, trace, probe, pin, or pad semantics
-- Confirm/write/Edit Layout behavior
-- AI/OCR/CV fact creation
-- Measure Sheet, router, Project Home, assets, pubspec, or `_incoming` runtime dependencies
-- Add Component, ghost-placement, or drag-to-place behavior unless separately scoped
+## Human decisions locked
+
+- Placement events should align to the V2 event regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
+- Evolve the Board Canvas right-panel / ghost draft into the official UI-local placement editor.
+- Do not create a standalone placement editor screen first unless a later scope overturns this decision.
+- Painter/renderer remains read-only; future Confirm calls a dedicated placement writer service.
+- Primary confirmed visual placement size model is `width` + `height`; `scale` may remain import/backward compatibility only unless later scoped.
+- VectorFootprintLibrary / footprint recipe model owns the canonical visual vocabulary.
+- Board Canvas starter templates are UI presets only.
+- Visual contact layout is a separate future event/projection and is not electrical confirmation.
+- AI marker remains an unconfirmed proposal/sidecar/UI-local candidate until a human converts it through the same placement editor path.
+
+## Standing forbidden surfaces for this pass
+
+- No runtime or test edits.
+- No schema, writer, materializer, validator, projection, router, sample, asset, or pubspec edits.
+- No `events.jsonl` or `known_facts.json` semantic changes.
+- No Confirm/write/Edit Layout implementation.
+- No AI marker implementation.
+- No `_incoming` staging or runtime dependency.
+- No broad staging, commit, or push.

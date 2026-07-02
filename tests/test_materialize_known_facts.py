@@ -249,6 +249,207 @@ def make_v2_component_visual_placement_payload(**overrides):
 
 
 class MaterializeKnownFactsTests(unittest.TestCase):
+    def test_component_visual_placement_later_v2_beats_earlier_v1_by_stream_order(self):
+        data = run_materialize_events(
+            [
+                make_event("evt_100001", 100001, "component_created", {"component_id": "Q2"}),
+                make_event(
+                    "evt_100900",
+                    100900,
+                    "component_visual_placement_confirmed",
+                    {
+                        "component_id": "Q2",
+                        "coordinate_space": "board_normalized",
+                        "board_side": "top",
+                        "center_x": 0.1,
+                        "center_y": 0.2,
+                        "rotation_deg": 0.0,
+                        "width": 0.11,
+                        "height": 0.07,
+                    },
+                ),
+                make_v2_event(
+                    "evt_200001",
+                    "component_visual_placement_confirmed",
+                    make_v2_component_visual_placement_payload(
+                        component_id="Q2",
+                        center_x=0.7,
+                        center_y=0.8,
+                        net_id="N_DO_NOT_PROJECT",
+                        pin_id="Q2.1",
+                        contact_layout=[{"pin_id": "Q2.1"}],
+                        visual_contacts=[{"x": 0.1, "y": 0.2}],
+                        pads=[{"x": 0.1, "y": 0.2}],
+                        ai_authored_fact={"kind": "forbidden"},
+                    ),
+                ),
+            ]
+        )
+
+        placements = data["component_visual_placements"]
+        self.assertEqual(len(placements), 1)
+        placement = placements[0]
+        self.assertEqual(placement["source_event_id"], "evt_200001")
+        self.assertEqual(placement["center_x"], 0.7)
+        self.assertEqual(placement["center_y"], 0.8)
+        for forbidden_key in (
+            "net_id",
+            "pin_id",
+            "contact_layout",
+            "visual_contacts",
+            "pads",
+            "ai_authored_fact",
+        ):
+            self.assertNotIn(forbidden_key, placement)
+        self.assertEqual(data.get("nets"), [])
+        self.assertEqual(data.get("pins"), [])
+
+    def test_component_visual_placement_later_v1_beats_earlier_v2_by_stream_order(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "component_visual_placement_confirmed",
+                    make_v2_component_visual_placement_payload(
+                        component_id="Q2",
+                        center_x=0.2,
+                        center_y=0.3,
+                    ),
+                ),
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_visual_placement_confirmed",
+                    {
+                        "component_id": "Q2",
+                        "coordinate_space": "board_normalized",
+                        "board_side": "top",
+                        "center_x": 0.6,
+                        "center_y": 0.7,
+                        "rotation_deg": 0.0,
+                        "width": 0.1,
+                        "height": 0.06,
+                    },
+                ),
+            ]
+        )
+
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement["source_event_id"], "evt_100001")
+        self.assertEqual(placement["center_x"], 0.6)
+        self.assertEqual(placement["center_y"], 0.7)
+
+    def test_component_visual_placement_invalidation_retracts_only_valid_placement(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "component_visual_placement_confirmed",
+                    make_v2_component_visual_placement_payload(component_id="Q2"),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "Q2",
+                        "reason": "wrong_location",
+                    },
+                ),
+            ]
+        )
+
+        self.assertNotIn("component_visual_placements", data)
+        self.assertEqual(data["event_invalidations"][0]["invalidates_event_id"], "evt_200001")
+
+    def test_component_visual_placement_invalidating_older_keeps_newer_valid_placement(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_visual_placement_confirmed",
+                    {
+                        "component_id": "Q2",
+                        "coordinate_space": "board_normalized",
+                        "board_side": "top",
+                        "center_x": 0.2,
+                        "center_y": 0.3,
+                        "rotation_deg": 0.0,
+                        "width": 0.1,
+                        "height": 0.06,
+                    },
+                ),
+                make_v2_event(
+                    "evt_200001",
+                    "component_visual_placement_confirmed",
+                    make_v2_component_visual_placement_payload(
+                        component_id="Q2",
+                        center_x=0.8,
+                        center_y=0.9,
+                    ),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_100001",
+                        "target_entity_id": "Q2",
+                        "reason": "older_location_wrong",
+                    },
+                ),
+            ]
+        )
+
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement["source_event_id"], "evt_200001")
+        self.assertEqual(placement["center_x"], 0.8)
+        self.assertEqual(placement["center_y"], 0.9)
+
+    def test_component_visual_placement_invalidating_newest_falls_back_to_previous(self):
+        data = run_materialize_events(
+            [
+                make_event(
+                    "evt_100001",
+                    100001,
+                    "component_visual_placement_confirmed",
+                    {
+                        "component_id": "Q2",
+                        "coordinate_space": "board_normalized",
+                        "board_side": "top",
+                        "center_x": 0.2,
+                        "center_y": 0.3,
+                        "rotation_deg": 0.0,
+                        "width": 0.1,
+                        "height": 0.06,
+                    },
+                ),
+                make_v2_event(
+                    "evt_200001",
+                    "component_visual_placement_confirmed",
+                    make_v2_component_visual_placement_payload(
+                        component_id="Q2",
+                        center_x=0.8,
+                        center_y=0.9,
+                    ),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "Q2",
+                        "reason": "newer_location_wrong",
+                    },
+                ),
+            ]
+        )
+
+        placement = data["component_visual_placements"][0]
+        self.assertEqual(placement["source_event_id"], "evt_100001")
+        self.assertEqual(placement["center_x"], 0.2)
+        self.assertEqual(placement["center_y"], 0.3)
+
     def test_v2_measurement_projection_preserves_provenance_and_context(self):
         context_values = [
             {

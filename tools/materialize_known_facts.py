@@ -253,7 +253,7 @@ def main() -> int:
     suspect_regions: list[dict] = []
     visual_traces: list[dict] = []
     photo_to_board_alignments_by_id: dict[str, tuple[int, dict]] = {}
-    component_visual_placements_by_component: dict[str, tuple[int, dict]] = {}
+    component_visual_placement_candidates_by_component: dict[str, list[tuple[int, dict]]] = {}
     excluded_from_fault_candidates: list[dict] = []
     project_id = manifest_project_id
     accepted_project_id_locked = project_id != "unknown"
@@ -263,9 +263,10 @@ def main() -> int:
     v2_component_create_event_by_id: dict[str, str] = {}
     v2_measurement_by_event: dict[str, dict] = {}
     event_invalidations: list[dict] = []
+    invalidated_event_ids: set[str] = set()
     orphaned_measurements: list[dict] = []
 
-    for event in raw_events:
+    for event_index, event in enumerate(raw_events):
         event_id = event.get("event_id")
         sequence = event.get("sequence")
 
@@ -356,10 +357,9 @@ def main() -> int:
                 if "template_id" in payload:
                     placement["template_id"] = payload.get("template_id")
 
-                placement_sequence = sequence if isinstance(sequence, int) else -1
-                previous = component_visual_placements_by_component.get(component_id)
-                if previous is None or placement_sequence >= previous[0]:
-                    component_visual_placements_by_component[component_id] = (placement_sequence, placement)
+                component_visual_placement_candidates_by_component.setdefault(component_id, []).append(
+                    (event_index, placement)
+                )
                 continue
 
             if event_type == "event_invalidated":
@@ -376,6 +376,8 @@ def main() -> int:
                 event_invalidations.append(invalidation)
 
                 if isinstance(invalidates_event_id, str):
+                    invalidated_event_ids.add(invalidates_event_id)
+
                     measurement = v2_measurement_by_event.get(invalidates_event_id)
                     if measurement is not None:
                         measurement["validity_status"] = "invalidated"
@@ -599,10 +601,9 @@ def main() -> int:
             if "template_id" in payload:
                 placement["template_id"] = payload.get("template_id")
 
-            placement_sequence = sequence if isinstance(sequence, int) else -1
-            previous = component_visual_placements_by_component.get(component_id)
-            if previous is None or placement_sequence >= previous[0]:
-                component_visual_placements_by_component[component_id] = (placement_sequence, placement)
+            component_visual_placement_candidates_by_component.setdefault(component_id, []).append(
+                (event_index, placement)
+            )
             continue
 
         if event_type == "photo_to_board_alignment_confirmed":
@@ -688,13 +689,17 @@ def main() -> int:
             continue
         # Other event types intentionally not materialized yet.
 
-    component_visual_placements = [
-        value[1]
-        for value in sorted(
-            component_visual_placements_by_component.values(),
-            key=lambda item: str(item[1].get("component_id", "")),
-        )
-    ]
+    component_visual_placements = []
+    for candidates in component_visual_placement_candidates_by_component.values():
+        valid_candidates = [
+            (event_index, placement)
+            for event_index, placement in candidates
+            if placement.get("source_event_id") not in invalidated_event_ids
+        ]
+        if not valid_candidates:
+            continue
+        component_visual_placements.append(max(valid_candidates, key=lambda item: item[0])[1])
+    component_visual_placements.sort(key=lambda item: str(item.get("component_id", "")))
     photo_to_board_alignments = [
         value[1]
         for value in sorted(

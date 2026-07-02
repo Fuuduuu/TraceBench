@@ -151,3 +151,19 @@ Stable decisions:
 - It does not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored facts, or visual contact/pad layout.
 - Visual contact layout remains separate future scope; AI/photo markers remain unconfirmed until human conversion.
 - Board Canvas renderer remains bodyOnly/read-only: `renderer writes: none`.
+
+## Placement projection ordering and invalidation scope lock
+
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS` locks projection semantics before any placement writer, Confirm/Edit UI, visual-contact layout, or AI marker conversion is implemented.
+
+Stable decisions:
+
+- Legacy V1 placement events remain first-class legacy events.
+- `component_visual_placements` latest-wins must interleave V1 and V2 placement confirmations deterministically by `events.jsonl` stream order, not by V1 `sequence` alone.
+- A later valid accepted/human-confirmed placement event supersedes an earlier placement for the same component.
+- `event_invalidated` retracts the targeted placement event from `component_visual_placements`.
+- If the newest placement is invalidated, projection falls back to the newest remaining valid placement for that component, or removes the projected placement if none remains.
+- Placement correction remains append-only through newer `component_visual_placement_confirmed` events.
+- Do not introduce a placement-updated event type for this fix.
+- Placement projection must not absorb contact layout, electrical connectivity, pin identity, net identity, AI-authored facts, pads, contacts, or visual-contact layout.
+- Future implementation is expected to be materializer + materializer tests only unless active-lock sync proves validator behavior must change.

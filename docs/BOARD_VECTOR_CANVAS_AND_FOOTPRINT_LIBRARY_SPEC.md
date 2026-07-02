@@ -61,9 +61,21 @@ Locked before any renderer/UI implementation:
 - `schemas/events.schema.json` remains V1-envelope-only by design/current state; V2 draft placement validation is owned by `tools/validate_events_jsonl.py`.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
 - No Dart placement writer exists yet, no placement Confirm/Edit UI exists yet, and Board Canvas remains read-only.
-- Open protected risk: mixed V1/V2 placement latest-wins ordering can drop a newer V2 human-authored placement when an older V1 placement has a higher `sequence`.
-- Open protected decision: `event_invalidated` currently does not retract `component_visual_placements`; future protected scope must decide whether placement invalidation is supported or correction is only by writing a newer placement confirmation.
+- Protected ordering/invalidation decisions are locked by `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`: mixed V1/V2 placement latest-wins uses deterministic stream order, and `event_invalidated` retracts targeted placement events from projection.
 - Visual contact layout remains a separate future event/projection and must not be folded into `component_visual_placement_confirmed`.
+
+## 2.5 Placement projection ordering and invalidation (`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`)
+
+- Legacy V1 placement events remain first-class legacy events.
+- `component_visual_placements` latest-wins must interleave V1 and V2 placement confirmations deterministically by `events.jsonl` stream order, not by V1 `sequence` alone.
+- A later valid placement event supersedes an earlier placement for the same component.
+- A V1 `sequence` number must not beat a later V2 human confirmation solely because V2 has no sequence.
+- `event_invalidated` retracts a targeted confirmed placement event from `component_visual_placements`.
+- If a newer non-invalidated placement exists for the same component, projection uses that newest valid placement.
+- If no valid non-invalidated placement remains, that component has no projected placement.
+- Placement correction remains append-only through newer `component_visual_placement_confirmed` events.
+- No new placement-updated event type is introduced for this fix.
+- Contact layout, electrical connectivity, pin identity, net identity, AI-authored facts, pads, contacts, and visual-contact layout remain outside placement projection.
 
 ## 3. Hard evidence boundaries
 

@@ -1876,7 +1876,7 @@ void main() {
       find.byKey(const Key('board_canvas_add_component_template_picker_label')),
       findsOneWidget,
     );
-    expect(find.text('Pick a footprint'), findsOneWidget);
+    expect(find.text('Vali kuju'), findsOneWidget);
     const forbiddenTemplateText = [
       'SOT-23',
       'SOIC',
@@ -2283,8 +2283,36 @@ void main() {
       find.text('UI-local marker draft'),
       findsOneWidget,
     );
+    expect(find.text('Pin-asetus'), findsOneWidget);
+    expect(find.text('Suurus'), findsOneWidget);
+    expect(find.text('Laius'), findsOneWidget);
+    expect(find.text('Kõrgus'), findsOneWidget);
+    expect(find.text('Pööramine'), findsOneWidget);
+    expect(find.text('Eelvaade'), findsOneWidget);
+    expect(find.text('Salvesta'), findsOneWidget);
+    expect(find.text('Muuda'), findsOneWidget);
+    expect(find.text('Kustuta'), findsOneWidget);
+    expect(find.text('Tühista'), findsOneWidget);
     expect(
       find.text('Per-side markers are UI-local; not confirmed contacts.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'Kontaktid on lokaalne mustand; neid ei kinnitata elektriliste kontaktidena.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Mustand on lokaalne kuni salvestamiseni.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Kontaktid ei kinnita elektrilist ühendust.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text("Salvestamine vajab eraldi writer-pass'i."),
       findsOneWidget,
     );
     expect(find.textContaining('template family'), findsNothing);
@@ -2296,6 +2324,219 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component panel size rotation preview and actions stay UI-local only',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_size_section')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_rotation_section'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_preview_section'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_action_bar')),
+      findsOneWidget,
+    );
+    final builderRectBeforeHover = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_template_builder')),
+    );
+    final sizeSectionRect = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_builder_size_section')),
+    );
+    final rotationSectionRect = tester.getRect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_rotation_section'),
+      ),
+    );
+    final previewSectionRect = tester.getRect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_preview_section'),
+      ),
+    );
+    expect(sizeSectionRect.width, closeTo(rotationSectionRect.width, 1));
+    expect(sizeSectionRect.width, closeTo(previewSectionRect.width, 1));
+    expect(
+      (sizeSectionRect.center.dx - rotationSectionRect.center.dx).abs(),
+      lessThanOrEqualTo(1),
+    );
+    expect(
+      (sizeSectionRect.center.dx - previewSectionRect.center.dx).abs(),
+      lessThanOrEqualTo(1),
+    );
+    final hoverGesture =
+        await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(hoverGesture.removePointer);
+    await hoverGesture.addPointer(
+      location: tester
+          .getCenter(find.byKey(
+              const Key('board_canvas_add_component_builder_width_increment')))
+          .translate(-4, 0),
+    );
+    for (final key in const [
+      'board_canvas_add_component_builder_width_decrement',
+      'board_canvas_add_component_builder_width_increment',
+      'board_canvas_add_component_builder_height_decrement',
+      'board_canvas_add_component_builder_height_increment',
+    ]) {
+      await hoverGesture.moveTo(tester.getCenter(find.byKey(Key(key))));
+      await tester.pump(const Duration(milliseconds: 48));
+      expect(
+        find.byKey(const Key('board_canvas_add_component_template_builder')),
+        findsOneWidget,
+      );
+      expect(find.text('Suurus'), findsOneWidget);
+      expect(find.text('Pööramine'), findsOneWidget);
+      expect(find.text('Eelvaade'), findsOneWidget);
+    }
+    final builderRectAfterHover = tester.getRect(
+      find.byKey(const Key('board_canvas_add_component_template_builder')),
+    );
+    expect(
+        builderRectAfterHover.width, closeTo(builderRectBeforeHover.width, 1));
+    expect(find.text('Laius'), findsOneWidget);
+    expect(find.text('Kõrgus'), findsOneWidget);
+    expect(find.text('1.00'), findsOneWidget);
+    expect(find.text('0.60'), findsOneWidget);
+    expect(find.text('Pööre: 0°'), findsNWidgets(2));
+    expect(find.text('Suurus: 1.00 × 0.60'), findsOneWidget);
+    expect(find.text('Peenhäälestus'), findsOneWidget);
+    expect(find.text('−10°'), findsOneWidget);
+    expect(find.text('+10°'), findsOneWidget);
+    expect(find.text('0°'), findsOneWidget);
+    expect(find.text('90°'), findsOneWidget);
+    expect(find.text('180°'), findsOneWidget);
+    expect(find.text('270°'), findsOneWidget);
+
+    final saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNull);
+    for (final key in const [
+      'board_canvas_add_component_builder_save',
+      'board_canvas_add_component_builder_local_edit',
+      'board_canvas_add_component_builder_delete',
+      'board_canvas_add_component_builder_cancel',
+    ]) {
+      final buttonFinder = find.descendant(
+        of: find.byKey(Key(key)),
+        matching: find.byType(OutlinedButton),
+      );
+      expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(38));
+    }
+
+    await tester.ensureVisible(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_width_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_width_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_height_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_rotation_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('1.10'), findsOneWidget);
+    expect(find.text('0.70'), findsOneWidget);
+    expect(find.text('Pööre: 10°'), findsNWidgets(2));
+    expect(find.text('Suurus: 1.10 × 0.70'), findsOneWidget);
+    expect(state.events, isEmpty);
+
+    await tester.ensureVisible(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_rotation_snap_90')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_rotation_snap_90')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(find.text('Pööre: 90°'), findsNWidgets(2));
+
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_add_component_builder_delete')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(const Key('board_canvas_add_component_builder_delete')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(find.text('1.00'), findsOneWidget);
+    expect(find.text('0.60'), findsOneWidget);
+    expect(find.text('Pööre: 0°'), findsNWidgets(2));
+
+    await tester.ensureVisible(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_width_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+          const Key('board_canvas_add_component_builder_width_increment')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(find.text('1.10'), findsOneWidget);
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_add_component_builder_cancel')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(const Key('board_canvas_add_component_builder_cancel')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(find.text('1.00'), findsOneWidget);
     expect(state.events, isEmpty);
   });
 
@@ -3252,7 +3493,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.textContaining('Draft / unsaved'), findsOneWidget);
+    expect(find.textContaining('Draft / unsaved'), findsWidgets);
     final ghostPaint = tester.widget<CustomPaint>(
       find.byKey(
         const Key('board_canvas_add_component_template_ghost_preview_body'),
@@ -6092,6 +6333,31 @@ void main() {
     expect(source, contains('Canonical projection remains unchanged.'));
     expect(source,
         contains('Per-side markers are UI-local; not confirmed contacts.'));
+    expect(source, contains('Pin-asetus'));
+    expect(source, contains('UI-local marker draft'));
+    expect(source, contains('Suurus'));
+    expect(source, contains('Laius'));
+    expect(source, contains('Kõrgus'));
+    expect(source, contains('Lohista nurgast suuruse muutmiseks'));
+    expect(source, contains('Pööramine'));
+    expect(source, contains(r'Pööre: $rotationDeg°'));
+    expect(source, contains('Eelvaade'));
+    expect(source, contains('Draft / unsaved'));
+    expect(source, contains('Mustand on lokaalne kuni salvestamiseni.'));
+    expect(source, contains('Kontaktid ei kinnita elektrilist ühendust.'));
+    expect(source, contains("Salvestamine vajab eraldi writer-pass'i."));
+    expect(
+        source,
+        contains(
+            'Kontaktid on lokaalne mustand; neid ei kinnitata elektriliste kontaktidena.'));
+    expect(source, contains('board_canvas_add_component_builder_save'));
+    expect(source, contains('board_canvas_add_component_builder_local_edit'));
+    expect(source, contains('board_canvas_add_component_builder_delete'));
+    expect(source, contains('board_canvas_add_component_builder_cancel'));
+    expect(source, isNot(contains('maxPanelHeight')));
+    expect(source, isNot(contains('scrollbars: false')));
+    expect(source, isNot(contains('event_writer_service.py')));
+    expect(source, isNot(contains('component_visual_placement_confirmed')));
     expect(source, contains('knownFacts.visualTraces'));
     expect(source, contains('knownFacts.photoToBoardAlignments'));
     expect(source, isNot(contains('knownFacts.damageRegions')));

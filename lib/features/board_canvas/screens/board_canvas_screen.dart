@@ -390,6 +390,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   int _addComponentTemplateBottomContactMarkers = 0;
   int _addComponentTemplateLeftContactMarkers = 0;
   String _addComponentTemplateDraftLabel = '';
+  double _addComponentTemplateDraftWidth = 1.0;
+  double _addComponentTemplateDraftHeight = 0.6;
+  int _addComponentTemplateDraftRotationDeg = 0;
   Offset? _addComponentTemplateGhostDraftAnchor;
   String? _placementEditorDraftKey;
   _PlacementEditorDraftState? _placementEditorDraft;
@@ -434,6 +437,20 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     _addComponentTemplateLeftContactMarkers = template.leftContactMarkers;
   }
 
+  void _resetAddComponentTemplateLocalDraftScalars() {
+    _addComponentTemplateDraftWidth = 1.0;
+    _addComponentTemplateDraftHeight = 0.6;
+    _addComponentTemplateDraftRotationDeg = 0;
+  }
+
+  double _clampAddComponentTemplateDraftDimension(double value) {
+    return value.clamp(0.2, 9.9).toDouble();
+  }
+
+  int _normalizeAddComponentTemplateDraftRotation(int value) {
+    return ((value % 360) + 360) % 360;
+  }
+
   void _setAddComponentTemplateSelection(String templateId) {
     final template = _kStarterAddComponentTemplates
         .cast<_AddComponentTemplateDefinition?>()
@@ -447,6 +464,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     setState(() {
       _selectedAddComponentTemplateId = templateId;
       _seedAddComponentTemplateContactCounts(template);
+      _resetAddComponentTemplateLocalDraftScalars();
       _addComponentTemplateGhostDraftAnchor = null;
     });
   }
@@ -902,6 +920,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             _addComponentTemplateBottomContactMarkers,
                         leftContactMarkers:
                             _addComponentTemplateLeftContactMarkers,
+                        draftWidth: _addComponentTemplateDraftWidth,
+                        draftHeight: _addComponentTemplateDraftHeight,
+                        draftRotationDeg: _addComponentTemplateDraftRotationDeg,
                         hasZeroContactMarkers:
                             _addComponentTemplateHasZeroMarkers,
                         hasExcessiveContactMarkers:
@@ -930,10 +951,30 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           setState(() =>
                               _addComponentTemplateLeftContactMarkers = value);
                         },
+                        onDraftWidthChanged: (value) {
+                          setState(() {
+                            _addComponentTemplateDraftWidth =
+                                _clampAddComponentTemplateDraftDimension(value);
+                          });
+                        },
+                        onDraftHeightChanged: (value) {
+                          setState(() {
+                            _addComponentTemplateDraftHeight =
+                                _clampAddComponentTemplateDraftDimension(value);
+                          });
+                        },
+                        onDraftRotationChanged: (value) {
+                          setState(() {
+                            _addComponentTemplateDraftRotationDeg =
+                                _normalizeAddComponentTemplateDraftRotation(
+                                    value);
+                          });
+                        },
                         onChangeTemplateSelection: () {
                           setState(() {
                             _selectedAddComponentTemplateId = null;
                             _addComponentTemplateGhostDraftAnchor = null;
+                            _resetAddComponentTemplateLocalDraftScalars();
                           });
                         },
                         onResetToTemplateDefaults:
@@ -943,6 +984,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                     setState(() {
                                       _seedAddComponentTemplateContactCounts(
                                           selectedAddComponentTemplate);
+                                      _resetAddComponentTemplateLocalDraftScalars();
                                       _addComponentTemplateGhostDraftAnchor =
                                           null;
                                     });
@@ -961,6 +1003,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final showContextPanel = _inspectorVisible &&
                       !_canvasFocusMode &&
                       contextPanel != null;
+                  final contextPanelSlot = contextPanel == null
+                      ? null
+                      : _contextPanelMode ==
+                              _WorkbenchContextPanelMode.addComponentTemplates
+                          ? Scrollbar(
+                              child: SingleChildScrollView(
+                                key: const Key(
+                                  'board_canvas_add_component_context_scroll',
+                                ),
+                                child: contextPanel,
+                              ),
+                            )
+                          : contextPanel;
                   final measurePanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_measure_sheet_button'),
                     icon: Icons.science_outlined,
@@ -1078,7 +1133,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         SizedBox(
                           key: const Key('board_canvas_context_panel'),
                           width: contextPanelWidth,
-                          child: contextPanel,
+                          child: contextPanelSlot,
                         ),
                       ],
                     ],
@@ -2028,12 +2083,18 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.rightContactMarkers,
     required this.bottomContactMarkers,
     required this.leftContactMarkers,
+    required this.draftWidth,
+    required this.draftHeight,
+    required this.draftRotationDeg,
     required this.hasZeroContactMarkers,
     required this.hasExcessiveContactMarkers,
     required this.onTopContactMarkersChanged,
     required this.onRightContactMarkersChanged,
     required this.onBottomContactMarkersChanged,
     required this.onLeftContactMarkersChanged,
+    required this.onDraftWidthChanged,
+    required this.onDraftHeightChanged,
+    required this.onDraftRotationChanged,
     required this.onChangeTemplateSelection,
     required this.draftLabel,
     required this.onDraftLabelChanged,
@@ -2048,12 +2109,18 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final int rightContactMarkers;
   final int bottomContactMarkers;
   final int leftContactMarkers;
+  final double draftWidth;
+  final double draftHeight;
+  final int draftRotationDeg;
   final bool hasZeroContactMarkers;
   final bool hasExcessiveContactMarkers;
   final ValueChanged<int> onTopContactMarkersChanged;
   final ValueChanged<int> onRightContactMarkersChanged;
   final ValueChanged<int> onBottomContactMarkersChanged;
   final ValueChanged<int> onLeftContactMarkersChanged;
+  final ValueChanged<double> onDraftWidthChanged;
+  final ValueChanged<double> onDraftHeightChanged;
+  final ValueChanged<int> onDraftRotationChanged;
   final VoidCallback onChangeTemplateSelection;
   final String draftLabel;
   final ValueChanged<String> onDraftLabelChanged;
@@ -2062,9 +2129,6 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxPanelHeight = MediaQuery.of(context).size.height > 200
-        ? MediaQuery.of(context).size.height - 210.0
-        : 200.0;
     final templateRows = entries
         .map(
           (entry) => Padding(
@@ -2101,103 +2165,106 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
               : 'Aktiivne mall',
         ),
         children: [
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: maxPanelHeight),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (selectedTemplate == null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(2, 0, 2, 6),
-                          child: Text(
-                            'Pick a footprint',
-                            key: const Key(
-                              'board_canvas_add_component_template_picker_label',
-                            ),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: _kBoardCanvasSignal,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (selectedTemplate == null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(2, 0, 2, 6),
+                      child: Text(
+                        'Vali kuju',
+                        key: const Key(
+                          'board_canvas_add_component_template_picker_label',
                         ),
-                        Padding(
-                          padding: EdgeInsets.zero,
-                          key: const Key(
-                            'board_canvas_add_component_template_list_rows',
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: templateRows,
-                          ),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: _kBoardCanvasSignal,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
                         ),
-                      ],
-                    )
-                  else ...[
-                    _AddComponentTemplateSelectedSummary(
-                      template: selectedTemplate!,
-                      onChangeTemplate: onChangeTemplateSelection,
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      key: const Key(
-                        'board_canvas_add_component_template_draft_label_input',
-                      ),
-                      initialValue: draftLabel,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        labelText: 'Draft label',
-                        hintText: 'e.g. AGH789',
-                        labelStyle: theme.textTheme.labelSmall?.copyWith(
-                          color: _kBoardCanvasMuted,
-                        ),
-                        hintStyle: theme.textTheme.bodySmall?.copyWith(
-                          color: _kBoardCanvasDim,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: _kBoardCanvasRule),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: _kBoardCanvasSignal),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 6,
-                        ),
-                      ),
-                      maxLength: 16,
-                      onChanged: onDraftLabelChanged,
-                      textAlign: TextAlign.left,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: _kBoardCanvasNavy,
                       ),
                     ),
-                    _AddComponentTemplateBuilderPanel(
+                    Padding(
+                      padding: EdgeInsets.zero,
                       key: const Key(
-                        'board_canvas_add_component_template_builder',
+                        'board_canvas_add_component_template_list_rows',
                       ),
-                      template: selectedTemplate!,
-                      topContactMarkers: topContactMarkers,
-                      rightContactMarkers: rightContactMarkers,
-                      bottomContactMarkers: bottomContactMarkers,
-                      leftContactMarkers: leftContactMarkers,
-                      hasZeroContactMarkers: hasZeroContactMarkers,
-                      hasExcessiveContactMarkers: hasExcessiveContactMarkers,
-                      onTopChanged: onTopContactMarkersChanged,
-                      onRightChanged: onRightContactMarkersChanged,
-                      onBottomChanged: onBottomContactMarkersChanged,
-                      onLeftChanged: onLeftContactMarkersChanged,
-                      onResetToDefaults: onResetToTemplateDefaults,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: templateRows,
+                      ),
                     ),
                   ],
-                ],
-              ),
-            ),
+                )
+              else ...[
+                _AddComponentTemplateSelectedSummary(
+                  template: selectedTemplate!,
+                  onChangeTemplate: onChangeTemplateSelection,
+                ),
+                const SizedBox(height: 6),
+                TextFormField(
+                  key: const Key(
+                    'board_canvas_add_component_template_draft_label_input',
+                  ),
+                  initialValue: draftLabel,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    labelText: 'Draft label',
+                    hintText: 'e.g. AGH789',
+                    labelStyle: theme.textTheme.labelSmall?.copyWith(
+                      color: _kBoardCanvasMuted,
+                    ),
+                    hintStyle: theme.textTheme.bodySmall?.copyWith(
+                      color: _kBoardCanvasDim,
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: _kBoardCanvasRule),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: _kBoardCanvasSignal),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
+                    ),
+                  ),
+                  maxLength: 16,
+                  onChanged: onDraftLabelChanged,
+                  textAlign: TextAlign.left,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: _kBoardCanvasNavy,
+                  ),
+                ),
+                _AddComponentTemplateBuilderPanel(
+                  key: const Key(
+                    'board_canvas_add_component_template_builder',
+                  ),
+                  template: selectedTemplate!,
+                  topContactMarkers: topContactMarkers,
+                  rightContactMarkers: rightContactMarkers,
+                  bottomContactMarkers: bottomContactMarkers,
+                  leftContactMarkers: leftContactMarkers,
+                  draftWidth: draftWidth,
+                  draftHeight: draftHeight,
+                  draftRotationDeg: draftRotationDeg,
+                  hasZeroContactMarkers: hasZeroContactMarkers,
+                  hasExcessiveContactMarkers: hasExcessiveContactMarkers,
+                  onTopChanged: onTopContactMarkersChanged,
+                  onRightChanged: onRightContactMarkersChanged,
+                  onBottomChanged: onBottomContactMarkersChanged,
+                  onLeftChanged: onLeftContactMarkersChanged,
+                  onDraftWidthChanged: onDraftWidthChanged,
+                  onDraftHeightChanged: onDraftHeightChanged,
+                  onDraftRotationChanged: onDraftRotationChanged,
+                  onResetToDefaults: onResetToTemplateDefaults,
+                ),
+              ],
+            ],
           ),
         ],
       ),
@@ -2283,6 +2350,7 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
     final title = template.shortTemplateShapeName;
     return Container(
       key: const Key('board_canvas_add_component_template_summary'),
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -2324,6 +2392,25 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
                     color: _kBoardCanvasMuted,
                   ),
                 ),
+                const SizedBox(height: 2),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 1,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _kBoardCanvasSignalTint,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: _kBoardCanvasRule),
+                  ),
+                  child: Text(
+                    'Mustand',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: _kBoardCanvasSignal,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -2341,7 +2428,7 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
               textStyle: theme.textTheme.labelSmall,
               foregroundColor: _kBoardCanvasMuted,
             ),
-            child: const Text('Change template'),
+            child: const Text('Muuda kuju'),
           ),
           const SizedBox(width: 2),
           Icon(
@@ -2367,12 +2454,18 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
     required this.rightContactMarkers,
     required this.bottomContactMarkers,
     required this.leftContactMarkers,
+    required this.draftWidth,
+    required this.draftHeight,
+    required this.draftRotationDeg,
     required this.hasZeroContactMarkers,
     required this.hasExcessiveContactMarkers,
     required this.onTopChanged,
     required this.onRightChanged,
     required this.onBottomChanged,
     required this.onLeftChanged,
+    required this.onDraftWidthChanged,
+    required this.onDraftHeightChanged,
+    required this.onDraftRotationChanged,
     this.onResetToDefaults,
   });
 
@@ -2381,12 +2474,18 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
   final int rightContactMarkers;
   final int bottomContactMarkers;
   final int leftContactMarkers;
+  final double draftWidth;
+  final double draftHeight;
+  final int draftRotationDeg;
   final bool hasZeroContactMarkers;
   final bool hasExcessiveContactMarkers;
   final ValueChanged<int> onTopChanged;
   final ValueChanged<int> onRightChanged;
   final ValueChanged<int> onBottomChanged;
   final ValueChanged<int> onLeftChanged;
+  final ValueChanged<double> onDraftWidthChanged;
+  final ValueChanged<double> onDraftHeightChanged;
+  final ValueChanged<int> onDraftRotationChanged;
   final VoidCallback? onResetToDefaults;
 
   @override
@@ -2405,6 +2504,18 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Pin-asetus',
+              key: const Key(
+                'board_canvas_add_component_builder_pin_layout_heading',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasSignal,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.6,
+              ),
+            ),
+            const SizedBox(height: 4),
             Row(
               children: [
                 Expanded(
@@ -2427,6 +2538,16 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
+              'Kontaktid on lokaalne mustand; neid ei kinnitata elektriliste kontaktidena.',
+              key: const Key(
+                'board_canvas_add_component_builder_local_contact_boundary',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
               'Per-side markers are UI-local; not confirmed contacts.',
               key: const Key(
                 'board_canvas_add_component_builder_local_marker_boundary',
@@ -2435,15 +2556,15 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 color: _kBoardCanvasMuted,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 5),
             SizedBox(
               key: const Key('board_canvas_add_component_builder_visual_body'),
-              height: 170,
+              height: 148,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: 36,
+                    height: 30,
                     child: Center(
                       child: _ContactMarkerCountRow(
                         controlKey: const Key(
@@ -2551,7 +2672,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 36,
+                    height: 30,
                     child: Center(
                       child: _ContactMarkerCountRow(
                         controlKey: const Key(
@@ -2622,9 +2743,582 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                   maxLines: 2,
                 ),
               ),
+            const SizedBox(height: 6),
+            _AddComponentDraftSizeControls(
+              draftWidth: draftWidth,
+              draftHeight: draftHeight,
+              onWidthChanged: onDraftWidthChanged,
+              onHeightChanged: onDraftHeightChanged,
+            ),
+            const SizedBox(height: 6),
+            _AddComponentDraftRotationControls(
+              rotationDeg: draftRotationDeg,
+              onRotationChanged: onDraftRotationChanged,
+            ),
+            const SizedBox(height: 6),
+            _AddComponentDraftPreviewCard(
+              template: template,
+              draftWidth: draftWidth,
+              draftHeight: draftHeight,
+              draftRotationDeg: draftRotationDeg,
+              topContactMarkers: topContactMarkers,
+              rightContactMarkers: rightContactMarkers,
+              bottomContactMarkers: bottomContactMarkers,
+              leftContactMarkers: leftContactMarkers,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Mustand on lokaalne kuni salvestamiseni.',
+              key: const Key(
+                'board_canvas_add_component_builder_local_draft_copy',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            Text(
+              'Kontaktid ei kinnita elektrilist ühendust.',
+              key: const Key(
+                'board_canvas_add_component_builder_no_connectivity_copy',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            Text(
+              "Salvestamine vajab eraldi writer-pass'i.",
+              key: const Key(
+                'board_canvas_add_component_builder_writer_pass_copy',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            const SizedBox(height: 6),
+            _AddComponentDraftActionBar(
+              onResetToDefaults: onResetToDefaults,
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AddComponentDraftSizeControls extends StatelessWidget {
+  const _AddComponentDraftSizeControls({
+    required this.draftWidth,
+    required this.draftHeight,
+    required this.onWidthChanged,
+    required this.onHeightChanged,
+  });
+
+  final double draftWidth;
+  final double draftHeight;
+  final ValueChanged<double> onWidthChanged;
+  final ValueChanged<double> onHeightChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      key: const Key('board_canvas_add_component_builder_size_section'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasPaper,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Suurus',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          _AddComponentDraftScalarControl(
+            label: 'Laius',
+            valueText: draftWidth.toStringAsFixed(2),
+            decrementKey: const Key(
+              'board_canvas_add_component_builder_width_decrement',
+            ),
+            valueKey:
+                const Key('board_canvas_add_component_builder_width_value'),
+            incrementKey: const Key(
+              'board_canvas_add_component_builder_width_increment',
+            ),
+            onDecrement: () => onWidthChanged(draftWidth - 0.1),
+            onIncrement: () => onWidthChanged(draftWidth + 0.1),
+          ),
+          const SizedBox(height: 4),
+          _AddComponentDraftScalarControl(
+            label: 'Kõrgus',
+            valueText: draftHeight.toStringAsFixed(2),
+            decrementKey: const Key(
+              'board_canvas_add_component_builder_height_decrement',
+            ),
+            valueKey:
+                const Key('board_canvas_add_component_builder_height_value'),
+            incrementKey: const Key(
+              'board_canvas_add_component_builder_height_increment',
+            ),
+            onDecrement: () => onHeightChanged(draftHeight - 0.1),
+            onIncrement: () => onHeightChanged(draftHeight + 0.1),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Lohista nurgast suuruse muutmiseks',
+            key: const Key(
+              'board_canvas_add_component_builder_resize_hint',
+            ),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddComponentDraftRotationControls extends StatelessWidget {
+  const _AddComponentDraftRotationControls({
+    required this.rotationDeg,
+    required this.onRotationChanged,
+  });
+
+  final int rotationDeg;
+  final ValueChanged<int> onRotationChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      key: const Key('board_canvas_add_component_builder_rotation_section'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasPaper,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pööramine',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Pööre: $rotationDeg°',
+            key: const Key(
+              'board_canvas_add_component_builder_rotation_value',
+            ),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final snap in const [0, 90, 180, 270])
+                _AddComponentDraftChipButton(
+                  key: Key(
+                    'board_canvas_add_component_builder_rotation_snap_$snap',
+                  ),
+                  label: '$snap°',
+                  onPressed: () => onRotationChanged(snap),
+                  minWidth: 52,
+                  minHeight: 32,
+                  foregroundColor: _kBoardCanvasNavy,
+                  backgroundColor: _kBoardCanvasSignalTint,
+                  borderColor: _kBoardCanvasRuleStrong,
+                ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Peenhäälestus',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              _AddComponentDraftChipButton(
+                key: const Key(
+                  'board_canvas_add_component_builder_rotation_decrement',
+                ),
+                label: '−10°',
+                onPressed: () => onRotationChanged(rotationDeg - 10),
+                minHeight: 26,
+                foregroundColor: _kBoardCanvasMuted,
+                borderColor: _kBoardCanvasRule,
+              ),
+              _AddComponentDraftChipButton(
+                key: const Key(
+                  'board_canvas_add_component_builder_rotation_increment',
+                ),
+                label: '+10°',
+                onPressed: () => onRotationChanged(rotationDeg + 10),
+                minHeight: 26,
+                foregroundColor: _kBoardCanvasMuted,
+                borderColor: _kBoardCanvasRule,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddComponentDraftPreviewCard extends StatelessWidget {
+  const _AddComponentDraftPreviewCard({
+    required this.template,
+    required this.draftWidth,
+    required this.draftHeight,
+    required this.draftRotationDeg,
+    required this.topContactMarkers,
+    required this.rightContactMarkers,
+    required this.bottomContactMarkers,
+    required this.leftContactMarkers,
+  });
+
+  final _AddComponentTemplateDefinition template;
+  final double draftWidth;
+  final double draftHeight;
+  final int draftRotationDeg;
+  final int topContactMarkers;
+  final int rightContactMarkers;
+  final int bottomContactMarkers;
+  final int leftContactMarkers;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      key: const Key('board_canvas_add_component_builder_preview_section'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasPaper,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Eelvaade',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: _kBoardCanvasNavy,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: _kBoardCanvasTile,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: _kBoardCanvasRule),
+                ),
+                child: Text(
+                  'Draft / unsaved',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasNavy,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 150,
+                maxHeight: 70,
+              ),
+              child: AspectRatio(
+                aspectRatio: template.bodyAspectRatio,
+                child: CustomPaint(
+                  key: const Key(
+                    'board_canvas_add_component_builder_local_preview',
+                  ),
+                  painter: _RectangularPerimeterTemplatePreviewPainter(
+                    template: template,
+                    topContactMarkers: topContactMarkers,
+                    rightContactMarkers: rightContactMarkers,
+                    bottomContactMarkers: bottomContactMarkers,
+                    leftContactMarkers: leftContactMarkers,
+                    dashedBoundary: true,
+                    strokeWidth: 2,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Suurus: ${draftWidth.toStringAsFixed(2)} × ${draftHeight.toStringAsFixed(2)}',
+            key: const Key(
+              'board_canvas_add_component_builder_preview_size_value',
+            ),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
+          ),
+          Text(
+            'Pööre: $draftRotationDeg°',
+            key: const Key(
+              'board_canvas_add_component_builder_preview_rotation_value',
+            ),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: _kBoardCanvasMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddComponentDraftActionBar extends StatelessWidget {
+  const _AddComponentDraftActionBar({
+    required this.onResetToDefaults,
+  });
+
+  final VoidCallback? onResetToDefaults;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      key: const Key('board_canvas_add_component_builder_action_bar'),
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _AddComponentDraftChipButton(
+          key: const Key('board_canvas_add_component_builder_save'),
+          label: 'Salvesta',
+          onPressed: null,
+          minWidth: 74,
+          minHeight: 38,
+          disabledForegroundColor: _kBoardCanvasSignal,
+          disabledBackgroundColor: _kBoardCanvasSignalTint,
+          disabledBorderColor: _kBoardCanvasSignal.withValues(alpha: 0.45),
+        ),
+        _AddComponentDraftChipButton(
+          key: const Key('board_canvas_add_component_builder_local_edit'),
+          label: 'Muuda',
+          onPressed: () {},
+          minWidth: 68,
+          minHeight: 38,
+          foregroundColor: const Color(0xFFF6C453),
+          backgroundColor: const Color(0xFF231B0A),
+          borderColor: const Color(0xFF66501D),
+        ),
+        _AddComponentDraftChipButton(
+          key: const Key('board_canvas_add_component_builder_delete'),
+          label: 'Kustuta',
+          onPressed: onResetToDefaults,
+          minWidth: 74,
+          minHeight: 38,
+          foregroundColor: const Color(0xFFEAA6A6),
+          backgroundColor: const Color(0xFF211417),
+          borderColor: const Color(0xFF493039),
+        ),
+        _AddComponentDraftChipButton(
+          key: const Key('board_canvas_add_component_builder_cancel'),
+          label: 'Tühista',
+          onPressed: onResetToDefaults,
+          minWidth: 74,
+          minHeight: 38,
+          foregroundColor: _kBoardCanvasNavy,
+          backgroundColor: _kBoardCanvasPaper,
+          borderColor: _kBoardCanvasRuleStrong,
+        ),
+      ],
+    );
+  }
+}
+
+class _AddComponentDraftScalarControl extends StatelessWidget {
+  const _AddComponentDraftScalarControl({
+    required this.label,
+    required this.valueText,
+    required this.decrementKey,
+    required this.valueKey,
+    required this.incrementKey,
+    required this.onDecrement,
+    required this.onIncrement,
+  });
+
+  final String label;
+  final String valueText;
+  final Key decrementKey;
+  final Key valueKey;
+  final Key incrementKey;
+  final VoidCallback onDecrement;
+  final VoidCallback onIncrement;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasTile,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 52,
+            child: Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: _kBoardCanvasNavy,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          IconButton(
+            key: decrementKey,
+            iconSize: 20,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints.tightFor(width: 30, height: 30),
+            style: IconButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              minimumSize: const Size(30, 30),
+              maximumSize: const Size(30, 30),
+              foregroundColor: const Color(0xFFEAA6A6),
+              backgroundColor: const Color(0xFF211417),
+            ),
+            tooltip: 'Vähenda $label',
+            onPressed: onDecrement,
+            icon: const Icon(Icons.remove_circle_outline),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              decoration: BoxDecoration(
+                color: _kBoardCanvasShell,
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(color: _kBoardCanvasRuleStrong),
+              ),
+              child: Text(
+                valueText,
+                key: valueKey,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: _kBoardCanvasNavy,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            key: incrementKey,
+            iconSize: 20,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints.tightFor(width: 30, height: 30),
+            style: IconButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              minimumSize: const Size(30, 30),
+              maximumSize: const Size(30, 30),
+              foregroundColor: _kBoardCanvasSignal,
+              backgroundColor: _kBoardCanvasSignalTint,
+            ),
+            tooltip: 'Suurenda $label',
+            onPressed: onIncrement,
+            icon: const Icon(Icons.add_circle_outline),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddComponentDraftChipButton extends StatelessWidget {
+  const _AddComponentDraftChipButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.borderColor,
+    this.disabledForegroundColor,
+    this.disabledBackgroundColor,
+    this.disabledBorderColor,
+    this.minWidth = 0,
+    this.minHeight = 28,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final Color? foregroundColor;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final Color? disabledForegroundColor;
+  final Color? disabledBackgroundColor;
+  final Color? disabledBorderColor;
+  final double minWidth;
+  final double minHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+        minimumSize: Size(minWidth, minHeight),
+        maximumSize: Size(math.max(minWidth, 120), minHeight),
+        foregroundColor: foregroundColor ?? _kBoardCanvasNavy,
+        backgroundColor: backgroundColor ?? Colors.transparent,
+        disabledForegroundColor: disabledForegroundColor ?? _kBoardCanvasDim,
+        disabledBackgroundColor: disabledBackgroundColor ?? Colors.transparent,
+        side: BorderSide(
+          color: onPressed == null
+              ? disabledBorderColor ?? _kBoardCanvasRule
+              : borderColor ?? _kBoardCanvasRuleStrong,
+        ),
+        textStyle: theme.textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      child: Text(label),
     );
   }
 }

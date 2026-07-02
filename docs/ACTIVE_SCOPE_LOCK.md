@@ -2,86 +2,55 @@
 
 ## Current pass
 
-`PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Status
 
-Docs-only active-lock sync is active. This pass arms the implementation allowlist for the first UI-local Board Canvas placement editor shell and does not implement runtime behavior.
+No active implementation lock is armed.
 
-## Scope-lock and audit baseline
+`PLACEMENT_EDITOR_SHELL_IMPL_PASS` is closed out as accepted/pushed/audited.
 
-- Scope-lock commit: `0ebcf433608c9691440d43c8aa3d212c693454b4` (`docs: lock placement editor and writer contract`)
-- Audit-record commit: `c4f7f5687360b76f9000a7b50f7d7733c08cc193` (`docs: record placement editor contract audit`)
-- Scope-lock audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
+## Closed implementation baseline
 
-## Write allowlist for this active-lock sync
+- Implementation commit: `d779b0c294b5b0f28557d3e8d921fb4cd7970c91` (`feat: add placement editor draft shell`)
+- Active-lock commit: `657a269f7ea0a949bde80f35007477576e3b38a6` (`docs: arm placement editor shell implementation`)
+- Implementation audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
+- Manual smoke: `PASS`
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
-
-## Armed implementation pass
-
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS`
-
-## Armed implementation allowlist
+## Closed implementation files
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-## Implementation goal
+## Closed implementation summary
 
-Implement the first UI-local Board Canvas placement editor shell.
-
-The future implementation pass may:
-
-- evolve the existing Board Canvas right-panel / Add Component ghost/draft area into a clearer placement editor shell
-- expose UI-local draft controls for component context / selected component
-- expose board side, shape/template family, local position/drag if already represented, `rotation_deg`, `width`, and `height` draft controls
-- expose optional `template_id` / visual family reference and optional notes if low-risk
-- clearly label draft state as unsaved/session-only
-- provide Cancel/Reset/Discard behavior that writes nothing
-- preserve existing read-only renderer/painter behavior
-- keep all draft state in memory only
-
-## Test requirements for implementation pass
-
-- Board Canvas shell shows placement draft as unsaved/session-only.
-- Draft changes do not write events or known facts.
-- No Confirm/write affordance is present unless clearly disabled/inert.
-- Cancel/Reset/Discard keeps renderer/canonical data unchanged.
-- Existing Board Canvas renderer read-only tests continue to pass.
-- Existing measurement/selection behavior remains intact.
-- Per-side/contact draft controls, if visible, are explicitly UI-local and not confirmed contacts.
-
-## Forbidden implementation surfaces
-
-- No new placement writer file.
-- No component service writer edits.
-- No Add Component writer edits.
-- No Edit Component writer edits.
-- No schema edits.
-- No tools/materializer/validator edits.
-- No router edits.
-- No `events.jsonl` / `known_facts.json` semantic changes.
-- No visual contact layout.
-- No contacts/pads/legs rendering as confirmed.
-- No AI marker implementation.
-- No sample/project fixture edits.
-- No `_incoming` edits or staging.
-- No broad docs cleanup.
-- No implementation in this active-lock sync.
+- Board Canvas now has a first UI-local placement editor draft shell in the right panel.
+- Draft is seeded read-only from selected placement projection.
+- Draft state is `setState` / in-memory / session-only.
+- Draft exposes local controls for side, rotation, width, and height.
+- Draft has Cancel local draft, Reset local draft, and Discard local draft actions.
+- Draft copy says unsaved/session-only and confirms canonical projection remains unchanged.
+- No canonical write is wired.
+- No placement writer was created.
+- No Confirm/Save/Edit placement action was added.
+- Renderer/painter remains read-only.
+- Add Component marker-builder copy was clarified as UI-local/not confirmed contacts.
 
 ## Boundary record
 
-- Board Canvas renderer/painter remains read-only until the implementation pass changes only allowed UI-local shell behavior.
-- Component identity and placement confirmation remain separate actions.
-- Placement and visual contact layout remain separate canonical concepts.
-- This sync creates no placement writer and no Confirm/write path.
-- This sync does not edit runtime, tests, schemas, tools, materializers, validators, writers, routers, samples, project fixtures, or `_incoming`.
+- No writer.
+- No canonical placement Confirm.
+- No `events.jsonl` write.
+- No `known_facts.json` write.
+- No schema/tool/materializer/validator/router changes.
+- No visual contact layout.
+- No AI marker conversion.
+- No `_incoming` dependency.
+
+## Future candidate, not armed
+
+`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`

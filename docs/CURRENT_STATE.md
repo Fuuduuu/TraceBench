@@ -2,65 +2,61 @@
 
 ## Current pass
 
-`PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Latest pushed audit-record commit verified: `c4f7f5687360b76f9000a7b50f7d7733c08cc193` (`docs: record placement editor contract audit`).
-- Pushed scope-lock commit verified: `0ebcf433608c9691440d43c8aa3d212c693454b4` (`docs: lock placement editor and writer contract`).
-- Scope-lock audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Route before this sync: current `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Route after this sync: current `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_PASS`.
+- Latest pushed implementation commit verified: `d779b0c294b5b0f28557d3e8d921fb4cd7970c91` (`feat: add placement editor draft shell`).
+- Active-lock commit verified: `657a269f7ea0a949bde80f35007477576e3b38a6` (`docs: arm placement editor shell implementation`).
+- Implementation pass closed out: `PLACEMENT_EDITOR_SHELL_IMPL_PASS`.
+- Closeout pass: `PLACEMENT_EDITOR_SHELL_IMPL_POST_AUDIT_PASS`.
+- Route before closeout: current `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_PASS`.
+- Route after closeout: current `NEEDS_USER_DECISION`, next `NEEDS_USER_DECISION`.
 
-## Implementation pass armed
+## Closed implementation summary
 
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS` is armed for the first UI-local Board Canvas placement editor shell.
+Board Canvas now has a first UI-local placement editor draft shell in the right panel.
 
-Implementation allowlist:
+- Draft is seeded read-only from the selected placement projection.
+- Draft state is `setState` / in-memory / session-only.
+- Draft exposes local controls for side, rotation, width, and height.
+- Draft has Cancel local draft, Reset local draft, and Discard local draft actions.
+- Draft copy says unsaved/session-only and confirms canonical projection remains unchanged.
+- No canonical write is wired.
+- No placement writer was created.
+- No Confirm/Save/Edit placement action was added.
+- Renderer/painter remains read-only.
+- Add Component marker-builder copy was clarified as UI-local/not confirmed contacts.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Audit and smoke record
 
-## Implementation goal recorded
+- Implementation audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Safe staging set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- Manual smoke: `PASS`.
+- Validation recorded: git status/diff/diff-check PASS; changed files exactly two allowlisted files; Board Canvas write-ref grep empty / no write path; `flutter test test/widget/board_canvas_screen_test.dart` 101/101 PASS; contrast `E9EEF4` on `11161C` WCAG-AA-comfortable; renderer-writes-none preserved; no Confirm/Save/Edit placement affordance; tests assert `state.events` empty.
 
-The future implementation pass may evolve the existing Board Canvas right-panel / Add Component ghost/draft area into a clearer placement editor shell, while keeping all state UI-local/in-memory and preserving read-only renderer/painter behavior.
+## Non-goals preserved
 
-Allowed future shell controls include:
+- No writer.
+- No canonical placement Confirm.
+- No `events.jsonl` write.
+- No `known_facts.json` write.
+- No schema/tool/materializer/validator/router changes.
+- No visual contact layout.
+- No AI marker conversion.
+- No `_incoming` dependency.
 
-- component context / selected component
-- board side
-- shape/template family
-- center position / drag, if already represented locally
-- `rotation_deg` UI-local draft control
-- `width` + `height` UI-local draft control
-- optional `template_id` / visual family reference
-- optional notes if low-risk
+## Recommended next candidate
 
-Required shell behavior:
-
-- clearly label draft state as unsaved/session-only
-- provide Cancel/Reset/Discard behavior that writes nothing
-- preserve existing read-only renderer/painter behavior
-- keep all draft state in memory only
-
-## Forbidden implementation surfaces recorded
-
-The future implementation pass must not create a placement writer, add Confirm canonical write, call `event_writer_service.py`, write `component_visual_placement_confirmed`, edit `known_facts.json`, edit `events.jsonl`, edit schema/tool/materializer/validator files, implement visual contact layout, treat per-side contact counts as confirmed contacts/pads/pins/nets, implement edit-placement from confirmed projection beyond shell preparation, or implement AI marker conversion.
-
-## Boundary confirmation
-
-- This active-lock sync does not implement runtime behavior.
-- No runtime/test files changed by this sync.
-- No schema/tool/materializer/validator/writer files changed.
-- No router/sample/project fixture files changed.
-- No `_incoming` files changed or staged.
-- No implementation happened in this sync.
+Not routed: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
 
 ## Canonical owners and evidence ledgers
 
@@ -78,4 +74,3 @@ The future implementation pass must not create a placement writer, add Confirm c
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- Next work is implementation inside the exact active allowlist only.

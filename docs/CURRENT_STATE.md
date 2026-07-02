@@ -2,67 +2,66 @@
 
 ## Current pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Latest pushed docs commit verified for this scope lock: `dd0024450deb674dbb55d7ec71103f366f02a313` (`docs: add TraceBench file map`).
-- Route before this pass: `NEEDS_USER_DECISION`.
-- FILE_MAP audit ledger sync in this pass records `TRACEBENCH_FILE_MAP_PASS` as accepted/pushed/audited with Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
+- Latest pushed scope-lock commit verified for this active-lock sync: `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`).
+- Route before this pass: current `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`, next `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Scope-lock audit verified: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
 
-## Active scope summary
+## Active-lock sync summary
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS` is a docs-only protected-surface scope-lock.
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only active-lock sync.
 
-The pass locks future `component_visual_placements` projection semantics before any placement writer, Confirm/Edit UI, edit-placement flow, visual-contact layout, or AI marker conversion is implemented.
+This pass arms the protected implementation allowlist for `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`.
 
-Locked decisions:
+Implementation allowlist:
 
-- Legacy V1 placement events remain first-class legacy events.
-- V1 and V2 placement confirmations must be interleaved deterministically by stream order, not by V1 `sequence` alone.
-- A later valid placement event in `events.jsonl` supersedes an earlier placement for the same component.
-- `event_invalidated` retracts the targeted placement event from `component_visual_placements` projection.
-- Invalidating the newest placement falls back to the newest remaining valid placement, or removes projected placement if none remains.
-- Placement correction remains append-only through newer `component_visual_placement_confirmed` events.
-- No new placement-updated event type is introduced for this fix.
+- `tools/materialize_known_facts.py`
+- `tests/test_materialize_known_facts.py`
 
-## Current accepted baseline
+## Implementation goal armed
 
-- V2 `component_visual_placement_confirmed` validator/materializer support is implemented.
-- V2 placement events validate and materialize under `schema_version: 2.0-draft`, `actor.type: human`, `source.type: explicit_user_confirmation`, `confirmation.confirmed: true`, `client_operation_id`, and width + height as the primary visual envelope model.
-- `schemas/events.schema.json` remains V1-envelope-only by design/current state.
-- No Dart placement writer exists yet.
-- No placement Confirm/Edit UI exists yet.
-- Board Canvas remains read-only.
-- Visual contact layout remains a separate future scope.
-- AI never authors canonical placement events.
+Implement locked `component_visual_placements` projection semantics:
 
-## Future implementation target
+- Cross-regime latest-wins uses deterministic `events.jsonl` stream order, not V1 `sequence` alone.
+- Later valid placement event supersedes earlier placement for the same component.
+- V1 and V2 placement confirmations both remain first-class when valid.
+- `event_invalidated` retracts targeted confirmed placement event from `component_visual_placements`.
+- Invalidating older placement does not remove newer valid placement.
+- Invalidating newest placement falls back to previous valid placement, or removes projection if none remains.
 
-- Next route: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Later implementation target: projection/materializer only.
-- Likely implementation allowlist:
-  - `tools/materialize_known_facts.py`
-  - `tests/test_materialize_known_facts.py`
-- Optional validator/test owner only if a later implementation review proves validator behavior must change.
+## Implementation test requirements armed
+
+The implementation must add focused materializer tests proving:
+
+- Later V2 placement beats earlier V1 placement for same component.
+- Later V1 placement beats earlier V2 placement by stream order.
+- `event_invalidated` retracts a targeted placement event.
+- Invalidating an older placement does not remove a newer valid placement.
+- Invalidating newest placement falls back to previous valid placement.
+- Invalidating only placement removes projected placement.
+- Contact/layout/electrical/net/pin/AI fields remain outside placement projection.
 
 ## Boundary confirmation
 
-- No runtime Dart files are authorized by this scope-lock pass.
-- No Board Canvas UI edits are authorized by this scope-lock pass.
-- No placement writer or Confirm/Edit UI is authorized by this scope-lock pass.
-- No schema, validator, known_facts schema, visual-contact layout, contacts/pads/legs rendering, AI marker implementation, sample/project fixture, or `_incoming` edits are authorized by this scope-lock pass.
+- No runtime Dart files are authorized by this sync.
+- No Board Canvas UI edits are authorized by this sync.
+- No placement writer or Confirm/Edit UI is authorized by this sync.
+- No router, schema, validator, known_facts schema, visual-contact layout, contacts/pads/legs rendering, AI marker implementation, sample/project fixture, or `_incoming` edits are authorized by this sync.
+- This sync does not implement the materializer behavior; it only arms the next implementation pass.
 
 ## Canonical owners and evidence ledgers
 
 - Active/near-future route queue: docs/PASS_QUEUE.md.
-- Current scope boundary: docs/ACTIVE_SCOPE_LOCK.md.
+- Current implementation allowlist: docs/ACTIVE_SCOPE_LOCK.md.
 - Completed pass provenance: docs/AUDIT_INDEX.md and docs/audit/.
 - Stable architecture memory: docs/PROJECT_MEMORY.md.
 - Core invariants and protected truth: docs/TRUTH_INDEX.md.
@@ -75,4 +74,4 @@ Locked decisions:
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- Protected implementation requires active-lock sync before code changes.
+- Implementation must remain inside the armed allowlist unless a later pass expands scope.

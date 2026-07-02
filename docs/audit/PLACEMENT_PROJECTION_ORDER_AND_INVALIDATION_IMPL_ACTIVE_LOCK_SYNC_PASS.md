@@ -1,38 +1,27 @@
-# Active Scope Lock
+# PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS
 
-## Current pass
+## Pass metadata
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- PASS_ID: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Mode: docs-only active-lock sync
+- Route before pass:
+  - Current: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`
+  - Next: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Route after pass:
+  - Current: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+  - Next: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
 
-## Next recommended pass
+## Scope-lock evidence
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
+- Scope-lock commit: `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`)
+- Scope-lock audit: `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
 
-## Status
-
-Docs-only active-lock sync is active.
-
-This sync arms the protected implementation allowlist for `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`. It does not implement runtime/tool behavior.
-
-## Accepted scope-lock evidence
-
-- Scope-lock pass: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`
-- Pushed scope-lock commit: `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`)
-- Scope-lock audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
-
-## Write allowlist for this active-lock sync pass
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
-
-## Armed implementation pass
+## Implementation pass armed
 
 `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
 
-## Armed implementation allowlist
+## Implementation allowlist
 
 - `tools/materialize_known_facts.py`
 - `tests/test_materialize_known_facts.py`
@@ -48,7 +37,7 @@ Implement locked `component_visual_placements` projection semantics:
 - Invalidating older placement does not remove newer valid placement.
 - Invalidating newest placement falls back to previous valid placement, or removes projection if none remains.
 
-## Implementation test requirements
+## Test requirements
 
 Implementation must add focused materializer tests proving:
 
@@ -80,17 +69,15 @@ Implementation must add focused materializer tests proving:
 - No implementation in this active-lock sync.
 - No broad staging, commit, or push.
 
-## Boundary record
+## Changed files
 
-- V2 `component_visual_placement_confirmed` validator/materializer support is implemented.
-- `schemas/events.schema.json` remains V1-envelope-only by design/current state.
-- No Dart placement writer exists yet.
-- No placement Confirm/Edit UI exists yet.
-- Board Canvas remains read-only.
-- Visual contact layout remains separate future scope.
-- AI never authors canonical placement events.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-## Validation required
+## Validation plan
 
 - `git status --short --branch`
 - `git log --oneline --decorate -10`
@@ -98,3 +85,7 @@ Implementation must add focused materializer tests proving:
 - `git diff --cached --name-status`
 - `git diff --check`
 - `python tools/validate_all.py`
+
+## Claude audit packet marker
+
+RETRO_CLAUDE_READY / DO_NOT_CLAIM_CLAUDE_REVIEW

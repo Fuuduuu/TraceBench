@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -28,15 +28,14 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 | PASS_ID | Lane/Type | Status | Notes |
 | --- | --- | --- | --- |
-| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected projection semantics | in progress | Docs-only protected scope-lock for `component_visual_placements` cross-regime latest-wins ordering and `event_invalidated` placement retraction semantics; no implementation. |
-| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | next | After accepted/pushed scope-lock audit, arm the exact implementation allowlist before materializer/test changes. |
+| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | in progress | Arms exact materializer/test implementation allowlist after accepted scope-lock audit; no implementation in this sync. |
+| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS | CODEX / PROTECTED_IMPLEMENTATION / materializer projection semantics | next | Implement deterministic stream-order latest-wins and `event_invalidated` placement retraction inside `tools/materialize_known_facts.py` with focused `tests/test_materialize_known_facts.py` coverage. |
 
 ## Planned follow-up sequence
 
 | Phase | Future pass family | Purpose | Implementation authorization |
 | --- | --- | --- | --- |
-| P2 | placement projection ordering/invalidation implementation active-lock sync | Arm exact future materializer/test allowlist after accepted scope-lock. | Docs only. |
-| P2b | placement projection ordering/invalidation implementation | Implement deterministic stream-order latest-wins and placement invalidation retraction. | Protected implementation after active-lock sync. |
+| P2 | placement projection ordering/invalidation implementation | Implement deterministic stream-order latest-wins and placement invalidation retraction. | Protected implementation now armed by active-lock sync. |
 | P3 | placement editor + writer scope-lock | Lock Board Canvas right-panel / ghost draft as the official UI-local placement editor and define writer boundaries after projection semantics are resolved. | Docs only after user decision. |
 | P4 | placement editor implementation active-lock sync | Arm exact future UI/writer implementation allowlist after accepted scope-lock. | Docs only. |
 | P5 | UI-local placement editor shell | Add or refine local draft UI without canonical writes. | Runtime/test only after active lock. |
@@ -49,10 +48,7 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 | PASS_ID | Lane/Type | Status | Notes |
 | --- | --- | --- | --- |
+| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected projection semantics | accepted/pushed/audited as `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`) | Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; locks stream-order latest-wins and placement invalidation retraction before writer/UI work. |
 | TRACEBENCH_FILE_MAP_PASS | CODEX / DOCS_SYNC / file-map creation | accepted/pushed/audited as `dd0024450deb674dbb55d7ec71103f366f02a313` (`docs: add TraceBench file map`) | Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; safe staging set recorded in `docs/AUDIT_INDEX.md`; route remained `NEEDS_USER_DECISION`. |
-| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | accepted/pushed as `94e3c6b` (`docs: arm placement event V2 regime implementation`) | Armed exact protected implementation allowlist after scope-lock audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; no implementation in this sync. |
 | BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_PASS | CODEX / PROTECTED_IMPLEMENTATION / event regime + projection plumbing | accepted/pushed as `fa85231045c8dadc3543a914ca173829a3272c4d` (`feat: support V2 placement event regime`) | V2 validator accepts `component_visual_placement_confirmed`; V2 placement requires human/explicit confirmation and width+height; forbidden semantic fields are rejected; materializer projects V2 human-confirmed placements; latest-wins preserved; `schemas/events.schema.json` unchanged. |
-| BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_IMPL_POST_AUDIT_PASS | CODEX / DOCS_CLOSEOUT / implementation post-audit | completed docs-only closeout; route set to `NEEDS_USER_DECISION` | Records implementation audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, safe staging set, implementation summary, boundary confirmation, and active-lock release. |
 | BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / architecture decision | accepted/pushed as `1f0438a` (`docs: lock placement editor architecture decision`) | Records Add Component identity-only boundary, Board Canvas UI-local placement editor seed decision, V2/human placement-event regime direction, width/height size model, VectorFootprintLibrary vocabulary ownership, future visual-contact separation, and AI marker conversion boundary. |
-| BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_POST_AUDIT_PASS | CODEX / DOCS_CLOSEOUT / architecture decision | accepted/pushed as `b059278` (`docs: close out placement editor architecture decision`) | Records audit `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`, non-blocking nits, closed decisions, pushed scope-lock commit hash, active-lock release, and route return to `NEEDS_USER_DECISION`. |
-| V2_BOARD_CANVAS_REAL_COMPONENT_FOOTPRINTS_IMPL_PASS | CODEX / FLUTTER_PASS / Board Canvas visual rendering | accepted/pushed as `02cd557` (`feat(board-canvas): render component footprints`) | Rendered recognizable component footprint bodies, enabled bodyOnly contact visibility, kept contacts/pads/legs off component image until future confirmed visual-contact layout, kept real pin selection in the right-side list, centered right-panel preview parity, removed old standalone M/M3 marker bubble, preserved no visual rotation and `renderer writes: none`. |

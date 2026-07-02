@@ -12,6 +12,7 @@ This file does not own current route, current scope, next route, or active imple
 - Active scope lock: `docs/ACTIVE_SCOPE_LOCK.md`.
 - Accepted history and evidence of pass outcomes: `docs/AUDIT_INDEX.md` plus `docs/audit/*.md`.
 - Durable invariants: `docs/PROJECT_MEMORY.md` and `docs/PROTECTED_SURFACES.md`.
+- Documentation classification, read priority, stale-risk, and do-not-read-by-default guidance: `docs/FILE_MAP.md`.
 - Governance diagrams / routing diagrams:
   - `docs/PASS_LIFECYCLE.md`
   - `docs/ARCHITECTURE_BOUNDARIES.md`
@@ -98,14 +99,7 @@ High-risk Codex implementation must receive the non-Codex review path defined th
 
 ## Active governance docs
 
-- `docs/MODEL_ROUTING.md`
-- `docs/MEMORY_REGISTRY.yml`
-- `docs/MEMORY_MAINTENANCE.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- `docs/PROTECTED_SURFACES.md`
-- `docs/PROJECT_ZIP_SPEC.md`
-- `docs/FLUTTER_UI_SPEC.md`
-- `docs/PHOTO_FLOW_SPEC.md`
+Canonical docs classification and read-priority mapping lives in `docs/FILE_MAP.md`. This source index does not maintain a separate governance-doc list.
 
 ## Conflict order
 
@@ -131,11 +125,7 @@ Archive files are never read by default.
 
 ## Governance routing source
 
-- `docs/MODEL_ROUTING.md`
-- `docs/MEMORY_MAINTENANCE.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- `docs/PROTECTED_SURFACES.md`
-- `docs/MEMORY_REGISTRY.yml`
+Use `docs/FILE_MAP.md` for docs classification and `docs/MODEL_ROUTING.md` for helper/model routing.
 
 ## Design/prototype source folders
 

@@ -2280,7 +2280,11 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Visual-contact builder'),
+      find.text('UI-local marker draft'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Per-side markers are UI-local; not confirmed contacts.'),
       findsOneWidget,
     );
     expect(find.textContaining('template family'), findsNothing);
@@ -2324,7 +2328,11 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
-    expect(find.text('Contact markers'), findsOneWidget);
+    expect(find.text('UI-local markers'), findsOneWidget);
+    expect(
+      find.text('Per-side markers are UI-local; not confirmed contacts.'),
+      findsOneWidget,
+    );
     expect(find.text('Top contact marker'), findsNothing);
     expect(find.text('Right contact marker'), findsNothing);
     expect(find.text('Bottom contact marker'), findsNothing);
@@ -5824,6 +5832,136 @@ void main() {
     );
   });
 
+  testWidgets(
+      'placement editor shell exposes session-only draft controls without writes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+
+    expect(
+      find.byKey(const Key('board_canvas_placement_editor_shell')),
+      findsOneWidget,
+    );
+    expect(find.text('Placement draft'), findsOneWidget);
+    expect(find.text('unsaved/session-only'), findsOneWidget);
+    expect(find.text('Draft changes stay in memory only.'), findsOneWidget);
+    expect(
+        find.text('Canonical projection remains unchanged.'), findsOneWidget);
+    expect(
+      find.text('Selected component: R101 (cmp_r101)'),
+      findsOneWidget,
+    );
+    expect(find.text('Board side draft: top'), findsOneWidget);
+    expect(find.text('Shape/template draft: sot23_3'), findsOneWidget);
+    expect(find.text('Rotation draft: 15 deg'), findsOneWidget);
+    expect(find.text('Width draft: 1.00'), findsOneWidget);
+    expect(find.text('Height draft: 0.60'), findsOneWidget);
+    expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
+    expect(find.textContaining('Board side: top'), findsOneWidget);
+    expect(find.textContaining('Rotation (deg): 15'), findsOneWidget);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_side_toggle'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_rotation_increment'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_width_increment'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_height_increment'),
+    );
+
+    expect(find.text('Board side draft: bottom'), findsOneWidget);
+    expect(find.text('Rotation draft: 30 deg'), findsOneWidget);
+    expect(find.text('Width draft: 1.10'), findsOneWidget);
+    expect(find.text('Height draft: 0.70'), findsOneWidget);
+    expect(find.textContaining('Board side: top'), findsOneWidget);
+    expect(find.textContaining('Rotation (deg): 15'), findsOneWidget);
+    expect(find.text('Confirm'), findsNothing);
+    expect(find.text('Save'), findsNothing);
+    expect(find.text('Edit'), findsNothing);
+    expect(find.text('Edit Layout'), findsNothing);
+    expect(state.events, isEmpty);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_reset'),
+    );
+    expect(find.text('Board side draft: top'), findsOneWidget);
+    expect(find.text('Rotation draft: 15 deg'), findsOneWidget);
+    expect(find.text('Width draft: 1.00'), findsOneWidget);
+    expect(find.text('Height draft: 0.60'), findsOneWidget);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_width_increment'),
+    );
+    expect(find.text('Width draft: 1.10'), findsOneWidget);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_discard'),
+    );
+    expect(find.text('Width draft: 1.00'), findsOneWidget);
+    expect(find.text('Height draft: 0.60'), findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('placement draft state is selection-scoped and volatile',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1', designator: 'U1'),
+      ],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('first')),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_placement_draft_width_increment'),
+    );
+    expect(find.text('Width draft: 1.10'), findsOneWidget);
+
+    await _selectPlacement(tester, 'U1 (cmp_u1)');
+    expect(find.text('Width draft: 1.50'), findsOneWidget);
+    expect(find.text('Height draft: 0.80'), findsOneWidget);
+    expect(find.text('Width draft: 1.10'), findsNothing);
+
+    await tester.pumpWidget(
+      _harness(projectState: state, boardCanvasKey: const ValueKey('second')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    expect(find.text('Width draft: 1.00'), findsOneWidget);
+    expect(find.text('Width draft: 1.10'), findsNothing);
+    expect(state.events, isEmpty);
+  });
+
   test('board canvas source keeps read-only data-path boundaries', () {
     final source = File(
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
@@ -5947,6 +6085,13 @@ void main() {
     expect(source, isNot(contains('events.jsonl')));
     expect(source, isNot(contains('board_graph.json')));
     expect(source, isNot(contains('view_state.json')));
+    expect(source, contains('_PlacementEditorDraftState'));
+    expect(source, contains('board_canvas_placement_editor_shell'));
+    expect(source, contains('unsaved/session-only'));
+    expect(source, contains('Draft changes stay in memory only.'));
+    expect(source, contains('Canonical projection remains unchanged.'));
+    expect(source,
+        contains('Per-side markers are UI-local; not confirmed contacts.'));
     expect(source, contains('knownFacts.visualTraces'));
     expect(source, contains('knownFacts.photoToBoardAlignments'));
     expect(source, isNot(contains('knownFacts.damageRegions')));

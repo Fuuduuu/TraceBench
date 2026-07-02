@@ -391,6 +391,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   int _addComponentTemplateLeftContactMarkers = 0;
   String _addComponentTemplateDraftLabel = '';
   Offset? _addComponentTemplateGhostDraftAnchor;
+  String? _placementEditorDraftKey;
+  _PlacementEditorDraftState? _placementEditorDraft;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -447,6 +449,48 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       _seedAddComponentTemplateContactCounts(template);
       _addComponentTemplateGhostDraftAnchor = null;
     });
+  }
+
+  _PlacementEditorDraftState _placementEditorDraftFor(_PlacementEntry entry) {
+    if (_placementEditorDraftKey != entry.key ||
+        _placementEditorDraft == null) {
+      _placementEditorDraftKey = entry.key;
+      _placementEditorDraft = _PlacementEditorDraftState.fromEntry(entry);
+    }
+    return _placementEditorDraft!;
+  }
+
+  void _updatePlacementEditorDraft(
+    _PlacementEntry entry,
+    _PlacementEditorDraftState Function(_PlacementEditorDraftState draft)
+        update,
+  ) {
+    setState(() {
+      final current =
+          _placementEditorDraftKey == entry.key && _placementEditorDraft != null
+              ? _placementEditorDraft!
+              : _PlacementEditorDraftState.fromEntry(entry);
+      _placementEditorDraftKey = entry.key;
+      _placementEditorDraft = update(current);
+    });
+  }
+
+  void _resetPlacementEditorDraft(_PlacementEntry entry) {
+    setState(() {
+      _placementEditorDraftKey = entry.key;
+      _placementEditorDraft = _PlacementEditorDraftState.fromEntry(entry);
+    });
+  }
+
+  String _nextPlacementDraftBoardSide(String boardSide) {
+    switch (boardSide.trim().toLowerCase()) {
+      case 'top':
+        return 'bottom';
+      case 'bottom':
+        return 'top';
+      default:
+        return 'top';
+    }
   }
 
   @override
@@ -574,6 +618,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         visibleMeasurementValueBadgeComponentIds.contains(
           selectedEntry.placement.componentId,
         );
+    final _PlacementEntry? selectedDraftEntry = selectedEntry;
+    final selectedPlacementDraft = selectedDraftEntry == null
+        ? null
+        : _placementEditorDraftFor(selectedDraftEntry);
 
     return _buildScaffold(
       context,
@@ -718,6 +766,54 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   relatedMeasurements: relatedMeasurements,
                   relatedVisualTraces: relatedVisualTraces,
                   photoToBoardAlignments: photoToBoardAlignments,
+                  placementDraft: selectedPlacementDraft,
+                  onTogglePlacementDraftSide: selectedDraftEntry == null
+                      ? null
+                      : () {
+                          _updatePlacementEditorDraft(
+                            selectedDraftEntry,
+                            (draft) => draft.copyWith(
+                              boardSide:
+                                  _nextPlacementDraftBoardSide(draft.boardSide),
+                            ),
+                          );
+                        },
+                  onIncrementPlacementDraftRotation: selectedDraftEntry == null
+                      ? null
+                      : () {
+                          _updatePlacementEditorDraft(
+                            selectedDraftEntry,
+                            (draft) => draft.copyWith(
+                              rotationDeg: draft.rotationDeg + 15,
+                            ),
+                          );
+                        },
+                  onIncrementPlacementDraftWidth: selectedDraftEntry == null
+                      ? null
+                      : () {
+                          _updatePlacementEditorDraft(
+                            selectedDraftEntry,
+                            (draft) => draft.copyWith(
+                              width: draft.width + 0.1,
+                            ),
+                          );
+                        },
+                  onIncrementPlacementDraftHeight: selectedDraftEntry == null
+                      ? null
+                      : () {
+                          _updatePlacementEditorDraft(
+                            selectedDraftEntry,
+                            (draft) => draft.copyWith(
+                              height: draft.height + 0.1,
+                            ),
+                          );
+                        },
+                  onResetPlacementDraft: selectedDraftEntry == null
+                      ? null
+                      : () => _resetPlacementEditorDraft(selectedDraftEntry),
+                  onDiscardPlacementDraft: selectedDraftEntry == null
+                      ? null
+                      : () => _resetPlacementEditorDraft(selectedDraftEntry),
                 );
                 final controlBand = useWorkbenchShell
                     ? const SizedBox.shrink(
@@ -2313,7 +2409,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Visual-contact builder',
+                    'UI-local marker draft',
                     style: theme.textTheme.titleSmall?.copyWith(
                       color: _kBoardCanvasNavy,
                       fontWeight: FontWeight.w600,
@@ -2322,12 +2418,22 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Contact markers',
+                  'UI-local markers',
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: _kBoardCanvasMuted,
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 2),
+            Text(
+              'Per-side markers are UI-local; not confirmed contacts.',
+              key: const Key(
+                'board_canvas_add_component_builder_local_marker_boundary',
+              ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
             ),
             const SizedBox(height: 6),
             SizedBox(
@@ -3831,6 +3937,13 @@ class _InspectorPanel extends StatelessWidget {
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
     required this.photoToBoardAlignments,
+    required this.placementDraft,
+    required this.onTogglePlacementDraftSide,
+    required this.onIncrementPlacementDraftRotation,
+    required this.onIncrementPlacementDraftWidth,
+    required this.onIncrementPlacementDraftHeight,
+    required this.onResetPlacementDraft,
+    required this.onDiscardPlacementDraft,
   });
 
   final _PlacementEntry? selectedEntry;
@@ -3841,6 +3954,13 @@ class _InspectorPanel extends StatelessWidget {
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
   final List<PhotoToBoardAlignmentFact> photoToBoardAlignments;
+  final _PlacementEditorDraftState? placementDraft;
+  final VoidCallback? onTogglePlacementDraftSide;
+  final VoidCallback? onIncrementPlacementDraftRotation;
+  final VoidCallback? onIncrementPlacementDraftWidth;
+  final VoidCallback? onIncrementPlacementDraftHeight;
+  final VoidCallback? onResetPlacementDraft;
+  final VoidCallback? onDiscardPlacementDraft;
 
   @override
   Widget build(BuildContext context) {
@@ -3881,6 +4001,20 @@ class _InspectorPanel extends StatelessWidget {
               onToggleSelectedMeasurementValueBadges,
         ),
       );
+      if (placementDraft != null) {
+        children.add(
+          _PlacementEditorShellCard(
+            entry: selectedEntry!,
+            draft: placementDraft!,
+            onToggleSide: onTogglePlacementDraftSide,
+            onIncrementRotation: onIncrementPlacementDraftRotation,
+            onIncrementWidth: onIncrementPlacementDraftWidth,
+            onIncrementHeight: onIncrementPlacementDraftHeight,
+            onReset: onResetPlacementDraft,
+            onDiscard: onDiscardPlacementDraft,
+          ),
+        );
+      }
       children.add(
         _MeasurementSummaryCard(relatedMeasurements: relatedMeasurements),
       );
@@ -3907,6 +4041,255 @@ class _InspectorPanel extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PlacementEditorDraftState {
+  const _PlacementEditorDraftState({
+    required this.componentLabel,
+    required this.boardSide,
+    required this.templateLabel,
+    required this.rotationDeg,
+    required this.width,
+    required this.height,
+  });
+
+  factory _PlacementEditorDraftState.fromEntry(_PlacementEntry entry) {
+    final placement = entry.placement;
+    final templateId = placement.templateId?.trim();
+    final width = placement.width?.toDouble();
+    final height = placement.height?.toDouble();
+    return _PlacementEditorDraftState(
+      componentLabel: entry.selectorLabel,
+      boardSide: placement.boardSide.trim().isEmpty
+          ? 'top'
+          : placement.boardSide.trim(),
+      templateLabel: templateId == null || templateId.isEmpty
+          ? _footprintVisualKindLabel(_footprintVisualKind(entry))
+          : templateId,
+      rotationDeg: placement.rotationDeg.toDouble(),
+      width: width == null || !width.isFinite || width <= 0 ? 1.0 : width,
+      height: height == null || !height.isFinite || height <= 0 ? 0.6 : height,
+    );
+  }
+
+  final String componentLabel;
+  final String boardSide;
+  final String templateLabel;
+  final double rotationDeg;
+  final double width;
+  final double height;
+
+  _PlacementEditorDraftState copyWith({
+    String? boardSide,
+    double? rotationDeg,
+    double? width,
+    double? height,
+  }) {
+    return _PlacementEditorDraftState(
+      componentLabel: componentLabel,
+      boardSide: boardSide ?? this.boardSide,
+      templateLabel: templateLabel,
+      rotationDeg: rotationDeg ?? this.rotationDeg,
+      width: width ?? this.width,
+      height: height ?? this.height,
+    );
+  }
+}
+
+class _PlacementEditorShellCard extends StatelessWidget {
+  const _PlacementEditorShellCard({
+    required this.entry,
+    required this.draft,
+    required this.onToggleSide,
+    required this.onIncrementRotation,
+    required this.onIncrementWidth,
+    required this.onIncrementHeight,
+    required this.onReset,
+    required this.onDiscard,
+  });
+
+  final _PlacementEntry entry;
+  final _PlacementEditorDraftState draft;
+  final VoidCallback? onToggleSide;
+  final VoidCallback? onIncrementRotation;
+  final VoidCallback? onIncrementWidth;
+  final VoidCallback? onIncrementHeight;
+  final VoidCallback? onReset;
+  final VoidCallback? onDiscard;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final boundaryTextStyle = theme.textTheme.bodySmall?.copyWith(
+      color: _kBoardCanvasNavy,
+      fontWeight: FontWeight.w600,
+      height: 1.25,
+    );
+    return Card(
+      key: const Key('board_canvas_placement_editor_shell'),
+      color: _kBoardCanvasTile,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: _kBoardCanvasRule),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionHeader(
+              title: 'Placement draft',
+              tag: 'LOCAL',
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'unsaved/session-only',
+              key: const Key('board_canvas_placement_draft_session_only'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasSignal,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Draft changes stay in memory only.',
+              style: boundaryTextStyle,
+            ),
+            Text(
+              'Canonical projection remains unchanged.',
+              style: boundaryTextStyle,
+            ),
+            Text(
+              'Canonical write unavailable in this pass.',
+              style: boundaryTextStyle,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Selected component: ${draft.componentLabel}',
+              key: const Key('board_canvas_placement_draft_component'),
+            ),
+            Text(
+              'Board side draft: ${draft.boardSide}',
+              key: const Key('board_canvas_placement_draft_side'),
+            ),
+            Text(
+              'Shape/template draft: ${draft.templateLabel}',
+              key: const Key('board_canvas_placement_draft_template'),
+            ),
+            Text(
+              'Rotation draft: ${_formatPlacementDraftRotation(draft.rotationDeg)} deg',
+              key: const Key('board_canvas_placement_draft_rotation'),
+            ),
+            Text(
+              'Width draft: ${_formatPlacementDraftSize(draft.width)}',
+              key: const Key('board_canvas_placement_draft_width'),
+            ),
+            Text(
+              'Height draft: ${_formatPlacementDraftSize(draft.height)}',
+              key: const Key('board_canvas_placement_draft_height'),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                _PlacementDraftButton(
+                  buttonKey:
+                      const Key('board_canvas_placement_draft_side_toggle'),
+                  label: 'Toggle side',
+                  onPressed: onToggleSide,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key(
+                    'board_canvas_placement_draft_rotation_increment',
+                  ),
+                  label: 'Rotate +15',
+                  onPressed: onIncrementRotation,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key(
+                    'board_canvas_placement_draft_width_increment',
+                  ),
+                  label: 'Width +0.10',
+                  onPressed: onIncrementWidth,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key(
+                    'board_canvas_placement_draft_height_increment',
+                  ),
+                  label: 'Height +0.10',
+                  onPressed: onIncrementHeight,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key('board_canvas_placement_draft_cancel'),
+                  label: 'Cancel local draft',
+                  onPressed: onReset,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key('board_canvas_placement_draft_reset'),
+                  label: 'Reset local draft',
+                  onPressed: onReset,
+                ),
+                _PlacementDraftButton(
+                  buttonKey: const Key('board_canvas_placement_draft_discard'),
+                  label: 'Discard local draft',
+                  onPressed: onDiscard,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PlacementDraftButton extends StatelessWidget {
+  const _PlacementDraftButton({
+    required this.buttonKey,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final Key buttonKey;
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return TextButton(
+      key: buttonKey,
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        minimumSize: const Size(0, 28),
+        textStyle: theme.textTheme.labelSmall,
+        foregroundColor: _kBoardCanvasSignal,
+        disabledForegroundColor: _kBoardCanvasDim,
+      ),
+      child: Text(label),
+    );
+  }
+}
+
+String _formatPlacementDraftRotation(double value) {
+  if (!value.isFinite) {
+    return '0';
+  }
+  final rounded = value.roundToDouble();
+  if ((value - rounded).abs() < 0.001) {
+    return rounded.toInt().toString();
+  }
+  return value.toStringAsFixed(1);
+}
+
+String _formatPlacementDraftSize(double value) {
+  if (!value.isFinite) {
+    return '0.00';
+  }
+  return value.toStringAsFixed(2);
 }
 
 class _IntegratedMeasurePanel extends StatefulWidget {

@@ -2,65 +2,38 @@
 
 ## Current pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Status
 
-Docs-only active-lock sync is active.
+No active implementation lock. The `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS` protected implementation lock is released by `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_POST_AUDIT_PASS`.
 
-This sync arms the protected implementation allowlist for `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`. It does not implement runtime/tool behavior.
+## Released implementation lock
 
-## Accepted scope-lock evidence
+- Armed by: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Implemented by: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
+- Pushed implementation commit: `386b52369a44053ac947aed344864a1b74e54df1` (`fix: order placement projection by event stream`)
+- Implementation audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
+- Safe staging set recorded:
+  - `tools/materialize_known_facts.py`
+  - `tests/test_materialize_known_facts.py`
 
-- Scope-lock pass: `PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS`
-- Pushed scope-lock commit: `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`)
-- Scope-lock audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
+## Closed implementation summary
 
-## Write allowlist for this active-lock sync pass
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
-
-## Armed implementation pass
-
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS`
-
-## Armed implementation allowlist
-
-- `tools/materialize_known_facts.py`
-- `tests/test_materialize_known_facts.py`
-
-## Implementation goal
-
-Implement locked `component_visual_placements` projection semantics:
-
-- Cross-regime latest-wins uses deterministic `events.jsonl` stream order, not V1 `sequence` alone.
-- Later valid placement event supersedes earlier placement for the same component.
+- `component_visual_placements` projection now uses deterministic `events.jsonl` stream order across V1 and V2 placements.
+- Later valid placement supersedes earlier placement for the same component.
 - V1 and V2 placement confirmations both remain first-class when valid.
-- `event_invalidated` retracts targeted confirmed placement event from `component_visual_placements`.
+- `event_invalidated` retracts targeted placement event from `component_visual_placements`.
 - Invalidating older placement does not remove newer valid placement.
-- Invalidating newest placement falls back to previous valid placement, or removes projection if none remains.
-
-## Implementation test requirements
-
-Implementation must add focused materializer tests proving:
-
-- Later V2 placement beats earlier V1 placement for same component.
-- Later V1 placement beats earlier V2 placement by stream order.
-- `event_invalidated` retracts a targeted placement event.
-- Invalidating an older placement does not remove a newer valid placement.
 - Invalidating newest placement falls back to previous valid placement.
 - Invalidating only placement removes projected placement.
-- Contact/layout/electrical/net/pin/AI fields remain outside placement projection.
+- No placement-updated event type was introduced.
 
-## Forbidden surfaces
+## Boundary record
 
 - No Dart runtime edits.
 - No Board Canvas UI edits.
@@ -74,27 +47,15 @@ Implementation must add focused materializer tests proving:
 - No contacts/pads/legs rendering.
 - No AI marker implementation.
 - No sample/project fixture edits.
-- No `_incoming` edits or staging.
-- No broad docs cleanup.
-- No audit file moves/deletes.
-- No implementation in this active-lock sync.
-- No broad staging, commit, or push.
+- No `_incoming` staging or runtime dependency.
+- No broad staging, commit, or push by this closeout pass.
 
-## Boundary record
+## Validation recorded
 
-- V2 `component_visual_placement_confirmed` validator/materializer support is implemented.
-- `schemas/events.schema.json` remains V1-envelope-only by design/current state.
-- No Dart placement writer exists yet.
-- No placement Confirm/Edit UI exists yet.
-- Board Canvas remains read-only.
-- Visual contact layout remains separate future scope.
-- AI never authors canonical placement events.
+- `py -3 -m unittest tests.test_materialize_known_facts`: 95/95 OK.
+- `py -3 tools/validate_all.py`: 285 tests OK; PASSED.
+- `board_canvas_positive_smoke` materializes clean.
 
-## Validation required
+## Next work
 
-- `git status --short --branch`
-- `git log --oneline --decorate -10`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git diff --check`
-- `python tools/validate_all.py`
+A new user decision and explicit scoped pass are required before additional implementation or docs route work begins.

@@ -66,7 +66,6 @@ Additional protected UI scope-lock: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SC
 - `Muuda` is local edit/draft mode only, and `Kustuta` discards local draft only in this UI-local pass.
 - Pin/contact controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.
 - Preserve `Ainult vaatamine · kirjutusi pole` and `renderer writes: none`.
-enderer writes: none.
 
 ## Core rule
 

@@ -90,6 +90,34 @@ Locked before any renderer/UI implementation:
 - Edit placement reopens the same editor pre-seeded from projection and appends a newer placement confirmation on Confirm; no placement-updated event type is introduced.
 - AI/photo marker candidates remain non-canonical proposals until a human uses the editor and confirms placement.
 
+## 2.7 Placement writer and Confirm/Salvesta scope lock (2026-07-02)
+
+`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS` locks the future canonical placement writer contract before implementation.
+
+Future implementation target:
+
+- Writer file: `lib/features/components/services/v2_placement_writer.dart`.
+- Canonical event type: `component_visual_placement_confirmed` only.
+- Envelope: `schema_version: 2.0-draft`, `actor.type: human`, `source.type: explicit_user_confirmation`, `confirmation.confirmed: true`, `client_operation_id`.
+- Required payload: `component_id`, `coordinate_space`, `board_side`, `center_x`, `center_y`, `rotation_deg`, `width`, `height`.
+- Optional payload: `template_id`, `source_photo_id`, `notes`.
+- Existing canonical append/event writer precedent is reused; `known_facts.json` and projection state are not directly edited by the UI/writer.
+
+Confirm/Salvesta behavior:
+
+- Canonical placement write requires explicit user action.
+- Draft-only interactions, including open/select/drag/rotate/resize/side/template/notes/cancel/reset/discard/navigation, write nothing canonical.
+- Save is unavailable or disabled when component identity, coordinates, size, or required fields are invalid/missing.
+- Placement confirmation does not create component identity unless a future combined Add Component scope explicitly allows it.
+
+Boundary:
+
+- No `component_created` or `component_updated` from placement writer.
+- No visual contact layout writes.
+- No confirmed contacts, pins, pads, nets, traces, measurements, electrical facts, AI-authored facts, or repair conclusions.
+- Contact markers in Add Component remain UI-local visual marker draft until a separate visual-contact layout scope.
+- Visual contact confirmation is separate from electrical confirmation.
+- Add Component panel redesign is pending external Claude Design handoff and is not consumed here.
 ## 3. Hard evidence boundaries
 
 - Human is the sensor. AI is the graph engine.

@@ -46,6 +46,14 @@ Additional protected scope-lock: `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`.
 - The writer must use the canonical append path and must not directly edit `known_facts.json`, create component identity, update component metadata, or write nets, pins, pads, contacts, measurements, AI facts, repair conclusions, or visual contact layout.
 - Edit placement reuses the same editor, pre-seeded from projection, and re-confirms by appending a newer placement event; no placement-updated event type is introduced.
 
+Additional protected scope-lock: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
+
+- Future placement writer path is locked as `lib/features/components/services/v2_placement_writer.dart`.
+- The writer may emit exactly one canonical event type: `component_visual_placement_confirmed`.
+- Confirm/Salvesta writes only after explicit user action; all draft interactions remain UI-local/no-write.
+- The writer uses V2/human envelope semantics with explicit user confirmation, `client_operation_id`, and width plus height as the primary visual envelope size model.
+- Placement save does not create component identity and does not write contacts, pins, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- Add Component panel redesign remains pending external Claude Design handoff and is not consumed by this scope-lock.
 ## Core rule
 
 Human is the sensor. AI is the graph engine.

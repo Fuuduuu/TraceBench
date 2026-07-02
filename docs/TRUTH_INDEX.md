@@ -28,7 +28,9 @@ Core invariants (semantics unchanged):
 - Protected placement editor/writer contract: Board Canvas right-panel / ghost draft is the placement editor owner; the first implementation slice is UI-local draft only with no canonical writes until explicit human Confirm through a dedicated placement writer.
 - Placement editor draft interactions must not write on open, drag, rotate, resize, shape/template change, side change, cancel, discard, or leaving the editor.
 - Future placement Confirm emits only V2 `component_visual_placement_confirmed` through a dedicated writer; placement payload remains visual envelope data only and must not include visual contact layout, contacts, pads, pins, nets, measurements, AI facts, or repair conclusions.
-
+- Placement writer and Confirm/Salvesta are locked as a protected future scope by `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`: the future writer file is `lib/features/components/services/v2_placement_writer.dart`, and it may emit only `component_visual_placement_confirmed` through the existing canonical append/event writer pattern.
+- Placement Confirm/Salvesta is explicit-user-action-only: opening the panel, selecting a component, dragging, rotating, resizing, changing side/template, editing notes, cancelling, resetting, discarding, or navigating away must not write canonical data.
+- Placement confirmation remains separate from component identity creation; the placement writer must not emit `component_created` or `component_updated` unless a future combined-flow Add Component scope explicitly changes that boundary.
 Product identity owner:
 
 - `docs/PROJECT_MEMORY.md` is the durable owner for BenchBeep / TraceBench / BoardFact naming.

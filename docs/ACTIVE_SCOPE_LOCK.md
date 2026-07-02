@@ -2,55 +2,67 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Status
 
-No active implementation lock is armed.
+Docs-only protected-surface scope-lock is active.
 
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS` is closed out as accepted/pushed/audited.
+No runtime implementation lock is armed yet. The future implementation allowlist must be armed by `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS` before any writer/UI code changes.
 
-## Closed implementation baseline
+## Write allowlist for this pass
 
-- Implementation commit: `d779b0c294b5b0f28557d3e8d921fb4cd7970c91` (`feat: add placement editor draft shell`)
-- Active-lock commit: `657a269f7ea0a949bde80f35007477576e3b38a6` (`docs: arm placement editor shell implementation`)
-- Implementation audit: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
-- Manual smoke: `PASS`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/TRUTH_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS.md`
 
-## Closed implementation files
+## Scope summary
 
+Lock the future placement writer and explicit Confirm/Salvesta contract before any canonical placement write path is implemented.
+
+The full writer/Confirm contract lives in `docs/audit/PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS.md` and `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` section 2.7.
+
+## Locked implementation direction
+
+- Future writer file: `lib/features/components/services/v2_placement_writer.dart`.
+- Future writer emits exactly one canonical event type: `component_visual_placement_confirmed`.
+- Future writer uses V2/human explicit confirmation envelope and existing append/event writer precedent.
+- Future writer does not directly edit `known_facts.json` or projection state.
+- Confirm/Salvesta is explicit-user-action-only.
+- Draft interactions, cancel, reset, discard, and navigation write nothing canonical.
+- Placement confirmation remains separate from component identity creation.
+
+## Forbidden surfaces
+
+- No runtime implementation in this pass.
+- No tests in this pass.
+- No writer file in this pass.
+- No schema/tool/materializer/validator/router edits.
+- No `events.jsonl` or `known_facts.json` edits.
+- No visual contact layout writes.
+- No confirmed contacts, pins, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- No Add Component writer edits.
+- No sample/project fixture edits.
+- No `_incoming` edits or staging.
+- No broad docs cleanup.
+
+## Future implementation sequence
+
+1. `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
+2. `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`
+
+Likely future allowlist, not yet armed:
+
+- `lib/features/components/services/v2_placement_writer.dart`
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
-
-## Closed implementation summary
-
-- Board Canvas now has a first UI-local placement editor draft shell in the right panel.
-- Draft is seeded read-only from selected placement projection.
-- Draft state is `setState` / in-memory / session-only.
-- Draft exposes local controls for side, rotation, width, and height.
-- Draft has Cancel local draft, Reset local draft, and Discard local draft actions.
-- Draft copy says unsaved/session-only and confirms canonical projection remains unchanged.
-- No canonical write is wired.
-- No placement writer was created.
-- No Confirm/Save/Edit placement action was added.
-- Renderer/painter remains read-only.
-- Add Component marker-builder copy was clarified as UI-local/not confirmed contacts.
-
-## Boundary record
-
-- No writer.
-- No canonical placement Confirm.
-- No `events.jsonl` write.
-- No `known_facts.json` write.
-- No schema/tool/materializer/validator/router changes.
-- No visual contact layout.
-- No AI marker conversion.
-- No `_incoming` dependency.
-
-## Future candidate, not armed
-
-`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`
+- Optional writer service test path only if matching precedent requires it.

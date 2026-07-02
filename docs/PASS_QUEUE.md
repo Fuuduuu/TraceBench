@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,14 +26,22 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Active / near-future queue
 
-No active pass is armed.
-
 | PASS_ID | Lane/Type | Status | Purpose |
 | --- | --- | --- | --- |
-| PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected writer + Confirm path | future candidate | Lock dedicated V2 placement writer service and explicit Confirm path before implementation. |
+| PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected writer + Confirm path | active / drafted | Lock dedicated V2 placement writer service and explicit Confirm path before implementation. Writer/Confirm contract lives in `docs/audit/PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS.md` and spec section 2.7. |
+| PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / implementation arm | next | Arm the exact future implementation allowlist after audit acceptance. |
+| PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS | CODEX / PROTECTED_IMPLEMENTATION / writer + explicit Confirm path | future | Implement the writer and explicit Confirm/Salvesta hookup only inside the armed allowlist. |
 | EDIT_PLACEMENT_FLOW_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / edit-placement flow | future | Reopen existing projected placement as draft, confirm via same writer, and preserve latest-wins projection semantics. |
 | VISUAL_CONTACT_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / visual contacts | future | Confirmed visual contacts/pads/legs as separate event/projection, not folded into placement. |
 | AI_MARKER_TO_PLACEMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / AI marker conversion | future | Convert unconfirmed AI/photo marker proposals only through human-confirmed placement editor flow. |
+
+## Active pass note
+
+This queue intentionally points to the contract owner docs instead of duplicating architecture prose.
+
+- Writer/Confirm contract lives in `docs/audit/PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS.md` and spec section 2.7.
+- Current scope boundary lives in `docs/ACTIVE_SCOPE_LOCK.md`.
+- Audit/provenance row lives in `docs/AUDIT_INDEX.md`.
 
 ## Recent context
 

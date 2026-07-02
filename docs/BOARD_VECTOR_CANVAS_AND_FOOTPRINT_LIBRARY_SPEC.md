@@ -77,6 +77,19 @@ Locked before any renderer/UI implementation:
 - No new placement-updated event type is introduced for this fix.
 - Contact layout, electrical connectivity, pin identity, net identity, AI-authored facts, pads, contacts, and visual-contact layout remain outside placement projection.
 
+## 2.6 Placement editor and writer contract (`PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`)
+
+- Board Canvas right-panel / ghost draft area is the official first owner for the placement editor surface.
+- First implementation slice is UI-local placement editor shell only; no writer, no Confirm write path, and no canonical event mutation.
+- Draft placement state remains in-memory/session-only until explicit human Confirm.
+- Open, drag, rotate, resize, template/shape change, side change, cancel, discard, and leaving the editor must not write.
+- Editor controls may cover component context, board side, shape/template family, center position, `rotation_deg`, `width`, `height`, optional `template_id` / visual family reference, and optional notes.
+- Per-side contact counts are allowed only as UI-local visual draft controls until a future visual-contact layout scope; they must not be written to `component_visual_placement_confirmed`.
+- Future dedicated writer service emits exactly one V2 event type: `component_visual_placement_confirmed`.
+- Confirmed placement payload remains visual envelope data only and must not include nets, pins, pads, contacts, visual contact layout, measurements, AI-authored facts, electrical connectivity, or repair conclusions.
+- Edit placement reopens the same editor pre-seeded from projection and appends a newer placement confirmation on Confirm; no placement-updated event type is introduced.
+- AI/photo marker candidates remain non-canonical proposals until a human uses the editor and confirms placement.
+
 ## 3. Hard evidence boundaries
 
 - Human is the sensor. AI is the graph engine.

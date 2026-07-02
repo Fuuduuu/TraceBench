@@ -35,6 +35,17 @@ Accepted scope-lock owner: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_
 - Visual contact confirmation is not electrical confirmation.
 - AI marker conversion remains future scope: AI marker is an unconfirmed proposal/sidecar/UI-local candidate until human confirmation converts it through the placement editor path. AI never authors canonical placement events.
 
+Additional protected scope-lock: `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`.
+
+- Board Canvas right-panel / ghost draft area owns the first official placement editor surface.
+- First implementation slice is UI-local placement editor shell only; no writer and no canonical writes.
+- Draft state is in-memory/session-only until explicit human Confirm; cancel, discard, leaving the editor, and ordinary draft edits must not write.
+- Placement editor may edit board side, template/shape family, center position, rotation, width, height, optional template/visual family reference, and optional notes.
+- Per-side contact counts may be draft-only visual controls until a separate visual-contact layout scope; they must not be persisted as contacts or placement payload.
+- Future dedicated writer emits exactly one V2 event type: `component_visual_placement_confirmed` with human actor, explicit user confirmation source, confirmed confirmation block, idempotent client operation precedent, and width/height envelope payload.
+- The writer must use the canonical append path and must not directly edit `known_facts.json`, create component identity, update component metadata, or write nets, pins, pads, contacts, measurements, AI facts, repair conclusions, or visual contact layout.
+- Edit placement reuses the same editor, pre-seeded from projection, and re-confirms by appending a newer placement event; no placement-updated event type is introduced.
+
 ## Core rule
 
 Human is the sensor. AI is the graph engine.

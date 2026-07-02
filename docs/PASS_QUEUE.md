@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -26,19 +26,48 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Active / near-future queue
 
-No active scoped pass. Current route is `NEEDS_USER_DECISION`.
+| PASS_ID | Lane/Type | Status | Purpose |
+| --- | --- | --- | --- |
+| PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected product + writer architecture | drafted / pending audit | Lock Board Canvas placement editor, dedicated placement writer, edit-placement, manual flow, AI marker boundary, and implementation sequence before implementation. |
+| PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / future implementation arm | next recommended after accepted scope-lock | Arm exact UI-local Board Canvas placement editor shell allowlist; no writer and no canonical writes in sync. |
+| PLACEMENT_EDITOR_SHELL_IMPL_PASS | CODEX / RUNTIME_IMPLEMENTATION / UI-local editor shell | future, not armed yet | Board Canvas placement editor shell only; UI-local draft state; no writer, no Confirm write path, no canonical event mutation. |
+| PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected writer + Confirm path | future | Lock dedicated V2 placement writer service and explicit Confirm path before implementation. |
+| EDIT_PLACEMENT_FLOW_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / edit-placement flow | future | Reopen existing projected placement as draft, confirm via same writer, and preserve latest-wins projection semantics. |
+| VISUAL_CONTACT_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / visual contacts | future | Confirmed visual contacts/pads/legs as separate event/projection, not folded into placement. |
+| AI_MARKER_TO_PLACEMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / AI marker conversion | future | Convert unconfirmed AI/photo marker proposals only through human-confirmed placement editor flow. |
 
-## Planned follow-up sequence
+## Locked implementation sequence
 
 | Phase | Future pass family | Purpose | Implementation authorization |
 | --- | --- | --- | --- |
-| P3 | placement editor + writer scope-lock | Lock Board Canvas right-panel / ghost draft as the official UI-local placement editor and define writer boundaries now that projection ordering/invalidation is resolved. | Docs only after user decision. |
-| P4 | placement editor implementation active-lock sync | Arm exact future UI/writer implementation allowlist after accepted scope-lock. | Docs only. |
-| P5 | UI-local placement editor shell | Add or refine local draft UI without canonical writes. | Runtime/test only after active lock. |
-| P6 | placement writer implementation | Add dedicated V2 placement writer service and tests. | Protected implementation after explicit scope lock. |
-| P7 | edit-placement flow | Scope and implement editing of confirmed visual placement separately. | Future protected scope. |
-| P8 | visual-contact layout | Separate confirmed visual-contact event/projection/UI; not folded into placement. | Future protected scope. |
-| P9 | AI marker conversion | Human-confirmed conversion of AI marker proposals through placement editor path. | Future protected scope. |
+| P1 | placement editor shell active-lock sync | Arm Board Canvas placement editor shell allowlist. | Docs only. |
+| P1 implementation | UI-local placement editor shell | Board Canvas right-panel / ghost draft editor shell, in-memory draft only. | Runtime/test only after active lock. |
+| P2 | placement writer + Confirm scope lock | Dedicated V2 placement writer service and explicit Confirm path. | Docs only before protected implementation. |
+| P3 | edit-placement flow | Reopen confirmed placement, draft edits, re-confirm through same writer. | Future protected scope. |
+| P4 | visual-contact layout | Confirmed visual contacts/pads/legs as separate canonical concept. | Future protected scope. |
+| P5 | AI marker conversion | Unconfirmed AI marker candidate to human-confirmed placement. | Future protected scope. |
+
+## Likely future allowlists
+
+P1 editor shell:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- Optional new Board Canvas subfiles only if separately justified by active-lock sync.
+
+P2 writer + Confirm:
+
+- `lib/features/components/services/v2_placement_writer.dart`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- Relevant writer tests if repo has a matching test location.
+- Do not include materializer/validator unless a later audit proves they are needed.
+
+P3 edit placement:
+
+- Board Canvas/editor files.
+- Widget tests.
+- Writer reuse tests.
 
 ## Recent closeout context
 
@@ -46,6 +75,5 @@ No active scoped pass. Current route is `NEEDS_USER_DECISION`.
 | --- | --- | --- | --- |
 | PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / protected implementation arm | accepted/pushed as `39df320` (`docs: arm placement projection ordering implementation`) | Armed exact implementation allowlist `tools/materialize_known_facts.py` and `tests/test_materialize_known_facts.py`; no implementation in sync. |
 | PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_PASS | CODEX / PROTECTED_IMPLEMENTATION / materializer projection semantics | accepted/pushed as `386b52369a44053ac947aed344864a1b74e54df1` (`fix: order placement projection by event stream`) | Implementation audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; safe staging set `tools/materialize_known_facts.py` and `tests/test_materialize_known_facts.py`; stream-order latest-wins and placement invalidation retraction implemented. |
-| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_POST_AUDIT_PASS | CODEX / DOCS_CLOSEOUT / implementation post-audit | completed docs-only closeout; route set to `NEEDS_USER_DECISION` | Records implementation audit, validation evidence, implementation summary, test coverage, boundary confirmation, and active-lock release. |
-| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / protected projection semantics | accepted/pushed/audited as `5cbf3b5174d062e716aa0c31d73420716fff7964` (`docs: lock placement projection ordering`) | Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; locks stream-order latest-wins and placement invalidation retraction before writer/UI work. |
-| TRACEBENCH_FILE_MAP_PASS | CODEX / DOCS_SYNC / file-map creation | accepted/pushed/audited as `dd0024450deb674dbb55d7ec71103f366f02a313` (`docs: add TraceBench file map`) | Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; safe staging set recorded in `docs/AUDIT_INDEX.md`; route remained `NEEDS_USER_DECISION`. |
+| PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_IMPL_POST_AUDIT_PASS | CODEX / DOCS_CLOSEOUT / implementation post-audit | accepted/pushed as `05178a0be0523f780cf3b8c5a9157450fa40ad8c` (`docs: close out placement projection ordering`) | Completed docs-only closeout; route returned to `NEEDS_USER_DECISION` before this scope-lock. |
+| TRACEBENCH_FILE_MAP_PASS | CODEX / DOCS_SYNC / file-map creation | accepted/pushed/audited as `dd0024450deb674dbb55d7ec71103f366f02a313` (`docs: add TraceBench file map`) | Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; route remained `NEEDS_USER_DECISION`. |

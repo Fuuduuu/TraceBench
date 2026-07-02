@@ -2,74 +2,65 @@
 
 ## Current pass
 
-`PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`
+`PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PLACEMENT_EDITOR_SHELL_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Baseline route before this pass: `NEEDS_USER_DECISION`.
-- Latest closeout commit verified for baseline: `05178a0be0523f780cf3b8c5a9157450fa40ad8c` (`docs: close out placement projection ordering`).
-- Active scope: docs-only protected product/architecture scope-lock for placement editor and placement writer contract.
-- Route after this scope-lock draft: current `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Latest pushed audit-record commit verified: `c4f7f5687360b76f9000a7b50f7d7733c08cc193` (`docs: record placement editor contract audit`).
+- Pushed scope-lock commit verified: `0ebcf433608c9691440d43c8aa3d212c693454b4` (`docs: lock placement editor and writer contract`).
+- Scope-lock audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Route before this sync: current `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Route after this sync: current `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`, next `PLACEMENT_EDITOR_SHELL_IMPL_PASS`.
 
-## Source context recorded
+## Implementation pass armed
 
-Accepted baseline decisions before implementation work:
+`PLACEMENT_EDITOR_SHELL_IMPL_PASS` is armed for the first UI-local Board Canvas placement editor shell.
 
-- Add Component creates component identity/existence only through `component_created`.
-- `component_created` must not carry position, rotation, size, board side, contacts, pins, nets, or visual layout.
-- Board Canvas right-panel / ghost draft is the intended seed for the placement editor.
-- Board Canvas renderer/painter remains read-only: `renderer writes: none`.
-- Future placement Confirm must call a dedicated placement writer service.
-- V2 `component_visual_placement_confirmed` validator/materializer support is implemented.
-- Placement projection uses deterministic `events.jsonl` stream order across V1/V2.
-- `event_invalidated` retracts targeted placement event from `component_visual_placements`.
-- `width` + `height` is the primary confirmed visual envelope size model.
-- Visual contact layout remains separate future scope.
-- AI markers remain unconfirmed until human confirmation.
-- AI never authors canonical placement events.
-- `_incoming/ui_redesign` inventory is complete; do not deep-read it by default.
+Implementation allowlist:
 
-## Scope-lock summary
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-`PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS` locks the product and architecture contract before Board Canvas placement editor UI, placement writer service, Confirm placement action, edit-placement flow, visual-contact layout, or AI-marker conversion is implemented.
+## Implementation goal recorded
 
-Locked direction:
+The future implementation pass may evolve the existing Board Canvas right-panel / Add Component ghost/draft area into a clearer placement editor shell, while keeping all state UI-local/in-memory and preserving read-only renderer/painter behavior.
 
-- First implementation slice is Board Canvas placement editor shell only.
-- Placement editor draft state is UI-local/in-memory until explicit Confirm.
-- Open, drag, rotate, resize, shape/template change, side change, cancel, discard, and leaving the editor must not write canonical events.
-- Future Confirm emits exactly one V2 `component_visual_placement_confirmed` event through a dedicated writer service.
-- Placement writer and renderer remain separate; renderer/painter code does not write.
-- Contact counts may exist only as UI-local visual draft controls until a separate visual-contact layout scope.
-- Confirmed visual placement remains visual/documentation envelope data only, not connectivity, net, pin, pad, contact, measurement, AI fact, or repair evidence.
+Allowed future shell controls include:
 
-## Implementation sequence locked
+- component context / selected component
+- board side
+- shape/template family
+- center position / drag, if already represented locally
+- `rotation_deg` UI-local draft control
+- `width` + `height` UI-local draft control
+- optional `template_id` / visual family reference
+- optional notes if low-risk
 
-1. `PLACEMENT_EDITOR_SHELL_IMPL_ACTIVE_LOCK_SYNC_PASS`
-2. `PLACEMENT_EDITOR_SHELL_IMPL_PASS`
-3. `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`
-4. Future active-lock + implementation for the dedicated writer/Confirm path.
-5. `EDIT_PLACEMENT_FLOW_SCOPE_LOCK_PASS`
-6. Future visual-contact layout and AI-marker conversion scopes only after explicit user decisions.
+Required shell behavior:
+
+- clearly label draft state as unsaved/session-only
+- provide Cancel/Reset/Discard behavior that writes nothing
+- preserve existing read-only renderer/painter behavior
+- keep all draft state in memory only
+
+## Forbidden implementation surfaces recorded
+
+The future implementation pass must not create a placement writer, add Confirm canonical write, call `event_writer_service.py`, write `component_visual_placement_confirmed`, edit `known_facts.json`, edit `events.jsonl`, edit schema/tool/materializer/validator files, implement visual contact layout, treat per-side contact counts as confirmed contacts/pads/pins/nets, implement edit-placement from confirmed projection beyond shell preparation, or implement AI marker conversion.
 
 ## Boundary confirmation
 
-- No runtime files changed by this scope-lock.
-- No test files changed.
-- No schema/tool/materializer/validator/writer implementation changed.
-- No placement writer exists yet.
-- No Confirm/Edit UI exists yet.
-- No visual contact layout exists yet.
-- No AI marker conversion is implemented.
-- No `_incoming` dependency is introduced.
-- Board Canvas remains read-only until a future implementation pass explicitly scopes otherwise.
-- Component identity and visual placement confirmation remain separate actions.
+- This active-lock sync does not implement runtime behavior.
+- No runtime/test files changed by this sync.
+- No schema/tool/materializer/validator/writer files changed.
+- No router/sample/project fixture files changed.
+- No `_incoming` files changed or staged.
+- No implementation happened in this sync.
 
 ## Canonical owners and evidence ledgers
 
@@ -87,4 +78,4 @@ Locked direction:
 - Repo docs and verified git state outrank chat handoff text and assistant memory.
 - Stage exact files only if explicitly asked; never use git add ., git add -A, or git commit -am.
 - Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
-- Next implementation work requires accepted audit and active-lock sync.
+- Next work is implementation inside the exact active allowlist only.

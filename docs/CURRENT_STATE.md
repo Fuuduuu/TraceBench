@@ -2,39 +2,39 @@
 
 ## Current pass
 
-`PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`
+`ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: C:\Users\Kasutaja\Desktop\TraceBench
 - Branch: main
-- Latest pushed closeout commit verified: `d3bf2db724faf9be63be9a7553a66dd41eeea797` (`docs: close out placement editor shell`).
-- Previous route: current `NEEDS_USER_DECISION`, next `NEEDS_USER_DECISION`.
-- Active pass: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
-- Next route: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Latest pushed writer/Confirm scope-lock commit verified: `c50add13f9bc45e73a30906b41bb378a7bd15013` (`docs: lock placement writer confirm contract`).
+- Previous route: current `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`, next `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Active pass: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`.
+- Next route: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 
 ## Active scope summary
 
-Docs-only protected-surface scope-lock for the future placement writer and explicit Confirm/Salvesta path.
+Docs-only protected UI scope-lock for the Board Canvas right-side `Lisa komponent` panel local draft controls.
 
-- The accepted writer/Confirm contract lives in `docs/audit/PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS.md` and `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md` section 2.7.
-- No implementation is armed by this pass.
-- No runtime, test, schema, tool, materializer, validator, router, event, known-facts, sample, asset, or `_incoming` changes are in scope.
-- Board Canvas remains read-only unless the future implementation active-lock explicitly arms the writer/UI files.
+- The exact design handoff is `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html`.
+- The handoff is `DESIGN_INPUT_ONLY`; `_incoming` remains provenance/design input only and must not be staged.
+- This pass intentionally defers `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- The writer/Confirm contract remains locked and preserved, but writer implementation is not armed by this pass.
+- No runtime, test, writer, schema, tool, materializer, validator, router, event, known-facts, sample, asset, or `_incoming` changes are in scope.
 
-## Recent closed baseline
+## Locked UI-local direction
 
-`PLACEMENT_EDITOR_SHELL_IMPL_PASS` is accepted/pushed/audited as `d779b0c294b5b0f28557d3e8d921fb4cd7970c91` (`feat: add placement editor draft shell`).
+Future implementation updates only the existing Board Canvas right-side `Lisa komponent` panel.
 
-- Board Canvas has a UI-local/session-only placement draft shell in the right panel.
-- Draft controls write nothing canonical.
-- No placement writer was created.
-- No Confirm/Save/Edit placement action was added.
-- Renderer/painter remains read-only.
+- Add real UI-local sections for package/shape, pin/contact marker draft, size, rotation, draft preview, safety copy, and action buttons.
+- Preserve `Ainult vaatamine · kirjutusi pole` and `renderer writes: none`.
+- `Salvesta` is design intent only until a separately armed writer pass exists.
+- Contacts/pins remain UI-local visual marker drafts only and do not confirm electrical contacts.
 
 ## Canonical owners and evidence ledgers
 

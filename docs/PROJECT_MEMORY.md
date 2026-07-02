@@ -53,7 +53,21 @@ Additional protected scope-lock: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
 - Confirm/Salvesta writes only after explicit user action; all draft interactions remain UI-local/no-write.
 - The writer uses V2/human envelope semantics with explicit user confirmation, `client_operation_id`, and width plus height as the primary visual envelope size model.
 - Placement save does not create component identity and does not write contacts, pins, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
-- Add Component panel redesign remains pending external Claude Design handoff and is not consumed by this scope-lock.
+- Add Component panel redesign was not consumed by `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`; `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS` separately consumes the exact HTML handoff as `DESIGN_INPUT_ONLY`.
+
+Additional protected UI scope-lock: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`.
+
+- Exact design handoff: `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html`.
+- The handoff is `DESIGN_INPUT_ONLY`; `_incoming` remains provenance/design input only and must not be staged or imported into runtime.
+- User decision: defer `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS` and implement UI-local Add Component panel controls first.
+- Future implementation updates only the existing Board Canvas right-side `Lisa komponent` panel.
+- Panel controls for shape/package, pin/contact marker layout, size, rotation, draft preview, safety copy, and action buttons are UI-local draft only.
+- `Salvesta` is design intent only until a separately armed writer pass exists.
+- `Muuda` is local edit/draft mode only, and `Kustuta` discards local draft only in this UI-local pass.
+- Pin/contact controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.
+- Preserve `Ainult vaatamine · kirjutusi pole` and `renderer writes: none`.
+enderer writes: none.
+
 ## Core rule
 
 Human is the sensor. AI is the graph engine.

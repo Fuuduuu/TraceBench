@@ -118,6 +118,56 @@ Boundary:
 - Contact markers in Add Component remain UI-local visual marker draft until a separate visual-contact layout scope.
 - Visual contact confirmation is separate from electrical confirmation.
 - Add Component panel redesign is pending external Claude Design handoff and is not consumed here.
+
+## 2.8 Add Component panel local draft controls scope lock (2026-07-02)
+
+`ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS` locks the UI-local Board Canvas right-side `Lisa komponent` panel redesign before implementation.
+
+Design input:
+
+- Exact handoff: `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html`.
+- The handoff is `DESIGN_INPUT_ONLY`.
+- `_incoming` remains provenance/design input only and must not be staged, copied into runtime, or imported as runtime dependency.
+
+Route decision:
+
+- `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS` is intentionally deferred.
+- `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS` remains accepted/pushed and preserved.
+- Future writer implementation must still obey the writer/Confirm contract in section 2.7.
+
+Locked panel model:
+
+- Everything for adding a component lives under the existing right-side `Lisa komponent` panel.
+- Flow: choose package/shape, set pin/contact marker layout, change size, rotate, then act with `Salvesta`, `Muuda`, `Kustuta`, or `Tühista`.
+- The design replaces red annotation boxes with real `Suurus` and `Pööramine` controls.
+- The UI-local marker draft concept is preserved.
+- `Ainult vaatamine · kirjutusi pole` and `renderer writes: none` are preserved.
+- `Salvesta` is design intent only until a writer pass exists.
+- Contacts/pins are UI-local visual marker drafts only.
+
+Future implementation should include:
+
+- Header: `Lisa komponent`, `Mustand` badge.
+- Active template card: selected shape/package, contact count, `Muuda kuju`.
+- Draft label: `Nimi / tähis`, placeholder `nt R12, U3, C7`.
+- Shape/package section: `Kuju`, `Vali kuju` / `Muuda kuju`.
+- Pin/contact layout: `Pin-asetus`, `UI-local marker draft`, side steppers, and local-only safety copy.
+- Size: `Suurus`, `Laius`, `Kõrgus`, decrement/increment controls, corner-handle hint.
+- Rotation: `Pööramine`, `Pööre: 0°`, `⟲ −10°`, `⟳ +10°`, and snaps `0° / 90° / 180° / 270°`.
+- Draft preview: `Eelvaade`, dashed `Draft / unsaved` visual preview.
+- Safety copy: local draft, no electrical connectivity proof, writer pass required before save.
+- Action bar: `Salvesta`, `Muuda`, `Kustuta`, `Tühista`.
+
+Boundaries:
+
+- All controls are UI-local draft only.
+- `Salvesta` must not call writer, event service, `events.jsonl`, `known_facts.json`, projection refresh, schema, validator, or materializer until a separate writer pass is armed.
+- `Muuda` is local edit/draft mode only in this UI pass.
+- `Kustuta` discards local draft only and must not delete canonical components or emit invalidation/delete events.
+- No real physical `mm` semantics should be introduced unless current code already owns that unit; prefer existing draft width/height formatting.
+- Corner handles may be visual affordances; real drag-resize is not required for the first implementation unless already local and low-risk.
+- No confirmed pins, pads, contacts, nets, traces, measurements, electrical facts, schema changes, materializer changes, validator changes, writer changes, or router changes are defined by this design.
+
 ## 3. Hard evidence boundaries
 
 - Human is the sensor. AI is the graph engine.

@@ -31,6 +31,10 @@ Core invariants (semantics unchanged):
 - Placement writer and Confirm/Salvesta are locked as a protected future scope by `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`: the future writer file is `lib/features/components/services/v2_placement_writer.dart`, and it may emit only `component_visual_placement_confirmed` through the existing canonical append/event writer pattern.
 - Placement Confirm/Salvesta is explicit-user-action-only: opening the panel, selecting a component, dragging, rotating, resizing, changing side/template, editing notes, cancelling, resetting, discarding, or navigating away must not write canonical data.
 - Placement confirmation remains separate from component identity creation; the placement writer must not emit `component_created` or `component_updated` unless a future combined-flow Add Component scope explicitly changes that boundary.
+- Add Component panel local draft controls are locked by `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`: the exact HTML handoff is `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html` and is `DESIGN_INPUT_ONLY`.
+- The future `Lisa komponent` panel implementation is UI-local only: shape/package, marker steppers, size, rotation, preview, safety copy, and action buttons must not write canonical facts or events.
+- `Salvesta` in the Add Component panel may be visible only as disabled/inert/design-intent until a separately armed writer pass exists; contacts/pins remain visual marker drafts only and do not confirm electrical contacts.
+
 Product identity owner:
 
 - `docs/PROJECT_MEMORY.md` is the durable owner for BenchBeep / TraceBench / BoardFact naming.

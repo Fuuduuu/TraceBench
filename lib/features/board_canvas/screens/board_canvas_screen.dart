@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../../components/services/v2_placement_writer.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
@@ -396,6 +397,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   Offset? _addComponentTemplateGhostDraftAnchor;
   String? _placementEditorDraftKey;
   _PlacementEditorDraftState? _placementEditorDraft;
+  bool _addComponentPlacementSaveInFlight = false;
+  String? _addComponentTemplatePlacementContextKey;
+  String? _addComponentTemplateSaveStatusMessage;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -498,6 +502,76 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       _placementEditorDraftKey = entry.key;
       _placementEditorDraft = _PlacementEditorDraftState.fromEntry(entry);
     });
+  }
+
+  Future<void> _confirmAddComponentTemplatePlacement({
+    required ProjectState projectState,
+    required _PlacementEntry selectedEntry,
+    required _AddComponentTemplateDefinition template,
+  }) async {
+    if (_addComponentPlacementSaveInFlight) {
+      return;
+    }
+
+    final placement = selectedEntry.placement;
+    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+    final request = V2PlacementWriterRequest(
+      componentId: placement.componentId,
+      coordinateSpace: placement.coordinateSpace,
+      boardSide: placement.boardSide,
+      centerX: draftAnchor?.dx ?? placement.centerX,
+      centerY: draftAnchor?.dy ?? placement.centerY,
+      rotationDeg: _addComponentTemplateDraftRotationDeg,
+      width: _addComponentTemplateDraftWidth,
+      height: _addComponentTemplateDraftHeight,
+      templateId: template.id,
+      sourcePhotoId: placement.sourcePhotoId,
+      clientOperationId: _placementClientOperationIdFor(placement.componentId),
+    );
+
+    setState(() {
+      _addComponentPlacementSaveInFlight = true;
+      _addComponentTemplateSaveStatusMessage =
+          'Salvestan valitud komponendi visuaalset paigutust...';
+    });
+
+    try {
+      final result = await ref.read(v2PlacementWriterProvider).confirmPlacement(
+            projectState: projectState,
+            request: request,
+          );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _addComponentTemplateSaveStatusMessage = result.appended
+            ? 'Visuaalne paigutus salvestatud.'
+            : 'See visuaalne paigutus oli juba salvestatud.';
+      });
+    } on V2PlacementWriterException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _addComponentTemplateSaveStatusMessage =
+            'Salvestamine ebaõnnestus: ${error.message}';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _addComponentPlacementSaveInFlight = false;
+        });
+      }
+    }
+  }
+
+  String _placementClientOperationIdFor(String componentId) {
+    final safeComponentId = componentId
+        .trim()
+        .replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_');
+    final timestamp = DateTime.now().toUtc().microsecondsSinceEpoch;
+    return 'op_board_canvas_visual_placement_${safeComponentId}_$timestamp';
   }
 
   String _nextPlacementDraftBoardSide(String boardSide) {
@@ -640,7 +714,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     final selectedPlacementDraft = selectedDraftEntry == null
         ? null
         : _placementEditorDraftFor(selectedDraftEntry);
-
+    _PlacementEntry? addComponentTemplatePlacementContextEntry;
+    final addComponentTemplatePlacementContextKey =
+        _addComponentTemplatePlacementContextKey;
+    if (addComponentTemplatePlacementContextKey != null) {
+      for (final entry in entries) {
+        if (entry.key == addComponentTemplatePlacementContextKey) {
+          addComponentTemplatePlacementContextEntry = entry;
+          break;
+        }
+      }
+    }
     return _buildScaffold(
       context,
       Padding(
@@ -671,6 +755,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onSelected: (value) {
                     setState(() {
                       _selectedPlacementKey = value;
+                      _addComponentTemplatePlacementContextKey = value;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
                         _contextPanelMode =
@@ -717,6 +802,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onPlacementSelected: (value) {
                     setState(() {
                       _selectedPlacementKey = value;
+                      _addComponentTemplatePlacementContextKey = value;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
                         _contextPanelMode =
@@ -728,6 +814,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onCanvasTapEmpty: () {
                     setState(() {
                       _selectedPlacementKey = null;
+                      _addComponentTemplatePlacementContextKey = null;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
                         _contextPanelMode = _WorkbenchContextPanelMode.hidden;
@@ -890,6 +977,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         onSelected: (value) {
                           setState(() {
                             _selectedPlacementKey = value;
+                            _addComponentTemplatePlacementContextKey = value;
                             _contextPanelMode =
                                 _WorkbenchContextPanelMode.inspector;
                             _inspectorVisible = true;
@@ -989,6 +1077,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                           null;
                                     });
                                   },
+                        onConfirmPlacement:
+                            selectedAddComponentTemplate == null ||
+                                    addComponentTemplatePlacementContextEntry ==
+                                        null ||
+                                    _addComponentPlacementSaveInFlight
+                                ? null
+                                : () => _confirmAddComponentTemplatePlacement(
+                                      projectState: projectState,
+                                      selectedEntry:
+                                          addComponentTemplatePlacementContextEntry!,
+                                      template: selectedAddComponentTemplate,
+                                    ),
+                        saveContextLabel:
+                            addComponentTemplatePlacementContextEntry
+                                ?.selectorLabel,
+                        saveStatusMessage:
+                            _addComponentTemplateSaveStatusMessage,
                       );
                       break;
                     case _WorkbenchContextPanelMode.safetyEvidence:
@@ -1063,6 +1168,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _WorkbenchContextPanelMode.addComponentTemplates,
                     onPressed: () {
                       setState(() {
+                        _addComponentTemplatePlacementContextKey = selectedKey;
                         _selectedPlacementKey = null;
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.addComponentTemplates;
@@ -2098,6 +2204,9 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.onChangeTemplateSelection,
     required this.draftLabel,
     required this.onDraftLabelChanged,
+    required this.onConfirmPlacement,
+    this.saveContextLabel,
+    this.saveStatusMessage,
     this.onResetToTemplateDefaults,
   });
 
@@ -2124,6 +2233,9 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final VoidCallback onChangeTemplateSelection;
   final String draftLabel;
   final ValueChanged<String> onDraftLabelChanged;
+  final VoidCallback? onConfirmPlacement;
+  final String? saveContextLabel;
+  final String? saveStatusMessage;
   final VoidCallback? onResetToTemplateDefaults;
 
   @override
@@ -2262,6 +2374,9 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                   onDraftHeightChanged: onDraftHeightChanged,
                   onDraftRotationChanged: onDraftRotationChanged,
                   onResetToDefaults: onResetToTemplateDefaults,
+                  onConfirmPlacement: onConfirmPlacement,
+                  saveContextLabel: saveContextLabel,
+                  saveStatusMessage: saveStatusMessage,
                 ),
               ],
             ],
@@ -2466,6 +2581,9 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
     required this.onDraftWidthChanged,
     required this.onDraftHeightChanged,
     required this.onDraftRotationChanged,
+    required this.onConfirmPlacement,
+    this.saveContextLabel,
+    this.saveStatusMessage,
     this.onResetToDefaults,
   });
 
@@ -2486,6 +2604,9 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
   final ValueChanged<double> onDraftWidthChanged;
   final ValueChanged<double> onDraftHeightChanged;
   final ValueChanged<int> onDraftRotationChanged;
+  final VoidCallback? onConfirmPlacement;
+  final String? saveContextLabel;
+  final String? saveStatusMessage;
   final VoidCallback? onResetToDefaults;
 
   @override
@@ -2786,17 +2907,41 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
               ),
             ),
             Text(
-              "Salvestamine vajab eraldi writer-pass'i.",
+              onConfirmPlacement == null
+                  ? 'Vali olemasolev komponent enne salvestamist.'
+                  : 'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
               key: const Key(
-                'board_canvas_add_component_builder_writer_pass_copy',
+                'board_canvas_add_component_builder_save_boundary_copy',
               ),
               style: theme.textTheme.labelSmall?.copyWith(
                 color: _kBoardCanvasNavy,
               ),
             ),
+            if (saveContextLabel != null)
+              Text(
+                'Valitud komponent: $saveContextLabel',
+                key: const Key(
+                  'board_canvas_add_component_builder_save_context',
+                ),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: _kBoardCanvasMuted,
+                ),
+              ),
+            if (saveStatusMessage != null)
+              Text(
+                saveStatusMessage!,
+                key: const Key(
+                  'board_canvas_add_component_builder_save_status',
+                ),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: _kBoardCanvasSignal,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             const SizedBox(height: 6),
             _AddComponentDraftActionBar(
               onResetToDefaults: onResetToDefaults,
+              onConfirmPlacement: onConfirmPlacement,
             ),
           ],
         ),
@@ -3108,9 +3253,11 @@ class _AddComponentDraftPreviewCard extends StatelessWidget {
 class _AddComponentDraftActionBar extends StatelessWidget {
   const _AddComponentDraftActionBar({
     required this.onResetToDefaults,
+    required this.onConfirmPlacement,
   });
 
   final VoidCallback? onResetToDefaults;
+  final VoidCallback? onConfirmPlacement;
 
   @override
   Widget build(BuildContext context) {
@@ -3123,9 +3270,12 @@ class _AddComponentDraftActionBar extends StatelessWidget {
         _AddComponentDraftChipButton(
           key: const Key('board_canvas_add_component_builder_save'),
           label: 'Salvesta',
-          onPressed: null,
+          onPressed: onConfirmPlacement,
           minWidth: 74,
           minHeight: 38,
+          foregroundColor: _kBoardCanvasSignal,
+          backgroundColor: _kBoardCanvasSignalTint,
+          borderColor: _kBoardCanvasSignal.withValues(alpha: 0.7),
           disabledForegroundColor: _kBoardCanvasSignal,
           disabledBackgroundColor: _kBoardCanvasSignalTint,
           disabledBorderColor: _kBoardCanvasSignal.withValues(alpha: 0.45),

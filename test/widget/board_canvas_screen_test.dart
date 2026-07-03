@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
+import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -51,10 +52,16 @@ ProjectState _inlineProjectState({
   );
 }
 
-Widget _harness({required ProjectState? projectState, Key? boardCanvasKey}) {
+Widget _harness({
+  required ProjectState? projectState,
+  Key? boardCanvasKey,
+  V2PlacementWriter? placementWriter,
+}) {
   return ProviderScope(
     overrides: [
       projectStateProvider.overrideWith((_) => projectState),
+      if (placementWriter != null)
+        v2PlacementWriterProvider.overrideWith((_) => placementWriter),
     ],
     child: MaterialApp(home: BoardCanvasScreen(key: boardCanvasKey)),
   );
@@ -160,6 +167,25 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
   await tester.pump();
   await tester.tap(finder);
   await tester.pump(const Duration(milliseconds: 16));
+}
+
+class _FakePlacementWriter implements V2PlacementWriter {
+  final List<V2PlacementWriterRequest> requests = <V2PlacementWriterRequest>[];
+
+  @override
+  Future<V2PlacementWriterResult> confirmPlacement({
+    required ProjectState projectState,
+    required V2PlacementWriterRequest request,
+  }) async {
+    requests.add(request);
+    return const V2PlacementWriterResult(
+      status: V2PlacementWriteStatus.appended,
+      event: <String, dynamic>{
+        'event_type': 'component_visual_placement_confirmed',
+      },
+      appended: true,
+    );
+  }
 }
 
 double _previewCenterSlotDx(WidgetTester tester) {
@@ -2312,7 +2338,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text("Salvestamine vajab eraldi writer-pass'i."),
+      find.text('Vali olemasolev komponent enne salvestamist.'),
       findsOneWidget,
     );
     expect(find.textContaining('template family'), findsNothing);
@@ -2537,6 +2563,100 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
     expect(find.text('1.00'), findsOneWidget);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component Salvesta writes placement only on explicit user action',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final placementWriter = _FakePlacementWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(placementWriter.requests, isEmpty);
+    expect(
+      find.text(
+        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_context')),
+      findsOneWidget,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_width_increment'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_rotation_increment'),
+    );
+    expect(placementWriter.requests, isEmpty);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(placementWriter.requests, hasLength(1));
+    final request = placementWriter.requests.single;
+    expect(request.componentId, 'cmp_r101');
+    expect(request.coordinateSpace, 'board_normalized');
+    expect(request.boardSide, 'top');
+    expect(request.width, 1.1);
+    expect(request.height, 0.6);
+    expect(request.rotationDeg, 10);
+    expect(request.templateId, 'template_family_rect_2_top_bottom');
+    expect(
+      request.clientOperationId,
+      startsWith('op_board_canvas_visual_placement_cmp_r101_'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_status')),
+      findsOneWidget,
+    );
+    expect(state.events, isEmpty);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_width_increment'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_delete'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_cancel'),
+    );
+    expect(placementWriter.requests, hasLength(1));
     expect(state.events, isEmpty);
   });
 
@@ -6345,7 +6465,12 @@ void main() {
     expect(source, contains('Draft / unsaved'));
     expect(source, contains('Mustand on lokaalne kuni salvestamiseni.'));
     expect(source, contains('Kontaktid ei kinnita elektrilist ühendust.'));
-    expect(source, contains("Salvestamine vajab eraldi writer-pass'i."));
+    expect(
+        source,
+        contains(
+            'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.'));
+    expect(source, contains('v2PlacementWriterProvider'));
+    expect(source, contains('V2PlacementWriterRequest'));
     expect(
         source,
         contains(

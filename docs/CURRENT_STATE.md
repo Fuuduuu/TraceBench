@@ -2,47 +2,46 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed implementation commit verified: `93452da3bddf554d7921b7df0e15bb183394f649` (`feat: add add component panel local draft controls`).
-- Active-lock commit verified: `d0dbfcea033670b6d82175adda12638850955f31` (`docs: arm add component panel local draft controls`).
-- Closed implementation pass: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_IMPL_PASS`.
-- Closeout pass: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_IMPL_POST_AUDIT_PASS`.
-- Route returned to user decision.
+- Latest pushed closeout verified: `ed45dbcf` (`docs: close out add component panel local draft controls`).
+- Accepted writer/Confirm scope-lock: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
+- Active pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Next route: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
 
-## Closeout summary
+## Active scope summary
 
-The pushed Board Canvas `Lisa komponent` right-panel implementation is recorded and closed out.
+Docs-only active-lock sync for the protected placement writer and explicit Confirm/Salvesta implementation.
 
-- Implementation audit recorded: `AUDIT_VERDICT: ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
-- Manual smoke recorded: `PASS`.
-- Active implementation lock released.
-- Future writer work remains deferred until separately routed and armed.
+- Implementation pass armed: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
+- Implementation allowlist:
+  - `lib/features/components/services/v2_placement_writer.dart`
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/unit/v2_placement_writer_test.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- No runtime, test, writer, schema, tool, materializer, validator, router, event, known-facts, sample, or `_incoming` edits are made by this sync pass.
 
-## Current accepted behavior
+## Locked implementation direction
 
-- Board Canvas `Lisa komponent` right panel has UI-local add-component controls.
-- Active template / shape package card is preserved.
-- `Pin-asetus` / UI-local marker draft remains.
-- `Suurus` exposes local width/height controls.
-- `Pööramine` exposes local rotation controls.
-- `Eelvaade` / Draft / unsaved preview is visible.
-- Safety copy confirms the draft is local, contacts are not electrical proof, and saving needs a separate writer pass.
-- Action bar includes `Salvesta`, `Muuda`, `Kustuta`, and `Tühista`.
-- The fixed-height / hidden-scroll panel layout hack was removed before closeout.
-- Controls remain UI-local / in-memory only.
-- `Salvesta` remains inert/disabled/design-intent only.
-- `Kustuta` discards local draft only.
-- `Ainult vaatamine · kirjutusi pole` remains.
-- `renderer writes: none` remains.
+Future implementation may wire explicit human Confirm/Salvesta for visual placement only.
+
+- Confirm requires explicit human action.
+- Writer emits only `component_visual_placement_confirmed`.
+- Writer uses V2/human envelope semantics and `client_operation_id` precedent.
+- Placement payload remains visual envelope only: component, coordinate space, board side, center, rotation, width, height, optional template/source photo/notes.
+- Placement write does not create component identity.
+- Placement write does not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, visual contact layout, or repair conclusions.
+- AI never authors canonical placement events.
+- Board Canvas renderer/painter remains read-only; only the explicit UI Confirm path may call the writer in the next implementation pass.
+- `Salvesta` may become wired only in `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`, not in this sync pass.
 
 ## Canonical owners and evidence ledgers
 

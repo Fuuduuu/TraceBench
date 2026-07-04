@@ -1156,7 +1156,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         saveBoundaryCopy: _addComponentPlacementSaveInFlight
                             ? 'Salvestamine on pooleli...'
                             : addComponentTemplateSaveBlockReason ??
-                                'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
+                                'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
                         saveContextLabel:
                             addComponentTemplatePlacementContextEntry
                                 ?.selectorLabel,
@@ -1447,7 +1447,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
-                          'Ainult vaatamine · kirjutusi pole',
+                          'Renderdus loeb · Salvesta võib kirjutada',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelSmall?.copyWith(
@@ -1508,7 +1508,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       flex: 2,
                       child: Center(
                         child: Text(
-                          'renderer writes: none',
+                          'renderer/painter writes: none',
                           key: Key('renderer_writes_none'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -2277,7 +2277,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.onDraftLabelChanged,
     required this.onConfirmPlacement,
     this.saveBoundaryCopy =
-        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
+        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
     this.saveContextLabel,
     this.saveStatusMessage,
     this.onResetToTemplateDefaults,
@@ -3353,19 +3353,19 @@ class _AddComponentDraftActionBar extends StatelessWidget {
           disabledBackgroundColor: _kBoardCanvasSignalTint,
           disabledBorderColor: _kBoardCanvasSignal.withValues(alpha: 0.45),
         ),
-        _AddComponentDraftChipButton(
-          key: const Key('board_canvas_add_component_builder_local_edit'),
-          label: 'Muuda',
-          onPressed: () {},
+        const _AddComponentDraftChipButton(
+          key: Key('board_canvas_add_component_builder_local_edit'),
+          label: 'Muuda (tulekul)',
+          onPressed: null,
           minWidth: 68,
           minHeight: 38,
-          foregroundColor: const Color(0xFFF6C453),
-          backgroundColor: const Color(0xFF231B0A),
-          borderColor: const Color(0xFF66501D),
+          foregroundColor: Color(0xFFF6C453),
+          backgroundColor: Color(0xFF231B0A),
+          borderColor: Color(0xFF66501D),
         ),
         _AddComponentDraftChipButton(
           key: const Key('board_canvas_add_component_builder_delete'),
-          label: 'Kustuta',
+          label: 'Kustuta mustand',
           onPressed: onResetToDefaults,
           minWidth: 74,
           minHeight: 38,
@@ -3373,10 +3373,10 @@ class _AddComponentDraftActionBar extends StatelessWidget {
           backgroundColor: const Color(0xFF211417),
           borderColor: const Color(0xFF493039),
         ),
-        _AddComponentDraftChipButton(
-          key: const Key('board_canvas_add_component_builder_cancel'),
-          label: 'Tühista',
-          onPressed: onResetToDefaults,
+        const _AddComponentDraftChipButton(
+          key: Key('board_canvas_add_component_builder_cancel'),
+          label: 'Tühista (pole aktiivne)',
+          onPressed: null,
           minWidth: 74,
           minHeight: 38,
           foregroundColor: _kBoardCanvasNavy,

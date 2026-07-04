@@ -390,7 +390,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: null));
 
     expect(find.text('Open a project to view its board.'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('shows no-components state when known facts have no components',
@@ -453,7 +453,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('No confirmed visual placements yet.'), findsNothing);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('renders visual footprint forms for board placements',
@@ -656,7 +656,7 @@ void main() {
       rectsByLabel[genericLabel]!.width,
       greaterThanOrEqualTo(32),
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('footprint pin visuals stay faithful to projected pin sources',
@@ -804,7 +804,7 @@ void main() {
         'Board Canvas footprint visual U8 (cmp_u8): IC / dual-side package footprint, visual only; 8 known pin identities listed separately; contacts not added',
       ),
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
 
     final measureSheetAction = find.byKey(
       const Key('board_canvas_measure_sheet_button'),
@@ -866,7 +866,11 @@ void main() {
       find.byKey(const Key('board_canvas_read_only_status_pill')),
       findsOneWidget,
     );
-    expect(find.text('Ainult vaatamine · kirjutusi pole'), findsOneWidget);
+    expect(
+      find.text('Renderdus loeb · Salvesta võib kirjutada'),
+      findsOneWidget,
+    );
+    expect(find.text('Ainult vaatamine · kirjutusi pole'), findsNothing);
     expect(find.text('Read-only · no writes'), findsNothing);
     expect(find.text('Plaadi projektsioonivaade'), findsOneWidget);
     expect(find.text('Board projection canvas'), findsNothing);
@@ -880,7 +884,7 @@ void main() {
     expect(find.text('Valmis'), findsOneWidget);
     expect(find.text('Ready'), findsNothing);
     expect(find.text('BenchBeep · TraceBench platform'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('Board Canvas measurement action opens non-writing panel shell',
@@ -1266,7 +1270,7 @@ void main() {
       closeTo(previewCenterSlotDxBeforePinSelection, 0.5),
     );
     expect(find.text('selected Pin 1'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsAtLeastNWidgets(1));
+    expect(find.text('renderer/painter writes: none'), findsAtLeastNWidgets(1));
     expect(find.text('From -> To context'), findsOneWidget);
     expect(
       find.text('Display only; no confirmed connectivity.'),
@@ -1721,7 +1725,7 @@ void main() {
     expect(find.text('Safety / Evidence'), findsNothing);
     expect(find.textContaining('read-only'), findsAtLeastNWidgets(1));
     expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsNothing);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(state.events, isEmpty);
   });
 
@@ -1757,7 +1761,7 @@ void main() {
       find.byKey(const Key('board_canvas_focus_toggle_button')),
       findsOneWidget,
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -1811,7 +1815,7 @@ void main() {
       find.byKey(const Key('board_canvas_rail_inspector_tool')),
       findsOneWidget,
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
 
     final futureTraceTool = tester.widget<IconButton>(
       find.byKey(const Key('board_canvas_rail_future_trace_tool')),
@@ -2369,9 +2373,9 @@ void main() {
     expect(find.text('Pööramine'), findsOneWidget);
     expect(find.text('Eelvaade'), findsOneWidget);
     expect(find.text('Salvesta'), findsOneWidget);
-    expect(find.text('Muuda'), findsOneWidget);
-    expect(find.text('Kustuta'), findsOneWidget);
-    expect(find.text('Tühista'), findsOneWidget);
+    expect(find.text('Muuda (tulekul)'), findsOneWidget);
+    expect(find.text('Kustuta mustand'), findsOneWidget);
+    expect(find.text('Tühista (pole aktiivne)'), findsOneWidget);
     expect(
       find.text('Per-side markers are UI-local; not confirmed contacts.'),
       findsOneWidget,
@@ -2558,6 +2562,33 @@ void main() {
       );
       expect(tester.getSize(buttonFinder).height, greaterThanOrEqualTo(38));
     }
+    final localEditButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(
+          const Key('board_canvas_add_component_builder_local_edit'),
+        ),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    final localDeleteButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(
+          const Key('board_canvas_add_component_builder_delete'),
+        ),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    final localCancelButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(
+          const Key('board_canvas_add_component_builder_cancel'),
+        ),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(localEditButton.onPressed, isNull);
+    expect(localDeleteButton.onPressed, isNotNull);
+    expect(localCancelButton.onPressed, isNull);
 
     await tester.ensureVisible(
       find.byKey(
@@ -2622,11 +2653,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
     expect(find.text('1.10'), findsOneWidget);
     await tester.ensureVisible(
-      find.byKey(const Key('board_canvas_add_component_builder_cancel')),
+      find.byKey(const Key('board_canvas_add_component_builder_delete')),
     );
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
-      find.byKey(const Key('board_canvas_add_component_builder_cancel')),
+      find.byKey(const Key('board_canvas_add_component_builder_delete')),
     );
     await tester.pump(const Duration(milliseconds: 16));
     expect(find.text('1.00'), findsOneWidget);
@@ -2672,7 +2703,7 @@ void main() {
     expect(placementWriter.requests, isEmpty);
     expect(
       find.text(
-        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
+        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
       ),
       findsOneWidget,
     );
@@ -4293,7 +4324,7 @@ void main() {
 
     expect(find.text('Placement inspector (read-only)'), findsNothing);
     expect(find.byKey(const Key('board_canvas_context_panel')), findsNothing);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(state.events, isEmpty);
   });
 
@@ -4361,7 +4392,7 @@ void main() {
         findsOneWidget);
     expect(find.text('Show controls'), findsOneWidget);
     expect(find.text('Placement inspector (read-only)'), findsNothing);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(state.events, isEmpty);
     final focusedCanvasSize =
         tester.getSize(find.byKey(const Key('board_canvas_painter')));
@@ -4378,7 +4409,7 @@ void main() {
     expect(find.byKey(const Key('board_canvas_context_panel')), findsOneWidget);
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
     expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(state.events, isEmpty);
     expect(tester.takeException(), isNull);
   });
@@ -4523,7 +4554,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Placement inspector (read-only)'), findsNothing);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('board_canvas_fit_view_button')));
     await tester.pump();
@@ -4564,7 +4595,7 @@ void main() {
     await tester.pump();
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -4581,7 +4612,7 @@ void main() {
     );
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('renders width-height mode placement without error',
@@ -4596,7 +4627,7 @@ void main() {
     );
 
     expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('missing scale-width-height falls back safely', (tester) async {
@@ -4764,7 +4795,7 @@ void main() {
     );
     expect(find.text('No transform is computed.'), findsOneWidget);
     expect(find.text('Not electrical proof.'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('readiness panel is absent when photoToBoardAlignments is empty',
@@ -4952,7 +4983,7 @@ void main() {
       find.textContaining('declared type — not computed: similarity'),
       findsOneWidget,
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
 
     await _selectPlacement(tester, 'R101 (cmp_r101)');
 
@@ -5044,7 +5075,7 @@ void main() {
       find.text('Template does not prove electrical identity.'),
       findsOneWidget,
     );
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets(
@@ -5463,7 +5494,7 @@ void main() {
 
     expect(find.text('Placement inspector (read-only)'), findsOneWidget);
     expect(find.textContaining('Component ID: cmp_r101'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets('tapping one rendered placement then another updates inspector',
@@ -5563,7 +5594,7 @@ void main() {
     expect(state.events, isEmpty);
     expect(state.knownFacts.componentVisualPlacements, const [boardPlacement]);
     expect(state.knownFacts.measurements, isEmpty);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   test(
@@ -5878,7 +5909,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Show measurement badge'), findsOneWidget);
-    expect(find.text('renderer writes: none'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
 
   testWidgets(
@@ -6815,7 +6846,7 @@ void main() {
     expect(
         source,
         contains(
-            'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.'));
+            'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.'));
     expect(source, contains('v2PlacementWriterProvider'));
     expect(source, contains('V2PlacementWriterRequest'));
     expect(

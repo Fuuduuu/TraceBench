@@ -22,6 +22,7 @@ ProjectState _inlineProjectState({
   List<MeasurementFact> measurements = const [],
   List<VisualTraceFact> visualTraces = const [],
   List<PhotoToBoardAlignmentFact> photoToBoardAlignments = const [],
+  String? projectDirectory,
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -49,6 +50,7 @@ ProjectState _inlineProjectState({
     ),
     events: const [],
     customerReport: '',
+    projectDirectory: projectDirectory,
   );
 }
 
@@ -170,6 +172,9 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
 }
 
 class _FakePlacementWriter implements V2PlacementWriter {
+  _FakePlacementWriter({this.error});
+
+  final Object? error;
   final List<V2PlacementWriterRequest> requests = <V2PlacementWriterRequest>[];
 
   @override
@@ -178,6 +183,10 @@ class _FakePlacementWriter implements V2PlacementWriter {
     required V2PlacementWriterRequest request,
   }) async {
     requests.add(request);
+    final error = this.error;
+    if (error != null) {
+      throw error;
+    }
     return const V2PlacementWriterResult(
       status: V2PlacementWriteStatus.appended,
       event: <String, dynamic>{
@@ -2479,6 +2488,20 @@ void main() {
       ),
     );
     expect(saveButton.onPressed, isNull);
+    expect(find.text('Valitud komponent: puudub'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_context')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_status')),
+      findsNothing,
+    );
+    expect(
+      find.text('Vali olemasolev komponent enne salvestamist.'),
+      findsAtLeastNWidgets(1),
+    );
+    expect(state.events, isEmpty);
     for (final key in const [
       'board_canvas_add_component_builder_save',
       'board_canvas_add_component_builder_local_edit',
@@ -2572,12 +2595,16 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
     final placementWriter = _FakePlacementWriter();
     final state = _inlineProjectState(
       components: const [
         ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
       ],
       placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
     );
 
     await tester.pumpWidget(
@@ -2609,6 +2636,14 @@ void main() {
       find.byKey(const Key('board_canvas_add_component_builder_save_context')),
       findsOneWidget,
     );
+    expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
+    final enabledSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(enabledSaveButton.onPressed, isNotNull);
 
     await _tapWidgetByKey(
       tester,
@@ -2657,6 +2692,184 @@ void main() {
       const Key('board_canvas_add_component_builder_cancel'),
     );
     expect(placementWriter.requests, hasLength(1));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('Add Component no-preselect flow keeps Salvesta guarded',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final placementWriter = _FakePlacementWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Valitud komponent: puudub'), findsOneWidget);
+    expect(
+      find.text('Vali olemasolev komponent enne salvestamist.'),
+      findsAtLeastNWidgets(1),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_context')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_status')),
+      findsNothing,
+    );
+    final guardedSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(guardedSaveButton.onPressed, isNull);
+    expect(placementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_width_increment'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_delete'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_cancel'),
+    );
+    expect(placementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component Salvesta blocks local project precondition visibly',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final placementWriter = _FakePlacementWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.text('Salvestamiseks ava projekt kohalikust kaustast.'),
+      findsOneWidget,
+    );
+    final blockedSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(blockedSaveButton.onPressed, isNull);
+    expect(
+      find.byKey(const Key('board_canvas_add_component_builder_save_status')),
+      findsNothing,
+    );
+    expect(
+      find.text('Salvestamiseks ava projekt kohalikust kaustast.'),
+      findsAtLeastNWidgets(1),
+    );
+    expect(placementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('Add Component Salvesta surfaces unexpected writer failures',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final placementWriter =
+        _FakePlacementWriter(error: StateError('manual smoke failure'));
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(placementWriter.requests, hasLength(1));
+    expect(
+      find.text(
+        'Salvestamine ebaõnnestus: Bad state: manual smoke failure',
+      ),
+      findsOneWidget,
+    );
     expect(state.events, isEmpty);
   });
 

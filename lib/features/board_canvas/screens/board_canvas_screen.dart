@@ -403,8 +403,16 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
+  final ScrollController _addComponentContextScrollController =
+      ScrollController();
   _WorkbenchContextPanelMode _contextPanelMode =
       _WorkbenchContextPanelMode.hidden;
+
+  @override
+  void dispose() {
+    _addComponentContextScrollController.dispose();
+    super.dispose();
+  }
 
   _AddComponentTemplateDefinition? _selectedAddComponentTemplateDefinition() {
     for (final template in _kStarterAddComponentTemplates) {
@@ -504,6 +512,26 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
   }
 
+  String? _addComponentTemplateSaveBlockReason({
+    required ProjectState projectState,
+    required _PlacementEntry? selectedEntry,
+  }) {
+    if (selectedEntry == null) {
+      return 'Vali olemasolev komponent enne salvestamist.';
+    }
+    final projectDirectory = projectState.projectDirectory;
+    if (projectDirectory == null || projectDirectory.trim().isEmpty) {
+      return 'Salvestamiseks ava projekt kohalikust kaustast.';
+    }
+    return null;
+  }
+
+  void _showAddComponentTemplateSaveStatus(String message) {
+    setState(() {
+      _addComponentTemplateSaveStatusMessage = message;
+    });
+  }
+
   Future<void> _confirmAddComponentTemplatePlacement({
     required ProjectState projectState,
     required _PlacementEntry selectedEntry,
@@ -543,19 +571,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       if (!mounted) {
         return;
       }
-      setState(() {
-        _addComponentTemplateSaveStatusMessage = result.appended
+      _showAddComponentTemplateSaveStatus(
+        result.appended
             ? 'Visuaalne paigutus salvestatud.'
-            : 'See visuaalne paigutus oli juba salvestatud.';
-      });
+            : 'See visuaalne paigutus oli juba salvestatud.',
+      );
     } on V2PlacementWriterException catch (error) {
       if (!mounted) {
         return;
       }
-      setState(() {
-        _addComponentTemplateSaveStatusMessage =
-            'Salvestamine ebaõnnestus: ${error.message}';
-      });
+      _showAddComponentTemplateSaveStatus(
+        'Salvestamine ebaõnnestus: ${error.message}',
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showAddComponentTemplateSaveStatus('Salvestamine ebaõnnestus: $error');
     } finally {
       if (mounted) {
         setState(() {
@@ -725,6 +757,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         }
       }
     }
+    final addComponentTemplateSaveBlockReason =
+        selectedAddComponentTemplate == null
+            ? null
+            : _addComponentTemplateSaveBlockReason(
+                projectState: projectState,
+                selectedEntry: addComponentTemplatePlacementContextEntry,
+              );
+    final canConfirmAddComponentPlacement =
+        selectedAddComponentTemplate != null &&
+            addComponentTemplateSaveBlockReason == null &&
+            !_addComponentPlacementSaveInFlight;
     return _buildScaffold(
       context,
       Padding(
@@ -1077,18 +1120,20 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                           null;
                                     });
                                   },
-                        onConfirmPlacement:
-                            selectedAddComponentTemplate == null ||
-                                    addComponentTemplatePlacementContextEntry ==
-                                        null ||
-                                    _addComponentPlacementSaveInFlight
-                                ? null
-                                : () => _confirmAddComponentTemplatePlacement(
-                                      projectState: projectState,
-                                      selectedEntry:
-                                          addComponentTemplatePlacementContextEntry!,
-                                      template: selectedAddComponentTemplate,
-                                    ),
+                        onConfirmPlacement: canConfirmAddComponentPlacement
+                            ? () {
+                                _confirmAddComponentTemplatePlacement(
+                                  projectState: projectState,
+                                  selectedEntry:
+                                      addComponentTemplatePlacementContextEntry!,
+                                  template: selectedAddComponentTemplate,
+                                );
+                              }
+                            : null,
+                        saveBoundaryCopy: _addComponentPlacementSaveInFlight
+                            ? 'Salvestamine on pooleli...'
+                            : addComponentTemplateSaveBlockReason ??
+                                'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
                         saveContextLabel:
                             addComponentTemplatePlacementContextEntry
                                 ?.selectorLabel,
@@ -1113,10 +1158,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       : _contextPanelMode ==
                               _WorkbenchContextPanelMode.addComponentTemplates
                           ? Scrollbar(
+                              controller: _addComponentContextScrollController,
                               child: SingleChildScrollView(
                                 key: const Key(
                                   'board_canvas_add_component_context_scroll',
                                 ),
+                                controller:
+                                    _addComponentContextScrollController,
                                 child: contextPanel,
                               ),
                             )
@@ -2205,6 +2253,8 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.draftLabel,
     required this.onDraftLabelChanged,
     required this.onConfirmPlacement,
+    this.saveBoundaryCopy =
+        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
     this.saveContextLabel,
     this.saveStatusMessage,
     this.onResetToTemplateDefaults,
@@ -2234,6 +2284,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final String draftLabel;
   final ValueChanged<String> onDraftLabelChanged;
   final VoidCallback? onConfirmPlacement;
+  final String saveBoundaryCopy;
   final String? saveContextLabel;
   final String? saveStatusMessage;
   final VoidCallback? onResetToTemplateDefaults;
@@ -2375,6 +2426,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                   onDraftRotationChanged: onDraftRotationChanged,
                   onResetToDefaults: onResetToTemplateDefaults,
                   onConfirmPlacement: onConfirmPlacement,
+                  saveBoundaryCopy: saveBoundaryCopy,
                   saveContextLabel: saveContextLabel,
                   saveStatusMessage: saveStatusMessage,
                 ),
@@ -2582,6 +2634,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
     required this.onDraftHeightChanged,
     required this.onDraftRotationChanged,
     required this.onConfirmPlacement,
+    required this.saveBoundaryCopy,
     this.saveContextLabel,
     this.saveStatusMessage,
     this.onResetToDefaults,
@@ -2605,6 +2658,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
   final ValueChanged<double> onDraftHeightChanged;
   final ValueChanged<int> onDraftRotationChanged;
   final VoidCallback? onConfirmPlacement;
+  final String saveBoundaryCopy;
   final String? saveContextLabel;
   final String? saveStatusMessage;
   final VoidCallback? onResetToDefaults;
@@ -2743,23 +2797,20 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                                 key: Key(
                                   'board_canvas_add_component_builder_preview_${template.id}',
                                 ),
-                                child: RepaintBoundary(
-                                  child: AspectRatio(
-                                    aspectRatio: template.bodyAspectRatio,
-                                    child: CustomPaint(
-                                      key: const Key(
-                                        'board_canvas_add_component_builder_preview',
-                                      ),
-                                      painter:
-                                          _RectangularPerimeterTemplatePreviewPainter(
-                                        template: template,
-                                        topContactMarkers: topContactMarkers,
-                                        rightContactMarkers:
-                                            rightContactMarkers,
-                                        bottomContactMarkers:
-                                            bottomContactMarkers,
-                                        leftContactMarkers: leftContactMarkers,
-                                      ),
+                                child: AspectRatio(
+                                  aspectRatio: template.bodyAspectRatio,
+                                  child: CustomPaint(
+                                    key: const Key(
+                                      'board_canvas_add_component_builder_preview',
+                                    ),
+                                    painter:
+                                        _RectangularPerimeterTemplatePreviewPainter(
+                                      template: template,
+                                      topContactMarkers: topContactMarkers,
+                                      rightContactMarkers: rightContactMarkers,
+                                      bottomContactMarkers:
+                                          bottomContactMarkers,
+                                      leftContactMarkers: leftContactMarkers,
                                     ),
                                   ),
                                 ),
@@ -2907,9 +2958,7 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
               ),
             ),
             Text(
-              onConfirmPlacement == null
-                  ? 'Vali olemasolev komponent enne salvestamist.'
-                  : 'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse.',
+              saveBoundaryCopy,
               key: const Key(
                 'board_canvas_add_component_builder_save_boundary_copy',
               ),
@@ -2917,16 +2966,17 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 color: _kBoardCanvasNavy,
               ),
             ),
-            if (saveContextLabel != null)
-              Text(
-                'Valitud komponent: $saveContextLabel',
-                key: const Key(
-                  'board_canvas_add_component_builder_save_context',
-                ),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: _kBoardCanvasMuted,
-                ),
+            Text(
+              saveContextLabel == null
+                  ? 'Valitud komponent: puudub'
+                  : 'Valitud komponent: $saveContextLabel',
+              key: const Key(
+                'board_canvas_add_component_builder_save_context',
               ),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasMuted,
+              ),
+            ),
             if (saveStatusMessage != null)
               Text(
                 saveStatusMessage!,

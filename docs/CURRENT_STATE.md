@@ -1,75 +1,72 @@
 # CURRENT_STATE.md
 
-Operational handoff for the current TraceBench route. Historical provenance lives in `docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/*.md`.
+Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync. This pass arms the implementation allowlist for the future Board Canvas explicit-write status/action copy polish.
+No active implementation or docs lock is armed.
 
-The pushed scope-lock baseline is:
+The pushed `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` implementation is closed out by `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_POST_AUDIT_PASS`.
 
-- `e50c2e9` (`docs: lock board canvas explicit write status copy scope`)
+Implementation commit recorded from live git log:
 
-Prior implementation foundation:
+- `80f00408f2fa504e9cc941435b968644090175e7`
+- `fix: clarify board canvas write status copy`
 
-- `e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8` (`fix: mark placement save projection stale`)
-- placement save appends canonical `component_visual_placement_confirmed` through the V2 writer
-- successful placement save marks projection stale / refresh-needed
-- Board Canvas renderer and painter remain read-only
+Audit result recorded:
 
-## Implementation pass armed
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
 
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
+Manual smoke:
 
-Exact implementation allowlist:
+- `NOT_REQUIRED`
+- Optional visual glance: user saw updated Board Canvas wording in app.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Closed behavior
 
-## Live-code findings recorded for implementation
+- Top badge/status copy no longer falsely implies Board Canvas has no writes anywhere.
+- UI distinguishes renderer/painter read-only behavior from explicit human-confirmed panel save capability.
+- Footer/status copy keeps the renderer/painter read-only boundary clear.
+- `Muuda` no longer appears as an active no-op.
+- `Tuhista` no longer misleadingly behaves like active cancel/reset.
+- `Kustuta` copy is clearer as local draft discard.
+- `Salvesta` canonical write path is unchanged.
+- No new canonical write path was introduced.
+- Placement writer contract is unchanged.
+- Project Open From Directory behavior is unchanged.
+- Rotation normalization is unchanged.
+- Projection-stale policy is unchanged.
+- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
 
-- Top status badge still says `Ainult vaatamine · kirjutusi pole`, which is now misleading because explicit `Salvesta` can write canonical placement events.
-- Footer/status still says `renderer writes: none`; this remains technically true for the renderer/painter but needs clearer UI wording so users understand explicit panel save is the only write path.
-- Placement save success copy already says `Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.`
-- `Salvesta` is gated and disabled unless an existing component, local folder project, and required draft fields are valid.
-- `Muuda` is currently a visible empty callback/no-op.
-- `Kustuta` currently resets/discards the local draft, not a canonical delete.
-- `Tühista` currently duplicates reset/discard behavior.
+## Downstream observation
 
-## Implementation goal
+Manual visual smoke exposed a separate canonical-bounds issue outside the status/copy pass:
 
-Make Board Canvas status/action copy truthful after the placement writer exists:
+- UI can still produce `board_normalized` payload values outside schema bounds, for example `width > 1` or center outside `0..1`.
+- The validator correctly rejects invalid payloads.
+- This is not part of the status/copy pass.
 
-- distinguish renderer/painter read-only behavior from explicit panel save write behavior
-- keep `Salvesta` as the only canonical write trigger
-- remove misleading no-write status copy while preserving the renderer read-only boundary in source/tests
-- make `Muuda`, `Kustuta`, and `Tühista` labels/tooltips/copy match current behavior
-- keep projection-stale success copy truthful
-- update widget/source-boundary tests for the accepted wording
+Recommended future candidate, not routed:
 
-## Forbidden surfaces
+`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS`
 
-The armed implementation must not edit:
+## Boundary confirmation
 
-- placement writer contract or writer files
-- Project Open From Directory behavior
-- rotation normalization behavior
-- schema/tool/materializer/validator/router files
-- `events.jsonl` / `known_facts.json`
-- sample/project fixtures
-- `_incoming`
-- component identity, pin, contact, pad, net, trace, electrical, measurement, AI, or repair semantics
+This closeout is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, or `_incoming`.
 
-## Route safety
+## Route safety reminders
 
-Do not stage, commit, or push from this pass.
-
-If implementation needs any file outside the exact allowlist above, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
+- Do not use `git add .`.
+- Do not use `git add -A`.
+- Do not use `git commit -am`.
+- Stage only exact files when staging is explicitly requested.
+- Repo docs and verified git state outrank handoff text.

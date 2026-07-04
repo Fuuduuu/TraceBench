@@ -1,74 +1,53 @@
 # PASS_QUEUE.md
 
-Sequencing ledger for TraceBench passes. Current route pointers are intentionally duplicated from `docs/CURRENT_STATE.md` for quick handoff checks.
+Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
-## Active queue
+## Route status
 
-| Order | PASS_ID | Type | Status | Notes |
-|---|---|---|---|---|
-| 1 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS` | docs-only active-lock sync | current | Arms the exact implementation allowlist for Board Canvas explicit-write status/action copy polish. |
-| 2 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | guarded implementation | next | Update Board Canvas status/action copy now that explicit `Salvesta` can write placement events. |
+No active pass is armed. The route is released after `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_POST_AUDIT_PASS`.
 
-## Armed implementation allowlist
-
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` may edit exactly:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-Rationale:
-
-- `board_canvas_screen.dart` owns the visible top badge, footer/status copy, Add Component action bar labels/tooltips/callbacks, save guard copy, and placement-save success/stale copy.
-- `board_canvas_screen_test.dart` owns widget/source-boundary assertions for the visible copy, action behavior, no-write paths, explicit save behavior, and renderer read-only boundaries.
-
-No other runtime, writer, project-open, rotation, schema, tool, fixture, or `_incoming` surface is armed.
-
-## Future implementation requirements
-
-The implementation must:
-
-- replace misleading global no-write copy with wording that states renderer/painter are read-only while explicit `Salvesta` may write placement confirmation
-- preserve the technical renderer/painter read-only boundary
-- preserve `Salvesta` as the only canonical write path
-- keep draft edits, `Kustuta`, `Tühista`, navigation, and preview changes as no-write paths
-- keep placement save success copy truthful that projection needs refresh/materialization/reload
-- align `Muuda`, `Kustuta`, and `Tühista` visible copy/tooltips with current behavior
-- update tests without weakening writer/no-write coverage
-
-## Forbidden surfaces for next implementation
-
-- no placement writer changes
-- no project open/from-directory changes
-- no rotation normalization changes
-- no schema/tool/materializer/validator/router changes
-- no `events.jsonl` / `known_facts.json` semantic changes
-- no sample/project fixture changes
-- no `_incoming` imports/copies/staging
-- no component identity creation
-- no pins/contacts/pads/nets/traces/electrical facts
-- no measurements
-- no AI-authored canonical facts
-- no repair conclusions
-
-## Routing provenance
+## Recently closed
 
 | PASS_ID | Result |
 |---|---|
-| `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS` | Current docs-only active-lock sync. Baseline is pushed scope-lock `e50c2e9` (`docs: lock board canvas explicit write status copy scope`). Arms exact two-file implementation allowlist and routes to `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`. |
-| `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_SCOPE_LOCK_PASS` | Pushed scope-lock. Records live-code copy/action findings after placement writer/open-folder/rotation/projection-stale foundation. |
-| `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_POST_AUDIT_PASS` | Previous closeout released route to `NEEDS_USER_DECISION` after accepted projection-stale behavior and manual smoke evidence. |
+| `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Accepted, pushed, and audited as `80f00408f2fa504e9cc941435b968644090175e7` (`fix: clarify board canvas write status copy`). |
+| `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_POST_AUDIT_PASS` | Docs-only closeout records `AUDIT_VERDICT: ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, manual smoke `NOT_REQUIRED`, and releases route to `NEEDS_USER_DECISION`. |
+
+## Recommended candidate, not routed
+
+`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS`
+
+Reason: manual visual smoke exposed a separate canonical-bounds issue where UI can still produce `board_normalized` payload values outside schema bounds, for example `width > 1` or center outside `0..1`. Validator rejection is correct; a future protected pass should decide the draft guard behavior.
 
 ## Scope gate rules
 
-- Route docs and `docs/ACTIVE_SCOPE_LOCK.md` outrank prompt text and memory.
-- Do not implement outside the active allowlist.
-- If an implementation requires a non-armed file, stop and report the mismatch.
-- Do not stage, commit, or push unless explicitly instructed.
+- One narrow pass at a time.
+- Do not implement without an active lock.
+- Do not broaden runtime, schema, tool, event, projection, or writer surfaces unless the active lock explicitly authorizes them.
+- Do not stage, commit, or push unless explicitly asked.
+- Never use `git add .`, `git add -A`, or `git commit -am`.
+
+## Current-state maintenance trigger
+
+When a pass is staged/pushed/audited or a route changes, keep these route owners synchronized:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+
+## Planned follow-up sequence / P-roadmap
+
+No route is armed. Candidate work must start with a new scope-lock pass from `NEEDS_USER_DECISION`.
+
+## Routing provenance
+
+Provenance and audit details live in `docs/AUDIT_INDEX.md` and `docs/audit/*.md`. `PASS_QUEUE.md` remains a routing ledger, not architecture documentation.

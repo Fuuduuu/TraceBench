@@ -1,77 +1,39 @@
 # ACTIVE_SCOPE_LOCK
 
 ## Current pass
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Mode
-Docs-only active-lock sync.
+No active implementation lock.
 
-## Write allowlist for this pass
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+## Lock status
+Released by `PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS`.
 
-## Implementation pass armed
+## Last closed implementation
 `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
 
-## Exact implementation allowlist
-The implementation pass may write only:
+Pushed implementation commit:
+`ca8d152a1b5105a576a2cb0d215628afb7dc9855` (`fix: normalize placement rotation before write`)
+
+Safe implementation set:
 - `lib/features/components/services/v2_placement_writer.dart`
 - `test/unit/v2_placement_writer_test.dart`
 
-## Implementation goal
-Normalize `request.rotationDeg` before emitting payload `rotation_deg` in `component_visual_placement_confirmed`.
+## Result recorded
+- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
+- Manual smoke: `PASS`
+- Writer normalizes canonical `rotation_deg` to `-180 <= rotation_deg < 180` before emitting `component_visual_placement_confirmed`.
 
-Canonical output range:
-`-180 <= rotation_deg < 180`
+## Boundary record
+- Validator/schema unchanged.
+- Writer contract unchanged.
+- Event type remains `component_visual_placement_confirmed`.
+- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions were added.
+- Project Open From Directory behavior unchanged.
+- Board Canvas renderer/painter unchanged.
 
-Required examples:
-- `0 -> 0`
-- `90 -> 90`
-- `180 -> -180`
-- `270 -> -90`
-- `360 -> 0`
-- `-181 -> 179`
-- `-270 -> 90`
-- `540 -> -180`
-
-## Implementation must preserve
-- finite-number validation
-- validator/schema unchanged
-- event type `component_visual_placement_confirmed`
-- V2 human-confirmed envelope unchanged
-- `client_operation_id` required
-- no component identity creation
-- no pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
-- Project Open From Directory behavior unchanged
-- Board Canvas renderer/painter behavior unchanged
-
-## Forbidden implementation surfaces
-- No Board Canvas screen edits.
-- No project open/load UI edits.
-- No validator/schema/tools edits.
-- No events/known_facts edits.
-- No materializer/router edits.
-- No `_incoming` edits or staging.
-- No staging, commit, or push.
-
-## Required implementation tests
-- `270` normalizes to `-90`
-- `180` normalizes to `-180`
-- `360` normalizes to `0`
-- `-181` normalizes to `179`
-- `-270` normalizes to `90`
-- `540` normalizes to `-180`
-- emitted payload always satisfies `-180 <= rotation_deg < 180`
-- existing finite validation remains intact
-- writer still emits only `component_visual_placement_confirmed`
-
-## Validation required for this sync pass
-- `python tools/validate_all.py`
-- `git diff --check`
-- verify `docs/AUDIT_INDEX.md` has no glued table rows / no `||`
+## Standing protected boundaries
+Future work must re-arm a new active scope lock before editing runtime, tests, schema, tools, events, known_facts, materializer, validator, router, Project ZIP, samples, or `_incoming`.

@@ -1,56 +1,30 @@
 # CURRENT_STATE
 
 ## Current pass
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
-Docs-only active-lock sync is active. The implementation lock is armed for the placement writer-boundary rotation normalization fix.
+No active implementation lock. Placement rotation normalization implementation is closed out.
 
-## Baseline evidence
-Latest pushed scope-lock commit observed in live git log:
-`2937deb docs: lock placement rotation normalization scope`
+## Latest closeout
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS`
 
-The route before this sync was:
-Current: `PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
-Next: `PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Pushed implementation recorded:
+`ca8d152a1b5105a576a2cb0d215628afb7dc9855` (`fix: normalize placement rotation before write`)
 
-## Live-code findings
-`lib/features/components/services/v2_placement_writer.dart` currently validates `request.rotationDeg` as finite, then emits it directly as payload `rotation_deg`.
+Claude audit recorded:
+`ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
 
-`tools/validate_events_jsonl.py` already enforces the canonical range:
-`-180 <= rotation_deg < 180`
+Manual smoke recorded:
+`PASS`
 
-`test/unit/v2_placement_writer_test.dart` already covers writer envelope, client operation ID, finite validation, unknown component, project directory guards, writer status mapping, and forbidden side-effect fields. It does not yet cover rotation normalization.
+## Closeout summary
+The prior manual-smoke blocker is fixed: UI rotation `270` previously failed validator because the placement writer emitted canonical `rotation_deg: 270`. The writer now normalizes emitted canonical `rotation_deg` into `-180 <= rotation_deg < 180` before writing `component_visual_placement_confirmed`.
 
-## Implementation pass armed
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
-
-Exact implementation allowlist:
-- `lib/features/components/services/v2_placement_writer.dart`
-- `test/unit/v2_placement_writer_test.dart`
-
-No other implementation files are armed.
-
-## Required implementation behavior
-Future implementation must:
-- normalize `request.rotationDeg` before payload emit
-- keep finite-number validation
-- keep validator/schema unchanged
-- keep event type `component_visual_placement_confirmed`
-- keep V2 human-confirmed envelope unchanged
-- keep `client_operation_id` required
-- not create component identity
-- not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
-- not change Project Open From Directory behavior
-- not change Board Canvas renderer/painter behavior
-
-Canonical output range:
-`-180 <= rotation_deg < 180`
-
-Required examples:
+Normalization contract recorded:
 - `0 -> 0`
 - `90 -> 90`
 - `180 -> -180`
@@ -60,13 +34,13 @@ Required examples:
 - `-270 -> 90`
 - `540 -> -180`
 
-## Forbidden surfaces for implementation
-- No Board Canvas screen edits.
-- No project open files.
-- No validator/schema/tools edits.
-- No events/known_facts edits.
-- No materializer/router edits.
-- No `_incoming` edits or staging.
+## Boundary record
+- Validator/schema unchanged.
+- Writer contract unchanged.
+- Event type remains `component_visual_placement_confirmed`.
+- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions were added.
+- Project Open From Directory behavior unchanged.
+- Board Canvas renderer/painter unchanged.
 
 ## Binding workflow safety
 - Never use `git add .`.

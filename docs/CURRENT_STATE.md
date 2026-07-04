@@ -1,60 +1,75 @@
-# CURRENT_STATE
+# CURRENT_STATE.md
+
+Operational handoff for the current TraceBench route. Historical provenance lives in `docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and `docs/audit/*.md`.
 
 ## Current pass
-`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_SCOPE_LOCK_PASS`
 
-## Next recommended pass
 `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Route status
-Docs-only scope-lock for a future Board Canvas UI/status copy polish pass.
+## Next recommended pass
 
-## Baseline
-Latest closed closeout before this route:
-`0b67e79` (`docs: close out placement save projection stale`)
-
-Recently closed implementation:
-`e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8` (`fix: mark placement save projection stale`)
-
-## Scope summary
-The Board Canvas placement foundation chain is closed:
-- folder-backed project open works;
-- placement writer append works;
-- rotation is normalized;
-- placement save success copy truthfully says projection needs refresh.
-
-The remaining scope-locked UI polish issue is status/action copy:
-- top badge still says "Ainult vaatamine · kirjutusi pole", even though explicit panel `Salvesta` can write canonical placement events when valid;
-- bottom/status copy `renderer writes: none` remains true for renderer/painter, but must not imply all Board Canvas interactions are no-write;
-- `Muuda` is clickable but currently no-op;
-- `Tühista` duplicates reset/`Kustuta` behavior instead of clearly cancelling/exiting or being honestly disabled.
-
-## Locked product intent
-- Board Canvas renderer/painter remains read-only.
-- Explicit human-confirmed panel actions may write canonical events only when separately scoped and valid.
-- UI copy must distinguish renderer/painter no-write behavior from explicit panel confirmation writes.
-- Draft/edit/preview controls remain UI-local until confirmation.
-- `Salvesta` success/stale copy from the previous pass must remain truthful.
-- No new canonical write path is introduced by the future copy/action polish pass.
-
-## Future implementation route
-This pass does not arm runtime/test files.
-
-Next pass must inspect live code and arm the exact implementation allowlist for:
 `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
 
-Likely candidate surfaces, not armed here:
+## Route status
+
+Docs-only active-lock sync. This pass arms the implementation allowlist for the future Board Canvas explicit-write status/action copy polish.
+
+The pushed scope-lock baseline is:
+
+- `e50c2e9` (`docs: lock board canvas explicit write status copy scope`)
+
+Prior implementation foundation:
+
+- `e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8` (`fix: mark placement save projection stale`)
+- placement save appends canonical `component_visual_placement_confirmed` through the V2 writer
+- successful placement save marks projection stale / refresh-needed
+- Board Canvas renderer and painter remain read-only
+
+## Implementation pass armed
+
+`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
+
+Exact implementation allowlist:
+
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-## Binding workflow safety
-- Never use `git add .`.
-- Never use `git add -A`.
-- Never use `git commit -am`.
-- Stage exact files only when explicitly requested by the user.
+## Live-code findings recorded for implementation
 
-## Canonical owners / evidence ledgers
-- Current route: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
-- Stable invariants: `docs/TRUTH_INDEX.md`
-- Protected surfaces: `docs/PROTECTED_SURFACES.md`
-- Audit provenance: `docs/AUDIT_INDEX.md` and `docs/audit/*.md`
+- Top status badge still says `Ainult vaatamine · kirjutusi pole`, which is now misleading because explicit `Salvesta` can write canonical placement events.
+- Footer/status still says `renderer writes: none`; this remains technically true for the renderer/painter but needs clearer UI wording so users understand explicit panel save is the only write path.
+- Placement save success copy already says `Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.`
+- `Salvesta` is gated and disabled unless an existing component, local folder project, and required draft fields are valid.
+- `Muuda` is currently a visible empty callback/no-op.
+- `Kustuta` currently resets/discards the local draft, not a canonical delete.
+- `Tühista` currently duplicates reset/discard behavior.
+
+## Implementation goal
+
+Make Board Canvas status/action copy truthful after the placement writer exists:
+
+- distinguish renderer/painter read-only behavior from explicit panel save write behavior
+- keep `Salvesta` as the only canonical write trigger
+- remove misleading no-write status copy while preserving the renderer read-only boundary in source/tests
+- make `Muuda`, `Kustuta`, and `Tühista` labels/tooltips/copy match current behavior
+- keep projection-stale success copy truthful
+- update widget/source-boundary tests for the accepted wording
+
+## Forbidden surfaces
+
+The armed implementation must not edit:
+
+- placement writer contract or writer files
+- Project Open From Directory behavior
+- rotation normalization behavior
+- schema/tool/materializer/validator/router files
+- `events.jsonl` / `known_facts.json`
+- sample/project fixtures
+- `_incoming`
+- component identity, pin, contact, pad, net, trace, electrical, measurement, AI, or repair semantics
+
+## Route safety
+
+Do not stage, commit, or push from this pass.
+
+If implementation needs any file outside the exact allowlist above, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.

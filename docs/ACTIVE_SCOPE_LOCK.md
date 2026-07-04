@@ -1,57 +1,67 @@
-# Active Scope Lock
+# ACTIVE_SCOPE_LOCK
 
 ## Current pass
-
-`NEEDS_USER_DECISION`
-
-## Next recommended pass
-
-`NEEDS_USER_DECISION`
-
-## Status
-
-No active implementation lock.
-
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` is closed by `PROJECT_OPEN_FROM_DIRECTORY_IMPL_POST_AUDIT_PASS`.
-
-## Closed implementation
-
-- Pushed implementation: `21c8c6551a5b340173b994354874f606c17d6f21` (`feat: open project from local folder`).
-- Claude audit: `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`.
-- Manual smoke: `PASS_WITH_DOWNSTREAM_BLOCKER`.
-
-Safe implementation set:
-
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/features/project/screens/home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-
-## Closed implementation summary
-
-- `Ava projekt kaustast` / open local folder path works.
-- Folder-backed project loads through `ProjectLoader.loadFromDirectory`.
-- `projectDirectory` is preserved enough to reach the real writer/validator path.
-- Board Canvas opens from the external smoke project.
-- `Salvesta` reaches the real placement writer/validator.
-- Invalid rotation `270°` was rejected by validation.
-- `events.jsonl` remained unchanged; no invalid event was appended.
-
-## Downstream blocker recorded
-
-- Placement writer passes UI rotation through unnormalized.
-- Validator requires `-180 <= rotation_deg < 180`.
-- `270°` must normalize to `-90` before canonical emit.
-- This is out of scope for the open-folder implementation.
-
-## Recommended next candidate
-
 `PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
 
-This candidate is not armed. A future scope-lock pass must define its route, allowlist, tests, and protected boundaries.
+## Next recommended pass
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Boundary confirmation
+## Mode
+Docs-only scope-lock.
 
-No active write allowlist is armed.
+## Write allowlist for this pass
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS.md`
 
-Future runtime, test, schema, writer, materializer, validator, router, events, known-facts, sample, project fixture, ZIP, or `_incoming` edits require a new explicit scope lock.
+## Forbidden in this pass
+- No runtime edits.
+- No test edits.
+- No tools, schema, validator, materializer, projection, events, known_facts, sample, ZIP, or `_incoming` edits.
+- No Project Open From Directory behavior changes.
+- No placement writer implementation.
+- No Board Canvas renderer/painter changes.
+- No staging, commit, or push.
+
+## Locked future goal
+Future implementation will normalize `rotation_deg` at the placement writer boundary before emitting the canonical `component_visual_placement_confirmed` payload.
+
+Canonical output range:
+`-180 <= rotation_deg < 180`
+
+Locked examples:
+- `0 -> 0`
+- `90 -> 90`
+- `180 -> -180`
+- `270 -> -90`
+- `360 -> 0`
+- `-181 -> 179`
+- `-270 -> 90`
+- `540 -> -180`
+
+## Future implementation boundaries
+Future implementation must:
+- normalize `rotation_deg` before writing `component_visual_placement_confirmed`
+- keep finite-number validation
+- keep validator/schema canonical constraint unchanged
+- keep event type unchanged
+- keep V2 human-confirmed envelope unchanged
+- keep `client_operation_id` requirement unchanged
+- not create component identity
+- not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
+- not change Project Open From Directory behavior
+- not change Board Canvas renderer/painter read-only boundary
+
+## Candidate implementation surfaces, not armed here
+Likely surfaces observed from live code:
+- `lib/features/components/services/v2_placement_writer.dart`
+- `test/unit/v2_placement_writer_test.dart`
+
+The next active-lock sync must read live code and arm the exact implementation allowlist.
+
+## Validation required for this pass
+- `python tools/validate_all.py`
+- `git diff --check`
+- verify `docs/AUDIT_INDEX.md` has no glued table rows / no `||`

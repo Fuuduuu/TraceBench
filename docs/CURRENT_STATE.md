@@ -1,76 +1,63 @@
-# Current State
+# CURRENT_STATE
 
 ## Current pass
-
-`NEEDS_USER_DECISION`
-
-## Next recommended pass
-
-`NEEDS_USER_DECISION`
-
-## Repository handoff
-
-- Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
-- Branch: `main`
-- Latest pushed implementation verified: `21c8c6551a5b340173b994354874f606c17d6f21` (`feat: open project from local folder`).
-- Closed pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`.
-- Closeout pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_POST_AUDIT_PASS`.
-- Current route: `NEEDS_USER_DECISION`.
-- Next route: `NEEDS_USER_DECISION`.
-
-## Closeout summary
-
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` is closed after Claude audit `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`.
-
-Safe implementation set:
-
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/features/project/screens/home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-
-Implementation result recorded:
-
-- `Ava projekt kaustast` / open local folder path works.
-- Folder-backed project loads through `ProjectLoader.loadFromDirectory`.
-- `projectDirectory` is preserved enough to reach the real writer/validator path.
-- Board Canvas opens from the external smoke project.
-- `Salvesta` reaches the real placement writer/validator.
-- Sample/assets and ZIP import behavior remain unchanged by the closeout.
-
-## Manual smoke record
-
-`PASS_WITH_DOWNSTREAM_BLOCKER`
-
-Smoke result:
-
-- Invalid rotation `270°` was rejected by validation.
-- `events.jsonl` remained unchanged; no invalid event was appended.
-
-Downstream blocker:
-
-- The placement writer passes UI rotation through unnormalized.
-- Validator requires the half-open range `-180 <= rotation_deg < 180`.
-- `270°` must normalize to `-90` before canonical emit.
-- This is out of scope for the open-folder implementation.
-
-Recommended next candidate, not armed:
-
 `PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
 
-## Canonical owners and evidence ledgers
+## Next recommended pass
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-- Active/near-future route queue: `docs/PASS_QUEUE.md`.
-- Current scope boundary: `docs/ACTIVE_SCOPE_LOCK.md`.
-- Completed pass provenance: `docs/AUDIT_INDEX.md` and `docs/audit/`.
-- Stable architecture memory: `docs/PROJECT_MEMORY.md`.
-- Core invariants and protected truth: `docs/TRUTH_INDEX.md`.
-- Board vector and footprint architecture: `docs/BOARD_VECTOR_CANVAS_AND_FOOTPRINT_LIBRARY_SPEC.md`.
-- Protected boundaries: `docs/PROTECTED_SURFACES.md`.
-- Documentation classification/read priority: `docs/FILE_MAP.md`.
+## Route status
+Docs-only scope lock is active for the placement rotation normalization bugfix.
 
-## Binding workflow constraints
+## Scope summary
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` proved the folder-backed open path can reach the real placement writer/validator. Manual smoke then exposed a downstream writer-boundary issue: UI rotation can produce `270`, while canonical validation requires `-180 <= rotation_deg < 180`.
 
-- Repo docs and verified git state outrank chat handoff text and assistant memory.
-- Stage exact files only if explicitly asked; never use `git add .`, `git add -A`, or `git commit -am`.
-- Do not stage `_incoming`; do not create runtime dependencies on `_incoming`.
+This pass locks the future fix only. No runtime, tests, tools, schema, events, known_facts, or `_incoming` files are changed here.
+
+## Locked product intent
+Normalize `rotation_deg` at the placement writer boundary before emitting `component_visual_placement_confirmed`.
+
+Canonical output range:
+`-180 <= rotation_deg < 180`
+
+Locked examples:
+- `0 -> 0`
+- `90 -> 90`
+- `180 -> -180`
+- `270 -> -90`
+- `360 -> 0`
+- `-181 -> 179`
+- `-270 -> 90`
+- `540 -> -180`
+
+## Future implementation boundaries
+Future implementation must keep:
+- event type unchanged: `component_visual_placement_confirmed`
+- V2 human-confirmed envelope unchanged
+- `client_operation_id` requirement unchanged
+- finite-number validation intact
+- validator/schema canonical constraint unchanged
+- no component identity creation
+- no pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
+- no Project Open From Directory behavior change
+- Board Canvas renderer/painter read-only boundary unchanged
+
+Likely future surfaces are `lib/features/components/services/v2_placement_writer.dart` and `test/unit/v2_placement_writer_test.dart`, but this scope-lock does not arm the implementation allowlist. The next active-lock sync must read live code and arm exact files.
+
+## Manual smoke target for future implementation
+Use `C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`.
+
+Expected future smoke:
+open project from folder -> Board Canvas renders R1/C1/U1 -> select R1/C1/U1 -> Lisa -> choose rotation that previously produced `270` -> Salvesta -> one `component_visual_placement_confirmed` appends with `rotation_deg: -90` -> `python tools/validate_all.py` passes.
+
+## Binding workflow safety
+- Never use `git add .`.
+- Never use `git add -A`.
+- Never use `git commit -am`.
+- Stage exact files only when explicitly requested by the user.
+
+## Canonical owners / evidence ledgers
+- Current route: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
+- Stable invariants: `docs/TRUTH_INDEX.md`
+- Protected surfaces: `docs/PROTECTED_SURFACES.md`
+- Audit provenance: `docs/AUDIT_INDEX.md` and `docs/audit/*.md`

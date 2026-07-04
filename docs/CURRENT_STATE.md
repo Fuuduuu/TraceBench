@@ -2,51 +2,64 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed implementation verified for closeout:
-  - `e0af793e1b140eec7c498d9a73e8a65f29020b33` (`feat: confirm component visual placement`)
-  - `8db8c23669421f4d7c4a71cfce716dc1f9dd06a7` (`fix: align placement confirm flow with canvas selection`)
-- Closed implementation pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
-- Closeout pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_POST_AUDIT_PASS`.
-- Active implementation lock released by this closeout.
+- Latest pushed closeout verified: `f4ce7c6` (`docs: close out placement writer confirm implementation`).
+- Current pass: `PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`.
+- Next route: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
 
-## Closeout summary
+## Active scope summary
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` implemented the protected placement writer and explicit Board Canvas `Salvesta` confirmation path.
+Docs-only scope lock for a future local-folder project open path.
 
-- Dedicated writer emits only `component_visual_placement_confirmed`.
-- Placement confirmation requires explicit human action and `client_operation_id`.
-- Board Canvas `Salvesta` is wired for selected existing component visual placement only.
-- Canvas/list selection is the only placement-confirm binding path.
-- Drifted in-panel `Olemasolev komponent` dropdown was removed by the follow-up patch.
-- Draft edits, cancel/reset/discard, navigation, and `Kustuta` write nothing canonical.
-- Board Canvas renderer/painter remains read-only.
-- No component identity, pin, contact, pad, net, trace, electrical, measurement, AI, visual-contact-layout, or repair fact is created by placement confirm.
+This pass exists because `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` is closed, but full UI -> writer -> `events.jsonl` append smoke remains blocked until the app can open an existing folder-backed TraceBench project and preserve `projectDirectory`.
 
-## Audit and smoke record
+Locked product intent:
 
-- Claude final audit: `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`.
-- Manual smoke: `PASS_WITH_ENVIRONMENT_LIMITATION`.
-- Limitation: full UI -> writer -> `events.jsonl` append smoke remains unverified because the app currently lacks an open-from-local-folder UI path. Sample/loadFromAssets and ZIP import leave `projectDirectory` null, so `Salvesta` is correctly guarded. A later folder-open pass is required.
-- Non-blocking nits:
-  - `Muuda` is currently a no-op.
-  - `Tühista` duplicates `Kustuta`/reset behavior.
-  - End-to-end append needs folder-open UI before real smoke.
+- Add an `Ava projekt kaustast` / `Open project from folder` path.
+- Let the user pick an existing local project folder.
+- Load the folder through `ProjectLoader.loadFromDirectory`.
+- Preserve `projectDirectory` so scoped writers can append to the selected folder-backed `events.jsonl`.
+- Keep sample/assets and ZIP import behavior separate unless a later active lock explicitly includes them.
 
-## Recommended next candidate
+## Current code findings
 
-`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+- `ProjectLoader.loadFromDirectory` already validates required project files and returns `ProjectState.copyWith(projectDirectory: trimmedDirectory, isProjectionStale: false)`.
+- Current launcher import uses ZIP bytes/path through `ProjectLoader.loadFromZipBytes`, which does not preserve a local project directory.
+- Bundled sample loading uses `ProjectLoader.loadFromAssets`, which does not preserve a local project directory.
+- The new-project wizard already uses `FilePicker.platform.getDirectoryPath` for folder picking, so there is an existing platform approach to evaluate in the implementation active-lock sync.
 
-This is a candidate only. It is not armed as the current or next route.
+## Scope boundaries
+
+This pass is documentation only.
+
+Future implementation must preserve:
+
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- No schema changes unless separately scope-locked.
+- No writer contract changes.
+- No component identity creation.
+- No AI-authored canonical facts.
+- Local folder path must be user-selected, not guessed.
+- Sample/asset projects may remain read-only.
+- ZIP import behavior must not be silently changed unless explicitly included by the future active lock.
+
+## Recommended future implementation route
+
+Next pass should be docs-only:
+
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+
+That active-lock sync must read live code and decide the exact implementation allowlist. Candidate surfaces to evaluate include launcher/home integration, project loading, existing folder-picker pattern/tests, and project-open error handling. These candidate surfaces are not armed by this scope-lock pass.
 
 ## Canonical owners and evidence ledgers
 

@@ -2,64 +2,114 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Status
 
-No active scope lock is armed.
+Docs-only scope-lock is active.
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` has been closed out by `PLACEMENT_WRITER_AND_CONFIRM_IMPL_POST_AUDIT_PASS`.
+This pass locks the future product intent and implementation boundaries for opening an existing local TraceBench project folder. It does not implement the UI, does not arm runtime files for editing, and does not change project-loading behavior.
 
-## Released implementation lock
+## Write allowlist for this pass
 
-Closed implementation pass:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS.md`
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`
+## Locked product intent
 
-Pushed implementation commits recorded:
+Add an `Ava projekt kaustast` / `Open project from folder` path that:
 
-- `e0af793e1b140eec7c498d9a73e8a65f29020b33` (`feat: confirm component visual placement`)
-- `8db8c23669421f4d7c4a71cfce716dc1f9dd06a7` (`fix: align placement confirm flow with canvas selection`)
+- lets the user pick an existing local project folder;
+- loads it through `ProjectLoader.loadFromDirectory`;
+- preserves `projectDirectory` on `ProjectState`;
+- makes a valid loaded project writable through existing scoped writer preconditions;
+- allows later placement-writer smoke against a real folder-backed `events.jsonl`.
 
-## Safe implementation set recorded
+## Current code facts recorded
 
-- `lib/features/components/services/v2_placement_writer.dart`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/unit/v2_placement_writer_test.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- `ProjectLoader.loadFromDirectory` already reads required local project files and preserves `projectDirectory`.
+- Bundled sample loading uses `ProjectLoader.loadFromAssets` and remains non-folder-backed.
+- ZIP import uses `ProjectLoader.loadFromZipBytes` and remains non-folder-backed.
+- The new-project wizard already demonstrates the existing `FilePicker.platform.getDirectoryPath` folder-picker approach.
 
-## Preserved boundaries
+## Future implementation active-lock sync
 
-- Placement writer emits only `component_visual_placement_confirmed`.
-- Confirm requires explicit human action.
-- `client_operation_id` is required.
-- No component identity is created or updated by placement confirm.
-- No pins, contacts, pads, nets, traces, measurements, electrical facts, AI-authored facts, visual-contact-layout facts, or repair conclusions are created by placement confirm.
-- Draft edits, preview changes, size changes before save, rotation changes before save, cancel/reset/discard/navigation, and `Kustuta` write nothing canonical.
-- Board Canvas renderer/painter remains read-only.
-- `_incoming` remains design/source input only and is not staged or imported into runtime.
+The next pass must be docs-only:
 
-## Manual smoke limitation recorded
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-Manual smoke result is `PASS_WITH_ENVIRONMENT_LIMITATION`.
+That sync pass must read live code and decide the exact runtime/test implementation allowlist before any implementation begins.
 
-Full UI → writer → `events.jsonl` append smoke remains unverified because the app currently lacks an open-from-local-folder UI path. Sample/loadFromAssets and ZIP import leave `projectDirectory` null, so `Salvesta` is correctly guarded. A later folder-open pass is required.
+Candidate surfaces to evaluate, not armed here:
 
-## Recommended next candidate
+- `lib/app/app.dart`
+- `lib/features/project/screens/home_screen.dart`
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/shared/services/project_loader.dart`
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/shared/services/project_creator.dart`
+- launcher/home/project-loader/folder-picker tests
 
-`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+## Future implementation must preserve
 
-This candidate is not armed. A future pass must explicitly scope it before any route, runtime, project-loader, home-screen, writer, event, known-facts, schema, tool, materializer, validator, or `_incoming` changes.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- No schema changes unless separately scope-locked.
+- No writer contract changes.
+- No component identity creation.
+- No AI-authored canonical facts.
+- Local folder path must be user-selected, not guessed.
+- Sample/asset project may remain read-only.
+- ZIP import behavior must not be silently changed unless explicitly included.
+- Existing placement writer contract remains unchanged.
+- Board Canvas renderer/painter remains read-only except already scoped explicit writer calls.
 
-## Write allowlist
+## Future implementation should cover
 
-No files are currently armed for a new pass.
+- visible UI entry point for opening a local folder project;
+- folder picker integration using existing platform approach if present;
+- clear error copy for invalid folder structure or failed load;
+- successful load sets `projectDirectory`;
+- loaded project remains reloadable/usable by Board Canvas;
+- placement writer can append to that folder-backed `events.jsonl`;
+- no broad project-model rewiring beyond what is required.
+
+## Future tests and smoke expectations
+
+Future implementation should include practical unit/widget coverage where possible:
+
+- open-folder action invokes a folder picker;
+- invalid folder shows clear error;
+- valid folder loads with `projectDirectory` present;
+- sample/asset and ZIP paths are not silently converted into writable folder-backed projects.
+
+Manual smoke target:
+
+`C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`
+
+Manual smoke expectation after implementation:
+
+canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` appended -> `python tools/validate_all.py` passes.
+
+## Forbidden in this scope-lock pass
+
+- No runtime edits.
+- No test edits.
+- No schema/tool/materializer/validator edits.
+- No event or known-facts edits.
+- No `_incoming` edits or staging.
+- No UI implementation.
+- No implementation allowlist arming beyond the future active-lock sync route.
+- No staging, commit, or push.
 
 ## Route
 
-1. `NEEDS_USER_DECISION`
-2. `NEEDS_USER_DECISION`
+1. `PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+2. `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`

@@ -2,64 +2,81 @@
 
 ## Current pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed closeout verified: `f4ce7c6` (`docs: close out placement writer confirm implementation`).
-- Current pass: `PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`.
-- Next route: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Latest pushed scope-lock verified: `d29c821d63bff56f1a0874a2bebaca4bf2e0878e` (`docs: lock project open from directory scope`).
+- Current pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Next route: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`.
 
 ## Active scope summary
 
-Docs-only scope lock for a future local-folder project open path.
+Docs-only active-lock sync for the local-folder project open implementation.
 
-This pass exists because `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` is closed, but full UI -> writer -> `events.jsonl` append smoke remains blocked until the app can open an existing folder-backed TraceBench project and preserve `projectDirectory`.
+This pass arms the exact future implementation allowlist for adding an `Ava projekt kaustast` / `Open project from folder` path. The implementation must let the user pick an existing local TraceBench project folder and load it through `ProjectLoader.loadFromDirectory` so `projectDirectory` is preserved for folder-backed writer smoke.
 
-Locked product intent:
+## Live-code findings
 
-- Add an `Ava projekt kaustast` / `Open project from folder` path.
-- Let the user pick an existing local project folder.
-- Load the folder through `ProjectLoader.loadFromDirectory`.
-- Preserve `projectDirectory` so scoped writers can append to the selected folder-backed `events.jsonl`.
-- Keep sample/assets and ZIP import behavior separate unless a later active lock explicitly includes them.
+- `ProjectLoader.loadFromDirectory` already exists in `lib/shared/services/project_loader.dart`; it validates required local files and returns project state with `projectDirectory: trimmedDirectory`.
+- `ProjectLoader.loadFromAssets` remains the bundled sample flow and does not preserve a folder-backed `projectDirectory`.
+- `ProjectLoader.loadFromZipBytes` remains the ZIP import flow and does not preserve a folder-backed `projectDirectory`.
+- `ProjectZipImportAction.importZip` in `lib/features/project/screens/home_screen.dart` owns the current ZIP import action and error handling pattern.
+- `TraceBenchApp` in `lib/app/app.dart` wires launcher callbacks into project state and routing.
+- `BenchBeepHomeScreen` in `lib/features/home/screens/benchbeep_home_screen.dart` owns the visible launcher project actions.
+- `NewProjectWizardScreen` already demonstrates the existing `FilePicker.platform.getDirectoryPath` folder picker approach, but the wizard itself is reference-only for the implementation pass.
+- Existing loader tests already cover `ProjectLoader.loadFromDirectory`; launcher-facing coverage belongs with the BenchBeep home widget tests.
 
-## Current code findings
+## Implementation pass armed
 
-- `ProjectLoader.loadFromDirectory` already validates required project files and returns `ProjectState.copyWith(projectDirectory: trimmedDirectory, isProjectionStale: false)`.
-- Current launcher import uses ZIP bytes/path through `ProjectLoader.loadFromZipBytes`, which does not preserve a local project directory.
-- Bundled sample loading uses `ProjectLoader.loadFromAssets`, which does not preserve a local project directory.
-- The new-project wizard already uses `FilePicker.platform.getDirectoryPath` for folder picking, so there is an existing platform approach to evaluate in the implementation active-lock sync.
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
 
-## Scope boundaries
+Exact implementation allowlist:
 
-This pass is documentation only.
+- `lib/app/app.dart`
+- `lib/features/project/screens/home_screen.dart`
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
 
-Future implementation must preserve:
+## Implementation boundaries
 
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- No schema changes unless separately scope-locked.
-- No writer contract changes.
-- No component identity creation.
-- No AI-authored canonical facts.
-- Local folder path must be user-selected, not guessed.
-- Sample/asset projects may remain read-only.
-- ZIP import behavior must not be silently changed unless explicitly included by the future active lock.
+The future implementation must:
 
-## Recommended future implementation route
+- Add a visible open-folder entry point.
+- Use the existing platform folder picker approach if available.
+- Call `ProjectLoader.loadFromDirectory` for the selected folder.
+- Preserve `projectDirectory` on the loaded project state.
+- Show clear copy for cancelled, invalid, or failed folder selection/load.
+- Leave sample/assets flow read-only unless separately scoped.
+- Leave ZIP import behavior unchanged unless separately scoped.
+- Avoid schema changes.
+- Avoid writer contract changes.
+- Avoid component identity creation.
+- Avoid AI-authored canonical facts.
+- Avoid changing `events.jsonl` / `known_facts.json` semantics.
 
-Next pass should be docs-only:
+## Test and smoke expectations
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Future implementation should cover:
 
-That active-lock sync must read live code and decide the exact implementation allowlist. Candidate surfaces to evaluate include launcher/home integration, project loading, existing folder-picker pattern/tests, and project-open error handling. These candidate surfaces are not armed by this scope-lock pass.
+- valid local folder opens and `projectDirectory` is present;
+- cancelled folder picker does not break current state;
+- invalid folder shows clear error;
+- existing sample and ZIP import behavior do not silently change.
+
+Manual smoke target:
+
+`C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`
+
+Expected smoke after implementation:
+
+open that folder -> canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` event appends -> `python tools/validate_all.py` passes.
 
 ## Canonical owners and evidence ledgers
 

@@ -12,11 +12,11 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 ## Current pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
 
 ## Current-state maintenance trigger pointer
 
@@ -28,9 +28,9 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 
 | PASS_ID | Lane/Type | Status | Purpose |
 | --- | --- | --- | --- |
-| PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / local folder open path | active / drafted | Lock the future local-folder project open path needed for folder-backed placement-writer smoke. |
-| PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / local folder open path | next | Read live launcher/project-loader code and arm the exact future implementation allowlist; no runtime implementation in the sync pass. |
-| PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS | CODEX / GUARDED_IMPLEMENTATION / local folder open path | future | Implement the selected exact allowlist so users can open an existing TraceBench project folder through `ProjectLoader.loadFromDirectory`. |
+| PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / local folder open path | accepted/pushed as `d29c821d63bff56f1a0874a2bebaca4bf2e0878e` (`docs: lock project open from directory scope`) | Locked the future local-folder project open path needed for folder-backed placement-writer smoke. |
+| PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS | CODEX / DOCS_ACTIVE_LOCK_SYNC / local folder open path | active / drafted | Read live launcher/project-loader code and arm the exact future implementation allowlist; no runtime implementation in the sync pass. |
+| PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS | CODEX / GUARDED_IMPLEMENTATION / local folder open path | next / armed | Implement a visible folder-open path that loads an existing TraceBench project folder through `ProjectLoader.loadFromDirectory` and preserves `projectDirectory`. |
 | EDIT_PLACEMENT_FLOW_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / edit-placement flow | future | Reopen existing projected placement as draft, confirm via same writer, and preserve latest-wins projection semantics. |
 | VISUAL_CONTACT_LAYOUT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / visual contacts | future | Confirmed visual contacts/pads/legs as separate event/projection, not folded into placement. |
 | AI_MARKER_TO_PLACEMENT_SCOPE_LOCK_PASS | CODEX / DOCS_SCOPE_LOCK / AI marker conversion | future | Convert unconfirmed AI/photo marker proposals only through human-confirmed placement editor flow. |
@@ -38,21 +38,28 @@ PASS_QUEUE is the active pass allowlist and near-future sequencing ledger.
 ## Active pass note
 
 - This pass is docs-only.
+- It arms `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`; it does not implement runtime behavior.
 - Future product intent: add `Ava projekt kaustast` / `Open project from folder` for existing local TraceBench project folders.
 - Future implementation must preserve folder-backed `projectDirectory` by loading with `ProjectLoader.loadFromDirectory`.
-- Do not arm implementation files in this scope-lock; the next active-lock sync must decide exact implementation allowlist from live code.
 
-## Candidate surfaces for next active-lock sync to evaluate
+## Implementation allowlist armed for next pass
 
-These are evidence/candidate surfaces only, not an armed implementation allowlist:
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` may edit only:
 
 - `lib/app/app.dart`
 - `lib/features/project/screens/home_screen.dart`
 - `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/shared/services/project_loader.dart`
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `lib/shared/services/project_creator.dart`
-- relevant widget/unit tests for launcher, project loader, and folder-picker behavior
+- `test/widget/benchbeep_home_screen_test.dart`
+
+## Live-code findings behind the allowlist
+
+- `lib/app/app.dart` wires launcher callbacks into `projectStateProvider` and route changes.
+- `lib/features/project/screens/home_screen.dart` owns the existing ZIP import action/error pattern and already imports `file_picker`.
+- `lib/features/home/screens/benchbeep_home_screen.dart` owns the visible BenchBeep launcher project action UI.
+- `test/widget/benchbeep_home_screen_test.dart` already exercises `TraceBenchApp`, launcher actions, and `file_picker` behavior.
+- `lib/shared/services/project_loader.dart` already provides `ProjectLoader.loadFromDirectory`; no loader edit is armed.
+- `lib/features/project/screens/new_project_wizard_screen.dart` and `lib/shared/services/project_creator.dart` are reference-only for folder-picker/create-project patterns; no edit is armed.
+- Placement writer files are not armed; this pass does not change writer contract or placement-confirm behavior.
 
 ## Future implementation boundaries
 
@@ -68,7 +75,14 @@ Future implementation must preserve:
 - sample/asset projects may remain read-only.
 - ZIP import behavior must not be silently changed unless explicitly included.
 
-## Future smoke expectation
+## Future test and smoke expectations
+
+Future implementation should cover:
+
+- valid local folder opens and `projectDirectory` is present;
+- cancelled folder picker does not break current state;
+- invalid folder shows clear error;
+- existing sample and ZIP import behavior do not silently change.
 
 Manual smoke should use:
 
@@ -76,7 +90,7 @@ Manual smoke should use:
 
 Expected smoke route after implementation:
 
-canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` appended -> `python tools/validate_all.py` passes.
+open that folder -> canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` appended -> `python tools/validate_all.py` passes.
 
 ## Recent context
 

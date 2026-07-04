@@ -2,80 +2,82 @@
 
 ## Current pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
 
 ## Status
 
-Docs-only scope-lock is active.
+Docs-only active-lock sync is active.
 
-This pass locks the future product intent and implementation boundaries for opening an existing local TraceBench project folder. It does not implement the UI, does not arm runtime files for editing, and does not change project-loading behavior.
+This pass arms the exact runtime/test implementation allowlist for opening an existing local TraceBench project folder. It does not implement the UI, does not edit runtime/tests, and does not change project-loading behavior.
 
-## Write allowlist for this pass
+## Verified prior scope-lock
+
+- Pushed commit: `d29c821d63bff56f1a0874a2bebaca4bf2e0878e` (`docs: lock project open from directory scope`).
+- Prior route: `PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS` -> `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+
+## Write allowlist for this active-lock sync pass
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS.md`
+- `docs/audit/PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-## Locked product intent
+## Implementation pass armed
 
-Add an `Ava projekt kaustast` / `Open project from folder` path that:
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
 
-- lets the user pick an existing local project folder;
-- loads it through `ProjectLoader.loadFromDirectory`;
-- preserves `projectDirectory` on `ProjectState`;
-- makes a valid loaded project writable through existing scoped writer preconditions;
-- allows later placement-writer smoke against a real folder-backed `events.jsonl`.
+## Exact implementation allowlist
 
-## Current code facts recorded
-
-- `ProjectLoader.loadFromDirectory` already reads required local project files and preserves `projectDirectory`.
-- Bundled sample loading uses `ProjectLoader.loadFromAssets` and remains non-folder-backed.
-- ZIP import uses `ProjectLoader.loadFromZipBytes` and remains non-folder-backed.
-- The new-project wizard already demonstrates the existing `FilePicker.platform.getDirectoryPath` folder-picker approach.
-
-## Future implementation active-lock sync
-
-The next pass must be docs-only:
-
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
-
-That sync pass must read live code and decide the exact runtime/test implementation allowlist before any implementation begins.
-
-Candidate surfaces to evaluate, not armed here:
+The implementation pass may edit only:
 
 - `lib/app/app.dart`
 - `lib/features/project/screens/home_screen.dart`
 - `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/shared/services/project_loader.dart`
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `lib/shared/services/project_creator.dart`
-- launcher/home/project-loader/folder-picker tests
+- `test/widget/benchbeep_home_screen_test.dart`
+
+## Live-code findings behind the allowlist
+
+- `ProjectLoader.loadFromDirectory` already exists in `lib/shared/services/project_loader.dart`; it validates required local project files and preserves `projectDirectory`.
+- `ProjectLoader.loadFromAssets` remains the bundled sample flow and does not preserve a folder-backed `projectDirectory`.
+- `ProjectLoader.loadFromZipBytes` remains the ZIP import flow and does not preserve a folder-backed `projectDirectory`.
+- `ProjectZipImportAction.importZip` in `lib/features/project/screens/home_screen.dart` owns the current ZIP import action and local user-facing error pattern.
+- `TraceBenchApp` in `lib/app/app.dart` wires launcher callbacks into `projectStateProvider` and route changes.
+- `BenchBeepHomeScreen` in `lib/features/home/screens/benchbeep_home_screen.dart` owns the visible launcher project actions.
+- `test/widget/benchbeep_home_screen_test.dart` already exercises `TraceBenchApp`, launcher actions, and `file_picker` behavior.
+
+## Reference-only surfaces not armed
+
+- `lib/shared/services/project_loader.dart`: reuse existing `ProjectLoader.loadFromDirectory`; no loader edit is armed.
+- `lib/features/project/screens/new_project_wizard_screen.dart`: reference for `FilePicker.platform.getDirectoryPath`; no wizard edit is armed.
+- `lib/shared/services/project_creator.dart`: reference for folder-backed project state after creation; no creator edit is armed.
+- Placement writer files: not directly needed for opening a folder-backed project and not armed.
+- Schema/tool/materializer/validator/event/known-facts/sample/_incoming files: not armed.
 
 ## Future implementation must preserve
 
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
-- No schema changes unless separately scope-locked.
+- No schema changes.
 - No writer contract changes.
 - No component identity creation.
 - No AI-authored canonical facts.
 - Local folder path must be user-selected, not guessed.
 - Sample/asset project may remain read-only.
-- ZIP import behavior must not be silently changed unless explicitly included.
+- ZIP import behavior must not be silently changed.
 - Existing placement writer contract remains unchanged.
 - Board Canvas renderer/painter remains read-only except already scoped explicit writer calls.
 
 ## Future implementation should cover
 
 - visible UI entry point for opening a local folder project;
-- folder picker integration using existing platform approach if present;
-- clear error copy for invalid folder structure or failed load;
+- folder picker integration using the existing platform approach if available;
+- call `ProjectLoader.loadFromDirectory` for the selected folder;
+- clear copy for cancelled, invalid, or failed folder selection/load;
 - successful load sets `projectDirectory`;
 - loaded project remains reloadable/usable by Board Canvas;
 - placement writer can append to that folder-backed `events.jsonl`;
@@ -83,12 +85,12 @@ Candidate surfaces to evaluate, not armed here:
 
 ## Future tests and smoke expectations
 
-Future implementation should include practical unit/widget coverage where possible:
+Future implementation should include practical widget coverage where possible:
 
-- open-folder action invokes a folder picker;
+- valid local folder opens and `projectDirectory` is present;
+- cancelled folder picker does not break current state;
 - invalid folder shows clear error;
-- valid folder loads with `projectDirectory` present;
-- sample/asset and ZIP paths are not silently converted into writable folder-backed projects.
+- existing sample and ZIP import behavior do not silently change.
 
 Manual smoke target:
 
@@ -96,9 +98,9 @@ Manual smoke target:
 
 Manual smoke expectation after implementation:
 
-canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` appended -> `python tools/validate_all.py` passes.
+open that folder -> canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` appended -> `python tools/validate_all.py` passes.
 
-## Forbidden in this scope-lock pass
+## Forbidden in this active-lock sync pass
 
 - No runtime edits.
 - No test edits.
@@ -106,10 +108,9 @@ canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_v
 - No event or known-facts edits.
 - No `_incoming` edits or staging.
 - No UI implementation.
-- No implementation allowlist arming beyond the future active-lock sync route.
 - No staging, commit, or push.
 
 ## Route
 
-1. `PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
-2. `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+1. `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+2. `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`

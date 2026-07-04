@@ -2,104 +2,120 @@
 
 ## Current pass
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS`
+`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
 
 ## Active lock
 
-Docs-only scope-lock for future placement draft canonical-bounds guard.
+Docs-only active-lock sync arming the exact implementation allowlist for `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`.
 
-## Write allowlist for this pass
+## Write allowlist for this docs-only sync
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS.md`
+- `docs/audit/PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-## This pass must not
+## Implementation pass armed
 
-- implement runtime behavior
-- edit tests
-- edit schema, tools, validator, materializer, writer, router, events, `known_facts.json`, samples, or `_incoming`
-- arm the future implementation allowlist
-- stage, commit, or push
+`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
 
-## Problem locked
-
-Add Component placement draft can currently produce canonical `board_normalized` payload values outside schema bounds, for example `width > 1` or center outside `0..1`. The validator correctly rejects invalid events, but the UI can let the user reach `Salvesta` and then expose a raw failure path.
-
-## Required future policy
-
-- Validator/schema remains strict.
-- Writer must not emit invalid canonical payloads.
-- UI must not present invalid draft as saveable.
-- If draft bounds are invalid, `Salvesta` must be disabled or guarded with clear copy before writer call.
-- Error copy must be user-facing, not raw Python validator output.
-- Invalid draft edits remain UI-local and write nothing.
-- No automatic silent clamp unless explicitly accepted by a later implementation decision.
-- Do not weaken validator constraints to make UI pass.
-
-## Canonical constraints to preserve
-
-- `coordinate_space: board_normalized`
-- `center_x` within `0..1`
-- `center_y` within `0..1`
-- `width` numeric positive and `<= 1`
-- `height` numeric positive and `<= 1`
-- `rotation_deg` normalized to `-180 <= rotation_deg < 180`
-
-## Future implementation surfaces
-
-Do not treat this section as an armed allowlist. The next active-lock sync must re-read live code and arm exact files.
-
-Likely candidate surfaces pending verification:
+## Exact implementation allowlist
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
-- possibly `lib/features/components/services/v2_placement_writer.dart` and `test/unit/v2_placement_writer_test.dart` only if live code proves a writer-boundary guard is required
 
-## Future implementation must not
+## Files not armed
 
-- change event schema
-- change validator/tools/materializer
-- change `known_facts.json` behavior
-- mutate `known_facts.json` directly from Flutter
-- create component identity
-- create pins, contacts, pads, nets, traces, or electrical facts
-- create measurements
-- create AI-authored facts
-- change Project Open From Directory behavior
-- change rotation normalization behavior
-- change projection-stale policy
-- redesign Board Canvas
+- `lib/features/components/services/v2_placement_writer.dart`
+- `test/unit/v2_placement_writer_test.dart`
+- project open files
+- router files
+- schema files
+- validator/tool/materializer files
+- events / `known_facts.json`
+- samples/assets
+- `_incoming`
+
+## Live-code basis for allowlist
+
+- Board Canvas assembles `center_x`, `center_y`, `width`, `height`, rotation, template, and selected placement context into `V2PlacementWriterRequest` immediately before calling the placement writer.
+- Current save guard covers selected component and local project-directory prerequisites but not canonical `board_normalized` center/size bounds.
+- Existing widget tests provide fake placement writer request capture, so the future implementation can assert invalid drafts do not invoke the writer.
+- Writer, unit-test, schema, validator, and tool files are not required for a pre-writer UI guard and remain outside the implementation allowlist.
+
+## Future implementation must
+
+- Block or guard `Salvesta` before writer call when `board_normalized` payload is invalid.
+- Show clear user-facing Estonian guard copy.
+- Avoid raw Python validator dump for expected UI validation cases.
+- Keep validator/schema strict and unchanged.
+- Keep writer/event contract unchanged.
+- Preserve rotation normalization.
+- Preserve projection-stale behavior.
+- Preserve Project Open From Directory behavior.
+- Preserve Board Canvas renderer/painter read-only boundary.
+- Ensure invalid draft edits remain UI-local and write nothing.
+- Ensure `Kustuta`, `Tühista`, and navigation still write nothing.
+- Ensure valid draft still saves and marks projection stale.
+- Not directly mutate `known_facts.json` from Flutter.
+- Not create component identity.
+- Not create pins, contacts, pads, nets, traces, or electrical facts.
+- Not create measurements.
+- Not create AI-authored facts.
+
+## Canonical bounds
+
+For `coordinate_space: board_normalized`:
+
+- `center_x` must be within `0..1`.
+- `center_y` must be within `0..1`.
+- `width` must be valid and `<= 1`.
+- `height` must be valid and `<= 1`.
+- `rotation_deg` must remain normalized to `-180 <= rotation_deg < 180`.
 
 ## Future tests expected
 
-- invalid `width > 1` blocks `Salvesta` before writer call
-- invalid `height > 1` blocks `Salvesta` before writer call
-- invalid `center_x` / `center_y` outside `0..1` blocks `Salvesta` before writer call
-- user-facing guard copy appears
-- writer is not invoked for invalid draft
-- valid draft still saves and marks projection stale
-- rotation normalization still works
-- Project Open From Directory still works
-- draft edits / `Kustuta` / `Tühista` / navigation write nothing
-- validator/schema remains unchanged
+- `width > 1` blocks `Salvesta` before writer call.
+- `height > 1` blocks `Salvesta` before writer call.
+- `center_x < 0` or `center_x > 1` blocks `Salvesta` before writer call.
+- `center_y < 0` or `center_y > 1` blocks `Salvesta` before writer call.
+- Clear guard copy appears.
+- Writer is not invoked for invalid draft.
+- Valid draft still saves.
+- Valid draft still marks projection stale / refresh-needed.
+- Rotation normalization still works.
+- Project Open From Directory still works.
+- Draft edits / `Kustuta` / `Tühista` / navigation write nothing.
+- Validator/schema remains unchanged.
 
-## Manual smoke target for future implementation
+## Future manual smoke
+
+Use:
 
 `C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`
 
-Expected future smoke: open folder-backed project, select R1/C1/U1, open `Lisa`, make draft too wide or outside canonical bounds, verify `Salvesta` is disabled or clearly guarded and no event appends, reduce draft into valid bounds, save one `component_visual_placement_confirmed`, verify projection-refresh truth copy, and run `python tools/validate_all.py`.
+Smoke:
 
-## Default boundaries while scoped
+- open folder-backed project
+- select R1/C1/U1
+- `Lisa`
+- make draft too wide or outside canonical bounds
+- confirm `Salvesta` is disabled or shows clear guard
+- confirm no event appends
+- reduce draft into valid bounds
+- `Salvesta` appends one `component_visual_placement_confirmed`
+- UI shows projection-refresh truth copy
+- `python tools/validate_all.py` passes
 
-- No runtime edits in this scope-lock.
-- No test edits in this scope-lock.
-- No schema, tool, materializer, validator, writer, event, or projection changes in this scope-lock.
-- No `_incoming` edits or staging.
-- Do not stage, commit, or push unless explicitly asked.
+## This sync pass must not
+
+- implement runtime behavior
+- edit tests
+- edit writer files
+- edit schema, tools, validator, materializer, router, events, `known_facts.json`, samples, assets, or `_incoming`
+- stage, commit, or push

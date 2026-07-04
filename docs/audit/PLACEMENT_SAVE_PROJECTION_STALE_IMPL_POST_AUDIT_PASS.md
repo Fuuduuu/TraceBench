@@ -1,21 +1,29 @@
-# CURRENT_STATE
+# PLACEMENT_SAVE_PROJECTION_STALE_IMPL_POST_AUDIT_PASS
 
-## Current pass
-`NEEDS_USER_DECISION`
+## Mode
+Docs-only implementation closeout.
 
-## Next recommended pass
-`NEEDS_USER_DECISION`
+## Baseline verification
+- Route before closeout:
+  - Current: `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+  - Next: `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`
+- Tracked diff and cached diff were clean before closeout.
+- Branch was aligned with `origin/main`.
+- Pushed implementation commit verified from live git log:
+  - `e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8`
+  - `fix: mark placement save projection stale`
 
-## Route status
-`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` is closed. Active implementation lock is released.
+## Route after closeout
+- Current: `NEEDS_USER_DECISION`
+- Next: `NEEDS_USER_DECISION`
 
-## Latest closed implementation
+## Implementation closed
 `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`
 
-Pushed implementation commit:
+## Implementation commit
 `e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8` (`fix: mark placement save projection stale`)
 
-Claude audit:
+## Audit record
 - `AUDIT_VERDICT: ACCEPT_AS_IS`
 - `SAFE_FOR_STAGING: YES`
 
@@ -23,8 +31,8 @@ Safe implementation set:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Manual smoke:
-- `PASS`
+## Manual smoke record
+`PASS`
 
 Manual smoke evidence:
 - UI showed: "Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist."
@@ -34,7 +42,7 @@ Manual smoke evidence:
 - `known_facts.json` hash stayed unchanged: `B068F7686E8C3666ADBF3C2519C56D5267DAF250BF7DFD2A6EA070C1C2E4690B`.
 - `python tools/validate_all.py` passed in live verification.
 
-## Behavior now recorded
+## Behavior recorded
 - After successful placement save, UI truthfully indicates projection needs refresh.
 - Flutter does not directly mutate `known_facts.json`.
 - `events.jsonl` remains canonical truth.
@@ -48,14 +56,17 @@ Manual smoke evidence:
 - Top badge "Ainult vaatamine · kirjutusi pole" remains status/copy debt because explicit panel save now exists.
 - `Muuda` no-op / `Tühista` reset behavior remains future UI-polish debt.
 
-## Binding workflow safety
-- Never use `git add .`.
-- Never use `git add -A`.
-- Never use `git commit -am`.
-- Stage exact files only when explicitly requested by the user.
+## Boundary confirmation
+- No runtime edits in this closeout.
+- No test edits in this closeout.
+- No schema/tool/materializer/validator edits.
+- No events.jsonl or known_facts.json edits.
+- No samples/assets edits.
+- No `_incoming` edits or staging.
+- No staging, commit, or push by Codex.
 
-## Canonical owners / evidence ledgers
-- Current route: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
-- Stable invariants: `docs/TRUTH_INDEX.md`
-- Protected surfaces: `docs/PROTECTED_SURFACES.md`
-- Audit provenance: `docs/AUDIT_INDEX.md` and `docs/audit/*.md`
+## Validation
+Completed for this docs-only closeout:
+- `python tools/validate_all.py`: PASS, 285 tests OK.
+- `git diff --check`: PASS.
+- `Select-String -Path docs/AUDIT_INDEX.md -Pattern '\|\|'`: no matches.

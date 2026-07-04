@@ -1,52 +1,51 @@
 # CURRENT_STATE
 
 ## Current pass
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
-`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` is closed. Active implementation lock is released.
+Docs-only scope-lock for a future Board Canvas UI/status copy polish pass.
 
-## Latest closed implementation
-`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`
+## Baseline
+Latest closed closeout before this route:
+`0b67e79` (`docs: close out placement save projection stale`)
 
-Pushed implementation commit:
+Recently closed implementation:
 `e69263a5fb9cbfef89f93a4ae8905ab4322e6aa8` (`fix: mark placement save projection stale`)
 
-Claude audit:
-- `AUDIT_VERDICT: ACCEPT_AS_IS`
-- `SAFE_FOR_STAGING: YES`
+## Scope summary
+The Board Canvas placement foundation chain is closed:
+- folder-backed project open works;
+- placement writer append works;
+- rotation is normalized;
+- placement save success copy truthfully says projection needs refresh.
 
-Safe implementation set:
+The remaining scope-locked UI polish issue is status/action copy:
+- top badge still says "Ainult vaatamine · kirjutusi pole", even though explicit panel `Salvesta` can write canonical placement events when valid;
+- bottom/status copy `renderer writes: none` remains true for renderer/painter, but must not imply all Board Canvas interactions are no-write;
+- `Muuda` is clickable but currently no-op;
+- `Tühista` duplicates reset/`Kustuta` behavior instead of clearly cancelling/exiting or being honestly disabled.
+
+## Locked product intent
+- Board Canvas renderer/painter remains read-only.
+- Explicit human-confirmed panel actions may write canonical events only when separately scoped and valid.
+- UI copy must distinguish renderer/painter no-write behavior from explicit panel confirmation writes.
+- Draft/edit/preview controls remain UI-local until confirmation.
+- `Salvesta` success/stale copy from the previous pass must remain truthful.
+- No new canonical write path is introduced by the future copy/action polish pass.
+
+## Future implementation route
+This pass does not arm runtime/test files.
+
+Next pass must inspect live code and arm the exact implementation allowlist for:
+`BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`
+
+Likely candidate surfaces, not armed here:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
-
-Manual smoke:
-- `PASS`
-
-Manual smoke evidence:
-- UI showed: "Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist."
-- `events.jsonl` line count increased: `8 -> 9`.
-- Appended event: `evt_000009`.
-- Appended event type: `component_visual_placement_confirmed`.
-- `known_facts.json` hash stayed unchanged: `B068F7686E8C3666ADBF3C2519C56D5267DAF250BF7DFD2A6EA070C1C2E4690B`.
-- `python tools/validate_all.py` passed in live verification.
-
-## Behavior now recorded
-- After successful placement save, UI truthfully indicates projection needs refresh.
-- Flutter does not directly mutate `known_facts.json`.
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- Board Canvas renderer/painter remains read-only.
-- Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
-- Project Open From Directory behavior is unchanged.
-- Placement rotation normalization behavior is unchanged.
-
-## Known carryover debt
-- Top badge "Ainult vaatamine · kirjutusi pole" remains status/copy debt because explicit panel save now exists.
-- `Muuda` no-op / `Tühista` reset behavior remains future UI-polish debt.
 
 ## Binding workflow safety
 - Never use `git add .`.

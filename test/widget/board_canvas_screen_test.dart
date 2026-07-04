@@ -12,6 +12,7 @@ import 'package:trace_bench_viewer/features/components/services/v2_placement_wri
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
 
 ProjectState _inlineProjectState({
@@ -22,7 +23,9 @@ ProjectState _inlineProjectState({
   List<MeasurementFact> measurements = const [],
   List<VisualTraceFact> visualTraces = const [],
   List<PhotoToBoardAlignmentFact> photoToBoardAlignments = const [],
+  List<TraceBenchEvent> events = const [],
   String? projectDirectory,
+  bool isProjectionStale = false,
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -48,9 +51,10 @@ ProjectState _inlineProjectState({
       componentVisualPlacements: placements,
       photoToBoardAlignments: photoToBoardAlignments,
     ),
-    events: const [],
+    events: events,
     customerReport: '',
     projectDirectory: projectDirectory,
+    isProjectionStale: isProjectionStale,
   );
 }
 
@@ -171,10 +175,52 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
   await tester.pump(const Duration(milliseconds: 16));
 }
 
+ProjectState _readProjectState(WidgetTester tester) {
+  return ProviderScope.containerOf(
+    tester.element(find.byType(BoardCanvasScreen)),
+    listen: false,
+  ).read(projectStateProvider)!;
+}
+
+Map<String, dynamic> _placementWriterEventJson({
+  String eventId = 'evt_widget_placement_001',
+  String componentId = 'cmp_r101',
+  String clientOperationId = 'op_widget_placement_001',
+}) {
+  return {
+    'schema_version': '2.0-draft',
+    'event_id': eventId,
+    'event_type': 'component_visual_placement_confirmed',
+    'project_id': 'proj_001',
+    'created_at': '2026-01-01T00:00:00Z',
+    'client_operation_id': clientOperationId,
+    'actor': {'type': 'human', 'id': 'local_operator'},
+    'source': {'type': 'explicit_user_confirmation'},
+    'confirmation': {'confirmed': true},
+    'payload': {
+      'component_id': componentId,
+      'coordinate_space': 'board_normalized',
+      'board_side': 'top',
+      'center_x': 0.42,
+      'center_y': 0.58,
+      'rotation_deg': 0,
+      'width': 1.0,
+      'height': 0.6,
+      'template_id': 'template_family_rect_2_top_bottom',
+    },
+  };
+}
+
 class _FakePlacementWriter implements V2PlacementWriter {
-  _FakePlacementWriter({this.error});
+  _FakePlacementWriter({
+    this.error,
+    this.status = V2PlacementWriteStatus.appended,
+    Map<String, dynamic>? event,
+  }) : event = event ?? _placementWriterEventJson();
 
   final Object? error;
+  final V2PlacementWriteStatus status;
+  final Map<String, dynamic> event;
   final List<V2PlacementWriterRequest> requests = <V2PlacementWriterRequest>[];
 
   @override
@@ -187,12 +233,10 @@ class _FakePlacementWriter implements V2PlacementWriter {
     if (error != null) {
       throw error;
     }
-    return const V2PlacementWriterResult(
-      status: V2PlacementWriteStatus.appended,
-      event: <String, dynamic>{
-        'event_type': 'component_visual_placement_confirmed',
-      },
-      appended: true,
+    return V2PlacementWriterResult(
+      status: status,
+      event: event,
+      appended: status == V2PlacementWriteStatus.appended,
     );
   }
 }
@@ -2673,6 +2717,19 @@ void main() {
       request.clientOperationId,
       startsWith('op_board_canvas_visual_placement_cmp_r101_'),
     );
+    final updatedState = _readProjectState(tester);
+    expect(updatedState.events, hasLength(1));
+    expect(
+      updatedState.events.single.eventType,
+      'component_visual_placement_confirmed',
+    );
+    expect(updatedState.isProjectionStale, isTrue);
+    expect(
+      find.text(
+        'Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.',
+      ),
+      findsOneWidget,
+    );
     expect(
       find.byKey(const Key('board_canvas_add_component_builder_save_status')),
       findsOneWidget,
@@ -2692,7 +2749,72 @@ void main() {
       const Key('board_canvas_add_component_builder_cancel'),
     );
     expect(placementWriter.requests, hasLength(1));
+    final afterLocalActionsState = _readProjectState(tester);
+    expect(afterLocalActionsState.events, hasLength(1));
+    expect(afterLocalActionsState.isProjectionStale, isTrue);
     expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component idempotent Salvesta marks projection stale without duplicating event',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final existingEventJson = _placementWriterEventJson(
+      eventId: 'evt_existing_widget_placement',
+      clientOperationId: 'op_existing_widget_placement',
+    );
+    final placementWriter = _FakePlacementWriter(
+      status: V2PlacementWriteStatus.existing,
+      event: existingEventJson,
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      events: [TraceBenchEvent.fromJson(existingEventJson)],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(placementWriter.requests, hasLength(1));
+    final updatedState = _readProjectState(tester);
+    expect(updatedState.events, hasLength(1));
+    expect(updatedState.events.single.eventId, 'evt_existing_widget_placement');
+    expect(updatedState.isProjectionStale, isTrue);
+    expect(
+      find.text(
+        'See visuaalne paigutus oli juba salvestatud. Projektsioon vajab värskendamist.',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Add Component no-preselect flow keeps Salvesta guarded',
@@ -2751,6 +2873,9 @@ void main() {
     expect(guardedSaveButton.onPressed, isNull);
     expect(placementWriter.requests, isEmpty);
     expect(state.events, isEmpty);
+    final guardedState = _readProjectState(tester);
+    expect(guardedState.events, isEmpty);
+    expect(guardedState.isProjectionStale, isFalse);
 
     await _tapWidgetByKey(
       tester,
@@ -2766,6 +2891,9 @@ void main() {
     );
     expect(placementWriter.requests, isEmpty);
     expect(state.events, isEmpty);
+    final afterLocalActionsState = _readProjectState(tester);
+    expect(afterLocalActionsState.events, isEmpty);
+    expect(afterLocalActionsState.isProjectionStale, isFalse);
   });
 
   testWidgets(
@@ -2821,6 +2949,9 @@ void main() {
     );
     expect(placementWriter.requests, isEmpty);
     expect(state.events, isEmpty);
+    final blockedState = _readProjectState(tester);
+    expect(blockedState.events, isEmpty);
+    expect(blockedState.isProjectionStale, isFalse);
   });
 
   testWidgets('Add Component Salvesta surfaces unexpected writer failures',
@@ -2871,6 +3002,9 @@ void main() {
       findsOneWidget,
     );
     expect(state.events, isEmpty);
+    final failedState = _readProjectState(tester);
+    expect(failedState.events, isEmpty);
+    expect(failedState.isProjectionStale, isFalse);
   });
 
   testWidgets(

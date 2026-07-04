@@ -12,6 +12,7 @@ import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
+import '../../../shared/models/trace_bench_event.dart';
 
 const double _kCompactBoardCanvasAppBarHeight = 36;
 const double _kCompactControlTileHeight = 34;
@@ -532,6 +533,24 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
   }
 
+  void _markPlacementProjectionStale({
+    required ProjectState projectState,
+    required Map<String, dynamic> event,
+  }) {
+    final returnedEvent = TraceBenchEvent.fromJson(event);
+    final updatedEvents = List<TraceBenchEvent>.from(projectState.events);
+    final eventAlreadyPresent = updatedEvents.any(
+      (localEvent) => localEvent.eventId == returnedEvent.eventId,
+    );
+    if (!eventAlreadyPresent) {
+      updatedEvents.add(returnedEvent);
+    }
+    ref.read(projectStateProvider.notifier).state = projectState.copyWith(
+      events: updatedEvents,
+      isProjectionStale: true,
+    );
+  }
+
   Future<void> _confirmAddComponentTemplatePlacement({
     required ProjectState projectState,
     required _PlacementEntry selectedEntry,
@@ -571,10 +590,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       if (!mounted) {
         return;
       }
+      _markPlacementProjectionStale(
+        projectState: projectState,
+        event: result.event,
+      );
       _showAddComponentTemplateSaveStatus(
         result.appended
-            ? 'Visuaalne paigutus salvestatud.'
-            : 'See visuaalne paigutus oli juba salvestatud.',
+            ? 'Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.'
+            : 'See visuaalne paigutus oli juba salvestatud. Projektsioon vajab värskendamist.',
       );
     } on V2PlacementWriterException catch (error) {
       if (!mounted) {

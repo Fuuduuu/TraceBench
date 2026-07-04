@@ -2,81 +2,61 @@
 
 ## Current pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed scope-lock verified: `d29c821d63bff56f1a0874a2bebaca4bf2e0878e` (`docs: lock project open from directory scope`).
-- Current pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Next route: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`.
+- Latest pushed implementation verified: `21c8c6551a5b340173b994354874f606c17d6f21` (`feat: open project from local folder`).
+- Closed pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`.
+- Closeout pass: `PROJECT_OPEN_FROM_DIRECTORY_IMPL_POST_AUDIT_PASS`.
+- Current route: `NEEDS_USER_DECISION`.
+- Next route: `NEEDS_USER_DECISION`.
 
-## Active scope summary
+## Closeout summary
 
-Docs-only active-lock sync for the local-folder project open implementation.
+`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` is closed after Claude audit `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`.
 
-This pass arms the exact future implementation allowlist for adding an `Ava projekt kaustast` / `Open project from folder` path. The implementation must let the user pick an existing local TraceBench project folder and load it through `ProjectLoader.loadFromDirectory` so `projectDirectory` is preserved for folder-backed writer smoke.
-
-## Live-code findings
-
-- `ProjectLoader.loadFromDirectory` already exists in `lib/shared/services/project_loader.dart`; it validates required local files and returns project state with `projectDirectory: trimmedDirectory`.
-- `ProjectLoader.loadFromAssets` remains the bundled sample flow and does not preserve a folder-backed `projectDirectory`.
-- `ProjectLoader.loadFromZipBytes` remains the ZIP import flow and does not preserve a folder-backed `projectDirectory`.
-- `ProjectZipImportAction.importZip` in `lib/features/project/screens/home_screen.dart` owns the current ZIP import action and error handling pattern.
-- `TraceBenchApp` in `lib/app/app.dart` wires launcher callbacks into project state and routing.
-- `BenchBeepHomeScreen` in `lib/features/home/screens/benchbeep_home_screen.dart` owns the visible launcher project actions.
-- `NewProjectWizardScreen` already demonstrates the existing `FilePicker.platform.getDirectoryPath` folder picker approach, but the wizard itself is reference-only for the implementation pass.
-- Existing loader tests already cover `ProjectLoader.loadFromDirectory`; launcher-facing coverage belongs with the BenchBeep home widget tests.
-
-## Implementation pass armed
-
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`
-
-Exact implementation allowlist:
+Safe implementation set:
 
 - `lib/app/app.dart`
-- `lib/features/project/screens/home_screen.dart`
 - `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/features/project/screens/home_screen.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 
-## Implementation boundaries
+Implementation result recorded:
 
-The future implementation must:
+- `Ava projekt kaustast` / open local folder path works.
+- Folder-backed project loads through `ProjectLoader.loadFromDirectory`.
+- `projectDirectory` is preserved enough to reach the real writer/validator path.
+- Board Canvas opens from the external smoke project.
+- `Salvesta` reaches the real placement writer/validator.
+- Sample/assets and ZIP import behavior remain unchanged by the closeout.
 
-- Add a visible open-folder entry point.
-- Use the existing platform folder picker approach if available.
-- Call `ProjectLoader.loadFromDirectory` for the selected folder.
-- Preserve `projectDirectory` on the loaded project state.
-- Show clear copy for cancelled, invalid, or failed folder selection/load.
-- Leave sample/assets flow read-only unless separately scoped.
-- Leave ZIP import behavior unchanged unless separately scoped.
-- Avoid schema changes.
-- Avoid writer contract changes.
-- Avoid component identity creation.
-- Avoid AI-authored canonical facts.
-- Avoid changing `events.jsonl` / `known_facts.json` semantics.
+## Manual smoke record
 
-## Test and smoke expectations
+`PASS_WITH_DOWNSTREAM_BLOCKER`
 
-Future implementation should cover:
+Smoke result:
 
-- valid local folder opens and `projectDirectory` is present;
-- cancelled folder picker does not break current state;
-- invalid folder shows clear error;
-- existing sample and ZIP import behavior do not silently change.
+- Invalid rotation `270°` was rejected by validation.
+- `events.jsonl` remained unchanged; no invalid event was appended.
 
-Manual smoke target:
+Downstream blocker:
 
-`C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`
+- The placement writer passes UI rotation through unnormalized.
+- Validator requires the half-open range `-180 <= rotation_deg < 180`.
+- `270°` must normalize to `-90` before canonical emit.
+- This is out of scope for the open-folder implementation.
 
-Expected smoke after implementation:
+Recommended next candidate, not armed:
 
-open that folder -> canvas-select `R1`/`C1`/`U1` -> `Lisa` -> `Salvesta` -> exactly one `component_visual_placement_confirmed` event appends -> `python tools/validate_all.py` passes.
+`PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
 
 ## Canonical owners and evidence ledgers
 

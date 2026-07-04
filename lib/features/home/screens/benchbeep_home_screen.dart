@@ -14,6 +14,7 @@ class BenchBeepHomeScreen extends StatelessWidget {
     required this.hasProject,
     required this.onLoadBundledProject,
     required this.onImportProject,
+    required this.onOpenProjectFolder,
     required this.onOpenProject,
     required this.onOpenWorkbench,
     super.key,
@@ -22,6 +23,7 @@ class BenchBeepHomeScreen extends StatelessWidget {
   final bool hasProject;
   final Future<void> Function() onLoadBundledProject;
   final Future<void> Function(BuildContext context)? onImportProject;
+  final Future<void> Function(BuildContext context) onOpenProjectFolder;
   final VoidCallback onOpenProject;
   final VoidCallback onOpenWorkbench;
 
@@ -59,12 +61,14 @@ class BenchBeepHomeScreen extends StatelessWidget {
               hasProject: hasProject,
               onLoadBundledProject: onLoadBundledProject,
               onImportProject: onImportProject,
+              onOpenProjectFolder: onOpenProjectFolder,
               onOpenProject: onOpenProject,
               onOpenWorkbench: onOpenWorkbench,
             );
             final right = _RightColumn(
               hasProject: hasProject,
               onLoadBundledProject: onLoadBundledProject,
+              onOpenProjectFolder: onOpenProjectFolder,
               onOpenProject: onOpenProject,
               onOpenWorkbench: onOpenWorkbench,
             );
@@ -282,6 +286,7 @@ class _LauncherRail extends StatelessWidget {
     required this.hasProject,
     required this.onLoadBundledProject,
     required this.onImportProject,
+    required this.onOpenProjectFolder,
     required this.onOpenProject,
     required this.onOpenWorkbench,
   });
@@ -289,6 +294,7 @@ class _LauncherRail extends StatelessWidget {
   final bool hasProject;
   final Future<void> Function() onLoadBundledProject;
   final Future<void> Function(BuildContext context)? onImportProject;
+  final Future<void> Function(BuildContext context) onOpenProjectFolder;
   final VoidCallback onOpenProject;
   final VoidCallback onOpenWorkbench;
 
@@ -770,12 +776,14 @@ class _RightColumn extends StatelessWidget {
   const _RightColumn({
     required this.hasProject,
     required this.onLoadBundledProject,
+    required this.onOpenProjectFolder,
     required this.onOpenProject,
     required this.onOpenWorkbench,
   });
 
   final bool hasProject;
   final Future<void> Function() onLoadBundledProject;
+  final Future<void> Function(BuildContext context) onOpenProjectFolder;
   final VoidCallback onOpenProject;
   final VoidCallback onOpenWorkbench;
 
@@ -791,6 +799,7 @@ class _RightColumn extends StatelessWidget {
             final detail = _DetailPanel(
               hasProject: hasProject,
               onLoadBundledProject: onLoadBundledProject,
+              onOpenProjectFolder: onOpenProjectFolder,
               onOpenProject: onOpenProject,
               onOpenWorkbench: onOpenWorkbench,
             );
@@ -948,12 +957,14 @@ class _DetailPanel extends StatelessWidget {
   const _DetailPanel({
     required this.hasProject,
     required this.onLoadBundledProject,
+    required this.onOpenProjectFolder,
     required this.onOpenProject,
     required this.onOpenWorkbench,
   });
 
   final bool hasProject;
   final Future<void> Function() onLoadBundledProject;
+  final Future<void> Function(BuildContext context) onOpenProjectFolder;
   final VoidCallback onOpenProject;
   final VoidCallback onOpenWorkbench;
 
@@ -1017,6 +1028,15 @@ class _DetailPanel extends StatelessWidget {
             type: 'current board canvas context',
             active: false,
             onTap: onOpenWorkbench,
+          ),
+          const SizedBox(height: 12),
+          _ProjectRow(
+            label: 'Ava projekt kaustast',
+            type: 'existing local folder · writable when valid',
+            active: false,
+            onTap: () {
+              onOpenProjectFolder(context);
+            },
           ),
         ],
       ),

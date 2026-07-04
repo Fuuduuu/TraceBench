@@ -9,8 +9,10 @@ import '../shared/services/project_loader.dart';
 import '../shared/theme/app_theme.dart';
 import 'router.dart';
 
-final StateProvider<ProjectState?> projectStateProvider = StateProvider<ProjectState?>((_) => null);
-final StateProvider<bool> beginnerModeProvider = StateProvider<bool>((_) => true);
+final StateProvider<ProjectState?> projectStateProvider =
+    StateProvider<ProjectState?>((_) => null);
+final StateProvider<bool> beginnerModeProvider =
+    StateProvider<bool>((_) => true);
 final Provider<GoRouter> routerProvider = Provider<GoRouter>((ref) {
   return buildTraceBenchRouter();
 });
@@ -42,6 +44,14 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
     );
   }
 
+  Future<void> _openProjectDirectory(BuildContext context) async {
+    await ProjectDirectoryOpenAction.openDirectory(
+      context: context,
+      ref: ref,
+      onOpened: () => _openWorkbench(initialLocation: '/project'),
+    );
+  }
+
   Widget _buildLauncherHome(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
@@ -50,6 +60,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
           hasProject: hasProject,
           onLoadBundledProject: _loadBundledProject,
           onImportProject: _importProjectZip,
+          onOpenProjectFolder: _openProjectDirectory,
           onOpenProject: () => _openWorkbench(initialLocation: '/project'),
           onOpenWorkbench: _openWorkbench,
         );
@@ -87,8 +98,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
       );
     }
 
-    final router =
-        _workbenchRouter ??
+    final router = _workbenchRouter ??
         buildTraceBenchRouter(initialLocation: '/project/board-canvas');
 
     return MaterialApp.router(

@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/models/project_state.dart';
 import '../../../shared/services/project_loader.dart';
 
 class ProjectZipImportAction {
@@ -69,6 +70,55 @@ class ProjectZipImportAction {
   }
 }
 
+class ProjectDirectoryOpenAction {
+  const ProjectDirectoryOpenAction._();
+
+  static Future<void> openDirectory({
+    required BuildContext context,
+    required WidgetRef ref,
+    Future<String?> Function()? directoryPicker,
+    Future<ProjectState> Function(String projectDirectory)? projectLoader,
+    VoidCallback? onOpened,
+  }) async {
+    final selectedDirectory = await (directoryPicker ??
+        () => FilePicker.platform.getDirectoryPath(
+              dialogTitle: 'Ava TraceBenchi projektikaust',
+            ))();
+    if (selectedDirectory == null || selectedDirectory.trim().isEmpty) {
+      return;
+    }
+
+    try {
+      final loadProject = projectLoader ?? ProjectLoader.loadFromDirectory;
+      final loaded = await loadProject(selectedDirectory);
+      ref.read(projectStateProvider.notifier).state = loaded;
+      if (context.mounted) {
+        if (onOpened != null) {
+          onOpened();
+        } else {
+          context.go('/project');
+        }
+      }
+    } on ProjectLoadException {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Valitud kaust ei ole kehtiv TraceBenchi projekt.'),
+          ),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Projekti kaustast avamine ebaõnnestus: $error'),
+          ),
+        );
+      }
+    }
+  }
+}
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -79,6 +129,10 @@ class HomeScreen extends ConsumerWidget {
 
   Future<void> _importZip(BuildContext context, WidgetRef ref) async {
     await ProjectZipImportAction.importZip(context: context, ref: ref);
+  }
+
+  Future<void> _openProjectFolder(BuildContext context, WidgetRef ref) async {
+    await ProjectDirectoryOpenAction.openDirectory(context: context, ref: ref);
   }
 
   void _openNewProjectWizard(BuildContext context) {
@@ -122,6 +176,11 @@ class HomeScreen extends ConsumerWidget {
             ElevatedButton(
               onPressed: () => _importZip(context, ref),
               child: const Text('Import Project ZIP'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => _openProjectFolder(context, ref),
+              child: const Text('Ava projekt kaustast'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(

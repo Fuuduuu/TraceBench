@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,16 +8,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/features/project/screens/home_screen.dart';
+import 'package:trace_bench_viewer/shared/models/known_facts.dart';
+import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
+import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 class _FakeFilePicker extends FilePicker {
   _FakeFilePicker(this.result);
 
   final FilePickerResult? result;
   var pickCount = 0;
+  var directoryPickCount = 0;
   FileType? requestedType;
   List<String>? requestedExtensions;
   bool? requestedWithData;
   bool? requestedAllowMultiple;
+  String? requestedDirectoryDialogTitle;
+  String? requestedDirectoryInitialDirectory;
+  bool? requestedDirectoryLockParentWindow;
 
   @override
   Future<FilePickerResult?> pickFiles({
@@ -39,6 +50,49 @@ class _FakeFilePicker extends FilePicker {
     requestedAllowMultiple = allowMultiple;
     return result;
   }
+
+  @override
+  Future<String?> getDirectoryPath({
+    String? dialogTitle,
+    String? initialDirectory,
+    bool lockParentWindow = false,
+  }) async {
+    directoryPickCount += 1;
+    requestedDirectoryDialogTitle = dialogTitle;
+    requestedDirectoryInitialDirectory = initialDirectory;
+    requestedDirectoryLockParentWindow = lockParentWindow;
+    return null;
+  }
+}
+
+ProjectState _directoryBackedProjectState(String projectDirectory) {
+  return ProjectState(
+    manifest: const ProjectManifest(
+      projectId: 'home_open_project',
+      schemaVersion: '1.0',
+      createdAt: '2026-07-04T00:00:00Z',
+      deviceType: 'pelle',
+      model: 'PV20',
+      symptom: 'not_provided',
+    ),
+    knownFacts: const KnownFacts(
+      projectId: 'home_open_project',
+      components: [],
+      pins: [],
+      measurements: [],
+      nets: [],
+      excludedFromFaultCandidates: [],
+      componentPinIndex: {},
+      photos: [],
+      damageRegions: [],
+      suspectRegions: [],
+      visualTraces: [],
+    ),
+    events: const [],
+    customerReport: '# Home open report\n',
+    projectDirectory: projectDirectory,
+    isProjectionStale: false,
+  );
 }
 
 Color _actionBorderColor(WidgetTester tester, Finder action) {
@@ -157,6 +211,11 @@ void main() {
 
     expect(find.text('Import project'), findsAtLeastNWidgets(1));
     expect(find.text('existing ZIP flow'), findsOneWidget);
+    expect(find.text('Ava projekt kaustast'), findsAtLeastNWidgets(1));
+    expect(
+      find.text('existing local folder · writable when valid'),
+      findsOneWidget,
+    );
     expect(find.text('Ava näidisprojekt'), findsAtLeastNWidgets(1));
     expect(find.text('Ava projekt'), findsNothing);
     expect(find.text('OPEN EXISTING'), findsOneWidget);
@@ -203,6 +262,8 @@ void main() {
 
     final importAction =
         find.byKey(const ValueKey('benchbeep_home_import_project_button'));
+    await tester.ensureVisible(importAction);
+    await tester.pump();
     expect(_actionBorderColor(tester, importAction), const Color(0xFF6B5A30));
 
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
@@ -218,7 +279,14 @@ void main() {
   testWidgets('launcher preserves bundled sample project handoff', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: TraceBenchApp()));
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
 
     final sampleProjectButton =
         find.byKey(const ValueKey('benchbeep_home_sample_project_button'));
@@ -228,6 +296,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Ava projekt'), findsOneWidget);
+    expect(container.read(projectStateProvider)!.projectDirectory, isNull);
 
     final openWorkbenchButton =
         find.byKey(const ValueKey('benchbeep_home_open_workbench_button'));
@@ -240,6 +309,174 @@ void main() {
     expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
         findsOneWidget);
     expect(find.text('Project overview'), findsOneWidget);
+  });
+
+  testWidgets('launcher open folder cancel leaves project state unchanged', (
+    tester,
+  ) async {
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final fakePicker = _FakeFilePicker(null);
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final cancelOpenFolderButton = find.text('Ava projekt kaustast');
+    await tester.ensureVisible(cancelOpenFolderButton);
+    await tester.tap(cancelOpenFolderButton);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(fakePicker.directoryPickCount, 1);
+    expect(
+      fakePicker.requestedDirectoryDialogTitle,
+      'Ava TraceBenchi projektikaust',
+    );
+    expect(container.read(projectStateProvider), isNull);
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('benchbeep_workbench_router')),
+      findsNothing,
+    );
+    expect(
+      find.text('Valitud kaust ei ole kehtiv TraceBenchi projekt.'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('open folder invalid selection shows clear error', (
+    tester,
+  ) async {
+    final invalidDirectory =
+        '${Directory.systemTemp.path}${Platform.pathSeparator}'
+        'tracebench_missing_project_${DateTime.now().microsecondsSinceEpoch}';
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    late BuildContext actionContext;
+    late WidgetRef actionRef;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Consumer(
+            builder: (context, ref, _) {
+              actionContext = context;
+              actionRef = ref;
+              return const Scaffold(
+                body: Text('Folder open action harness'),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(container.read(projectStateProvider), isNull);
+
+    await tester.runAsync(() async {
+      await ProjectDirectoryOpenAction.openDirectory(
+        context: actionContext,
+        ref: actionRef,
+        directoryPicker: () async => invalidDirectory,
+        projectLoader: (_) async {
+          throw const ProjectLoadException('invalid test folder');
+        },
+      ).timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => throw TimeoutException(
+          'ProjectDirectoryOpenAction.openDirectory did not complete '
+          'for invalid folder',
+        ),
+      );
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(container.read(projectStateProvider), isNull);
+    expect(
+      find.text('Valitud kaust ei ole kehtiv TraceBenchi projekt.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('open folder action loads directory-backed project', (
+    tester,
+  ) async {
+    final projectDirectory =
+        '${Directory.systemTemp.path}${Platform.pathSeparator}'
+        'tracebench_valid_project';
+    String? loadedPath;
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    late BuildContext actionContext;
+    late WidgetRef actionRef;
+    var opened = false;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Consumer(
+            builder: (context, ref, _) {
+              actionContext = context;
+              actionRef = ref;
+              return const Scaffold(
+                body: Text('Folder open action harness'),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.runAsync(() async {
+      await ProjectDirectoryOpenAction.openDirectory(
+        context: actionContext,
+        ref: actionRef,
+        directoryPicker: () async => projectDirectory,
+        projectLoader: (path) async {
+          loadedPath = path;
+          return _directoryBackedProjectState(path);
+        },
+        onOpened: () {
+          opened = true;
+        },
+      ).timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => throw TimeoutException(
+          'ProjectDirectoryOpenAction.openDirectory did not complete '
+          'for valid folder',
+        ),
+      );
+    });
+    await tester.pump();
+
+    final loaded = container.read(projectStateProvider);
+    expect(opened, isTrue);
+    expect(loadedPath, projectDirectory);
+    expect(loaded, isNotNull);
+    expect(loaded!.projectDirectory, projectDirectory);
   });
 
   testWidgets('launcher opens the existing Workbench router', (tester) async {
@@ -316,9 +553,11 @@ void main() {
 
     await tester.pumpWidget(const ProviderScope(child: TraceBenchApp()));
 
-    await tester.tap(
-      find.byKey(const ValueKey('benchbeep_home_import_project_button')),
-    );
+    final importButton =
+        find.byKey(const ValueKey('benchbeep_home_import_project_button'));
+    await tester.ensureVisible(importButton);
+    await tester.pump();
+    await tester.tap(importButton);
     await tester.pumpAndSettle();
 
     expect(fakePicker.pickCount, 1);

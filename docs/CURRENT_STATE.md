@@ -1,46 +1,41 @@
 # CURRENT_STATE
 
 ## Current pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
-No active implementation lock. Placement rotation normalization implementation is closed out.
+Docs-only scope-lock for placement-save projection stale/truthfulness behavior.
 
-## Latest closeout
+## Baseline
+Latest closed pass:
 `PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS`
 
-Pushed implementation recorded:
+Pushed closeout recorded:
+`eea1353` (`docs: close out placement rotation normalization`)
+
+Implementation recorded by that closeout:
 `ca8d152a1b5105a576a2cb0d215628afb7dc9855` (`fix: normalize placement rotation before write`)
 
-Claude audit recorded:
-`ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
+## Current scope summary
+Lock a future implementation pass for truthful post-save state after Board Canvas placement `Salvesta` succeeds.
 
-Manual smoke recorded:
-`PASS`
-
-## Closeout summary
-The prior manual-smoke blocker is fixed: UI rotation `270` previously failed validator because the placement writer emitted canonical `rotation_deg: 270`. The writer now normalizes emitted canonical `rotation_deg` into `-180 <= rotation_deg < 180` before writing `component_visual_placement_confirmed`.
-
-Normalization contract recorded:
-- `0 -> 0`
-- `90 -> 90`
-- `180 -> -180`
-- `270 -> -90`
-- `360 -> 0`
-- `-181 -> 179`
-- `-270 -> 90`
-- `540 -> -180`
+Live-code findings to preserve:
+- `ProjectState.isProjectionStale` is the existing UI truth flag for stale projections.
+- Add/Edit Component and measurement save flows append the returned event to in-memory `projectState.events` when missing and set `isProjectionStale: true`.
+- Board Canvas placement save currently calls the placement writer and reports success, but the local project state is not updated to include the returned placement event and the projection-stale flag is not set by that flow.
+- `known_facts.json` remains projection/cache and must not be mutated directly by Flutter UI.
 
 ## Boundary record
-- Validator/schema unchanged.
-- Writer contract unchanged.
+- This is docs-only; no runtime or test implementation is authorized yet.
+- Future implementation must not mutate `known_facts.json` directly.
+- Future implementation must not run materialization automatically from the placement save path unless separately scoped.
 - Event type remains `component_visual_placement_confirmed`.
-- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions were added.
-- Project Open From Directory behavior unchanged.
-- Board Canvas renderer/painter unchanged.
+- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, visual-contact layout, AI-authored facts, or repair conclusions may be created by this future fix.
+- Board Canvas renderer/painter remains read-only.
+- The next active-lock sync must inspect live code and arm exact implementation files; no implementation allowlist is armed in this scope-lock pass.
 
 ## Binding workflow safety
 - Never use `git add .`.

@@ -1,39 +1,52 @@
 # ACTIVE_SCOPE_LOCK
 
 ## Current pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Mode
-No active implementation lock.
+Docs-only scope-lock.
 
 ## Lock status
-Released by `PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS`.
+Active docs-only route/scope lock. No runtime or test implementation is armed in this pass.
 
-## Last closed implementation
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
+## Write allowlist for this pass
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS.md`
 
-Pushed implementation commit:
-`ca8d152a1b5105a576a2cb0d215628afb7dc9855` (`fix: normalize placement rotation before write`)
+## Implementation pass to prepare later
+`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`
 
-Safe implementation set:
-- `lib/features/components/services/v2_placement_writer.dart`
-- `test/unit/v2_placement_writer_test.dart`
+The next pass, `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS`, must inspect live code and arm the exact implementation allowlist.
 
-## Result recorded
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- Manual smoke: `PASS`
-- Writer normalizes canonical `rotation_deg` to `-180 <= rotation_deg < 180` before emitting `component_visual_placement_confirmed`.
+Likely candidate surfaces, not yet armed:
+- Board Canvas placement save UI state owner.
+- Board Canvas widget tests for placement save state/stale behavior.
+
+Do not assume these paths until the active-lock sync verifies them from live code.
+
+## Locked behavior
+- After successful explicit human placement `Salvesta`, the loaded in-memory project state should include the returned `component_visual_placement_confirmed` event if missing.
+- After successful placement save/idempotent confirmation, `ProjectState.isProjectionStale` should become `true`.
+- Guarded save, writer failure, draft edits, cancel/reset/delete/navigation must not mutate in-memory canonical event state or stale state.
+- The UI should remain truthful that `known_facts.json` projection-backed views may be stale until materialization/reload/export.
+- `known_facts.json` must not be mutated directly by Flutter UI.
+- No automatic materializer run is authorized by this lock.
 
 ## Boundary record
-- Validator/schema unchanged.
+- `events.jsonl` remains canonical.
+- `known_facts.json` remains projection/cache.
 - Writer contract unchanged.
 - Event type remains `component_visual_placement_confirmed`.
-- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions were added.
-- Project Open From Directory behavior unchanged.
-- Board Canvas renderer/painter unchanged.
+- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, visual-contact layout, AI-authored facts, or repair conclusions.
+- No Project Open From Directory behavior changes.
+- No placement writer service changes unless the next active-lock sync proves they are required; expected answer is no.
+- Board Canvas renderer/painter remains read-only.
 
 ## Standing protected boundaries
 Future work must re-arm a new active scope lock before editing runtime, tests, schema, tools, events, known_facts, materializer, validator, router, Project ZIP, samples, or `_incoming`.

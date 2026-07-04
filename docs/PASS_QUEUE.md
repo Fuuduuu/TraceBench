@@ -1,49 +1,44 @@
 # PASS_QUEUE
 
 ## Current pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
-`NEEDS_USER_DECISION`
+`PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Queue state
-No active route. Placement rotation normalization implementation is closed out.
+Active docs-only scope-lock for placement-save projection stale/truthfulness behavior.
 
 | Order | Pass ID | Status | Notes |
 | --- | --- | --- | --- |
-| 1 | `PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS` | completed / docs-only closeout | Records pushed implementation, Claude audit `ACCEPT_AS_IS`, manual smoke `PASS`, boundary record, and route reset. |
+| 1 | `PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS` | current / docs-only scope-lock | Locks future behavior for updating in-memory event state and stale-projection truth after successful Board Canvas placement save; no implementation allowlist armed yet. |
+| 2 | `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_ACTIVE_LOCK_SYNC_PASS` | next / docs-only active-lock sync | Must inspect live code and arm exact implementation allowlist for the small UI state/test fix. |
 
-## Closed implementation
-`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS` was pushed as:
+## Latest closed baseline
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS` was pushed as:
+`eea1353` (`docs: close out placement rotation normalization`)
+
+It recorded implementation:
 `ca8d152a1b5105a576a2cb0d215628afb7dc9855` (`fix: normalize placement rotation before write`)
 
-Safe implementation set:
-- `lib/features/components/services/v2_placement_writer.dart`
-- `test/unit/v2_placement_writer_test.dart`
+## Locked product intent
+After explicit human placement `Salvesta` succeeds, the app must be truthful that `events.jsonl` is newer than the loaded `known_facts.json` projection.
 
-## Recorded result
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- Manual smoke: `PASS`
-- Prior blocker fixed: writer now normalizes canonical `rotation_deg` into `-180 <= rotation_deg < 180` before emitting `component_visual_placement_confirmed`.
-- Add Component / Salvesta now shows successful save.
-
-## Normalization contract
-- `0 -> 0`
-- `90 -> 90`
-- `180 -> -180`
-- `270 -> -90`
-- `360 -> 0`
-- `-181 -> 179`
-- `-270 -> 90`
-- `540 -> -180`
+Future implementation should match existing Add/Edit Component and measurement save patterns:
+- append the returned placement event to in-memory `projectState.events` if it is not already present;
+- set `isProjectionStale: true` after successful append/idempotent confirmation;
+- keep draft edits, cancel/reset/delete/navigation, save guard failures, and writer failures as no-state-mutation paths;
+- keep user copy clear that the visible projection may remain stale until materialization/reload/export.
 
 ## Boundary record
-- Validator/schema unchanged.
-- Writer contract unchanged.
+- `events.jsonl` remains canonical.
+- `known_facts.json` remains projection/cache.
+- Flutter must not mutate `known_facts.json` directly.
+- No schema/tool/materializer/validator/projection semantics changes are authorized by this scope-lock.
 - Event type remains `component_visual_placement_confirmed`.
-- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions were added.
-- Project Open From Directory behavior unchanged.
-- Board Canvas renderer/painter unchanged.
+- No component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, visual-contact layout, AI-authored facts, or repair conclusions may be created.
+- Board Canvas renderer/painter remains read-only.
+- The next active-lock sync owns exact implementation allowlist selection after live-code inspection.
 
 ## Current-state maintenance trigger
 Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` together whenever the current or next pass changes.
@@ -51,5 +46,6 @@ Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOC
 ## Routing provenance
 | Pass ID | Provenance |
 | --- | --- |
+| `PLACEMENT_SAVE_PROJECTION_STALE_SCOPE_LOCK_PASS` | Current docs-only scope-lock after placement writer/open-folder/rotation foundation passes; records live-code stale-projection gap and routes to active-lock sync. |
 | `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS` | Pushed implementation `ca8d152a1b5105a576a2cb0d215628afb7dc9855`; normalized placement writer rotation before canonical emit. |
 | `PLACEMENT_ROTATION_NORMALIZATION_IMPL_POST_AUDIT_PASS` | Closeout returned route to `NEEDS_USER_DECISION`. |

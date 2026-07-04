@@ -131,6 +131,7 @@ bool _writerWasCalled(_FakeProcessRunner runner) {
 V2PlacementWriterRequest _request({
   String componentId = 'cmp_r101',
   String clientOperationId = 'op_place_cmp_r101',
+  num rotationDeg = 90,
 }) {
   return V2PlacementWriterRequest(
     componentId: componentId,
@@ -138,7 +139,7 @@ V2PlacementWriterRequest _request({
     boardSide: 'top',
     centerX: 0.42,
     centerY: 0.58,
-    rotationDeg: 90,
+    rotationDeg: rotationDeg,
     width: 1.2,
     height: 0.7,
     templateId: 'template_family_rect_2_top_bottom',
@@ -245,6 +246,62 @@ void main() {
             .any((part) => part.contains('materialize_known_facts.py'))),
         isFalse,
       );
+    });
+
+    test('normalizes rotation_deg into the canonical half-open range',
+        () async {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-v2-place-test-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      File('${directory.path}/events.jsonl').writeAsStringSync('');
+      var eventIndex = 2;
+      final runner = _FakeProcessRunner((command) {
+        if (command.last == '--version') {
+          return _success('Python 3.12.0');
+        }
+        return _success('[OK] appended: evt_000002');
+      });
+      final service = V2PlacementService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+        now: () => DateTime.utc(2026, 6, 10, 12),
+        eventIdGenerator: () =>
+            'evt_${(eventIndex++).toString().padLeft(6, '0')}',
+      );
+
+      final cases = <num, num>{
+        0: 0,
+        90: 90,
+        180: -180,
+        270: -90,
+        360: 0,
+        -181: 179,
+        -270: 90,
+        540: -180,
+      };
+
+      for (final entry in cases.entries) {
+        await service.confirmPlacement(
+          projectState: _projectState(directory),
+          request: _request(
+            rotationDeg: entry.key,
+            clientOperationId: 'op_place_cmp_r101_${entry.key}',
+          ),
+        );
+      }
+
+      expect(runner.candidates, hasLength(cases.length));
+      for (var index = 0; index < cases.length; index++) {
+        final input = cases.keys.elementAt(index);
+        final expected = cases.values.elementAt(index);
+        final candidate = runner.candidates[index];
+        expect(candidate['event_type'], 'component_visual_placement_confirmed');
+        final payload = candidate['payload'] as Map<String, dynamic>;
+        final rotationDeg = payload['rotation_deg'] as num;
+        expect(rotationDeg, expected, reason: '$input');
+        expect(rotationDeg >= -180, isTrue, reason: '$input');
+        expect(rotationDeg < 180, isTrue, reason: '$input');
+      }
     });
 
     test('requires client_operation_id before writer invocation', () async {

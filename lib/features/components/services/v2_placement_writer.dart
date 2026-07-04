@@ -268,7 +268,7 @@ class V2PlacementService implements V2PlacementWriter {
       'board_side': request.boardSide.trim(),
       'center_x': request.centerX,
       'center_y': request.centerY,
-      'rotation_deg': request.rotationDeg,
+      'rotation_deg': _normalizeRotationDeg(request.rotationDeg),
       'width': request.width,
       'height': request.height,
       if (_hasText(request.templateId))
@@ -300,6 +300,11 @@ class V2PlacementService implements V2PlacementWriter {
       },
       'payload': payload,
     };
+  }
+
+  num _normalizeRotationDeg(num rotationDeg) {
+    final normalized = (rotationDeg + 180) % 360 - 180;
+    return normalized == 0 ? 0 : normalized;
   }
 
   bool _hasText(String? value) => value != null && value.trim().isNotEmpty;

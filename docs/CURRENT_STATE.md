@@ -1,26 +1,56 @@
 # CURRENT_STATE
 
 ## Current pass
-`PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
-
-## Next recommended pass
 `PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
+## Next recommended pass
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
+
 ## Route status
-Docs-only scope lock is active for the placement rotation normalization bugfix.
+Docs-only active-lock sync is active. The implementation lock is armed for the placement writer-boundary rotation normalization fix.
 
-## Scope summary
-`PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` proved the folder-backed open path can reach the real placement writer/validator. Manual smoke then exposed a downstream writer-boundary issue: UI rotation can produce `270`, while canonical validation requires `-180 <= rotation_deg < 180`.
+## Baseline evidence
+Latest pushed scope-lock commit observed in live git log:
+`2937deb docs: lock placement rotation normalization scope`
 
-This pass locks the future fix only. No runtime, tests, tools, schema, events, known_facts, or `_incoming` files are changed here.
+The route before this sync was:
+Current: `PLACEMENT_ROTATION_NORMALIZATION_SCOPE_LOCK_PASS`
+Next: `PLACEMENT_ROTATION_NORMALIZATION_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Locked product intent
-Normalize `rotation_deg` at the placement writer boundary before emitting `component_visual_placement_confirmed`.
+## Live-code findings
+`lib/features/components/services/v2_placement_writer.dart` currently validates `request.rotationDeg` as finite, then emits it directly as payload `rotation_deg`.
+
+`tools/validate_events_jsonl.py` already enforces the canonical range:
+`-180 <= rotation_deg < 180`
+
+`test/unit/v2_placement_writer_test.dart` already covers writer envelope, client operation ID, finite validation, unknown component, project directory guards, writer status mapping, and forbidden side-effect fields. It does not yet cover rotation normalization.
+
+## Implementation pass armed
+`PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`
+
+Exact implementation allowlist:
+- `lib/features/components/services/v2_placement_writer.dart`
+- `test/unit/v2_placement_writer_test.dart`
+
+No other implementation files are armed.
+
+## Required implementation behavior
+Future implementation must:
+- normalize `request.rotationDeg` before payload emit
+- keep finite-number validation
+- keep validator/schema unchanged
+- keep event type `component_visual_placement_confirmed`
+- keep V2 human-confirmed envelope unchanged
+- keep `client_operation_id` required
+- not create component identity
+- not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
+- not change Project Open From Directory behavior
+- not change Board Canvas renderer/painter behavior
 
 Canonical output range:
 `-180 <= rotation_deg < 180`
 
-Locked examples:
+Required examples:
 - `0 -> 0`
 - `90 -> 90`
 - `180 -> -180`
@@ -30,25 +60,13 @@ Locked examples:
 - `-270 -> 90`
 - `540 -> -180`
 
-## Future implementation boundaries
-Future implementation must keep:
-- event type unchanged: `component_visual_placement_confirmed`
-- V2 human-confirmed envelope unchanged
-- `client_operation_id` requirement unchanged
-- finite-number validation intact
-- validator/schema canonical constraint unchanged
-- no component identity creation
-- no pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
-- no Project Open From Directory behavior change
-- Board Canvas renderer/painter read-only boundary unchanged
-
-Likely future surfaces are `lib/features/components/services/v2_placement_writer.dart` and `test/unit/v2_placement_writer_test.dart`, but this scope-lock does not arm the implementation allowlist. The next active-lock sync must read live code and arm exact files.
-
-## Manual smoke target for future implementation
-Use `C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`.
-
-Expected future smoke:
-open project from folder -> Board Canvas renders R1/C1/U1 -> select R1/C1/U1 -> Lisa -> choose rotation that previously produced `270` -> Salvesta -> one `component_visual_placement_confirmed` appends with `rotation_deg: -90` -> `python tools/validate_all.py` passes.
+## Forbidden surfaces for implementation
+- No Board Canvas screen edits.
+- No project open files.
+- No validator/schema/tools edits.
+- No events/known_facts edits.
+- No materializer/router edits.
+- No `_incoming` edits or staging.
 
 ## Binding workflow safety
 - Never use `git add .`.

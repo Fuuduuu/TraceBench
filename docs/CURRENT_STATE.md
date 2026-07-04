@@ -2,46 +2,51 @@
 
 ## Current pass
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Repository handoff
 
 - Repository: `C:\Users\Kasutaja\Desktop\TraceBench`
 - Branch: `main`
-- Latest pushed closeout verified: `ed45dbcf` (`docs: close out add component panel local draft controls`).
-- Accepted writer/Confirm scope-lock: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
-- Active pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS`.
-- Next route: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
+- Latest pushed implementation verified for closeout:
+  - `e0af793e1b140eec7c498d9a73e8a65f29020b33` (`feat: confirm component visual placement`)
+  - `8db8c23669421f4d7c4a71cfce716dc1f9dd06a7` (`fix: align placement confirm flow with canvas selection`)
+- Closed implementation pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
+- Closeout pass: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_POST_AUDIT_PASS`.
+- Active implementation lock released by this closeout.
 
-## Active scope summary
+## Closeout summary
 
-Docs-only active-lock sync for the protected placement writer and explicit Confirm/Salvesta implementation.
+`PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` implemented the protected placement writer and explicit Board Canvas `Salvesta` confirmation path.
 
-- Implementation pass armed: `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`.
-- Implementation allowlist:
-  - `lib/features/components/services/v2_placement_writer.dart`
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/unit/v2_placement_writer_test.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- No runtime, test, writer, schema, tool, materializer, validator, router, event, known-facts, sample, or `_incoming` edits are made by this sync pass.
+- Dedicated writer emits only `component_visual_placement_confirmed`.
+- Placement confirmation requires explicit human action and `client_operation_id`.
+- Board Canvas `Salvesta` is wired for selected existing component visual placement only.
+- Canvas/list selection is the only placement-confirm binding path.
+- Drifted in-panel `Olemasolev komponent` dropdown was removed by the follow-up patch.
+- Draft edits, cancel/reset/discard, navigation, and `Kustuta` write nothing canonical.
+- Board Canvas renderer/painter remains read-only.
+- No component identity, pin, contact, pad, net, trace, electrical, measurement, AI, visual-contact-layout, or repair fact is created by placement confirm.
 
-## Locked implementation direction
+## Audit and smoke record
 
-Future implementation may wire explicit human Confirm/Salvesta for visual placement only.
+- Claude final audit: `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`.
+- Manual smoke: `PASS_WITH_ENVIRONMENT_LIMITATION`.
+- Limitation: full UI -> writer -> `events.jsonl` append smoke remains unverified because the app currently lacks an open-from-local-folder UI path. Sample/loadFromAssets and ZIP import leave `projectDirectory` null, so `Salvesta` is correctly guarded. A later folder-open pass is required.
+- Non-blocking nits:
+  - `Muuda` is currently a no-op.
+  - `Tühista` duplicates `Kustuta`/reset behavior.
+  - End-to-end append needs folder-open UI before real smoke.
 
-- Confirm requires explicit human action.
-- Writer emits only `component_visual_placement_confirmed`.
-- Writer uses V2/human envelope semantics and `client_operation_id` precedent.
-- Placement payload remains visual envelope only: component, coordinate space, board side, center, rotation, width, height, optional template/source photo/notes.
-- Placement write does not create component identity.
-- Placement write does not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, visual contact layout, or repair conclusions.
-- AI never authors canonical placement events.
-- Board Canvas renderer/painter remains read-only; only the explicit UI Confirm path may call the writer in the next implementation pass.
-- `Salvesta` may become wired only in `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`, not in this sync pass.
+## Recommended next candidate
+
+`PROJECT_OPEN_FROM_DIRECTORY_SCOPE_LOCK_PASS`
+
+This is a candidate only. It is not armed as the current or next route.
 
 ## Canonical owners and evidence ledgers
 

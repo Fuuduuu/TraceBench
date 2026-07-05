@@ -426,7 +426,9 @@ void main() {
     expect(find.byKey(const ValueKey('overview-reference-images-button')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('overview-project-id')), findsOneWidget);
-    expect(find.text('Board Canvas · primary'), findsOneWidget);
+    expect(find.text('Loo komponent'), findsOneWidget);
+    expect(find.text('Muuda komponendi andmeid'), findsOneWidget);
+    expect(find.text('Board Canvas · visuaalne paigutus'), findsOneWidget);
     expect(find.text('Advanced graph · projection'), findsOneWidget);
     expect(find.text('Board graph view'), findsNothing);
   });
@@ -528,7 +530,7 @@ void main() {
     await tester.tap(addComponentAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('Add Component'), findsAtLeastNWidgets(1));
+    expect(find.text('Loo komponent'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Edit Component action navigates to edit component screen',
@@ -550,7 +552,7 @@ void main() {
     await tester.tap(editComponentAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('Edit Component'), findsAtLeastNWidgets(1));
+    expect(find.text('Muuda komponendi andmeid'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Board Canvas action navigates to board canvas screen',

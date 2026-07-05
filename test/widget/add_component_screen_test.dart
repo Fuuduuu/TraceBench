@@ -182,16 +182,21 @@ void main() {
       (tester) async {
     await _pumpAddComponentScreen(tester);
 
-    expect(find.text('Add Component'), findsAtLeastNWidgets(1));
+    expect(find.text('Loo komponent'), findsAtLeastNWidgets(1));
     expect(
       find.text('Human is the sensor. AI is the graph engine.'),
       findsOneWidget,
     );
     expect(
-      find.text('Creates component_created only after explicit human action.'),
+      find.text(
+        'Loob component_created identiteedi- ja olemasolufakti ainult selge inimkinnituse järel.',
+      ),
       findsOneWidget,
     );
-    expect(find.text('Koht → Väärtus → Ühik → Lisa'), findsAtLeastNWidgets(1));
+    expect(
+      find.text('Koht → Väärtus → Ühik → Loo komponent'),
+      findsAtLeastNWidgets(1),
+    );
     await tester.drag(find.byType(ListView), const Offset(0, -1000));
     await tester.pump();
     expect(find.text('Vihjed on kontekst, mitte tõend.'), findsOneWidget);
@@ -288,7 +293,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Add Component uses the accepted V2 writer service.'),
+      find.text('Add Component writes component identity/existence only.'),
       findsOneWidget,
     );
     expect(find.text('Event type: component_created'), findsOneWidget);
@@ -397,7 +402,7 @@ void main() {
       'Run AI',
       'Detect',
       'Promote',
-      'Edit Component',
+      'Muuda komponendi andmeid',
       'Board Canvas',
       'Reference Images',
       'Activity Timeline',

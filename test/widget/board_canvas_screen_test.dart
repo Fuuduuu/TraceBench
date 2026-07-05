@@ -1878,7 +1878,10 @@ void main() {
         .toList();
     expect(railSemanticsLabels, contains('Paneelid'));
     expect(railSemanticsLabels, contains('Tulevased tööriistad'));
-    expect(railSemanticsLabels, contains('Lisa komponent panel mode'));
+    expect(
+      railSemanticsLabels,
+      contains('Visuaalse paigutuse Lisa panel mode'),
+    );
     await tester
         .tap(find.byKey(const Key('board_canvas_rail_safety_evidence_tool')));
     await tester.pump(const Duration(milliseconds: 16));
@@ -2719,7 +2722,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
     expect(
       find.text(
-        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
+        'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
       ),
       findsOneWidget,
     );
@@ -3198,7 +3201,7 @@ void main() {
     );
     expect(
       find.text(
-        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
+        'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
       ),
       findsOneWidget,
     );
@@ -7159,7 +7162,7 @@ void main() {
     expect(
         source,
         contains(
-            'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.'));
+            'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.'));
     expect(source, contains('v2PlacementWriterProvider'));
     expect(source, contains('V2PlacementWriterRequest'));
     expect(

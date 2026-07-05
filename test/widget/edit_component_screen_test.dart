@@ -208,19 +208,19 @@ void main() {
       (tester) async {
     await _pumpEditComponentScreen(tester);
 
-    expect(find.text('Edit Component'), findsAtLeastNWidgets(1));
+    expect(find.text('Muuda komponendi andmeid'), findsAtLeastNWidgets(1));
     expect(find.text('Human is the sensor. AI is the graph engine.'),
         findsOneWidget);
     expect(
         find.text(
-            'Creates component_updated only after explicit human action.'),
+            'Kirjutab component_updated ainult olemasoleva komponendi metadata muutmiseks.'),
         findsOneWidget);
     expect(
         find.text(
             'Edits existing components only; no new component is created.'),
         findsOneWidget);
     expect(
-      find.text('Koht → Väärtus → Ühik → Muuda'),
+      find.text('Koht → Väärtus → Ühik → Uuenda andmeid'),
       findsAtLeastNWidgets(1),
     );
     await tester.drag(find.byType(ListView), const Offset(0, -600));
@@ -231,7 +231,8 @@ void main() {
     expect(_editButton(tester).onPressed, isNull);
   });
 
-  testWidgets('empty-state guidance is shown when no components exist', (tester) async {
+  testWidgets('empty-state guidance is shown when no components exist',
+      (tester) async {
     await _pumpEditComponentScreen(
       tester,
       projectState: _inlineProjectState(includeComponents: false),
@@ -239,16 +240,15 @@ void main() {
 
     expect(find.text('Komponente pole veel'), findsOneWidget);
     expect(
-      find.text(
-          'Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.'),
-      findsOneWidget);
+        find.text(
+            'Muuta saab ainult olemasolevat komponenti. Lisa esmalt komponent ja tule siis muutma.'),
+        findsOneWidget);
     expect(find.byKey(const ValueKey('edit-component-select-dropdown')),
         findsNothing);
     expect(
         find.byKey(const ValueKey('edit-component-label-field')), findsNothing);
     expect(find.byKey(const ValueKey('edit-component-button')), findsNothing);
-    expect(
-        find.byKey(const ValueKey('edit-component-add-component-button')),
+    expect(find.byKey(const ValueKey('edit-component-add-component-button')),
         findsOneWidget);
   });
 
@@ -275,8 +275,12 @@ void main() {
       findsOneWidget,
       reason: 'Navigation should go to existing Add Component flow.',
     );
-    expect(find.text('Creates component_created only after explicit human action.'),
-        findsOneWidget);
+    expect(
+      find.text(
+        'Loob component_created identiteedi- ja olemasolufakti ainult selge inimkinnituse järel.',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -342,7 +346,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Edit Component uses the accepted V2 writer service.'),
+      find.text('Edit Component writes metadata updates only.'),
       findsOneWidget,
     );
     expect(find.text('Event type: component_updated'), findsOneWidget);

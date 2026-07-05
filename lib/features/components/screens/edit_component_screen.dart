@@ -263,7 +263,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
     final components = projectState.knownFacts.components;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Component')),
+      appBar: AppBar(title: const Text('Muuda komponendi andmeid')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -281,7 +281,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Koht → Väärtus → Ühik → Muuda',
+                      'Koht → Väärtus → Ühik → Uuenda andmeid',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
@@ -345,7 +345,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                       controller: _reasonController,
                       decoration: const InputDecoration(
                         labelText: 'Muutmise põhjus',
-                        helperText: 'Defaults to human_component_edit if blank.',
+                        helperText:
+                            'Defaults to human_component_edit if blank.',
                       ),
                       onChanged: (_) => _clearMessages(),
                     ),
@@ -362,7 +363,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                               }),
                       title: const Text('Kinnitan komponendi muudatuse'),
                       subtitle: const Text(
-                        'This records component_updated after explicit human action.',
+                        'See kirjutab component_updated metadata muutuse pärast selget inimkinnitust.',
                       ),
                       controlAffinity: ListTileControlAffinity.leading,
                     ),
@@ -370,7 +371,9 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     ElevatedButton(
                       key: const ValueKey('edit-component-button'),
                       onPressed: _canEdit ? _editComponent : null,
-                      child: Text(_isSaving ? 'Muudan...' : 'Muuda komponenti'),
+                      child: Text(
+                        _isSaving ? 'Uuendan...' : 'Muuda komponendi andmeid',
+                      ),
                     ),
                     if (_successMessage != null) ...[
                       const SizedBox(height: 8),
@@ -381,8 +384,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                       const SizedBox(height: 4),
                       const Text(
                         'Projection stale until refresh.',
-                        key: ValueKey(
-                            'edit-component-stale-projection-message'),
+                        key:
+                            ValueKey('edit-component-stale-projection-message'),
                       ),
                     ],
                     if (_errorMessage != null) ...[
@@ -396,7 +399,7 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                     const _TechnicalDetailsTile(
                       eventType: 'component_updated',
                       writerCopy:
-                          'Edit Component uses the accepted V2 writer service.',
+                          'Edit Component writes metadata updates only.',
                     ),
                   ],
                 ),
@@ -435,7 +438,7 @@ class _EmptyComponentStateCard extends StatelessWidget {
             OutlinedButton(
               key: const ValueKey('edit-component-add-component-button'),
               onPressed: onAddComponent,
-              child: const Text('Lisa komponent'),
+              child: const Text('Loo komponent'),
             ),
           ],
         ),
@@ -458,16 +461,16 @@ class _SafetyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Edit Component',
+              'Muuda komponendi andmeid',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text('Project: ${projectState.manifest.projectId}'),
             const SizedBox(height: 8),
             const Text('Human is the sensor. AI is the graph engine.'),
-            const Text('Koht → Väärtus → Ühik → Muuda'),
+            const Text('Koht → Väärtus → Ühik → Uuenda andmeid'),
             const Text(
-              'Creates component_updated only after explicit human action.',
+              'Kirjutab component_updated ainult olemasoleva komponendi metadata muutmiseks.',
             ),
             const Text(
               'Edits existing components only; no new component is created.',

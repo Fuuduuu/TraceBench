@@ -1227,7 +1227,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         saveBoundaryCopy: _addComponentPlacementSaveInFlight
                             ? 'Salvestamine on pooleli...'
                             : addComponentTemplateSaveBlockReason ??
-                                'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
+                                'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
                         saveContextLabel:
                             addComponentTemplatePlacementContextEntry
                                 ?.selectorLabel,
@@ -1304,7 +1304,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     icon: Icons.add_box_outlined,
                     tooltip: 'Ava komponendi lisamise malliloend',
                     label: 'Lisa',
-                    semanticLabel: 'Lisa komponent',
+                    semanticLabel: 'Visuaalse paigutuse Lisa',
                     modeKey: 'add_component',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.addComponentTemplates,
@@ -2348,7 +2348,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.onDraftLabelChanged,
     required this.onConfirmPlacement,
     this.saveBoundaryCopy =
-        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
+        'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
     this.saveContextLabel,
     this.saveStatusMessage,
     this.onResetToTemplateDefaults,
@@ -2416,7 +2416,7 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         tilePadding: _kCompactControlTilePadding,
         childrenPadding: _kCompactControlChildrenPadding,
         title: _CompactDisclosureTitle(
-          label: 'Lisa komponent',
+          label: 'Lisa visuaalne paigutus',
           detail: selectedTemplate == null
               ? 'Visuaalsed algmallid'
               : 'Aktiivne mall',

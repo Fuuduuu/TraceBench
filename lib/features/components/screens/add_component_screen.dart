@@ -218,7 +218,7 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Component')),
+      appBar: AppBar(title: const Text('Loo komponent')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -231,7 +231,7 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Koht → Väärtus → Ühik → Lisa',
+                    'Koht → Väärtus → Ühik → Loo komponent',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
@@ -335,7 +335,7 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                   ElevatedButton(
                     key: const ValueKey('add-component-button'),
                     onPressed: _canAdd ? _addComponent : null,
-                    child: Text(_isSaving ? 'Lisan...' : 'Lisa komponent'),
+                    child: Text(_isSaving ? 'Loon...' : 'Loo komponent'),
                   ),
                   if (_successMessage != null) ...[
                     const SizedBox(height: 8),
@@ -360,7 +360,7 @@ class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
                   const _TechnicalDetailsTile(
                     eventType: 'component_created',
                     writerCopy:
-                        'Add Component uses the accepted V2 writer service.',
+                        'Add Component writes component identity/existence only.',
                   ),
                 ],
               ),
@@ -395,16 +395,17 @@ class _SafetyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add Component',
+              'Loo komponent',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text('Project: ${projectState.manifest.projectId}'),
             const SizedBox(height: 8),
             const Text('Human is the sensor. AI is the graph engine.'),
-            const Text('Koht → Väärtus → Ühik → Lisa'),
+            const Text('Koht → Väärtus → Ühik → Loo komponent'),
             const Text(
-                'Creates component_created only after explicit human action.'),
+              'Loob component_created identiteedi- ja olemasolufakti ainult selge inimkinnituse järel.',
+            ),
           ],
         ),
       ),

@@ -4,40 +4,43 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active for the future Board Graph route/surface implementation.
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` is closed out and the active implementation lock is released.
 
-No runtime, test, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this sync pass.
+No active implementation or docs route is armed. The next pass requires an explicit user decision.
 
-## Active-lock result
+## Last closed pass
 
-The implementation pass `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` is armed with the exact live-code allowlist:
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_POST_AUDIT_PASS`
 
-- `lib/features/project/screens/project_overview_screen.dart`
-- `lib/features/board_graph/screens/board_graph_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `test/widget/board_graph_screen_test.dart`
+Closeout recorded the pushed implementation:
 
-## Scope intent
+- Commit: `6234e790db1590e937f14f4118dfb4ba196dc815`
+- Message: `fix: classify board graph as advanced projection surface`
+- Claude audit: `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`
+- Manual smoke: `OPTIONAL / not required`
+- Targeted tests: `24/24` passed
+- Non-blocking note: pre-existing repo-wide analyzer issues remain out of scope
 
-Board Canvas is the primary technician-facing board/workbench surface.
+## Behavior recorded
 
-Board Graph is currently a projection/debug/advanced surface at `/project/graph`, reachable from Project Overview / Workbench navigation and covered by Board Graph widget tests.
-
-The armed implementation may relabel or reposition Board Graph so it is not presented as the primary placement/write/edit workflow, while keeping `/project/graph` available unless a later route-hiding pass explicitly scopes router changes.
+- Board Canvas is now labeled/presented as the primary board/workbench surface.
+- Board Graph is labeled/presented as advanced/debug projection inspection.
+- `/project/graph` remains reachable.
+- Board Graph screen/tests remain preserved.
+- Board Graph remains no-write / no canonical facts.
+- The implementation bundled minor analyzer cleanups inside the armed files; this was verified safe and accepted as a non-blocking nit.
 
 ## Boundary confirmation
 
-- Board Canvas behavior remains unchanged.
-- Board Graph route remains available.
-- Router changes are not armed.
-- Writer/schema/events/known_facts/materializer/validator/projection semantics remain unchanged.
-- No canonical facts are created or mutated by this docs-only pass.
+- No router files changed.
+- No writer, schema, validator, materializer, event, `known_facts.json`, `_incoming`, sample, or asset files changed.
+- No canonical facts were created or mutated by the closeout.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

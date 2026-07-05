@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-The current pass is a docs-only active-lock sync for Board Graph route/surface treatment.
+No active pass is armed. `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` is closed out by `BOARD_GRAPH_LEGACY_ROUTE_IMPL_POST_AUDIT_PASS`.
 
 ## Current accepted placement chain
 
@@ -38,36 +38,33 @@ The current pass is a docs-only active-lock sync for Board Graph route/surface t
 - Board Graph may remain as an advanced/debug/projection inspection view.
 - No deletion or route hiding is authorized by the scope-lock pass.
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the exact implementation allowlist for `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`:
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` armed the exact implementation allowlist for `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`:
 
 - `lib/features/project/screens/project_overview_screen.dart`
 - `lib/features/board_graph/screens/board_graph_screen.dart`
 - `test/widget/project_overview_screen_test.dart`
 - `test/widget/board_graph_screen_test.dart`
 
-Live-code basis:
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` was pushed as:
 
-- Project Overview currently shows Board Graph in the Workbench action area via `overview-board-graph-button` linking to `/project/graph`.
-- Board Canvas is also in the same Workbench action area and remains the primary technician-facing board surface.
-- Board Graph owns screen title/copy and projection-stale context text.
-- Existing Board Graph and Project Overview widget tests cover the affected labels/navigation.
-- Router changes are not armed because the locked direction keeps `/project/graph` available unless a later pass explicitly scopes route hiding.
+- Commit: `6234e790db1590e937f14f4118dfb4ba196dc815`
+- Message: `fix: classify board graph as advanced projection surface`
+- Claude audit: `ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`
+- Manual smoke: `OPTIONAL / not required`
+- Targeted tests: `24/24` passed
 
-Future implementation may:
+Accepted behavior:
 
-- relabel Board Graph as advanced/debug/projection inspection
-- move Board Graph out of primary Workbench action emphasis if possible inside the armed Project Overview surface
-- keep direct route available for tests/dev/advanced use
-- update navigation and Board Graph tests accordingly
+- Board Canvas is labeled/presented as the primary board/workbench surface.
+- Board Graph is labeled/presented as advanced/debug projection inspection.
+- `/project/graph` remains reachable.
+- Board Graph screen/tests remain preserved.
+- Board Graph remains no-write / no canonical facts.
+- No router, writer, schema, validator, materializer, events, `known_facts.json`, `_incoming`, samples, or assets changed.
 
-Future implementation must not:
+Non-blocking nit:
 
-- delete Board Graph
-- remove tests without migration
-- change Board Canvas behavior
-- change writer/schema/events/known_facts behavior
-- create or mutate canonical facts
-- alter projection/materializer semantics
+- The implementation bundled minor analyzer cleanups inside the armed files; these were verified safe and accepted.
 
 ## Scope gate rules
 

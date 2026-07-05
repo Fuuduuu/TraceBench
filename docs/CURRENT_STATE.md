@@ -4,56 +4,48 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active. It arms the future implementation pass for the Add Component / `Lisa komponent` required draft label/name save blocker copy.
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` is implemented, pushed, audited, and closed out.
 
-This pass documents and arms the implementation allowlist only. It does not implement runtime, edit tests, change schema/tools/events/`known_facts.json`, touch `_incoming`, stage, commit, or push.
+The active implementation lock is released. No implementation pass is currently armed.
 
-## Implementation pass armed
+## Latest closeout
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_POST_AUDIT_PASS`
 
-Exact implementation allowlist:
+Closeout recorded:
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- implementation commit `c773c413f6d8588e1043de5822e6c30cadf918f2` (`fix: explain missing add component draft label`)
+- Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
+- manual smoke `PASS`
+- safe implementation set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
 
-## Live-code findings behind allowlist
+## Accepted behavior recorded
 
-- Board Canvas owns the Add Component panel local draft label state through `_addComponentTemplateDraftLabel`.
-- Board Canvas passes `draftLabel` and `onDraftLabelChanged` into `_AddComponentTemplateListPanel`.
-- The visible label input is in Board Canvas with key `board_canvas_add_component_template_draft_label_input`.
-- Save blocking copy is produced in Board Canvas through `_addComponentTemplateSaveBlockReason` and currently covers no selected component, no local project folder, and invalid `board_normalized` bounds.
-- The current `canConfirmAddComponentPlacement` gate checks selected template, save-block reason, and in-flight state; the missing label is not currently represented as a dedicated save-block reason in that gate.
-- Board Canvas widget tests already cover explicit `Salvesta` writer path, no-preselect guard, invalid bounds guard, local-folder guard, writer failure surfacing, label input visibility, and no-write/source boundary assertions.
-- No placement writer, project-open, rotation-normalization, projection-stale, schema/tool/event, router, or `_incoming` file is required for this implementation.
-
-## Required future behavior
-
-- Make the missing required draft label/name reason visible without hover/click.
-- Keep `Salvesta` disabled while required label/name is missing.
-- Keep writer uninvoked while label/name is missing.
-- Allow `Salvesta` to become enabled after label/name is entered if all other guards are satisfied.
-- Preserve or explicitly document guard priority:
-  1. no selected component
-  2. missing required label/name
-  3. invalid board-normalized bounds
-  4. missing local project folder
-- Keep existing bounds guard behavior.
-- Keep projection-stale success copy.
-- Keep rotation normalization, Project Open From Directory behavior, placement writer contract, Board Canvas renderer/painter read-only boundary, and `known_facts.json` projection/cache boundary unchanged.
-- Keep draft edits / `Kustuta` / `Tühista` / navigation as no-write paths.
+- Missing required Add Component draft label/name now shows visible copy without hover/click: `Lisa nimi enne salvestamist.`
+- `Salvesta` remains disabled until label/name is entered.
+- Valid label/name enables save when all other guards pass.
+- Valid save appended `evt_000015` with `event_type: component_visual_placement_confirmed` during manual smoke.
+- Writer is not invoked while label/name is missing.
+- Existing guards remain intact: no selected component, invalid canonical bounds, and missing local project folder.
+- Valid save still shows projection-refresh truth copy.
+- Placement writer contract is unchanged.
+- Schema/tools/validator/materializer are unchanged.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
 
 ## Boundary confirmation
 
-This active-lock sync is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+This closeout is docs-only. Runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, and `_incoming` are not changed by this closeout.
 
 ## Route safety reminders
 

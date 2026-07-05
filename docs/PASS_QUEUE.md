@@ -4,51 +4,30 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active. It arms the exact implementation allowlist for the Add Component required draft label/name copy fix.
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` is closed out after pushed implementation and accepted audit.
 
-## Implementation pass armed
+No next implementation pass is armed.
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
+## Latest closeout
 
-Exact implementation allowlist:
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_POST_AUDIT_PASS`
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+Recorded:
 
-## Live-code routing finding
-
-The future implementation belongs in Board Canvas only:
-
-- The draft label state, label input, save boundary copy, and save enable/disable gate are in `lib/features/board_canvas/screens/board_canvas_screen.dart`.
-- Relevant coverage and source-boundary assertions are in `test/widget/board_canvas_screen_test.dart`.
-- The placement writer, project-open files, rotation-normalization files, projection-stale files outside Board Canvas, tools/materializer/validator/schema, events/known_facts, router, and `_incoming` are not armed.
-
-## Required future behavior
-
-- Empty required label/name disables or keeps disabled `Salvesta`.
-- Visible copy explains the missing label/name without hover/click.
-- Writer is not invoked while label/name is missing.
-- Entering valid label/name can enable `Salvesta` when other guards pass.
-- Existing guards still work: no selected component, invalid board-normalized bounds, and missing local project folder.
-- Valid save still appends and shows projection-refresh truth copy.
-- Draft edits / `Kustuta` / `Tühista` / navigation write nothing.
-
-## Guard priority to preserve or document
-
-1. no selected component
-2. missing required label/name
-3. invalid board-normalized bounds
-4. missing local project folder
-
-If implementation finds a better priority from live UX constraints, it must document the choice in tests/audit without changing writer/schema/event boundaries.
+- implementation commit `c773c413f6d8588e1043de5822e6c30cadf918f2` (`fix: explain missing add component draft label`)
+- Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
+- manual smoke `PASS`
+- safe implementation set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
 
 ## Current accepted placement chain
 
@@ -60,6 +39,7 @@ If implementation finds a better priority from live UX constraints, it must docu
 | 4 | `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` | Made successful placement save truthfully mark/show projection stale or refresh-needed. |
 | 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
+| 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
 
 ## Scope gate rules
 

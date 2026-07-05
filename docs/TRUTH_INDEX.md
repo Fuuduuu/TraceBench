@@ -30,6 +30,7 @@ Core invariants (semantics unchanged):
 - Placement payload remains visual envelope data only and must not include visual contact layout, contacts, pads, pins, nets, measurements, AI facts, or repair conclusions.
 - Successful placement save records canonical truth in `events.jsonl` and truthfully marks/shows projection refresh needed; Flutter must not directly mutate `known_facts.json`.
 - Placement confirmation remains separate from component identity creation; the placement writer must not emit `component_created` or `component_updated` unless a future combined-flow Add Component scope explicitly changes that boundary.
+- Standalone Add Component, standalone Edit Component, and Board Canvas placement confirmation own different canonical semantics: `component_created` creates component identity/existence, `component_updated` updates component metadata, and `component_visual_placement_confirmed` confirms visual placement/documentation for an already existing component.
 - Placement writer normalizes canonical `rotation_deg` into `-180 <= rotation_deg < 180` before emit, and Board Canvas guards invalid `board_normalized` draft bounds before writer call.
 - Add Component panel local draft controls are accepted UI-local controls from `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`; the exact HTML handoff remains `DESIGN_INPUT_ONLY` and `_incoming` is not runtime truth.
 - Contacts/pins/marker controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.

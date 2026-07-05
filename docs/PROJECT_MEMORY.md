@@ -54,6 +54,17 @@ Accepted Add Component panel draft controls:
 - `Muuda` is not an active no-op, `Kustuta` discards local draft only, and `Tühista` must not imply a canonical write.
 - Pin/contact controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.
 
+Standalone Add/Edit transitional writer flows:
+
+Owner pass: `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_SCOPE_LOCK_PASS`.
+
+- Standalone Add Component and standalone Edit Component remain transitional canonical writer flows for now.
+- Standalone Add Component creates component identity/existence through `component_created`.
+- Standalone Edit Component updates component metadata through `component_updated`.
+- Board Canvas `Lisa` / `Salvesta` confirms visual placement for an already selected existing component through `component_visual_placement_confirmed`.
+- Future copy/labeling should distinguish identity creation, metadata editing, and visual placement confirmation.
+- This scope-lock authorizes no route hiding, screen deletion, route merge, writer/schema/event semantics change, runtime implementation, or test migration.
+
 ## Core rule
 
 Human is the sensor. AI is the graph engine.

@@ -65,6 +65,14 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
                 isStale: projectState.isProjectionStale,
                 contextLabel: 'Board graph',
               ),
+              const Padding(
+                key: ValueKey('board-graph-role-copy'),
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: Text(
+                  'Advanced/debug projection inspection · no canonical writes. '
+                  'Board Canvas is the primary board/workbench surface.',
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
                 child: Wrap(
@@ -126,14 +134,12 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
                         value: null,
                         child: Text('No focus'),
                       ),
-                      ...knownFacts.components
-                          .map(
-                            (component) => DropdownMenuItem<String>(
-                              value: component.componentId,
-                              child: Text(component.componentId),
-                            ),
-                          )
-                          ,
+                      ...knownFacts.components.map(
+                        (component) => DropdownMenuItem<String>(
+                          value: component.componentId,
+                          child: Text(component.componentId),
+                        ),
+                      ),
                     ],
                     onChanged: (value) => setState(() {
                       _focusComponent = value;

@@ -426,6 +426,9 @@ void main() {
     expect(find.byKey(const ValueKey('overview-reference-images-button')),
         findsOneWidget);
     expect(find.byKey(const ValueKey('overview-project-id')), findsOneWidget);
+    expect(find.text('Board Canvas · primary'), findsOneWidget);
+    expect(find.text('Advanced graph · projection'), findsOneWidget);
+    expect(find.text('Board graph view'), findsNothing);
   });
 
   testWidgets('uses polished Estonian copy in secondary shell actions',
@@ -569,6 +572,36 @@ void main() {
     await tester.tap(boardCanvasAction);
     await tester.pumpAndSettle();
     expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('Board Graph action remains reachable as advanced projection',
+      (tester) async {
+    final projectState = _inlineProjectState();
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      initialLocation: '/project',
+      useRouter: true,
+    );
+    await tester.pumpAndSettle();
+
+    final boardGraphAction =
+        find.byKey(const ValueKey('overview-board-graph-button'));
+    expect(boardGraphAction, findsOneWidget);
+    expect(find.text('Advanced graph · projection'), findsOneWidget);
+
+    await tester.ensureVisible(boardGraphAction);
+    await tester.tap(boardGraphAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Board graph'), findsOneWidget);
+    expect(
+      find.text(
+        'Advanced/debug projection inspection · no canonical writes. '
+        'Board Canvas is the primary board/workbench surface.',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Board Canvas action does not mutate project events',

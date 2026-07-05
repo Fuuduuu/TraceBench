@@ -48,6 +48,28 @@ ProjectState _inlineProjectState() {
   );
 }
 
+Future<ProviderContainer> _pumpBoardGraph(
+  WidgetTester tester, {
+  required ProjectState projectState,
+  required bool isBeginnerMode,
+}) async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+  container.read(projectStateProvider.notifier).state = projectState;
+  container.read(beginnerModeProvider.notifier).state = isBeginnerMode;
+
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: BoardGraphScreen()),
+    ),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 100));
+
+  return container;
+}
+
 void main() {
   testWidgets('board graph screen renders title and key labels',
       (tester) async {
@@ -67,6 +89,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Board graph'), findsOneWidget);
+    expect(find.byKey(const ValueKey('board-graph-role-copy')), findsOneWidget);
+    expect(
+      find.text(
+        'Advanced/debug projection inspection · no canonical writes. '
+        'Board Canvas is the primary board/workbench surface.',
+      ),
+      findsOneWidget,
+    );
     expect(find.textContaining('Q2'), findsAtLeast(1));
     expect(find.textContaining('components:'), findsOneWidget);
     expect(find.text('Show visual traces'), findsNothing);
@@ -95,5 +125,43 @@ void main() {
     expect(find.byType(DropdownButton<String>), findsOneWidget);
     expect(find.text('Advanced mode: true'), findsOneWidget);
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+  });
+
+  testWidgets('board graph interactions remain projection-only and no-write',
+      (tester) async {
+    final projectState = _inlineProjectState();
+    final container = await _pumpBoardGraph(
+      tester,
+      projectState: projectState,
+      isBeginnerMode: false,
+    );
+
+    final initialEvents = List<String>.from(
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
+    );
+
+    await tester.tap(find.text('Show visual traces'));
+    await tester.pump();
+    await tester.tap(find.text('Audit/history'));
+    await tester.pump();
+
+    final resultingEvents = List<String>.from(
+      container
+          .read(projectStateProvider)!
+          .events
+          .map((event) => event.eventId),
+    );
+
+    expect(resultingEvents, equals(initialEvents));
+    expect(
+      find.text(
+        'Advanced/debug projection inspection · no canonical writes. '
+        'Board Canvas is the primary board/workbench surface.',
+      ),
+      findsOneWidget,
+    );
   });
 }

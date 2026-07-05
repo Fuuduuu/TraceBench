@@ -25,7 +25,6 @@ class _ProjectHomeShellColors {
   static const greenBright = Color(0xFF2BC06F);
   static const greenTint = Color(0x261FA35C);
   static const copper = Color(0xFFD8A24A);
-  static const copperTint = Color(0x26D8A24A);
   static const silk = Color(0xFFCDC78A);
 }
 
@@ -126,10 +125,10 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
 
     return DecoratedBox(
       key: const ValueKey('overview-menu-breadcrumb'),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: _ProjectHomeShellColors.tile,
         border: Border(
-          top: const BorderSide(color: _ProjectHomeShellColors.rule),
+          top: BorderSide(color: _ProjectHomeShellColors.rule),
         ),
       ),
       child: SizedBox(
@@ -764,16 +763,16 @@ class _ActionRailCard extends StatelessWidget {
                   runSpacing: 5,
                   children: [
                     OutlinedButton(
-                      key: const ValueKey('overview-board-graph-button'),
-                      onPressed: () => context.go('/project/graph'),
-                      style: outlinedButtonStyle,
-                      child: const Text('Board graph view'),
-                    ),
-                    OutlinedButton(
                       key: const ValueKey('overview-board-canvas-button'),
                       onPressed: () => context.go('/project/board-canvas'),
                       style: outlinedButtonStyle,
-                      child: const Text('Board Canvas'),
+                      child: const Text('Board Canvas · primary'),
+                    ),
+                    OutlinedButton(
+                      key: const ValueKey('overview-board-graph-button'),
+                      onPressed: () => context.go('/project/graph'),
+                      style: outlinedButtonStyle,
+                      child: const Text('Advanced graph · projection'),
                     ),
                     OutlinedButton(
                       key: const ValueKey('overview-reference-images-button'),

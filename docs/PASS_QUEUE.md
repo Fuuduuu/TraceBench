@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-The current pass is a docs-only active-lock sync for future standalone Add Component / Edit Component labeling cleanup.
+No active pass is armed. The Add/Edit Component legacy-flow labeling implementation is closed out.
 
 ## Current accepted placement chain
 
@@ -34,52 +34,24 @@ The current pass is a docs-only active-lock sync for future standalone Add Compo
 - `component_updated` = component metadata update.
 - `component_visual_placement_confirmed` = visual placement/documentation confirmation.
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS` arms `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` with this exact implementation allowlist:
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS` armed `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` with the exact implementation allowlist.
 
-- `lib/features/project/screens/project_overview_screen.dart`
-- `lib/features/components/screens/add_component_screen.dart`
-- `lib/features/components/screens/edit_component_screen.dart`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `test/widget/add_component_screen_test.dart`
-- `test/widget/edit_component_screen_test.dart`
-- `test/widget/board_canvas_screen_test.dart`
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` was pushed as `129a1a87cf8c015f65b6bd5024fc160dcfd900e7` (`fix: clarify add edit and placement flow labels`) and is closed out by `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS`.
 
-Live-code basis:
+Accepted result:
 
-- Project Overview owns the Add/Edit/Board Canvas action labels and navigation buttons.
-- Standalone Add Component owns visible identity-creation copy and `component_created` helper text.
-- Standalone Edit Component owns visible metadata-edit copy and `component_updated` helper text.
-- Board Canvas owns visible `Lisa komponent` / `Salvesta` copy for selected-component visual placement confirmation.
-- The corresponding widget tests assert current labels and event-role copy.
+- Project Overview distinguishes component identity creation, component metadata edit, and Board Canvas visual placement confirmation.
+- Standalone Add Component copy clearly means component identity/existence creation.
+- Standalone Edit Component copy clearly means component metadata update.
+- Board Canvas `Lisa` / `Salvesta` remains visual placement confirmation for an existing component.
+- Routes remain working.
+- No routes/screens were hidden, deleted, or merged.
+- Writer/event semantics remain unchanged for `component_created`, `component_updated`, and `component_visual_placement_confirmed`.
 
-Future implementation must preserve:
+Known future product direction:
 
-- routes working
-- standalone Add Component as explicit human component identity/existence writer
-- standalone Edit Component as explicit human metadata writer
-- Board Canvas `Lisa` / `Salvesta` as visual placement confirmation for an existing component
-- `component_created`, `component_updated`, and `component_visual_placement_confirmed` writer behavior
-- writer contracts, event schema, `events.jsonl` as canonical truth, and `known_facts.json` as projection/cache
-- Board Canvas renderer/painter read-only boundary
-
-Future implementation must not:
-
-- hide routes
-- delete screens
-- merge Add/Edit with Board Canvas
-- change writer services
-- change router paths
-- change event schema
-- change validator/materializer/tools
-- mutate `known_facts.json` directly from Flutter
-- create pins/contacts/pads/nets/traces/electrical facts
-- create measurements
-- create AI-authored facts
-- change Project Open From Directory
-- change rotation normalization
-- change projection-stale behavior
-- change canonical-bounds guard behavior
+- A Board Canvas `Komponendid` workflow panel may be considered later.
+- That direction is out of scope for this closeout and is not armed here.
 
 ## Scope gate rules
 

@@ -4,43 +4,45 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active for the future Add/Edit Component legacy-flow labeling implementation.
+The `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` implementation is closed out and the active implementation lock is released.
 
-No runtime, test, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this sync pass.
+No implementation pass is currently armed.
 
-## Active-lock result
+## Latest closeout
 
-The implementation pass `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` is armed with the exact live-code allowlist:
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS` records pushed implementation commit `129a1a87cf8c015f65b6bd5024fc160dcfd900e7` (`fix: clarify add edit and placement flow labels`).
 
-- `lib/features/project/screens/project_overview_screen.dart`
-- `lib/features/components/screens/add_component_screen.dart`
-- `lib/features/components/screens/edit_component_screen.dart`
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/project_overview_screen_test.dart`
-- `test/widget/add_component_screen_test.dart`
-- `test/widget/edit_component_screen_test.dart`
-- `test/widget/board_canvas_screen_test.dart`
+Recorded audit result:
 
-## Scope intent
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+- Targeted tests: `151/151` passed.
+- Manual smoke: `OPTIONAL / not required`.
 
-Future implementation may update copy/labels so users can clearly distinguish:
+## Behavior recorded
 
-- standalone Add Component = component identity/existence creation through `component_created`
-- standalone Edit Component = component metadata update through `component_updated`
-- Board Canvas `Lisa` / `Salvesta` = visual placement confirmation for an existing selected component through `component_visual_placement_confirmed`
+- Project Overview distinguishes component identity creation, component metadata edit, and Board Canvas visual placement confirmation.
+- Standalone Add Component copy now clearly means component identity/existence creation.
+- Standalone Edit Component copy now clearly means component metadata update.
+- Board Canvas `Lisa` / `Salvesta` remains visual placement confirmation for an existing component.
+- Routes remain working.
+- No routes/screens were hidden, deleted, or merged.
+- Writer/event semantics remain unchanged: `component_created`, `component_updated`, and `component_visual_placement_confirmed` are unchanged.
+
+## Known out-of-scope future direction
+
+A future Board Canvas `Komponendid` workflow panel may be considered later, but it is not armed or started by this closeout.
 
 ## Boundary confirmation
 
-- Routes must keep working.
-- No route hiding or screen deletion is armed.
-- No writer service, router path, schema, validator, materializer, tool, event, `known_facts.json`, sample, asset, Project Open From Directory, rotation normalization, projection-stale, or canonical-bounds behavior change is armed.
-- The sync pass itself made docs-only route/lock changes.
+- No files are armed after closeout.
+- No writer service, router path, schema, validator, materializer, tool, event, `known_facts.json`, sample, asset, Project Open From Directory, rotation normalization, projection-stale, canonical-bounds, or `_incoming` behavior change is recorded by this closeout.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

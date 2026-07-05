@@ -2711,6 +2711,12 @@ void main() {
       find.byKey(const Key('board_canvas_add_component_builder_save_context')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_save_boundary_notice'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
     final enabledSaveButton = tester.widget<OutlinedButton>(
       find.descendant(
@@ -2720,10 +2726,6 @@ void main() {
     );
     expect(enabledSaveButton.onPressed, isNotNull);
 
-    await _tapWidgetByKey(
-      tester,
-      const Key('board_canvas_add_component_builder_width_increment'),
-    );
     await _tapWidgetByKey(
       tester,
       const Key('board_canvas_add_component_builder_rotation_increment'),
@@ -2740,7 +2742,7 @@ void main() {
     expect(request.componentId, 'cmp_r101');
     expect(request.coordinateSpace, 'board_normalized');
     expect(request.boardSide, 'top');
-    expect(request.width, 1.1);
+    expect(request.width, 1.0);
     expect(request.height, 0.6);
     expect(request.rotationDeg, 10);
     expect(request.templateId, 'template_family_rect_2_top_bottom');
@@ -2925,6 +2927,259 @@ void main() {
     final afterLocalActionsState = _readProjectState(tester);
     expect(afterLocalActionsState.events, isEmpty);
     expect(afterLocalActionsState.isProjectionStale, isFalse);
+  });
+
+  testWidgets(
+      'Add Component blocks invalid board-normalized draft size before writer call',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final placementWriter = _FakePlacementWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_width_increment'),
+    );
+    expect(
+      find.text('Suurus või asukoht ei mahu plaadi piiridesse.'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_save_boundary_notice'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .getRect(
+            find.byKey(
+              const Key(
+                  'board_canvas_add_component_builder_save_boundary_copy'),
+            ),
+          )
+          .height,
+      greaterThan(0),
+    );
+    expect(find.textContaining('center_x'), findsNothing);
+    expect(find.textContaining('Traceback'), findsNothing);
+    var blockedSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(blockedSaveButton.onPressed, isNull);
+    expect(placementWriter.requests, isEmpty);
+    var blockedState = _readProjectState(tester);
+    expect(blockedState.events, isEmpty);
+    expect(blockedState.isProjectionStale, isFalse);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_delete'),
+    );
+    for (var i = 0; i < 5; i += 1) {
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_add_component_builder_height_increment'),
+      );
+    }
+    expect(
+      find.text('Suurus või asukoht ei mahu plaadi piiridesse.'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_save_boundary_notice'),
+      ),
+      findsOneWidget,
+    );
+    blockedSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(blockedSaveButton.onPressed, isNull);
+    expect(placementWriter.requests, isEmpty);
+    blockedState = _readProjectState(tester);
+    expect(blockedState.events, isEmpty);
+    expect(blockedState.isProjectionStale, isFalse);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component blocks invalid board-normalized draft centers before writer call',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final lowCenterWriter = _FakePlacementWriter();
+    final lowCenterState = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_x_low', designator: 'RXLOW'),
+      ],
+      placements: const [
+        ComponentVisualPlacementFact(
+          componentId: 'cmp_x_low',
+          coordinateSpace: 'board_normalized',
+          boardSide: 'top',
+          centerX: -0.01,
+          centerY: 0.45,
+          rotationDeg: 0,
+          sourceEventId: 'evt_invalid_x_low',
+          status: 'user_confirmed_visual',
+        ),
+      ],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: lowCenterState,
+        boardCanvasKey: const ValueKey('low-center-bounds'),
+        placementWriter: lowCenterWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'RXLOW (cmp_x_low)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.text('Suurus või asukoht ei mahu plaadi piiridesse.'),
+      findsOneWidget,
+    );
+    var blockedSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(blockedSaveButton.onPressed, isNull);
+    expect(lowCenterWriter.requests, isEmpty);
+    var blockedState = _readProjectState(tester);
+    expect(blockedState.events, isEmpty);
+    expect(blockedState.isProjectionStale, isFalse);
+    expect(lowCenterState.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component converts moved ghost draft center before writer call',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final ghostCenterWriter = _FakePlacementWriter();
+    final ghostCenterState = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: ghostCenterState,
+        boardCanvasKey: const ValueKey('ghost-center-bounds'),
+        placementWriter: ghostCenterWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapCanvasAtNormalized(tester, x: 0.72, y: 0.28);
+
+    expect(
+      find.text('Suurus või asukoht ei mahu plaadi piiridesse.'),
+      findsNothing,
+    );
+    expect(
+      find.text(
+        'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
+      ),
+      findsOneWidget,
+    );
+    final enabledSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(enabledSaveButton.onPressed, isNotNull);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(ghostCenterWriter.requests, hasLength(1));
+    final request = ghostCenterWriter.requests.single;
+    expect(request.centerX, closeTo(0.72, 0.01));
+    expect(request.centerY, closeTo(0.28, 0.01));
+    expect(request.width, 1.0);
+    expect(request.height, 0.6);
+    final savedState = _readProjectState(tester);
+    expect(savedState.events, hasLength(1));
+    expect(savedState.isProjectionStale, isTrue);
+    expect(ghostCenterState.events, isEmpty);
   });
 
   testWidgets(

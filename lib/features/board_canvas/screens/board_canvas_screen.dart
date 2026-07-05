@@ -396,6 +396,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   double _addComponentTemplateDraftHeight = 0.6;
   int _addComponentTemplateDraftRotationDeg = 0;
   Offset? _addComponentTemplateGhostDraftAnchor;
+  Size? _addComponentTemplateGhostDraftCanvasSize;
   String? _placementEditorDraftKey;
   _PlacementEditorDraftState? _placementEditorDraft;
   bool _addComponentPlacementSaveInFlight = false;
@@ -464,6 +465,55 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return ((value % 360) + 360) % 360;
   }
 
+  double _addComponentTemplateDraftCenterX(_PlacementEntry selectedEntry) {
+    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+    if (draftAnchor == null) {
+      return selectedEntry.placement.centerX.toDouble();
+    }
+    final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
+    if (canvasSize == null || canvasSize.width <= 0) {
+      return draftAnchor.dx;
+    }
+    return draftAnchor.dx / canvasSize.width;
+  }
+
+  double _addComponentTemplateDraftCenterY(_PlacementEntry selectedEntry) {
+    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+    if (draftAnchor == null) {
+      return selectedEntry.placement.centerY.toDouble();
+    }
+    final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
+    if (canvasSize == null || canvasSize.height <= 0) {
+      return draftAnchor.dy;
+    }
+    return draftAnchor.dy / canvasSize.height;
+  }
+
+  bool _isBoardNormalizedCoordinateInBounds(double value) {
+    return value.isFinite && value >= 0 && value <= 1;
+  }
+
+  bool _isBoardNormalizedSizeInBounds(double value) {
+    return value.isFinite && value > 0 && value <= 1;
+  }
+
+  String? _addComponentTemplateCanonicalBoundsBlockReason(
+    _PlacementEntry selectedEntry,
+  ) {
+    if (selectedEntry.placement.coordinateSpace.trim() != 'board_normalized') {
+      return null;
+    }
+    final centerX = _addComponentTemplateDraftCenterX(selectedEntry);
+    final centerY = _addComponentTemplateDraftCenterY(selectedEntry);
+    if (!_isBoardNormalizedCoordinateInBounds(centerX) ||
+        !_isBoardNormalizedCoordinateInBounds(centerY) ||
+        !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftWidth) ||
+        !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftHeight)) {
+      return 'Suurus või asukoht ei mahu plaadi piiridesse.';
+    }
+    return null;
+  }
+
   void _setAddComponentTemplateSelection(String templateId) {
     final template = _kStarterAddComponentTemplates
         .cast<_AddComponentTemplateDefinition?>()
@@ -479,6 +529,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       _seedAddComponentTemplateContactCounts(template);
       _resetAddComponentTemplateLocalDraftScalars();
       _addComponentTemplateGhostDraftAnchor = null;
+      _addComponentTemplateGhostDraftCanvasSize = null;
     });
   }
 
@@ -524,7 +575,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     if (projectDirectory == null || projectDirectory.trim().isEmpty) {
       return 'Salvestamiseks ava projekt kohalikust kaustast.';
     }
-    return null;
+    return _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
   }
 
   void _showAddComponentTemplateSaveStatus(String message) {
@@ -561,13 +612,20 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }
 
     final placement = selectedEntry.placement;
-    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+    final canonicalBoundsBlockReason =
+        _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
+    if (canonicalBoundsBlockReason != null) {
+      _showAddComponentTemplateSaveStatus(canonicalBoundsBlockReason);
+      return;
+    }
+    final centerX = _addComponentTemplateDraftCenterX(selectedEntry);
+    final centerY = _addComponentTemplateDraftCenterY(selectedEntry);
     final request = V2PlacementWriterRequest(
       componentId: placement.componentId,
       coordinateSpace: placement.coordinateSpace,
       boardSide: placement.boardSide,
-      centerX: draftAnchor?.dx ?? placement.centerX,
-      centerY: draftAnchor?.dy ?? placement.centerY,
+      centerX: centerX,
+      centerY: centerY,
       rotationDeg: _addComponentTemplateDraftRotationDeg,
       width: _addComponentTemplateDraftWidth,
       height: _addComponentTemplateDraftHeight,
@@ -905,7 +963,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   selectedAddComponentTemplate: selectedAddComponentTemplate,
                   onAddComponentTemplateGhostDraftAnchorChanged: (value) {
                     setState(() {
-                      _addComponentTemplateGhostDraftAnchor = value;
+                      _addComponentTemplateGhostDraftAnchor = value.anchor;
+                      _addComponentTemplateGhostDraftCanvasSize =
+                          value.canvasSize;
                     });
                   },
                 );
@@ -1128,6 +1188,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           setState(() {
                             _selectedAddComponentTemplateId = null;
                             _addComponentTemplateGhostDraftAnchor = null;
+                            _addComponentTemplateGhostDraftCanvasSize = null;
                             _resetAddComponentTemplateLocalDraftScalars();
                           });
                         },
@@ -1140,6 +1201,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                           selectedAddComponentTemplate);
                                       _resetAddComponentTemplateLocalDraftScalars();
                                       _addComponentTemplateGhostDraftAnchor =
+                                          null;
+                                      _addComponentTemplateGhostDraftCanvasSize =
                                           null;
                                     });
                                   },
@@ -2980,13 +3043,30 @@ class _AddComponentTemplateBuilderPanel extends StatelessWidget {
                 color: _kBoardCanvasNavy,
               ),
             ),
-            Text(
-              saveBoundaryCopy,
+            DecoratedBox(
               key: const Key(
-                'board_canvas_add_component_builder_save_boundary_copy',
+                'board_canvas_add_component_builder_save_boundary_notice',
               ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: _kBoardCanvasNavy,
+              decoration: BoxDecoration(
+                color: _kBoardCanvasTile,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kBoardCanvasRule),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 7,
+                ),
+                child: Text(
+                  saveBoundaryCopy,
+                  key: const Key(
+                    'board_canvas_add_component_builder_save_boundary_copy',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: _kBoardCanvasNavy,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
             Text(
@@ -3349,9 +3429,9 @@ class _AddComponentDraftActionBar extends StatelessWidget {
           foregroundColor: _kBoardCanvasSignal,
           backgroundColor: _kBoardCanvasSignalTint,
           borderColor: _kBoardCanvasSignal.withValues(alpha: 0.7),
-          disabledForegroundColor: _kBoardCanvasSignal,
-          disabledBackgroundColor: _kBoardCanvasSignalTint,
-          disabledBorderColor: _kBoardCanvasSignal.withValues(alpha: 0.45),
+          disabledForegroundColor: _kBoardCanvasMuted,
+          disabledBackgroundColor: _kBoardCanvasTile,
+          disabledBorderColor: _kBoardCanvasRuleStrong,
         ),
         const _AddComponentDraftChipButton(
           key: Key('board_canvas_add_component_builder_local_edit'),
@@ -4158,7 +4238,8 @@ class _CanvasPanel extends StatefulWidget {
   final String addComponentTemplateGhostDraftLabel;
   final Offset? addComponentTemplateGhostDraftAnchor;
   final _AddComponentTemplateDefinition? selectedAddComponentTemplate;
-  final ValueChanged<Offset> onAddComponentTemplateGhostDraftAnchorChanged;
+  final ValueChanged<({Offset anchor, Size canvasSize})>
+      onAddComponentTemplateGhostDraftAnchorChanged;
 
   @override
   State<_CanvasPanel> createState() => _CanvasPanelState();
@@ -4191,7 +4272,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   void _selectPlacementAt(Offset position, Size size) {
     if (widget.showAddComponentTemplateGhost &&
         widget.selectedAddComponentTemplate != null) {
-      widget.onAddComponentTemplateGhostDraftAnchorChanged(position);
+      widget.onAddComponentTemplateGhostDraftAnchorChanged(
+        (anchor: position, canvasSize: size),
+      );
       return;
     }
     for (final entry in widget.entries.reversed) {
@@ -4365,9 +4448,12 @@ class _CanvasPanelState extends State<_CanvasPanel> {
           (event.position - startGlobal) / _addComponentTemplateGhostDragScale;
       final nextAnchor = pointerCanvasPosition - grabOffset;
       widget.onAddComponentTemplateGhostDraftAnchorChanged(
-        _clampAddComponentTemplateGhostDraftAnchor(
-          nextAnchor,
-          _addComponentTemplateGhostDragCanvasSize,
+        (
+          anchor: _clampAddComponentTemplateGhostDraftAnchor(
+            nextAnchor,
+            _addComponentTemplateGhostDragCanvasSize,
+          ),
+          canvasSize: _addComponentTemplateGhostDragCanvasSize,
         ),
       );
       return;

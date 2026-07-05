@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_SCOPE_LOCK_PASS`
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS`
 
 ## Route status
 
-The current pass is a docs-only scope-lock for future standalone Add Component / Edit Component copy and labeling cleanup.
+The current pass is a docs-only active-lock sync for future standalone Add Component / Edit Component labeling cleanup.
 
 ## Current accepted placement chain
 
@@ -26,76 +26,60 @@ The current pass is a docs-only scope-lock for future standalone Add Component /
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 | 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
 
-## Recent Board Graph closeout
+## Add/Edit/Board Canvas labeling sequence
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` was pushed as `6234e790db1590e937f14f4118dfb4ba196dc815` (`fix: classify board graph as advanced projection surface`) and closed out by `BOARD_GRAPH_LEGACY_ROUTE_IMPL_POST_AUDIT_PASS`.
-
-Accepted behavior from that chain:
-
-- Board Canvas is the primary board/workbench surface.
-- Board Graph is advanced/debug projection inspection.
-- `/project/graph` remains reachable.
-- Board Graph remains no-write / no canonical facts.
-
-## Add/Edit/Board Canvas labeling scope
-
-`LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` classified standalone Add Component and Edit Component as `KEEP_BUT_RESKIN_LATER` transitional canonical writer flows, not trash.
-
-This scope-lock records the canonical semantic split:
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_SCOPE_LOCK_PASS` locked the product taxonomy:
 
 - `component_created` = component identity/existence creation.
 - `component_updated` = component metadata update.
 - `component_visual_placement_confirmed` = visual placement/documentation confirmation.
 
-Locked product intent:
-
-- Keep standalone Add Component and Edit Component for now as transitional canonical writer flows.
-- Do not delete, hide, merge, or replace them in this pass.
-- Standalone Add Component should be described as component identity/existence creation.
-- Standalone Edit Component should be described as component metadata editing.
-- Board Canvas `Lisa` should be described as visual placement/template confirmation for an existing component.
-- Future copy should distinguish identity, metadata, and visual placement.
-- Future visual reskin/V2 alignment may happen later, but is not part of this pass.
-
-Future active-lock sync must inspect live code and decide:
-
-- where Project Overview action labels are defined
-- where standalone Add Component title/helper/safety copy is defined
-- where standalone Edit Component title/helper/safety copy is defined
-- whether Board Canvas `Lisa` wording should be touched in the same implementation or only referenced
-- which widget tests assert the current labels
-- whether copy updates can happen without router or writer changes
-
-Likely future surfaces, not armed by this pass:
+`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS` arms `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` with this exact implementation allowlist:
 
 - `lib/features/project/screens/project_overview_screen.dart`
 - `lib/features/components/screens/add_component_screen.dart`
 - `lib/features/components/screens/edit_component_screen.dart`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/project_overview_screen_test.dart`
 - `test/widget/add_component_screen_test.dart`
 - `test/widget/edit_component_screen_test.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-The active-lock sync must verify exact paths before arming an implementation allowlist.
+Live-code basis:
 
-## Future implementation boundaries
+- Project Overview owns the Add/Edit/Board Canvas action labels and navigation buttons.
+- Standalone Add Component owns visible identity-creation copy and `component_created` helper text.
+- Standalone Edit Component owns visible metadata-edit copy and `component_updated` helper text.
+- Board Canvas owns visible `Lisa komponent` / `Salvesta` copy for selected-component visual placement confirmation.
+- The corresponding widget tests assert current labels and event-role copy.
 
-Future implementation may update labels/helper/safety copy in Project Overview, standalone Add Component, standalone Edit Component, and related widget tests.
+Future implementation must preserve:
+
+- routes working
+- standalone Add Component as explicit human component identity/existence writer
+- standalone Edit Component as explicit human metadata writer
+- Board Canvas `Lisa` / `Salvesta` as visual placement confirmation for an existing component
+- `component_created`, `component_updated`, and `component_visual_placement_confirmed` writer behavior
+- writer contracts, event schema, `events.jsonl` as canonical truth, and `known_facts.json` as projection/cache
+- Board Canvas renderer/painter read-only boundary
 
 Future implementation must not:
 
-- change router paths
-- change writer services
-- change event schema
-- change validator/materializer/tools
-- change events.jsonl semantics
-- change known_facts.json semantics
-- change Board Canvas placement writer behavior
-- change measurement writer behavior
-- change Project Open From Directory behavior
-- merge Add/Edit with Board Canvas
 - hide routes
 - delete screens
-- remove tests
+- merge Add/Edit with Board Canvas
+- change writer services
+- change router paths
+- change event schema
+- change validator/materializer/tools
+- mutate `known_facts.json` directly from Flutter
+- create pins/contacts/pads/nets/traces/electrical facts
+- create measurements
+- create AI-authored facts
+- change Project Open From Directory
+- change rotation normalization
+- change projection-stale behavior
+- change canonical-bounds guard behavior
 
 ## Scope gate rules
 

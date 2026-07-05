@@ -4,17 +4,29 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-No active pass is armed. Route control remains with the user after the canonical placement chain closeouts.
+Docs-only scope-lock is active for a future Add Component / `Lisa komponent` required draft label/name copy fix.
 
-This docs-only truth sync records the accepted post-chain reality and does not arm implementation.
+This pass documents scope only. It does not arm runtime implementation, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+
+## Scope summary
+
+Manual smoke showed that `Salvesta` becomes inactive when the required draft label/name is empty, but the UI does not make that reason clear enough. The future implementation must make the required label/name blocker visible and understandable without depending on hover, tooltip, or clicking a disabled button.
+
+Locked product intent for the future implementation:
+
+- If required draft label/name is missing, `Salvesta` may remain disabled.
+- Persistent visible copy must explain the missing label/name reason.
+- Writer must not be invoked while the label/name is missing.
+- `events.jsonl` must not grow for the missing-label draft state.
+- Entering a valid label/name may enable `Salvesta` only when all other guards are satisfied.
 
 ## Current accepted placement reality
 
@@ -28,22 +40,15 @@ This docs-only truth sync records the accepted post-chain reality and does not a
 - Visual placement save does not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
 - Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
 
-## Recent implementation chain recorded
+## Future implementation boundaries
 
-- `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`: placement writer + explicit selected-component `Salvesta`.
-- `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`: local-folder open path preserves `projectDirectory`.
-- `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`: writer-boundary rotation normalization.
-- `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`: truthful projection-stale copy after save.
-- `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`: status/action copy distinguishes renderer read-only from explicit save.
-- `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`: pre-writer canonical-bounds guard.
+The next active-lock sync must inspect live code and arm exact files. Likely candidate surfaces are Board Canvas screen and Board Canvas widget tests, but this scope-lock does not arm them.
 
-## Candidate only
-
-Likely next candidate, not armed: `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`.
+Future work must not change placement writer contract, canonical event schema, validator/tools/materializer, Project Open From Directory behavior, rotation normalization, projection-stale behavior, canonical-bounds guard, `known_facts.json` mutation behavior, component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, Board Canvas redesign, selected-placement prefill/edit flow, or `Muuda` / `Tühista` behavior unless separately scoped.
 
 ## Boundary confirmation
 
-This truth-sync is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+This scope-lock is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
 
 ## Route safety reminders
 

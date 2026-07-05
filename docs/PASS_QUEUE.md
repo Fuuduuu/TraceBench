@@ -4,15 +4,38 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-No active pass is armed. The canonical placement chain is closed out, and route control remains with the user.
+Docs-only scope-lock is active. It locks a future Add Component / `Lisa komponent` UX copy fix for the missing required draft label/name save blocker.
+
+## Locked problem statement
+
+Manual smoke showed that `Salvesta` becomes inactive when the required draft label/name is empty, but the UI does not make that reason clear enough. The future implementation must show persistent visible copy explaining the missing label/name requirement.
+
+Suggested copy intent for the future implementation:
+
+- `Lisa nimi enne salvestamist.`
+- `Komponendi nimi on salvestamiseks vajalik.`
+- `Sisesta nimi, et paigutus salvestada.`
+
+Exact final copy may be refined during implementation, but it must be concise, user-facing, and explicit.
+
+## Locked behavior for future implementation
+
+- Empty required label/name disables or keeps disabled `Salvesta`.
+- Missing-label reason is visible without hover, tooltip, or clicking a disabled button.
+- Writer is not invoked while label/name is missing.
+- `events.jsonl` does not grow while label/name is missing.
+- Entering a valid label/name can enable `Salvesta` only when other guards are satisfied.
+- Existing guards remain intact: no selected component, invalid `board_normalized` bounds, and missing local project folder.
+- Valid save still appends and shows projection-refresh truth copy.
+- Draft edits / `Kustuta` / `Tühista` / navigation write nothing.
 
 ## Current accepted placement chain
 
@@ -25,17 +48,24 @@ No active pass is armed. The canonical placement chain is closed out, and route 
 | 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 
-## Current behavior summary
+## Future implementation questions
 
-- Explicit human-confirmed `Salvesta` can append `component_visual_placement_confirmed` only through the accepted writer path.
-- Board Canvas renderer/painter remains read-only.
-- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
-- Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
-- Visual placement save does not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
+The next active-lock sync must inspect live code and decide:
 
-## Candidate only
+- Where the required draft label/name validation currently lives.
+- Whether `Salvesta` is disabled because label is missing, or because multiple guards collapse into one state.
+- Where the best persistent helper/error copy belongs.
+- How to order messages when multiple guards are active: no selected component, missing required label/name, invalid bounds, and no local project folder.
+- Which widget tests need to assert the disabled reason.
 
-Likely next candidate, not armed: `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`.
+## Future implementation surfaces
+
+No implementation allowlist is armed in this pass. The next active-lock sync must read live code and arm exact files.
+
+Likely candidate surfaces, not armed here:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
 ## Scope gate rules
 

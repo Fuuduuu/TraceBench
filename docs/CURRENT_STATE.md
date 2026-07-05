@@ -4,51 +4,56 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
 
 ## Route status
 
-Docs-only scope-lock is active for a future Add Component / `Lisa komponent` required draft label/name copy fix.
+Docs-only active-lock sync is active. It arms the future implementation pass for the Add Component / `Lisa komponent` required draft label/name save blocker copy.
 
-This pass documents scope only. It does not arm runtime implementation, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+This pass documents and arms the implementation allowlist only. It does not implement runtime, edit tests, change schema/tools/events/`known_facts.json`, touch `_incoming`, stage, commit, or push.
 
-## Scope summary
+## Implementation pass armed
 
-Manual smoke showed that `Salvesta` becomes inactive when the required draft label/name is empty, but the UI does not make that reason clear enough. The future implementation must make the required label/name blocker visible and understandable without depending on hover, tooltip, or clicking a disabled button.
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
 
-Locked product intent for the future implementation:
+Exact implementation allowlist:
 
-- If required draft label/name is missing, `Salvesta` may remain disabled.
-- Persistent visible copy must explain the missing label/name reason.
-- Writer must not be invoked while the label/name is missing.
-- `events.jsonl` must not grow for the missing-label draft state.
-- Entering a valid label/name may enable `Salvesta` only when all other guards are satisfied.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-## Current accepted placement reality
+## Live-code findings behind allowlist
 
-- Open project from folder works through `ProjectLoader.loadFromDirectory` and preserves `projectDirectory` for folder-backed writer smoke.
-- Board Canvas renderer/painter remains read-only: renderer writes none.
-- Explicit human-confirmed Board Canvas Add Component panel `Salvesta` can append canonical `component_visual_placement_confirmed` events when the selected existing component, local project folder, required label, canonical bounds, and writer validation are satisfied.
-- Placement writer exists at `lib/features/components/services/v2_placement_writer.dart` and emits only `component_visual_placement_confirmed`.
-- Rotation is normalized at the writer boundary to `-180 <= rotation_deg < 180`.
-- Invalid `board_normalized` placement drafts are guarded before writer call.
-- Successful placement save marks/shows projection stale or refresh-needed; `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
-- Visual placement save does not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
-- Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
+- Board Canvas owns the Add Component panel local draft label state through `_addComponentTemplateDraftLabel`.
+- Board Canvas passes `draftLabel` and `onDraftLabelChanged` into `_AddComponentTemplateListPanel`.
+- The visible label input is in Board Canvas with key `board_canvas_add_component_template_draft_label_input`.
+- Save blocking copy is produced in Board Canvas through `_addComponentTemplateSaveBlockReason` and currently covers no selected component, no local project folder, and invalid `board_normalized` bounds.
+- The current `canConfirmAddComponentPlacement` gate checks selected template, save-block reason, and in-flight state; the missing label is not currently represented as a dedicated save-block reason in that gate.
+- Board Canvas widget tests already cover explicit `Salvesta` writer path, no-preselect guard, invalid bounds guard, local-folder guard, writer failure surfacing, label input visibility, and no-write/source boundary assertions.
+- No placement writer, project-open, rotation-normalization, projection-stale, schema/tool/event, router, or `_incoming` file is required for this implementation.
 
-## Future implementation boundaries
+## Required future behavior
 
-The next active-lock sync must inspect live code and arm exact files. Likely candidate surfaces are Board Canvas screen and Board Canvas widget tests, but this scope-lock does not arm them.
-
-Future work must not change placement writer contract, canonical event schema, validator/tools/materializer, Project Open From Directory behavior, rotation normalization, projection-stale behavior, canonical-bounds guard, `known_facts.json` mutation behavior, component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, Board Canvas redesign, selected-placement prefill/edit flow, or `Muuda` / `Tühista` behavior unless separately scoped.
+- Make the missing required draft label/name reason visible without hover/click.
+- Keep `Salvesta` disabled while required label/name is missing.
+- Keep writer uninvoked while label/name is missing.
+- Allow `Salvesta` to become enabled after label/name is entered if all other guards are satisfied.
+- Preserve or explicitly document guard priority:
+  1. no selected component
+  2. missing required label/name
+  3. invalid board-normalized bounds
+  4. missing local project folder
+- Keep existing bounds guard behavior.
+- Keep projection-stale success copy.
+- Keep rotation normalization, Project Open From Directory behavior, placement writer contract, Board Canvas renderer/painter read-only boundary, and `known_facts.json` projection/cache boundary unchanged.
+- Keep draft edits / `Kustuta` / `Tühista` / navigation as no-write paths.
 
 ## Boundary confirmation
 
-This scope-lock is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+This active-lock sync is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
 
 ## Route safety reminders
 

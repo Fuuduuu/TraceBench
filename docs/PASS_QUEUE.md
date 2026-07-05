@@ -4,38 +4,51 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
 
 ## Route status
 
-Docs-only scope-lock is active. It locks a future Add Component / `Lisa komponent` UX copy fix for the missing required draft label/name save blocker.
+Docs-only active-lock sync is active. It arms the exact implementation allowlist for the Add Component required draft label/name copy fix.
 
-## Locked problem statement
+## Implementation pass armed
 
-Manual smoke showed that `Salvesta` becomes inactive when the required draft label/name is empty, but the UI does not make that reason clear enough. The future implementation must show persistent visible copy explaining the missing label/name requirement.
+`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS`
 
-Suggested copy intent for the future implementation:
+Exact implementation allowlist:
 
-- `Lisa nimi enne salvestamist.`
-- `Komponendi nimi on salvestamiseks vajalik.`
-- `Sisesta nimi, et paigutus salvestada.`
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-Exact final copy may be refined during implementation, but it must be concise, user-facing, and explicit.
+## Live-code routing finding
 
-## Locked behavior for future implementation
+The future implementation belongs in Board Canvas only:
+
+- The draft label state, label input, save boundary copy, and save enable/disable gate are in `lib/features/board_canvas/screens/board_canvas_screen.dart`.
+- Relevant coverage and source-boundary assertions are in `test/widget/board_canvas_screen_test.dart`.
+- The placement writer, project-open files, rotation-normalization files, projection-stale files outside Board Canvas, tools/materializer/validator/schema, events/known_facts, router, and `_incoming` are not armed.
+
+## Required future behavior
 
 - Empty required label/name disables or keeps disabled `Salvesta`.
-- Missing-label reason is visible without hover, tooltip, or clicking a disabled button.
+- Visible copy explains the missing label/name without hover/click.
 - Writer is not invoked while label/name is missing.
-- `events.jsonl` does not grow while label/name is missing.
-- Entering a valid label/name can enable `Salvesta` only when other guards are satisfied.
-- Existing guards remain intact: no selected component, invalid `board_normalized` bounds, and missing local project folder.
+- Entering valid label/name can enable `Salvesta` when other guards pass.
+- Existing guards still work: no selected component, invalid board-normalized bounds, and missing local project folder.
 - Valid save still appends and shows projection-refresh truth copy.
 - Draft edits / `Kustuta` / `Tühista` / navigation write nothing.
+
+## Guard priority to preserve or document
+
+1. no selected component
+2. missing required label/name
+3. invalid board-normalized bounds
+4. missing local project folder
+
+If implementation finds a better priority from live UX constraints, it must document the choice in tests/audit without changing writer/schema/event boundaries.
 
 ## Current accepted placement chain
 
@@ -48,29 +61,10 @@ Exact final copy may be refined during implementation, but it must be concise, u
 | 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 
-## Future implementation questions
-
-The next active-lock sync must inspect live code and decide:
-
-- Where the required draft label/name validation currently lives.
-- Whether `Salvesta` is disabled because label is missing, or because multiple guards collapse into one state.
-- Where the best persistent helper/error copy belongs.
-- How to order messages when multiple guards are active: no selected component, missing required label/name, invalid bounds, and no local project folder.
-- Which widget tests need to assert the disabled reason.
-
-## Future implementation surfaces
-
-No implementation allowlist is armed in this pass. The next active-lock sync must read live code and arm exact files.
-
-Likely candidate surfaces, not armed here:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
 ## Scope gate rules
 
 - One narrow pass at a time.
-- Do not implement without an active implementation lock.
+- Do not implement outside the active implementation allowlist.
 - Do not broaden runtime, schema, tool, event, projection, or writer surfaces unless the active lock explicitly authorizes them.
 - Do not stage, commit, or push unless explicitly asked.
 - Never use `git add .`, `git add -A`, or `git commit -am`.

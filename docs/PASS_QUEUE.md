@@ -61,3 +61,16 @@ When a pass is staged/pushed/audited or a route changes, keep these route owners
 ## Routing provenance
 
 Provenance and audit details live in `docs/AUDIT_INDEX.md` and `docs/audit/*.md`. `PASS_QUEUE.md` remains a routing ledger, not architecture documentation.
+
+
+## Legacy surface classification planning
+
+`LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` is a docs-only classification pass. It keeps the active route at `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION` and records durable app-surface labels in `docs/PROJECT_MEMORY.md`.
+
+No deletion/hiding/removal is authorized by the classification. Later cleanup must use small scoped passes: docs labeling, route hiding/debug-only scope, test migration, and removal only after replacement/proof.
+
+Likely future candidates, not armed:
+
+- `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
+- `ADD_EDIT_COMPONENT_LEGACY_FLOW_REVIEW_PASS`
+- `MEASURE_SHEET_V2_ALIGNMENT_SCOPE_LOCK_PASS`

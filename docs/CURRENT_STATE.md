@@ -54,3 +54,12 @@ This closeout is docs-only. Runtime, tests, schema, tools, events, `known_facts.
 - Do not use `git commit -am`.
 - Stage only exact files when staging is explicitly requested.
 - Repo docs and verified git state outrank handoff text.
+
+
+## Legacy surface classification handoff
+
+- `LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` is recorded in `docs/PROJECT_MEMORY.md`.
+- Route remains `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`; no implementation lock is armed.
+- The classification authorizes no route hiding, screen deletion, runtime changes, test edits, or UI rename.
+- Important preserved distinctions: Board Canvas `Lisa` confirms visual placement for an existing selected component; standalone Add Component creates identity; standalone Edit Component updates metadata; Measure Sheet remains the current canonical measurement writer; Board Graph and raw list/viewer routes remain advanced/debug unless later scoped.
+- Likely next candidates, not armed: `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`, `ADD_EDIT_COMPONENT_LEGACY_FLOW_REVIEW_PASS`, `MEASURE_SHEET_V2_ALIGNMENT_SCOPE_LOCK_PASS`.

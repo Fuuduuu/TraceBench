@@ -571,11 +571,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     if (selectedEntry == null) {
       return 'Vali olemasolev komponent enne salvestamist.';
     }
+    if (_addComponentTemplateDraftLabel.trim().isEmpty) {
+      return 'Lisa nimi enne salvestamist.';
+    }
+    final canonicalBoundsReason =
+        _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
+    if (canonicalBoundsReason != null) {
+      return canonicalBoundsReason;
+    }
     final projectDirectory = projectState.projectDirectory;
     if (projectDirectory == null || projectDirectory.trim().isEmpty) {
       return 'Salvestamiseks ava projekt kohalikust kaustast.';
     }
-    return _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
+    return null;
   }
 
   void _showAddComponentTemplateSaveStatus(String message) {

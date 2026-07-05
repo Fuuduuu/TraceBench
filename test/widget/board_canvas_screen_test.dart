@@ -2701,6 +2701,22 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(placementWriter.requests, isEmpty);
+    expect(find.text('Lisa nimi enne salvestamist.'), findsOneWidget);
+    var saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNull);
+
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     expect(
       find.text(
         'Salvesta kinnitab ainult valitud komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
@@ -2718,13 +2734,13 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
-    final enabledSaveButton = tester.widget<OutlinedButton>(
+    saveButton = tester.widget<OutlinedButton>(
       find.descendant(
         of: find.byKey(const Key('board_canvas_add_component_builder_save')),
         matching: find.byType(OutlinedButton),
       ),
     );
-    expect(enabledSaveButton.onPressed, isNotNull);
+    expect(saveButton.onPressed, isNotNull);
 
     await _tapWidgetByKey(
       tester,
@@ -2832,6 +2848,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
       const Key('board_canvas_add_component_builder_save'),
@@ -2965,6 +2988,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
       const Key('board_canvas_add_component_builder_width_increment'),
@@ -3089,6 +3119,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'RXLOW',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     expect(
       find.text('Suurus või asukoht ei mahu plaadi piiridesse.'),
       findsOneWidget,
@@ -3144,6 +3181,13 @@ void main() {
           'board_canvas_add_component_template_template_family_rect_2_top_bottom',
         ),
       ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
     );
     await tester.pump(const Duration(milliseconds: 16));
     await _tapCanvasAtNormalized(tester, x: 0.72, y: 0.28);
@@ -3214,6 +3258,13 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     expect(
       find.text('Salvestamiseks ava projekt kohalikust kaustast.'),
       findsOneWidget,
@@ -3273,6 +3324,13 @@ void main() {
           'board_canvas_add_component_template_template_family_rect_2_top_bottom',
         ),
       ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
     );
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(

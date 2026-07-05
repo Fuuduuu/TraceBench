@@ -4,100 +4,64 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync for the future placement draft canonical-bounds guard implementation.
+The pushed `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` is closed out and the active implementation lock is released.
 
-The pushed scope-lock `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS` is now being converted into an exact implementation allowlist.
+No implementation pass is armed. The next pass requires an explicit user decision and a fresh scope-lock or active-lock sync.
 
-## Implementation pass armed
+## Last closed implementation
 
 `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
 
-## Exact implementation allowlist
+Pushed implementation commit recorded from live git log:
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- `90107a64ec277a8992ff9d509d1b8eee6fae2f19`
+- `fix: guard invalid placement draft bounds`
 
-No writer, unit-test, schema, validator, tool, project-open, router, sample, asset, events, `known_facts.json`, materializer, or `_incoming` files are armed.
+## Closeout record
 
-## Live-code findings
+- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
+- Manual smoke: `PASS`
+- Safe implementation set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
 
-- Board Canvas assembles `V2PlacementWriterRequest` immediately before the placement writer call in the Add Component / placement save path.
-- The request uses selected placement context, optional local ghost anchor for `center_x` / `center_y`, local draft `width` / `height`, local draft rotation, template id, and project state.
-- Existing guard copy covers missing selected component and missing local folder-backed project, but there is no focused pre-save guard for `board_normalized` center/size bounds.
-- Add Component local draft dimension clamp allows values above normalized canonical bounds, so UI-local visual editing can produce `width > 1` / `height > 1` payload candidates.
-- Existing widget tests already use a fake placement writer and request capture, so the future guard can be proven without changing writer/unit-test surfaces.
-- Placement writer remains unchanged for this implementation lock: it keeps the explicit human-confirmed `component_visual_placement_confirmed` contract, existing project-directory and component checks, event-writer validation path, and rotation normalization.
-- `tools/validate_events_jsonl.py` remains the canonical strict validator for `board_normalized` bounds.
+Manual smoke evidence recorded:
 
-## Canonical bounds to preserve
+- Empty required label keeps `Salvesta` disabled.
+- Valid selected component + label enables `Salvesta` and saves.
+- Width/height above canonical bounds disables `Salvesta`.
+- Invalid draft does not append `events.jsonl`.
+- Valid draft appends `component_visual_placement_confirmed`.
+- `python tools/validate_all.py` passes.
 
-For `coordinate_space: board_normalized`:
+## Behavior now recorded
 
-- `center_x` must be within `0..1`.
-- `center_y` must be within `0..1`.
-- `width` must be numeric positive and `<= 1`.
-- `height` must be numeric positive and `<= 1`.
-- `rotation_deg` must remain normalized to `-180 <= rotation_deg < 180`.
-
-## Future implementation requirement
-
-The future implementation must block or guard `Salvesta` before writer call when the assembled `board_normalized` payload would be invalid. It must show clear user-facing Estonian copy and avoid exposing raw Python validator output for expected UI validation cases.
-
-The implementation should answer in code/tests:
-
-1. Where `center_x` / `center_y` / `width` / `height` are assembled before writer call.
-2. Whether invalid bounds disable `Salvesta` or keep it clickable with guard copy.
-3. Whether local preview/draft editing may visually exceed bounds while canonical save remains guarded.
-4. Whether extents are checked only by payload fields or also by board-edge overhang.
-5. Exact Estonian copy replacing raw validator failures.
-6. Tests proving the writer is not invoked for invalid bounds.
-
-## Required behavior to preserve
-
+- Invalid `board_normalized` placement drafts are guarded before writer call.
+- UI shows clear guard copy instead of raw validator output.
+- Writer is not invoked for invalid draft bounds.
+- Validator/schema remain strict and unchanged.
 - Valid draft still saves and marks projection stale / refresh-needed.
-- Invalid draft edits remain UI-local and write nothing.
-- `Kustuta`, `Tühista`, draft edits, and navigation write nothing.
-- `Salvesta` remains the only canonical placement write trigger.
-- Validator/schema remains strict and unchanged.
-- Writer/event contract remains unchanged.
-- Rotation normalization remains unchanged.
-- Project Open From Directory behavior remains unchanged.
-- Board Canvas renderer/painter remains read-only.
-- Flutter must not directly mutate `known_facts.json`.
-- No component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored facts are created.
+- Rotation normalization is unchanged.
+- Project Open From Directory behavior is unchanged.
+- Placement writer contract is unchanged.
+- `known_facts.json` is not directly mutated by Flutter.
+- Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
 
-## Future tests expected
+## Known carryover nit
 
-- `width > 1` blocks `Salvesta` before writer call.
-- `height > 1` blocks `Salvesta` before writer call.
-- `center_x < 0` or `center_x > 1` blocks `Salvesta` before writer call.
-- `center_y < 0` or `center_y > 1` blocks `Salvesta` before writer call.
-- Clear guard copy appears.
-- Writer is not invoked for invalid draft.
-- Valid draft still saves.
-- Valid draft still marks projection stale / refresh-needed.
-- Rotation normalization still works.
-- Project Open From Directory still works.
-- Draft edits / `Kustuta` / `Tühista` / navigation write nothing.
-- Validator/schema remains unchanged.
-
-## Manual smoke target for future implementation
-
-`C:\Users\Kasutaja\Desktop\TraceBench_SMOKE_PROJECTS\placement_writer_confirm_smoke`
-
-Smoke should verify: open folder-backed project, select R1/C1/U1, open `Lisa`, make draft too wide or outside canonical bounds, confirm `Salvesta` is disabled or shows clear guard, confirm no event appends, reduce draft into valid bounds, `Salvesta` appends one `component_visual_placement_confirmed`, UI shows projection-refresh truth copy, and `python tools/validate_all.py` passes.
+- Empty required draft label also disables `Salvesta`; future copy may make that clearer if desired.
 
 ## Boundary confirmation
 
-This pass is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, or `_incoming`.
+This closeout is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
 
 ## Route safety reminders
 

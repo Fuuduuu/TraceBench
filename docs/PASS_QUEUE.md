@@ -12,30 +12,30 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Route status
 
-No active pass is armed. `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` is closed out and route control is returned to the user.
+No active pass is armed. The canonical placement chain is closed out, and route control remains with the user.
 
-## Recently closed sequence
+## Current accepted placement chain
 
-| Order | PASS_ID | Result |
+| Order | PASS_ID | Accepted result |
 |---|---|---|
-| 1 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_SCOPE_LOCK_PASS` | Pushed scope-lock for guarding invalid placement draft canonical bounds before writer call. |
-| 2 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_ACTIVE_LOCK_SYNC_PASS` | Pushed active-lock sync arming the exact implementation allowlist. |
-| 3 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Pushed implementation `90107a64ec277a8992ff9d509d1b8eee6fae2f19` (`fix: guard invalid placement draft bounds`). |
-| 4 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_POST_AUDIT_PASS` | Docs-only closeout records Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, manual smoke `PASS`, safe implementation set, behavior, and boundary confirmation. |
+| 1 | `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` | Added the dedicated placement writer and explicit selected-component Board Canvas `Salvesta` path. |
+| 2 | `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` | Added local-folder project open path so `projectDirectory` is preserved for writer-backed projects. |
+| 3 | `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS` | Normalized writer payload `rotation_deg` into `-180 <= rotation_deg < 180`. |
+| 4 | `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` | Made successful placement save truthfully mark/show projection stale or refresh-needed. |
+| 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
+| 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 
-## Closed behavior summary
+## Current behavior summary
 
-- Invalid `board_normalized` placement drafts are guarded before writer call.
-- Clear Estonian UI guard copy replaces raw validator output for expected invalid draft cases.
-- Writer is not invoked for invalid draft bounds.
-- Valid draft still saves and marks projection stale / refresh-needed.
-- Validator/schema, placement writer contract, rotation normalization, and Project Open From Directory behavior remain unchanged.
-- `known_facts.json` is not directly mutated by Flutter.
+- Explicit human-confirmed `Salvesta` can append `component_visual_placement_confirmed` only through the accepted writer path.
+- Board Canvas renderer/painter remains read-only.
+- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
 - Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
+- Visual placement save does not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
 
-## Known carryover nit
+## Candidate only
 
-- Empty required draft label also disables `Salvesta`; future copy may make that clearer if desired.
+Likely next candidate, not armed: `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`.
 
 ## Scope gate rules
 

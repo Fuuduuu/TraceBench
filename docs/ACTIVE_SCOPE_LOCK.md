@@ -10,43 +10,25 @@
 
 ## Active lock
 
-None. The `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` active implementation lock is released.
+None. No implementation pass is armed.
 
 ## Write allowlist
 
 No files are currently armed for implementation.
 
-## Last released implementation lock
+## Current accepted placement boundaries
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
-
-Safe implementation set recorded:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-## Closeout result
-
-- Pushed implementation: `90107a64ec277a8992ff9d509d1b8eee6fae2f19` (`fix: guard invalid placement draft bounds`)
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- Manual smoke: `PASS`
-
-## Behavior recorded
-
-- Invalid `board_normalized` placement drafts are guarded before writer call.
-- UI shows clear guard copy instead of raw validator output.
-- Writer is not invoked for invalid draft bounds.
-- Validator/schema remain strict and unchanged.
-- Valid draft still saves and marks projection stale / refresh-needed.
-- Rotation normalization remains unchanged.
-- Project Open From Directory behavior remains unchanged.
-- Placement writer contract remains unchanged.
-- `known_facts.json` is not directly mutated by Flutter.
+- Board Canvas renderer/painter remains read-only: renderer writes none.
+- Explicit human-confirmed Add Component panel `Salvesta` is the scoped canonical placement write path.
+- Placement writer emits only `component_visual_placement_confirmed`.
+- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
 - Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
+- Invalid `board_normalized` placement drafts are guarded before writer call.
+- Rotation normalization and projection-stale behavior are accepted and remain unchanged unless separately scoped.
 
-## Known carryover nit
+## Candidate only
 
-- Empty required draft label also disables `Salvesta`; future copy may make that clearer if desired.
+Likely next candidate, not armed: `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`.
 
 ## Protected surfaces remain locked unless separately scoped
 

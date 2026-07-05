@@ -21,13 +21,11 @@ Accepted scope-lock owner: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_
 
 - Add Component remains the human-entered identity/existence writer and creates `component_created` only.
 - `component_created` does not confirm board position, board side, rotation, size, shape, visual contacts, pads, legs, pins, nets, or measurements.
-- Board Canvas remains bodyOnly/read-only until separately scoped: `renderer writes: none`.
-- Board Canvas local builder/ghost/template state is UI-local draft only and is not canonical placement/contact proof.
-- Future placement editor ownership starts by evolving the Board Canvas right-panel / ghost draft into the official UI-local placement editor.
-- Do not create a standalone placement editor screen first unless a later scope overturns this decision.
-- Future Confirm calls a dedicated placement writer service; painter/renderer code does not write events.
-- `component_visual_placement_confirmed` must be aligned to the V2 event regime before Dart writer or Confirm UI implementation.
-- The V2 placement regime decision is `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
+- Board Canvas renderer/painter remains bodyOnly/read-only: `renderer writes: none`.
+- Board Canvas local builder/ghost/template state is UI-local draft only unless explicit human `Salvesta` confirms visual placement through the dedicated placement writer.
+- The accepted placement editor surface is the Board Canvas right-panel / `Lisa komponent` draft area; do not create a standalone placement editor screen first unless a later scope overturns this decision.
+- Explicit Confirm/Salvesta calls the dedicated placement writer service; painter/renderer code does not write events.
+- The V2 placement regime is `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and idempotent `client_operation_id` precedent where applicable.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
 - Confirmed visual placement size uses `width` + `height` as the primary visual envelope; `scale` is import/backward compatibility only unless later scoped.
 - VectorFootprintLibrary / footprint recipe model owns canonical visual vocabulary; Board Canvas starter templates are UI presets only.
@@ -35,37 +33,26 @@ Accepted scope-lock owner: `BOARD_CANVAS_PLACEMENT_EDITOR_ARCHITECTURE_DECISION_
 - Visual contact confirmation is not electrical confirmation.
 - AI marker conversion remains future scope: AI marker is an unconfirmed proposal/sidecar/UI-local candidate until human confirmation converts it through the placement editor path. AI never authors canonical placement events.
 
-Additional protected scope-lock: `PLACEMENT_EDITOR_AND_WRITER_SCOPE_LOCK_PASS`.
+Accepted placement writer and save chain:
 
-- Board Canvas right-panel / ghost draft area owns the first official placement editor surface.
-- First implementation slice is UI-local placement editor shell only; no writer and no canonical writes.
-- Draft state is in-memory/session-only until explicit human Confirm; cancel, discard, leaving the editor, and ordinary draft edits must not write.
-- Placement editor may edit board side, template/shape family, center position, rotation, width, height, optional template/visual family reference, and optional notes.
-- Per-side contact counts may be draft-only visual controls until a separate visual-contact layout scope; they must not be persisted as contacts or placement payload.
-- Future dedicated writer emits exactly one V2 event type: `component_visual_placement_confirmed` with human actor, explicit user confirmation source, confirmed confirmation block, idempotent client operation precedent, and width/height envelope payload.
-- The writer must use the canonical append path and must not directly edit `known_facts.json`, create component identity, update component metadata, or write nets, pins, pads, contacts, measurements, AI facts, repair conclusions, or visual contact layout.
-- Edit placement reuses the same editor, pre-seeded from projection, and re-confirms by appending a newer placement event; no placement-updated event type is introduced.
-
-Additional protected scope-lock: `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`.
-
-- Future placement writer path is locked as `lib/features/components/services/v2_placement_writer.dart`.
-- The writer may emit exactly one canonical event type: `component_visual_placement_confirmed`.
+- `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` added `lib/features/components/services/v2_placement_writer.dart` and explicit selected-component Board Canvas `Salvesta`.
+- The writer emits exactly one canonical event type: `component_visual_placement_confirmed`.
 - Confirm/Salvesta writes only after explicit user action; all draft interactions remain UI-local/no-write.
 - The writer uses V2/human envelope semantics with explicit user confirmation, `client_operation_id`, and width plus height as the primary visual envelope size model.
-- Placement save does not create component identity and does not write contacts, pins, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
-- Add Component panel redesign was not consumed by `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`; `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS` separately consumes the exact HTML handoff as `DESIGN_INPUT_ONLY`.
+- Placement save does not create component identity and does not write contacts, pins, pads, nets, traces, measurements, electrical facts, AI facts, repair conclusions, or visual contact layout.
+- `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` added a local-folder open path through `ProjectLoader.loadFromDirectory`, preserving `projectDirectory` for writer-backed local projects.
+- `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS` normalizes canonical `rotation_deg` to `-180 <= rotation_deg < 180` before emit.
+- `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` makes successful save truthfully show projection refresh/stale state; `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
+- `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` updates status copy to distinguish renderer/painter read-only from explicit panel save write capability.
+- `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` guards invalid `board_normalized` draft bounds before writer call.
 
-Additional protected UI scope-lock: `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`.
+Accepted Add Component panel draft controls:
 
-- Exact design handoff: `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html`.
-- The handoff is `DESIGN_INPUT_ONLY`; `_incoming` remains provenance/design input only and must not be staged or imported into runtime.
-- User decision: defer `PLACEMENT_WRITER_AND_CONFIRM_IMPL_ACTIVE_LOCK_SYNC_PASS` and implement UI-local Add Component panel controls first.
-- Future implementation updates only the existing Board Canvas right-side `Lisa komponent` panel.
-- Panel controls for shape/package, pin/contact marker layout, size, rotation, draft preview, safety copy, and action buttons are UI-local draft only.
-- `Salvesta` is design intent only until a separately armed writer pass exists.
-- `Muuda` is local edit/draft mode only, and `Kustuta` discards local draft only in this UI-local pass.
+- `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS` consumed the exact design handoff `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html` as `DESIGN_INPUT_ONLY`.
+- `_incoming` remains provenance/design input only and must not be staged or imported into runtime.
+- Shape/package, marker layout, size, rotation, draft preview, and safety copy are UI-local draft controls until explicit save.
+- `Muuda` is not an active no-op, `Kustuta` discards local draft only, and `Tühista` must not imply a canonical write.
 - Pin/contact controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.
-- Preserve `Ainult vaatamine · kirjutusi pole` and `renderer writes: none`.
 
 ## Core rule
 
@@ -143,8 +130,8 @@ flowchart LR
   MW -.->|separately scoped only| P
 ```
 
-- The accepted runtime is strictly read-only in this model: no canonical write path through the Workbench canvas/panel/rail controls.
-- `renderer writes: none` is an active accepted baseline constraint.
+- The accepted Workbench/measurement-overlay model is read-only here; this line does not describe the separately scoped Board Canvas placement `Salvesta` path.
+- `renderer writes: none` is an active renderer/painter constraint; explicit panel save writes only through the dedicated placement writer service.
 - `Trace` and `Repair map` are currently visible as UI affordances but disabled/inert.
 - Empty-canvas tap is read-only state behavior only (clear local selection/panel state).
 - `/project/measure-sheet` and inline value/unit/Save work are future/protected and must be implemented only through separate accepted write-flow passes.
@@ -168,17 +155,16 @@ Current accepted snapshot lives in [docs/CURRENT_STATE.md](CURRENT_STATE.md).
 Full pass history and evidence live in [docs/PASS_QUEUE.md](PASS_QUEUE.md) and `docs/audit/**/*.md`.
 - V2 event-writing architecture, schema/spec, validator, materializer, writer service, and Save Measurement UI write-flow are accepted through separately scoped/audited passes; other UI write flows remain blocked until separately scoped/audited, and canonical writes remain human-authored append-only events.
 
-## Placement event V2 regime scope lock
+## Placement event V2 regime
 
-`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS` locks the future `component_visual_placement_confirmed` migration direction before placement writer/editor implementation.
+`BOARD_CANVAS_PLACEMENT_EVENT_V2_REGIME_SCOPE_LOCK_PASS` locked the `component_visual_placement_confirmed` migration direction that is now implemented through validator/materializer support and the dedicated placement writer path.
 
 Stable decisions:
 
-- Future placement events align to the V2/human regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
+- Placement events align to the V2/human regime: `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, and `client_operation_id` / idempotency precedent where applicable.
 - Do not build a new V1 placement writer using `actor.type = user` plus `sequence` / `status`.
-- Validator/materializer are now V2-capable for human-authored `component_visual_placement_confirmed`; `schemas/events.schema.json` remains V1-envelope-only by design/current state.
-- Future protected implementation must reconcile schema, validator, materializer, V2 event-type ownership, focused tests, and samples only when explicitly scoped.
-- Materializer must not silently drop V2 human-authored placement events after migration.
+- Validator/materializer are V2-capable for human-authored `component_visual_placement_confirmed`; `schemas/events.schema.json` remains V1-envelope-only by design/current state.
+- Materializer does not silently drop V2 human-authored placement events.
 - `component_visual_placement_confirmed` represents visual placement envelope data only: component, board side, coordinate space, center position, rotation, width/height, optional template/family reference, and human confirmation metadata.
 - It does not represent electrical connectivity, net identity, measurement pin identity, confirmed contact layout, AI-authored facts, or visual contact/pad layout.
 - Visual contact layout remains separate future scope; AI/photo markers remain unconfirmed until human conversion.
@@ -186,7 +172,7 @@ Stable decisions:
 
 ## Placement projection ordering and invalidation scope lock
 
-`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS` locks projection semantics before any placement writer, Confirm/Edit UI, visual-contact layout, or AI marker conversion is implemented.
+`PLACEMENT_PROJECTION_ORDER_AND_INVALIDATION_SCOPE_LOCK_PASS` locks projection semantics for visual placements; it remains separate from edit-placement UI, visual-contact layout, and AI marker conversion.
 
 Stable decisions:
 

@@ -12,56 +12,38 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Route status
 
-The pushed `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` is closed out and the active implementation lock is released.
+No active pass is armed. Route control remains with the user after the canonical placement chain closeouts.
 
-No implementation pass is armed. The next pass requires an explicit user decision and a fresh scope-lock or active-lock sync.
+This docs-only truth sync records the accepted post-chain reality and does not arm implementation.
 
-## Last closed implementation
+## Current accepted placement reality
 
-`PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`
-
-Pushed implementation commit recorded from live git log:
-
-- `90107a64ec277a8992ff9d509d1b8eee6fae2f19`
-- `fix: guard invalid placement draft bounds`
-
-## Closeout record
-
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- Manual smoke: `PASS`
-- Safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-
-Manual smoke evidence recorded:
-
-- Empty required label keeps `Salvesta` disabled.
-- Valid selected component + label enables `Salvesta` and saves.
-- Width/height above canonical bounds disables `Salvesta`.
-- Invalid draft does not append `events.jsonl`.
-- Valid draft appends `component_visual_placement_confirmed`.
-- `python tools/validate_all.py` passes.
-
-## Behavior now recorded
-
+- Open project from folder works through `ProjectLoader.loadFromDirectory` and preserves `projectDirectory` for folder-backed writer smoke.
+- Board Canvas renderer/painter remains read-only: renderer writes none.
+- Explicit human-confirmed Board Canvas Add Component panel `Salvesta` can append canonical `component_visual_placement_confirmed` events when the selected existing component, local project folder, required label, canonical bounds, and writer validation are satisfied.
+- Placement writer exists at `lib/features/components/services/v2_placement_writer.dart` and emits only `component_visual_placement_confirmed`.
+- Rotation is normalized at the writer boundary to `-180 <= rotation_deg < 180`.
 - Invalid `board_normalized` placement drafts are guarded before writer call.
-- UI shows clear guard copy instead of raw validator output.
-- Writer is not invoked for invalid draft bounds.
-- Validator/schema remain strict and unchanged.
-- Valid draft still saves and marks projection stale / refresh-needed.
-- Rotation normalization is unchanged.
-- Project Open From Directory behavior is unchanged.
-- Placement writer contract is unchanged.
-- `known_facts.json` is not directly mutated by Flutter.
+- Successful placement save marks/shows projection stale or refresh-needed; `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
+- Visual placement save does not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
 - Draft edits / `Kustuta` / `Tühista` / navigation remain no-write paths.
 
-## Known carryover nit
+## Recent implementation chain recorded
 
-- Empty required draft label also disables `Salvesta`; future copy may make that clearer if desired.
+- `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS`: placement writer + explicit selected-component `Salvesta`.
+- `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS`: local-folder open path preserves `projectDirectory`.
+- `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS`: writer-boundary rotation normalization.
+- `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS`: truthful projection-stale copy after save.
+- `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS`: status/action copy distinguishes renderer read-only from explicit save.
+- `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS`: pre-writer canonical-bounds guard.
+
+## Candidate only
+
+Likely next candidate, not armed: `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_SCOPE_LOCK_PASS`.
 
 ## Boundary confirmation
 
-This closeout is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
+This truth-sync is docs-only. It does not edit runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, or `_incoming`.
 
 ## Route safety reminders
 

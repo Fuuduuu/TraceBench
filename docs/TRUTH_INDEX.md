@@ -17,23 +17,22 @@ Core invariants (semantics unchanged):
 - Do not add `sequence` to V2 events.
 - No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
-- Placement editor architecture decision: Add Component creates identity/existence only; Board Canvas ghost/template placement remains UI-local draft only until a separately scoped placement editor/writer implementation.
-- Accepted V2 placement event regime: validator/materializer are now V2-capable for human-authored `component_visual_placement_confirmed`; V2 placement requires `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, `client_operation_id`, and `width` + `height` as the primary visual envelope model.
+- Placement editor architecture decision: Add Component creates identity/existence only; Board Canvas ghost/template placement remains UI-local draft unless explicitly confirmed through the separately scoped placement writer path.
+- Accepted V2 placement event regime: validator/materializer are V2-capable for human-authored `component_visual_placement_confirmed`; V2 placement requires `schema_version: 2.0-draft`, `actor.type: human`, source block, `confirmation.confirmed: true`, `client_operation_id`, and `width` + `height` as the primary visual envelope model.
 - `schemas/events.schema.json` remains V1-envelope-only by design/current state; V2 draft placement validation is owned by `tools/validate_events_jsonl.py`.
-- No Dart placement writer exists yet, no placement Confirm/Edit UI exists yet, and Board Canvas remains read-only.
+- The Dart placement writer exists at `lib/features/components/services/v2_placement_writer.dart` and may emit only canonical `component_visual_placement_confirmed` events through the accepted append/event writer path.
+- Board Canvas renderer/painter remains read-only; explicit human-confirmed Add Component panel `Salvesta` is the scoped placement write action and may append canonical placement events only when project folder, selected existing component, required label, canonical bounds, and writer validation are satisfied.
 - Protected placement projection decision: legacy V1 placement events remain first-class legacy events, and `component_visual_placements` latest-wins must interleave V1 and V2 placements deterministically by `events.jsonl` stream order, not by V1 `sequence` alone.
 - Protected placement invalidation decision: `event_invalidated` retracts a targeted placement event from `component_visual_placements`; projection falls back to the newest remaining valid placement for that component or removes the projected placement if none remains.
 - Placement correction remains append-only through newer `component_visual_placement_confirmed` events; do not create a new placement-updated event type for this fix.
 - Visual contact layout is separate from visual placement and is not electrical confirmation.
-- Protected placement editor/writer contract: Board Canvas right-panel / ghost draft is the placement editor owner; the first implementation slice is UI-local draft only with no canonical writes until explicit human Confirm through a dedicated placement writer.
-- Placement editor draft interactions must not write on open, drag, rotate, resize, shape/template change, side change, cancel, discard, or leaving the editor.
-- Future placement Confirm emits only V2 `component_visual_placement_confirmed` through a dedicated writer; placement payload remains visual envelope data only and must not include visual contact layout, contacts, pads, pins, nets, measurements, AI facts, or repair conclusions.
-- Placement writer and Confirm/Salvesta are locked as a protected future scope by `PLACEMENT_WRITER_AND_CONFIRM_SCOPE_LOCK_PASS`: the future writer file is `lib/features/components/services/v2_placement_writer.dart`, and it may emit only `component_visual_placement_confirmed` through the existing canonical append/event writer pattern.
 - Placement Confirm/Salvesta is explicit-user-action-only: opening the panel, selecting a component, dragging, rotating, resizing, changing side/template, editing notes, cancelling, resetting, discarding, or navigating away must not write canonical data.
+- Placement payload remains visual envelope data only and must not include visual contact layout, contacts, pads, pins, nets, measurements, AI facts, or repair conclusions.
+- Successful placement save records canonical truth in `events.jsonl` and truthfully marks/shows projection refresh needed; Flutter must not directly mutate `known_facts.json`.
 - Placement confirmation remains separate from component identity creation; the placement writer must not emit `component_created` or `component_updated` unless a future combined-flow Add Component scope explicitly changes that boundary.
-- Add Component panel local draft controls are locked by `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`: the exact HTML handoff is `C:\Users\Kasutaja\Desktop\TraceBench\_incoming\ui_redesign\Components\Lisa_Komponent_Panel_Codex_Handoff.html` and is `DESIGN_INPUT_ONLY`.
-- The future `Lisa komponent` panel implementation is UI-local only: shape/package, marker steppers, size, rotation, preview, safety copy, and action buttons must not write canonical facts or events.
-- `Salvesta` in the Add Component panel may be visible only as disabled/inert/design-intent until a separately armed writer pass exists; contacts/pins remain visual marker drafts only and do not confirm electrical contacts.
+- Placement writer normalizes canonical `rotation_deg` into `-180 <= rotation_deg < 180` before emit, and Board Canvas guards invalid `board_normalized` draft bounds before writer call.
+- Add Component panel local draft controls are accepted UI-local controls from `ADD_COMPONENT_PANEL_LOCAL_DRAFT_CONTROLS_SCOPE_LOCK_PASS`; the exact HTML handoff remains `DESIGN_INPUT_ONLY` and `_incoming` is not runtime truth.
+- Contacts/pins/marker controls remain visual marker drafts only and do not confirm contacts, pads, pins, nets, traces, measurements, or electrical facts.
 
 Product identity owner:
 

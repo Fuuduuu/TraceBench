@@ -4,62 +4,41 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` is implemented, pushed, audited, and closed out.
+Docs-only scope-lock is active for future Board Graph route/surface treatment.
 
-The active implementation lock is released. No implementation pass is currently armed.
+No runtime, test, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this pass.
 
-## Latest closeout
+## Scope intent
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_POST_AUDIT_PASS`
+Board Canvas is the primary technician-facing board/workbench surface.
 
-Closeout recorded:
+Board Graph is currently a projection/debug/advanced surface at `/project/graph`, reachable from Project Overview / Workbench navigation and covered by `test/widget/board_graph_screen_test.dart`.
 
-- implementation commit `c773c413f6d8588e1043de5822e6c30cadf918f2` (`fix: explain missing add component draft label`)
-- Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- manual smoke `PASS`
-- safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
+This pass documents the future decision only:
 
-## Accepted behavior recorded
+- Board Graph is not the primary placement/write/edit surface.
+- Board Graph must not create canonical facts.
+- Board Graph may remain reachable as advanced/debug/projection inspection until a later implementation pass hides or relabels it.
+- No deletion or route hiding is authorized by this pass.
 
-- Missing required Add Component draft label/name now shows visible copy without hover/click: `Lisa nimi enne salvestamist.`
-- `Salvesta` remains disabled until label/name is entered.
-- Valid label/name enables save when all other guards pass.
-- Valid save appended `evt_000015` with `event_type: component_visual_placement_confirmed` during manual smoke.
-- Writer is not invoked while label/name is missing.
-- Existing guards remain intact: no selected component, invalid canonical bounds, and missing local project folder.
-- Valid save still shows projection-refresh truth copy.
-- Placement writer contract is unchanged.
-- Schema/tools/validator/materializer are unchanged.
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
+## Future implementation direction, not armed here
+
+A later implementation may relabel Board Graph as advanced/debug, move it out of primary Workbench action rail, hide it behind advanced/dev tools, keep direct route access for tests/dev, and update navigation tests accordingly.
+
+The next active-lock sync pass must inspect live code and arm the exact implementation allowlist before any runtime/test edit.
 
 ## Boundary confirmation
 
-This closeout is docs-only. Runtime, tests, schema, tools, events, `known_facts.json`, samples, assets, and `_incoming` are not changed by this closeout.
-
-## Route safety reminders
-
-- Do not use `git add .`.
-- Do not use `git add -A`.
-- Do not use `git commit -am`.
-- Stage only exact files when staging is explicitly requested.
-- Repo docs and verified git state outrank handoff text.
-
-
-## Legacy surface classification handoff
-
-- `LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` is recorded in `docs/PROJECT_MEMORY.md`.
-- Route remains `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`; no implementation lock is armed.
-- The classification authorizes no route hiding, screen deletion, runtime changes, test edits, or UI rename.
-- Important preserved distinctions: Board Canvas `Lisa` confirms visual placement for an existing selected component; standalone Add Component creates identity; standalone Edit Component updates metadata; Measure Sheet remains the current canonical measurement writer; Board Graph and raw list/viewer routes remain advanced/debug unless later scoped.
-- Likely next candidates, not armed: `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`, `ADD_EDIT_COMPONENT_LEGACY_FLOW_REVIEW_PASS`, `MEASURE_SHEET_V2_ALIGNMENT_SCOPE_LOCK_PASS`.
+- Board Canvas behavior remains unchanged.
+- Board Graph route remains unchanged.
+- Writer/schema/events/known_facts/materializer/validator/projection semantics remain unchanged.
+- No canonical facts are created or mutated by this docs-only pass.
+- Do not use `git add .`, `git add -A`, or `git commit -am`.

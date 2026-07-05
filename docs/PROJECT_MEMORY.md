@@ -240,3 +240,36 @@ Additional notes:
 - Reference Images are local sidecar/reference only, not canonical evidence.
 - Customer report/export remains critical lifecycle behavior.
 - Cleanup candidates should proceed by small future passes, likely `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`, `ADD_EDIT_COMPONENT_LEGACY_FLOW_REVIEW_PASS`, and `MEASURE_SHEET_V2_ALIGNMENT_SCOPE_LOCK_PASS`.
+
+## Board Graph legacy route scope lock
+
+Owner pass: `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`.
+
+Locked product decision:
+
+- Board Canvas is the primary technician-facing board/workbench surface.
+- Board Graph is an advanced/debug/projection inspection surface, not the primary placement/write/edit workflow.
+- Board Graph must not create canonical facts.
+- Board Graph may remain reachable from current navigation until a later implementation pass explicitly hides, moves, or relabels it.
+- No deletion or route hiding is authorized by the scope-lock.
+
+Read-only findings recorded for this lock:
+
+- Router exposes Board Graph at `/project/graph` through `BoardGraphScreen`.
+- Project Overview / Workbench currently exposes a Board Graph action beside Board Canvas-related actions.
+- `BoardGraphScreen` consumes projected graph/state data for inspection and has no scoped canonical writer role.
+- `test/widget/board_graph_screen_test.dart` is the direct Board Graph widget-test surface to preserve or migrate before route hiding.
+
+Future wording direction:
+
+- Use wording equivalent to `Advanced graph view`, `Projection graph`, or `Debug graph` to distinguish it from `Board Canvas`.
+- Avoid presenting Board Graph as a peer primary technician workflow next to Board Canvas unless a later product decision reclassifies it.
+
+Future implementation constraints:
+
+- Do not delete Board Graph in one step.
+- Do not remove tests without migration.
+- Do not change Board Canvas behavior.
+- Do not change writer/schema/events/known_facts behavior.
+- Do not create or mutate canonical facts.
+- Do not alter projection/materializer semantics.

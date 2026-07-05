@@ -4,30 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` is closed out after pushed implementation and accepted audit.
-
-No next implementation pass is armed.
-
-## Latest closeout
-
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_POST_AUDIT_PASS`
-
-Recorded:
-
-- implementation commit `c773c413f6d8588e1043de5822e6c30cadf918f2` (`fix: explain missing add component draft label`)
-- Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- manual smoke `PASS`
-- safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
+The current pass is a docs-only scope-lock for Board Graph route/surface treatment.
 
 ## Current accepted placement chain
 
@@ -40,6 +25,39 @@ Recorded:
 | 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 | 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
+
+## Board Graph route decision sequence
+
+`LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` classified Board Graph as `KEEP_AS_TEST_OR_DEBUG_ONLY`: projection/debug/advanced, not a Board Canvas replacement.
+
+`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS` locks the product decision for the next implementation planning step:
+
+- Board Canvas is the primary technician-facing board/workbench surface.
+- Board Graph is not the primary placement/write/edit surface.
+- Board Graph must not create canonical facts.
+- Board Graph may remain as an advanced/debug/projection inspection view.
+- No deletion or route hiding is authorized by this docs-only pass.
+
+Next pass:
+
+- `BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` should inspect live route/navigation/test code and arm the exact allowlist for any future relabel/hide/move implementation.
+
+Future implementation may later:
+
+- relabel Board Graph as advanced/debug
+- move Board Graph out of primary Workbench action rail
+- hide it behind advanced/dev tools
+- keep direct route available for tests/dev
+- update navigation tests accordingly
+
+Future implementation must not:
+
+- delete Board Graph in one step
+- remove tests without migration
+- change Board Canvas behavior
+- change writer/schema/events/known_facts behavior
+- create or mutate canonical facts
+- alter projection/materializer semantics
 
 ## Scope gate rules
 
@@ -61,16 +79,3 @@ When a pass is staged/pushed/audited or a route changes, keep these route owners
 ## Routing provenance
 
 Provenance and audit details live in `docs/AUDIT_INDEX.md` and `docs/audit/*.md`. `PASS_QUEUE.md` remains a routing ledger, not architecture documentation.
-
-
-## Legacy surface classification planning
-
-`LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` is a docs-only classification pass. It keeps the active route at `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION` and records durable app-surface labels in `docs/PROJECT_MEMORY.md`.
-
-No deletion/hiding/removal is authorized by the classification. Later cleanup must use small scoped passes: docs labeling, route hiding/debug-only scope, test migration, and removal only after replacement/proof.
-
-Likely future candidates, not armed:
-
-- `BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
-- `ADD_EDIT_COMPONENT_LEGACY_FLOW_REVIEW_PASS`
-- `MEASURE_SHEET_V2_ALIGNMENT_SCOPE_LOCK_PASS`

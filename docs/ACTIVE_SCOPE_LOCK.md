@@ -2,48 +2,61 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Active lock
 
-No active implementation lock is currently armed.
+Docs-only scope-lock for future Board Graph route/surface treatment.
 
-## Latest released lock
+## Write allowlist for this pass
 
-`ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` is closed out by `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_POST_AUDIT_PASS`.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/audit/BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS.md`
 
-The implementation changed only:
+## Locked decision
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- Board Canvas is the primary technician-facing board/workbench surface.
+- Board Graph is not the primary placement/write/edit surface.
+- Board Graph must not create canonical facts.
+- Board Graph may remain reachable as advanced/debug/projection inspection unless a later implementation pass hides or relabels it.
+- No deletion or route hiding is authorized by this pass.
 
-Closeout recorded:
+## Future implementation planning
 
-- implementation commit `c773c413f6d8588e1043de5822e6c30cadf918f2` (`fix: explain missing add component draft label`)
-- Claude audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`
-- manual smoke `PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` must inspect live code and arm an exact implementation allowlist before any runtime/test changes.
 
-## Boundary confirmation
+Likely candidate surfaces to inspect, not armed here:
 
-The released implementation preserved:
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/board_graph/screens/board_graph_screen.dart`
+- `lib/app/router.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/board_graph_screen_test.dart`
 
-- placement writer contract
-- schema/tools/validator/materializer behavior
-- Project Open From Directory behavior
-- rotation normalization
-- projection-stale behavior
-- Board Canvas renderer/painter read-only boundary
-- `events.jsonl` as canonical truth
-- `known_facts.json` as projection/cache only
-- no direct Flutter mutation of `known_facts.json`
-- no component identity creation
-- no pins/contacts/pads/nets/traces/electrical facts
-- no measurements
-- no AI-authored facts
+## Future implementation may later
+
+- relabel Board Graph as advanced/debug
+- move Board Graph out of primary Workbench action rail
+- hide it behind advanced/dev tools
+- keep direct route available for tests/dev
+- update navigation tests accordingly
+
+## Future implementation must not
+
+- delete Board Graph in one step
+- remove tests without migration
+- change Board Canvas behavior
+- change writer/schema/events/known_facts behavior
+- create or mutate canonical facts
+- alter projection/materializer semantics
 
 ## Protected surfaces remain locked unless separately scoped
 

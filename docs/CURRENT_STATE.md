@@ -4,41 +4,40 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
 
 ## Route status
 
-Docs-only scope-lock is active for future Board Graph route/surface treatment.
+Docs-only active-lock sync is active for the future Board Graph route/surface implementation.
 
-No runtime, test, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this pass.
+No runtime, test, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this sync pass.
+
+## Active-lock result
+
+The implementation pass `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS` is armed with the exact live-code allowlist:
+
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/board_graph/screens/board_graph_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/board_graph_screen_test.dart`
 
 ## Scope intent
 
 Board Canvas is the primary technician-facing board/workbench surface.
 
-Board Graph is currently a projection/debug/advanced surface at `/project/graph`, reachable from Project Overview / Workbench navigation and covered by `test/widget/board_graph_screen_test.dart`.
+Board Graph is currently a projection/debug/advanced surface at `/project/graph`, reachable from Project Overview / Workbench navigation and covered by Board Graph widget tests.
 
-This pass documents the future decision only:
-
-- Board Graph is not the primary placement/write/edit surface.
-- Board Graph must not create canonical facts.
-- Board Graph may remain reachable as advanced/debug/projection inspection until a later implementation pass hides or relabels it.
-- No deletion or route hiding is authorized by this pass.
-
-## Future implementation direction, not armed here
-
-A later implementation may relabel Board Graph as advanced/debug, move it out of primary Workbench action rail, hide it behind advanced/dev tools, keep direct route access for tests/dev, and update navigation tests accordingly.
-
-The next active-lock sync pass must inspect live code and arm the exact implementation allowlist before any runtime/test edit.
+The armed implementation may relabel or reposition Board Graph so it is not presented as the primary placement/write/edit workflow, while keeping `/project/graph` available unless a later route-hiding pass explicitly scopes router changes.
 
 ## Boundary confirmation
 
 - Board Canvas behavior remains unchanged.
-- Board Graph route remains unchanged.
+- Board Graph route remains available.
+- Router changes are not armed.
 - Writer/schema/events/known_facts/materializer/validator/projection semantics remain unchanged.
 - No canonical facts are created or mutated by this docs-only pass.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

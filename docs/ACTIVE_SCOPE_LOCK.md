@@ -2,73 +2,67 @@
 
 ## Current pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
 
-## Active lock
+## Mode
 
-Docs-only scope-lock for future Board Graph route/surface treatment.
+Docs-only active-lock sync.
 
-## Write allowlist for this pass
+## Implementation pass armed
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/audit/BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS.md`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
 
-## Locked decision
-
-- Board Canvas is the primary technician-facing board/workbench surface.
-- Board Graph is not the primary placement/write/edit surface.
-- Board Graph must not create canonical facts.
-- Board Graph may remain reachable as advanced/debug/projection inspection unless a later implementation pass hides or relabels it.
-- No deletion or route hiding is authorized by this pass.
-
-## Future implementation planning
-
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` must inspect live code and arm an exact implementation allowlist before any runtime/test changes.
-
-Likely candidate surfaces to inspect, not armed here:
+## Exact implementation allowlist
 
 - `lib/features/project/screens/project_overview_screen.dart`
 - `lib/features/board_graph/screens/board_graph_screen.dart`
-- `lib/app/router.dart`
 - `test/widget/project_overview_screen_test.dart`
 - `test/widget/board_graph_screen_test.dart`
 
-## Future implementation may later
+## Implementation goal
 
-- relabel Board Graph as advanced/debug
-- move Board Graph out of primary Workbench action rail
-- hide it behind advanced/dev tools
-- keep direct route available for tests/dev
-- update navigation tests accordingly
+Make the Board Graph route/surface truthful as an advanced/debug/projection inspection surface, while preserving Board Canvas as the primary technician-facing board/workbench surface.
+
+## Live-code findings used for allowlist
+
+- `lib/features/project/screens/project_overview_screen.dart` owns the visible Workbench action linking `overview-board-graph-button` to `/project/graph`, next to the Board Canvas action.
+- `lib/features/board_graph/screens/board_graph_screen.dart` owns Board Graph title/copy and projection-stale context wording.
+- `test/widget/project_overview_screen_test.dart` covers the Project Overview Workbench navigation affordances.
+- `test/widget/board_graph_screen_test.dart` covers Board Graph screen labels, projection-stale behavior, and advanced controls.
+
+## Future implementation may
+
+- Relabel Board Graph in Project Overview as advanced/debug/projection inspection.
+- Move Board Graph out of the primary Workbench action emphasis if this can be done inside the armed Project Overview surface.
+- Clarify Board Graph screen title/copy so users do not confuse it with Board Canvas placement/write/edit workflows.
+- Update the armed widget tests to preserve coverage under the new labels/navigation wording.
 
 ## Future implementation must not
 
-- delete Board Graph in one step
-- remove tests without migration
-- change Board Canvas behavior
-- change writer/schema/events/known_facts behavior
-- create or mutate canonical facts
-- alter projection/materializer semantics
+- Delete Board Graph.
+- Remove Board Graph tests without migration.
+- Hide or remove `/project/graph`; route behavior changes require a later explicit route-hiding scope.
+- Change Board Canvas behavior.
+- Change writer/schema/events/known_facts/materializer/validator/projection semantics.
+- Create or mutate canonical facts.
+- Introduce any canonical write path.
 
-## Protected surfaces remain locked unless separately scoped
+## Explicitly not armed
 
-- placement writer contract
-- canonical event schema
-- validator / tools / materializer / projection semantics
-- events / `known_facts.json` semantics
-- Project Open From Directory behavior
-- rotation normalization behavior
-- projection-stale behavior
-- canonical-bounds guard behavior
-- component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions
-- selected-placement prefill/edit flow
-- `Muuda` / `Tühista` behavior
-- samples/assets and `_incoming`
+- `lib/app/router.dart` because `/project/graph` remains available in the locked implementation direction.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart` because Board Canvas behavior is not part of this implementation.
+- Placement, component, measurement, project-open, schema, tool, materializer, validator, events, known_facts, `_incoming`, sample, and asset files.
+
+## Stop conditions
+
+Stop and report `BLOCKED_PRODUCT_DECISION` if the implementation requires hiding/removing the route or deciding a different product role for Board Graph.
+
+Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if implementation requires a file outside the exact allowlist above.
+
+## Staging
+
+Do not stage, commit, or push.

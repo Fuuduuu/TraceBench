@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`
 
 ## Route status
 
-The current pass is a docs-only scope-lock for Board Graph route/surface treatment.
+The current pass is a docs-only active-lock sync for Board Graph route/surface treatment.
 
 ## Current accepted placement chain
 
@@ -30,29 +30,39 @@ The current pass is a docs-only scope-lock for Board Graph route/surface treatme
 
 `LEGACY_SURFACE_CLASSIFICATION_DOCS_PASS` classified Board Graph as `KEEP_AS_TEST_OR_DEBUG_ONLY`: projection/debug/advanced, not a Board Canvas replacement.
 
-`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS` locks the product decision for the next implementation planning step:
+`BOARD_GRAPH_LEGACY_ROUTE_SCOPE_LOCK_PASS` locked the product decision:
 
 - Board Canvas is the primary technician-facing board/workbench surface.
 - Board Graph is not the primary placement/write/edit surface.
 - Board Graph must not create canonical facts.
 - Board Graph may remain as an advanced/debug/projection inspection view.
-- No deletion or route hiding is authorized by this docs-only pass.
+- No deletion or route hiding is authorized by the scope-lock pass.
 
-Next pass:
+`BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` arms the exact implementation allowlist for `BOARD_GRAPH_LEGACY_ROUTE_IMPL_PASS`:
 
-- `BOARD_GRAPH_LEGACY_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS` should inspect live route/navigation/test code and arm the exact allowlist for any future relabel/hide/move implementation.
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/board_graph/screens/board_graph_screen.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/board_graph_screen_test.dart`
 
-Future implementation may later:
+Live-code basis:
 
-- relabel Board Graph as advanced/debug
-- move Board Graph out of primary Workbench action rail
-- hide it behind advanced/dev tools
-- keep direct route available for tests/dev
-- update navigation tests accordingly
+- Project Overview currently shows Board Graph in the Workbench action area via `overview-board-graph-button` linking to `/project/graph`.
+- Board Canvas is also in the same Workbench action area and remains the primary technician-facing board surface.
+- Board Graph owns screen title/copy and projection-stale context text.
+- Existing Board Graph and Project Overview widget tests cover the affected labels/navigation.
+- Router changes are not armed because the locked direction keeps `/project/graph` available unless a later pass explicitly scopes route hiding.
+
+Future implementation may:
+
+- relabel Board Graph as advanced/debug/projection inspection
+- move Board Graph out of primary Workbench action emphasis if possible inside the armed Project Overview surface
+- keep direct route available for tests/dev/advanced use
+- update navigation and Board Graph tests accordingly
 
 Future implementation must not:
 
-- delete Board Graph in one step
+- delete Board Graph
 - remove tests without migration
 - change Board Canvas behavior
 - change writer/schema/events/known_facts behavior

@@ -414,3 +414,13 @@ Hard boundaries:
 - Do not change writer services, event schema, validator/materializer/tools, `events.jsonl`, or `known_facts.json` semantics.
 - Do not hide or delete standalone Add/Edit/Measure routes without a later dedicated route/backstage scope.
 - Do not use `_incoming` design handoffs for this product-direction revision.
+## Board Canvas Visual First component workflow scope lock
+
+- `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS` locks the product rule: VISUAL FIRST.
+- Normal component work should happen in the Board Canvas right-side menu/panel: measurement, component creation, component metadata editing, and visual placement.
+- Old standalone Add/Edit/Measure-style pages are transitional debt and should be removed or migrated through scoped passes, not duplicated in Board Canvas and not kept as the primary technician workflow.
+- The committed Board Canvas `Komponendid` hub/card UI is product debt because it duplicates old workflow concepts; future implementation should remove or replace it rather than patch it into another menu.
+- Measurement/right-panel workflow is accepted for the current Visual First direction and must not be reworked by the first cleanup slice.
+- Preserve event split: `component_created` creates component identity/existence, `component_updated` updates metadata, `component_visual_placement_confirmed` confirms visual placement, and `measurement_recorded` records measurement.
+- Future migration phases: remove/replace duplicate `Komponendid` hub/card UI first, then move component identity creation and metadata editing into Board Canvas right panel, then retire/hide/remove old standalone routes after dependency verification and confirmed replacements.
+- This scope lock arms no implementation allowlist and changes no runtime, tests, writers, schemas, tools, events, known facts, samples, assets, or `_incoming` files.

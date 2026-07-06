@@ -59,6 +59,26 @@ enum _WorkbenchContextPanelMode {
   safetyEvidence
 }
 
+abstract class CanvasSelection {
+  const CanvasSelection();
+}
+
+class EmptyCanvasSelection extends CanvasSelection {
+  const EmptyCanvasSelection();
+}
+
+class ComponentPlacementSelection extends CanvasSelection {
+  const ComponentPlacementSelection({
+    required this.placementKey,
+    required this.componentId,
+    this.canvasAnchor,
+  });
+
+  final String placementKey;
+  final String componentId;
+  final Offset? canvasAnchor;
+}
+
 bool measurementEndpointMatchesComponent(
   String endpoint,
   String componentId,
@@ -385,7 +405,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 }
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
-  String? _selectedPlacementKey;
+  CanvasSelection _canvasSelection = const EmptyCanvasSelection();
   String? _selectedAddComponentTemplateId;
   int _addComponentTemplateTopContactMarkers = 0;
   int _addComponentTemplateRightContactMarkers = 0;
@@ -414,6 +434,48 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   void dispose() {
     _addComponentContextScrollController.dispose();
     super.dispose();
+  }
+
+  String? get _selectedPlacementKey {
+    final selection = _canvasSelection;
+    return selection is ComponentPlacementSelection
+        ? selection.placementKey
+        : null;
+  }
+
+  void _setCanvasSelection(CanvasSelection selection) {
+    _canvasSelection = selection;
+  }
+
+  void _clearCanvasSelection() {
+    _setCanvasSelection(const EmptyCanvasSelection());
+  }
+
+  void _selectComponentPlacement(
+    _PlacementEntry entry, {
+    Offset? canvasAnchor,
+  }) {
+    _setCanvasSelection(
+      ComponentPlacementSelection(
+        placementKey: entry.key,
+        componentId: entry.placement.componentId,
+        canvasAnchor: canvasAnchor,
+      ),
+    );
+  }
+
+  void _selectComponentPlacementByKey(
+    String placementKey,
+    List<_PlacementEntry> entries, {
+    Offset? canvasAnchor,
+  }) {
+    for (final entry in entries) {
+      if (entry.key == placementKey) {
+        _selectComponentPlacement(entry, canvasAnchor: canvasAnchor);
+        return;
+      }
+    }
+    _clearCanvasSelection();
   }
 
   _AddComponentTemplateDefinition? _selectedAddComponentTemplateDefinition() {
@@ -942,7 +1004,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   selectedLabel: selectedEntry?.selectorLabel,
                   onSelected: (value) {
                     setState(() {
-                      _selectedPlacementKey = value;
+                      _selectComponentPlacementByKey(value, entries);
                       _addComponentTemplatePlacementContextKey = value;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
@@ -987,10 +1049,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   cornerFocusAction: useWorkbenchShell && !_canvasFocusMode
                       ? focusToggle
                       : null,
-                  onPlacementSelected: (value) {
+                  onPlacementSelected: (selection) {
                     setState(() {
-                      _selectedPlacementKey = value;
-                      _addComponentTemplatePlacementContextKey = value;
+                      _setCanvasSelection(selection);
+                      _addComponentTemplatePlacementContextKey =
+                          selection.placementKey;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
                         _contextPanelMode =
@@ -1001,7 +1064,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                   onCanvasTapEmpty: () {
                     setState(() {
-                      _selectedPlacementKey = null;
+                      _clearCanvasSelection();
                       _addComponentTemplatePlacementContextKey = null;
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
@@ -1166,7 +1229,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         initiallyExpanded: true,
                         onSelected: (value) {
                           setState(() {
-                            _selectedPlacementKey = value;
+                            _selectComponentPlacementByKey(value, entries);
                             _addComponentTemplatePlacementContextKey = value;
                             _contextPanelMode =
                                 _WorkbenchContextPanelMode.inspector;
@@ -1335,8 +1398,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _contextPanelMode == _WorkbenchContextPanelMode.measure,
                     onPressed: () {
                       setState(() {
-                        _selectedPlacementKey ??=
-                            entries.isEmpty ? null : entries.first.key;
+                        if (_selectedPlacementKey == null &&
+                            entries.isNotEmpty) {
+                          _selectComponentPlacement(entries.first);
+                        }
                         _contextPanelMode = _WorkbenchContextPanelMode.measure;
                         _inspectorVisible = true;
                         _canvasFocusMode = false;
@@ -1353,7 +1418,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _WorkbenchContextPanelMode.placements,
                     onPressed: () {
                       setState(() {
-                        _selectedPlacementKey = null;
+                        _clearCanvasSelection();
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.placements;
                         _inspectorVisible = true;
@@ -1379,7 +1444,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           _seedAddComponentTemplateDraftFromPlacement(
                               placementContextEntry);
                         }
-                        _selectedPlacementKey = null;
+                        _clearCanvasSelection();
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.addComponentTemplates;
                         _inspectorVisible = true;
@@ -1397,7 +1462,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _WorkbenchContextPanelMode.safetyEvidence,
                     onPressed: () {
                       setState(() {
-                        _selectedPlacementKey = null;
+                        _clearCanvasSelection();
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.safetyEvidence;
                         _inspectorVisible = true;
@@ -1517,7 +1582,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _coerceSelection(List<_PlacementEntry> entries) {
     if (entries.isEmpty) {
       if (_selectedPlacementKey != null) {
-        _selectedPlacementKey = null;
+        _clearCanvasSelection();
         _contextPanelMode = _WorkbenchContextPanelMode.hidden;
       }
       return null;
@@ -1532,7 +1597,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       if (_contextPanelMode == _WorkbenchContextPanelMode.inspector) {
         _contextPanelMode = _WorkbenchContextPanelMode.hidden;
       }
-      _selectedPlacementKey = null;
+      _clearCanvasSelection();
     }
     return null;
   }
@@ -4304,7 +4369,7 @@ class _CanvasPanel extends StatefulWidget {
   final bool allMeasurementValueBadgesVisible;
   final VoidCallback onToggleAllMeasurementValueBadges;
   final Widget? cornerFocusAction;
-  final ValueChanged<String> onPlacementSelected;
+  final ValueChanged<ComponentPlacementSelection> onPlacementSelected;
   final VoidCallback onCanvasTapEmpty;
   final bool showAddComponentTemplateGhost;
   final int addComponentTemplateGhostTopContactMarkers;
@@ -4359,7 +4424,13 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         position: position,
         size: size,
       )) {
-        widget.onPlacementSelected(entry.key);
+        widget.onPlacementSelected(
+          ComponentPlacementSelection(
+            placementKey: entry.key,
+            componentId: entry.placement.componentId,
+            canvasAnchor: position,
+          ),
+        );
         return;
       }
     }

@@ -7395,6 +7395,25 @@ void main() {
     expect(source, contains('board_canvas_tap_layer'));
     expect(source, contains('onPlacementSelected'));
     expect(source, contains('_renderedPlacementContains('));
+    expect(source, contains('abstract class CanvasSelection'));
+    expect(
+      source,
+      contains('class EmptyCanvasSelection extends CanvasSelection'),
+    );
+    expect(
+      source,
+      contains('class ComponentPlacementSelection extends CanvasSelection'),
+    );
+    expect(source, contains('CanvasSelection _canvasSelection'));
+    expect(source, contains('String? get _selectedPlacementKey'));
+    expect(source, contains('final String placementKey;'));
+    expect(source, contains('final String componentId;'));
+    expect(source, contains('final Offset? canvasAnchor;'));
+    expect(source, isNot(contains('screenAnchor')));
+    expect(source, isNot(contains('PinSelection')));
+    expect(source, isNot(contains('ContactSelection')));
+    expect(source, isNot(contains('TraceSelection')));
+    expect(source, isNot(contains('MeasurementSelection')));
     expect(source, isNot(contains('Confirm net')));
     expect(source, isNot(contains('Show photo')));
     expect(source, isNot(contains('Render overlay')));

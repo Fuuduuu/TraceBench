@@ -2824,6 +2824,13 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.byKey(
+        const Key('board_canvas_add_component_builder_rotation_value'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Pööre: 15°'), findsAtLeastNWidgets(1));
     expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
     saveButton = tester.widget<OutlinedButton>(
       find.descendant(
@@ -2849,9 +2856,11 @@ void main() {
     expect(request.componentId, 'cmp_r101');
     expect(request.coordinateSpace, 'board_normalized');
     expect(request.boardSide, 'top');
+    expect(request.centerX, 0.25);
+    expect(request.centerY, 0.45);
     expect(request.width, 1.0);
     expect(request.height, 0.6);
-    expect(request.rotationDeg, 10);
+    expect(request.rotationDeg, 25);
     expect(request.templateId, 'template_family_rect_2_top_bottom');
     expect(
       request.clientOperationId,
@@ -3315,6 +3324,101 @@ void main() {
     expect(savedState.events, hasLength(1));
     expect(savedState.isProjectionStale, isTrue);
     expect(ghostCenterState.events, isEmpty);
+  });
+
+  testWidgets(
+      'Add Component prefill uses selected current placement over older same-component data',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final placementWriter = _FakePlacementWriter();
+    const olderPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_r101',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.10,
+      centerY: 0.20,
+      rotationDeg: 0,
+      width: 0.30,
+      height: 0.20,
+      templateId: 'template_family_generic_blank',
+      sourceEventId: 'evt_old_v1',
+      status: 'user_confirmed_visual',
+    );
+    const currentPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_r101',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.66,
+      centerY: 0.77,
+      rotationDeg: 90,
+      width: 0.72,
+      height: 0.44,
+      templateId: 'template_family_rect_2_top_bottom',
+      sourceEventId: 'evt_newer_v2',
+      status: 'user_confirmed_visual',
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [olderPlacement, currentPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('placement_selector_cmp_r101|evt_newer_v2'),
+    );
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
+    expect(find.text('Suurus: 0.72 × 0.44'), findsOneWidget);
+    expect(find.text('Pööre: 90°'), findsAtLeastNWidgets(1));
+    expect(find.text('Suurus: 0.30 × 0.20'), findsNothing);
+    expect(placementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+    final prefillState = _readProjectState(tester);
+    expect(prefillState.events, isEmpty);
+    expect(prefillState.isProjectionStale, isFalse);
+
+    await tester.enterText(
+      find.byKey(
+        const Key('board_canvas_add_component_template_draft_label_input'),
+      ),
+      'R101',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(placementWriter.requests, hasLength(1));
+    final request = placementWriter.requests.single;
+    expect(request.componentId, 'cmp_r101');
+    expect(request.centerX, 0.66);
+    expect(request.centerY, 0.77);
+    expect(request.width, 0.72);
+    expect(request.height, 0.44);
+    expect(request.rotationDeg, 90);
+    expect(request.templateId, 'template_family_rect_2_top_bottom');
+    expect(state.events, isEmpty);
+    final savedState = _readProjectState(tester);
+    expect(savedState.events, hasLength(1));
+    expect(savedState.isProjectionStale, isTrue);
   });
 
   testWidgets(

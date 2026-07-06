@@ -417,8 +417,18 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   }
 
   _AddComponentTemplateDefinition? _selectedAddComponentTemplateDefinition() {
+    return _starterAddComponentTemplateById(_selectedAddComponentTemplateId);
+  }
+
+  _AddComponentTemplateDefinition? _starterAddComponentTemplateById(
+    String? templateId,
+  ) {
+    final normalizedTemplateId = templateId?.trim();
+    if (normalizedTemplateId == null || normalizedTemplateId.isEmpty) {
+      return null;
+    }
     for (final template in _kStarterAddComponentTemplates) {
-      if (template.id == _selectedAddComponentTemplateId) {
+      if (template.id == normalizedTemplateId) {
         return template;
       }
     }
@@ -455,6 +465,42 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     _addComponentTemplateDraftWidth = 1.0;
     _addComponentTemplateDraftHeight = 0.6;
     _addComponentTemplateDraftRotationDeg = 0;
+  }
+
+  void _seedAddComponentTemplateDraftFromPlacement(
+    _PlacementEntry entry, {
+    bool seedTemplate = true,
+  }) {
+    final placement = entry.placement;
+    final placementWidth = placement.width?.toDouble();
+    final placementHeight = placement.height?.toDouble();
+    _addComponentTemplateDraftWidth = placementWidth == null ||
+            !placementWidth.isFinite ||
+            placementWidth <= 0
+        ? 1.0
+        : _clampAddComponentTemplateDraftDimension(placementWidth);
+    _addComponentTemplateDraftHeight = placementHeight == null ||
+            !placementHeight.isFinite ||
+            placementHeight <= 0
+        ? 0.6
+        : _clampAddComponentTemplateDraftDimension(placementHeight);
+    _addComponentTemplateDraftRotationDeg =
+        _normalizeAddComponentTemplateDraftRotation(
+      placement.rotationDeg.round(),
+    );
+    _addComponentTemplateGhostDraftAnchor = null;
+    _addComponentTemplateGhostDraftCanvasSize = null;
+
+    if (!seedTemplate) {
+      return;
+    }
+    final template = _starterAddComponentTemplateById(placement.templateId);
+    if (template == null) {
+      _selectedAddComponentTemplateId = null;
+      return;
+    }
+    _selectedAddComponentTemplateId = template.id;
+    _seedAddComponentTemplateContactCounts(template);
   }
 
   double _clampAddComponentTemplateDraftDimension(double value) {
@@ -514,7 +560,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return null;
   }
 
-  void _setAddComponentTemplateSelection(String templateId) {
+  void _setAddComponentTemplateSelection(
+    String templateId, {
+    _PlacementEntry? placementContextEntry,
+  }) {
     final template = _kStarterAddComponentTemplates
         .cast<_AddComponentTemplateDefinition?>()
         .firstWhere(
@@ -527,9 +576,16 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     setState(() {
       _selectedAddComponentTemplateId = templateId;
       _seedAddComponentTemplateContactCounts(template);
-      _resetAddComponentTemplateLocalDraftScalars();
-      _addComponentTemplateGhostDraftAnchor = null;
-      _addComponentTemplateGhostDraftCanvasSize = null;
+      if (placementContextEntry == null) {
+        _resetAddComponentTemplateLocalDraftScalars();
+        _addComponentTemplateGhostDraftAnchor = null;
+        _addComponentTemplateGhostDraftCanvasSize = null;
+        return;
+      }
+      _seedAddComponentTemplateDraftFromPlacement(
+        placementContextEntry,
+        seedTemplate: false,
+      );
     });
   }
 
@@ -1149,7 +1205,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             _addComponentTemplateHasZeroMarkers,
                         hasExcessiveContactMarkers:
                             _addComponentTemplateHasExcessiveCounts,
-                        onTemplateSelected: _setAddComponentTemplateSelection,
+                        onTemplateSelected: (templateId) {
+                          _setAddComponentTemplateSelection(
+                            templateId,
+                            placementContextEntry:
+                                addComponentTemplatePlacementContextEntry,
+                          );
+                        },
                         draftLabel: _addComponentTemplateDraftLabel,
                         onDraftLabelChanged: (value) {
                           setState(() {
@@ -1309,8 +1371,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.addComponentTemplates,
                     onPressed: () {
+                      final placementContextEntry = selectedEntry;
                       setState(() {
-                        _addComponentTemplatePlacementContextKey = selectedKey;
+                        _addComponentTemplatePlacementContextKey =
+                            placementContextEntry?.key;
+                        if (placementContextEntry != null) {
+                          _seedAddComponentTemplateDraftFromPlacement(
+                              placementContextEntry);
+                        }
                         _selectedPlacementKey = null;
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.addComponentTemplates;

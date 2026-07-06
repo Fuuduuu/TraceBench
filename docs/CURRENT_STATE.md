@@ -1,59 +1,66 @@
 # CURRENT_STATE.md
 
-Operational handoff for TraceBench / BenchBeep / BoardFact.
+Operational handoff for the active TraceBench / BenchBeep / BoardFact route.
 
 ## Current pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active for the Board Canvas `Komponendid` hub action-gateway implementation.
+No active implementation lock is armed.
 
-The previous scope-lock is pushed as `72a6049 docs: lock board canvas components workflow actions scope` and route state now advances from scope-lock to active-lock sync.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` was aborted before staging, commit, or push because the navigation-only Komponendid gateway direction was rejected as `BLOCKED_PRODUCT_DECISION`.
 
-This pass arms an implementation allowlist only. It does not implement runtime behavior, does not edit tests, does not hide or delete routes/screens, and does not change writer semantics.
+## Abort closeout record
 
-## Implementation shape decision
+Pass recorded by this closeout:
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS`
 
-Implementation shape: navigation-only gateway with one existing in-panel action.
+Rejected implementation direction:
 
-Future implementation may make the existing Board Canvas `Komponendid` hub rows actionable as follows:
+- Board Canvas Komponendid hub actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
+- Navigation from the Board Canvas Komponendid hub to old standalone pages as the primary workflow.
 
-- `Loo komponent`: navigate to existing Add Component identity route.
-- `Muuda andmeid`: navigate to existing Edit Component metadata route.
-- `Paiguta`: open or focus the current Board Canvas `Lisa` / `Salvesta` visual placement panel.
-- `Mõõda komponenti`: navigate to existing Measure Sheet route as a route-only action, with no measurement writer merge and no context propagation requirement.
+New product decision:
 
-## Implementation allowlist armed
+- Board Canvas Komponendid work should be redesigned for in-panel work beside/on the canvas where practical.
+- Do not route the user out to old standalone pages as the primary Komponendid UX.
 
-For `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` only:
+Revert result recorded:
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- Uncommitted implementation changes were reverted.
+- Reverted files: `lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`.
+- Final tracked diff after revert: empty.
+- Final cached diff after revert: empty.
+- No files were staged, committed, or pushed by the abort/revert step.
 
-No router, Project Overview, Add Component screen, Edit Component screen, Measure Sheet screen, writer, schema, tool, materializer, validator, events, known_facts, samples/assets, Project Open From Directory, rotation normalization, or `_incoming` files are armed.
+Validation evidence recorded from the abort/revert step:
 
-## Protected boundary reminder
+- `git diff --check`: PASS.
+- `flutter test test/widget/board_canvas_screen_test.dart`: PASS, 112/112.
+- `python tools/validate_all.py`: PASS, 285 tests OK.
 
-The canonical split must remain unchanged:
+## Recommended next candidate
 
-- `component_created` = component identity/existence creation
-- `component_updated` = component metadata update
-- `component_visual_placement_confirmed` = visual placement confirmation
-- `measurement_recorded` = measurement write
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
 
-No identity may be created from visual placement. No pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts may be inferred from hub actions.
+This is only a candidate. This closeout does not start the revision scope and does not arm implementation files.
 
 ## Binding workflow safety
 
-Never use broad staging:
+- Never use `git add .`.
+- Never use `git add -A`.
+- Never use `git commit -am`.
+- Stage exact files only when the user explicitly asks for staging.
 
-- Do not run `git add .`
-- Do not run `git add -A`
-- Do not run `git commit -am`
-- Stage exact files only when the user explicitly requests staging.
+## Canonical owners / evidence ledgers
+
+- Route state: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`.
+- Stable architecture truth: `docs/TRUTH_INDEX.md`, `docs/PROJECT_MEMORY.md`.
+- Protected surfaces: `docs/PROTECTED_SURFACES.md`.
+- Audit provenance: `docs/AUDIT_INDEX.md`, `docs/audit/*.md`.

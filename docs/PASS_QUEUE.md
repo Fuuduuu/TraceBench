@@ -4,78 +4,58 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Active-lock sync for the Board Canvas `Komponendid` hub action-gateway implementation.
+No active implementation lock is armed.
 
-This pass is docs-only. It arms the future implementation allowlist and records the live-code decision that the next implementation can stay within Board Canvas and its widget test.
+The attempted `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` direction was aborted before staging, commit, or push. The rejected direction was a navigation-only Board Canvas Komponendid gateway that sent users to old standalone pages through actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
+
+## Product decision recorded
+
+`BLOCKED_PRODUCT_DECISION`
+
+Board Canvas Komponendid workflow should be redesigned around in-panel work beside/on the canvas where practical. Old standalone pages must not be the primary Komponendid UX target for this workflow.
+
+## Abort closeout
+
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` records:
+
+- uncommitted runtime/test implementation diff reverted;
+- reverted files: `lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`;
+- final tracked/cached diff empty after revert;
+- `git diff --check` PASS;
+- `flutter test test/widget/board_canvas_screen_test.dart` PASS, 112/112;
+- `python tools/validate_all.py` PASS, 285 tests OK;
+- no staging, commit, or push by the abort/revert step.
+
+## Recommended next candidate
+
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
+
+This queue entry is informational only. A future scope-lock must separately decide the in-panel workflow direction and arm any implementation allowlist.
 
 ## Scope gate rules
 
-- One narrow pass at a time.
-- Repo docs and verified git state outrank prompt handoff text.
-- `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` must agree before implementation.
-- Protected surfaces require a dedicated scope-lock before implementation.
-- Do not stage, commit, or push unless the user explicitly asks.
-- Never use `git add .`, `git add -A`, or `git commit -am`.
-
-## Board Canvas Komponendid workflow actions active-lock sync
-
-Live-code findings:
-
-- Board Canvas already contains the read-only `Komponendid` hub in `lib/features/board_canvas/screens/board_canvas_screen.dart`.
-- Board Canvas already owns the `Lisa` / `Salvesta` visual placement panel and selected-component placement save flow.
-- Existing Project Overview actions route to Add Component, Edit Component, Board Canvas, and Measure Sheet.
-- Existing router/project navigation exposes Add Component, Edit Component, Measure Sheet, and Board Canvas routes.
-- Existing widget coverage for Board Canvas already includes the `Komponendid` hub and placement-save boundaries; implementation-specific tests belong in `test/widget/board_canvas_screen_test.dart`.
-
-Implementation-shape decision:
-
-- Navigation-only gateway, plus existing in-panel placement action.
-- Not an integrated writer merge.
-- Not blocked by product decision.
-
-Exact implementation allowlist armed for `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-Implementation boundaries:
-
-- No writer services.
-- No Add Component screen edits.
-- No Edit Component screen edits.
-- No Measure Sheet screen edits.
-- No Project Overview edits.
-- No router edits.
-- No schema/tool/materializer/validator edits.
-- No events.jsonl / known_facts.json semantic changes.
-- No route hiding/deletion.
-- No `_incoming`, samples, or assets edits.
-
-## Planned follow-up sequence
-
-1. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS` - current docs-only active-lock sync.
-2. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` - implement the small Board Canvas action-gateway behavior inside the armed allowlist.
-3. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_POST_AUDIT_PASS` - close out after audit and push.
-
-## Recent accepted context
-
-| Pass | Status | Notes |
-|---|---|---|
-| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS` | pushed / pending audit record | Scope-lock for action-gateway direction, pushed as `72a6049 docs: lock board canvas components workflow actions scope`. |
-| `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS` | closed | Selected placement context/prefill closed out and route released. |
-| `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` | closed | Read-only `Komponendid` hub added and recorded. |
-| `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS` | closed | Standalone Add/Edit flow labels clarified as identity/metadata flows. |
+- One pass at a time.
+- Repo docs and verified git state outrank chat handoff text.
+- Runtime/test/schema/tool/event/fact changes require an active lock that names the exact files.
+- Protected surfaces require a dedicated protected-surface scope-lock before implementation.
+- Do not stage, commit, or push unless explicitly requested.
 
 ## Current-state maintenance trigger
 
-Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` together when the route changes.
+Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, `docs/AUDIT_INDEX.md`, and the relevant `docs/audit/*.md` artifact together when a pass changes route state or audit state.
 
-Update `docs/AUDIT_INDEX.md` and create a focused `docs/audit/*.md` artifact for each route-changing pass.
+## Recent routing provenance
+
+| Pass | Result | Notes |
+|---|---|---|
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS` | armed implementation | Armed the rejected navigation-only actions implementation pass. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` | aborted before staging | Rejected by product decision; uncommitted runtime/test diff reverted. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` | drafted closeout | Records abort, releases active lock, and returns route to `NEEDS_USER_DECISION`. |

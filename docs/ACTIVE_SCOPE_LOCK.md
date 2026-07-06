@@ -2,93 +2,54 @@
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
-## Mode
+## Active lock status
 
-Docs-only active-lock sync.
+Released. No implementation files are currently armed.
 
-## Purpose
+## Abort closeout record
 
-Arm the exact implementation allowlist for the Board Canvas `Komponendid` hub action-gateway implementation.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` records the aborted `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`.
 
-## Current pass write allowlist
+Rejected direction:
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+- Navigation-only Komponendid hub actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
+- Sending users from Board Canvas to old standalone pages as the primary Komponendid workflow.
 
-## Implementation pass armed
+New product decision:
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`
+- Board Canvas Komponendid workflow should be redesigned for in-panel work beside/on the canvas where practical.
+- Do not route users out to old standalone pages as the primary Komponendid UX.
 
-## Exact implementation allowlist
+## Previously armed implementation allowlist
+
+The aborted implementation had touched only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-## Implementation shape decision
+Those uncommitted changes were reverted before this closeout. These files are no longer armed by an active lock.
 
-Navigation-only gateway with existing in-panel placement action.
+## Revert evidence recorded
 
-Future implementation may make the existing Board Canvas `Komponendid` hub rows actionable as follows:
+- Final tracked diff after revert: empty.
+- Final cached diff after revert: empty.
+- `git diff --check`: PASS.
+- `flutter test test/widget/board_canvas_screen_test.dart`: PASS, 112/112.
+- `python tools/validate_all.py`: PASS, 285 tests OK.
+- No files staged, committed, or pushed by the abort/revert step.
 
-- `Loo komponent`: navigate to the existing standalone Add Component identity route.
-- `Muuda andmeid`: navigate to the existing standalone Edit Component metadata route.
-- `Paiguta`: open or focus the existing Board Canvas `Lisa` / `Salvesta` visual placement workflow.
-- `Mõõda komponenti`: navigate to the existing Measure Sheet route as route-only behavior.
+## Recommended next candidate
 
-This is not an integrated writer panel and not a writer merge.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
 
-## Must preserve
+This is not armed. A future scope-lock must define the in-panel workflow and exact allowlist before implementation.
 
-- `component_created` remains component identity/existence creation.
-- `component_updated` remains component metadata update.
-- `component_visual_placement_confirmed` remains visual placement confirmation.
-- `measurement_recorded` remains measurement write.
-- Existing standalone Add/Edit routes remain available.
-- Existing Measure Sheet route remains available.
-- Existing Board Canvas placement save guards remain intact.
-- Board Canvas renderer/painter read-only boundary remains intact.
-- Existing writer contracts remain unchanged.
-- Existing routes remain available.
+## Protected boundary reminder
 
-## Forbidden surfaces for implementation
-
-- No writer service edits.
-- No Add Component screen edits.
-- No Edit Component screen edits.
-- No Measure Sheet screen edits.
-- No Project Overview edits.
-- No router edits.
-- No schema/tool/materializer/validator edits.
-- No events.jsonl / known_facts.json edits or semantic changes.
-- No Project Open From Directory changes.
-- No rotation normalization changes.
-- No samples/assets edits.
-- No `_incoming` edits or staging.
-- No route hiding or deletion.
-- No screen deletion.
-- No writer semantic merge.
-- No component identity creation from placement.
-- No pins/contacts/pads/nets/traces/electrical facts from marker drafts.
-- No AI-authored canonical facts.
-
-## Future test expectations
-
-The implementation pass should add/update focused Board Canvas widget tests proving:
-
-- `Komponendid` hub actions/links are clear.
-- Identity creation, metadata edit, placement confirmation, and measurement remain labeled distinctly.
-- Navigation-only actions target existing routes when implemented.
-- Non-clickable/future rows are not misleadingly interactive.
-- Board Canvas placement save behavior remains unchanged.
-- No writer/event/schema behavior changes are introduced.
-- No route hiding/deletion occurred.
-- Renderer/painter remains read-only.
+No runtime, tests, writer, schema, tools, events, known_facts, samples, assets, router, or `_incoming` files are authorized by this released lock.

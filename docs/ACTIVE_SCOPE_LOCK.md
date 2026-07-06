@@ -2,82 +2,50 @@
 
 ## Current pass
 
-`BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Lock type
 
-Docs-only blocked-closeout plus platform build-lock.
+No active implementation lock.
 
-## Current pass write allowlist
+## Released implementation lock
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS.md`
+Released pass:
+- `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
 
-## Blocked prior implementation path
+Recorded implementation commit:
+- `324829e586b40eddd266a2f1d834c02a39ef4aa1`
+- `feat: launch benchbeep fullscreen`
 
-`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` is blocked for the real Windows desktop fullscreen requirement.
+Review status:
+- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
+- Claude audit skipped/unavailable.
+- Reviewer path: GPT/Pro + user manual smoke + local validation.
+- User approved proceeding after exact allowlist review, validation, and manual Windows smoke.
 
-Recorded blocker:
-- `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE`
-
-Reason:
-- SDK-only `SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)` did not make the app open as true fullscreen on Windows desktop.
-- true desktop-window fullscreen requires platform/window-manager scope outside the previous two-file allowlist.
-
-## Armed implementation pass
-
-`BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
-
-## Exact implementation write allowlist
-
+Safe implementation set:
 - `pubspec.yaml`
 - `pubspec.lock`
 - `lib/main.dart`
 - `test/widget/fullscreen_launch_test.dart`
 
-No other runtime, test, docs, schema, tool, event, fact, platform runner, native runner, `windows/`, or `_incoming` file is armed.
+## Result recorded
 
-`pubspec.lock` exists and is tracked, so it is included if dependency resolution changes it.
+BenchBeep fullscreen launch now uses `window_manager` and requests fullscreen before rendering `TraceBenchApp`.
 
-## Implementation goal
+No active files are armed after this closeout.
 
-Use a desktop window manager approach for true Windows fullscreen launch.
+## Boundaries preserved
 
-Preferred dependency candidate:
-- `window_manager`
+This was app-shell/window presentation only.
 
-Allowed implementation shape:
-- add `window_manager` through `pubspec.yaml`
-- update `pubspec.lock` through normal dependency resolution
-- call `windowManager.ensureInitialized()` before window manipulation
-- call `windowManager.setFullScreen(true)` or the package's current equivalent API before rendering `TraceBenchApp`
-- preserve `ProviderScope(child: TraceBenchApp())`
-- keep this app-shell/window presentation only
-- add or update focused tests in `test/widget/fullscreen_launch_test.dart`
-
-## Required stop conditions
-
-Report `BLOCKED_NEEDS_NATIVE_RUNNER_SCOPE` if true Windows fullscreen requires:
+No changes were made to:
 - `windows/`
-- native runner edits
-- native platform-specific code outside the allowlist
-
-Report `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside:
-- `pubspec.yaml`
-- `pubspec.lock`
-- `lib/main.dart`
-- `test/widget/fullscreen_launch_test.dart`
-
-## Forbidden surfaces
-
-Do not change:
+- native runner files
 - router files
 - route definitions
 - splash implementation
@@ -93,6 +61,4 @@ Do not change:
 - `_incoming`
 - docs compaction
 
-## Product/canonical boundary
-
-This pass and the armed implementation are app-shell/window presentation only. They do not authorize canonical data changes, workflow changes, fact/event creation, project semantics changes, or product-route changes.
+Fullscreen launch creates no facts and writes no events. `events.jsonl` remains canonical truth. `known_facts.json` remains projection/cache. Flutter must not directly mutate `known_facts.json`.

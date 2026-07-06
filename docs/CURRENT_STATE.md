@@ -1,49 +1,56 @@
 # Current State
 
-Current pass: BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS
-Next recommended pass: BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS
+Current pass: NEEDS_USER_DECISION
+Next recommended pass: NEEDS_USER_DECISION
 
 ## Status
 
-Docs-only blocked-closeout plus platform build-lock is active for BenchBeep fullscreen launch.
+`BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` is closed out after push.
 
-This pass records that the SDK-only fullscreen launch implementation path did not satisfy real Windows desktop fullscreen in manual smoke, and arms a platform-scoped window-manager implementation pass.
+Implementation commit recorded:
+- `324829e586b40eddd266a2f1d834c02a39ef4aa1`
+- `feat: launch benchbeep fullscreen`
 
-## Blocker recorded
+Review status:
+- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
+- Claude audit skipped/unavailable.
+- Reviewer path: GPT/Pro + user manual smoke + local validation.
+- User approved proceeding after exact allowlist review, validation, and manual Windows smoke.
 
-`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` attempted SDK-only immersive startup using `SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)`, but manual smoke showed the app does not open as true fullscreen on Windows desktop.
+## Implementation result
 
-Verdict: `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE`
+BenchBeep now requests true desktop fullscreen launch through the `window_manager` package.
 
-Reason: true desktop-window fullscreen requires platform/window-manager scope outside the SDK-only allowlist.
+Recorded behavior:
+- Added `window_manager` dependency.
+- Updated `pubspec.lock` through dependency resolution.
+- Added startup fullscreen configuration in `lib/main.dart`.
+- Calls `windowManager.ensureInitialized()`.
+- Calls `windowManager.setFullScreen(true)`.
+- Calls both before `runApp(...)`.
+- Preserves `runApp(const ProviderScope(child: TraceBenchApp()))`.
+- Added focused source-level fullscreen launch tests.
+- Implements true Windows desktop fullscreen behavior without native runner edits.
 
-## Platform-scoped implementation pass armed
+## Validation recorded
 
-Implementation pass: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
-
-Preferred dependency candidate: `window_manager`
-
-Rationale:
-- supports desktop platforms including Windows
-- provides `windowManager.ensureInitialized()`
-- provides `windowManager.setFullScreen(true)`
-
-Exact implementation allowlist:
-- `pubspec.yaml`
-- `pubspec.lock`
-- `lib/main.dart`
-- `test/widget/fullscreen_launch_test.dart`
-
-`pubspec.lock` exists and is tracked, so it is armed for the future implementation if changed by dependency resolution.
-
-Do not arm or touch `windows/` or native runner files unless a later pass proves they are required. If they are required, stop and report `BLOCKED_NEEDS_NATIVE_RUNNER_SCOPE`.
+- `flutter pub get`: PASS
+- `flutter test test/widget/fullscreen_launch_test.dart`: PASS, 3/3
+- `flutter test`: PASS, 378/378
+- `python tools/validate_all.py`: PASS, 285 tests OK
+- `git diff --check`: PASS, only LF-to-CRLF warnings if present
+- tracked/cached diff clean after push
+- manual Windows smoke: PASS; app opens fullscreen
+- startup intro still plays and launcher opens
 
 ## Boundaries
 
-This remains app-shell/window presentation only.
+This was app-shell/window presentation only.
 
-Do not change:
-- router or app routes
+No changes to:
+- `windows/`
+- native runner files
+- router or route definitions
 - splash implementation
 - home/workbench screens
 - Board Canvas
@@ -55,7 +62,14 @@ Do not change:
 - `_incoming`
 - docs compaction
 
+Fullscreen launch creates no facts and writes no events. `events.jsonl` remains canonical truth. `known_facts.json` remains projection/cache. Flutter must not directly mutate `known_facts.json`. Human is the sensor; AI is the graph engine. Visual First Board Canvas workflow remains unchanged.
+
+## Candidate future work
+
+Candidate only, not active route:
+- Fullscreen Exit/Välju affordance, because manual smoke currently relies on Alt+F4 to exit.
+
 ## Route
 
-Current: `BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS`
-Next: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`

@@ -2,76 +2,50 @@
 
 ## Current route
 
-Current: `BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS`
-Next: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current focus
+## Latest closed pass
 
-Docs-only blocked-closeout plus platform build-lock for BenchBeep fullscreen launch.
+`BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` is closed out after push.
 
-## Blocked SDK-only attempt
+Implementation commit:
+- `324829e586b40eddd266a2f1d834c02a39ef4aa1`
+- `feat: launch benchbeep fullscreen`
 
-`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` is recorded as blocked for the real Windows desktop fullscreen requirement.
+Review status:
+- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
+- Claude audit skipped/unavailable.
+- Reviewer path: GPT/Pro + user manual smoke + local validation.
+- User approved proceeding after exact allowlist review, validation, and manual Windows smoke.
 
-Observed result:
-- SDK-only `SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)` does not make the Windows desktop app open as true fullscreen.
-
-Verdict:
-- `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE`
-
-Reason:
-- true desktop-window fullscreen requires platform/window-manager scope outside the previous SDK-only allowlist.
-
-## Armed implementation
-
-Implementation pass: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
-
-Exact implementation allowlist:
+Safe implementation set recorded:
 - `pubspec.yaml`
 - `pubspec.lock`
 - `lib/main.dart`
 - `test/widget/fullscreen_launch_test.dart`
 
-Preferred dependency candidate:
-- `window_manager`
+## Closed behavior
 
-Expected implementation direction:
-- add the desktop window manager dependency through `pubspec.yaml`
-- update `pubspec.lock` through normal dependency resolution
-- initialize the window manager before rendering `TraceBenchApp`
-- request real fullscreen with `windowManager.setFullScreen(true)` or the package's current equivalent API
-- preserve `ProviderScope(child: TraceBenchApp())`
-- keep startup behavior app-shell only
+- Added `window_manager` dependency.
+- Updated `pubspec.lock` through dependency resolution.
+- `lib/main.dart` calls `windowManager.ensureInitialized()` and `windowManager.setFullScreen(true)` before `runApp(...)`.
+- `runApp(const ProviderScope(child: TraceBenchApp()))` remains preserved.
+- Focused source-level fullscreen launch tests were added.
+- Manual Windows smoke passed: app opens fullscreen, startup intro still plays, and launcher opens.
+- No `windows/` or native runner edits were required.
 
-## Stop conditions for implementation
+## Boundaries preserved
 
-Stop and report `BLOCKED_NEEDS_NATIVE_RUNNER_SCOPE` if true Windows fullscreen requires:
-- `windows/`
-- native runner edits
-- platform-specific native code outside the allowlist
+No changes to router, route definitions, splash implementation, home/workbench screens, Board Canvas, Add/Edit/Measure pages, writers, schemas, materializers, validators, tools, canonical events/facts, `events.jsonl`, `known_facts.json`, `_incoming`, or docs compaction.
 
-Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside:
-- `pubspec.yaml`
-- `pubspec.lock`
-- `lib/main.dart`
-- `test/widget/fullscreen_launch_test.dart`
+Fullscreen launch is app-shell/window presentation only. It creates no facts and writes no events.
 
-## Strict exclusions
+## Candidate future work
 
-Do not change:
-- router files
-- route definitions
-- splash implementation
-- home/workbench screens
-- Board Canvas
-- Add/Edit/Measure pages
-- writer/schema/materializer/validator/tool behavior
-- canonical events/facts
-- `events.jsonl`
-- `known_facts.json`
-- `_incoming`
-- docs compaction
-
-## Route after this pass
-
-Proceed to `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` after this blocked-closeout/platform build-lock is accepted and staged by the user.
+Candidates only; no active route is armed:
+- Fullscreen Exit/Välju affordance.
+- Docs compaction / Visual First alignment.
+- Home lockup refresh.
+- Board Canvas right-panel component creation flow.
+- Board Canvas metadata edit flow.

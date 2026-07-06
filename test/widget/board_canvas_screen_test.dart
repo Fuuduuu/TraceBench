@@ -2667,6 +2667,94 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  testWidgets('Add Component exposes Komponendid workflow roles without writes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final placementWriter = _FakePlacementWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, placementWriter: placementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.byKey(const Key('board_canvas_component_workflow_hub')),
+        findsOneWidget);
+    expect(find.text('Komponendid'), findsOneWidget);
+    expect(
+      find.text(
+        'Komponendi töö algab plaadilt. See paneel selgitab, milline '
+        'tegevus millise kirjutaja kaudu salvestub.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_workflow_identity')),
+      findsOneWidget,
+    );
+    expect(find.text('Loo komponent'), findsOneWidget);
+    expect(
+        find.text('Lisa uus komponent projekti faktidesse.'), findsOneWidget);
+    expect(find.text('Sündmus: component_created'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_component_workflow_metadata')),
+      findsOneWidget,
+    );
+    expect(find.text('Muuda andmeid'), findsOneWidget);
+    expect(
+      find.text('Muuda olemasoleva komponendi nime, tüüpi või paketiinfot.'),
+      findsOneWidget,
+    );
+    expect(find.text('Sündmus: component_updated'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_component_workflow_placement')),
+      findsOneWidget,
+    );
+    expect(find.text('Paiguta'), findsOneWidget);
+    expect(
+      find.text('Kinnita valitud komponendi visuaalne asukoht plaadil.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Sündmus: component_visual_placement_confirmed'),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_workflow_measurement')),
+      findsOneWidget,
+    );
+    expect(find.text('Mõõda komponenti'), findsOneWidget);
+    expect(
+      find.text('Ava mõõtmise töövoog komponendiga seotud näitude jaoks.'),
+      findsOneWidget,
+    );
+    expect(find.text('Sündmus: measurement_recorded'), findsOneWidget);
+
+    expect(placementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
+  });
+
   testWidgets(
       'Add Component Salvesta writes placement only on explicit user action',
       (tester) async {

@@ -4,109 +4,97 @@ Last updated: 2026-07-06
 
 ## Current route
 
-Current: `BENCHBEEP_STARTUP_INTRO_BUILD_LOCK_PASS`
-Next: `BENCHBEEP_STARTUP_INTRO_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Active pass
 
-`BENCHBEEP_STARTUP_INTRO_BUILD_LOCK_PASS` is a docs-only build-lock / implementation allowlist sync for a narrow BenchBeep startup intro implementation.
+No active implementation lock is armed.
 
-This pass performs no runtime or test implementation. It verifies the design handoff ZIP, reads the live launcher code, and arms the exact implementation allowlist for `BENCHBEEP_STARTUP_INTRO_IMPL_PASS`.
+`BENCHBEEP_STARTUP_INTRO_IMPL_PASS` has been pushed and closed out by `BENCHBEEP_STARTUP_INTRO_IMPL_POST_AUDIT_PASS`.
 
-## Implementation allowlist armed
+## Closeout summary
 
-Future implementation may write only:
+Pushed implementation recorded:
+
+- `3c0f06a1cf29baaeefb4592bd5d159ff61e0b211`
+- `feat: add benchbeep startup intro`
+
+Review status:
+
+- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
+- Claude audit skipped/unavailable.
+- Reviewer path: GPT/Pro + Gemini advisory + user decision.
+- User approved proceeding without Claude after exact allowlist review and local validation.
+
+Safe implementation set recorded:
 
 - `lib/app/app.dart`
 - `lib/features/home/screens/benchbeep_splash_screen.dart`
 - `test/widget/benchbeep_splash_screen_test.dart`
 
-If startup intro implementation needs `lib/app/router.dart`, `pubspec.yaml`, assets, home lockup replacement, writer/schema/materializer/validator/tools/events/known_facts, `_incoming`, or any additional file, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
+Validation evidence recorded:
 
-## Design input verified
+- `validate_all.py`: PASS, per user terminal output before closeout.
+- `git status` / `git diff` / `git diff --cached` / `git diff --check`: clean for tracked/cached implementation state except known untracked scratch/design/local files.
 
-Design/provenance input only:
+## Startup intro behavior now recorded
 
-- `_incoming/ui_redesign/TraceBench_startup_animation.zip`
+- Added BenchBeep startup intro / splash.
+- Added `BenchBeepSplashScreen`.
+- Wired splash before the existing launcher home in `TraceBenchApp`.
+- Splash shows once per app process before the existing BenchBeep launcher.
+- Splash completion returns to the existing launcher home.
+- Existing launcher/workbench behavior is preserved.
+- Real `assets/brand/benchbeep_mark.png` branding is used rather than fake/generic placeholder icons.
+- Startup animation handoff was used as design input only.
+- `onComplete` is guarded to fire once.
+- Targeted widget tests cover splash rendering/completion behavior.
+- Scope remains presentation-only.
 
-Expected ZIP entries verified:
+## Explicit non-changes
 
-- `codex/BENCHBEEP_LOGO_INTEGRATION.md`
-- `codex/README.md`
-- `codex/benchbeep_lockup.dart`
-- `codex/benchbeep_splash_screen.dart`
-
-Only the startup intro / splash material is in scope for the next implementation. The lockup refresh material exists in the ZIP but is explicitly out of scope.
-
-Do not import, stage, or copy the ZIP itself. Do not stage `_incoming`.
-
-## Live-code findings for implementation
-
-- `TraceBenchApp` is a `ConsumerStatefulWidget`.
-- `_TraceBenchAppState` already controls launcher/workbench transition through local `_showLauncher` state.
-- When launcher is active, `TraceBenchApp.build` returns `MaterialApp(home: _buildLauncherHome(context))`.
-- Existing launcher home is `BenchBeepHomeScreen`.
-- The splash can be wired before the existing launcher without touching `lib/app/router.dart`.
-- `BenchBeepHomeScreen` already uses `assets/brand/benchbeep_mark.png`.
-- No new dependency, asset, font, or `pubspec.yaml` edit is expected.
-- The new splash widget and its widget test do not exist yet and are intentionally armed as new implementation files.
-
-## Locked implementation intent
-
-Add a presentation-only startup intro that shows once per app process before the existing BenchBeep launcher home.
-
-Preferred implementation:
-
-- Add `BenchBeepSplashScreen` at `lib/features/home/screens/benchbeep_splash_screen.dart` using the design handoff as source material.
-- Wire the splash in `lib/app/app.dart` through local `_TraceBenchAppState` state.
-- Use an in-memory bool such as `_showStartupIntro` or `_showSplash`.
-- If `_showLauncher` is true and the splash flag is true, show `BenchBeepSplashScreen`.
-- On splash completion, set the splash flag false and then show the existing launcher home.
-- Do not show the splash every time the user returns from workbench to home during the same app process.
-- Do not route through `/splash`.
-- Do not edit `router.dart`.
-
-## Test intent
-
-Future implementation should add a targeted widget test for `BenchBeepSplashScreen` that:
-
-- pumps the splash with a short total duration
-- verifies key startup text / visual identity renders
-- verifies `onComplete` fires once after animation completes
-- verifies repeat completion does not call the callback multiple times if practical
-
-If practical, add a source-level assertion that `app.dart` imports/wires `BenchBeepSplashScreen` without `router.dart` changes.
-
-Do not add broad brittle golden tests.
+- No `router.dart` change.
+- No `/splash` route.
+- No `pubspec.yaml` change.
+- No new assets.
+- No new packages.
+- No font / Space Grotesk work.
+- No home lockup refresh.
+- No fullscreen implementation.
+- No Board Canvas changes.
+- No standalone Add/Edit/Measure page edits.
+- No writer/schema/materializer/validator/tool changes.
+- No canonical event changes.
+- No `events.jsonl` / `known_facts.json` semantic changes.
+- No `_incoming` runtime reference.
+- No `_incoming` or ZIP staging.
+- No duplicate old workflow menu/hub/card.
+- No table/form UX regression.
 
 ## Product and canonical boundaries
 
-This is launcher presentation only.
+This was launcher presentation only.
 
-- It must not affect Board Canvas workflows, right-panel behavior, project data, canonical writes, or old route migration policy.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
 - Flutter must not directly mutate `known_facts.json`.
 - Human is the sensor; AI is the graph engine.
-- UI animation must not create or imply canonical facts.
-- No events or facts are written by the splash.
+- Splash animation creates no facts and writes no events.
+- Visual First Board Canvas workflow remains unchanged.
 
-## Strict exclusions
+## Candidate future work
 
-- No runtime or test edits in this build-lock pass.
-- No router changes.
-- No old standalone Add/Edit/Measure page changes.
-- No writer/schema/materializer/validator/tool changes.
-- No canonical event changes.
-- No events.jsonl / known_facts.json semantic changes.
-- No `_incoming` use or staging.
-- No new assets.
-- No `pubspec.yaml` changes.
-- No new packages.
-- No Space Grotesk/font work.
-- No logo lockup refresh in this pass.
-- No Board Canvas workflow changes.
-- No Visual First rule changes.
-- No duplicate old workflow menu/hub/card.
-- No table/form UX regression.
-- Do not stage, commit, or push.
+Candidates only, not active route:
+
+- fullscreen launch as a separate build-lock / implementation pass
+- home lockup refresh as a separate pass
+- docs compaction / Visual First alignment later
+- Board Canvas right-panel component creation flow
+- Board Canvas metadata edit flow
+
+## Operator reminders
+
+- Do not represent `BENCHBEEP_STARTUP_INTRO_IMPL_PASS` as Claude-audited.
+- Do not stage, commit, or push unless explicitly requested.
+- If staging is requested, stage exact files only.

@@ -4,48 +4,50 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
 
 ## Next recommended pass
 
-BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS
 
 ## Route status
 
-Docs-only product scope-lock is active for the next Board Canvas `Komponendid` hub step.
+Docs-only active-lock sync is active for the Board Canvas `Komponendid` hub action-gateway implementation.
 
-This pass does not implement runtime behavior, does not arm an implementation allowlist, and does not hide or delete any routes/screens. It records the product decision for turning the existing read-only `Komponendid` hub into a safe action gateway later.
+The previous scope-lock is pushed as `72a6049 docs: lock board canvas components workflow actions scope` and route state now advances from scope-lock to active-lock sync.
 
-## Latest accepted baseline
+This pass arms an implementation allowlist only. It does not implement runtime behavior, does not edit tests, does not hide or delete routes/screens, and does not change writer semantics.
 
-Latest closed route before this pass: `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS`.
+## Implementation shape decision
 
-Live pushed baseline verified before this scope-lock:
+Implementation shape: navigation-only gateway with one existing in-panel action.
 
-- `e385c37 docs: close out selected placement edit prefill`
-- Route before this pass: `NEEDS_USER_DECISION -> NEEDS_USER_DECISION`
-- Active implementation allowlist before this pass: none
+Future implementation may make the existing Board Canvas `Komponendid` hub rows actionable as follows:
 
-## Current scope summary
+- `Loo komponent`: navigate to existing Add Component identity route.
+- `Muuda andmeid`: navigate to existing Edit Component metadata route.
+- `Paiguta`: open or focus the current Board Canvas `Lisa` / `Salvesta` visual placement panel.
+- `Mõõda komponenti`: navigate to existing Measure Sheet route as a route-only action, with no measurement writer merge and no context propagation requirement.
 
-Board Canvas is the primary technician-facing board/workbench surface.
+## Implementation allowlist armed
 
-The current Board Canvas `Komponendid` hub is display-only and explains four write domains:
+For `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+No router, Project Overview, Add Component screen, Edit Component screen, Measure Sheet screen, writer, schema, tool, materializer, validator, events, known_facts, samples/assets, Project Open From Directory, rotation normalization, or `_incoming` files are armed.
+
+## Protected boundary reminder
+
+The canonical split must remain unchanged:
 
 - `component_created` = component identity/existence creation
 - `component_updated` = component metadata update
 - `component_visual_placement_confirmed` = visual placement confirmation
 - `measurement_recorded` = measurement write
 
-Locked direction for the next implementation track:
-
-- Use the hub as a navigation/action gateway first, not as an integrated writer panel.
-- `Loo komponent` may link to the existing standalone Add Component identity route.
-- `Muuda andmeid` may link to the existing standalone Edit Component metadata route.
-- `Paiguta` should stay anchored in the existing Board Canvas `Lisa` / `Salvesta` visual placement workflow.
-- `Mõõda komponenti` may link to the existing Measure Sheet route only if the active-lock sync confirms that no context propagation or measurement-writer merge is needed; otherwise it should remain informational/future.
-
-No writer semantics change is authorized by this scope-lock.
+No identity may be created from visual placement. No pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts may be inferred from hub actions.
 
 ## Binding workflow safety
 
@@ -55,28 +57,3 @@ Never use broad staging:
 - Do not run `git add -A`
 - Do not run `git commit -am`
 - Stage exact files only when the user explicitly requests staging.
-
-## Canonical owners / evidence ledgers
-
-Current route owners:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-
-Canonical evidence and invariant ledgers:
-
-- `docs/AUDIT_INDEX.md`
-- `docs/TRUTH_INDEX.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/PROTECTED_SURFACES.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- `docs/AUDIT_CONTRACT.md`
-- `docs/MODEL_ROUTING.md`
-- `docs/PASS_LIFECYCLE.md`
-
-## Protected boundary reminder
-
-No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics change is authorized by this docs-only pass.
-
-No runtime, test, schema, tool, events, known_facts, samples, assets, router, or `_incoming` edits are authorized.

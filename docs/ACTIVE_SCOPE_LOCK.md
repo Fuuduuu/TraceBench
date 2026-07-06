@@ -2,19 +2,19 @@
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`
 
 ## Mode
 
-Docs-only product scope-lock.
+Docs-only active-lock sync.
 
 ## Purpose
 
-Record the product decision for turning the existing Board Canvas `Komponendid` hub into a safe action gateway in a later implementation pass.
+Arm the exact implementation allowlist for the Board Canvas `Komponendid` hub action-gateway implementation.
 
 ## Current pass write allowlist
 
@@ -22,28 +22,29 @@ Record the product decision for turning the existing Board Canvas `Komponendid` 
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/TRUTH_INDEX.md` only if taxonomy cross-reference wording is needed
-- `docs/audit/BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS.md`
+- `docs/audit/BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
 ## Implementation pass armed
 
-None.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`
 
-The next active-lock sync pass must inspect live code and arm an exact implementation allowlist. This scope-lock does not authorize runtime or test edits.
+## Exact implementation allowlist
 
-## Locked product intent
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-Board Canvas is the primary technician-facing board/workbench surface.
+## Implementation shape decision
 
-The `Komponendid` hub should become a safe navigation/action gateway before any deeper integrated component-workflow rewrite.
+Navigation-only gateway with existing in-panel placement action.
 
-Future intended actions:
+Future implementation may make the existing Board Canvas `Komponendid` hub rows actionable as follows:
 
-- `Loo komponent`: navigate to the existing standalone Add Component identity flow.
-- `Muuda andmeid`: navigate to the existing standalone Edit Component metadata flow.
-- `Paiguta`: open/focus the existing Board Canvas `Lisa` / `Salvesta` visual placement workflow.
-- `Mõõda komponenti`: route to Measure Sheet only if the next active-lock sync confirms direct navigation is safe without context propagation; otherwise keep informational/future.
+- `Loo komponent`: navigate to the existing standalone Add Component identity route.
+- `Muuda andmeid`: navigate to the existing standalone Edit Component metadata route.
+- `Paiguta`: open or focus the existing Board Canvas `Lisa` / `Salvesta` visual placement workflow.
+- `Mõõda komponenti`: navigate to the existing Measure Sheet route as route-only behavior.
+
+This is not an integrated writer panel and not a writer merge.
 
 ## Must preserve
 
@@ -55,29 +56,39 @@ Future intended actions:
 - Existing Measure Sheet route remains available.
 - Existing Board Canvas placement save guards remain intact.
 - Board Canvas renderer/painter read-only boundary remains intact.
+- Existing writer contracts remain unchanged.
+- Existing routes remain available.
 
-## Forbidden in this pass
+## Forbidden surfaces for implementation
 
-- No runtime edits.
-- No test edits.
-- No writer edits.
+- No writer service edits.
+- No Add Component screen edits.
+- No Edit Component screen edits.
+- No Measure Sheet screen edits.
+- No Project Overview edits.
+- No router edits.
 - No schema/tool/materializer/validator edits.
-- No events.jsonl / known_facts.json edits.
-- No router changes.
+- No events.jsonl / known_facts.json edits or semantic changes.
+- No Project Open From Directory changes.
+- No rotation normalization changes.
+- No samples/assets edits.
+- No `_incoming` edits or staging.
 - No route hiding or deletion.
 - No screen deletion.
 - No writer semantic merge.
 - No component identity creation from placement.
-- No pins/contacts/pads/nets/electrical facts from marker drafts.
+- No pins/contacts/pads/nets/traces/electrical facts from marker drafts.
 - No AI-authored canonical facts.
-- No `_incoming` edits or staging.
-- No implementation allowlist arming.
-- Do not stage, commit, or push.
 
-## Future active-lock sync expectations
+## Future test expectations
 
-The next pass should read live code and decide the exact implementation allowlist. Candidate surfaces may include Board Canvas and related widget tests, but paths must be verified live before arming.
+The implementation pass should add/update focused Board Canvas widget tests proving:
 
-Do not arm broad directories.
-Do not arm schema/tools/events/known_facts/_incoming.
-Do not arm writer files unless live code proves a direct need; expected answer is no.
+- `Komponendid` hub actions/links are clear.
+- Identity creation, metadata edit, placement confirmation, and measurement remain labeled distinctly.
+- Navigation-only actions target existing routes when implemented.
+- Non-clickable/future rows are not misleadingly interactive.
+- Board Canvas placement save behavior remains unchanged.
+- No writer/event/schema behavior changes are introduced.
+- No route hiding/deletion occurred.
+- Renderer/painter remains read-only.

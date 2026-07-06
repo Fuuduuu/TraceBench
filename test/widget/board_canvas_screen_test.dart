@@ -2667,7 +2667,8 @@ void main() {
     expect(state.events, isEmpty);
   });
 
-  testWidgets('Add Component exposes Komponendid workflow roles without writes',
+  testWidgets(
+      'Add Component removes duplicate Komponendid hub while preserving placement shell',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -2698,63 +2699,50 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
 
-    expect(find.byKey(const Key('board_canvas_component_workflow_hub')),
-        findsOneWidget);
-    expect(find.text('Komponendid'), findsOneWidget);
     expect(
-      find.text(
-        'Komponendi töö algab plaadilt. See paneel selgitab, milline '
-        'tegevus millise kirjutaja kaudu salvestub.',
-      ),
-      findsOneWidget,
+      find.byKey(const Key('board_canvas_component_workflow_hub')),
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_component_workflow_identity')),
-      findsOneWidget,
+      findsNothing,
     );
-    expect(find.text('Loo komponent'), findsOneWidget);
-    expect(
-        find.text('Lisa uus komponent projekti faktidesse.'), findsOneWidget);
-    expect(find.text('Sündmus: component_created'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_component_workflow_metadata')),
-      findsOneWidget,
+      findsNothing,
     );
-    expect(find.text('Muuda andmeid'), findsOneWidget);
-    expect(
-      find.text('Muuda olemasoleva komponendi nime, tüüpi või paketiinfot.'),
-      findsOneWidget,
-    );
-    expect(find.text('Sündmus: component_updated'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_component_workflow_placement')),
-      findsOneWidget,
-    );
-    expect(find.text('Paiguta'), findsOneWidget);
-    expect(
-      find.text('Kinnita valitud komponendi visuaalne asukoht plaadil.'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('Sündmus: component_visual_placement_confirmed'),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(const Key('board_canvas_component_workflow_measurement')),
-      findsOneWidget,
+      findsNothing,
     );
-    expect(find.text('Mõõda komponenti'), findsOneWidget);
+    expect(find.text('Komponendid'), findsNothing);
+    expect(find.text('Loo komponent'), findsNothing);
+    expect(find.text('Muuda andmeid'), findsNothing);
+    expect(find.text('Mõõda komponenti'), findsNothing);
+    expect(find.text('Ava loomine'), findsNothing);
+    expect(find.text('Ava muutmine'), findsNothing);
+    expect(find.text('Ava mõõtmine'), findsNothing);
+    expect(find.text('Sündmus: component_created'), findsNothing);
+    expect(find.text('Sündmus: component_updated'), findsNothing);
+    expect(find.text('Sündmus: measurement_recorded'), findsNothing);
+
+    expect(find.text('Pin-asetus'), findsOneWidget);
+    expect(find.text('Suurus'), findsOneWidget);
+    expect(find.text('Pööramine'), findsOneWidget);
+    expect(find.text('Eelvaade'), findsOneWidget);
     expect(
-      find.text('Ava mõõtmise töövoog komponendiga seotud näitude jaoks.'),
+      find.byKey(const Key('board_canvas_add_component_builder_save')),
       findsOneWidget,
     );
-    expect(find.text('Sündmus: measurement_recorded'), findsOneWidget);
+    expect(find.text('renderer/painter writes: none'), findsOneWidget);
 
     expect(placementWriter.requests, isEmpty);
     expect(state.events, isEmpty);
-    expect(find.text('renderer/painter writes: none'), findsOneWidget);
   });
-
   testWidgets(
       'Add Component Salvesta writes placement only on explicit user action',
       (tester) async {

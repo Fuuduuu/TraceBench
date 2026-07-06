@@ -4,59 +4,79 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
 
 ## Route status
 
-Selected-placement edit/prefill implementation closeout is recorded and the active implementation lock is released.
+Docs-only product scope-lock is active for the next Board Canvas `Komponendid` hub step.
 
-The repo is waiting for the next user-selected pass.
+This pass does not implement runtime behavior, does not arm an implementation allowlist, and does not hide or delete any routes/screens. It records the product decision for turning the existing read-only `Komponendid` hub into a safe action gateway later.
 
 ## Latest accepted baseline
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS` closed out pushed implementation commit `2d796f1f773f560ff0ecb96fb94d2aac834aef9e` (`fix: prefill placement draft from selected component`).
+Latest closed route before this pass: `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS`.
 
-## Latest implementation summary
+Live pushed baseline verified before this scope-lock:
 
-Board Canvas selected component/placement context is preserved when opening `Lisa` / the placement panel.
+- `e385c37 docs: close out selected placement edit prefill`
+- Route before this pass: `NEEDS_USER_DECISION -> NEEDS_USER_DECISION`
+- Active implementation allowlist before this pass: none
 
-The local placement draft is seeded from the selected current/latest placement where available:
+## Current scope summary
 
-- center
-- width
-- height
-- rotation
-- template / shape
+Board Canvas is the primary technician-facing board/workbench surface.
 
-Prefill is UI-local only. No event is written before explicit `Salvesta`.
+The current Board Canvas `Komponendid` hub is display-only and explains four write domains:
 
-`Salvesta` remains the only canonical placement write trigger and valid save still emits exactly one `component_visual_placement_confirmed`.
+- `component_created` = component identity/existence creation
+- `component_updated` = component metadata update
+- `component_visual_placement_confirmed` = visual placement confirmation
+- `measurement_recorded` = measurement write
 
-The implementation includes a focused V1/V2 stale-placement hazard test proving current/latest placement data wins over stale older placement data.
+Locked direction for the next implementation track:
 
-The required-label guard remains meaningful because label is intentionally not prefilled.
+- Use the hub as a navigation/action gateway first, not as an integrated writer panel.
+- `Loo komponent` may link to the existing standalone Add Component identity route.
+- `Muuda andmeid` may link to the existing standalone Edit Component metadata route.
+- `Paiguta` should stay anchored in the existing Board Canvas `Lisa` / `Salvesta` visual placement workflow.
+- `Mõõda komponenti` may link to the existing Measure Sheet route only if the active-lock sync confirms that no context propagation or measurement-writer merge is needed; otherwise it should remain informational/future.
 
-## Manual smoke recorded
+No writer semantics change is authorized by this scope-lock.
 
-Manual smoke: `PASS`.
+## Binding workflow safety
 
-Recorded evidence:
+Never use broad staging:
 
-- C1 selected on canvas opened `Lisa` with C1 / radial-round style prefill.
-- R1 repeated separately and appended with `component_id` R1.
-- Prefill wrote nothing before `Salvesta`.
-- Valid save appended the matching selected component event.
-- User smoke notes report `validate_all.py` passed.
+- Do not run `git add .`
+- Do not run `git add -A`
+- Do not run `git commit -am`
+- Stage exact files only when the user explicitly requests staging.
 
-## Boundary confirmation
+## Canonical owners / evidence ledgers
 
-- No active implementation allowlist remains armed.
-- No writer/schema/event semantics changed.
-- No identity, pins, contacts, pads, nets, traces, electrical facts, measurements, or AI facts are created by prefill.
-- Board Canvas renderer/painter remains read-only.
-- `known_facts.json` is not directly mutated by Flutter.
-- Do not use `git add .`, `git add -A`, or `git commit -am`.
+Current route owners:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+
+Canonical evidence and invariant ledgers:
+
+- `docs/AUDIT_INDEX.md`
+- `docs/TRUTH_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/PROTECTED_SURFACES.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/AUDIT_CONTRACT.md`
+- `docs/MODEL_ROUTING.md`
+- `docs/PASS_LIFECYCLE.md`
+
+## Protected boundary reminder
+
+No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics change is authorized by this docs-only pass.
+
+No runtime, test, schema, tool, events, known_facts, samples, assets, router, or `_incoming` edits are authorized.

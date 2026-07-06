@@ -350,3 +350,29 @@ Boundaries:
 - Visual placement must not create component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts.
 - Standalone Add/Edit Component identity/metadata writers remain separate.
 - The next active-lock sync must inspect live code and arm the exact implementation allowlist; this scope-lock does not arm runtime/test files.
+
+## Board Canvas Komponendid workflow actions scope lock
+
+Scope-lock pass: `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS`.
+
+Product decision:
+
+- Treat the existing Board Canvas `Komponendid` hub as a future navigation/action gateway first, not as an integrated replacement for all component writers.
+- Keep standalone Add Component as the current component identity writer path for `component_created`.
+- Keep standalone Edit Component as the current component metadata writer path for `component_updated`.
+- Keep Board Canvas `Lisa` / `Salvesta` as the current visual placement confirmation path for `component_visual_placement_confirmed`.
+- Keep Measure Sheet as the current measurement writer path for `measurement_recorded`.
+
+Future action direction:
+
+- `Loo komponent` can navigate to the existing Add Component route.
+- `Muuda andmeid` can navigate to the existing Edit Component route.
+- `Paiguta` should open or focus the existing Board Canvas placement panel instead of creating a new route or writer path.
+- `Mõõda komponenti` can navigate to Measure Sheet only if the active-lock sync confirms no unsafe context propagation is needed; otherwise it remains informational/future.
+
+Boundaries:
+
+- No route hiding or deletion is authorized by the scope-lock.
+- No writer/schema/tool/materializer/validator/event/projection semantics change is authorized.
+- No component identity may be created from visual placement.
+- No pins, contacts, pads, nets, electrical facts, measurements, or AI-authored facts may be inferred from the hub.

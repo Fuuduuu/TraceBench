@@ -4,62 +4,73 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS
 
 ## Route status
 
-Selected-placement edit/prefill implementation closeout is complete. The active implementation lock is released and no implementation files remain armed.
+Scope-lock the next Board Canvas `Komponendid` hub step as a safe navigation/action gateway.
 
-The next route is intentionally unset until the user chooses the next pass.
-
-## Current accepted placement chain
-
-| Order | PASS_ID | Accepted result |
-|---|---|---|
-| 1 | `PLACEMENT_WRITER_AND_CONFIRM_IMPL_PASS` | Added the dedicated placement writer and explicit selected-component Board Canvas `Salvesta` path. |
-| 2 | `PROJECT_OPEN_FROM_DIRECTORY_IMPL_PASS` | Added local-folder project open path so `projectDirectory` is preserved for writer-backed projects. |
-| 3 | `PLACEMENT_ROTATION_NORMALIZATION_IMPL_PASS` | Normalized writer payload `rotation_deg` into `-180 <= rotation_deg < 180`. |
-| 4 | `PLACEMENT_SAVE_PROJECTION_STALE_IMPL_PASS` | Made successful placement save truthfully mark/show projection stale or refresh-needed. |
-| 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
-| 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
-| 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
-| 8 | `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` | Clarified Project Overview, standalone Add Component, standalone Edit Component, and Board Canvas copy so identity creation, metadata edit, and visual placement confirmation are not confused. |
-| 9 | `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS` | Added a read-only Board Canvas `Komponendid` hub card that explains component identity, metadata, placement, and measurement write domains without adding writer calls or route changes. |
-| 10 | `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS` | Preserved selected component/placement context when opening `Lisa`, seeded UI-local draft geometry/template from the selected current/latest placement, kept prefill no-write, kept `Salvesta` as the only canonical placement write trigger, and covered the V1/V2 stale-placement hazard in tests. |
-
-## Latest closeout
-
-`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS` records:
-
-- Implementation commit: `2d796f1f773f560ff0ecb96fb94d2aac834aef9e` (`fix: prefill placement draft from selected component`).
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
-- Safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- Manual smoke: `PASS`.
-- Route released to `NEEDS_USER_DECISION`.
+This pass is docs-only. It does not implement runtime behavior, does not arm an implementation allowlist, does not hide or delete routes, and does not merge writer semantics.
 
 ## Scope gate rules
 
 - One narrow pass at a time.
-- Do not implement outside the active implementation allowlist.
-- Do not broaden runtime, schema, tool, event, projection, or writer surfaces unless the active lock explicitly authorizes them.
-- Do not stage, commit, or push unless explicitly asked.
+- Repo docs and verified git state outrank prompt handoff text.
+- `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` must agree before implementation.
+- Protected surfaces require a dedicated scope-lock before implementation.
+- Do not stage, commit, or push unless the user explicitly asks.
 - Never use `git add .`, `git add -A`, or `git commit -am`.
+
+## Board Canvas Komponendid workflow actions scope-lock
+
+Current state:
+
+- Board Canvas already contains a read-only `Komponendid` hub in the `Lisa` / Add Component panel.
+- The hub explains four domains: identity creation, metadata edit, visual placement confirmation, and measurement recording.
+- Existing standalone Add/Edit Component routes remain the canonical component identity/metadata writer flows.
+- Existing Board Canvas `Lisa` / `Salvesta` remains the visual placement confirmation flow.
+- Existing Measure Sheet remains the measurement writer flow.
+
+Locked product decision:
+
+- The next implementation should be navigation/action-gateway first, not an integrated in-panel writer replacement.
+- `Loo komponent` should route to the existing standalone Add Component identity flow if implemented.
+- `Muuda andmeid` should route to the existing standalone Edit Component metadata flow if implemented.
+- `Paiguta` should activate or focus the existing Board Canvas placement panel behavior rather than create a new writer path.
+- `Mõõda komponenti` may route to Measure Sheet only if active-lock sync confirms that direct navigation is safe without context propagation; otherwise it remains informational/future.
+
+Boundaries for the future implementation:
+
+- No writer contract changes.
+- No schema/tool/materializer/validator changes.
+- No events.jsonl / known_facts.json semantic changes.
+- No component identity creation from visual placement.
+- No pins/contacts/pads/nets/electrical facts from visual marker drafts.
+- No AI-authored canonical facts.
+- No route hiding/deletion in the scope-lock.
+
+## Planned follow-up sequence
+
+1. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS` - current docs-only product scope-lock.
+2. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS` - read live code and arm an exact implementation allowlist.
+3. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` - if approved, implement the smallest safe action-gateway behavior.
+4. `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_POST_AUDIT_PASS` - close out after audit and push.
+
+## Recent accepted context
+
+| Pass | Status | Notes |
+|---|---|---|
+| `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_POST_AUDIT_PASS` | closed | Selected placement context/prefill closed out and route released. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` | closed | Read-only `Komponendid` hub added and recorded. |
+| `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS` | closed | Standalone Add/Edit flow labels clarified as identity/metadata flows. |
+| `BOARD_GRAPH_LEGACY_ROUTE_IMPL_POST_AUDIT_PASS` | closed | Board Graph labeled as advanced/debug projection inspection. |
 
 ## Current-state maintenance trigger
 
-When a pass is staged/pushed/audited or a route changes, keep these route owners synchronized:
+Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` together when the route changes.
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-
-## Routing provenance
-
-Provenance and audit details live in `docs/AUDIT_INDEX.md` and `docs/audit/*.md`. `PASS_QUEUE.md` remains a routing ledger, not architecture documentation.
+Update `docs/AUDIT_INDEX.md` and create a focused `docs/audit/*.md` artifact for each route-changing pass.

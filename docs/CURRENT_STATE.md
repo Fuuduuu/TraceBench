@@ -4,72 +4,64 @@ Last updated: 2026-07-06
 
 ## Current route
 
-Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
-Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Active pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only implementation active-lock sync for Phase 1 Board Canvas typed selection.
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_POST_AUDIT_PASS` closes out the pushed Phase 1 typed Board Canvas selection implementation and releases the active implementation lock.
 
-This pass performs no runtime or test implementation. It reads live Board Canvas code and arms the exact two-file implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
+No implementation pass is currently armed.
 
-## Implementation allowlist armed
+## Closed implementation
 
-Future implementation may write only:
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS` is recorded as accepted and pushed.
+
+Implementation commit:
+
+- `9a9b3cfcabb7da7986595a8feafadf9966086d75` (`refactor: add typed board canvas selection`)
+
+Claude audit recorded for the implementation:
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+
+Safe implementation set:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-If typed selection Phase 1 requires any additional runtime, test, router, writer, schema, tool, materializer, validator, events, known_facts, asset, sample, or `_incoming` file, stop and request a new scope.
+## Typed selection behavior recorded
 
-## Live-code findings for implementation
+- Introduced a typed UI-local `CanvasSelection` model.
+- Added `EmptyCanvasSelection`.
+- Added `ComponentPlacementSelection`.
+- `ComponentPlacementSelection` carries `placementKey`, `componentId`, and `canvasAnchor`.
+- Kept selection UI-local inside `_BoardCanvasScreenState`.
+- Preserved `selectedPlacementKey` compatibility getter/adapter.
+- Routed selection writes through typed helper methods.
+- Migrated canvas hit-test selection toward typed `ComponentPlacementSelection`.
+- Preserved component tap selection/highlight behavior.
+- Preserved right-panel / inspector selected component context.
+- Preserved placement selector behavior.
+- Preserved empty canvas tap clearing behavior.
+- Preserved measure-button selection fallback behavior.
+- Preserved Add Component / `Lisa` selected-placement prefill behavior.
+- Preserved `Salvesta` behavior and guards.
+- Preserved explicit writer boundary: selection alone writes nothing.
+- Tests assert typed selection architecture and forbidden selection classes are absent.
 
-- Board Canvas selection is currently UI-local inside `_BoardCanvasScreenState`.
-- The current compatibility state is raw placement-key based through `_selectedPlacementKey`.
-- Add Component placement context currently also depends on the selected placement key through `_addComponentTemplatePlacementContextKey`.
-- Existing Board Canvas code already has placement entries, placement draft seeding from selected placement, `InteractiveViewer` / `GestureDetector` canvas interaction, and hit/selection plumbing that can be migrated behind a typed selection adapter.
-- Existing Board Canvas widget tests already exercise selection helpers, placement draft behavior, no-write assertions, writer invocation, renderer read-only boundaries, and source-level checks for `InteractiveViewer`, `GestureDetector`, `onPlacementSelected`, and placement hit testing.
-- No live-code evidence requires files outside the Board Canvas screen and Board Canvas widget test for Phase 1.
-
-## Visual First product rule
+## Visual First product rule retained
 
 VISUAL FIRST.
 
-Board Canvas right-side panel/menu is the primary surface for normal technician component work.
+Board Canvas right-side panel/menu remains the primary surface for normal technician component work.
 
-Do not rebuild old standalone Add/Edit/Measure workflows as a new Board Canvas menu. Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendid` hub/card, `Uus komponent` / `Muuda andmeid` / `Paiguta` / `Mõõda` workflow menu, or table/form-filling UX inside Board Canvas.
+Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt. They are not primary technician workflow, were not touched by the typed-selection implementation, and must not be duplicated inside Board Canvas.
 
-Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They are not the primary technician workflow and must be migrated/removed only through separately scoped passes.
+The accepted measurement/right-panel workflow remains accepted and was not reworked.
 
-The accepted measurement/right-panel workflow remains accepted and is not reworked by this scope-lock.
-
-## Typed selection architecture decision
-
-Phase 1 should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
-
-Phase 1 is limited to component placement selection only:
-
-- UI-local state inside `_BoardCanvasScreenState`.
-- No Riverpod/global provider extraction in Phase 1.
-- No pin/contact/pad/net/trace/measurement/electrical selection semantics in Phase 1.
-- No floating panel implementation in Phase 1.
-- No router or standalone page changes in Phase 1.
-- No writer/schema/materializer/validator/tool changes in Phase 1.
-- No canonical event changes in Phase 1.
-- No `_incoming` use or staging.
-
-Preferred future implementation shape:
-
-- Introduce a typed `CanvasSelection` abstraction.
-- Include `EmptyCanvasSelection`.
-- Include `ComponentPlacementSelection`.
-- `ComponentPlacementSelection` may carry `placementKey`, `componentId`, and `canvasAnchor`.
-- `screenAnchor` should not be stored as durable selection state in Phase 1; future floating panel position should be derived from `canvasAnchor` plus current canvas transform / RenderBox data.
-- Preserve a `selectedPlacementKey` compatibility getter/adapter so existing right-panel/painter code can migrate incrementally.
-- Canvas hit-test can later report typed selection instead of raw placement key.
-- Empty canvas tap can later produce `EmptyCanvasSelection`.
-
-## Canonical boundaries
+## Canonical boundaries retained
 
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
@@ -83,8 +75,35 @@ Preferred future implementation shape:
 - `component_visual_placement_confirmed` = visual placement confirmation.
 - `measurement_recorded` = measurement write.
 
+## Explicit non-changes
+
+- No Riverpod/global provider extraction.
+- No pin/contact/pad/net/trace/measurement/electrical selection semantics.
+- No floating panel implementation.
+- No router changes.
+- No standalone Add/Edit/Measure page edits.
+- No writer/schema/materializer/validator/tool changes.
+- No canonical event changes.
+- No events.jsonl / known_facts.json semantic changes.
+- No `_incoming` use or staging.
+- No durable `screenAnchor` storage.
+- No duplicate `Komponendid` hub/card or old workflow menu.
+- No navigation-only gateway.
+- No four-card selector.
+- No table/form-filling UX regression.
+
+## Candidate follow-ups only
+
+Future candidates remain inactive until the user chooses and scopes one:
+
+- Board Canvas right-panel component creation flow.
+- Board Canvas right-panel component metadata editing flow.
+- Standalone Add/Edit route migration/removal after right-panel replacements exist.
+- Standalone Measure route cleanup after right-panel measurement dependencies are verified.
+- Docs compaction / Visual First alignment only after the current runtime chain is fully closed.
+
 ## Standing boundaries
 
-- Do not edit runtime or tests in this scope-lock.
-- Do not touch router, standalone Add/Edit/Measure pages, writers, schema, validator, materializer, tools, events, known_facts, samples, assets, or `_incoming`.
-- Do not stage, commit, or push.
+- Do not stage, commit, or push unless explicitly requested.
+- Do not use `git add .`, `git add -A`, or `git commit -am`.
+- Treat `_incoming` as design input only, not runtime truth.

@@ -4,33 +4,41 @@ Last updated: 2026-07-06
 
 ## Route
 
-Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
-Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current pass summary
+## Latest closeout
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only active-lock sync for typed Board Canvas selection Phase 1.
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_POST_AUDIT_PASS` records and closes the pushed `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS` implementation.
 
-It reads live code and arms the exact implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
+Implementation commit recorded:
 
-The sync performs no runtime or test implementation.
+- `9a9b3cfcabb7da7986595a8feafadf9966086d75` (`refactor: add typed board canvas selection`)
 
-## Implementation pass armed
+Claude implementation audit recorded:
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
 
-Exact implementation allowlist:
+Safe implementation set:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Live-code findings:
+## Closed behavior summary
 
-- Current Board Canvas selection state is UI-local and raw placement-key based through `_selectedPlacementKey`.
-- Add Component placement context uses `_addComponentTemplatePlacementContextKey`.
-- Board Canvas already has placement entries, selected-placement draft seeding, canvas interaction, and hit/selection plumbing suitable for typed-selection Phase 1 migration.
-- Board Canvas widget tests already cover selection helpers, no-write paths, placement draft behavior, writer invocation boundaries, and source-level canvas interaction checks.
-- No additional files are needed for Phase 1 based on live-code inspection.
+Phase 1 typed Board Canvas selection now introduces UI-local typed selection architecture while preserving current behavior through compatibility adapters.
+
+Recorded behavior:
+
+- `CanvasSelection` model introduced.
+- `EmptyCanvasSelection` introduced.
+- `ComponentPlacementSelection` introduced with `placementKey`, `componentId`, and `canvasAnchor`.
+- Selection remains UI-local inside `_BoardCanvasScreenState`.
+- `selectedPlacementKey` compatibility getter/adapter remains for incremental migration.
+- Canvas hit-test selection moves toward typed `ComponentPlacementSelection`.
+- Component tap selection/highlight, right-panel context, placement selector, empty-canvas clearing, measure-button fallback, Add Component prefill, and `Salvesta` guards remain preserved.
+- Selection alone writes no canonical data.
 
 ## Visual First guardrails
 
@@ -40,7 +48,7 @@ Board Canvas right-side panel/menu remains the primary surface for normal compon
 
 Do not rebuild old standalone Add/Edit/Measure workflows as a new Board Canvas menu. Do not resurrect navigation-only gateway behavior, a four-card mode selector, `Komponendid` hub/card, `Uus komponent` / `Muuda andmeid` / `Paiguta` / `Mõõda` workflow menu, or table/form-filling UX inside Board Canvas.
 
-Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt and are not changed by this pass.
+Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt and were not changed by this implementation.
 
 ## Canonical split preserved
 
@@ -49,30 +57,30 @@ Old standalone Add/Edit/Measure-style pages remain transitional migration/remova
 - `component_visual_placement_confirmed` = visual placement confirmation
 - `measurement_recorded` = measurement write
 
-## Phase 1 typed selection scope
+## Explicit non-changes recorded
 
-Implementation may define:
+- No Riverpod/global provider extraction.
+- No pin/contact/pad/net/trace/measurement/electrical selection semantics.
+- No floating panel implementation.
+- No router or standalone page changes.
+- No writer/schema/materializer/validator/tool changes.
+- No canonical event changes.
+- No events.jsonl / known_facts.json semantic changes.
+- No `_incoming` use or staging.
+- No durable `screenAnchor` storage.
 
-- `CanvasSelection`
-- `EmptyCanvasSelection`
-- `ComponentPlacementSelection` carrying `placementKey`, `componentId`, and `canvasAnchor`
-- `selectedPlacementKey` compatibility getter/adapter for incremental migration
+## Candidate follow-ups, not active route
 
-Implementation must not include:
-
-- Riverpod/global provider extraction
-- pin/contact/pad/net/trace/measurement/electrical selection semantics
-- floating panel implementation
-- router or standalone page changes
-- writer/schema/materializer/validator/tool changes
-- canonical event changes
-- `_incoming` use or staging
-- any file outside the two-file implementation allowlist
+- Board Canvas right-panel component creation flow.
+- Board Canvas right-panel component metadata editing flow.
+- Standalone Add/Edit route migration/removal after right-panel replacements exist.
+- Standalone Measure route cleanup after right-panel measurement dependencies are verified.
+- Docs compaction / Visual First alignment only after the current runtime chain is fully closed.
 
 ## Scope gate rules
 
 - One narrow pass at a time.
 - Active implementation allowlists live in `docs/ACTIVE_SCOPE_LOCK.md`.
-- Runtime/test implementation may begin only after the active-lock sync pass arms exact files.
+- Runtime/test implementation may begin only after an active-lock sync pass arms exact files.
 - Do not stage, commit, or push from Codex unless explicitly requested.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

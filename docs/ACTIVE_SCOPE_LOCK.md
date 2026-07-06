@@ -4,70 +4,54 @@ Last updated: 2026-07-06
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Active lock state
 
-Docs-only implementation active-lock sync is active.
+No active implementation lock is armed.
 
-The runtime implementation lock is now armed for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
+The `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS` implementation lock is released by `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_POST_AUDIT_PASS`.
 
-## Write allowlist for this active-lock sync
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
-
-## Armed implementation pass
+## Released implementation pass
 
 `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
-## Exact implementation write allowlist
+Implementation commit recorded:
+
+- `9a9b3cfcabb7da7986595a8feafadf9966086d75` (`refactor: add typed board canvas selection`)
+
+Claude audit recorded for the implementation:
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+
+Safe implementation set:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-If implementation needs any additional file, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
+## Released allowlist
 
-## Live-code findings
+The prior implementation allowlist is no longer active:
 
-- Current Board Canvas selection is UI-local inside `_BoardCanvasScreenState`.
-- Existing compatibility state is raw placement-key based through `_selectedPlacementKey`.
-- Add Component placement context uses `_addComponentTemplatePlacementContextKey`.
-- Board Canvas screen contains placement entry, placement draft seeding, and canvas interaction plumbing suitable for a typed-selection adapter.
-- Board Canvas widget tests cover selection helpers, placement draft behavior, no-write assertions, writer boundaries, and canvas interaction source checks.
-- Live-code inspection did not justify arming files outside the Board Canvas screen and Board Canvas widget tests.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-## Locked Phase 1 architecture
+A future implementation pass must be separately scoped and actively armed before any runtime/test files may be edited.
 
-Implementation should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
+## Closed typed selection behavior
 
-Phase 1 allowed architecture:
-
-- UI-local state inside `_BoardCanvasScreenState`.
-- Component placement selection only.
-- `CanvasSelection` abstraction.
-- `EmptyCanvasSelection`.
-- `ComponentPlacementSelection` with `placementKey`, `componentId`, and `canvasAnchor`.
-- `selectedPlacementKey` compatibility getter/adapter for incremental migration.
-
-Phase 1 forbidden architecture:
-
-- No Riverpod/global provider extraction.
-- No pin/contact/pad/net/trace/measurement/electrical selection semantics.
-- No floating panel implementation.
-- No router or standalone page changes.
-- No writer/schema/materializer/validator/tool changes.
-- No canonical event changes.
-- No `_incoming` use or staging.
-- No storage of `screenAnchor` as durable selection state.
-- No edits outside the exact implementation write allowlist.
+- UI-local `CanvasSelection` model introduced.
+- `EmptyCanvasSelection` and `ComponentPlacementSelection` introduced.
+- `ComponentPlacementSelection` carries `placementKey`, `componentId`, and `canvasAnchor`.
+- `selectedPlacementKey` compatibility getter/adapter preserved.
+- Canvas hit-test selection migrated toward typed `ComponentPlacementSelection`.
+- Existing component selection, right-panel context, placement selector, empty-canvas clearing, measure fallback, Add Component prefill, and `Salvesta` guards preserved.
+- Selection alone writes no canonical data.
 
 ## Visual First rule retained
 
@@ -77,6 +61,8 @@ Board Canvas right-side panel/menu is the primary surface for normal component w
 
 Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendid` hub/card, old standalone workflow menu, or table/form-filling UX inside Board Canvas.
 
+Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt.
+
 ## Canonical boundary retained
 
 - UI selection must not create or imply canonical facts.
@@ -85,4 +71,4 @@ Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendi
 - Flutter must not directly mutate `known_facts.json`.
 - Visual placement must not create component identity.
 - Visual/contact draft state must not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
-- The accepted measurement/right-panel workflow remains accepted and must not be reworked by this scope-lock.
+- The accepted measurement/right-panel workflow remains accepted and was not reworked.

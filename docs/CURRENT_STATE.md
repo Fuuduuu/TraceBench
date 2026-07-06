@@ -1,47 +1,33 @@
 # Current State
 
 ## Current pass
-`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS`
-
-## Next recommended pass
 `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
+## Next recommended pass
+`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_PASS`
+
 ## Route status
-Docs-only product scope lock for the Board Canvas Visual First component workflow direction.
+Docs-only active-lock sync for the first small Visual First component workflow cleanup slice.
 
 Baseline verified from live git/docs:
-- Latest pushed closeout commit: `c072655 docs: close out aborted visual-first components workflow implementation`
-- Prior route before this scope lock: `NEEDS_USER_DECISION -> NEEDS_USER_DECISION`
+- Latest pushed scope-lock commit: `ecba121 docs: lock visual-first board canvas component workflow scope`
+- Prior route before this sync: `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS -> BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_ACTIVE_LOCK_SYNC_PASS`
 - Main is aligned with `origin/main`.
-- Tracked diff and cached diff were clean before this scope lock.
-- `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ABORT_CLOSEOUT_PASS` is pushed/recorded.
+- Tracked diff and cached diff were clean before this sync.
+- `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS` is pushed/recorded.
 
-This pass does not implement runtime UI, hide routes, delete screens, edit tests, or arm implementation files.
+This pass does not implement runtime UI, edit tests, hide routes, delete screens, or perform implementation work.
 
-## Product rule locked
+## Product rule carried forward
 VISUAL FIRST.
 
-All normal component work should happen in the Board Canvas right-side menu/panel:
-- measurement
+Board Canvas right-side panel/menu is the primary surface for normal component work:
 - component creation
 - component metadata editing
 - visual placement
+- measurement
 
-Old standalone Add/Edit/Measure-style pages are transitional debt. They must be removed or migrated through separately scoped passes, not duplicated in Board Canvas and not kept as the primary technician workflow.
-
-Do not return to table/form-filling UX.
-
-## Scope decisions
-1. Board Canvas right-side panel/menu is the primary component-work surface.
-2. Component creation belongs in the Board Canvas right-side panel/menu.
-3. Component metadata editing belongs in the Board Canvas right-side panel/menu.
-4. Visual placement remains Board Canvas-native.
-5. Measurement/right-panel workflow is accepted and must not be reworked in this scope.
-6. Old standalone Add/Edit/Measure-style pages are transitional debt and should be removed/migrated through scoped passes.
-7. Existing committed duplicate `Komponendid` hub/card UI is product debt and should be removed/replaced, not patched into another menu.
-8. No duplicate workflow menu.
-9. No route-out primary workflow.
-10. No table/form-filling regression.
+Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They are not the primary technician workflow and must not be duplicated inside Board Canvas.
 
 ## Canonical event split to preserve
 - `component_created` = component identity/existence creation
@@ -49,42 +35,50 @@ Do not return to table/form-filling UX.
 - `component_visual_placement_confirmed` = visual placement confirmation
 - `measurement_recorded` = measurement write
 
-## Measurement clarification
+## Live-code findings
+- The committed duplicate Board Canvas `Komponendid` hub/card UI is implemented inside `lib/features/board_canvas/screens/board_canvas_screen.dart`.
+- Board Canvas widget expectations for the hub/card UI live in `test/widget/board_canvas_screen_test.dart`.
+- The first safe cleanup slice can remove or replace the duplicate hub/card UI inside Board Canvas only.
+- Router, Project Overview, standalone Add Component, standalone Edit Component, Measure Sheet, writer services, schema, validator, materializer, events, known facts, samples, assets, and `_incoming` are not required for this first slice.
+- Existing placement controls and accepted measurement/right-panel behavior can remain untouched in the first slice.
+
+## First-slice implementation decision
+Arm only duplicate Board Canvas `Komponendid` hub/card cleanup.
+
+The future implementation should:
+- remove or replace the committed duplicate Board Canvas `Komponendid` hub/card UI
+- not replace it with another duplicate workflow selector
+- keep old standalone Add/Edit/Measure-style pages out of the primary technician workflow
+- preserve current placement controls
+- preserve accepted measurement/right-panel behavior
+- preserve `Salvesta` placement save behavior
+- preserve renderer/painter read-only boundaries
+- avoid standalone route deletion in this first slice
+
+Broader route/page retirement remains later scoped work after dependency verification and right-panel replacements.
+
+## Active implementation allowlist
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+## Measurement clarification carried forward
 The accepted measurement/right-panel workflow stays.
 
-This scope does not change measurement implementation. Only duplicate `Komponendid` hub/card measurement affordance and old standalone measurement route/surface debt may be marked for future removal or migration after dependency verification.
-
-## Phased migration strategy
-Phase A: remove or replace the committed duplicate Board Canvas `Komponendid` hub/card UI. Do not replace it with another duplicate workflow selector. Keep existing measurement/right-panel behavior and placement controls intact.
-
-Phase B: move or land component identity creation in the Board Canvas right-side panel. A future pass may use the `component_created` writer, but writer changes are not authorized by this scope lock.
-
-Phase C: move or land component metadata editing in the Board Canvas right-side panel. A future pass may use the `component_updated` writer, but writer changes are not authorized by this scope lock.
-
-Phase D: retire, hide, or remove old standalone Add/Edit/Measure routes/pages only after dependency verification and after right-panel replacements are confirmed. No deletion is authorized by this docs-only pass.
-
-## Expected first implementation slice candidate
-Likely first implementation candidate for the next active-lock sync to evaluate:
-- remove/replace duplicate Board Canvas `Komponendid` hub/card UI
-- preserve current placement controls
-- preserve accepted measurement/right-panel workflow
-- do not delete standalone routes yet unless the active-lock sync proves it is safe and explicitly scopes it
+The first cleanup slice must not rework measurement implementation. It may only remove/revise duplicate `Komponendid` hub/card measurement affordance if that affordance is part of the duplicate hub/card UI.
 
 ## Boundaries
 Future implementation must not:
 - rebuild old standalone forms inside Board Canvas
-- create a second workflow menu duplicating old pages
+- create another duplicate workflow menu
 - route technicians out of Board Canvas as primary workflow
 - change measurement implementation in the first cleanup slice
-- change writer services unless separately scoped
+- hide or delete old standalone routes in this first slice
+- change writer services
 - change event schema
 - change validator/materializer/tools
+- touch `events.jsonl` or `known_facts.json`
 - mutate `known_facts.json` directly from Flutter
-- touch `events.jsonl` or `known_facts.json` as sample truth
 - create identity from visual placement
 - create pins/contacts/pads/nets/traces/electrical facts from visual drafts
 - create AI-authored canonical facts
 - implement startup intro or use `_incoming` design handoffs
-
-## Implementation allowlist
-None armed in this pass.

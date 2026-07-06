@@ -4,45 +4,51 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-The `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` implementation is closed out and the active implementation lock is released.
+Docs-only product scope-lock is active for a future Board Canvas `Komponendid` workflow panel direction.
 
-No implementation pass is currently armed.
+No runtime, test, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this scope-lock.
 
-## Latest closeout
+## Scope intent
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS` records pushed implementation commit `129a1a87cf8c015f65b6bd5024fc160dcfd900e7` (`fix: clarify add edit and placement flow labels`).
+Board Canvas remains the primary technician-facing board/workbench surface. Component work should become more contextual to the selected board/component where practical.
 
-Recorded audit result:
+Future product direction may introduce a Board Canvas right-side/contextual `Komponendid` panel that coordinates component identity, metadata, visual placement, and component-related measurement entry while keeping canonical event boundaries separate.
 
-- `AUDIT_VERDICT: ACCEPT_AS_IS`
-- `SAFE_FOR_STAGING: YES`
-- Targeted tests: `151/151` passed.
-- Manual smoke: `OPTIONAL / not required`.
+## Current semantic split to preserve
 
-## Behavior recorded
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
 
-- Project Overview distinguishes component identity creation, component metadata edit, and Board Canvas visual placement confirmation.
-- Standalone Add Component copy now clearly means component identity/existence creation.
-- Standalone Edit Component copy now clearly means component metadata update.
-- Board Canvas `Lisa` / `Salvesta` remains visual placement confirmation for an existing component.
-- Routes remain working.
-- No routes/screens were hidden, deleted, or merged.
-- Writer/event semantics remain unchanged: `component_created`, `component_updated`, and `component_visual_placement_confirmed` are unchanged.
+## Locked direction
 
-## Known out-of-scope future direction
+- Standalone Add Component and Edit Component remain available transitional canonical writer flows for now.
+- Measure Sheet remains the current canonical measurement writer for now.
+- Board Graph remains advanced/debug projection inspection.
+- No routes/screens are hidden, deleted, or merged by this pass.
+- No writer semantics change is authorized by this pass.
+- No implementation allowlist is armed by this pass.
 
-A future Board Canvas `Komponendid` workflow panel may be considered later, but it is not armed or started by this closeout.
+## Future decision still needed
+
+A later product/implementation decision should choose whether the Board Canvas `Komponendid` workflow becomes:
+
+- A navigation hub to existing Add/Edit/Measure flows.
+- A true integrated right-panel workflow.
+- A phased hybrid: first hub/copy, then integrated writer surfaces.
+- Not pursued yet.
 
 ## Boundary confirmation
 
-- No files are armed after closeout.
-- No writer service, router path, schema, validator, materializer, tool, event, `known_facts.json`, sample, asset, Project Open From Directory, rotation normalization, projection-stale, canonical-bounds, or `_incoming` behavior change is recorded by this closeout.
+- This pass is docs-only.
+- Future implementation must be separately scope-locked and active-lock synced before files are armed.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

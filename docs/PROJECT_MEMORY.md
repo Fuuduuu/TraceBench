@@ -284,3 +284,57 @@ Future implementation constraints:
 - Do not change writer/schema/events/known_facts behavior.
 - Do not create or mutate canonical facts.
 - Do not alter projection/materializer semantics.
+
+## Board Canvas Komponendid workflow panel scope lock
+
+Owner pass: `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`.
+
+Locked product direction:
+
+- Board Canvas is the primary technician-facing board/workbench surface.
+- Component work should be contextual to the selected board/component where practical.
+- A future Board Canvas `Komponendid` panel may coordinate identity, metadata, visual placement, and component-related measurement entry.
+- Standalone Add Component and Edit Component remain transitional canonical writer flows until a V2 replacement exists.
+- Measure Sheet remains the current canonical measurement writer until a Board Canvas measurement workflow is separately scoped and accepted.
+- Board Graph remains advanced/debug projection inspection.
+- No route hiding, screen deletion, writer merge, or writer semantics change is authorized by this scope-lock.
+
+Canonical boundaries to preserve:
+
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
+
+Current flow map:
+
+- Project Overview / Workbench routes to standalone Add Component, standalone Edit Component, Board Canvas, Measure Sheet, Board Graph, and projection/list views.
+- Standalone Add Component owns component identity/existence creation through `component_created`.
+- Standalone Edit Component owns component metadata update through `component_updated`.
+- Board Canvas owns selected-component visual placement confirmation through `component_visual_placement_confirmed`.
+- Measure Sheet owns measurement entry through `measurement_recorded`.
+- Board Graph remains advanced/debug projection inspection and must not create canonical facts.
+
+Proposed future Board Canvas `Komponendid` flow map:
+
+- `Vali komponent`: select or anchor component context.
+- `Loo komponent`: identity/existence creation through `component_created`.
+- `Muuda andmeid`: metadata update through `component_updated`.
+- `Paiguta / kinnita visuaalne paigutus`: visual placement confirmation through `component_visual_placement_confirmed`.
+- `Mõõda komponenti`: component-related measurement through measurement flow and `measurement_recorded`.
+- `Vaata seotud mõõtmisi`: projection/read-only summary.
+
+Future product decision still needed before implementation:
+
+- `A`: a navigation hub to existing Add/Edit/Measure flows.
+- `B`: a true integrated right-panel workflow.
+- `C`: a phased hybrid: first hub/copy, then integrated writer surfaces.
+- `D`: not pursued yet.
+
+Future implementation constraints:
+
+- The next active-lock sync must inspect live code and arm exact files.
+- Do not create identity from visual placement.
+- Do not create pins, contacts, pads, nets, traces, or electrical facts from visual marker drafts.
+- Do not create AI-authored canonical facts.
+- Do not change writer services, event schema, validator/materializer/tools, `events.jsonl`, `known_facts.json`, Project Open From Directory, rotation normalization, projection-stale policy, canonical-bounds guard, Add/Edit writer behavior, Board Canvas placement writer behavior, or measurement writer behavior without separate scope.

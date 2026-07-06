@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-No active pass is armed. The Add/Edit Component legacy-flow labeling implementation is closed out.
+The current pass is a docs-only product scope-lock for a future Board Canvas `Komponendid` workflow panel direction.
 
 ## Current accepted placement chain
 
@@ -25,33 +25,36 @@ No active pass is armed. The Add/Edit Component legacy-flow labeling implementat
 | 5 | `BOARD_CANVAS_EXPLICIT_WRITE_STATUS_COPY_IMPL_PASS` | Clarified Board Canvas copy: renderer/painter are read-only, but explicit panel save may write canonical placement events. |
 | 6 | `PLACEMENT_DRAFT_CANONICAL_BOUNDS_GUARD_IMPL_PASS` | Blocked invalid `board_normalized` placement drafts before writer call with clear UI copy. |
 | 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
+| 8 | `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` | Clarified Project Overview, standalone Add Component, standalone Edit Component, and Board Canvas copy so identity creation, metadata edit, and visual placement confirmation are not confused. |
 
-## Add/Edit/Board Canvas labeling sequence
+## Board Canvas `Komponendid` workflow direction
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_SCOPE_LOCK_PASS` locked the product taxonomy:
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS` locks product direction only.
 
-- `component_created` = component identity/existence creation.
-- `component_updated` = component metadata update.
-- `component_visual_placement_confirmed` = visual placement/documentation confirmation.
+Current flow map:
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_ACTIVE_LOCK_SYNC_PASS` armed `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` with the exact implementation allowlist.
+- Project Overview / Workbench routes users to standalone Add Component, standalone Edit Component, Board Canvas, Measure Sheet, Board Graph, and projection/list surfaces.
+- Standalone Add Component writes `component_created` for explicit human component identity/existence creation.
+- Standalone Edit Component writes `component_updated` for explicit human component metadata updates.
+- Board Canvas `Lisa` / `Salvesta` writes `component_visual_placement_confirmed` for visual placement confirmation of an existing selected component.
+- Measure Sheet writes `measurement_recorded` and remains the current canonical measurement writer.
+- Board Graph remains advanced/debug projection inspection and must not create canonical facts.
 
-`ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` was pushed as `129a1a87cf8c015f65b6bd5024fc160dcfd900e7` (`fix: clarify add edit and placement flow labels`) and is closed out by `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_POST_AUDIT_PASS`.
+Proposed future `Komponendid` flow map:
 
-Accepted result:
+- `Vali komponent` selects or anchors component context on Board Canvas.
+- `Loo komponent` leads to identity/existence creation through `component_created`.
+- `Muuda andmeid` leads to metadata update through `component_updated`.
+- `Paiguta / kinnita visuaalne paigutus` confirms placement through `component_visual_placement_confirmed`.
+- `Mõõda komponenti` starts component-related measurement through the measurement flow and `measurement_recorded`.
+- `Vaata seotud mõõtmisi` shows projection/read-only measurement summary.
 
-- Project Overview distinguishes component identity creation, component metadata edit, and Board Canvas visual placement confirmation.
-- Standalone Add Component copy clearly means component identity/existence creation.
-- Standalone Edit Component copy clearly means component metadata update.
-- Board Canvas `Lisa` / `Salvesta` remains visual placement confirmation for an existing component.
-- Routes remain working.
-- No routes/screens were hidden, deleted, or merged.
-- Writer/event semantics remain unchanged for `component_created`, `component_updated`, and `component_visual_placement_confirmed`.
+Product decision still needed before implementation:
 
-Known future product direction:
-
-- A Board Canvas `Komponendid` workflow panel may be considered later.
-- That direction is out of scope for this closeout and is not armed here.
+- `A` navigation hub to existing Add/Edit/Measure flows.
+- `B` true integrated right-panel workflow.
+- `C` phased hybrid: first hub/copy, then integrated writer surfaces.
+- `D` do not pursue yet.
 
 ## Scope gate rules
 

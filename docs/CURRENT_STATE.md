@@ -4,50 +4,65 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS`
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS`
 
 ## Route status
 
-Docs-only product scope-lock is active for selected-placement visual draft prefill behavior.
+Docs-only active-lock sync is active for the selected-placement edit/prefill implementation pass.
 
-No implementation files are armed by this pass. The next active-lock sync must inspect live code and arm the exact implementation allowlist if this direction is accepted.
+This pass arms the implementation allowlist only. It does not implement runtime behavior and does not edit tests.
 
 ## Latest accepted baseline
 
 `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` closed out pushed implementation commit `2d08eb6464c4a0edf6eef886accfcc5836a4f912` (`feat: add board canvas components workflow hub`).
 
-Recorded baseline behavior:
+Current scope-lock commit in live git log:
 
-- Board Canvas Add Component / `Lisa` panel includes a read-only `Komponendid` hub card.
-- Board Canvas `Salvesta` remains visual placement confirmation for an existing selected component.
-- Existing `Salvesta` behavior, placement writer invocation, required-label guard, canonical-bounds guard, rotation normalization, and projection-stale behavior remain unchanged.
-- Board Canvas renderer/painter remains read-only.
+- `3596e1a` (`docs: lock selected placement edit prefill scope`)
 
-## Scope-lock question
+## Implementation pass armed
 
-When a technician selects a component/placement on the Board Canvas and opens `Lisa` / Add Component, the selected placement context should carry into the right-panel visual placement draft/editor instead of feeling like a blank template-only flow.
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS`
 
-This pass locks product intent only; it does not implement runtime behavior.
+Exact implementation allowlist:
 
-## Locked product intent
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-- Board Canvas visual placement work is for existing selected components.
-- Selection context should not be lost when opening the placement/draft panel.
-- Existing placement data may seed local draft fields where safe.
-- Draft seeding is UI-local and writes nothing.
-- `Salvesta` remains the only canonical placement write trigger.
-- No component identity is created from visual placement.
-- No pins, contacts, pads, nets, traces, or electrical facts are created from visual placement drafts.
-- Standalone Add/Edit Component identity/metadata flows remain separate.
+## Live-code findings
+
+- Board Canvas owns the selected placement context, the Add Component / `Lisa` rail, local draft fields, save guards, and placement writer call site.
+- `_selectedPlacementKey` is the volatile Board Canvas selection key.
+- `_addComponentTemplatePlacementContextKey` carries the selected existing placement/component context into the Add Component panel.
+- The panel already renders `Valitud komponent: ...` or `Valitud komponent: puudub`.
+- Draft label, width, height, rotation, center, template, and save guard behavior are implemented in `lib/features/board_canvas/screens/board_canvas_screen.dart` and covered by `test/widget/board_canvas_screen_test.dart`.
+- The placement writer contract is already established and does not need to change for this pass.
+
+## Implementation requirement summary
+
+The implementation pass must seed or prefill the Board Canvas visual placement draft from the currently selected existing placement where safe.
+
+It must preserve:
+
+- selected existing component as the required placement-confirm context
+- UI-local draft seeding and draft edits until explicit `Salvesta`
+- `Salvesta` as the only canonical placement write trigger
+- existing required-label, canonical-bounds, local-folder, projection-stale, and rotation-normalization behavior
+- Board Canvas renderer/painter read-only boundary
+
+Critical stale-projection requirement:
+
+- The implementation must not prefill from stale older placement data.
+- Tests must prove the selected draft uses the current/latest placement value intended by the app projection, including the V1/V2 stream-order hazard recorded by placement projection ordering work.
 
 ## Boundary confirmation
 
-- Docs-only pass.
-- Do not edit runtime or tests.
-- Do not arm implementation allowlist in this pass.
-- Do not change placement writer contract, event schema, validator/materializer/tools, events/known_facts semantics, Project Open From Directory, rotation normalization, projection-stale policy, canonical-bounds guard, required-label guard, Add/Edit identity/metadata writers, or measurement writer behavior.
+- Docs-only active-lock sync.
+- No runtime files edited.
+- No test files edited.
+- No placement writer, Add/Edit Component standalone, Project Overview, project-open, route, schema, validator, materializer, event, `known_facts.json`, sample, asset, or `_incoming` file is armed or edited by this sync.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

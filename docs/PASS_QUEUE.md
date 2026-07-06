@@ -4,17 +4,17 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS`
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS`
 
 ## Route status
 
-The current pass is a docs-only product scope-lock for selected-placement visual draft prefill behavior in Board Canvas.
+The current pass is a docs-only active-lock sync for selected-placement visual draft prefill behavior in Board Canvas.
 
-No implementation allowlist is armed in this pass. The next active-lock sync must read live code and arm exact files if the scope-lock is accepted.
+It arms the exact implementation allowlist for `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS`; no runtime or test implementation is performed in this sync.
 
 ## Current accepted placement chain
 
@@ -30,50 +30,70 @@ No implementation allowlist is armed in this pass. The next active-lock sync mus
 | 8 | `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` | Clarified Project Overview, standalone Add Component, standalone Edit Component, and Board Canvas copy so identity creation, metadata edit, and visual placement confirmation are not confused. |
 | 9 | `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS` | Added a read-only Board Canvas `Komponendid` hub card that explains component identity, metadata, placement, and measurement write domains without adding writer calls or route changes. |
 
-## Selected placement edit/prefill scope-lock
+## Selected placement edit/prefill active-lock sync
 
-`SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS` locks the intended behavior for opening a Board Canvas visual placement draft from a selected existing component/placement.
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS` arms `SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_PASS`.
 
-Product problem:
+Scope-lock source:
 
-- A technician can select a component/placement on the Board Canvas and open `Lisa` / Add Component.
-- The current flow carries selected component context for save guards, but the panel can still feel like a blank shape/template choice flow.
-- User expectation is that selected board/component context should carry meaningful placement context into the right-panel draft/editor.
+- `3596e1a` (`docs: lock selected placement edit prefill scope`)
+- `docs/audit/SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS.md`
 
-Current live-code findings:
-
-- `_selectedPlacementKey` is the volatile Board Canvas selection key.
-- Selection handlers update both `_selectedPlacementKey` and `_addComponentTemplatePlacementContextKey`.
-- Opening the Add Component rail captures the current coerced selected key into `_addComponentTemplatePlacementContextKey`.
-- The save context copy renders `Valitud komponent: ...` or `Valitud komponent: puudub`.
-- `Salvesta` is guarded by selected component context, required label, canonical bounds, and local project folder.
-- Local draft width, height, rotation, center, template, and label state remain in-memory until explicit `Salvesta`.
-- Existing tests cover selected context, no-preselect guard, invalid board-normalized guards, writer invocation, and volatile draft behavior.
-
-Locked product behavior:
-
-- Selected component/placement context should prefill or seed visual placement draft state where safe.
-- If selected placement data exists, future UI may open directly into an edit-like placement draft rather than a blank template-only flow.
-- The user should still be able to choose/change template/shape locally before save.
-- This is visual placement editing/confirmation for an existing component, not standalone Add Component identity creation.
-- Later copy may prefer `Muuda paigutust` / `Paiguta` wording over generic `Lisa`, but naming is not implemented in this pass.
-- All draft edits remain UI-local until explicit `Salvesta`.
-
-Future implementation expectations:
-
-- Preserve selected placement context when opening the panel.
-- Prefill template/shape/size/rotation/center from selected placement where safe.
-- Show clear copy that this is visual placement editing/confirmation.
-- Still allow changing template/shape locally before save.
-- Keep draft edits, `Kustuta`, `Tühista`, and navigation no-write.
-- Keep `Salvesta` guarded by selected component, label, bounds, and folder-backed project.
-
-Likely future implementation surfaces to inspect later:
+Exact implementation allowlist:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Do not assume these are sufficient. The next active-lock sync must inspect live code and arm the exact allowlist.
+Live-code findings:
+
+- Board Canvas owns selected placement state, Add Component / `Lisa` panel state, local visual draft fields, guard copy, and the placement save call site.
+- `_selectedPlacementKey` is the volatile canvas/list selection key.
+- `_addComponentTemplatePlacementContextKey` carries selected existing placement context into the panel.
+- Opening the Add Component rail captures the current coerced selected key into `_addComponentTemplatePlacementContextKey`.
+- The panel already shows `Valitud komponent: ...` / `Valitud komponent: puudub` and guards `Salvesta` by selected component, required label, canonical bounds, and folder-backed project.
+- Board Canvas widget tests already cover the relevant selection, guard, save, local-only draft, and no-write paths.
+- No placement writer, standalone Add/Edit Component, Project Overview, Project Open From Directory, router, schema, validator, materializer, event, `known_facts.json`, sample, asset, or `_incoming` file is required for this implementation.
+
+Implementation goal:
+
+- When a technician selects an existing placement/component and opens the Board Canvas visual placement draft panel, seed or prefill the UI-local draft from the selected placement where safe.
+- Preserve selected component context and make the panel feel edit-like for the selected placement rather than blank template-only.
+- Continue allowing local template/shape/size/rotation changes before explicit save.
+
+Critical V1/V2 stale placement hazard:
+
+- Prefill must use the current/latest placement value represented by the app projection, not a stale older placement for the same component.
+- The implementation pass must verify selected entry/source selection against the latest-wins placement projection semantics established by the placement projection ordering work.
+- Tests must include a case proving a selected component with older V1 and newer V2 placement history pre-fills from the intended current/latest placement, not from an older stale value.
+
+Required tests for implementation:
+
+- canvas/list select component or placement -> open Add Component / `Lisa` panel keeps selected context
+- selected placement seeds draft center/size/rotation/template where available
+- prefilled draft writes nothing before `Salvesta`
+- changing template/size/rotation remains UI-local until save
+- `Salvesta` still emits exactly one `component_visual_placement_confirmed` when valid
+- no selected component remains guarded
+- missing label, invalid bounds, and missing folder guards still work
+- V1/V2 stale placement hazard is covered by a focused fixture/test
+- standalone Add/Edit identity/metadata behavior is not changed
+
+Forbidden surfaces for implementation:
+
+- no placement writer contract changes
+- no event schema changes
+- no validator/materializer/tool changes
+- no `events.jsonl` or `known_facts.json` semantic changes
+- no Project Open From Directory changes
+- no rotation normalization changes
+- no projection-stale policy changes
+- no canonical-bounds guard weakening
+- no required-label guard weakening
+- no Add/Edit Component identity/metadata writer changes
+- no measurement writer changes
+- no identity creation from visual placement
+- no pins/contacts/pads/nets/traces/electrical facts from visual marker drafts
+- no AI-authored canonical facts
 
 ## Scope gate rules
 

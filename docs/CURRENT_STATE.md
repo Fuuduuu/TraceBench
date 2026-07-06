@@ -4,51 +4,43 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`
 
 ## Route status
 
-Docs-only product scope-lock is active for a future Board Canvas `Komponendid` workflow panel direction.
+Docs-only active-lock sync is active for the future Board Canvas `Komponendid` workflow panel implementation pass.
 
-No runtime, test, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits are authorized by this scope-lock.
+Implementation shape decision: `A` / small Board Canvas right-panel hub-and-copy slice first.
 
-## Scope intent
+## Armed implementation allowlist
 
-Board Canvas remains the primary technician-facing board/workbench surface. Component work should become more contextual to the selected board/component where practical.
+The next implementation pass may edit exactly:
 
-Future product direction may introduce a Board Canvas right-side/contextual `Komponendid` panel that coordinates component identity, metadata, visual placement, and component-related measurement entry while keeping canonical event boundaries separate.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-## Current semantic split to preserve
+No other runtime, test, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` files are armed.
 
-- `component_created` = component identity/existence creation.
-- `component_updated` = component metadata update.
-- `component_visual_placement_confirmed` = visual placement confirmation.
-- `measurement_recorded` = measurement write.
+## Implementation goal
 
-## Locked direction
+Introduce a small Board Canvas `Komponendid` workflow panel/hub treatment that makes component workflow roles visible around the selected board/component without merging writer semantics.
 
-- Standalone Add Component and Edit Component remain available transitional canonical writer flows for now.
-- Measure Sheet remains the current canonical measurement writer for now.
-- Board Graph remains advanced/debug projection inspection.
-- No routes/screens are hidden, deleted, or merged by this pass.
-- No writer semantics change is authorized by this pass.
-- No implementation allowlist is armed by this pass.
+The first implementation should label or group these roles in Board Canvas:
 
-## Future decision still needed
-
-A later product/implementation decision should choose whether the Board Canvas `Komponendid` workflow becomes:
-
-- A navigation hub to existing Add/Edit/Measure flows.
-- A true integrated right-panel workflow.
-- A phased hybrid: first hub/copy, then integrated writer surfaces.
-- Not pursued yet.
+- component identity/existence creation remains `component_created` via standalone Add Component flow.
+- component metadata update remains `component_updated` via standalone Edit Component flow.
+- selected-component visual placement confirmation remains `component_visual_placement_confirmed` via Board Canvas `Lisa` / `Salvesta`.
+- component measurement remains `measurement_recorded` via Measure Sheet flow.
 
 ## Boundary confirmation
 
-- This pass is docs-only.
-- Future implementation must be separately scope-locked and active-lock synced before files are armed.
-- Do not use `git add .`, `git add -A`, or `git commit -am`.
+- Board Canvas remains the primary technician-facing board/workbench surface.
+- Existing explicit Board Canvas placement save behavior remains unchanged.
+- Existing standalone Add/Edit and Measure Sheet writer behavior remains unchanged.
+- If implementation requires Project Overview, Add/Edit screens, Measure Sheet, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
+- If implementation requires a broader product choice than the small Board Canvas hub/copy slice, stop and report `BLOCKED_PRODUCT_DECISION`.
+- Do not stage, commit, or push.

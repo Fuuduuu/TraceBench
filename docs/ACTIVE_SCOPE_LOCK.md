@@ -2,29 +2,53 @@
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`
 
 ## Mode
 
-Docs-only product scope-lock.
+Docs-only active-lock sync.
 
-## Implementation pass not armed
+## Implementation pass armed
 
-No implementation files are armed by this pass.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`
 
-The next active-lock sync must inspect live code and decide the exact implementation allowlist before any runtime/test changes.
+## Implementation-shape decision
 
-## Locked product intent
+`A` / small Board Canvas right-panel hub-and-copy slice first.
 
-- Board Canvas is the primary technician-facing board/workbench surface.
-- Component work should be contextual to the selected board/component where practical.
-- A future Board Canvas `Komponendid` panel may coordinate identity, metadata, visual placement, and component-related measurement entry.
-- Standalone Add Component and Edit Component remain transitional canonical writer flows until a V2 replacement exists.
-- No route hiding, route deletion, screen deletion, writer merge, or writer semantics change is authorized by this pass.
+Rationale from live code:
+
+- Project Overview already exposes distinct routes/actions for Add Component, Edit Component, Board Canvas, Measure Sheet, and Board Graph.
+- Standalone Add Component already owns `component_created` identity/existence writing.
+- Standalone Edit Component already owns `component_updated` metadata writing.
+- Measure Sheet already owns `measurement_recorded` writing.
+- Board Canvas already owns the selected-component visual-placement draft/save panel and `component_visual_placement_confirmed` writer call.
+- A first Board Canvas-only hub/copy slice can improve product clarity without broad routing, writer, or screen changes.
+
+## Exact implementation allowlist
+
+The implementation pass may edit exactly:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+No other files are armed.
+
+## Implementation goal
+
+Add or refine a Board Canvas `Komponendid` workflow panel/hub treatment that is contextual to the selected board/component and makes the component workflow split visible.
+
+The implementation may:
+
+- add/relabel a compact `Komponendid` area in the Board Canvas right panel or contextual panel.
+- present workflow entries/copy for component identity creation, metadata editing, visual placement confirmation, component measurement, and related measurement viewing.
+- point users toward existing flows semantically without changing those flows.
+- keep Board Canvas visual placement draft/save behavior intact.
+- update Board Canvas widget tests for copy, visibility, guard behavior, and no-write paths.
 
 ## Canonical event boundaries to preserve
 
@@ -33,60 +57,37 @@ The next active-lock sync must inspect live code and decide the exact implementa
 - `component_visual_placement_confirmed` = visual placement confirmation.
 - `measurement_recorded` = measurement write.
 
-## Current flow map
+## Future implementation must preserve
 
-- Project Overview routes to Add Component, Edit Component, Board Canvas, Measure Sheet, Board Graph, and projection/list views.
-- Standalone Add Component owns component identity/existence creation through `component_created`.
-- Standalone Edit Component owns component metadata update through `component_updated`.
-- Board Canvas owns selected-component visual placement confirmation through `component_visual_placement_confirmed`.
-- Measure Sheet owns measurement entry through `measurement_recorded`.
-- Board Graph is advanced/debug projection inspection.
-
-## Future implementation may later consider
-
-- Board Canvas screen changes for a `Komponendid` right-panel/contextual workflow.
-- Project Overview navigation/copy changes for routing component work toward Board Canvas.
-- Add/Edit Component screen adapters or transitional route links.
-- Measure Sheet links for component-related measurement starts.
-- Related widget tests.
-
-These surfaces are not armed in this scope-lock.
-
-## Future implementation must not
-
-- Change writer services unless separately armed.
-- Change event schema.
-- Change validator/materializer/tools.
-- Change `events.jsonl` or `known_facts.json` semantics.
-- Change Project Open From Directory behavior.
-- Change rotation normalization.
-- Change projection-stale policy.
-- Change canonical bounds guard behavior.
-- Change measurement writer behavior.
-- Change Add/Edit Component writer behavior.
-- Change Board Canvas placement writer behavior.
-- Create component identity from visual placement.
-- Create pins, contacts, pads, nets, traces, or electrical facts from visual marker drafts.
-- Create AI-authored canonical facts.
-- Hide routes.
-- Delete screens.
-- Merge writer semantics.
+- Board Canvas remains the primary technician-facing board/workbench surface.
+- Board Canvas renderer/painter remains read-only.
+- `Salvesta` remains the only canonical placement write trigger inside the Board Canvas placement panel.
+- Draft edits, preview changes, `Kustuta`, `Tühista`, and navigation write nothing.
+- Existing placement writer contract, projection-stale policy, rotation normalization, canonical-bounds guard, and Project Open From Directory behavior remain unchanged.
+- Standalone Add/Edit Component and Measure Sheet writer behavior remains unchanged.
+- No component identity is created from visual placement.
+- No pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions are created by component workflow copy/hub UI.
 
 ## Explicitly not armed
 
-- `lib/`
-- `test/`
-- `tools/`
-- `schemas/`
+- `lib/features/project/screens/project_overview_screen.dart`
+- `lib/features/components/screens/add_component_screen.dart`
+- `lib/features/components/screens/edit_component_screen.dart`
+- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+- router/app files
+- writer/service files
+- schema files
+- validator/materializer/tool files
 - `events.jsonl`
 - `known_facts.json`
+- samples/assets
 - `_incoming`
 
-## Stop conditions for next pass
+## Stop conditions for implementation
 
-Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if future implementation requires files outside the active-lock allowlist set by the next sync pass.
+Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside the exact allowlist.
 
-Stop and report `BLOCKED_PRODUCT_DECISION` if implementation requires choosing between hub, integrated panel, phased hybrid, or not-pursued direction without a recorded decision.
+Stop and report `BLOCKED_PRODUCT_DECISION` if implementation requires a broader integrated writer panel, route hiding/deletion, writer merge, or non-copy navigation architecture decision.
 
 ## Staging
 

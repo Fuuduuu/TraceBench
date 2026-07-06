@@ -4,15 +4,15 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`
 
 ## Route status
 
-The current pass is a docs-only product scope-lock for a future Board Canvas `Komponendid` workflow panel direction.
+The current pass is a docs-only active-lock sync arming the first narrow Board Canvas `Komponendid` workflow panel implementation slice.
 
 ## Current accepted placement chain
 
@@ -27,34 +27,25 @@ The current pass is a docs-only product scope-lock for a future Board Canvas `Ko
 | 7 | `ADD_COMPONENT_DRAFT_LABEL_REQUIRED_COPY_IMPL_PASS` | Made the missing required Add Component draft label/name reason visible while keeping `Salvesta` disabled and writer uninvoked until the label is entered. |
 | 8 | `ADD_EDIT_COMPONENT_LEGACY_FLOW_LABELING_IMPL_PASS` | Clarified Project Overview, standalone Add Component, standalone Edit Component, and Board Canvas copy so identity creation, metadata edit, and visual placement confirmation are not confused. |
 
-## Board Canvas `Komponendid` workflow direction
+## Board Canvas `Komponendid` workflow implementation lock
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_SCOPE_LOCK_PASS` locks product direction only.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS` arms `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`.
 
-Current flow map:
+Implementation-shape decision: `A` / small Board Canvas right-panel hub-and-copy slice first.
 
-- Project Overview / Workbench routes users to standalone Add Component, standalone Edit Component, Board Canvas, Measure Sheet, Board Graph, and projection/list surfaces.
-- Standalone Add Component writes `component_created` for explicit human component identity/existence creation.
-- Standalone Edit Component writes `component_updated` for explicit human component metadata updates.
-- Board Canvas `Lisa` / `Salvesta` writes `component_visual_placement_confirmed` for visual placement confirmation of an existing selected component.
-- Measure Sheet writes `measurement_recorded` and remains the current canonical measurement writer.
-- Board Graph remains advanced/debug projection inspection and must not create canonical facts.
+Exact implementation allowlist:
 
-Proposed future `Komponendid` flow map:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-- `Vali komponent` selects or anchors component context on Board Canvas.
-- `Loo komponent` leads to identity/existence creation through `component_created`.
-- `Muuda andmeid` leads to metadata update through `component_updated`.
-- `Paiguta / kinnita visuaalne paigutus` confirms placement through `component_visual_placement_confirmed`.
-- `Mõõda komponenti` starts component-related measurement through the measurement flow and `measurement_recorded`.
-- `Vaata seotud mõõtmisi` shows projection/read-only measurement summary.
+The implementation should make Board Canvas component workflow roles visible without moving or merging writers:
 
-Product decision still needed before implementation:
+- `Loo komponent` / identity creation remains the standalone Add Component `component_created` flow.
+- `Muuda andmeid` / metadata update remains the standalone Edit Component `component_updated` flow.
+- `Paiguta` / visual placement confirmation remains the selected-component Board Canvas `component_visual_placement_confirmed` flow.
+- `Mõõda komponenti` / measurement remains the Measure Sheet `measurement_recorded` flow.
 
-- `A` navigation hub to existing Add/Edit/Measure flows.
-- `B` true integrated right-panel workflow.
-- `C` phased hybrid: first hub/copy, then integrated writer surfaces.
-- `D` do not pursue yet.
+If implementation requires Project Overview, Add/Edit screens, Measure Sheet, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
 
 ## Scope gate rules
 

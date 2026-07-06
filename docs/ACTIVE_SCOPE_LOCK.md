@@ -1,68 +1,88 @@
-# ACTIVE_SCOPE_LOCK
-
-Last updated: 2026-07-06
+# Active Scope Lock
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
 
-## Active lock state
+## Lock type
 
-No active implementation lock is armed.
+Docs-only build-lock / implementation allowlist sync.
 
-`BENCHBEEP_STARTUP_INTRO_IMPL_PASS` has been closed out by `BENCHBEEP_STARTUP_INTRO_IMPL_POST_AUDIT_PASS`.
+## Current pass write allowlist
 
-## Released implementation allowlist
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS.md`
 
-The following implementation files were recorded as the safe implementation set for the pushed startup intro pass, but they are no longer armed for further edits by this lock:
+## Armed implementation pass
 
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_splash_screen.dart`
-- `test/widget/benchbeep_splash_screen_test.dart`
+`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
 
-## Recorded implementation commit
+## Exact implementation write allowlist
 
-- `3c0f06a1cf29baaeefb4592bd5d159ff61e0b211`
-- `feat: add benchbeep startup intro`
+- `lib/main.dart`
+- `test/widget/fullscreen_launch_test.dart`
 
-## Review status
+No other runtime, test, docs, schema, tool, event, fact, platform, package, or `_incoming` file is armed.
 
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
-- Claude audit skipped/unavailable.
-- Reviewer path: GPT/Pro + Gemini advisory + user decision.
-- User approved proceeding without Claude after exact allowlist review and local validation.
+## Implementation goal
 
-Do not represent this implementation as Claude-audited.
+Request fullscreen / immersive startup before rendering `TraceBenchApp`.
 
-## Boundary retained
+Allowed implementation shape:
+- keep `WidgetsFlutterBinding.ensureInitialized()`
+- use Flutter SDK APIs only
+- request fullscreen / immersive mode before `runApp`
+- preserve `ProviderScope(child: TraceBenchApp())`
+- add a focused test for the startup-shell configuration if useful
 
-This was launcher presentation only.
+## Live-code findings recorded
 
-- No router changes.
-- No `/splash` route.
-- No `pubspec.yaml` changes.
-- No new assets or packages.
-- No font / Space Grotesk work.
-- No home lockup refresh.
-- No fullscreen implementation.
-- No Board Canvas workflow changes.
-- No standalone Add/Edit/Measure page edits.
-- No writer/schema/materializer/validator/tool changes.
-- No canonical event changes.
-- No `events.jsonl` / `known_facts.json` semantic changes.
-- No `_incoming` runtime reference or staging.
-- No duplicate old workflow menu/hub/card.
-- No table/form UX regression.
+- `lib/main.dart` currently only ensures widget binding and runs `ProviderScope(child: TraceBenchApp())`.
+- `TraceBenchApp` owns launcher/workbench UI in `lib/app/app.dart`.
+- `pubspec.yaml` currently has no desktop window/fullscreen package.
+- `windows/` is not a tracked implementation surface for this pass.
 
-## Product and canonical boundary retained
+## Required stop conditions
 
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- Flutter must not directly mutate `known_facts.json`.
-- Human is the sensor; AI is the graph engine.
-- Splash animation creates no facts and writes no events.
-- Visual First Board Canvas workflow remains unchanged.
+Report `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE` if real desktop fullscreen requires:
+- `pubspec.yaml`
+- a new dependency
+- `windows/`
+- native platform runner edits
+- platform-specific window-management code outside the allowlist
+
+Report `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside:
+- `lib/main.dart`
+- `test/widget/fullscreen_launch_test.dart`
+
+## Forbidden surfaces
+
+Do not change:
+- `pubspec.yaml`
+- packages/dependencies
+- platform runner files
+- `windows/`
+- router files
+- app route flow
+- splash implementation
+- home/workbench screens
+- Board Canvas
+- Add/Edit/Measure pages
+- writer services
+- schemas
+- validators/materializers/tools
+- events/facts semantics
+- `events.jsonl`
+- `known_facts.json`
+- `_incoming`
+
+## Product/canonical boundary
+
+This pass and its armed implementation are app-shell presentation only. They do not authorize canonical data changes, workflow changes, fact/event creation, or product-route changes.

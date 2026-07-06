@@ -1,5 +1,6 @@
 # AUDIT_INDEX.md
 
+| BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS | docs/audit/BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS.md | DRAFTED / PENDING CLAUDE AUDIT | Docs-only build-lock / implementation allowlist sync for BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS; records live startup-shell findings, SDK-only immersive/fullscreen decision, arms exact implementation allowlist lib/main.dart and test/widget/fullscreen_launch_test.dart, excludes pubspec/packages/platform runner/windows/router/app/splash/home/Board Canvas/writer/schema/tool/events/known_facts/_incoming changes, and routes directly to implementation. |
 Lazy-loading index for pass audit documents.
 
 ## Conventions

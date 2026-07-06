@@ -1,100 +1,43 @@
-# CURRENT_STATE
+# Current State
 
-Last updated: 2026-07-06
+Current pass: BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS
+Next recommended pass: BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS
 
-## Current route
+## Status
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Docs-only build-lock / implementation allowlist sync is active for BenchBeep fullscreen launch.
 
-## Active pass
+This pass records live startup-shell findings and arms the narrow implementation pass only. It does not implement fullscreen behavior.
 
-No active implementation lock is armed.
+## Build-lock decision
 
-`BENCHBEEP_STARTUP_INTRO_IMPL_PASS` has been pushed and closed out by `BENCHBEEP_STARTUP_INTRO_IMPL_POST_AUDIT_PASS`.
+BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS may request fullscreen / immersive startup before rendering `TraceBenchApp` using Flutter SDK APIs only.
 
-## Closeout summary
+Live-code findings recorded for the implementation pass:
+- `lib/main.dart` currently ensures Flutter widgets binding and runs `ProviderScope(child: TraceBenchApp())`.
+- `TraceBenchApp` owns launcher/workbench UI in `lib/app/app.dart`.
+- `pubspec.yaml` currently has no desktop window/fullscreen package.
+- `windows/` is untracked scratch on this host and is not an implementation surface for this pass.
 
-Pushed implementation recorded:
+Implementation decision:
+- SDK-only fullscreen/immersive request is allowed as a best-effort startup-shell change.
+- True Windows desktop-window fullscreen requiring a package, `pubspec.yaml`, platform runner, or `windows/` changes is not allowed in this pass and must stop as `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE`.
 
-- `3c0f06a1cf29baaeefb4592bd5d159ff61e0b211`
-- `feat: add benchbeep startup intro`
+## Armed implementation pass
 
-Review status:
+Implementation pass: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
 
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
-- Claude audit skipped/unavailable.
-- Reviewer path: GPT/Pro + Gemini advisory + user decision.
-- User approved proceeding without Claude after exact allowlist review and local validation.
+Exact implementation allowlist:
+- `lib/main.dart`
+- `test/widget/fullscreen_launch_test.dart`
 
-Safe implementation set recorded:
+Expected implementation shape:
+- keep `WidgetsFlutterBinding.ensureInitialized()` before `runApp`
+- request fullscreen / immersive mode before `runApp`
+- preserve `ProviderScope(child: TraceBenchApp())`
+- avoid route, splash, home, workbench, Board Canvas, writer, schema, tool, event, known_facts, `_incoming`, package, and platform-runner changes
 
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_splash_screen.dart`
-- `test/widget/benchbeep_splash_screen_test.dart`
+## Route
 
-Validation evidence recorded:
-
-- `validate_all.py`: PASS, per user terminal output before closeout.
-- `git status` / `git diff` / `git diff --cached` / `git diff --check`: clean for tracked/cached implementation state except known untracked scratch/design/local files.
-
-## Startup intro behavior now recorded
-
-- Added BenchBeep startup intro / splash.
-- Added `BenchBeepSplashScreen`.
-- Wired splash before the existing launcher home in `TraceBenchApp`.
-- Splash shows once per app process before the existing BenchBeep launcher.
-- Splash completion returns to the existing launcher home.
-- Existing launcher/workbench behavior is preserved.
-- Real `assets/brand/benchbeep_mark.png` branding is used rather than fake/generic placeholder icons.
-- Startup animation handoff was used as design input only.
-- `onComplete` is guarded to fire once.
-- Targeted widget tests cover splash rendering/completion behavior.
-- Scope remains presentation-only.
-
-## Explicit non-changes
-
-- No `router.dart` change.
-- No `/splash` route.
-- No `pubspec.yaml` change.
-- No new assets.
-- No new packages.
-- No font / Space Grotesk work.
-- No home lockup refresh.
-- No fullscreen implementation.
-- No Board Canvas changes.
-- No standalone Add/Edit/Measure page edits.
-- No writer/schema/materializer/validator/tool changes.
-- No canonical event changes.
-- No `events.jsonl` / `known_facts.json` semantic changes.
-- No `_incoming` runtime reference.
-- No `_incoming` or ZIP staging.
-- No duplicate old workflow menu/hub/card.
-- No table/form UX regression.
-
-## Product and canonical boundaries
-
-This was launcher presentation only.
-
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- Flutter must not directly mutate `known_facts.json`.
-- Human is the sensor; AI is the graph engine.
-- Splash animation creates no facts and writes no events.
-- Visual First Board Canvas workflow remains unchanged.
-
-## Candidate future work
-
-Candidates only, not active route:
-
-- fullscreen launch as a separate build-lock / implementation pass
-- home lockup refresh as a separate pass
-- docs compaction / Visual First alignment later
-- Board Canvas right-panel component creation flow
-- Board Canvas metadata edit flow
-
-## Operator reminders
-
-- Do not represent `BENCHBEEP_STARTUP_INTRO_IMPL_PASS` as Claude-audited.
-- Do not stage, commit, or push unless explicitly requested.
-- If staging is requested, stage exact files only.
+Current: `BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS`
+Next: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`

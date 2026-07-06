@@ -1,91 +1,57 @@
-# PASS_QUEUE
+# Pass Queue
 
-Last updated: 2026-07-06
+## Current route
 
-## Route
+Current: `BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS`
+Next: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+## Current focus
 
-## Latest closeout
+Docs-only build-lock / implementation allowlist sync for BenchBeep fullscreen launch.
 
-`BENCHBEEP_STARTUP_INTRO_IMPL_POST_AUDIT_PASS` closes out the pushed `BENCHBEEP_STARTUP_INTRO_IMPL_PASS` implementation and releases the active implementation lock.
+## Armed implementation
 
-Pushed implementation recorded:
+Implementation pass: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
 
-- `3c0f06a1cf29baaeefb4592bd5d159ff61e0b211`
-- `feat: add benchbeep startup intro`
+Exact implementation allowlist:
+- `lib/main.dart`
+- `test/widget/fullscreen_launch_test.dart`
 
-Review status recorded exactly:
+## Implementation intent
 
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
-- Claude audit skipped/unavailable.
-- Reviewer path: GPT/Pro + Gemini advisory + user decision.
-- User approved proceeding without Claude after exact allowlist review and local validation.
+Request fullscreen / immersive startup before rendering `TraceBenchApp`, using Flutter SDK APIs only.
 
-Safe implementation set:
+The implementation may update `lib/main.dart` to import `package:flutter/services.dart`, keep `WidgetsFlutterBinding.ensureInitialized()`, request `SystemChrome.setEnabledSystemUIMode(...)` before `runApp`, and preserve `ProviderScope(child: TraceBenchApp())`.
 
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_splash_screen.dart`
-- `test/widget/benchbeep_splash_screen_test.dart`
+The implementation may add a focused source/widget test in `test/widget/fullscreen_launch_test.dart` that proves the startup shell is configured without changing app routing, splash/home/workbench flows, packages, or platform runner files.
 
-## Behavior recorded
+## Stop conditions for implementation
 
-- BenchBeep startup intro / splash was added.
-- `BenchBeepSplashScreen` was added.
-- Splash is wired before the existing launcher home in `TraceBenchApp`.
-- Splash shows once per app process before the existing BenchBeep launcher.
-- Splash completion returns to the existing launcher home.
-- Existing launcher/workbench behavior is preserved.
-- Real `assets/brand/benchbeep_mark.png` branding is used.
-- Startup animation handoff was used as design input only.
-- `onComplete` is guarded to fire once.
-- Targeted widget test coverage was added.
-- Scope remains presentation-only.
+Stop and report `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE` if the requested desktop fullscreen behavior requires:
+- a new package
+- `pubspec.yaml`
+- `windows/`
+- native platform runner edits
+- app/router/splash/home/feature workflow changes
 
-## Explicit non-changes
+Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if any file outside the armed allowlist is required.
 
-- No `router.dart` change.
-- No `/splash` route.
-- No `pubspec.yaml` change.
-- No new assets or packages.
-- No font / Space Grotesk work.
-- No home lockup refresh.
-- No fullscreen implementation.
-- No Board Canvas changes.
-- No standalone Add/Edit/Measure page edits.
-- No writer/schema/materializer/validator/tool changes.
-- No canonical event changes.
-- No `events.jsonl` / `known_facts.json` semantic changes.
-- No `_incoming` runtime reference or staging.
-- No duplicate old workflow menu/hub/card.
-- No table/form UX regression.
+## Boundaries
 
-## Product and canonical boundaries retained
+This route is app-shell/window presentation only.
 
-This was launcher presentation only.
+Do not change:
+- runtime routes beyond `lib/main.dart`
+- splash implementation
+- home/workbench screens
+- Board Canvas
+- Add/Edit/Measure pages
+- writer/schema/materializer/validator/tool behavior
+- canonical events/facts
+- `events.jsonl`
+- `known_facts.json`
+- `_incoming`
 
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` remains projection/cache.
-- Flutter must not directly mutate `known_facts.json`.
-- Human is the sensor; AI is the graph engine.
-- Splash animation creates no facts and writes no events.
-- Visual First Board Canvas workflow remains unchanged.
+## Route after build-lock
 
-## Candidate future work
-
-Candidates only, not active route:
-
-- fullscreen launch as a separate build-lock / implementation pass
-- home lockup refresh as a separate pass
-- docs compaction / Visual First alignment later
-- Board Canvas right-panel component creation flow
-- Board Canvas metadata edit flow
-
-## Scope gate rules
-
-- One narrow pass at a time.
-- Active implementation allowlists live in `docs/ACTIVE_SCOPE_LOCK.md`.
-- Runtime/test implementation may begin only after an active lock arms exact files.
-- Do not stage, commit, or push from Codex unless explicitly requested.
-- Do not use `git add .`, `git add -A`, or `git commit -am`.
+Proceed directly to `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` after this build-lock is accepted and staged by the user.

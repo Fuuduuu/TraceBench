@@ -4,71 +4,114 @@ Last updated: 2026-07-06
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_STARTUP_INTRO_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_STARTUP_INTRO_IMPL_PASS`
 
 ## Active lock state
 
-No active implementation lock is armed.
+Docs-only build-lock / implementation allowlist sync is active.
 
-The `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS` implementation lock is released by `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_POST_AUDIT_PASS`.
+The runtime implementation lock is now armed for `BENCHBEEP_STARTUP_INTRO_IMPL_PASS`.
 
-## Released implementation pass
+## Write allowlist for this build-lock pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BENCHBEEP_STARTUP_INTRO_BUILD_LOCK_PASS.md`
 
-Implementation commit recorded:
+## Armed implementation pass
 
-- `9a9b3cfcabb7da7986595a8feafadf9966086d75` (`refactor: add typed board canvas selection`)
+`BENCHBEEP_STARTUP_INTRO_IMPL_PASS`
 
-Claude audit recorded for the implementation:
+## Exact implementation write allowlist
 
-- `AUDIT_VERDICT: ACCEPT_AS_IS`
-- `SAFE_FOR_STAGING: YES`
+- `lib/app/app.dart`
+- `lib/features/home/screens/benchbeep_splash_screen.dart`
+- `test/widget/benchbeep_splash_screen_test.dart`
 
-Safe implementation set:
+If implementation needs any additional file, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Verified design input
 
-## Released allowlist
+Design/provenance input only:
 
-The prior implementation allowlist is no longer active:
+- `_incoming/ui_redesign/TraceBench_startup_animation.zip`
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+Verified ZIP entries:
 
-A future implementation pass must be separately scoped and actively armed before any runtime/test files may be edited.
+- `codex/BENCHBEEP_LOGO_INTEGRATION.md`
+- `codex/README.md`
+- `codex/benchbeep_lockup.dart`
+- `codex/benchbeep_splash_screen.dart`
 
-## Closed typed selection behavior
+The implementation pass may use only the startup intro / splash material. It must not import, copy, or stage the ZIP or `_incoming` directory. It must not implement the lockup refresh.
 
-- UI-local `CanvasSelection` model introduced.
-- `EmptyCanvasSelection` and `ComponentPlacementSelection` introduced.
-- `ComponentPlacementSelection` carries `placementKey`, `componentId`, and `canvasAnchor`.
-- `selectedPlacementKey` compatibility getter/adapter preserved.
-- Canvas hit-test selection migrated toward typed `ComponentPlacementSelection`.
-- Existing component selection, right-panel context, placement selector, empty-canvas clearing, measure fallback, Add Component prefill, and `Salvesta` guards preserved.
-- Selection alone writes no canonical data.
+## Live-code findings
 
-## Visual First rule retained
+- `TraceBenchApp` is a `ConsumerStatefulWidget`.
+- `_TraceBenchAppState` owns local launcher/workbench transition state through `_showLauncher`.
+- When launcher is active, `TraceBenchApp.build` returns `MaterialApp(home: _buildLauncherHome(context))`.
+- Existing launcher home is `BenchBeepHomeScreen`.
+- The splash can be wired before the existing launcher without touching `lib/app/router.dart`.
+- `BenchBeepHomeScreen` already uses `assets/brand/benchbeep_mark.png`.
+- No new dependency, asset, font, or `pubspec.yaml` edit is expected.
 
-VISUAL FIRST.
+## Locked implementation intent
 
-Board Canvas right-side panel/menu is the primary surface for normal component work.
+Add a presentation-only startup intro that shows once per app process before the existing BenchBeep launcher home.
 
-Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendid` hub/card, old standalone workflow menu, or table/form-filling UX inside Board Canvas.
+Preferred implementation:
 
-Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt.
+- Add `BenchBeepSplashScreen` at `lib/features/home/screens/benchbeep_splash_screen.dart`.
+- Wire it in `lib/app/app.dart` using local `_TraceBenchAppState` state.
+- Use an in-memory bool such as `_showStartupIntro` or `_showSplash`.
+- If `_showLauncher` is true and the splash flag is true, show `BenchBeepSplashScreen`.
+- On splash completion, set the splash flag false and then show the existing launcher home.
+- Do not show the splash every time the user returns from workbench to home during the same app process.
+- Do not route through `/splash`.
+- Do not edit `router.dart`.
 
-## Canonical boundary retained
+## Test intent
 
-- UI selection must not create or imply canonical facts.
+- Add `test/widget/benchbeep_splash_screen_test.dart`.
+- Pump the splash with a short total duration.
+- Verify key startup text / visual identity renders.
+- Verify `onComplete` fires once after animation completes.
+- Verify repeat completion does not call the callback multiple times if practical.
+- If practical, add a source-level assertion that `app.dart` imports/wires `BenchBeepSplashScreen` without router changes.
+- Do not add broad brittle golden tests.
+
+## Strict exclusions
+
+- No router changes.
+- No old standalone Add/Edit/Measure page changes.
+- No writer/schema/materializer/validator/tool changes.
+- No canonical event changes.
+- No events.jsonl / known_facts.json semantic changes.
+- No `_incoming` use or staging.
+- No new assets.
+- No `pubspec.yaml` changes.
+- No new packages.
+- No Space Grotesk/font work.
+- No logo lockup refresh in this pass.
+- No Board Canvas workflow changes.
+- No Visual First rule changes.
+- No duplicate old workflow menu/hub/card.
+- No table/form UX regression.
+
+## Product and canonical boundary retained
+
+This is launcher presentation only.
+
+- It must not affect Board Canvas workflows, right-panel behavior, project data, canonical writes, or old route migration policy.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
 - Flutter must not directly mutate `known_facts.json`.
-- Visual placement must not create component identity.
-- Visual/contact draft state must not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
-- The accepted measurement/right-panel workflow remains accepted and was not reworked.
+- Human is the sensor; AI is the graph engine.
+- UI animation must not create or imply canonical facts.
+- No events or facts are written by the splash.

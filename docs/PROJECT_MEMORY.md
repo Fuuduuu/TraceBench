@@ -338,3 +338,15 @@ Future implementation constraints:
 - Do not create pins, contacts, pads, nets, traces, or electrical facts from visual marker drafts.
 - Do not create AI-authored canonical facts.
 - Do not change writer services, event schema, validator/materializer/tools, `events.jsonl`, `known_facts.json`, Project Open From Directory, rotation normalization, projection-stale policy, canonical-bounds guard, Add/Edit writer behavior, Board Canvas placement writer behavior, or measurement writer behavior without separate scope.
+
+## Selected placement edit/prefill scope lock
+
+`SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS` locks a future Board Canvas behavior direction: when a technician selects an existing component/placement and opens the Board Canvas visual placement draft panel, selection context should not be lost and existing placement data may seed local draft fields where safe.
+
+Boundaries:
+
+- Draft seeding is UI-local and writes nothing.
+- `Salvesta` remains the only canonical `component_visual_placement_confirmed` write trigger.
+- Visual placement must not create component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts.
+- Standalone Add/Edit Component identity/metadata writers remain separate.
+- The next active-lock sync must inspect live code and arm the exact implementation allowlist; this scope-lock does not arm runtime/test files.

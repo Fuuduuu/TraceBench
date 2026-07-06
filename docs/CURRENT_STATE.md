@@ -4,48 +4,50 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`SELECTED_PLACEMENT_EDIT_PREFILL_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`SELECTED_PLACEMENT_EDIT_PREFILL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-The `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS` implementation is closed out and the active implementation lock is released.
+Docs-only product scope-lock is active for selected-placement visual draft prefill behavior.
 
-No implementation pass is currently armed.
+No implementation files are armed by this pass. The next active-lock sync must inspect live code and arm the exact implementation allowlist if this direction is accepted.
 
-## Latest closeout
+## Latest accepted baseline
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` records pushed implementation commit `2d08eb6464c4a0edf6eef886accfcc5836a4f912` (`feat: add board canvas components workflow hub`).
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` closed out pushed implementation commit `2d08eb6464c4a0edf6eef886accfcc5836a4f912` (`feat: add board canvas components workflow hub`).
 
-Recorded audit result:
+Recorded baseline behavior:
 
-- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
-- `SAFE_FOR_STAGING: YES`
-- Targeted Board Canvas widget tests: `111/111` passed.
-- Manual smoke: `OPTIONAL / recommended visual check only`.
-
-## Behavior recorded
-
-- Board Canvas Add Component / `Lisa` panel now includes a read-only `Komponendid` hub card.
-- The hub is display-only / informational.
-- The hub explains four separate write domains:
-  - `component_created` = component identity/existence creation.
-  - `component_updated` = component metadata update.
-  - `component_visual_placement_confirmed` = visual placement confirmation.
-  - `measurement_recorded` = measurement write.
+- Board Canvas Add Component / `Lisa` panel includes a read-only `Komponendid` hub card.
+- Board Canvas `Salvesta` remains visual placement confirmation for an existing selected component.
 - Existing `Salvesta` behavior, placement writer invocation, required-label guard, canonical-bounds guard, rotation normalization, and projection-stale behavior remain unchanged.
 - Board Canvas renderer/painter remains read-only.
-- No writer/schema/tool/materializer/validator/events/known_facts/_incoming changes were made.
 
-## Accepted audit nit
+## Scope-lock question
 
-Codex/change summary understated the implementation as copy polish; actual diff added a new read-only `Komponendid` hub card. Claude audit accepted this as within scope and non-blocking.
+When a technician selects a component/placement on the Board Canvas and opens `Lisa` / Add Component, the selected placement context should carry into the right-panel visual placement draft/editor instead of feeling like a blank template-only flow.
+
+This pass locks product intent only; it does not implement runtime behavior.
+
+## Locked product intent
+
+- Board Canvas visual placement work is for existing selected components.
+- Selection context should not be lost when opening the placement/draft panel.
+- Existing placement data may seed local draft fields where safe.
+- Draft seeding is UI-local and writes nothing.
+- `Salvesta` remains the only canonical placement write trigger.
+- No component identity is created from visual placement.
+- No pins, contacts, pads, nets, traces, or electrical facts are created from visual placement drafts.
+- Standalone Add/Edit Component identity/metadata flows remain separate.
 
 ## Boundary confirmation
 
-- No files are armed after closeout.
-- No route, writer service, router path, schema, validator, materializer, tool, event, `known_facts.json`, sample, asset, Project Open From Directory, rotation normalization, projection-stale, canonical-bounds, or `_incoming` behavior change is recorded by this closeout.
+- Docs-only pass.
+- Do not edit runtime or tests.
+- Do not arm implementation allowlist in this pass.
+- Do not change placement writer contract, event schema, validator/materializer/tools, events/known_facts semantics, Project Open From Directory, rotation normalization, projection-stale policy, canonical-bounds guard, required-label guard, Add/Edit identity/metadata writers, or measurement writer behavior.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

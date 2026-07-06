@@ -4,28 +4,55 @@ Last updated: 2026-07-06
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Active lock state
 
-No active implementation lock is armed.
+Docs-only architecture scope-lock is active.
 
-The `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_PASS` implementation lock has been released by `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_POST_AUDIT_PASS`.
+No runtime implementation lock is armed by this pass.
 
-Recorded implementation commit:
+## Write allowlist for this scope-lock
 
-`e598c9a9ae08dce44a1e0ae1666eb66a18292362 fix: remove duplicate board canvas component workflow hub`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS.md`
 
-## Released implementation allowlist
+## Future implementation pass to route toward
 
-The prior active implementation allowlist is no longer armed:
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+The next active-lock sync must inspect live code and arm the exact implementation allowlist. Expected candidate surfaces are likely limited to Board Canvas screen and Board Canvas widget tests, but this scope-lock does not arm them directly.
+
+## Locked Phase 1 architecture
+
+Future implementation should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
+
+Phase 1 allowed architecture:
+
+- UI-local state inside `_BoardCanvasScreenState`.
+- Component placement selection only.
+- `CanvasSelection` abstraction.
+- `EmptyCanvasSelection`.
+- `ComponentPlacementSelection` with `placementKey`, `componentId`, and `canvasAnchor`.
+- `selectedPlacementKey` compatibility getter/adapter for incremental migration.
+
+Phase 1 forbidden architecture:
+
+- No Riverpod/global provider extraction.
+- No pin/contact/pad/net/trace/measurement/electrical selection semantics.
+- No floating panel implementation.
+- No router or standalone page changes.
+- No writer/schema/materializer/validator/tool changes.
+- No canonical event changes.
+- No `_incoming` use or staging.
+- No storage of `screenAnchor` as durable selection state.
 
 ## Visual First rule retained
 
@@ -33,23 +60,14 @@ VISUAL FIRST.
 
 Board Canvas right-side panel/menu is the primary surface for normal component work.
 
-Canonical write split remains:
+Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendid` hub/card, old standalone workflow menu, or table/form-filling UX inside Board Canvas.
 
-- `component_created` = component identity/existence creation
-- `component_updated` = component metadata update
-- `component_visual_placement_confirmed` = visual placement confirmation
-- `measurement_recorded` = measurement write
+## Canonical boundary retained
 
-Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They must not be duplicated inside Board Canvas and must not be used as the primary technician workflow after scoped replacements exist.
-
-## Standing forbidden surfaces without a new lock
-
-- No runtime edits.
-- No test edits.
-- No router edits.
-- No Add/Edit/Measure page edits.
-- No writer/schema/tool/materializer/validator edits.
-- No events.jsonl / known_facts.json semantic changes.
-- No `_incoming` edits or staging.
-- No duplicate Board Canvas workflow hub/menu for old standalone flows.
-- No table/form-filling UX regression.
+- UI selection must not create or imply canonical facts.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- Flutter must not directly mutate `known_facts.json`.
+- Visual placement must not create component identity.
+- Visual/contact draft state must not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
+- The accepted measurement/right-panel workflow remains accepted and must not be reworked by this scope-lock.

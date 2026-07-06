@@ -4,49 +4,57 @@ Last updated: 2026-07-06
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
+Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-No implementation pass is armed.
+## Current pass summary
 
-## Latest completed closeout
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS` is a docs-only architecture scope-lock for typed Board Canvas selection Phase 1.
 
-`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_POST_AUDIT_PASS`
+It locks the decision to introduce a future UI-local `CanvasSelection` model while keeping Phase 1 limited to component placement selection inside `_BoardCanvasScreenState`.
 
-Closeout records the pushed Visual First cleanup implementation:
+No implementation files are armed by this scope-lock. The next pass should be a docs-only active-lock sync that inspects live code and arms the exact implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
 
-`e598c9a9ae08dce44a1e0ae1666eb66a18292362 fix: remove duplicate board canvas component workflow hub`
-
-The implementation removed the duplicate Board Canvas `Komponendid` hub/card UI from the Add Component / `Lisa` panel. It did not create a replacement duplicate workflow menu, did not route users to standalone pages, and did not touch writers, routes, schema, validator, materializer, tools, events, known_facts, `_incoming`, samples, or assets.
-
-## Product direction
+## Visual First guardrails
 
 VISUAL FIRST.
 
-Board Canvas right-side panel/menu is the primary surface for normal component work.
+Board Canvas right-side panel/menu remains the primary surface for normal component work.
 
-Canonical write split remains:
+Do not rebuild old standalone Add/Edit/Measure workflows as a new Board Canvas menu. Do not resurrect navigation-only gateway behavior, a four-card mode selector, `Komponendid` hub/card, `Uus komponent` / `Muuda andmeid` / `Paiguta` / `Mõõda` workflow menu, or table/form-filling UX inside Board Canvas.
+
+Old standalone Add/Edit/Measure-style pages remain transitional migration/removal debt and are not changed by this pass.
+
+## Canonical split preserved
 
 - `component_created` = component identity/existence creation
 - `component_updated` = component metadata update
 - `component_visual_placement_confirmed` = visual placement confirmation
 - `measurement_recorded` = measurement write
 
-Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They must not be duplicated inside Board Canvas and must not remain the primary technician workflow once scoped replacements exist.
+## Phase 1 typed selection scope
 
-## Recommended candidate sequence
+Future implementation may define:
 
-These are candidates only, not armed route state:
+- `CanvasSelection`
+- `EmptyCanvasSelection`
+- `ComponentPlacementSelection` carrying `placementKey`, `componentId`, and `canvasAnchor`
+- `selectedPlacementKey` compatibility getter/adapter for incremental migration
 
-1. Board Canvas right-panel component creation flow.
-2. Board Canvas right-panel component metadata editing flow.
-3. Standalone Add/Edit route migration or removal after right-panel replacements exist.
-4. Standalone Measure route cleanup after verifying accepted right-panel measurement behavior and dependencies.
+Future implementation must not include:
+
+- Riverpod/global provider extraction
+- pin/contact/pad/net/trace/measurement/electrical selection semantics
+- floating panel implementation
+- router or standalone page changes
+- writer/schema/materializer/validator/tool changes
+- canonical event changes
+- `_incoming` use or staging
 
 ## Scope gate rules
 
 - One narrow pass at a time.
 - Active implementation allowlists live in `docs/ACTIVE_SCOPE_LOCK.md`.
-- Do not touch runtime/tests/docs outside the active pass allowlist.
+- Runtime/test implementation may begin only after the active-lock sync pass arms exact files.
 - Do not stage, commit, or push from Codex unless explicitly requested.
 - Do not use `git add .`, `git add -A`, or `git commit -am`.

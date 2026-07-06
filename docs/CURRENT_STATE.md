@@ -4,18 +4,14 @@ Last updated: 2026-07-06
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
+Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Latest closeout
+## Active pass
 
-`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_POST_AUDIT_PASS`
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS` is a docs-only architecture scope-lock for a future Phase 1 Board Canvas typed selection implementation.
 
-This docs-only closeout records the pushed `BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_IMPL_PASS` implementation and releases the active implementation lock.
-
-Recorded implementation commit:
-
-`e598c9a9ae08dce44a1e0ae1666eb66a18292362 fix: remove duplicate board canvas component workflow hub`
+This pass records architecture intent only. It does not implement runtime behavior, does not edit tests, and does not arm runtime files directly. The next pass is expected to be an implementation active-lock sync that reads live code and arms the exact implementation allowlist.
 
 ## Visual First product rule
 
@@ -23,38 +19,54 @@ VISUAL FIRST.
 
 Board Canvas right-side panel/menu is the primary surface for normal technician component work.
 
-Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They are not the primary technician workflow, must not be duplicated inside Board Canvas, and must be migrated or removed through separately scoped passes.
+Do not rebuild old standalone Add/Edit/Measure workflows as a new Board Canvas menu. Do not resurrect a navigation-only gateway, four-card mode selector, `Komponendid` hub/card, `Uus komponent` / `Muuda andmeid` / `Paiguta` / `Mõõda` workflow menu, or table/form-filling UX inside Board Canvas.
 
-The accepted measurement/right-panel workflow remains accepted and is not reworked by this closeout.
+Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. They are not the primary technician workflow and must be migrated/removed only through separately scoped passes.
 
-## Canonical write split
+The accepted measurement/right-panel workflow remains accepted and is not reworked by this scope-lock.
 
-- `component_created` = component identity/existence creation
-- `component_updated` = component metadata update
-- `component_visual_placement_confirmed` = visual placement confirmation
-- `measurement_recorded` = measurement write
+## Typed selection architecture decision
 
-## Closeout summary
+Future Phase 1 should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
 
-The pushed implementation removed the duplicate Board Canvas `Komponendid` hub/card UI from the Add Component / `Lisa` panel and removed unused hub-card code.
+Phase 1 is limited to component placement selection only:
 
-The implementation did not create a replacement duplicate workflow menu. It preserved existing placement controls, selected-placement prefill, required-label guard, canonical-bounds guard, projection-stale success copy, and the `Salvesta` placement-confirmation path.
+- UI-local state inside `_BoardCanvasScreenState`.
+- No Riverpod/global provider extraction in Phase 1.
+- No pin/contact/pad/net/trace/measurement/electrical selection semantics in Phase 1.
+- No floating panel implementation in Phase 1.
+- No router or standalone page changes in Phase 1.
+- No writer/schema/materializer/validator/tool changes in Phase 1.
+- No canonical event changes in Phase 1.
+- No `_incoming` use or staging.
 
-No router, standalone Add/Edit/Measure page, writer, schema, validator, materializer, tools, events, known_facts, `_incoming`, sample, or asset files were changed.
+Preferred future implementation shape:
 
-## Recommended next candidates
+- Introduce a typed `CanvasSelection` abstraction.
+- Include `EmptyCanvasSelection`.
+- Include `ComponentPlacementSelection`.
+- `ComponentPlacementSelection` may carry `placementKey`, `componentId`, and `canvasAnchor`.
+- `screenAnchor` should not be stored as durable selection state in Phase 1; future floating panel position should be derived from `canvasAnchor` plus current canvas transform / RenderBox data.
+- Preserve a `selectedPlacementKey` compatibility getter/adapter so existing right-panel/painter code can migrate incrementally.
+- Canvas hit-test can later report typed selection instead of raw placement key.
+- Empty canvas tap can later produce `EmptyCanvasSelection`.
 
-No pass is armed. Candidate directions only:
+## Canonical boundaries
 
-1. Board Canvas right-panel component creation flow, scoped separately.
-2. Board Canvas right-panel component metadata editing flow, scoped separately.
-3. Standalone Add/Edit route migration or removal after right-panel replacements exist.
-4. Standalone Measure route cleanup only after verifying accepted right-panel measurement behavior and dependencies.
+- `events.jsonl` remains canonical truth.
+- `known_facts.json` remains projection/cache.
+- Flutter must not directly mutate `known_facts.json`.
+- Human is the sensor; AI is the graph engine.
+- UI selection must not create or imply canonical facts.
+- Visual placement must not create component identity.
+- Visual/contact draft state must not create pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
 
 ## Standing boundaries
 
-- Do not create duplicate Board Canvas menus for old standalone workflows.
-- Do not route technicians out of Board Canvas as the primary component workflow.
-- Do not regress to table/form-filling UX.
-- Do not change writer/schema/materializer/validator/projection/project ZIP/fact/event semantics unless separately scoped.
-- Do not create identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions from visual placement UI.
+- Do not edit runtime or tests in this scope-lock.
+- Do not touch router, standalone Add/Edit/Measure pages, writers, schema, validator, materializer, tools, events, known_facts, samples, assets, or `_incoming`.
+- Do not stage, commit, or push.

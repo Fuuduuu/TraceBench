@@ -4,43 +4,48 @@ Operational handoff for TraceBench / BenchBeep / BoardFact.
 
 ## Current pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
 
-Docs-only active-lock sync is active for the future Board Canvas `Komponendid` workflow panel implementation pass.
+The `BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_PASS` implementation is closed out and the active implementation lock is released.
 
-Implementation shape decision: `A` / small Board Canvas right-panel hub-and-copy slice first.
+No implementation pass is currently armed.
 
-## Armed implementation allowlist
+## Latest closeout
 
-The next implementation pass may edit exactly:
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_PANEL_IMPL_POST_AUDIT_PASS` records pushed implementation commit `2d08eb6464c4a0edf6eef886accfcc5836a4f912` (`feat: add board canvas components workflow hub`).
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+Recorded audit result:
 
-No other runtime, test, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` files are armed.
+- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
+- `SAFE_FOR_STAGING: YES`
+- Targeted Board Canvas widget tests: `111/111` passed.
+- Manual smoke: `OPTIONAL / recommended visual check only`.
 
-## Implementation goal
+## Behavior recorded
 
-Introduce a small Board Canvas `Komponendid` workflow panel/hub treatment that makes component workflow roles visible around the selected board/component without merging writer semantics.
+- Board Canvas Add Component / `Lisa` panel now includes a read-only `Komponendid` hub card.
+- The hub is display-only / informational.
+- The hub explains four separate write domains:
+  - `component_created` = component identity/existence creation.
+  - `component_updated` = component metadata update.
+  - `component_visual_placement_confirmed` = visual placement confirmation.
+  - `measurement_recorded` = measurement write.
+- Existing `Salvesta` behavior, placement writer invocation, required-label guard, canonical-bounds guard, rotation normalization, and projection-stale behavior remain unchanged.
+- Board Canvas renderer/painter remains read-only.
+- No writer/schema/tool/materializer/validator/events/known_facts/_incoming changes were made.
 
-The first implementation should label or group these roles in Board Canvas:
+## Accepted audit nit
 
-- component identity/existence creation remains `component_created` via standalone Add Component flow.
-- component metadata update remains `component_updated` via standalone Edit Component flow.
-- selected-component visual placement confirmation remains `component_visual_placement_confirmed` via Board Canvas `Lisa` / `Salvesta`.
-- component measurement remains `measurement_recorded` via Measure Sheet flow.
+Codex/change summary understated the implementation as copy polish; actual diff added a new read-only `Komponendid` hub card. Claude audit accepted this as within scope and non-blocking.
 
 ## Boundary confirmation
 
-- Board Canvas remains the primary technician-facing board/workbench surface.
-- Existing explicit Board Canvas placement save behavior remains unchanged.
-- Existing standalone Add/Edit and Measure Sheet writer behavior remains unchanged.
-- If implementation requires Project Overview, Add/Edit screens, Measure Sheet, router, writer, schema, tool, event, `known_facts.json`, sample, asset, or `_incoming` edits, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
-- If implementation requires a broader product choice than the small Board Canvas hub/copy slice, stop and report `BLOCKED_PRODUCT_DECISION`.
-- Do not stage, commit, or push.
+- No files are armed after closeout.
+- No route, writer service, router path, schema, validator, materializer, tool, event, `known_facts.json`, sample, asset, Project Open From Directory, rotation normalization, projection-stale, canonical-bounds, or `_incoming` behavior change is recorded by this closeout.
+- Do not use `git add .`, `git add -A`, or `git commit -am`.

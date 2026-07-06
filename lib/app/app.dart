@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/home/screens/benchbeep_home_screen.dart';
+import '../features/home/screens/benchbeep_splash_screen.dart';
 import '../features/project/screens/home_screen.dart';
 import '../shared/models/project_state.dart';
 import '../shared/services/project_loader.dart';
@@ -26,6 +27,7 @@ class TraceBenchApp extends ConsumerStatefulWidget {
 
 class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
   bool _showLauncher = true;
+  bool _showStartupIntro = true;
   GoRouter? _workbenchRouter;
 
   Future<void> _loadBundledProject() async {
@@ -68,6 +70,31 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
     );
   }
 
+  void _completeStartupIntro() {
+    if (!_showStartupIntro || !mounted) {
+      return;
+    }
+    setState(() {
+      _showStartupIntro = false;
+    });
+  }
+
+  Widget _buildLauncherShell(BuildContext context) {
+    final launcher = _buildLauncherHome(context);
+    if (!_showStartupIntro) {
+      return launcher;
+    }
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        launcher,
+        IgnorePointer(
+          child: BenchBeepSplashScreen(onComplete: _completeStartupIntro),
+        ),
+      ],
+    );
+  }
+
   void _openWorkbench({String initialLocation = '/project/board-canvas'}) {
     _workbenchRouter?.dispose();
     _workbenchRouter = buildTraceBenchRouter(
@@ -94,7 +121,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
         title: 'BenchBeep',
         theme: theme,
         debugShowCheckedModeBanner: false,
-        home: _buildLauncherHome(context),
+        home: _buildLauncherShell(context),
       );
     }
 

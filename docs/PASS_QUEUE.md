@@ -2,46 +2,65 @@
 
 ## Current route
 
-Current: `BENCHBEEP_FULLSCREEN_LAUNCH_BUILD_LOCK_PASS`
-Next: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
+Current: `BENCHBEEP_FULLSCREEN_REQUIRES_PLATFORM_SCOPE_PASS`
+Next: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
 
 ## Current focus
 
-Docs-only build-lock / implementation allowlist sync for BenchBeep fullscreen launch.
+Docs-only blocked-closeout plus platform build-lock for BenchBeep fullscreen launch.
+
+## Blocked SDK-only attempt
+
+`BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` is recorded as blocked for the real Windows desktop fullscreen requirement.
+
+Observed result:
+- SDK-only `SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)` does not make the Windows desktop app open as true fullscreen.
+
+Verdict:
+- `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE`
+
+Reason:
+- true desktop-window fullscreen requires platform/window-manager scope outside the previous SDK-only allowlist.
 
 ## Armed implementation
 
-Implementation pass: `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS`
+Implementation pass: `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
 
 Exact implementation allowlist:
+- `pubspec.yaml`
+- `pubspec.lock`
 - `lib/main.dart`
 - `test/widget/fullscreen_launch_test.dart`
 
-## Implementation intent
+Preferred dependency candidate:
+- `window_manager`
 
-Request fullscreen / immersive startup before rendering `TraceBenchApp`, using Flutter SDK APIs only.
-
-The implementation may update `lib/main.dart` to import `package:flutter/services.dart`, keep `WidgetsFlutterBinding.ensureInitialized()`, request `SystemChrome.setEnabledSystemUIMode(...)` before `runApp`, and preserve `ProviderScope(child: TraceBenchApp())`.
-
-The implementation may add a focused source/widget test in `test/widget/fullscreen_launch_test.dart` that proves the startup shell is configured without changing app routing, splash/home/workbench flows, packages, or platform runner files.
+Expected implementation direction:
+- add the desktop window manager dependency through `pubspec.yaml`
+- update `pubspec.lock` through normal dependency resolution
+- initialize the window manager before rendering `TraceBenchApp`
+- request real fullscreen with `windowManager.setFullScreen(true)` or the package's current equivalent API
+- preserve `ProviderScope(child: TraceBenchApp())`
+- keep startup behavior app-shell only
 
 ## Stop conditions for implementation
 
-Stop and report `BLOCKED_FULLSCREEN_REQUIRES_PLATFORM_SCOPE` if the requested desktop fullscreen behavior requires:
-- a new package
-- `pubspec.yaml`
+Stop and report `BLOCKED_NEEDS_NATIVE_RUNNER_SCOPE` if true Windows fullscreen requires:
 - `windows/`
-- native platform runner edits
-- app/router/splash/home/feature workflow changes
+- native runner edits
+- platform-specific native code outside the allowlist
 
-Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if any file outside the armed allowlist is required.
+Stop and report `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside:
+- `pubspec.yaml`
+- `pubspec.lock`
+- `lib/main.dart`
+- `test/widget/fullscreen_launch_test.dart`
 
-## Boundaries
-
-This route is app-shell/window presentation only.
+## Strict exclusions
 
 Do not change:
-- runtime routes beyond `lib/main.dart`
+- router files
+- route definitions
 - splash implementation
 - home/workbench screens
 - Board Canvas
@@ -51,7 +70,8 @@ Do not change:
 - `events.jsonl`
 - `known_facts.json`
 - `_incoming`
+- docs compaction
 
-## Route after build-lock
+## Route after this pass
 
-Proceed directly to `BENCHBEEP_FULLSCREEN_LAUNCH_IMPL_PASS` after this build-lock is accepted and staged by the user.
+Proceed to `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` after this blocked-closeout/platform build-lock is accepted and staged by the user.

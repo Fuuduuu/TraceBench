@@ -4,16 +4,33 @@ Last updated: 2026-07-06
 
 ## Route
 
-Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
-Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
 ## Current pass summary
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS` is a docs-only architecture scope-lock for typed Board Canvas selection Phase 1.
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only active-lock sync for typed Board Canvas selection Phase 1.
 
-It locks the decision to introduce a future UI-local `CanvasSelection` model while keeping Phase 1 limited to component placement selection inside `_BoardCanvasScreenState`.
+It reads live code and arms the exact implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
 
-No implementation files are armed by this scope-lock. The next pass should be a docs-only active-lock sync that inspects live code and arms the exact implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
+The sync performs no runtime or test implementation.
+
+## Implementation pass armed
+
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
+
+Exact implementation allowlist:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+Live-code findings:
+
+- Current Board Canvas selection state is UI-local and raw placement-key based through `_selectedPlacementKey`.
+- Add Component placement context uses `_addComponentTemplatePlacementContextKey`.
+- Board Canvas already has placement entries, selected-placement draft seeding, canvas interaction, and hit/selection plumbing suitable for typed-selection Phase 1 migration.
+- Board Canvas widget tests already cover selection helpers, no-write paths, placement draft behavior, writer invocation boundaries, and source-level canvas interaction checks.
+- No additional files are needed for Phase 1 based on live-code inspection.
 
 ## Visual First guardrails
 
@@ -34,14 +51,14 @@ Old standalone Add/Edit/Measure-style pages remain transitional migration/remova
 
 ## Phase 1 typed selection scope
 
-Future implementation may define:
+Implementation may define:
 
 - `CanvasSelection`
 - `EmptyCanvasSelection`
 - `ComponentPlacementSelection` carrying `placementKey`, `componentId`, and `canvasAnchor`
 - `selectedPlacementKey` compatibility getter/adapter for incremental migration
 
-Future implementation must not include:
+Implementation must not include:
 
 - Riverpod/global provider extraction
 - pin/contact/pad/net/trace/measurement/electrical selection semantics
@@ -50,6 +67,7 @@ Future implementation must not include:
 - writer/schema/materializer/validator/tool changes
 - canonical event changes
 - `_incoming` use or staging
+- any file outside the two-file implementation allowlist
 
 ## Scope gate rules
 

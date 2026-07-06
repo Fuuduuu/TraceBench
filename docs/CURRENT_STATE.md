@@ -4,14 +4,32 @@ Last updated: 2026-07-06
 
 ## Current route
 
-Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
-Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Current: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Next: `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
 ## Active pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS` is a docs-only architecture scope-lock for a future Phase 1 Board Canvas typed selection implementation.
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS` is a docs-only implementation active-lock sync for Phase 1 Board Canvas typed selection.
 
-This pass records architecture intent only. It does not implement runtime behavior, does not edit tests, and does not arm runtime files directly. The next pass is expected to be an implementation active-lock sync that reads live code and arms the exact implementation allowlist.
+This pass performs no runtime or test implementation. It reads live Board Canvas code and arms the exact two-file implementation allowlist for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
+
+## Implementation allowlist armed
+
+Future implementation may write only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+If typed selection Phase 1 requires any additional runtime, test, router, writer, schema, tool, materializer, validator, events, known_facts, asset, sample, or `_incoming` file, stop and request a new scope.
+
+## Live-code findings for implementation
+
+- Board Canvas selection is currently UI-local inside `_BoardCanvasScreenState`.
+- The current compatibility state is raw placement-key based through `_selectedPlacementKey`.
+- Add Component placement context currently also depends on the selected placement key through `_addComponentTemplatePlacementContextKey`.
+- Existing Board Canvas code already has placement entries, placement draft seeding from selected placement, `InteractiveViewer` / `GestureDetector` canvas interaction, and hit/selection plumbing that can be migrated behind a typed selection adapter.
+- Existing Board Canvas widget tests already exercise selection helpers, placement draft behavior, no-write assertions, writer invocation, renderer read-only boundaries, and source-level checks for `InteractiveViewer`, `GestureDetector`, `onPlacementSelected`, and placement hit testing.
+- No live-code evidence requires files outside the Board Canvas screen and Board Canvas widget test for Phase 1.
 
 ## Visual First product rule
 
@@ -27,7 +45,7 @@ The accepted measurement/right-panel workflow remains accepted and is not rework
 
 ## Typed selection architecture decision
 
-Future Phase 1 should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
+Phase 1 should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
 
 Phase 1 is limited to component placement selection only:
 

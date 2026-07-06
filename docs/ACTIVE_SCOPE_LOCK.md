@@ -4,35 +4,49 @@ Last updated: 2026-07-06
 
 ## Current pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS`
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Next recommended pass
 
-`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
 ## Active lock state
 
-Docs-only architecture scope-lock is active.
+Docs-only implementation active-lock sync is active.
 
-No runtime implementation lock is armed by this pass.
+The runtime implementation lock is now armed for `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`.
 
-## Write allowlist for this scope-lock
+## Write allowlist for this active-lock sync
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_SCOPE_LOCK_PASS.md`
+- `docs/audit/V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-## Future implementation pass to route toward
+## Armed implementation pass
 
 `V2_BOARD_CANVAS_TYPED_SELECTION_PHASE_1_IMPL_PASS`
 
-The next active-lock sync must inspect live code and arm the exact implementation allowlist. Expected candidate surfaces are likely limited to Board Canvas screen and Board Canvas widget tests, but this scope-lock does not arm them directly.
+## Exact implementation write allowlist
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+If implementation needs any additional file, stop and report `BLOCKED_ALLOWLIST_MISMATCH`.
+
+## Live-code findings
+
+- Current Board Canvas selection is UI-local inside `_BoardCanvasScreenState`.
+- Existing compatibility state is raw placement-key based through `_selectedPlacementKey`.
+- Add Component placement context uses `_addComponentTemplatePlacementContextKey`.
+- Board Canvas screen contains placement entry, placement draft seeding, and canvas interaction plumbing suitable for a typed-selection adapter.
+- Board Canvas widget tests cover selection helpers, placement draft behavior, no-write assertions, writer boundaries, and canvas interaction source checks.
+- Live-code inspection did not justify arming files outside the Board Canvas screen and Board Canvas widget tests.
 
 ## Locked Phase 1 architecture
 
-Future implementation should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
+Implementation should introduce a typed UI-local `CanvasSelection` model as the Board Canvas selection layer.
 
 Phase 1 allowed architecture:
 
@@ -53,6 +67,7 @@ Phase 1 forbidden architecture:
 - No canonical event changes.
 - No `_incoming` use or staging.
 - No storage of `screenAnchor` as durable selection state.
+- No edits outside the exact implementation write allowlist.
 
 ## Visual First rule retained
 

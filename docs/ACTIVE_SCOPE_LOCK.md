@@ -2,54 +2,77 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+
+## Mode
+
+Docs-only product scope revision.
 
 ## Active lock status
 
-Released. No implementation files are currently armed.
+No runtime/test implementation allowlist is armed by this pass.
 
-## Abort closeout record
+## Write allowlist for this pass
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` records the aborted `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/TRUTH_INDEX.md` only if needed for taxonomy cross-reference
+- `docs/audit/BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS.md`
 
-Rejected direction:
+## Product decision locked
 
-- Navigation-only Komponendid hub actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
-- Sending users from Board Canvas to old standalone pages as the primary Komponendid workflow.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` was rejected because the navigation-only Komponendid hub direction sent technicians to old standalone pages as the primary workflow.
 
-New product decision:
+The revised direction is an in-panel Board Canvas Komponendid workflow:
 
-- Board Canvas Komponendid workflow should be redesigned for in-panel work beside/on the canvas where practical.
-- Do not route users out to old standalone pages as the primary Komponendid UX.
+- Board Canvas remains the primary technician-facing board/workbench surface.
+- Komponendid work should happen beside/on the canvas where practical.
+- The Komponendid panel should evolve into contextual in-panel modes.
+- Standalone Add/Edit/Measure pages remain transitional/backstage routes for now.
+- No route hiding, screen deletion, writer merge, or runtime implementation is authorized by this pass.
 
-## Previously armed implementation allowlist
+## Canonical split to preserve
 
-The aborted implementation had touched only:
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
+
+## Future first-slice direction
+
+The likely first implementation slice should be a Board Canvas-only panel shell:
+
+- convert the current read-only Komponendid hub into an in-panel mode selector / contextual shell;
+- make `Paiguta` use the existing Board Canvas placement draft behavior;
+- keep `Uus komponent`, `Muuda andmeid`, and `Mõõda` planned/future unless separately implemented;
+- avoid navigation out to legacy standalone pages as primary UX;
+- write nothing by mode switching.
+
+## Forbidden in this pass
+
+- No `lib/` edits.
+- No `test/` edits.
+- No `tools/` edits.
+- No `schemas/` edits.
+- No `events.jsonl` or `known_facts.json` edits.
+- No `_incoming` edits.
+- No route hiding or screen deletion.
+- No writer merge or writer semantics change.
+- No implementation allowlist arming.
+- No staging, commit, or push.
+
+## Next active-lock sync requirement
+
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS` must inspect live code and arm exact implementation files. Likely first-slice candidates are:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Those uncommitted changes were reverted before this closeout. These files are no longer armed by an active lock.
-
-## Revert evidence recorded
-
-- Final tracked diff after revert: empty.
-- Final cached diff after revert: empty.
-- `git diff --check`: PASS.
-- `flutter test test/widget/board_canvas_screen_test.dart`: PASS, 112/112.
-- `python tools/validate_all.py`: PASS, 285 tests OK.
-- No files staged, committed, or pushed by the abort/revert step.
-
-## Recommended next candidate
-
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
-
-This is not armed. A future scope-lock must define the in-panel workflow and exact allowlist before implementation.
-
-## Protected boundary reminder
-
-No runtime, tests, writer, schema, tools, events, known_facts, samples, assets, router, or `_incoming` files are authorized by this released lock.
+Those candidates are not armed by this scope revision.

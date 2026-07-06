@@ -351,7 +351,7 @@ Boundaries:
 - Standalone Add/Edit Component identity/metadata writers remain separate.
 - The next active-lock sync must inspect live code and arm the exact implementation allowlist; this scope-lock does not arm runtime/test files.
 
-## Board Canvas Komponendid workflow actions scope lock
+## Board Canvas Komponendid workflow actions scope lock (superseded)
 
 Scope-lock pass: `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS`.
 
@@ -376,3 +376,41 @@ Boundaries:
 - No writer/schema/tool/materializer/validator/event/projection semantics change is authorized.
 - No component identity may be created from visual placement.
 - No pins, contacts, pads, nets, electrical facts, measurements, or AI-authored facts may be inferred from the hub.
+
+## Board Canvas Komponendid workflow in-panel scope revision
+
+Owner pass: `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`.
+
+Supersedes: `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS` navigation-only gateway direction and the reverted `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` attempt.
+
+Locked product decision:
+
+- Board Canvas is the primary technician-facing board/workbench surface.
+- Komponendid work should happen beside/on the board canvas where practical.
+- The Board Canvas `Komponendid` panel should evolve into contextual in-panel modes, not a primary navigation gateway to legacy standalone pages.
+- Old standalone Add/Edit/Measure pages may remain transitional/backstage routes until separately replaced.
+- No route hiding, screen deletion, writer merge, or implementation is authorized by this scope revision.
+
+Canonical split to preserve:
+
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
+
+Phased future direction:
+
+- First slice should likely convert the read-only `Komponendid` hub into an in-panel mode selector / contextual shell.
+- `Paiguta` should be the first real in-panel action because Board Canvas placement draft/prefill/save behavior already exists.
+- `Uus komponent`, `Muuda andmeid`, and `Mõõda` should be planned/future in-panel modes unless a later pass safely implements those writers in-panel.
+- Switching modes must write nothing canonical.
+- Future active-lock sync must inspect live code and arm exact files; this scope revision arms no implementation allowlist.
+
+Hard boundaries:
+
+- Do not create identity from visual placement.
+- Do not infer pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts from visual drafts.
+- Do not merge Add/Edit/Measure writers into Board Canvas in one pass.
+- Do not change writer services, event schema, validator/materializer/tools, `events.jsonl`, or `known_facts.json` semantics.
+- Do not hide or delete standalone Add/Edit/Measure routes without a later dedicated route/backstage scope.
+- Do not use `_incoming` design handoffs for this product-direction revision.

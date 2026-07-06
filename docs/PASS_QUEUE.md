@@ -4,41 +4,81 @@ Routing owner for TraceBench / BenchBeep / BoardFact passes.
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
 ## Route status
 
-No active implementation lock is armed.
+Docs-only product scope revision is active.
 
-The attempted `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` direction was aborted before staging, commit, or push. The rejected direction was a navigation-only Board Canvas Komponendid gateway that sent users to old standalone pages through actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
+This pass supersedes the rejected navigation-only Komponendid gateway direction from `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_SCOPE_LOCK_PASS` / `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS`.
 
-## Product decision recorded
+## Rejected direction recorded
 
-`BLOCKED_PRODUCT_DECISION`
+The rejected implementation direction sent the technician from the Board Canvas Komponendid hub to old standalone pages through actions such as:
 
-Board Canvas Komponendid workflow should be redesigned around in-panel work beside/on the canvas where practical. Old standalone pages must not be the primary Komponendid UX target for this workflow.
+- "Ava loomine"
+- "Ava muutmine"
+- "Ava mõõtmine"
 
-## Abort closeout
+The implementation was reverted before staging and closed out in `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS`.
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` records:
+## Revised product decision
 
-- uncommitted runtime/test implementation diff reverted;
-- reverted files: `lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`;
-- final tracked/cached diff empty after revert;
-- `git diff --check` PASS;
-- `flutter test test/widget/board_canvas_screen_test.dart` PASS, 112/112;
-- `python tools/validate_all.py` PASS, 285 tests OK;
-- no staging, commit, or push by the abort/revert step.
+Board Canvas Komponendid should become an in-panel mode selector / contextual workflow shell, not a primary navigation gateway to legacy standalone pages.
 
-## Recommended next candidate
+Preserve the canonical writer split:
 
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
 
-This queue entry is informational only. A future scope-lock must separately decide the in-panel workflow direction and arm any implementation allowlist.
+## Proposed phased implementation direction
+
+Future implementation should be split into small slices.
+
+Likely first slice:
+
+- Convert the current read-only Komponendid hub into an in-panel mode selector / contextual panel shell.
+- Keep `Paiguta` connected to the existing Board Canvas local placement draft/prefill/save behavior.
+- Keep `Uus komponent`, `Muuda andmeid`, and `Mõõda` visibly planned/future in-panel modes unless separately and safely implemented.
+- Do not wire new canonical writers in the first slice unless separately scoped.
+- Do not route users out to legacy standalone pages as the primary Komponendid UX.
+
+Possible later slices:
+
+- In-panel component identity creation.
+- In-panel component metadata edit.
+- In-panel component-related measurement entry.
+- Backstage/transitional handling for old standalone Add/Edit/Measure routes.
+- Test migration once replacement workflows exist.
+
+## Hard boundaries
+
+Future implementation must not:
+
+- merge Add/Edit/Measure writers into Board Canvas in one pass;
+- create a generic component writer;
+- change writer services, event schema, validator/materializer/tools, `events.jsonl`, or `known_facts.json` semantics;
+- mutate `known_facts.json` directly from Flutter;
+- hide or delete standalone Add/Edit/Measure routes;
+- change Project Open From Directory, rotation normalization, projection-stale policy, canonical-bounds guard, required-label guard, or selected-placement prefill behavior;
+- create identity from visual placement;
+- create pins, contacts, pads, nets, traces, electrical facts, measurements, or AI-authored canonical facts from visual drafts;
+- implement startup intro or use `_incoming` design handoffs.
+
+## Active-lock sync expectation
+
+The next pass must be docs-only active-lock sync. It must inspect live code and arm exact implementation files. Likely first-slice surfaces are only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+Do not arm implementation files in this scope revision pass.
 
 ## Scope gate rules
 
@@ -56,6 +96,6 @@ Update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md
 
 | Pass | Result | Notes |
 |---|---|---|
-| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ACTIVE_LOCK_SYNC_PASS` | armed implementation | Armed the rejected navigation-only actions implementation pass. |
-| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_PASS` | aborted before staging | Rejected by product decision; uncommitted runtime/test diff reverted. |
-| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` | drafted closeout | Records abort, releases active lock, and returns route to `NEEDS_USER_DECISION`. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_ACTIONS_IMPL_ABORT_CLOSEOUT_PASS` | pushed closeout | Rejected navigation-only implementation was reverted and route returned to `NEEDS_USER_DECISION`. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS` | current scope revision | Supersedes navigation-only gateway direction with in-panel Board Canvas workflow direction. |
+| `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS` | next recommended | Must inspect live code and arm exact files before implementation. |

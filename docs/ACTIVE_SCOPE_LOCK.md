@@ -8,57 +8,56 @@
 
 `NEEDS_USER_DECISION`
 
-## Lock type
+## Lock state
 
 No active implementation lock.
 
-## Released implementation lock
+No runtime, test, schema, tool, writer, router, asset, event, fact, `known_facts.json`, `events.jsonl`, `windows/`, or `_incoming` file is armed.
 
-Released pass:
-- `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS`
+## If a new pass is chosen
 
-Recorded implementation commit:
-- `324829e586b40eddd266a2f1d834c02a39ef4aa1`
-- `feat: launch benchbeep fullscreen`
+Every new pass must define:
+- `PASS_ID`
+- exact write allowlist
+- forbidden surfaces
+- required validation
+- route result
 
-Review status:
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
-- Claude audit skipped/unavailable.
-- Reviewer path: GPT/Pro + user manual smoke + local validation.
-- User approved proceeding after exact allowlist review, validation, and manual Windows smoke.
+Runtime or protected-surface work must be scope-locked before implementation.
 
-Safe implementation set:
-- `pubspec.yaml`
-- `pubspec.lock`
-- `lib/main.dart`
-- `test/widget/fullscreen_launch_test.dart`
+## Current docs-hygiene review set
 
-## Result recorded
+For `DOCS_COMPACTION_VISUAL_FIRST_ALIGNMENT_PASS`, expected docs-only review set:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/UI_WORKFLOWS.md`
+- `docs/audit/DOCS_COMPACTION_VISUAL_FIRST_ALIGNMENT_PASS.md`
 
-BenchBeep fullscreen launch now uses `window_manager` and requests fullscreen before rendering `TraceBenchApp`.
+No implementation allowlist is armed by this hygiene pass.
 
-No active files are armed after this closeout.
+## Forbidden surfaces while route is free
 
-## Boundaries preserved
-
-This was app-shell/window presentation only.
-
-No changes were made to:
-- `windows/`
-- native runner files
-- router files
-- route definitions
-- splash implementation
-- home/workbench screens
-- Board Canvas
-- Add/Edit/Measure pages
+Do not change without a new active lock:
+- router files or route definitions
+- splash/home/workbench/Board Canvas/Add/Edit/Measure runtime
 - writer services
 - schemas
 - validators/materializers/tools
-- events/facts semantics
+- canonical events/facts semantics
 - `events.jsonl`
 - `known_facts.json`
 - `_incoming`
-- docs compaction
+- `windows/` or native runner files
 
-Fullscreen launch creates no facts and writes no events. `events.jsonl` remains canonical truth. `known_facts.json` remains projection/cache. Flutter must not directly mutate `known_facts.json`.
+## Canonical boundaries
+
+- events.jsonl is canonical truth.
+- known_facts.json is projection/cache.
+- Flutter must not directly mutate known_facts.json.
+- Human is the sensor; AI is the graph engine.
+- AI must not create canonical facts without explicit human confirmation.
+- Visual drafts must not become pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- Exact-file staging only; broad staging is forbidden.

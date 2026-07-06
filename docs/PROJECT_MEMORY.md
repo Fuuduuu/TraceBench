@@ -424,3 +424,19 @@ Hard boundaries:
 - Preserve event split: `component_created` creates component identity/existence, `component_updated` updates metadata, `component_visual_placement_confirmed` confirms visual placement, and `measurement_recorded` records measurement.
 - Future migration phases: remove/replace duplicate `Komponendid` hub/card UI first, then move component identity creation and metadata editing into Board Canvas right panel, then retire/hide/remove old standalone routes after dependency verification and confirmed replacements.
 - This scope lock arms no implementation allowlist and changes no runtime, tests, writers, schemas, tools, events, known facts, samples, assets, or `_incoming` files.
+## BenchBeep Visual First app vision
+
+BenchBeep is a local-first Visual First PCB repair workbench.
+
+Technician-facing core:
+- `Koht -> Väärtus -> Ühik -> Salvesta`
+
+The technician stays on the board. Board Canvas plus the right-side panel/menu is the primary workflow surface for normal component work. Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt and must not be duplicated as the primary Board Canvas workflow.
+
+Canonical split to preserve:
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
+
+AI may propose and organize, but the human confirms canonical facts. Visual drafts must not become pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.

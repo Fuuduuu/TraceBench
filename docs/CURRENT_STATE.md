@@ -5,69 +5,54 @@ Next recommended pass: NEEDS_USER_DECISION
 
 ## Status
 
-`BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` is closed out after push.
+No active implementation lock is armed.
 
-Implementation commit recorded:
-- `324829e586b40eddd266a2f1d834c02a39ef4aa1`
-- `feat: launch benchbeep fullscreen`
+Latest pushed closeout:
+- `93ddff1 docs: close out benchbeep fullscreen launch`
+- Closed `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` after push.
+- Review state recorded as `NON_CLAUDE_REVIEW: ACCEPTED_RISK`; do not describe startup intro or fullscreen launch as Claude-audited unless a real Claude audit is supplied later.
 
-Review status:
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`
-- Claude audit skipped/unavailable.
-- Reviewer path: GPT/Pro + user manual smoke + local validation.
-- User approved proceeding after exact allowlist review, validation, and manual Windows smoke.
+## Latest product direction
 
-## Implementation result
+BenchBeep is a local-first Visual First PCB repair workbench.
 
-BenchBeep now requests true desktop fullscreen launch through the `window_manager` package.
+Technician-facing core:
+- `Koht -> Väärtus -> Ühik -> Salvesta`
 
-Recorded behavior:
-- Added `window_manager` dependency.
-- Updated `pubspec.lock` through dependency resolution.
-- Added startup fullscreen configuration in `lib/main.dart`.
-- Calls `windowManager.ensureInitialized()`.
-- Calls `windowManager.setFullScreen(true)`.
-- Calls both before `runApp(...)`.
-- Preserves `runApp(const ProviderScope(child: TraceBenchApp()))`.
-- Added focused source-level fullscreen launch tests.
-- Implements true Windows desktop fullscreen behavior without native runner edits.
+Primary workflow rule:
+- The technician stays on the board.
+- Board Canvas plus right-side panel/menu is the primary workflow surface.
+- Old Add/Edit/Measure-style pages are transitional migration/removal debt, not the primary technician workflow.
+- AI may propose and organize, but the human confirms canonical facts.
 
-## Validation recorded
+## Immediate candidate directions
 
-- `flutter pub get`: PASS
-- `flutter test test/widget/fullscreen_launch_test.dart`: PASS, 3/3
-- `flutter test`: PASS, 378/378
-- `python tools/validate_all.py`: PASS, 285 tests OK
-- `git diff --check`: PASS, only LF-to-CRLF warnings if present
-- tracked/cached diff clean after push
-- manual Windows smoke: PASS; app opens fullscreen
-- startup intro still plays and launcher opens
+Candidates only; no active route is armed:
+- Fullscreen Exit/Välju affordance.
+- Board Canvas right-panel component creation flow.
+- Board Canvas metadata edit flow.
+- Home lockup refresh.
 
-## Boundaries
+Do not create another docs-only planning chain from this state unless a concrete audit or route mismatch requires it.
 
-This was app-shell/window presentation only.
+## Canonical owner pointers
 
-No changes to:
-- `windows/`
-- native runner files
-- router or route definitions
-- splash implementation
-- home/workbench screens
-- Board Canvas
-- Add/Edit/Measure pages
-- writer/schema/materializer/validator/tool behavior
-- canonical events/facts
-- `events.jsonl`
-- `known_facts.json`
-- `_incoming`
-- docs compaction
+- Route and latest handoff: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`.
+- Active allowlist and forbidden surfaces: `docs/ACTIVE_SCOPE_LOCK.md`.
+- Durable product memory and Visual First rule: `docs/PROJECT_MEMORY.md`.
+- Fact/event law and protected data boundaries: `docs/TRUTH_INDEX.md`.
+- UI/workflow policy: `docs/UI_WORKFLOWS.md`.
+- Audit/pass provenance: `docs/AUDIT_INDEX.md` and `docs/audit/*.md`.
+- Documentation map/read priority: `docs/FILE_MAP.md`.
 
-Fullscreen launch creates no facts and writes no events. `events.jsonl` remains canonical truth. `known_facts.json` remains projection/cache. Flutter must not directly mutate `known_facts.json`. Human is the sensor; AI is the graph engine. Visual First Board Canvas workflow remains unchanged.
+## Non-negotiable safety reminders
 
-## Candidate future work
-
-Candidate only, not active route:
-- Fullscreen Exit/Välju affordance, because manual smoke currently relies on Alt+F4 to exit.
+- events.jsonl is canonical truth.
+- known_facts.json is projection/cache.
+- Flutter must not directly mutate known_facts.json.
+- Human is the sensor; AI is the graph engine.
+- No broad staging: never `git add .`, never `git add -A`, never `git commit -am`.
+- `_incoming` is design/provenance input only and must not become runtime truth.
 
 ## Route
 

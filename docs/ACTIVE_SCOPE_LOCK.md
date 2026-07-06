@@ -1,109 +1,56 @@
 # Active Scope Lock
 
 ## Current pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Mode
-Docs-only active-lock sync.
+No active implementation lock.
 
-## Purpose
-Arm the exact implementation allowlist for the first Board Canvas in-panel Komponendid workflow implementation slice.
+## Lock state
+Released by `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ABORT_CLOSEOUT_PASS`.
 
-## Baseline
-Verified live before this sync:
-- Latest pushed scope-revision commit: `bf689c9 docs: revise board canvas components workflow toward in-panel scope`
-- Route before this sync: `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS -> BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
-- Main aligned with `origin/main`
-- Tracked diff clean
-- Cached diff clean
-
-## Implementation pass armed
+## Released implementation pass
 `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
 
-## Exact implementation allowlist
-Only these files may be edited in the implementation pass:
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Abort reason
+`BLOCKED_PRODUCT_DECISION`
 
-No other files are armed.
+The attempted implementation was rejected after user product review.
 
-## Live-code findings used for allowlist
-- The current Komponendid hub is already in `lib/features/board_canvas/screens/board_canvas_screen.dart` as `_ComponentWorkflowHubCard` inside `_AddComponentTemplateListPanel`.
-- Existing Board Canvas widget coverage for the Komponendid hub and placement panel lives in `test/widget/board_canvas_screen_test.dart`.
-- The first implementation slice can be expressed as Board Canvas-local UI state/copy/selection behavior without touching router, Project Overview, standalone Add/Edit screens, Measure Sheet, writers, schema, tools, events, or project open files.
+## Obsolete audit / rejected direction
+The earlier Claude audit that technically accepted the first implementation direction is obsolete after user product review.
 
-## Product intent locked for implementation
-Board Canvas Komponendid workflow should happen in-panel beside/on the canvas where practical. It must not be implemented as a primary navigation gateway to old standalone pages.
+After revert, the app still shows the earlier committed Board Canvas `Komponendid` hub/card UI. That UI is baseline from an earlier pass, not residue from the reverted implementation. User now rejects that baseline direction too because it duplicates old workflow concepts instead of removing or migrating them.
 
-Canonical in-panel labels:
-- `Uus komponent`
-- `Muuda andmeid`
-- `Paiguta`
-- `Mõõda`
+Rejected direction:
+- preserving or creating duplicate UI for component creation
+- preserving or creating duplicate UI for component metadata editing
+- preserving or creating duplicate UI for placement
+- preserving or creating duplicate UI for measurement
+- risk of returning to table/form-filling workflow
 
-Rejected as primary Komponendid action labels:
-- `Ava loomine`
-- `Ava muutmine`
-- `Ava mõõtmine`
+## Locked product rule
+VISUAL FIRST.
 
-## Allowed implementation shape
-The implementation pass may:
-- evolve the current read-only Komponendid hub into a Board Canvas-local in-panel shell/mode selector
-- make the four modes visible with technician-facing copy
-- keep planned modes inactive or informational when real behavior would require forbidden surfaces
-- keep `Paiguta` as the only active real workflow if it reuses the existing selected-placement draft/save behavior
-- update Board Canvas widget tests for the in-panel shell
+All component work must happen in the Board Canvas right-side menu/panel:
+- measurement
+- component creation
+- component metadata editing
+- visual placement
 
-## Required preservation
-The implementation pass must preserve:
-- existing explicit `Salvesta` placement save behavior
-- selected-placement prefill behavior
-- required-label guard
-- canonical-bounds guard
-- missing-local-folder guard
-- projection-stale success copy
-- rotation normalization behavior
-- placement writer contract
-- Board Canvas renderer/painter read-only boundary
-- draft edits / discard / cancel / navigation no-write paths
+Old standalone Add/Edit/Measure-style pages must be removed or migrated through scoped passes, not duplicated in Board Canvas and not used as the primary technician workflow.
 
-## Forbidden surfaces
-The implementation pass must not edit:
-- router/navigation files
-- Project Overview files
-- standalone Add Component or Edit Component screens
-- Measure Sheet files
-- writer services
-- schemas
-- validator/materializer/tools
-- events.jsonl / known_facts.json
-- project open files
-- samples/assets
-- `_incoming`
+Measurement/right-panel workflow is considered already ready for the current product direction. Do not change measurement implementation in this closeout.
 
-The implementation pass must not create:
-- component identity from visual placement
-- pins/contacts/pads/nets/traces/electrical facts
-- measurements from the panel shell
-- AI-authored canonical facts
-- repair conclusions
-- new canonical write paths beyond the existing explicit placement save
+## Active implementation allowlist
+None.
 
-If implementation requires a file or semantic change outside this lock, stop and report `BLOCKED_ALLOWLIST_MISMATCH` or `BLOCKED_PRODUCT_DECISION`.
+No runtime, test, router, writer, schema, tool, materializer, validator, events, known_facts, sample, asset, or `_incoming` files are armed.
 
-## Validation expected for implementation
-At minimum:
-- `dart format lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
-- `flutter analyze lib test`
-- `flutter test test/widget/board_canvas_screen_test.dart`
-- `flutter test`
-- `python tools/validate_all.py`
-- `git diff --check`
-- `git diff --name-status`
-- `git diff --cached --name-status`
+## Recommended next candidate
+`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS`
 
-## This sync boundaries
-This active-lock sync changed docs only. It did not edit runtime, tests, writers, schemas, tools, events, known_facts, project open files, samples/assets, or `_incoming`.
+Candidate only; not armed.

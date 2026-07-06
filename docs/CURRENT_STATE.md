@@ -1,62 +1,67 @@
 # Current State
 
 ## Current pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
-Docs-only active-lock sync is arming the first implementation slice for the Board Canvas in-panel Komponendid workflow.
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS` was aborted and reverted before staging or push.
 
-Baseline verified from live git/docs:
-- Latest pushed scope-revision commit: `bf689c9 docs: revise board canvas components workflow toward in-panel scope`
-- Prior route before this sync: `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS -> BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
-- Main is aligned with `origin/main`.
-- Tracked diff and cached diff were clean before this sync.
+This closeout records the product correction and releases the active implementation lock. It does not implement removal, start a replacement scope, or change runtime behavior.
 
-This sync does not implement runtime UI. It records the exact future implementation allowlist and route.
+## Abort/revert evidence
+The uncommitted implementation was reverted cleanly.
 
-## Implementation pass armed
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
-
-Exact allowlist for that implementation pass:
+Reverted files:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Live-code inspection found the current Komponendid hub is already rendered inside Board Canvas (`_ComponentWorkflowHubCard` within `_AddComponentTemplateListPanel`) and covered by Board Canvas widget tests. The first in-panel implementation slice therefore stays in Board Canvas only.
+Recorded revert state:
+- both files byte-identical to `HEAD` after revert
+- tracked diff empty before this docs pass
+- cached diff empty before this docs pass
+- no runtime/test changes remain
+- no files staged, committed, or pushed by the revert step
 
-## Product decision for armed implementation
-Board Canvas should evolve the existing read-only Komponendid hub into an in-panel workflow shell/mode selector, not a navigation gateway to old standalone pages.
+## Obsolete audit / rejected direction
+An earlier Claude audit technically accepted the first implementation direction, but that audit is now obsolete after user product review.
 
-Preferred Board Canvas in-panel labels:
-- `Uus komponent`
-- `Muuda andmeid`
-- `Paiguta`
-- `Mõõda`
+After revert, the app still shows the earlier committed Board Canvas `Komponendid` hub/card UI. That UI is baseline from an earlier pass, not residue from the reverted implementation. User now rejects that baseline direction too because it duplicates old workflow concepts instead of removing or migrating them.
 
-Rejected as primary Komponendid UX:
-- `Ava loomine`
-- `Ava muutmine`
-- `Ava mõõtmine`
+Rejected direction:
+- preserving or creating duplicate UI for component creation
+- preserving or creating duplicate UI for component metadata editing
+- preserving or creating duplicate UI for placement
+- preserving or creating duplicate UI for measurement
+- risk of returning to table/form-filling workflow
 
-Implementation shape:
-- in-panel shell/mode selector
-- partial/informational first slice is acceptable
-- `Paiguta` may remain the only active real workflow if it can safely reuse the existing placement draft/save behavior
-- `Uus komponent`, `Muuda andmeid`, and `Mõõda` must stay planned/inactive/local-only unless supportable inside the allowlist without forbidden surface changes
+## Locked product rule
+VISUAL FIRST.
 
-## Boundaries
-The future implementation must not:
-- route users out to standalone Add/Edit/Measure pages as the primary Komponendid action
-- edit router, Project Overview, standalone Add/Edit Component screens, Measure Sheet, writer services, schemas, tools, materializer, validator, events, known_facts, project open files, samples/assets, or `_incoming`
-- create component identity from visual placement
-- create pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions from this panel
-- add new canonical write paths beyond the existing explicit `Salvesta` placement confirmation path
+All component work must happen in the Board Canvas right-side menu/panel:
+- measurement
+- component creation
+- component metadata editing
+- visual placement
 
-## Current known stable behavior
-- Board Canvas is the primary technician-facing board/workbench surface.
-- Existing placement prefill/save behavior remains separately accepted.
-- `Salvesta` remains the only canonical placement write trigger in the Board Canvas placement panel.
-- Writer/schema/event semantics remain unchanged in this sync.
-- No runtime or test files are changed by this sync.
+Old standalone Add/Edit/Measure-style pages must be removed or migrated through scoped passes, not duplicated in Board Canvas and not used as the primary technician workflow.
+
+Measurement/right-panel workflow is considered already ready for the current product direction. Do not change measurement implementation in this closeout.
+
+## Recommended next candidate
+`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS`
+
+Candidate only; no next scope is started.
+
+The next candidate must define:
+- Board Canvas right panel as primary component-work surface
+- removal/migration of old standalone Add/Edit/Measure-style pages
+- removal/migration of committed duplicate `Komponendid` hub/card UI
+- no duplicate UI
+- no route-out primary workflow
+- no table/form-filling regression
+
+## Boundary confirmation
+No runtime, tests, router, writer services, schema, tools, materializer, validator, events.jsonl, known_facts.json, `_incoming`, sample, or asset files are changed by this closeout.

@@ -1,83 +1,67 @@
 # Pass Queue
 
 ## Current pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Route status
-This docs-only active-lock sync arms the first implementation slice for the Board Canvas in-panel Komponendid workflow.
+The active implementation lock for `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS` is released.
 
-Previous accepted scope revision:
-- `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
-- Latest pushed commit verified live: `bf689c9 docs: revise board canvas components workflow toward in-panel scope`
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ABORT_CLOSEOUT_PASS` records a user product-decision abort and product correction. It does not start the replacement scope.
 
-## Active implementation allowlist
-For `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`, the exact implementation allowlist is:
+## Abort/revert evidence
+The attempted in-panel implementation was reverted before staging or push.
+
+Reverted files:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-No other files are armed.
+Recorded revert state:
+- both files byte-identical to `HEAD` after revert
+- tracked diff empty before this docs pass
+- cached diff empty before this docs pass
+- no runtime/test changes remain
+- no files staged, committed, or pushed by the revert step
 
-## Implementation goal
-Convert the current Board Canvas Komponendid hub from a read-only explanatory card into a Board Canvas-local in-panel workflow shell/mode selector.
+## Obsolete audit / rejected direction
+The earlier Claude audit that technically accepted the first implementation direction is obsolete after user product review.
 
-Preferred Board Canvas in-panel labels:
-- `Uus komponent`
-- `Muuda andmeid`
-- `Paiguta`
-- `Mõõda`
+After revert, the app still shows the earlier committed Board Canvas `Komponendid` hub/card UI. That is baseline UI from an earlier pass, not residue from the reverted implementation. User now rejects this baseline direction too because it duplicates old workflow concepts instead of removing or migrating them.
 
-Rejected navigation-primary labels:
-- `Ava loomine`
-- `Ava muutmine`
-- `Ava mõõtmine`
+Rejected direction:
+- duplicate UI for component creation
+- duplicate UI for component metadata editing
+- duplicate UI for placement
+- duplicate UI for measurement
+- risk of returning to table/form-filling workflow
 
-The first implementation slice should remain Board Canvas-local. It may be partial/informational where a real workflow would require future scoped files. `Paiguta` may be the only active real mode if it reuses the existing placement draft/save behavior already in Board Canvas.
+## Locked product rule
+VISUAL FIRST.
 
-## Implementation must preserve
-- Board Canvas is the primary technician-facing board/workbench surface.
-- Standalone Add/Edit/Measure routes remain untouched and transitional/backstage unless later scoped.
-- `Salvesta` remains the only canonical placement write trigger in the placement panel.
-- Existing placement writer contract remains unchanged.
-- Existing required-label, canonical-bounds, missing-folder, rotation-normalization, prefill, and projection-stale behavior remains unchanged.
-- Board Canvas renderer/painter remains read-only.
-- `known_facts.json` remains projection/cache and is not directly mutated by Flutter.
+All component work must happen in the Board Canvas right-side menu/panel:
+- measurement
+- component creation
+- component metadata editing
+- visual placement
 
-## Forbidden surfaces for the implementation pass
-Do not edit:
-- router/navigation files
-- Project Overview files
-- standalone Add Component or Edit Component screens
-- Measure Sheet files
-- writer services
-- schemas
-- validator/materializer/tools
-- events.jsonl / known_facts.json
-- project open files
-- samples/assets
-- `_incoming`
+Old standalone Add/Edit/Measure-style pages must be removed or migrated through scoped passes, not duplicated in Board Canvas and not used as the primary technician workflow.
 
-Do not create:
-- component identity from visual placement
-- pins/contacts/pads/nets/traces/electrical facts
-- measurements from this panel shell
-- AI-authored canonical facts
-- repair conclusions
-- new canonical write paths beyond the existing explicit placement save
+Measurement/right-panel workflow is considered already ready for the current product direction. Do not change measurement implementation in this closeout.
 
-If any of those surfaces are required, stop and report `BLOCKED_ALLOWLIST_MISMATCH` or `BLOCKED_PRODUCT_DECISION` rather than broadening the patch.
+## Recommended next candidate
+`BOARD_CANVAS_VISUAL_FIRST_COMPONENT_WORKFLOW_SCOPE_PASS`
 
-## Test expectations for implementation
-Update only Board Canvas widget tests as needed to prove:
-- Komponendid panel remains in Board Canvas.
-- Canonical in-panel labels are visible: `Uus komponent`, `Muuda andmeid`, `Paiguta`, `Mõõda`.
-- Rejected navigation labels are not primary action copy.
-- No route push/navigation is introduced by the panel shell.
-- Planned/inactive modes do not write canonical events.
-- Existing placement save flow still works through `Salvesta`.
-- Existing no-write draft/edit/cancel/discard/navigation boundaries remain intact.
+Candidate only; no next scope is started.
+
+The next candidate must define:
+- Board Canvas right panel as primary component-work surface
+- removal/migration of old standalone Add/Edit/Measure-style pages
+- removal/migration of committed duplicate `Komponendid` hub/card UI
+- no duplicate UI
+- no route-out primary workflow
+- no table/form-filling regression
 
 ## Scope gate rules
 - Route owners: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`.

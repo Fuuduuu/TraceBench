@@ -1,68 +1,62 @@
-# CURRENT_STATE.md
-
-Operational handoff for the active TraceBench / BenchBeep / BoardFact route.
+# Current State
 
 ## Current pass
-
-`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS`
-
-## Next recommended pass
-
 `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
+## Next recommended pass
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
+
 ## Route status
+Docs-only active-lock sync is arming the first implementation slice for the Board Canvas in-panel Komponendid workflow.
 
-Docs-only product scope revision is active.
+Baseline verified from live git/docs:
+- Latest pushed scope-revision commit: `bf689c9 docs: revise board canvas components workflow toward in-panel scope`
+- Prior route before this sync: `BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_SCOPE_REVISION_PASS -> BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_ACTIVE_LOCK_SYNC_PASS`
+- Main is aligned with `origin/main`.
+- Tracked diff and cached diff were clean before this sync.
 
-The pushed abort closeout `120808a` (`docs: close out aborted board canvas components actions implementation`) returned the route to `NEEDS_USER_DECISION` after the rejected navigation-only Komponendid actions implementation was reverted.
+This sync does not implement runtime UI. It records the exact future implementation allowlist and route.
 
-## Product decision being locked
+## Implementation pass armed
+`BOARD_CANVAS_COMPONENTS_WORKFLOW_IN_PANEL_IMPL_PASS`
 
-Prior rejected direction:
+Exact allowlist for that implementation pass:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
-- Board Canvas Komponendid hub actions such as "Ava loomine", "Ava muutmine", and "Ava mõõtmine".
-- Navigation from Board Canvas to old standalone pages as the primary Komponendid UX.
+Live-code inspection found the current Komponendid hub is already rendered inside Board Canvas (`_ComponentWorkflowHubCard` within `_AddComponentTemplateListPanel`) and covered by Board Canvas widget tests. The first in-panel implementation slice therefore stays in Board Canvas only.
 
-Revised direction:
+## Product decision for armed implementation
+Board Canvas should evolve the existing read-only Komponendid hub into an in-panel workflow shell/mode selector, not a navigation gateway to old standalone pages.
 
+Preferred Board Canvas in-panel labels:
+- `Uus komponent`
+- `Muuda andmeid`
+- `Paiguta`
+- `Mõõda`
+
+Rejected as primary Komponendid UX:
+- `Ava loomine`
+- `Ava muutmine`
+- `Ava mõõtmine`
+
+Implementation shape:
+- in-panel shell/mode selector
+- partial/informational first slice is acceptable
+- `Paiguta` may remain the only active real workflow if it can safely reuse the existing placement draft/save behavior
+- `Uus komponent`, `Muuda andmeid`, and `Mõõda` must stay planned/inactive/local-only unless supportable inside the allowlist without forbidden surface changes
+
+## Boundaries
+The future implementation must not:
+- route users out to standalone Add/Edit/Measure pages as the primary Komponendid action
+- edit router, Project Overview, standalone Add/Edit Component screens, Measure Sheet, writer services, schemas, tools, materializer, validator, events, known_facts, project open files, samples/assets, or `_incoming`
+- create component identity from visual placement
+- create pins, contacts, pads, nets, traces, electrical facts, measurements, AI-authored facts, or repair conclusions from this panel
+- add new canonical write paths beyond the existing explicit `Salvesta` placement confirmation path
+
+## Current known stable behavior
 - Board Canvas is the primary technician-facing board/workbench surface.
-- Komponendid work should happen beside/on the board canvas where practical.
-- The Komponendid panel should evolve toward contextual in-panel workflows, not a navigation-only gateway.
-- Old standalone Add/Edit/Measure pages may remain transitional/backstage routes for now.
-- No route hiding, screen deletion, writer merge, or implementation is authorized by this pass.
-
-## Canonical split to preserve
-
-- `component_created` = component identity/existence creation.
-- `component_updated` = component metadata update.
-- `component_visual_placement_confirmed` = visual placement confirmation.
-- `measurement_recorded` = measurement write.
-
-## Phased future direction
-
-Likely first implementation slice, if separately armed later:
-
-- Convert the current read-only Komponendid hub into an in-panel mode selector / contextual panel shell.
-- Keep `Paiguta` as the first real in-panel action because the Board Canvas placement draft/prefill/save flow already exists.
-- Keep `Uus komponent`, `Muuda andmeid`, and `Mõõda` as planned/future in-panel modes unless a later pass safely implements them.
-- Avoid routing out to legacy standalone pages as the primary behavior.
-
-Later slices may separately scope in-panel identity creation, metadata editing, measurement entry, backstage handling of old standalone routes, and test migration.
-
-## Active implementation status
-
-No implementation allowlist is armed by this pass. The next active-lock sync must inspect live code and arm exact files.
-
-## Binding workflow safety
-
-- Never use `git add .`.
-- Never use `git add -A`.
-- Never use `git commit -am`.
-- Stage exact files only when the user explicitly asks for staging.
-
-## Canonical owners / evidence ledgers
-
-- Route state: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`.
-- Stable architecture truth: `docs/TRUTH_INDEX.md`, `docs/PROJECT_MEMORY.md`.
-- Protected surfaces: `docs/PROTECTED_SURFACES.md`.
-- Audit provenance: `docs/AUDIT_INDEX.md`, `docs/audit/*.md`.
+- Existing placement prefill/save behavior remains separately accepted.
+- `Salvesta` remains the only canonical placement write trigger in the Board Canvas placement panel.
+- Writer/schema/event semantics remain unchanged in this sync.
+- No runtime or test files are changed by this sync.

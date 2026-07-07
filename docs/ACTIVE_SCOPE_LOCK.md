@@ -2,47 +2,77 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`
 
 ## Lock state
 
-No active implementation lock.
+Docs-only build-lock active.
 
-No runtime, test, schema, tool, writer, router, asset, event, fact, `known_facts.json`, `events.jsonl`, `windows/`, or `_incoming` file is armed.
+Implementation lock armed for `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`.
 
-## If a new pass is chosen
+## Current build-lock write set
 
-Every new pass must define:
-- `PASS_ID`
-- exact write allowlist
-- forbidden surfaces
-- required validation
-- route result
-
-Runtime or protected-surface work must be scope-locked before implementation.
-
-## Current docs-hygiene review set
-
-For `DOCS_COMPACTION_VISUAL_FIRST_ALIGNMENT_PASS`, expected docs-only review set:
+Only these docs may be changed by this build-lock:
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/PROJECT_MEMORY.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/UI_WORKFLOWS.md`
-- `docs/audit/DOCS_COMPACTION_VISUAL_FIRST_ALIGNMENT_PASS.md`
+- `docs/audit/BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS.md`
 
-No implementation allowlist is armed by this hygiene pass.
+Do not edit runtime or tests in this build-lock.
 
-## Forbidden surfaces while route is free
+## Armed implementation allowlist
 
-Do not change without a new active lock:
+The next implementation pass may write only:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+If the implementation needs `v2_add_component_writer.dart`, schema, materializer, validator, tools, router, standalone Add/Edit/Measure screens, project state models, assets, `_incoming`, or any additional file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+## Locked implementation intent
+
+Add a first Visual First Board Canvas right-panel component identity creation flow.
+
+Required behavior:
+- User can create component identity/existence from the Board Canvas right panel.
+- The flow writes only `component_created`.
+- The flow uses the existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
+- The write occurs only on explicit human action, such as `Loo komponent` or `Salvesta komponent`.
+- The result updates local `projectState.events` and marks projection stale, matching the existing standalone writer pattern.
+- The flow remains inside the Board Canvas right panel; no route push to standalone Add Component as the primary creation flow.
+- The flow must not create visual placement or place the component on canvas.
+- The flow must not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+
+Minimum first-slice fields:
+- component ID / `Koht`
+- label / name
+- compact component kind choice using existing allowed kinds: `unknown`, `passive`, `ic`, `connector`, `regulator`
+
+Keep the UI compact and right-panel-native. Do not recreate a table/form page transplant.
+
+## Visual First rule
+
+Board Canvas plus the right-side panel/menu is the primary technician workflow surface.
+
+Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. Do not duplicate those pages inside Board Canvas and do not route technicians out of Board Canvas as the primary workflow unless a future scoped pass explicitly changes that product rule.
+
+Canonical split:
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
+
+## Forbidden surfaces
+
+Do not change in this build-lock.
+
+Do not change in the next implementation unless separately scoped:
 - router files or route definitions
-- splash/home/workbench/Board Canvas/Add/Edit/Measure runtime
+- splash/home/workbench/Add/Edit/Measure runtime outside the exact Board Canvas allowlist
 - writer services
 - schemas
 - validators/materializers/tools
@@ -51,6 +81,8 @@ Do not change without a new active lock:
 - `known_facts.json`
 - `_incoming`
 - `windows/` or native runner files
+
+For the next implementation pass, Board Canvas runtime/test edits are allowed only through the exact two-file implementation allowlist above.
 
 ## Canonical boundaries
 

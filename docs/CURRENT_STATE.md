@@ -1,16 +1,21 @@
 # Current State
 
-Current pass: NEEDS_USER_DECISION
-Next recommended pass: NEEDS_USER_DECISION
+Current pass: BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS
+Next recommended pass: BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS
 
 ## Status
 
-No active implementation lock is armed.
+Docs-only build-lock active. No runtime or test implementation is part of this pass.
 
-Latest pushed closeout:
-- `93ddff1 docs: close out benchbeep fullscreen launch`
-- Closed `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` after push.
-- Review state recorded as `NON_CLAUDE_REVIEW: ACCEPTED_RISK`; do not describe startup intro or fullscreen launch as Claude-audited unless a real Claude audit is supplied later.
+Latest pushed baseline:
+- `792b273 docs: compact visual-first operational docs`
+
+Implementation pass armed:
+- `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`
+
+Implementation write allowlist:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
 ## Latest product direction
 
@@ -20,20 +25,29 @@ Technician-facing core:
 - `Koht -> Väärtus -> Ühik -> Salvesta`
 
 Primary workflow rule:
+- VISUAL FIRST.
 - The technician stays on the board.
 - Board Canvas plus right-side panel/menu is the primary workflow surface.
 - Old Add/Edit/Measure-style pages are transitional migration/removal debt, not the primary technician workflow.
 - AI may propose and organize, but the human confirms canonical facts.
 
-## Immediate candidate directions
+## Armed implementation intent
 
-Candidates only; no active route is armed:
-- Fullscreen Exit/Välju affordance.
-- Board Canvas right-panel component creation flow.
-- Board Canvas metadata edit flow.
-- Home lockup refresh.
+The next implementation pass may add a first Board Canvas right-panel component identity creation flow.
 
-Do not create another docs-only planning chain from this state unless a concrete audit or route mismatch requires it.
+Locked boundaries:
+- Creation writes only `component_created`.
+- Creation must use the existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
+- The explicit human action may be `Loo komponent` or `Salvesta komponent`.
+- The flow stays in the Board Canvas right panel and must not route to the standalone Add Component page as the primary workflow.
+- It must not create visual placement, pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- If writer, schema, materializer, validator, router, standalone screens, project models, assets, `_incoming`, or any file outside the two-file allowlist is required, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+Canonical split to preserve:
+- `component_created` = component identity/existence creation.
+- `component_updated` = component metadata update.
+- `component_visual_placement_confirmed` = visual placement confirmation.
+- `measurement_recorded` = measurement write.
 
 ## Canonical owner pointers
 
@@ -56,5 +70,5 @@ Do not create another docs-only planning chain from this state unless a concrete
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS`
+Next: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`

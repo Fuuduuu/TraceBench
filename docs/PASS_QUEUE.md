@@ -2,8 +2,8 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS`
+Next: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`
 
 ## Queue policy
 
@@ -17,18 +17,31 @@ Do not route to another docs-only planning pass unless a concrete audit finding 
 - Implementation commit: `324829e586b40eddd266a2f1d834c02a39ef4aa1` (`feat: launch benchbeep fullscreen`).
 - Review status: `NON_CLAUDE_REVIEW: ACCEPTED_RISK`; Claude audit skipped/unavailable.
 
+## Active build-lock
+
+`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS` arms `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS` directly.
+
+Implementation allowlist armed:
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+Implementation must keep this as the first Visual First identity-creation slice:
+- Add compact right-panel component identity creation.
+- Use the existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
+- Write only `component_created` after explicit human action.
+- Update local `projectState.events` and mark projection stale, matching the existing standalone writer pattern.
+- Do not route to the standalone Add Component page as the primary creation flow.
+- Do not create visual placement or any pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+
+If the implementation needs any file outside the two-file allowlist, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+
 ## Candidate passes
 
-Candidates only; none is armed as active route.
+Candidates only; not armed by this build-lock:
 
 1. Fullscreen Exit/Välju affordance.
-   - Add an explicit exit/leave-fullscreen path so Windows manual smoke does not rely on Alt+F4.
-2. Board Canvas right-panel component creation flow.
-   - Move component identity creation toward the Visual First right-panel workflow.
-3. Board Canvas metadata edit flow.
-   - Move component metadata editing toward the Visual First right-panel workflow.
-4. Home lockup refresh.
-   - Polish launcher/wordmark presentation without touching canonical data behavior.
+2. Board Canvas metadata edit flow.
+3. Home lockup refresh.
 
 ## Visual First sequencing rule
 

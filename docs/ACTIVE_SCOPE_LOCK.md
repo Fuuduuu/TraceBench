@@ -2,52 +2,95 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_METADATA_EDIT_FLOW_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_PASS`
 
 ## Lock state
 
-No active implementation lock is armed.
+Docs-only build-lock active.
 
-`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS` is closed and pushed as `4390255c51609396977a16f60b14c2b6bee50d8c feat: add board canvas right-panel component creation`.
+Implementation lock armed for `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_PASS`.
 
-The prior implementation allowlist is released:
+## Current build-lock write set
+
+Only these docs may be changed by this build-lock:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_METADATA_EDIT_FLOW_BUILD_LOCK_PASS.md`
+
+Do not edit runtime or tests in this build-lock.
+
+## Armed implementation allowlist
+
+The next implementation pass may write only:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Do not treat this released allowlist as authorization for future edits. Any future implementation pass must be separately scoped and armed.
+If the implementation needs `v2_edit_component_writer.dart`, schemas, materializers, validators, tools, router files, standalone Add/Edit/Measure screens, project state models, assets, `_incoming`, or any additional file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
 
-## Closed implementation summary
+## Locked implementation intent
 
-Board Canvas right-panel component identity creation is now implemented.
+Add a first Visual First Board Canvas right-panel component metadata edit flow for an existing selected component.
 
-Recorded behavior:
-- Creation is available from the Board Canvas right panel.
-- Creation uses existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
-- Creation writes only `component_created`.
-- Creation is explicit human action only via `Loo komponent`.
-- Successful create appends returned event to local `projectState.events` if not already present.
-- Successful create marks projection stale.
-- Flow does not route to the standalone Add Component page.
-- Flow does not create visual placement or place the component on canvas.
-- Flow does not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
-- Visible rich labels from design input map only to writer-safe canonical `componentKind` values: `unknown`, `passive`, `ic`, `connector`, `regulator`.
-- No new canonical `componentKind` values were introduced.
+Required behavior:
+- When a placed component is selected on Board Canvas, the right panel may show compact metadata edit controls for that selected component.
+- Metadata edit must operate on the currently selected `ComponentPlacementSelection.componentId`.
+- If no component is selected, show compact guidance such as `Vali komponent plaadil`.
+- The flow writes only `component_updated`.
+- The flow uses the existing `V2EditComponentWriter` / `v2EditComponentWriterProvider`.
+- The write occurs only on explicit human action, such as `Salvesta muudatused`.
+- The result updates local `projectState.events` and marks projection stale, matching the existing standalone writer pattern.
+- The flow remains inside the Board Canvas right panel.
+- The flow must not route to standalone Edit Component as the primary edit flow.
+- The flow must not create component identity.
+- The flow must not create visual placement.
+- The flow must not place, move, resize, or rotate a component on canvas.
+- The flow must not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- The flow must not directly mutate `known_facts.json`.
+- The flow must not directly mutate `projectState.knownFacts`; known_facts remains projection/cache and may be stale after the write.
 
-Review status:
-- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`.
-- Claude audit was not supplied for this pass.
-- Reviewer path: GPT/Pro review plus local validation plus manual smoke plus user-approved push.
-- GPT/Pro verdict before staging: `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+Preferred first-slice fields:
+- display label / name
+- component kind using writer-safe canonical values: `unknown`, `passive`, `ic`, `connector`, `regulator`
+
+Optional only if simple and already safely represented in known facts:
+- reference designator
+- package hint
+
+Do not add pin count, contacts, visual contact layout, placement, net, trace, electrical status, AI diagnosis, or repair fields.
+
+Visible labels may be richer but must map back to canonical writer-safe values:
+- `Generic / unclassified` -> `unknown`
+- `Resistor / capacitor / diode / passive` -> `passive`
+- `IC dual-side / quad-side / dense grid` -> `ic`
+- `Connector / header` -> `connector`
+- `Regulator / relay / module` -> `regulator`
+
+Do not introduce new canonical `componentKind` values.
+
+## Change construction requirements
+
+The future implementation must:
+- build `V2ComponentChange` entries only for changed non-empty fields;
+- use `oldValueObserved` from current knownFacts / `ComponentFact` values;
+- use `unknown` only where the existing writer/screen pattern already does that safely;
+- use `changeKind: set` when old value is `unknown`, otherwise `replace`;
+- keep `editReason` compact and deterministic, e.g. `board_canvas_right_panel_metadata_edit`;
+- use deterministic `clientOperationId` from componentId plus changed fields/form key to support idempotent retries;
+- prevent duplicate submit of the same successful form if practical.
 
 ## Visual First rule
 
 Board Canvas plus the right-side panel/menu is the primary technician workflow surface.
 
 Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt. Do not duplicate those pages inside Board Canvas and do not route technicians out of Board Canvas as the primary workflow unless a future scoped pass explicitly changes that product rule.
+
+Do not resurrect navigation-only gateway behavior, four-card mode selectors, table/form page transplants, or old workflow menus inside Board Canvas.
 
 Canonical split:
 - `component_created` = component identity/existence creation.
@@ -57,19 +100,26 @@ Canonical split:
 
 ## Forbidden surfaces
 
-No implementation is authorized by the current route.
+Do not change in this build-lock.
 
-Do not change without a new active lock:
+Do not change in the next implementation unless separately scoped:
 - router files or route definitions
-- splash/home/workbench/Add/Edit/Measure runtime
+- standalone Add/Edit/Measure screens
+- Project Overview
 - writer services
 - schemas
-- validators/materializers/tools
+- materializers, validators, or tools
 - canonical events/facts semantics
 - `events.jsonl`
 - `known_facts.json`
 - `_incoming`
-- `windows/` or native runner files
+- assets
+- `pubspec.yaml` / `pubspec.lock`
+- splash/home/fullscreen/window-manager files
+- Board Graph files
+- contact/pin/pad/net/trace/measurement/electrical/AI/repair semantics
+
+For the next implementation pass, Board Canvas runtime/test edits are allowed only through the exact two-file implementation allowlist above.
 
 ## Canonical boundaries
 
@@ -78,5 +128,7 @@ Do not change without a new active lock:
 - Flutter must not directly mutate known_facts.json.
 - Human is the sensor; AI is the graph engine.
 - AI must not create canonical facts without explicit human confirmation.
-- Visual drafts must not become pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- UI drafts must not become facts without explicit scoped writer action.
+- Board Canvas renderer/painter remains read-only.
+- Explicit right-panel metadata edit action may write only `component_updated` through the accepted writer.
 - Exact-file staging only; broad staging is forbidden.

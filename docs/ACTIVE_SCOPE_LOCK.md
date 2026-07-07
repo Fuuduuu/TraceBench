@@ -2,57 +2,46 @@
 
 ## Current pass
 
-`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Lock state
 
-Docs-only build-lock active.
+No active implementation lock is armed.
 
-Implementation lock armed for `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`.
+`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS` is closed and pushed as `4390255c51609396977a16f60b14c2b6bee50d8c feat: add board canvas right-panel component creation`.
 
-## Current build-lock write set
-
-Only these docs may be changed by this build-lock:
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS.md`
-
-Do not edit runtime or tests in this build-lock.
-
-## Armed implementation allowlist
-
-The next implementation pass may write only:
+The prior implementation allowlist is released:
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-If the implementation needs `v2_add_component_writer.dart`, schema, materializer, validator, tools, router, standalone Add/Edit/Measure screens, project state models, assets, `_incoming`, or any additional file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+Do not treat this released allowlist as authorization for future edits. Any future implementation pass must be separately scoped and armed.
 
-## Locked implementation intent
+## Closed implementation summary
 
-Add a first Visual First Board Canvas right-panel component identity creation flow.
+Board Canvas right-panel component identity creation is now implemented.
 
-Required behavior:
-- User can create component identity/existence from the Board Canvas right panel.
-- The flow writes only `component_created`.
-- The flow uses the existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
-- The write occurs only on explicit human action, such as `Loo komponent` or `Salvesta komponent`.
-- The result updates local `projectState.events` and marks projection stale, matching the existing standalone writer pattern.
-- The flow remains inside the Board Canvas right panel; no route push to standalone Add Component as the primary creation flow.
-- The flow must not create visual placement or place the component on canvas.
-- The flow must not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+Recorded behavior:
+- Creation is available from the Board Canvas right panel.
+- Creation uses existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
+- Creation writes only `component_created`.
+- Creation is explicit human action only via `Loo komponent`.
+- Successful create appends returned event to local `projectState.events` if not already present.
+- Successful create marks projection stale.
+- Flow does not route to the standalone Add Component page.
+- Flow does not create visual placement or place the component on canvas.
+- Flow does not create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- Visible rich labels from design input map only to writer-safe canonical `componentKind` values: `unknown`, `passive`, `ic`, `connector`, `regulator`.
+- No new canonical `componentKind` values were introduced.
 
-Minimum first-slice fields:
-- component ID / `Koht`
-- label / name
-- compact component kind choice using existing allowed kinds: `unknown`, `passive`, `ic`, `connector`, `regulator`
-
-Keep the UI compact and right-panel-native. Do not recreate a table/form page transplant.
+Review status:
+- `NON_CLAUDE_REVIEW: ACCEPTED_RISK`.
+- Claude audit was not supplied for this pass.
+- Reviewer path: GPT/Pro review plus local validation plus manual smoke plus user-approved push.
+- GPT/Pro verdict before staging: `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
 
 ## Visual First rule
 
@@ -68,11 +57,11 @@ Canonical split:
 
 ## Forbidden surfaces
 
-Do not change in this build-lock.
+No implementation is authorized by the current route.
 
-Do not change in the next implementation unless separately scoped:
+Do not change without a new active lock:
 - router files or route definitions
-- splash/home/workbench/Add/Edit/Measure runtime outside the exact Board Canvas allowlist
+- splash/home/workbench/Add/Edit/Measure runtime
 - writer services
 - schemas
 - validators/materializers/tools
@@ -81,8 +70,6 @@ Do not change in the next implementation unless separately scoped:
 - `known_facts.json`
 - `_incoming`
 - `windows/` or native runner files
-
-For the next implementation pass, Board Canvas runtime/test edits are allowed only through the exact two-file implementation allowlist above.
 
 ## Canonical boundaries
 

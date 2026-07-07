@@ -2,8 +2,8 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Queue policy
 
@@ -13,35 +13,31 @@ Do not route to another docs-only planning pass unless a concrete audit finding 
 
 ## Latest closed work
 
-- `BENCHBEEP_FULLSCREEN_WINDOW_MANAGER_IMPL_PASS` closed by `93ddff1 docs: close out benchbeep fullscreen launch`.
-- Implementation commit: `324829e586b40eddd266a2f1d834c02a39ef4aa1` (`feat: launch benchbeep fullscreen`).
-- Review status: `NON_CLAUDE_REVIEW: ACCEPTED_RISK`; Claude audit skipped/unavailable.
+- `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS` closed by `4390255c51609396977a16f60b14c2b6bee50d8c feat: add board canvas right-panel component creation`.
+- Closeout pass: `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_POST_AUDIT_PASS`.
+- Review status: `NON_CLAUDE_REVIEW: ACCEPTED_RISK`; Claude audit was not supplied for this pass.
+- Reviewer path: GPT/Pro review plus local validation plus manual smoke plus user-approved push.
+- GPT/Pro verdict before staging: `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Safe implementation set: `lib/features/board_canvas/screens/board_canvas_screen.dart`, `test/widget/board_canvas_screen_test.dart`.
 
-## Active build-lock
-
-`BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_BUILD_LOCK_PASS` arms `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_PASS` directly.
-
-Implementation allowlist armed:
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-Implementation must keep this as the first Visual First identity-creation slice:
-- Add compact right-panel component identity creation.
-- Use the existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
-- Write only `component_created` after explicit human action.
-- Update local `projectState.events` and mark projection stale, matching the existing standalone writer pattern.
-- Do not route to the standalone Add Component page as the primary creation flow.
-- Do not create visual placement or any pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
-
-If the implementation needs any file outside the two-file allowlist, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+Implementation behavior recorded:
+- Board Canvas right-panel now has compact component identity creation.
+- Creation uses existing `V2AddComponentWriter` / `v2AddComponentWriterProvider`.
+- Creation writes only `component_created` after explicit human action via `Loo komponent`.
+- Successful create appends returned event to local `projectState.events` if not already present and marks projection stale.
+- Flow stays in Board Canvas right panel and does not route to the standalone Add Component page.
+- Flow does not create visual placement, place a component on canvas, or create pins, contacts, pads, nets, traces, measurements, electrical facts, AI facts, or repair conclusions.
+- Visible rich labels map only to canonical writer-safe `componentKind` values: `unknown`, `passive`, `ic`, `connector`, `regulator`.
+- Duplicate component ID validation failures show friendly Estonian copy instead of raw validator/Python details.
 
 ## Candidate passes
 
-Candidates only; not armed by this build-lock:
+Candidates only; not armed:
 
-1. Fullscreen Exit/Välju affordance.
-2. Board Canvas metadata edit flow.
+1. Board Canvas metadata edit flow.
+2. Fullscreen Exit/Välju affordance.
 3. Home lockup refresh.
+4. Later right-panel route migration/removal only after replacements and dependency audit.
 
 ## Visual First sequencing rule
 

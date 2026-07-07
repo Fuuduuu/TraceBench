@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../../components/services/v2_add_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
@@ -422,6 +423,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _addComponentPlacementSaveInFlight = false;
   String? _addComponentTemplatePlacementContextKey;
   String? _addComponentTemplateSaveStatusMessage;
+  String _rightPanelCreateComponentId = '';
+  String _rightPanelCreateComponentLabel = '';
+  String? _rightPanelCreateComponentKind;
+  bool _rightPanelCreateComponentInFlight = false;
+  String? _rightPanelCreateComponentStatusMessage;
+  String? _rightPanelCreateComponentErrorMessage;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -726,6 +733,131 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       events: updatedEvents,
       isProjectionStale: true,
     );
+  }
+
+  String? _rightPanelCreateComponentBlockReason(ProjectState projectState) {
+    if (_rightPanelCreateComponentId.trim().isEmpty) {
+      return 'Sisesta komponendi ID enne loomist.';
+    }
+    if (_rightPanelCreateComponentLabel.trim().isEmpty) {
+      return 'Sisesta komponendi nimi enne loomist.';
+    }
+    if (_rightPanelCreateComponentKind == null ||
+        _rightPanelCreateComponentKind!.trim().isEmpty) {
+      return 'Vali komponendi liik enne loomist.';
+    }
+    final projectDirectory = projectState.projectDirectory;
+    if (projectDirectory == null || projectDirectory.trim().isEmpty) {
+      return 'Komponendi loomiseks ava projekt kohalikust kaustast.';
+    }
+    return null;
+  }
+
+  Future<void> _confirmRightPanelComponentCreation({
+    required ProjectState projectState,
+  }) async {
+    if (_rightPanelCreateComponentInFlight) {
+      return;
+    }
+
+    final blockReason = _rightPanelCreateComponentBlockReason(projectState);
+    if (blockReason != null) {
+      setState(() {
+        _rightPanelCreateComponentStatusMessage = null;
+        _rightPanelCreateComponentErrorMessage = blockReason;
+      });
+      return;
+    }
+
+    final componentId = _rightPanelCreateComponentId.trim();
+    final request = V2AddComponentRequest(
+      componentId: componentId,
+      label: _rightPanelCreateComponentLabel.trim(),
+      componentKind: _rightPanelCreateComponentKind!.trim(),
+      clientOperationId: _componentCreationClientOperationIdFor(componentId),
+    );
+
+    setState(() {
+      _rightPanelCreateComponentInFlight = true;
+      _rightPanelCreateComponentStatusMessage =
+          'Salvestan komponendi identiteeti...';
+      _rightPanelCreateComponentErrorMessage = null;
+    });
+
+    try {
+      final result = await ref.read(v2AddComponentWriterProvider).addComponent(
+            projectState: projectState,
+            request: request,
+          );
+      if (!mounted) {
+        return;
+      }
+      _markPlacementProjectionStale(
+        projectState: projectState,
+        event: result.event,
+      );
+      setState(() {
+        _rightPanelCreateComponentStatusMessage = result.appended
+            ? 'Komponent loodud. Projektsioon vajab värskendamist.'
+            : 'Komponent oli juba salvestatud. Projektsioon vajab värskendamist.';
+        _rightPanelCreateComponentErrorMessage = null;
+      });
+    } on V2AddComponentException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _rightPanelCreateComponentStatusMessage = null;
+        _rightPanelCreateComponentErrorMessage =
+            _componentCreationFailureMessage(error);
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _rightPanelCreateComponentStatusMessage = null;
+        _rightPanelCreateComponentErrorMessage =
+            'Komponendi loomine ebaõnnestus: $error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _rightPanelCreateComponentInFlight = false;
+        });
+      }
+    }
+  }
+
+  String _componentCreationClientOperationIdFor(String componentId) {
+    final safeComponentId = componentId
+        .trim()
+        .replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_');
+    final timestamp = DateTime.now().toUtc().microsecondsSinceEpoch;
+    return 'op_board_canvas_component_created_${safeComponentId}_$timestamp';
+  }
+
+  String _componentCreationFailureMessage(V2AddComponentException error) {
+    switch (error.kind) {
+      case V2AddComponentFailureKind.noProjectDirectory:
+        return 'Komponendi loomiseks ava projekt kohalikust kaustast.';
+      case V2AddComponentFailureKind.invalidProjectDirectory:
+        return 'Projektikaust ei sobi komponendi loomiseks.';
+      case V2AddComponentFailureKind.pythonUnavailable:
+        return 'Komponendi kirjutaja pole saadaval.';
+      case V2AddComponentFailureKind.lockConflict:
+        return 'Komponendi kirjutaja on hetkel hõivatud.';
+      case V2AddComponentFailureKind.validation:
+        if (error.message.toLowerCase().contains(
+              'duplicate v2 component_id',
+            )) {
+          return 'Komponendi ID on juba kasutusel. Vali uus Koht / ID.';
+        }
+        return 'Komponenti ei loodud: sisestus ei läbinud valideerimist.';
+      case V2AddComponentFailureKind.append:
+        return 'Komponendi loomine ebaõnnestus: ${error.message}';
+    }
   }
 
   Future<void> _confirmAddComponentTemplatePlacement({
@@ -1251,6 +1383,48 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     case _WorkbenchContextPanelMode.addComponentTemplates:
                       contextPanel = _AddComponentTemplateListPanel(
                         entries: _kStarterAddComponentTemplates,
+                        createComponentId: _rightPanelCreateComponentId,
+                        onCreateComponentIdChanged: (value) {
+                          setState(() {
+                            _rightPanelCreateComponentId = value;
+                            _rightPanelCreateComponentStatusMessage = null;
+                            _rightPanelCreateComponentErrorMessage = null;
+                          });
+                        },
+                        createComponentLabel: _rightPanelCreateComponentLabel,
+                        onCreateComponentLabelChanged: (value) {
+                          setState(() {
+                            _rightPanelCreateComponentLabel = value;
+                            _rightPanelCreateComponentStatusMessage = null;
+                            _rightPanelCreateComponentErrorMessage = null;
+                          });
+                        },
+                        createComponentKind: _rightPanelCreateComponentKind,
+                        onCreateComponentKindChanged: (value) {
+                          setState(() {
+                            _rightPanelCreateComponentKind = value;
+                            _rightPanelCreateComponentStatusMessage = null;
+                            _rightPanelCreateComponentErrorMessage = null;
+                          });
+                        },
+                        createComponentBlockReason:
+                            _rightPanelCreateComponentBlockReason(projectState),
+                        createComponentStatusMessage:
+                            _rightPanelCreateComponentStatusMessage,
+                        createComponentErrorMessage:
+                            _rightPanelCreateComponentErrorMessage,
+                        createComponentInFlight:
+                            _rightPanelCreateComponentInFlight,
+                        onCreateComponent:
+                            _rightPanelCreateComponentBlockReason(
+                                          projectState,
+                                        ) ==
+                                        null &&
+                                    !_rightPanelCreateComponentInFlight
+                                ? () => _confirmRightPanelComponentCreation(
+                                      projectState: projectState,
+                                    )
+                                : null,
                         selectedTemplateId: _selectedAddComponentTemplateId,
                         selectedTemplate: selectedAddComponentTemplate,
                         topContactMarkers:
@@ -2457,6 +2631,17 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
 class _AddComponentTemplateListPanel extends StatelessWidget {
   const _AddComponentTemplateListPanel({
     required this.entries,
+    required this.createComponentId,
+    required this.onCreateComponentIdChanged,
+    required this.createComponentLabel,
+    required this.onCreateComponentLabelChanged,
+    required this.createComponentKind,
+    required this.onCreateComponentKindChanged,
+    required this.createComponentBlockReason,
+    required this.createComponentStatusMessage,
+    required this.createComponentErrorMessage,
+    required this.createComponentInFlight,
+    required this.onCreateComponent,
     required this.selectedTemplateId,
     required this.onTemplateSelected,
     required this.selectedTemplate,
@@ -2488,6 +2673,17 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   });
 
   final List<_AddComponentTemplateDefinition> entries;
+  final String createComponentId;
+  final ValueChanged<String> onCreateComponentIdChanged;
+  final String createComponentLabel;
+  final ValueChanged<String> onCreateComponentLabelChanged;
+  final String? createComponentKind;
+  final ValueChanged<String?> onCreateComponentKindChanged;
+  final String? createComponentBlockReason;
+  final String? createComponentStatusMessage;
+  final String? createComponentErrorMessage;
+  final bool createComponentInFlight;
+  final VoidCallback? onCreateComponent;
   final String? selectedTemplateId;
   final ValueChanged<String> onTemplateSelected;
   final _AddComponentTemplateDefinition? selectedTemplate;
@@ -2559,6 +2755,22 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
+              _RightPanelComponentCreationSection(
+                componentId: createComponentId,
+                onComponentIdChanged: onCreateComponentIdChanged,
+                label: createComponentLabel,
+                onLabelChanged: onCreateComponentLabelChanged,
+                componentKind: createComponentKind,
+                onComponentKindChanged: onCreateComponentKindChanged,
+                blockReason: createComponentBlockReason,
+                statusMessage: createComponentStatusMessage,
+                errorMessage: createComponentErrorMessage,
+                inFlight: createComponentInFlight,
+                onCreateComponent: onCreateComponent,
+              ),
+              const SizedBox(height: 10),
+              const Divider(color: _kBoardCanvasRule, height: 1),
+              const SizedBox(height: 8),
               if (selectedTemplate == null)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2661,6 +2873,236 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RightPanelComponentCreationSection extends StatelessWidget {
+  const _RightPanelComponentCreationSection({
+    required this.componentId,
+    required this.onComponentIdChanged,
+    required this.label,
+    required this.onLabelChanged,
+    required this.componentKind,
+    required this.onComponentKindChanged,
+    required this.blockReason,
+    required this.statusMessage,
+    required this.errorMessage,
+    required this.inFlight,
+    required this.onCreateComponent,
+  });
+
+  static const List<String> _componentKinds = <String>[
+    'unknown',
+    'passive',
+    'ic',
+    'connector',
+    'regulator',
+  ];
+  static const Map<String, String> _componentKindLabels = <String, String>{
+    'unknown': 'Generic / unclassified',
+    'passive': 'Resistor / capacitor / diode / passive',
+    'ic': 'IC dual-side / quad-side / dense grid',
+    'connector': 'Connector / header',
+    'regulator': 'Regulator / relay / module',
+  };
+
+  final String componentId;
+  final ValueChanged<String> onComponentIdChanged;
+  final String label;
+  final ValueChanged<String> onLabelChanged;
+  final String? componentKind;
+  final ValueChanged<String?> onComponentKindChanged;
+  final String? blockReason;
+  final String? statusMessage;
+  final String? errorMessage;
+  final bool inFlight;
+  final VoidCallback? onCreateComponent;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return DecoratedBox(
+      key: const Key('board_canvas_create_component_section'),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasTile,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Loo komponent',
+              key: const Key('board_canvas_create_component_title'),
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              'Sündmus: component_created',
+              key: const Key('board_canvas_create_component_event_type'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasSignal,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Loob komponendi identiteedi projekti faktidesse. Ei paiguta komponenti plaadile ega loo kontakte, võrke või mõõtmisi.',
+              key: const Key('board_canvas_create_component_boundary_copy'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasMuted,
+                height: 1.25,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              key: const Key('board_canvas_create_component_id_input'),
+              initialValue: componentId,
+              decoration: _compactInputDecoration(
+                theme: theme,
+                labelText: 'Koht / ID',
+                hintText: 'nt R102',
+              ),
+              onChanged: onComponentIdChanged,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            const SizedBox(height: 6),
+            TextFormField(
+              key: const Key('board_canvas_create_component_label_input'),
+              initialValue: label,
+              decoration: _compactInputDecoration(
+                theme: theme,
+                labelText: 'Nimi',
+                hintText: 'nt Pull-up resistor',
+              ),
+              onChanged: onLabelChanged,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+            ),
+            const SizedBox(height: 6),
+            DropdownButtonFormField<String>(
+              key: const Key('board_canvas_create_component_kind_dropdown'),
+              initialValue: componentKind,
+              isExpanded: true,
+              dropdownColor: _kBoardCanvasPaper,
+              decoration: _compactInputDecoration(
+                theme: theme,
+                labelText: 'Liik',
+                hintText: 'Vali liik',
+              ),
+              iconEnabledColor: _kBoardCanvasSignal,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+              items: _componentKinds
+                  .map(
+                    (kind) => DropdownMenuItem<String>(
+                      value: kind,
+                      child: Text(
+                        _componentKindLabels[kind] ?? kind,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
+              selectedItemBuilder: (context) => _componentKinds
+                  .map(
+                    (kind) => Text(
+                      _componentKindLabels[kind] ?? kind,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: _kBoardCanvasNavy,
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
+              onChanged: inFlight ? null : onComponentKindChanged,
+            ),
+            const SizedBox(height: 8),
+            if (blockReason != null)
+              Text(
+                blockReason!,
+                key: const Key('board_canvas_create_component_guard'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFFF6C453),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            if (errorMessage != null)
+              Text(
+                errorMessage!,
+                key: const Key('board_canvas_create_component_error'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFFEAA6A6),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            if (statusMessage != null)
+              Text(
+                statusMessage!,
+                key: const Key('board_canvas_create_component_status'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: _kBoardCanvasSignal,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.center,
+              child: _AddComponentDraftChipButton(
+                key: const Key('board_canvas_create_component_save'),
+                label: inFlight ? 'Salvestan...' : 'Loo komponent',
+                onPressed: onCreateComponent,
+                minWidth: 132,
+                minHeight: 38,
+                foregroundColor: _kBoardCanvasSignal,
+                backgroundColor: _kBoardCanvasSignalTint,
+                borderColor: _kBoardCanvasSignal.withValues(alpha: 0.7),
+                disabledForegroundColor: _kBoardCanvasMuted,
+                disabledBackgroundColor: _kBoardCanvasPaper,
+                disabledBorderColor: _kBoardCanvasRuleStrong,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static InputDecoration _compactInputDecoration({
+    required ThemeData theme,
+    required String labelText,
+    required String hintText,
+  }) {
+    return InputDecoration(
+      isDense: true,
+      labelText: labelText,
+      hintText: hintText,
+      labelStyle: theme.textTheme.labelSmall?.copyWith(
+        color: _kBoardCanvasMuted,
+      ),
+      hintStyle: theme.textTheme.bodySmall?.copyWith(
+        color: _kBoardCanvasDim,
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: _kBoardCanvasRule),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: _kBoardCanvasSignal),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 7,
       ),
     );
   }

@@ -2,57 +2,80 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
 
 ## Lock state
 
-No active implementation lock is armed.
+Docs-only build-lock is active.
 
 The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
 
-No runtime, test, docs, schema, writer, materializer, validator, tool, event, known_facts, asset, router, standalone-screen, or `_incoming` files are authorized for implementation from this state.
+No runtime/test implementation is authorized in this build-lock pass.
 
-## Last released lock
+## Current docs pass write allowlist
 
-`BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_PASS` is closed out by `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_POST_AUDIT_PASS`.
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS` may write only:
 
-Implementation commit recorded from live git:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS.md`
 
-- `1492075f13e24494cbb728eab28de93981d9d240` (`feat: add board canvas metadata edit flow`)
+## Armed implementation pass
 
-Safe implementation set recorded:
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+
+## Armed implementation write allowlist
+
+The future implementation pass may write only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Audit record:
+Existing measurement writer/provider use is import/call only. Do not edit `lib/features/measure_sheet/services/v2_save_measurement_writer.dart` in the future implementation pass unless a later lock explicitly arms it.
 
-- Claude audit: `ACCEPT_AS_IS`
-- `SAFE_FOR_STAGING: YES`
+## Locked intent
 
-## Released behavior
+- Board Canvas / right panel becomes the primary measurement entry context.
+- Technician selects board / component / pin / point context.
+- User enters Koht -> Väärtus -> Ühik -> Salvesta.
+- Use the existing human-confirmed measurement writer path where possible.
+- Write only `measurement_recorded`.
+- Write requires explicit human action: `Salvesta`.
+- AI may suggest next checks but writes no canonical facts.
+- Photo / visual trace / net inference must not become canonical.
 
-- Board Canvas right-panel metadata edit is implemented for selected existing `ComponentPlacementSelection.componentId` only.
-- The write action is explicit human action: `Salvesta muudatused`.
-- The flow writes only `component_updated` through existing `V2EditComponentWriter`.
-- Draft / unsaved placement metadata edit remains blocked.
-- No direct `known_facts.json` or `projectState.knownFacts` mutation occurs.
-- No writer, schema, router, tool, model, or `_incoming` edits were part of the implementation.
-- `docs/POHIKIRI.md` is now the tracked canonical product charter / first-read scope anchor.
+## Stop conditions
+
+Stop with `BLOCKED_ALLOWLIST_MISMATCH` if the future implementation needs any file outside:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+Stop if the future implementation needs:
+
+- router/page proliferation
+- standalone Measure Sheet deletion or hiding
+- direct `known_facts.json` mutation
+- schema, validator, materializer, writer, model, tool, event, known_facts, asset, or `_incoming` edits
+- AI/photo output as canonical facts
+- visual trace as electrical net
 
 ## Protected boundaries still in force
 
-- Events.jsonl remains canonical truth.
+- `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
 - Flutter must not directly mutate `known_facts.json`.
 - Human-confirmed canonical writes remain explicit and scoped by writer contract.
 - AI must not create canonical facts.
+- Measurement flow writes only `measurement_recorded`.
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
+Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`

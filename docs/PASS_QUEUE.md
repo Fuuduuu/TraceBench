@@ -2,50 +2,50 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
+Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
 
 ## Queue status
 
-No active implementation lock is armed.
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS` is a docs-only build-lock.
 
-Latest closed implementation:
+It arms the next narrow implementation pass:
 
-- Pass: `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_PASS`
-- Closeout: `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_POST_AUDIT_PASS`
-- Commit: `1492075f13e24494cbb728eab28de93981d9d240` (`feat: add board canvas metadata edit flow`)
-- Review: Claude audit `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`
-- Safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
+- `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
 
-## Metadata edit closeout notes
+## First-read charter
 
-Recorded behavior:
+Read `docs/POHIKIRI.md` before route, implementation, or audit decisions. If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
 
-- Board Canvas right-panel metadata editing works for selected existing `ComponentPlacementSelection.componentId` only.
-- `Salvesta muudatused` is the explicit human-confirmed write action.
-- The flow writes only `component_updated` through existing `V2EditComponentWriter`.
-- Draft / unsaved placement metadata edit remains blocked.
-- No direct `known_facts.json` or `projectState.knownFacts` mutation occurs.
-- No writer, schema, router, tool, model, or `_incoming` edits were included.
-- `docs/POHIKIRI.md` is now the tracked canonical product charter / first-read scope anchor.
+## Prerequisite closeouts recorded
 
-## Candidate next-pass notes
+- `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_POST_AUDIT_PASS` is recorded in the live repo history as the right-panel component identity creation closeout.
+- `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_POST_AUDIT_PASS` is recorded in the live repo history as the right-panel component metadata edit closeout.
 
-From `NEEDS_USER_DECISION`, choose the next pass explicitly. Do not infer an implementation lock from the closed metadata edit pass.
+## Next implementation intent
 
-Potential future work remains separate and must be scoped before implementation:
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` should add the first narrow Board Canvas right-panel measurement entry flow:
 
-- exit/fullscreen affordance polish
-- home lockup polish
-- later Visual First route migration/removal work only after replacement surfaces and route dependencies are scoped
+- technician works in the Board Canvas right panel
+- context is board / component / pin / point as available in the current UI state
+- user enters Koht -> Väärtus -> Ühik -> Salvesta
+- write requires explicit human action
+- event type remains `measurement_recorded`
+- existing V2 measurement writer/provider may be imported and called, but the writer file itself is not armed for edits
+
+## Exact implementation allowlist
+
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` may write only:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
 
 ## Scope gate rules
 
-- Read `docs/POHIKIRI.md` before choosing or executing the next pass.
-- If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
-- One narrow pass at a time.
-- Do not edit runtime, tests, schema, tools, events, known_facts, or `_incoming` unless the active lock explicitly arms those files.
-- Do not stage, commit, or push from this queue state.
-- If a future pass needs files outside its active allowlist, stop and report the mismatch.
+- Do not edit runtime or tests in this build-lock pass.
+- Do not edit writer, schema, validator, materializer, router, standalone screens, events, known_facts, assets, or `_incoming` in the next implementation unless a later lock explicitly authorizes it.
+- If writer/schema/validator/materializer edits are needed, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+- If implementation needs router/page proliferation or standalone Measure Sheet deletion/hiding, stop.
+- Do not let AI/photo/visual-trace output become canonical.
+- Do not treat visual trace as electrical net.
+- Do not stage, commit, or push from this pass.

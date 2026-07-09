@@ -10,6 +10,7 @@ import '../../../app/app.dart';
 import '../../components/services/v2_add_component_writer.dart';
 import '../../components/services/v2_edit_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
+import '../../measure_sheet/services/v2_save_measurement_writer.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
@@ -1622,6 +1623,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       break;
                     case _WorkbenchContextPanelMode.measure:
                       contextPanel = _IntegratedMeasurePanel(
+                        projectState: projectState,
                         selectedEntry: selectedEntry,
                         relatedMeasurements: relatedMeasurements,
                         relatedVisualTraces: relatedVisualTraces,
@@ -6423,30 +6425,286 @@ String _formatPlacementDraftSize(double value) {
   return value.toStringAsFixed(2);
 }
 
-class _IntegratedMeasurePanel extends StatefulWidget {
+class _IntegratedMeasurePanel extends ConsumerStatefulWidget {
   const _IntegratedMeasurePanel({
+    required this.projectState,
     required this.selectedEntry,
     required this.relatedMeasurements,
     required this.relatedVisualTraces,
     required this.onContinueToMeasureSheet,
   });
 
+  final ProjectState projectState;
   final _PlacementEntry? selectedEntry;
   final List<MeasurementFact> relatedMeasurements;
   final List<VisualTraceFact> relatedVisualTraces;
   final VoidCallback onContinueToMeasureSheet;
 
   @override
-  State<_IntegratedMeasurePanel> createState() =>
+  ConsumerState<_IntegratedMeasurePanel> createState() =>
       _IntegratedMeasurePanelState();
 }
 
-class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
+class _IntegratedMeasurePanelState
+    extends ConsumerState<_IntegratedMeasurePanel> {
   static const List<String> _draftUnitOptions = ['V', 'Ω', 'Diode', 'Beep'];
 
   String? _selectedTarget;
   final Map<String, String> _draftValuesByTarget = {};
   final Map<String, String> _draftUnitsByTarget = {};
+  bool _saveInFlight = false;
+  String? _saveStatusMessage;
+  String? _saveErrorMessage;
+  String? _lastSuccessfulFormKey;
+
+  _MeasureUnitSelection _unitSelection(String unitLabel) {
+    switch (unitLabel) {
+      case 'Ω':
+        return const _MeasureUnitSelection(
+          label: 'Ω',
+          mode: 'resistance',
+          schemaUnit: 'Ω',
+        );
+      case 'Diode':
+        return const _MeasureUnitSelection(
+          label: 'Diode',
+          mode: 'diode',
+          schemaUnit: 'diode',
+        );
+      case 'Beep':
+        return const _MeasureUnitSelection(
+          label: 'Beep',
+          mode: 'continuity',
+          schemaUnit: 'beep',
+        );
+      case 'V':
+      default:
+        return const _MeasureUnitSelection(
+          label: 'V',
+          mode: 'voltage',
+          schemaUnit: 'V',
+        );
+    }
+  }
+
+  Object _readingValue(String rawValue) {
+    return num.tryParse(rawValue) ?? rawValue;
+  }
+
+  String? _componentIdForTarget(String target) {
+    final selectedComponentId = widget.selectedEntry?.placement.componentId;
+    if (selectedComponentId != null &&
+        measurementEndpointMatchesComponent(target, selectedComponentId)) {
+      return selectedComponentId;
+    }
+    return selectedComponentId;
+  }
+
+  String? _pinIdForTarget(String target) {
+    final componentId = widget.selectedEntry?.placement.componentId;
+    if (componentId == null) {
+      return null;
+    }
+    return target.startsWith('$componentId.') ? target : null;
+  }
+
+  String? _formKeyFor({
+    required _MeasureTargetRowData? row,
+    required String valueText,
+    required String unitLabel,
+  }) {
+    if (widget.selectedEntry == null || row == null || row.isExistingValue) {
+      return null;
+    }
+    final trimmedValue = valueText.trim();
+    if (trimmedValue.isEmpty || unitLabel.trim().isEmpty) {
+      return null;
+    }
+    return [
+      row.target,
+      unitLabel.trim(),
+      trimmedValue,
+      'human_entered',
+    ].join('|');
+  }
+
+  String? _saveBlockReason({
+    required _MeasureTargetRowData? row,
+    required String valueText,
+    required String unitLabel,
+  }) {
+    if (widget.selectedEntry == null) {
+      return 'Vali mõõtmise Koht plaadil.';
+    }
+    if (row == null) {
+      return 'Vali Koht enne salvestamist.';
+    }
+    if (row.isExistingValue) {
+      return 'Vali uus Koht või sisesta mõõtmata reale Väärtus.';
+    }
+    if (valueText.trim().isEmpty) {
+      return 'Sisesta Väärtus enne salvestamist.';
+    }
+    if (unitLabel.trim().isEmpty) {
+      return 'Vali Ühik enne salvestamist.';
+    }
+    if (_lastSuccessfulFormKey ==
+        _formKeyFor(row: row, valueText: valueText, unitLabel: unitLabel)) {
+      return 'Mõõtmine on salvestatud. Projektsioon vajab värskendamist.';
+    }
+    final projectDirectory = widget.projectState.projectDirectory;
+    if (projectDirectory == null || projectDirectory.trim().isEmpty) {
+      return 'Mõõtmise salvestamiseks ava projekt kohalikust kaustast.';
+    }
+    return null;
+  }
+
+  Future<void> _saveMeasurement({
+    required _MeasureTargetRowData row,
+    required String valueText,
+    required String unitLabel,
+  }) async {
+    if (_saveInFlight) {
+      return;
+    }
+    final blockReason = _saveBlockReason(
+      row: row,
+      valueText: valueText,
+      unitLabel: unitLabel,
+    );
+    if (blockReason != null) {
+      setState(() {
+        _saveStatusMessage = null;
+        _saveErrorMessage = blockReason;
+      });
+      return;
+    }
+
+    final formKey =
+        _formKeyFor(row: row, valueText: valueText, unitLabel: unitLabel)!;
+    final unitSelection = _unitSelection(unitLabel);
+    final componentId = _componentIdForTarget(row.target);
+    final pinId = _pinIdForTarget(row.target);
+    final request = V2SaveMeasurementRequest(
+      value: _readingValue(valueText.trim()),
+      valueText: valueText.trim(),
+      displayValue: '${valueText.trim()} ${unitSelection.label}',
+      unitLabel: unitSelection.label,
+      schemaUnit: unitSelection.schemaUnit,
+      mode: unitSelection.mode,
+      targetKey: row.target,
+      displayLabel: row.displayLabel,
+      componentId: componentId,
+      pinId: pinId,
+      valueProvenance: 'human_entered',
+      clientOperationId: _measurementClientOperationIdFor(formKey),
+    );
+
+    setState(() {
+      _saveInFlight = true;
+      _saveStatusMessage = 'Salvestan mõõtmist...';
+      _saveErrorMessage = null;
+    });
+
+    try {
+      final projectState =
+          ref.read(projectStateProvider) ?? widget.projectState;
+      final result =
+          await ref.read(v2SaveMeasurementWriterProvider).saveMeasurement(
+                projectState: projectState,
+                request: request,
+              );
+      if (!mounted) {
+        return;
+      }
+      _appendMeasurementEventAndMarkStale(
+        projectState: projectState,
+        event: result.event,
+      );
+      setState(() {
+        _lastSuccessfulFormKey = formKey;
+        _saveStatusMessage = result.appended
+            ? 'Mõõtmine salvestatud. Projektsioon vajab värskendamist.'
+            : 'Mõõtmine oli juba salvestatud. Projektsioon vajab värskendamist.';
+        _saveErrorMessage = null;
+      });
+    } on V2SaveMeasurementException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _saveStatusMessage = null;
+        _saveErrorMessage = _measurementFailureMessage(error);
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _saveStatusMessage = null;
+        _saveErrorMessage = 'Mõõtmise salvestamine ebaõnnestus: $error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _saveInFlight = false;
+        });
+      }
+    }
+  }
+
+  void _appendMeasurementEventAndMarkStale({
+    required ProjectState projectState,
+    required Map<String, dynamic> event,
+  }) {
+    final returnedEvent = TraceBenchEvent.fromJson(event);
+    final updatedEvents = List<TraceBenchEvent>.from(projectState.events);
+    final clientOperationId = event['client_operation_id']?.toString();
+    final eventAlreadyPresent = updatedEvents.any((localEvent) {
+      if (localEvent.eventId == returnedEvent.eventId) {
+        return true;
+      }
+      if (clientOperationId == null || clientOperationId.isEmpty) {
+        return false;
+      }
+      return localEvent.toJson()['client_operation_id'] == clientOperationId ||
+          localEvent.payload['client_operation_id'] == clientOperationId;
+    });
+    if (!eventAlreadyPresent) {
+      updatedEvents.add(returnedEvent);
+    }
+    ref.read(projectStateProvider.notifier).state = projectState.copyWith(
+      events: updatedEvents,
+      isProjectionStale: true,
+    );
+  }
+
+  String _measurementClientOperationIdFor(String formKey) {
+    final safeKey = formKey
+        .trim()
+        .replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+    final timestamp = DateTime.now().toUtc().microsecondsSinceEpoch;
+    return 'op_board_canvas_measurement_${safeKey}_$timestamp';
+  }
+
+  String _measurementFailureMessage(V2SaveMeasurementException error) {
+    switch (error.kind) {
+      case V2SaveMeasurementFailureKind.noProjectDirectory:
+        return 'Mõõtmise salvestamiseks ava projekt kohalikust kaustast.';
+      case V2SaveMeasurementFailureKind.invalidProjectDirectory:
+        return 'Projektikaust ei sobi mõõtmise salvestamiseks.';
+      case V2SaveMeasurementFailureKind.pythonUnavailable:
+        return 'Mõõtmise kirjutaja pole saadaval.';
+      case V2SaveMeasurementFailureKind.lockConflict:
+        return 'Mõõtmise kirjutaja on hetkel hõivatud.';
+      case V2SaveMeasurementFailureKind.validation:
+        return 'Mõõtmist ei salvestatud: sisestus ei läbinud valideerimist.';
+      case V2SaveMeasurementFailureKind.append:
+        return 'Mõõtmise salvestamine ebaõnnestus: ${error.message}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -6461,6 +6719,21 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
     final contextRows = _measureContextRows();
     final selectedTargetRow = _effectiveSelectedTargetRow(targetRows);
     final selectedTarget = selectedTargetRow?.target;
+    final selectedDraftValue = selectedTarget == null
+        ? ''
+        : _draftValuesByTarget[selectedTarget] ?? '';
+    final selectedDraftUnit = selectedTarget == null
+        ? _draftUnitOptions.first
+        : _draftUnitsByTarget[selectedTarget] ??
+            (selectedTargetRow == null
+                ? _draftUnitOptions.first
+                : _defaultDraftUnit(selectedTargetRow));
+    final saveBlockReason = _saveBlockReason(
+      row: selectedTargetRow,
+      valueText: selectedDraftValue,
+      unitLabel: selectedDraftUnit,
+    );
+    final canSaveMeasurement = !_saveInFlight && saveBlockReason == null;
     final measuredTargetCount =
         targetRows.where((row) => row.isExistingValue).length;
 
@@ -6507,7 +6780,7 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const _MeasurePanelPill(label: 'local · no write'),
+                  const _MeasurePanelPill(label: 'human · write'),
                 ],
               ),
             ),
@@ -6576,7 +6849,8 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'rea väärtused · kohalikud mustandid',
+                    'Koht -> Väärtus -> Ühik -> Salvesta',
+                    key: const Key('board_canvas_measure_entry_flow_copy'),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: _kBoardCanvasMuted,
                     ),
@@ -6625,6 +6899,111 @@ class _IntegratedMeasurePanelState extends State<_IntegratedMeasurePanel> {
                               ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'AI/photo/trace context is not canonical. Salvesta records only the human-entered measurement.',
+                    key: const Key(
+                      'board_canvas_measure_canonical_boundary_copy',
+                    ),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: _kBoardCanvasMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 7),
+                  DecoratedBox(
+                    key: const Key('board_canvas_measure_save_bar'),
+                    decoration: BoxDecoration(
+                      color: _kMeasurePanelRowFill,
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: _kMeasurePanelRule),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(7),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  saveBlockReason ??
+                                      'Valmis mõõtmist salvestama.',
+                                  key: const Key(
+                                    'board_canvas_measure_save_guard',
+                                  ),
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: canSaveMeasurement
+                                        ? _kMeasurePanelSignal
+                                        : _kBoardCanvasMuted,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              OutlinedButton.icon(
+                                key: const Key(
+                                  'board_canvas_measure_save_button',
+                                ),
+                                onPressed: canSaveMeasurement &&
+                                        selectedTargetRow != null
+                                    ? () => _saveMeasurement(
+                                          row: selectedTargetRow,
+                                          valueText: selectedDraftValue,
+                                          unitLabel: selectedDraftUnit,
+                                        )
+                                    : null,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: _kMeasurePanelSignal,
+                                  disabledForegroundColor: _kBoardCanvasDim,
+                                  side: BorderSide(
+                                    color: canSaveMeasurement
+                                        ? _kMeasurePanelSignal
+                                        : _kMeasurePanelRule,
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                                icon: Icon(
+                                  _saveInFlight
+                                      ? Icons.hourglass_top_rounded
+                                      : Icons.save_alt_rounded,
+                                  size: 16,
+                                ),
+                                label: Text(
+                                  _saveInFlight ? 'Salvestan...' : 'Salvesta',
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_saveStatusMessage != null) ...[
+                            const SizedBox(height: 5),
+                            Text(
+                              _saveStatusMessage!,
+                              key: const Key(
+                                'board_canvas_measure_save_status',
+                              ),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: _kMeasurePanelSignal,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                          if (_saveErrorMessage != null) ...[
+                            const SizedBox(height: 5),
+                            Text(
+                              _saveErrorMessage!,
+                              key: const Key(
+                                'board_canvas_measure_save_error',
+                              ),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: const Color(0xFFFCA5A5),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -7039,6 +7418,18 @@ class _MeasureTargetRowData {
   final String? unit;
   final bool showExistingUnit;
   final String? suggestedUnit;
+}
+
+class _MeasureUnitSelection {
+  const _MeasureUnitSelection({
+    required this.label,
+    required this.mode,
+    required this.schemaUnit,
+  });
+
+  final String label;
+  final String mode;
+  final String schemaUnit;
 }
 
 class _MeasureContextRowData {

@@ -11,6 +11,7 @@ import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_sc
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
+import 'package:trace_bench_viewer/features/measure_sheet/services/v2_save_measurement_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -66,6 +67,7 @@ Widget _harness({
   V2AddComponentWriter? addComponentWriter,
   V2EditComponentWriter? editComponentWriter,
   V2PlacementWriter? placementWriter,
+  V2SaveMeasurementWriter? measurementWriter,
 }) {
   return ProviderScope(
     overrides: [
@@ -76,6 +78,8 @@ Widget _harness({
         v2EditComponentWriterProvider.overrideWith((_) => editComponentWriter),
       if (placementWriter != null)
         v2PlacementWriterProvider.overrideWith((_) => placementWriter),
+      if (measurementWriter != null)
+        v2SaveMeasurementWriterProvider.overrideWithValue(measurementWriter),
     ],
     child: MaterialApp(home: BoardCanvasScreen(key: boardCanvasKey)),
   );
@@ -291,6 +295,50 @@ Map<String, dynamic> _componentUpdatedEventJson({
   };
 }
 
+Map<String, dynamic> _measurementRecordedEventJson({
+  String eventId = 'evt_widget_measurement_001',
+  String targetKey = 'cmp_r101.2',
+  String displayLabel = 'Pin 2 · R101.2',
+  String? componentId = 'cmp_r101',
+  String? pinId = 'cmp_r101.2',
+  Object value = 1.23,
+  String unit = 'Ω',
+  String displayValue = '1.23 Ω',
+  String clientOperationId = 'op_widget_measurement_001',
+}) {
+  return {
+    'schema_version': '2.0-draft',
+    'event_id': eventId,
+    'event_type': 'measurement_recorded',
+    'project_id': 'proj_001',
+    'created_at': '2026-01-01T00:00:00Z',
+    'client_operation_id': clientOperationId,
+    'actor': {'type': 'human', 'id': 'local_operator'},
+    'source': {'type': 'explicit_user_confirmation'},
+    'confirmation': {'confirmed': true},
+    'payload': {
+      'measurement_id': 'M_widget_001',
+      'measured_at': '2026-01-01T00:00:00Z',
+      'target': {
+        'target_kind': pinId == null ? 'component' : 'component_pin',
+        'target_key': targetKey,
+        'display_label': displayLabel,
+        if (componentId != null) 'component_id': componentId,
+        if (pinId != null) 'pin_id': pinId,
+      },
+      'reading': {
+        'mode': unit == 'Ω' ? 'resistance' : 'voltage',
+        'value': value,
+        'unit': unit,
+        'display_value': displayValue,
+      },
+      'value_provenance': {
+        'measured_value_source': 'human_entered',
+      },
+    },
+  };
+}
+
 class _FakeAddComponentWriter implements V2AddComponentWriter {
   _FakeAddComponentWriter({
     this.error,
@@ -392,6 +440,56 @@ class _FakePlacementWriter implements V2PlacementWriter {
       status: status,
       event: event,
       appended: status == V2PlacementWriteStatus.appended,
+    );
+  }
+}
+
+class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
+  _FakeSaveMeasurementWriter({
+    this.error,
+    this.status = V2SaveMeasurementWriteStatus.appended,
+    Map<String, dynamic>? event,
+  }) : event = event ?? _measurementRecordedEventJson();
+
+  final Object? error;
+  final V2SaveMeasurementWriteStatus status;
+  final Map<String, dynamic> event;
+  final List<V2SaveMeasurementRequest> requests = <V2SaveMeasurementRequest>[];
+
+  @override
+  Future<V2SaveMeasurementResult> saveMeasurement({
+    required ProjectState projectState,
+    required V2SaveMeasurementRequest request,
+  }) async {
+    requests.add(request);
+    final error = this.error;
+    if (error != null) {
+      throw error;
+    }
+    return V2SaveMeasurementResult(
+      status: status,
+      event: {
+        ...event,
+        'client_operation_id': request.clientOperationId,
+        'payload': {
+          ...(event['payload'] as Map<String, dynamic>),
+          'target': {
+            'target_kind': request.targetKind,
+            'target_key': request.targetKey,
+            'display_label': request.displayLabel,
+            if (request.componentId != null)
+              'component_id': request.componentId,
+            if (request.pinId != null) 'pin_id': request.pinId,
+          },
+          'reading': {
+            'mode': request.mode,
+            'value': request.value,
+            'unit': request.schemaUnit,
+            'display_value': request.displayValue,
+          },
+        },
+      },
+      appended: status == V2SaveMeasurementWriteStatus.appended,
     );
   }
 }
@@ -1149,7 +1247,8 @@ void main() {
     expect(find.text('Component focus'), findsNothing);
     expect(find.text('component'), findsNothing);
     expect(find.text('read-only · local'), findsNothing);
-    expect(find.text('local · no write'), findsOneWidget);
+    expect(find.text('local · no write'), findsNothing);
+    expect(find.text('human · write'), findsOneWidget);
     expect(find.text('R101 (cmp_r101)'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_measure_canvas_focus_text')),
@@ -1162,9 +1261,10 @@ void main() {
     expect(find.text('Mõõdetud väärtused'), findsOneWidget);
     expect(find.text('Measured values'), findsNothing);
     expect(
-      find.text('rea väärtused · kohalikud mustandid'),
+      find.text('Koht -> Väärtus -> Ühik -> Salvesta'),
       findsOneWidget,
     );
+    expect(find.text('rea väärtused · kohalikud mustandid'), findsNothing);
     expect(find.text('inline values · local drafts'), findsNothing);
     expect(
       find.byKey(const Key('board_canvas_measure_values_count')),
@@ -1660,6 +1760,135 @@ void main() {
         findsNothing);
     expect(find.byKey(const Key('board_canvas_measure_save_placeholder')),
         findsNothing);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets(
+      'integrated Measure panel saves measurement only from explicit Salvesta',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-measure-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final measurementWriter = _FakeSaveMeasurementWriter();
+    const linkedTrace = VisualTraceFact(
+      traceId: 'tr_measure_r101',
+      photoId: 'ph_measure_r101',
+      evidenceType: 'visual_trace',
+      fromComponent: 'cmp_r101',
+      toComponent: 'cmp_u1',
+      fromPin: 'cmp_r101.2',
+      toPin: 'cmp_u1.2',
+      confidence: 'medium',
+      layer: 'top',
+    );
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+        ComponentFact(componentId: 'cmp_u1'),
+      ],
+      placements: const [boardPlacement, boardPlacementWidthHeight],
+      visualTraces: const [linkedTrace],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(projectState: state, measurementWriter: measurementWriter),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_measure_sheet_button')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('board_canvas_integrated_measure_panel')),
+      findsOneWidget,
+    );
+    expect(find.text('Koht -> Väärtus -> Ühik -> Salvesta'), findsOneWidget);
+    expect(find.text('human · write'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_measure_canonical_boundary_copy')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(
+        'AI/photo/trace context is not canonical. Salvesta records only the human-entered measurement.',
+      ),
+      findsOneWidget,
+    );
+
+    var saveButton = tester.widget<OutlinedButton>(
+      find.byKey(const Key('board_canvas_measure_save_button')),
+    );
+    expect(saveButton.onPressed, isNull);
+    expect(
+      find.text('Sisesta Väärtus enne salvestamist.'),
+      findsOneWidget,
+    );
+    expect(measurementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+
+    final targetRow =
+        find.byKey(const Key('board_canvas_measure_target_row_cmp_r101.2'));
+    await tester.ensureVisible(targetRow);
+    await tester.tap(targetRow);
+    await tester.pumpAndSettle();
+    final valueInput = find.byKey(
+      const Key('board_canvas_measure_row_value_input_cmp_r101.2'),
+    );
+    await tester.ensureVisible(valueInput);
+    await tester.enterText(valueInput, '1.23');
+    await tester.pumpAndSettle();
+    final unitSelect = find.byKey(
+      const Key('board_canvas_measure_row_unit_select_cmp_r101.2'),
+    );
+    await tester.ensureVisible(unitSelect);
+    await tester.tap(unitSelect);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ω').last);
+    await tester.pumpAndSettle();
+
+    saveButton = tester.widget<OutlinedButton>(
+      find.byKey(const Key('board_canvas_measure_save_button')),
+    );
+    expect(saveButton.onPressed, isNotNull);
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_measure_save_button')),
+    );
+    await tester.tap(find.byKey(const Key('board_canvas_measure_save_button')));
+    await tester.pumpAndSettle();
+
+    expect(measurementWriter.requests, hasLength(1));
+    final request = measurementWriter.requests.single;
+    expect(request.eventType, 'measurement_recorded');
+    expect(request.actorType, 'human');
+    expect(request.sourceType, 'explicit_user_confirmation');
+    expect(request.confirmed, isTrue);
+    expect(request.valueProvenance, 'human_entered');
+    expect(request.targetKey, 'cmp_r101.2');
+    expect(request.displayLabel, 'Pin 2 · R101.2');
+    expect(request.componentId, 'cmp_r101');
+    expect(request.pinId, 'cmp_r101.2');
+    expect(request.value, 1.23);
+    expect(request.schemaUnit, 'Ω');
+    expect(request.mode, 'resistance');
+    expect(
+      request.clientOperationId,
+      startsWith('op_board_canvas_measurement_cmp_r101_2_'),
+    );
+
+    final updatedState = _readProjectState(tester);
+    expect(updatedState.events, hasLength(1));
+    expect(updatedState.events.single.eventType, 'measurement_recorded');
+    expect(updatedState.isProjectionStale, isTrue);
+    expect(find.text('Mõõtmine salvestatud. Projektsioon vajab värskendamist.'),
+        findsOneWidget);
+    expect(find.text('Measure Sheet'), findsNothing);
+    expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsNothing);
     expect(state.events, isEmpty);
   });
 
@@ -8159,9 +8388,9 @@ void main() {
     expect(source, contains('board_canvas_safety_evidence_disclosure'));
     expect(source, contains('board_canvas_inspector_toggle_button'));
     expect(source, isNot(contains('MeasurementEventWriter')));
-    expect(source, isNot(contains('v2_save_measurement_' 'writer')));
-    expect(source, isNot(contains('V2SaveMeasurementWriter')));
-    expect(source, isNot(contains('v2SaveMeasurementWriter')));
+    expect(source, contains('v2_save_measurement_' 'writer'));
+    expect(source, contains('V2SaveMeasurementRequest'));
+    expect(source, contains('v2SaveMeasurementWriterProvider'));
     expect(source, isNot(contains('ProjectExporter')));
     expect(source, isNot(contains('ProjectCreator')));
     expect(source, isNot(contains('ProjectOverviewScreen')));

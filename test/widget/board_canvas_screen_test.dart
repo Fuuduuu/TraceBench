@@ -9,6 +9,7 @@ import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
+import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -63,6 +64,7 @@ Widget _harness({
   required ProjectState? projectState,
   Key? boardCanvasKey,
   V2AddComponentWriter? addComponentWriter,
+  V2EditComponentWriter? editComponentWriter,
   V2PlacementWriter? placementWriter,
 }) {
   return ProviderScope(
@@ -70,6 +72,8 @@ Widget _harness({
       projectStateProvider.overrideWith((_) => projectState),
       if (addComponentWriter != null)
         v2AddComponentWriterProvider.overrideWith((_) => addComponentWriter),
+      if (editComponentWriter != null)
+        v2EditComponentWriterProvider.overrideWith((_) => editComponentWriter),
       if (placementWriter != null)
         v2PlacementWriterProvider.overrideWith((_) => placementWriter),
     ],
@@ -248,6 +252,45 @@ Map<String, dynamic> _componentCreatedEventJson({
   };
 }
 
+Map<String, dynamic> _componentUpdatedEventJson({
+  String eventId = 'evt_widget_component_updated_001',
+  String componentId = 'cmp_r101',
+  String clientOperationId = 'op_widget_component_updated_001',
+  List<Map<String, dynamic>>? changes,
+}) {
+  return {
+    'schema_version': '2.0-draft',
+    'event_id': eventId,
+    'event_type': 'component_updated',
+    'project_id': 'proj_001',
+    'created_at': '2026-01-01T00:00:00Z',
+    'client_operation_id': clientOperationId,
+    'actor': {'type': 'human', 'id': 'local_operator'},
+    'source': {
+      'type': 'explicit_user_confirmation',
+      'surface': 'edit_component',
+      'action': 'edit_component',
+    },
+    'confirmation': {
+      'confirmed': true,
+      'confirmed_at': '2026-01-01T00:00:00Z',
+    },
+    'payload': {
+      'component_id': componentId,
+      'changes': changes ??
+          [
+            {
+              'field': 'label',
+              'old_value_observed': 'R101',
+              'new_value': 'R101 updated',
+              'change_kind': 'replace',
+            },
+          ],
+      'edit_reason': 'board_canvas_right_panel_metadata_edit',
+    },
+  };
+}
+
 class _FakeAddComponentWriter implements V2AddComponentWriter {
   _FakeAddComponentWriter({
     this.error,
@@ -281,6 +324,44 @@ class _FakeAddComponentWriter implements V2AddComponentWriter {
       status: status,
       event: writtenEvent,
       appended: status == V2AddComponentWriteStatus.appended,
+    );
+  }
+}
+
+class _FakeEditComponentWriter implements V2EditComponentWriter {
+  _FakeEditComponentWriter({
+    this.error,
+    this.status = V2EditComponentWriteStatus.appended,
+    this.event,
+  });
+
+  final Object? error;
+  final V2EditComponentWriteStatus status;
+  final Map<String, dynamic>? event;
+  final List<V2EditComponentRequest> requests = <V2EditComponentRequest>[];
+
+  @override
+  Future<V2EditComponentResult> editComponent({
+    required ProjectState projectState,
+    required V2EditComponentRequest request,
+  }) async {
+    requests.add(request);
+    final error = this.error;
+    if (error != null) {
+      throw error;
+    }
+    final writtenEvent = event ??
+        _componentUpdatedEventJson(
+          componentId: request.componentId,
+          clientOperationId: request.clientOperationId,
+          changes: request.changes
+              .map((change) => change.toJson())
+              .toList(growable: false),
+        );
+    return V2EditComponentResult(
+      status: status,
+      event: writtenEvent,
+      appended: status == V2EditComponentWriteStatus.appended,
     );
   }
 }
@@ -2613,7 +2694,7 @@ void main() {
       ),
     );
     expect(saveButton.onPressed, isNull);
-    expect(find.text('Valitud komponent: puudub'), findsOneWidget);
+    expect(find.text('Metaandmete komponent: puudub'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_add_component_builder_save_context')),
       findsOneWidget,
@@ -2872,6 +2953,10 @@ void main() {
       'Created component',
     );
     await tester.pump(const Duration(milliseconds: 16));
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_create_component_kind_dropdown')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(const Key('board_canvas_create_component_kind_dropdown')),
     );
@@ -3071,6 +3156,367 @@ void main() {
     }
   });
 
+  testWidgets('Board Canvas metadata edit guides until component is selected',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-edit-guide-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final editComponentWriter = _FakeEditComponentWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(
+          componentId: 'cmp_r101',
+          designator: 'R101',
+          type: 'passive',
+        ),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        editComponentWriter: editComponentWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_metadata_edit_section')),
+      findsOneWidget,
+    );
+    expect(find.text('Muuda andmeid'), findsOneWidget);
+    expect(find.text('Sündmus: component_updated'), findsOneWidget);
+    expect(find.text('Metaandmete komponent: puudub'), findsOneWidget);
+    expect(
+      find.text(
+        'Vali plaadil olemasolev komponent. Mustandit ei saa siin muuta.',
+      ),
+      findsOneWidget,
+    );
+    final saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_metadata_edit_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNull);
+
+    await tester.ensureVisible(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    final draftSaveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_metadata_edit_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(draftSaveButton.onPressed, isNull);
+    expect(editComponentWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+    expect(find.text('Ava muutmine'), findsNothing);
+  });
+
+  testWidgets(
+      'Board Canvas metadata edit explains stale projection after component creation',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-edit-stale-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final addComponentWriter = _FakeAddComponentWriter(
+      event: _componentCreatedEventJson(
+        componentId: 'cmp_c900',
+        label: 'Created component',
+        componentKind: 'passive',
+        clientOperationId: 'op_board_canvas_component_created_cmp_c900_test',
+      ),
+    );
+    final editComponentWriter = _FakeEditComponentWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        addComponentWriter: addComponentWriter,
+        editComponentWriter: editComponentWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await tester.enterText(
+      find.byKey(const Key('board_canvas_create_component_id_input')),
+      'cmp_c900',
+    );
+    await tester.enterText(
+      find.byKey(const Key('board_canvas_create_component_label_input')),
+      'Created component',
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(const Key('board_canvas_create_component_kind_dropdown')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Resistor / capacitor / diode / passive').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_create_component_save')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_create_component_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(addComponentWriter.requests, hasLength(1));
+    expect(editComponentWriter.requests, isEmpty);
+    final updatedState = _readProjectState(tester);
+    expect(updatedState.events.single.eventType, 'component_created');
+    expect(updatedState.isProjectionStale, isTrue);
+    expect(
+      find.text(
+        'Komponent loodi. Värskenda projektsioon või vali olemasolev komponent enne metadata muutmist.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'Board Canvas metadata edit saves selected component update explicitly',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-edit-save-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final editComponentWriter = _FakeEditComponentWriter();
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(
+          componentId: 'cmp_r101',
+          designator: 'R101',
+          type: 'passive',
+        ),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        editComponentWriter: editComponentWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _selectPlacement(tester, 'R101 (cmp_r101)');
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_add_component_tool')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text('Metaandmete komponent: R101 (cmp_r101)'), findsOneWidget);
+    expect(
+        find.text('Muuda nime või liiki enne salvestamist.'), findsOneWidget);
+    var saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_metadata_edit_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNull);
+
+    final metadataLabelField = find.descendant(
+      of: find.byKey(const Key('board_canvas_metadata_edit_label_input')),
+      matching: find.byType(EditableText),
+    );
+    await tester.enterText(metadataLabelField, 'R101 updated');
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.ensureVisible(
+      find.byKey(const Key('board_canvas_metadata_edit_kind_dropdown')),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(
+      find.byKey(const Key('board_canvas_metadata_edit_kind_dropdown')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('IC dual-side / quad-side / dense grid').last);
+    await tester.pumpAndSettle();
+
+    final saveButtonFinder = find.descendant(
+      of: find.byKey(const Key('board_canvas_metadata_edit_save')),
+      matching: find.byType(OutlinedButton),
+    );
+    await tester.ensureVisible(saveButtonFinder);
+    await tester.pump(const Duration(milliseconds: 16));
+    saveButton = tester.widget<OutlinedButton>(saveButtonFinder);
+    expect(saveButton.onPressed, isNotNull);
+    await tester.tap(saveButtonFinder);
+    await tester.pumpAndSettle();
+
+    expect(editComponentWriter.requests, hasLength(1));
+    final request = editComponentWriter.requests.single;
+    expect(request.componentId, 'cmp_r101');
+    expect(request.editReason, 'board_canvas_right_panel_metadata_edit');
+    expect(
+      request.clientOperationId,
+      startsWith('op_board_canvas_component_updated_cmp_r101_'),
+    );
+    expect(request.changes.map((change) => change.field), [
+      'label',
+      'component_kind',
+    ]);
+    final labelChange = request.changes.first;
+    expect(labelChange.oldValueObserved, 'R101');
+    expect(labelChange.newValue, 'R101 updated');
+    final kindChange = request.changes.last;
+    expect(kindChange.oldValueObserved, 'passive');
+    expect(kindChange.newValue, 'ic');
+
+    final updatedState = _readProjectState(tester);
+    expect(updatedState.events, hasLength(1));
+    expect(updatedState.events.single.eventType, 'component_updated');
+    expect(updatedState.isProjectionStale, isTrue);
+    expect(updatedState.knownFacts.components.single.designator, 'R101');
+    expect(updatedState.knownFacts.components.single.type, 'passive');
+    expect(
+      find.text(
+        'Komponendi andmed salvestatud. Projektsioon vajab värskendamist.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Ava muutmine'), findsNothing);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('Board Canvas metadata kind labels submit only canonical values',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-widget-edit-kind-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    const labelToCanonical = <String, String>{
+      'Generic / unclassified': 'unknown',
+      'Resistor / capacitor / diode / passive': 'passive',
+      'IC dual-side / quad-side / dense grid': 'ic',
+      'Connector / header': 'connector',
+      'Regulator / relay / module': 'regulator',
+    };
+    const allowedValues = <String>{
+      'unknown',
+      'passive',
+      'ic',
+      'connector',
+      'regulator',
+    };
+
+    for (final entry in labelToCanonical.entries) {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+
+      final editComponentWriter = _FakeEditComponentWriter();
+      final initialKind = entry.value == 'passive' ? 'unknown' : 'passive';
+      final state = _inlineProjectState(
+        components: [
+          ComponentFact(
+            componentId: 'cmp_r101',
+            designator: 'R101',
+            type: initialKind,
+          ),
+        ],
+        placements: const [boardPlacement],
+        projectDirectory: projectDirectory.path,
+      );
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          editComponentWriter: editComponentWriter,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      await tester.tap(
+        find.byKey(const Key('board_canvas_rail_add_component_tool')),
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+
+      await tester.ensureVisible(
+        find.byKey(const Key('board_canvas_metadata_edit_kind_dropdown')),
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+      await tester.tap(
+        find.byKey(const Key('board_canvas_metadata_edit_kind_dropdown')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(entry.key).last);
+      await tester.pumpAndSettle();
+
+      final saveButtonFinder = find.descendant(
+        of: find.byKey(const Key('board_canvas_metadata_edit_save')),
+        matching: find.byType(OutlinedButton),
+      );
+      await tester.ensureVisible(saveButtonFinder);
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(
+        tester.widget<OutlinedButton>(saveButtonFinder).onPressed,
+        isNotNull,
+        reason: entry.key,
+      );
+      await tester.tap(saveButtonFinder);
+      await tester.pumpAndSettle();
+
+      expect(editComponentWriter.requests, hasLength(1), reason: entry.key);
+      final kindChanges = editComponentWriter.requests.single.changes
+          .where((change) => change.field == 'component_kind')
+          .toList(growable: false);
+      expect(kindChanges, hasLength(1), reason: entry.key);
+      expect(kindChanges.single.newValue, entry.value, reason: entry.key);
+      expect(allowedValues, contains(kindChanges.single.newValue));
+      expect(
+          labelToCanonical.keys, isNot(contains(kindChanges.single.newValue)));
+    }
+  });
+
   testWidgets(
       'Add Component removes duplicate Komponendid hub while preserving placement shell',
       (tester) async {
@@ -3125,13 +3571,13 @@ void main() {
     );
     expect(find.text('Komponendid'), findsNothing);
     expect(find.text('Loo komponent'), findsNWidgets(2));
-    expect(find.text('Muuda andmeid'), findsNothing);
+    expect(find.text('Muuda andmeid'), findsOneWidget);
     expect(find.text('Mõõda komponenti'), findsNothing);
     expect(find.text('Ava loomine'), findsNothing);
     expect(find.text('Ava muutmine'), findsNothing);
     expect(find.text('Ava mõõtmine'), findsNothing);
     expect(find.text('Sündmus: component_created'), findsOneWidget);
-    expect(find.text('Sündmus: component_updated'), findsNothing);
+    expect(find.text('Sündmus: component_updated'), findsOneWidget);
     expect(find.text('Sündmus: measurement_recorded'), findsNothing);
 
     expect(find.text('Pin-asetus'), findsOneWidget);

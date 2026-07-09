@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
 import '../../components/services/v2_add_component_writer.dart';
+import '../../components/services/v2_edit_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
@@ -429,6 +430,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _rightPanelCreateComponentInFlight = false;
   String? _rightPanelCreateComponentStatusMessage;
   String? _rightPanelCreateComponentErrorMessage;
+  String? _rightPanelMetadataEditComponentId;
+  String _rightPanelMetadataEditLabel = '';
+  String _rightPanelMetadataEditKind = 'unknown';
+  bool _rightPanelMetadataEditInFlight = false;
+  String? _rightPanelMetadataEditStatusMessage;
+  String? _rightPanelMetadataEditErrorMessage;
+  String? _rightPanelMetadataEditLastSuccessfulFormKey;
   bool _inspectorVisible = true;
   bool _canvasFocusMode = false;
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
@@ -857,6 +865,248 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         return 'Komponenti ei loodud: sisestus ei läbinud valideerimist.';
       case V2AddComponentFailureKind.append:
         return 'Komponendi loomine ebaõnnestus: ${error.message}';
+    }
+  }
+
+  ComponentFact? _rightPanelSelectedMetadataComponent(
+    ProjectState projectState, {
+    String? fallbackComponentId,
+  }) {
+    final selection = _canvasSelection;
+    final componentId = selection is ComponentPlacementSelection
+        ? selection.componentId
+        : fallbackComponentId;
+    if (componentId == null || componentId.trim().isEmpty) {
+      return null;
+    }
+    for (final component in projectState.knownFacts.components) {
+      if (component.componentId == componentId) {
+        return component;
+      }
+    }
+    return null;
+  }
+
+  void _seedRightPanelMetadataEditDraft(ComponentFact? component) {
+    final componentId = component?.componentId;
+    if (_rightPanelMetadataEditComponentId == componentId) {
+      return;
+    }
+    _rightPanelMetadataEditComponentId = componentId;
+    _rightPanelMetadataEditLabel =
+        component == null ? '' : _componentMetadataEditBaselineLabel(component);
+    _rightPanelMetadataEditKind = _canonicalRightPanelComponentKind(
+      component?.type,
+    );
+    _rightPanelMetadataEditStatusMessage = null;
+    _rightPanelMetadataEditErrorMessage = null;
+    _rightPanelMetadataEditLastSuccessfulFormKey = null;
+  }
+
+  String _componentMetadataEditBaselineLabel(ComponentFact component) {
+    final designator = component.designator?.trim();
+    if (designator != null && designator.isNotEmpty) {
+      return designator;
+    }
+    return component.componentId;
+  }
+
+  String _componentMetadataEditDisplayLabel(ComponentFact component) {
+    final label = _componentMetadataEditBaselineLabel(component);
+    if (label == component.componentId) {
+      return component.componentId;
+    }
+    return '$label (${component.componentId})';
+  }
+
+  String _canonicalRightPanelComponentKind(String? rawValue) {
+    final value = rawValue?.trim().toLowerCase() ?? '';
+    if (_RightPanelComponentCreationSection._componentKinds.contains(value)) {
+      return value;
+    }
+    return 'unknown';
+  }
+
+  List<V2ComponentChange> _rightPanelMetadataEditChanges(
+    ComponentFact component,
+  ) {
+    final changes = <V2ComponentChange>[];
+    final oldLabel = _componentMetadataEditBaselineLabel(component);
+    final newLabel = _rightPanelMetadataEditLabel.trim();
+    if (newLabel != oldLabel) {
+      changes.add(
+        V2ComponentChange(
+          field: 'label',
+          oldValueObserved: oldLabel,
+          newValue: newLabel,
+          changeKind: oldLabel.isEmpty ? 'set' : 'replace',
+        ),
+      );
+    }
+
+    final oldKind = _canonicalRightPanelComponentKind(component.type);
+    final newKind = _canonicalRightPanelComponentKind(
+      _rightPanelMetadataEditKind,
+    );
+    if (newKind != oldKind) {
+      changes.add(
+        V2ComponentChange(
+          field: 'component_kind',
+          oldValueObserved: oldKind,
+          newValue: newKind,
+          changeKind: oldKind == 'unknown' ? 'set' : 'replace',
+        ),
+      );
+    }
+    return changes;
+  }
+
+  String? _rightPanelMetadataEditBlockReason(
+    ProjectState projectState,
+    ComponentFact? component,
+  ) {
+    if (component == null) {
+      if (_rightPanelCreateComponentStatusMessage?.startsWith(
+            'Komponent loodud.',
+          ) ??
+          false) {
+        return 'Komponent loodi. Värskenda projektsioon või vali olemasolev komponent enne metadata muutmist.';
+      }
+      return 'Vali plaadil olemasolev komponent. Mustandit ei saa siin muuta.';
+    }
+    if (_rightPanelMetadataEditLabel.trim().isEmpty) {
+      return 'Sisesta komponendi nimi enne salvestamist.';
+    }
+    if (_rightPanelMetadataEditChanges(component).isEmpty) {
+      return 'Muuda nime või liiki enne salvestamist.';
+    }
+    final formKey = _rightPanelMetadataEditFormKey(component);
+    if (_rightPanelMetadataEditLastSuccessfulFormKey == formKey) {
+      return 'Komponendi andmed on salvestatud. Projektsioon vajab värskendamist.';
+    }
+    final projectDirectory = projectState.projectDirectory;
+    if (projectDirectory == null || projectDirectory.trim().isEmpty) {
+      return 'Muudatuste salvestamiseks ava projekt kohalikust kaustast.';
+    }
+    return null;
+  }
+
+  Future<void> _confirmRightPanelMetadataEdit({
+    required ProjectState projectState,
+    required ComponentFact component,
+  }) async {
+    if (_rightPanelMetadataEditInFlight) {
+      return;
+    }
+
+    final blockReason = _rightPanelMetadataEditBlockReason(
+      projectState,
+      component,
+    );
+    if (blockReason != null) {
+      setState(() {
+        _rightPanelMetadataEditStatusMessage = null;
+        _rightPanelMetadataEditErrorMessage = blockReason;
+      });
+      return;
+    }
+
+    final request = V2EditComponentRequest(
+      componentId: component.componentId,
+      changes: _rightPanelMetadataEditChanges(component),
+      editReason: 'board_canvas_right_panel_metadata_edit',
+      clientOperationId: _metadataEditClientOperationIdFor(
+        component.componentId,
+      ),
+    );
+    final formKey = _rightPanelMetadataEditFormKey(component);
+
+    setState(() {
+      _rightPanelMetadataEditInFlight = true;
+      _rightPanelMetadataEditStatusMessage = 'Salvestan komponendi andmeid...';
+      _rightPanelMetadataEditErrorMessage = null;
+    });
+
+    try {
+      final result =
+          await ref.read(v2EditComponentWriterProvider).editComponent(
+                projectState: projectState,
+                request: request,
+              );
+      if (!mounted) {
+        return;
+      }
+      _markPlacementProjectionStale(
+        projectState: projectState,
+        event: result.event,
+      );
+      setState(() {
+        _rightPanelMetadataEditStatusMessage = result.appended
+            ? 'Komponendi andmed salvestatud. Projektsioon vajab värskendamist.'
+            : 'Komponendi andmed olid juba salvestatud. Projektsioon vajab värskendamist.';
+        _rightPanelMetadataEditErrorMessage = null;
+        _rightPanelMetadataEditLastSuccessfulFormKey = formKey;
+      });
+    } on V2EditComponentException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _rightPanelMetadataEditStatusMessage = null;
+        _rightPanelMetadataEditErrorMessage =
+            _componentMetadataEditFailureMessage(error);
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _rightPanelMetadataEditStatusMessage = null;
+        _rightPanelMetadataEditErrorMessage =
+            'Komponendi andmete muutmine ebaõnnestus: $error';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _rightPanelMetadataEditInFlight = false;
+        });
+      }
+    }
+  }
+
+  String _rightPanelMetadataEditFormKey(ComponentFact component) {
+    final label = _rightPanelMetadataEditLabel.trim();
+    final kind = _canonicalRightPanelComponentKind(_rightPanelMetadataEditKind);
+    return '${component.componentId}|$label|$kind';
+  }
+
+  String _metadataEditClientOperationIdFor(String componentId) {
+    final safeComponentId = componentId
+        .trim()
+        .replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_');
+    final timestamp = DateTime.now().toUtc().microsecondsSinceEpoch;
+    return 'op_board_canvas_component_updated_${safeComponentId}_$timestamp';
+  }
+
+  String _componentMetadataEditFailureMessage(
+    V2EditComponentException error,
+  ) {
+    switch (error.kind) {
+      case V2EditComponentFailureKind.noProjectDirectory:
+        return 'Muudatuste salvestamiseks ava projekt kohalikust kaustast.';
+      case V2EditComponentFailureKind.invalidProjectDirectory:
+        return 'Projektikaust ei sobi komponendi muutmiseks.';
+      case V2EditComponentFailureKind.pythonUnavailable:
+        return 'Komponendi muutmise kirjutaja pole saadaval.';
+      case V2EditComponentFailureKind.lockConflict:
+        return 'Komponendi muutmise kirjutaja on hetkel hõivatud.';
+      case V2EditComponentFailureKind.unknownComponent:
+        return 'Vali plaadil olemasolev komponent. Mustandit ei saa siin muuta.';
+      case V2EditComponentFailureKind.validation:
+        return 'Komponendi andmeid ei salvestatud: sisestus ei läbinud valideerimist.';
+      case V2EditComponentFailureKind.append:
+        return 'Komponendi andmete salvestamine ebaõnnestus: ${error.message}';
     }
   }
 
@@ -1381,6 +1631,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       );
                       break;
                     case _WorkbenchContextPanelMode.addComponentTemplates:
+                      final metadataEditComponent =
+                          _rightPanelSelectedMetadataComponent(
+                        projectState,
+                        fallbackComponentId:
+                            addComponentTemplatePlacementContextEntry
+                                ?.placement.componentId,
+                      );
+                      _seedRightPanelMetadataEditDraft(metadataEditComponent);
+                      final metadataEditBlockReason =
+                          _rightPanelMetadataEditBlockReason(
+                        projectState,
+                        metadataEditComponent,
+                      );
                       contextPanel = _AddComponentTemplateListPanel(
                         entries: _kStarterAddComponentTemplates,
                         createComponentId: _rightPanelCreateComponentId,
@@ -1425,6 +1688,45 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                       projectState: projectState,
                                     )
                                 : null,
+                        metadataEditComponentLabel:
+                            metadataEditComponent == null
+                                ? null
+                                : _componentMetadataEditDisplayLabel(
+                                    metadataEditComponent,
+                                  ),
+                        metadataEditLabel: _rightPanelMetadataEditLabel,
+                        onMetadataEditLabelChanged: (value) {
+                          setState(() {
+                            _rightPanelMetadataEditLabel = value;
+                            _rightPanelMetadataEditStatusMessage = null;
+                            _rightPanelMetadataEditErrorMessage = null;
+                            _rightPanelMetadataEditLastSuccessfulFormKey = null;
+                          });
+                        },
+                        metadataEditKind: _rightPanelMetadataEditKind,
+                        onMetadataEditKindChanged: (value) {
+                          setState(() {
+                            _rightPanelMetadataEditKind =
+                                _canonicalRightPanelComponentKind(value);
+                            _rightPanelMetadataEditStatusMessage = null;
+                            _rightPanelMetadataEditErrorMessage = null;
+                            _rightPanelMetadataEditLastSuccessfulFormKey = null;
+                          });
+                        },
+                        metadataEditBlockReason: metadataEditBlockReason,
+                        metadataEditStatusMessage:
+                            _rightPanelMetadataEditStatusMessage,
+                        metadataEditErrorMessage:
+                            _rightPanelMetadataEditErrorMessage,
+                        metadataEditInFlight: _rightPanelMetadataEditInFlight,
+                        onMetadataEdit: metadataEditComponent != null &&
+                                metadataEditBlockReason == null &&
+                                !_rightPanelMetadataEditInFlight
+                            ? () => _confirmRightPanelMetadataEdit(
+                                  projectState: projectState,
+                                  component: metadataEditComponent,
+                                )
+                            : null,
                         selectedTemplateId: _selectedAddComponentTemplateId,
                         selectedTemplate: selectedAddComponentTemplate,
                         topContactMarkers:
@@ -2642,6 +2944,16 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
     required this.createComponentErrorMessage,
     required this.createComponentInFlight,
     required this.onCreateComponent,
+    required this.metadataEditComponentLabel,
+    required this.metadataEditLabel,
+    required this.onMetadataEditLabelChanged,
+    required this.metadataEditKind,
+    required this.onMetadataEditKindChanged,
+    required this.metadataEditBlockReason,
+    required this.metadataEditStatusMessage,
+    required this.metadataEditErrorMessage,
+    required this.metadataEditInFlight,
+    required this.onMetadataEdit,
     required this.selectedTemplateId,
     required this.onTemplateSelected,
     required this.selectedTemplate,
@@ -2684,6 +2996,16 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
   final String? createComponentErrorMessage;
   final bool createComponentInFlight;
   final VoidCallback? onCreateComponent;
+  final String? metadataEditComponentLabel;
+  final String metadataEditLabel;
+  final ValueChanged<String> onMetadataEditLabelChanged;
+  final String metadataEditKind;
+  final ValueChanged<String?> onMetadataEditKindChanged;
+  final String? metadataEditBlockReason;
+  final String? metadataEditStatusMessage;
+  final String? metadataEditErrorMessage;
+  final bool metadataEditInFlight;
+  final VoidCallback? onMetadataEdit;
   final String? selectedTemplateId;
   final ValueChanged<String> onTemplateSelected;
   final _AddComponentTemplateDefinition? selectedTemplate;
@@ -2870,6 +3192,21 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
                   saveStatusMessage: saveStatusMessage,
                 ),
               ],
+              const SizedBox(height: 10),
+              const Divider(color: _kBoardCanvasRule, height: 1),
+              const SizedBox(height: 8),
+              _RightPanelMetadataEditSection(
+                selectedComponentLabel: metadataEditComponentLabel,
+                label: metadataEditLabel,
+                onLabelChanged: onMetadataEditLabelChanged,
+                componentKind: metadataEditKind,
+                onComponentKindChanged: onMetadataEditKindChanged,
+                blockReason: metadataEditBlockReason,
+                statusMessage: metadataEditStatusMessage,
+                errorMessage: metadataEditErrorMessage,
+                inFlight: metadataEditInFlight,
+                onSave: onMetadataEdit,
+              ),
             ],
           ),
         ],
@@ -3103,6 +3440,208 @@ class _RightPanelComponentCreationSection extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 7,
+      ),
+    );
+  }
+}
+
+class _RightPanelMetadataEditSection extends StatelessWidget {
+  const _RightPanelMetadataEditSection({
+    required this.selectedComponentLabel,
+    required this.label,
+    required this.onLabelChanged,
+    required this.componentKind,
+    required this.onComponentKindChanged,
+    required this.blockReason,
+    required this.statusMessage,
+    required this.errorMessage,
+    required this.inFlight,
+    required this.onSave,
+  });
+
+  final String? selectedComponentLabel;
+  final String label;
+  final ValueChanged<String> onLabelChanged;
+  final String componentKind;
+  final ValueChanged<String?> onComponentKindChanged;
+  final String? blockReason;
+  final String? statusMessage;
+  final String? errorMessage;
+  final bool inFlight;
+  final VoidCallback? onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasSelectedComponent = selectedComponentLabel != null;
+    return DecoratedBox(
+      key: const Key('board_canvas_metadata_edit_section'),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasTile,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Muuda andmeid',
+              key: const Key('board_canvas_metadata_edit_title'),
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: _kBoardCanvasNavy,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              'Sündmus: component_updated',
+              key: const Key('board_canvas_metadata_edit_event_type'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasSignal,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Muudab ainult valitud olemasoleva komponendi nime või liiki. Ei loo identiteeti, paigutust, kontakte, võrke ega mõõtmisi.',
+              key: const Key('board_canvas_metadata_edit_boundary_copy'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: _kBoardCanvasMuted,
+                height: 1.25,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              hasSelectedComponent
+                  ? 'Metaandmete komponent: $selectedComponentLabel'
+                  : 'Metaandmete komponent: puudub',
+              key: const Key('board_canvas_metadata_edit_selected_component'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color:
+                    hasSelectedComponent ? _kBoardCanvasNavy : _kBoardCanvasDim,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            KeyedSubtree(
+              key: const Key('board_canvas_metadata_edit_label_input'),
+              child: TextFormField(
+                key: ValueKey(
+                  'board_canvas_metadata_edit_label_input_${selectedComponentLabel ?? 'none'}',
+                ),
+                initialValue: label,
+                enabled: hasSelectedComponent && !inFlight,
+                decoration:
+                    _RightPanelComponentCreationSection._compactInputDecoration(
+                  theme: theme,
+                  labelText: 'Nimi',
+                  hintText: 'nt R101',
+                ),
+                onChanged: onLabelChanged,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: _kBoardCanvasNavy,
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            DropdownButtonFormField<String>(
+              key: const Key('board_canvas_metadata_edit_kind_dropdown'),
+              initialValue: _RightPanelComponentCreationSection._componentKinds
+                      .contains(componentKind)
+                  ? componentKind
+                  : 'unknown',
+              isExpanded: true,
+              dropdownColor: _kBoardCanvasPaper,
+              decoration:
+                  _RightPanelComponentCreationSection._compactInputDecoration(
+                theme: theme,
+                labelText: 'Liik',
+                hintText: 'Vali liik',
+              ),
+              iconEnabledColor: _kBoardCanvasSignal,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: _kBoardCanvasNavy,
+              ),
+              items: _RightPanelComponentCreationSection._componentKinds
+                  .map(
+                    (kind) => DropdownMenuItem<String>(
+                      value: kind,
+                      child: Text(
+                        _RightPanelComponentCreationSection
+                                ._componentKindLabels[kind] ??
+                            kind,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
+              selectedItemBuilder: (context) =>
+                  _RightPanelComponentCreationSection._componentKinds
+                      .map(
+                        (kind) => Text(
+                          _RightPanelComponentCreationSection
+                                  ._componentKindLabels[kind] ??
+                              kind,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: _kBoardCanvasNavy,
+                          ),
+                        ),
+                      )
+                      .toList(growable: false),
+              onChanged: hasSelectedComponent && !inFlight
+                  ? onComponentKindChanged
+                  : null,
+            ),
+            const SizedBox(height: 8),
+            if (blockReason != null)
+              Text(
+                blockReason!,
+                key: const Key('board_canvas_metadata_edit_guard'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFFF6C453),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            if (errorMessage != null)
+              Text(
+                errorMessage!,
+                key: const Key('board_canvas_metadata_edit_error'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFFEAA6A6),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            if (statusMessage != null)
+              Text(
+                statusMessage!,
+                key: const Key('board_canvas_metadata_edit_status'),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: _kBoardCanvasSignal,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.center,
+              child: _AddComponentDraftChipButton(
+                key: const Key('board_canvas_metadata_edit_save'),
+                label: inFlight ? 'Salvestan...' : 'Salvesta muudatused',
+                onPressed: onSave,
+                minWidth: 158,
+                minHeight: 38,
+                foregroundColor: const Color(0xFFF6C453),
+                backgroundColor: const Color(0xFF33270F),
+                borderColor: const Color(0xFFF6C453).withValues(alpha: 0.7),
+                disabledForegroundColor: _kBoardCanvasMuted,
+                disabledBackgroundColor: _kBoardCanvasPaper,
+                disabledBorderColor: _kBoardCanvasRuleStrong,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

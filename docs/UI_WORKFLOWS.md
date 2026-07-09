@@ -1,5 +1,8 @@
 # UI_WORKFLOWS.md
 
+> First-read charter: `docs/POHIKIRI.md`. UI workflows must preserve the Visual First charter and stop for human decision if a requested workflow conflicts with it.
+
+
 ## Purpose
 
 Concise UX/workflow policy for BenchBeep. This file does not authorize runtime writes by itself; active implementation scope still comes from `docs/ACTIVE_SCOPE_LOCK.md`.

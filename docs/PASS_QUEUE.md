@@ -29,7 +29,7 @@ Recorded behavior:
 - Draft / unsaved placement metadata edit remains blocked.
 - No direct `known_facts.json` or `projectState.knownFacts` mutation occurs.
 - No writer, schema, router, tool, model, or `_incoming` edits were included.
-- `docs/POHIKIRI.md` remains charter input / untracked unless separately scoped.
+- `docs/POHIKIRI.md` is now the tracked canonical product charter / first-read scope anchor.
 
 ## Candidate next-pass notes
 
@@ -43,6 +43,8 @@ Potential future work remains separate and must be scoped before implementation:
 
 ## Scope gate rules
 
+- Read `docs/POHIKIRI.md` before choosing or executing the next pass.
+- If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
 - One narrow pass at a time.
 - Do not edit runtime, tests, schema, tools, events, known_facts, or `_incoming` unless the active lock explicitly arms those files.
 - Do not stage, commit, or push from this queue state.

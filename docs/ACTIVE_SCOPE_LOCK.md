@@ -12,6 +12,8 @@
 
 No active implementation lock is armed.
 
+The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
+
 No runtime, test, docs, schema, writer, materializer, validator, tool, event, known_facts, asset, router, standalone-screen, or `_incoming` files are authorized for implementation from this state.
 
 ## Last released lock
@@ -40,7 +42,7 @@ Audit record:
 - Draft / unsaved placement metadata edit remains blocked.
 - No direct `known_facts.json` or `projectState.knownFacts` mutation occurs.
 - No writer, schema, router, tool, model, or `_incoming` edits were part of the implementation.
-- `docs/POHIKIRI.md` remains charter input / untracked unless separately scoped.
+- `docs/POHIKIRI.md` is now the tracked canonical product charter / first-read scope anchor.
 
 ## Protected boundaries still in force
 

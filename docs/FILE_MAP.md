@@ -1,5 +1,8 @@
 # FILE_MAP.md
 
+- `docs/POHIKIRI.md` - canonical product charter / first-read scope anchor; if a task conflicts with it, stop and ask the human.
+
+
 ## Purpose
 
 Compact orientation map for TraceBench documentation ownership, read priority, stale-risk, and update rules.

@@ -32,7 +32,7 @@ Recorded behavior:
 - No direct `known_facts.json` mutation occurs.
 - No direct `projectState.knownFacts` mutation occurs.
 - No writer, schema, router, tool, model, or `_incoming` edits were part of the implementation.
-- `docs/POHIKIRI.md` remains charter input / untracked unless separately scoped.
+- `docs/POHIKIRI.md` is now the tracked canonical product charter / first-read scope anchor.
 
 ## Validation evidence recorded
 
@@ -52,6 +52,7 @@ Next: `NEEDS_USER_DECISION`
 
 ## Canonical owner pointers
 
+- Product charter / first-read scope anchor: `docs/POHIKIRI.md`
 - Route state: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
 - Audit/provenance ledger: `docs/AUDIT_INDEX.md`
 - Stable project memory and facts: `docs/PROJECT_MEMORY.md`, `docs/TRUTH_INDEX.md`

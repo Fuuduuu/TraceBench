@@ -1,5 +1,9 @@
 # PROJECT_MEMORY.md
 
+## PÕHIKIRI charter anchor
+
+`docs/POHIKIRI.md` is the canonical product charter and first-read scope anchor. It owns the compact product rule that AI may propose, guide, and organize, but only human-confirmed information becomes canonical truth. If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
+
 Canonical product and architecture memory for TraceBench / BenchBeep.
 
 ## Product identity

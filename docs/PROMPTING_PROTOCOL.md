@@ -1,5 +1,8 @@
 # PROMPTING_PROTOCOL.md
 
+> First-read charter: `docs/POHIKIRI.md`. If a prompt conflicts with the charter, stop and ask the human. AI may propose, guide, and organize; only human-confirmed information becomes canonical truth.
+
+
 ## Purpose
 
 Keep prompts compact, scoped, and auditable without losing safety.

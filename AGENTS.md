@@ -18,7 +18,9 @@ AI must never invent measurements, hidden-layer connections, component identitie
 
 ## Repo-docs-first rule
 
-`docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` are the first-read route sources.
+`docs/POHIKIRI.md` is the first-read product charter and scope anchor. Read it before route docs. If a task conflicts with it, stop and ask the human. AI may propose, guide, and organize; only human-confirmed information becomes canonical truth.
+
+After `docs/POHIKIRI.md`, `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` are the first-read route sources.
 
 Canonical read-order also includes:
 
@@ -79,12 +81,13 @@ Canonical invariants are owned by `docs/TRUTH_INDEX.md`.
 
 ## Read order
 
-1. `docs/CURRENT_STATE.md`
-2. `docs/PASS_QUEUE.md`
-3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `docs/MEMORY_PROTOCOL.md`
-5. `docs/TRUTH_INDEX.md`
-6. relevant spec/audit files
+1. `docs/POHIKIRI.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/ACTIVE_SCOPE_LOCK.md`
+5. `docs/MEMORY_PROTOCOL.md`
+6. `docs/TRUTH_INDEX.md`
+7. relevant spec/audit files
 
 ## New fact intake check
 
@@ -122,6 +125,7 @@ Known scratch/untracked artifacts must not be staged unless explicitly scoped:
 
 ## Canonical ownership
 
+- Product charter / first-read scope anchor: `docs/POHIKIRI.md`
 - Current pass / next recommended pass: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`
 - Allowed/forbidden surface map: `docs/ACTIVE_SCOPE_LOCK.md`
 - Stable architecture truth: `docs/PROJECT_MEMORY.md`

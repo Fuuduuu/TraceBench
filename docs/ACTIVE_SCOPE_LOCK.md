@@ -2,80 +2,56 @@
 
 ## Current pass
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Lock state
 
-Docs-only build-lock is active.
+No active implementation lock is armed.
 
-The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
+The prior active implementation lock for `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` is released by `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_POST_AUDIT_PASS`.
 
-No runtime/test implementation is authorized in this build-lock pass.
+`docs/POHIKIRI.md` remains the first-read product charter / scope anchor. If a task conflicts with it, stop and ask the human.
 
-## Current docs pass write allowlist
-
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS` may write only:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS.md`
-
-## Armed implementation pass
+## Released implementation pass
 
 `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
 
-## Armed implementation write allowlist
+## Released implementation write allowlist
 
-The future implementation pass may write only:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-Existing measurement writer/provider use is import/call only. Do not edit `lib/features/measure_sheet/services/v2_save_measurement_writer.dart` in the future implementation pass unless a later lock explicitly arms it.
-
-## Locked intent
-
-- Board Canvas / right panel becomes the primary measurement entry context.
-- Technician selects board / component / pin / point context.
-- User enters Koht -> Väärtus -> Ühik -> Salvesta.
-- Use the existing human-confirmed measurement writer path where possible.
-- Write only `measurement_recorded`.
-- Write requires explicit human action: `Salvesta`.
-- AI may suggest next checks but writes no canonical facts.
-- Photo / visual trace / net inference must not become canonical.
-
-## Stop conditions
-
-Stop with `BLOCKED_ALLOWLIST_MISMATCH` if the future implementation needs any file outside:
+The released implementation pass wrote only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Stop if the future implementation needs:
+## Recorded result
 
-- router/page proliferation
-- standalone Measure Sheet deletion or hiding
-- direct `known_facts.json` mutation
-- schema, validator, materializer, writer, model, tool, event, known_facts, asset, or `_incoming` edits
-- AI/photo output as canonical facts
-- visual trace as electrical net
+- Implementation commit: `a68e924189627a3e780922c976829db440b51d82` (`feat: add board canvas measurement right-panel flow`)
+- Claude audit: `ACCEPT_WITH_NITS / SAFE_FOR_STAGING: YES`
+- Safe implementation set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
 
-## Protected boundaries still in force
+## Boundaries preserved
 
+- Board Canvas/right panel measurement entry writes only through explicit human `Salvesta`.
+- The flow uses the existing V2 measurement writer/provider by import/call only.
+- The writer file was not edited.
+- The measurement event type remains `measurement_recorded`.
+- Successful save appends the returned event locally and marks projection stale.
+- Standalone Measure Sheet remains available.
+- AI/photo/trace context remains non-canonical.
 - `events.jsonl` remains canonical truth.
 - `known_facts.json` remains projection/cache.
-- Flutter must not directly mutate `known_facts.json`.
-- Human-confirmed canonical writes remain explicit and scoped by writer contract.
-- AI must not create canonical facts.
-- Measurement flow writes only `measurement_recorded`.
+- Flutter does not directly mutate `known_facts.json`.
+- `projectState.knownFacts` is not mutated directly.
+- No component identity, placement, pins, contacts, pads, nets, traces, electrical facts, AI facts, or repair conclusions are created.
+- No writer, schema, validator, materializer, tool, router, model, asset, `_incoming`, events, or known_facts files were edited.
 
 ## Route
 
-Current: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`

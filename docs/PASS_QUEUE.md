@@ -2,50 +2,62 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Queue status
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS` is a docs-only build-lock.
+No active implementation lock is armed.
 
-It arms the next narrow implementation pass:
-
-- `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` is closed out after accepted implementation audit.
 
 ## First-read charter
 
 Read `docs/POHIKIRI.md` before route, implementation, or audit decisions. If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
 
-## Prerequisite closeouts recorded
+## Recent closeout
 
-- `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_POST_AUDIT_PASS` is recorded in the live repo history as the right-panel component identity creation closeout.
-- `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_POST_AUDIT_PASS` is recorded in the live repo history as the right-panel component metadata edit closeout.
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_POST_AUDIT_PASS` records:
 
-## Next implementation intent
+- implementation commit `a68e924189627a3e780922c976829db440b51d82` (`feat: add board canvas measurement right-panel flow`)
+- Claude audit `ACCEPT_WITH_NITS / SAFE_FOR_STAGING: YES`
+- safe implementation set:
+  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
+  - `test/widget/board_canvas_screen_test.dart`
+- validation evidence:
+  - Board Canvas widget tests 121/121 PASS
+  - `flutter test` 387/387 PASS
+  - `python tools/validate_all.py` 285 tests OK
+  - `git diff --check` PASS
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` should add the first narrow Board Canvas right-panel measurement entry flow:
+## Closed implementation behavior
 
-- technician works in the Board Canvas right panel
-- context is board / component / pin / point as available in the current UI state
-- user enters Koht -> Väärtus -> Ühik -> Salvesta
-- write requires explicit human action
-- event type remains `measurement_recorded`
-- existing V2 measurement writer/provider may be imported and called, but the writer file itself is not armed for edits
+- Board Canvas/right panel now includes the first compact measurement entry flow.
+- Technician-facing flow copy is `Koht -> Väärtus -> Ühik -> Salvesta`.
+- Measurement write requires explicit human action: `Salvesta`.
+- Existing V2 measurement writer/provider is used by import/call only.
+- The writer service file was not edited.
+- The only measurement event type emitted by this flow is `measurement_recorded`.
+- Successful save appends the returned event locally and marks projection stale.
+- AI/photo/trace context remains non-canonical.
+- Standalone Measure Sheet remains available.
 
-## Exact implementation allowlist
+## Boundaries preserved
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` may write only:
+- No writer/schema/router/tool/materializer/validator/model changes.
+- No events or known_facts files changed.
+- No direct `known_facts.json` mutation.
+- No direct `projectState.knownFacts` mutation.
+- No component identity, placement, pins, contacts, pads, nets, traces, electrical facts, AI facts, or repair conclusions created by the measurement panel.
+- No route hiding/deletion.
+- No `_incoming` use.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Known non-blocking nit
+
+- Dead conditional in `_componentIdForTarget`; behavior is safe and can be cleaned later if separately scoped.
 
 ## Scope gate rules
 
-- Do not edit runtime or tests in this build-lock pass.
-- Do not edit writer, schema, validator, materializer, router, standalone screens, events, known_facts, assets, or `_incoming` in the next implementation unless a later lock explicitly authorizes it.
-- If writer/schema/validator/materializer edits are needed, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
-- If implementation needs router/page proliferation or standalone Measure Sheet deletion/hiding, stop.
-- Do not let AI/photo/visual-trace output become canonical.
-- Do not treat visual trace as electrical net.
-- Do not stage, commit, or push from this pass.
+- Do not stage, commit, or push unless explicitly requested.
+- Do not arm a new pass without a separate route/scope decision.
+- Keep `docs/POHIKIRI.md` as the first-read product charter and scope anchor.

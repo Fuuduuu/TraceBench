@@ -1,7 +1,7 @@
 # Current State
 
-Current pass: BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS
-Next recommended pass: BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS
+Current pass: NEEDS_USER_DECISION
+Next recommended pass: NEEDS_USER_DECISION
 
 ## First-read charter
 
@@ -11,63 +11,60 @@ If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may prop
 
 ## Status
 
-Docs-only build-lock for the first narrow Board Canvas right-panel measurement entry flow.
+`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` is closed out.
 
-No runtime or test implementation is performed in this pass.
+Implementation commit recorded:
 
-Recent prerequisite closeouts recorded in the live repo:
+- `a68e924189627a3e780922c976829db440b51d82` — `feat: add board canvas measurement right-panel flow`
 
-- `BOARD_CANVAS_RIGHT_PANEL_CREATION_FLOW_IMPL_POST_AUDIT_PASS` closed the Board Canvas right-panel component identity creation flow.
-- `BOARD_CANVAS_METADATA_EDIT_FLOW_IMPL_POST_AUDIT_PASS` closed the Board Canvas right-panel component metadata edit flow.
+Prior build-lock commit recorded:
 
-## Scope lock summary
+- `3175ff0` — `docs: lock board canvas measurement right-panel flow`
 
-The next implementation pass is intended to add a compact Board Canvas right-panel measurement entry flow:
+Claude audit result recorded:
 
-- Board Canvas / right panel becomes the primary measurement entry context.
-- Technician selects board / component / pin / point context.
-- User enters Koht -> Väärtus -> Ühik -> Salvesta.
-- The flow uses the existing human-confirmed measurement writer path where possible.
-- The only canonical event type allowed for this flow is `measurement_recorded`.
-- The write requires explicit human action: `Salvesta`.
-- AI may suggest next checks, but AI writes no facts.
-- Photo, visual trace, and net inference must not become canonical.
+- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
+- `SAFE_FOR_STAGING: YES`
 
-## Live-code findings
-
-- `MeasureSheetScreen` remains the current canonical measurement writer UI surface.
-- Existing V2 measurement writer ownership is `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`.
-- Existing V2 measurement writer tests cover `measurement_recorded` behavior.
-- Board Canvas currently has right-panel UI and widget tests that can host the first narrow measurement entry slice.
-- Legacy `lib/shared/event_write/measurement_event_writer.dart` exists but is not the preferred future Board Canvas V2 path.
-
-## Armed allowlist for next implementation
-
-Exact implementation write allowlist for `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`:
+Safe implementation set:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-Existing measurement writer/provider use is allowed as import/call only from the Board Canvas implementation. The writer service file itself is not armed for edits in the next implementation pass.
+## Closed behavior
 
-## Boundaries
+- Board Canvas now has a compact right-panel measurement entry flow.
+- Flow copy: `Koht -> Väärtus -> Ühik -> Salvesta`.
+- Explicit `Salvesta` is required before any measurement write.
+- The flow uses the existing V2 measurement writer/provider by import/call only.
+- The writer file was not edited.
+- The only emitted measurement event type is `measurement_recorded`.
+- Successful save appends the returned event locally.
+- Successful save marks projection stale.
+- `known_facts.json` is not mutated directly.
+- `projectState.knownFacts` is not mutated directly.
+- No component identity, placement, pins, contacts, pads, nets, traces, electrical facts, AI facts, or repair conclusions are created.
+- Standalone Measure Sheet remains available.
+- AI/photo/trace context remains non-canonical.
 
-Stop with `BLOCKED_ALLOWLIST_MISMATCH` if the future implementation needs writer, schema, validator, materializer, router, model, standalone-screen, events, known_facts, asset, or `_incoming` edits.
+## Validation recorded
 
-Stop if the future implementation requires:
+- Board Canvas widget tests: 121/121 PASS.
+- `dart format`: PASS / 0 changed after format.
+- `flutter test test/widget/board_canvas_screen_test.dart`: PASS.
+- `flutter test`: 387/387 PASS.
+- `python tools/validate_all.py`: 285 tests OK.
+- `git diff --check`: PASS.
+- `git diff --cached`: empty before staging.
 
-- router/page proliferation
-- deleting or hiding standalone Measure Sheet
-- direct `known_facts.json` mutation
-- schema/validator/materializer changes
-- AI/photo output becoming canonical
-- visual trace being treated as electrical net
-- a broader allowlist than the two Board Canvas files above
+## Known non-blocking nit
+
+- Dead conditional in `_componentIdForTarget`; behavior is safe and may be cleaned later in a separately scoped pass.
 
 ## Route
 
-Current: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Canonical owner pointers
 
@@ -75,5 +72,6 @@ Next: `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS`
 - Route state: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
 - Audit/provenance ledger: `docs/AUDIT_INDEX.md`
 - Stable project memory and facts: `docs/PROJECT_MEMORY.md`, `docs/TRUTH_INDEX.md`
+- UI workflow policy: `docs/UI_WORKFLOWS.md`
 - Protected surface rules: `docs/PROTECTED_SURFACES.md`
 - Prompt/lifecycle/model-routing rules: `docs/PROMPTING_PROTOCOL.md`, `docs/PASS_LIFECYCLE.md`, `docs/MODEL_ROUTING.md`

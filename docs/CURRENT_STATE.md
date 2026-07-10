@@ -1,7 +1,7 @@
 # Current State
 
-Current pass: NEEDS_USER_DECISION
-Next recommended pass: NEEDS_USER_DECISION
+Current pass: BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS
+Next recommended pass: BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS
 
 ## First-read charter
 
@@ -11,60 +11,59 @@ If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may prop
 
 ## Status
 
-`BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_PASS` is closed out.
+Docs-only build-lock for a minimal Board Canvas Workbench visual-alignment implementation.
 
-Implementation commit recorded:
+No runtime or test implementation is performed in this pass.
 
-- `a68e924189627a3e780922c976829db440b51d82` — `feat: add board canvas measurement right-panel flow`
+Verified prerequisite state:
 
-Prior build-lock commit recorded:
+- Route before this pass was `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
+- No active implementation lock was armed.
+- Tracked and cached diffs were clean.
+- `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_POST_AUDIT_PASS` records the accepted/pushed measurement right-panel closeout.
+- `docs/POHIKIRI.md` remains the first-read charter.
 
-- `3175ff0` — `docs: lock board canvas measurement right-panel flow`
+## Design input
 
-Claude audit result recorded:
+`_incoming/ui_redesign/App visual/BenchBeep Workbench - Design Concept (standalone).html` is `DESIGN_INPUT_ONLY`.
 
-- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
-- `SAFE_FOR_STAGING: YES`
+It informs a restrained black/gold instrument tone, compact workbench hierarchy, dense right-panel presentation, technician-facing copy, and the boundary line:
 
-Safe implementation set:
+`AI/foto/rada ei ole fakt enne kinnitamist.`
+
+The HTML, its bundled JS/CSS/assets/fonts, and its proposed AI candidate/history/photo/trace workflows must not be imported, copied, or runtime-referenced.
+
+## Armed implementation slice
+
+`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` may:
+
+- keep the existing Board Canvas as the central Workbench
+- visually align existing Board Canvas shell/chrome, rail, canvas framing, and existing right-panel surfaces with the accepted BenchBeep Home dark/gold tone
+- improve technician-facing copy only inside existing Board Canvas/right-panel surfaces
+- add the non-canonical boundary line above where it fits the existing panel hierarchy
+- update Board Canvas widget tests for the visual/copy contract while preserving existing behavior coverage
+
+Existing component creation, metadata edit, visual placement, measurement, selection, pan/zoom, fit/recenter, and standalone route availability must remain behaviorally unchanged.
+
+## Armed implementation allowlist
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-## Closed behavior
+No Home file is armed. Live-code inspection found no need to edit `lib/features/home/screens/benchbeep_home_screen.dart` or its tests.
 
-- Board Canvas now has a compact right-panel measurement entry flow.
-- Flow copy: `Koht -> Väärtus -> Ühik -> Salvesta`.
-- Explicit `Salvesta` is required before any measurement write.
-- The flow uses the existing V2 measurement writer/provider by import/call only.
-- The writer file was not edited.
-- The only emitted measurement event type is `measurement_recorded`.
-- Successful save appends the returned event locally.
-- Successful save marks projection stale.
-- `known_facts.json` is not mutated directly.
-- `projectState.knownFacts` is not mutated directly.
-- No component identity, placement, pins, contacts, pads, nets, traces, electrical facts, AI facts, or repair conclusions are created.
-- Standalone Measure Sheet remains available.
-- AI/photo/trace context remains non-canonical.
+## Boundaries
 
-## Validation recorded
+Stop with `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any other file.
 
-- Board Canvas widget tests: 121/121 PASS.
-- `dart format`: PASS / 0 changed after format.
-- `flutter test test/widget/board_canvas_screen_test.dart`: PASS.
-- `flutter test`: 387/387 PASS.
-- `python tools/validate_all.py`: 285 tests OK.
-- `git diff --check`: PASS.
-- `git diff --cached`: empty before staging.
+Do not add AI candidate models/data, photo workflows, trace workflows, history workflows, fonts, assets, packages, router/pages, or shared theme infrastructure. Do not hide/delete standalone Add/Edit/Measure screens. Do not change writer/schema/validator/materializer/tool/model/event/fact/projection/Project ZIP behavior, `events.jsonl`, `known_facts.json`, or `projectState.knownFacts`.
 
-## Known non-blocking nit
-
-- Dead conditional in `_componentIdForTarget`; behavior is safe and may be cleaned later in a separately scoped pass.
+No component identity, placement, coordinate, contact, pin, pad, net, trace, electrical, measurement, AI-fact, or repair semantics may change. Painter geometry and hit testing remain unchanged; color-only presentation changes must not alter selection or interaction behavior.
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS`
+Next: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
 
 ## Canonical owner pointers
 

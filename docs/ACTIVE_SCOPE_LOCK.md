@@ -2,77 +2,53 @@
 
 ## Current pass
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS`
+`NEEDS_USER_DECISION`
 
 ## Next recommended pass
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
+`NEEDS_USER_DECISION`
 
 ## Lock state
 
-Docs-only build-lock is active.
+No active implementation lock is armed.
 
 The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
 
-No runtime/test implementation is authorized in this build-lock pass.
+The prior implementation lock for `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` is released by `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_POST_AUDIT_PASS`.
 
-## Current docs pass write allowlist
-
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS` may write only:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS.md`
-
-## Design input lock
-
-`_incoming/ui_redesign/App visual/BenchBeep Workbench - Design Concept (standalone).html` is `DESIGN_INPUT_ONLY`.
-
-- Do not edit or stage it.
-- Do not import, copy, or runtime-reference it or its bundled JS/CSS/assets/fonts.
-- Use only its restrained black/gold tone, compact hierarchy, and technician-facing copy as visual/reference input.
-- Its AI candidate, photo, trace, history, Home, asset, font, and dependency proposals are not implementation scope.
-
-## Armed implementation pass
+## Released implementation pass
 
 `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
 
-## Armed implementation write allowlist
+## Released implementation write allowlist
 
-The future implementation pass may write only:
+The closed implementation wrote only:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-No optional Home surface is armed. Live-code inspection did not justify a Home edit.
+## Recorded result
 
-## Locked implementation intent
+- Build-lock commit: `e16b4f8a2ec24a99a67ac93c65d6465e9e313033` (`docs: lock board canvas workbench visual alignment`)
+- Implementation commit: `c2a8d85b84169df8bf7728c02943be46f3c2d5bd` (`style: align board canvas workbench visuals`)
+- Claude audit: `ACCEPT_WITH_NITS / SAFE_FOR_STAGING: YES`
+- Human manual smoke: PASS at wide and medium layouts.
+- Exact boundary copy: `AI/foto/rada ei ole fakt enne kinnitamist.`
 
-- Keep the current Board Canvas as the central Workbench.
-- Restyle only existing Board Canvas shell/chrome, tool rail, canvas framing, right-panel surfaces, current cards/fields/buttons, and existing selected/active/status presentation.
-- Align those surfaces with the accepted BenchBeep Home dark/gold instrument tone without introducing shared-theme, asset, font, package, or Home changes.
-- Keep ready/success state visually distinct from active/selected emphasis.
-- Improve technician-facing copy only inside existing Board Canvas/right-panel surfaces.
-- Include `AI/foto/rada ei ole fakt enne kinnitamist.` where appropriate as non-canonical boundary copy.
-- Preserve all existing right-panel modes and creation, metadata edit, visual placement, and measurement behavior.
-- Preserve existing selection, pan/zoom, fit/recenter, save enablement, writer calls, event types, local event append, and projection-stale behavior.
-- Widget tests may change only to assert the revised presentation/copy and preserved behavior.
+## Closed behavior
 
-## Stop conditions
+- Board Canvas remains the central Workbench.
+- Local Board Canvas and measure-panel tokens provide the accepted black/gold/cream alignment.
+- Green ready/status remains distinct from gold active/selected emphasis.
+- Existing context-panel content is behaviorally unchanged beneath a presentational frame.
+- Existing component creation, metadata edit, visual placement, measurement, selection, pan/zoom, fit/recenter, and standalone route behavior remains unchanged.
+- Measurement still requires explicit `Salvesta`.
 
-Stop with `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any file outside the two-file allowlist.
+## Known non-blocking documentation nit
 
-Stop if implementation would require:
-
-- Home, asset, font, package, `pubspec`, router, page, or standalone-screen changes
-- importing/copying/runtime-referencing `_incoming` or the standalone HTML
-- a new panel mode, new route, new workflow section, or hidden/deleted Add/Edit/Measure screen
-- real AI candidate data/actions or photo/trace/history workflows
-- writer, schema, validator, materializer, tool, model, event, fact, projection, Project ZIP, sample, `events.jsonl`, `known_facts.json`, or `projectState.knownFacts` changes
-- component identity, placement, coordinate, pin, contact, pad, net, path, trace, electrical, measurement, AI-fact, or repair semantic changes
-- painter geometry, hit-testing, selection, pan/zoom, or fit/recenter behavior changes
+- Medium smoke viewport dimensions were not recorded.
+- The medium screenshot attachment was not preserved in the audit packet.
+- Missing dimensions and attachment provenance must not be invented.
 
 ## Protected boundaries still in force
 
@@ -81,22 +57,14 @@ Stop if implementation would require:
 - Photo pixels and visual traces are not facts or electrical nets.
 - Board Canvas renderer/painter writes nothing.
 - Existing explicit human save actions retain their separately accepted writer behavior.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics changes.
-
-## Future implementation validation
-
-- `dart format lib/features/board_canvas/screens/board_canvas_screen.dart test/widget/board_canvas_screen_test.dart`
-- `flutter test test/widget/board_canvas_screen_test.dart`
-- `flutter test`
-- `python tools/validate_all.py`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git diff --check`
-
-Manual smoke is required after the future visual implementation and before its Claude audit.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
+- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+- No shared theme, Home, asset, font, package, `pubspec`, router, page, or `_incoming` runtime changes.
+- No AI candidate model/data/actions and no photo, trace, or history workflow.
+- No painter geometry, hit-testing, selection, pan/zoom, or fit/recenter changes.
+- No new implementation pass is armed.
 
 ## Route
 
-Current: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`

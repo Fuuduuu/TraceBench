@@ -1,7 +1,7 @@
 # Current State
 
-Current pass: BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS
-Next recommended pass: BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS
+Current pass: NEEDS_USER_DECISION
+Next recommended pass: NEEDS_USER_DECISION
 
 ## First-read charter
 
@@ -11,59 +11,72 @@ If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may prop
 
 ## Status
 
-Docs-only build-lock for a minimal Board Canvas Workbench visual-alignment implementation.
+`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` is closed out.
 
-No runtime or test implementation is performed in this pass.
+Implementation commit recorded:
 
-Verified prerequisite state:
+- `c2a8d85b84169df8bf7728c02943be46f3c2d5bd` — `style: align board canvas workbench visuals`
 
-- Route before this pass was `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
-- No active implementation lock was armed.
-- Tracked and cached diffs were clean.
-- `BOARD_CANVAS_MEASUREMENT_RIGHT_PANEL_IMPL_POST_AUDIT_PASS` records the accepted/pushed measurement right-panel closeout.
-- `docs/POHIKIRI.md` remains the first-read charter.
+Prior build-lock commit recorded:
 
-## Design input
+- `e16b4f8a2ec24a99a67ac93c65d6465e9e313033` — `docs: lock board canvas workbench visual alignment`
 
-`_incoming/ui_redesign/App visual/BenchBeep Workbench - Design Concept (standalone).html` is `DESIGN_INPUT_ONLY`.
+Claude audit result recorded:
 
-It informs a restrained black/gold instrument tone, compact workbench hierarchy, dense right-panel presentation, technician-facing copy, and the boundary line:
+- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
+- `SAFE_FOR_STAGING: YES`
 
-`AI/foto/rada ei ole fakt enne kinnitamist.`
-
-The HTML, its bundled JS/CSS/assets/fonts, and its proposed AI candidate/history/photo/trace workflows must not be imported, copied, or runtime-referenced.
-
-## Armed implementation slice
-
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` may:
-
-- keep the existing Board Canvas as the central Workbench
-- visually align existing Board Canvas shell/chrome, rail, canvas framing, and existing right-panel surfaces with the accepted BenchBeep Home dark/gold tone
-- improve technician-facing copy only inside existing Board Canvas/right-panel surfaces
-- add the non-canonical boundary line above where it fits the existing panel hierarchy
-- update Board Canvas widget tests for the visual/copy contract while preserving existing behavior coverage
-
-Existing component creation, metadata edit, visual placement, measurement, selection, pan/zoom, fit/recenter, and standalone route availability must remain behaviorally unchanged.
-
-## Armed implementation allowlist
+Safe implementation set:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-No Home file is armed. Live-code inspection found no need to edit `lib/features/home/screens/benchbeep_home_screen.dart` or its tests.
+## Closed implementation result
+
+- Board Canvas remains the central Workbench.
+- Local Board Canvas and measure-panel tokens align the existing dark UI with the BenchBeep black/gold/cream tone.
+- Green ready/status remains visually distinct from gold active/selected emphasis.
+- Existing context-panel content is behaviorally unchanged and receives only a presentational frame.
+- Exact non-canonical boundary copy is present: `AI/foto/rada ei ole fakt enne kinnitamist.`
+- Existing component creation, metadata edit, placement, measurement, and standalone route behavior remains unchanged.
+- Measurement still requires explicit `Salvesta`.
+
+## Manual smoke recorded
+
+- Human visual acceptance: PASS.
+- Wide smoke: `1918 x 1078`, seven screenshots reviewed across Safety, Placements, Inspector, Draft/metadata edit, Component creation, Measurement, and canvas without a context panel.
+- Wide result: no clipping or RenderFlex overflow observed; Board Canvas remained dominant; rail, context panel, scrolling, controls, hierarchy, contrast, boundary copy, and measurement save gating were accepted.
+- Medium smoke: human observations and acceptance supplied; no clipping or overflow; panel usable and scrollable; controls reachable; measurement usable; hierarchy and contrast accepted.
+
+## Validation recorded
+
+- `dart format`: PASS.
+- `flutter test test/widget/board_canvas_screen_test.dart`: 122/122 PASS.
+- `flutter test`: 388/388 PASS.
+- `python tools/validate_all.py`: 285/285 PASS.
+- `git diff --check`: PASS.
+- Exact two-file implementation allowlist: PASS.
+- Claude force-unwrap review: `contextPanelSlot!` is safe because it is reached only when `showContextPanel` is true, which requires `contextPanel != null`.
+
+## Known non-blocking documentation nit
+
+- Actual medium viewport dimensions were not recorded.
+- The medium screenshot attachment was not preserved in the audit packet.
+- No missing dimensions or attachment provenance are inferred.
 
 ## Boundaries
 
-Stop with `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any other file.
-
-Do not add AI candidate models/data, photo workflows, trace workflows, history workflows, fonts, assets, packages, router/pages, or shared theme infrastructure. Do not hide/delete standalone Add/Edit/Measure screens. Do not change writer/schema/validator/materializer/tool/model/event/fact/projection/Project ZIP behavior, `events.jsonl`, `known_facts.json`, or `projectState.knownFacts`.
-
-No component identity, placement, coordinate, contact, pin, pad, net, trace, electrical, measurement, AI-fact, or repair semantics may change. Painter geometry and hit testing remain unchanged; color-only presentation changes must not alter selection or interaction behavior.
+- No shared theme, Home, asset, font, package, `pubspec`, router, page, or `_incoming` runtime changes.
+- No AI candidate model/data/actions and no photo, trace, or history workflow.
+- No painter geometry, hit-testing, selection, pan/zoom, or fit/recenter behavior changes.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
+- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+- No new implementation pass is armed.
 
 ## Route
 
-Current: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_BUILD_LOCK_PASS`
-Next: `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 ## Canonical owner pointers
 

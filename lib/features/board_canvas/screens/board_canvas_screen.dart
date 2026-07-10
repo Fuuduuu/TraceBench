@@ -29,25 +29,27 @@ const double _kMediumContextPanelWidth = 280;
 const int _kAddComponentContactMarkerWarningLimit = 8;
 const double _reservedPinControlGutterWidth = 40;
 const double _kPreviewFootprintVerticalCenterOffset = 2;
-const Color _kMeasurePanelNavy = Color(0xFFE9EEF4);
-const Color _kMeasurePanelSignal = Color(0xFF2DD4BF);
-const Color _kMeasurePanelSignalTint = Color(0xFF0E2623);
-const Color _kMeasurePanelCoolSurface = Color(0xFF161B22);
-const Color _kMeasurePanelBodyFill = Color(0xFF1D252D);
-const Color _kMeasurePanelRowFill = Color(0xFF101820);
-const Color _kMeasurePanelRowRaised = Color(0xFF202A32);
-const Color _kMeasurePanelRule = Color(0xFF2A3D38);
-const Color _kBoardCanvasShell = Color(0xFF0A0D11);
-const Color _kBoardCanvasPaper = Color(0xFF161B22);
-const Color _kBoardCanvasTile = Color(0xFF11161C);
-const Color _kBoardCanvasNavy = Color(0xFFE9EEF4);
-const Color _kBoardCanvasNavyDeep = Color(0xFF080B0F);
-const Color _kBoardCanvasMuted = Color(0xFFABB7C4);
-const Color _kBoardCanvasDim = Color(0xFF7C8A98);
-const Color _kBoardCanvasSignal = Color(0xFF2DD4BF);
-const Color _kBoardCanvasSignalTint = Color(0xFF0E2623);
-const Color _kBoardCanvasRule = Color(0xFF252D37);
-const Color _kBoardCanvasRuleStrong = Color(0xFF36404D);
+const Color _kMeasurePanelNavy = Color(0xFFF3ECDC);
+const Color _kMeasurePanelSignal = Color(0xFFE7C25A);
+const Color _kMeasurePanelSignalTint = Color(0xFF2A2416);
+const Color _kMeasurePanelCoolSurface = Color(0xFF141310);
+const Color _kMeasurePanelBodyFill = Color(0xFF1A1916);
+const Color _kMeasurePanelRowFill = Color(0xFF0A0A0A);
+const Color _kMeasurePanelRowRaised = Color(0xFF211E18);
+const Color _kMeasurePanelRule = Color(0xFF332E22);
+const Color _kBoardCanvasShell = Color(0xFF0C0C0C);
+const Color _kBoardCanvasPaper = Color(0xFF1A1916);
+const Color _kBoardCanvasTile = Color(0xFF141310);
+const Color _kBoardCanvasNavy = Color(0xFFF3ECDC);
+const Color _kBoardCanvasNavyDeep = Color(0xFF0A0A0A);
+const Color _kBoardCanvasMuted = Color(0xFFA89F8C);
+const Color _kBoardCanvasDim = Color(0xFF7E776A);
+const Color _kBoardCanvasSignal = Color(0xFFE7C25A);
+const Color _kBoardCanvasSignalTint = Color(0xFF2A2416);
+const Color _kBoardCanvasReady = Color(0xFF6FCF97);
+const Color _kBoardCanvasReadyTint = Color(0xFF0E251B);
+const Color _kBoardCanvasRule = Color(0xFF332E22);
+const Color _kBoardCanvasRuleStrong = Color(0xFF6B5A30);
 const EdgeInsets _kCompactControlTilePadding =
     EdgeInsets.symmetric(horizontal: 8);
 const EdgeInsets _kCompactControlChildrenPadding =
@@ -1992,7 +1994,36 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         SizedBox(
                           key: const Key('board_canvas_context_panel'),
                           width: contextPanelWidth,
-                          child: contextPanelSlot,
+                          child: DecoratedBox(
+                            key: const Key(
+                              'board_canvas_context_panel_frame',
+                            ),
+                            decoration: BoxDecoration(
+                              color: _kBoardCanvasPaper,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: _kBoardCanvasRuleStrong,
+                              ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x33000000),
+                                  blurRadius: 14,
+                                  offset: Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const _WorkbenchBoundaryNotice(),
+                                  const SizedBox(height: 8),
+                                  Flexible(child: contextPanelSlot!),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ],
@@ -2107,10 +2138,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 key: const Key('board_canvas_read_only_status_pill'),
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _kBoardCanvasSignalTint,
+                  color: _kBoardCanvasReadyTint,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: _kBoardCanvasSignal.withValues(alpha: 0.46),
+                    color: _kBoardCanvasReady.withValues(alpha: 0.54),
                   ),
                 ),
                 child: ConstrainedBox(
@@ -2122,7 +2153,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         width: 6,
                         height: 6,
                         decoration: const BoxDecoration(
-                          color: _kBoardCanvasSignal,
+                          color: _kBoardCanvasReady,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -2179,12 +2210,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       width: 6,
                       height: 6,
                       decoration: const BoxDecoration(
-                        color: _kBoardCanvasSignal,
+                        color: _kBoardCanvasReady,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 7),
-                    const Text('Valmis'),
+                    const Text(
+                      'Valmis',
+                      style: TextStyle(color: _kBoardCanvasReady),
+                    ),
                     const SizedBox(width: 12),
                     const Expanded(
                       flex: 2,
@@ -2442,6 +2476,51 @@ class _WorkbenchToolRail extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WorkbenchBoundaryNotice extends StatelessWidget {
+  const _WorkbenchBoundaryNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Semantics(
+      label: 'Inimese kinnituse piir',
+      child: Container(
+        key: const Key('board_canvas_human_confirmation_boundary'),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+        decoration: BoxDecoration(
+          color: _kBoardCanvasNavyDeep,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: _kBoardCanvasRuleStrong),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 1),
+              child: Icon(
+                Icons.verified_user_outlined,
+                size: 15,
+                color: _kBoardCanvasSignal,
+              ),
+            ),
+            const SizedBox(width: 7),
+            Expanded(
+              child: Text(
+                'AI/foto/rada ei ole fakt enne kinnitamist.',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: _kBoardCanvasNavy,
+                  fontWeight: FontWeight.w700,
+                  height: 1.25,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1990,7 +1990,7 @@ void main() {
       find.byKey(const Key('board_canvas_measure_panel_surface')),
     );
     final panelDecoration = measurePanelSurface.decoration as BoxDecoration;
-    expect(panelDecoration.color, const Color(0xFF161B22));
+    expect(panelDecoration.color, const Color(0xFF141310));
 
     expect(find.text('Pin 1 · R101.1'), findsOneWidget);
     expect(find.text('Pin 2 · R101.2'), findsOneWidget);
@@ -2306,6 +2306,51 @@ void main() {
       findsOneWidget,
     );
     expect(railSize.width, lessThan(120));
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('Workbench uses the local black-gold visual contract',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+      ],
+      placements: const [boardPlacement],
+    );
+
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    final appBar = tester.widget<AppBar>(find.byType(AppBar));
+    expect(scaffold.backgroundColor, const Color(0xFF0C0C0C));
+    expect(appBar.backgroundColor, const Color(0xFF1A1916));
+
+    await tester.tap(
+      find.byKey(const Key('board_canvas_rail_safety_evidence_tool')),
+    );
+    await tester.pumpAndSettle();
+
+    final contextFrame = tester.widget<DecoratedBox>(
+      find.byKey(const Key('board_canvas_context_panel_frame')),
+    );
+    final contextDecoration = contextFrame.decoration as BoxDecoration;
+    expect(contextDecoration.color, const Color(0xFF1A1916));
+    expect(
+      contextDecoration.border?.top.color,
+      const Color(0xFF6B5A30),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_human_confirmation_boundary')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('AI/foto/rada ei ole fakt enne kinnitamist.'),
+      findsOneWidget,
+    );
     expect(state.events, isEmpty);
   });
 

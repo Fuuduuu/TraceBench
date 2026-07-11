@@ -2,7 +2,7 @@
 
 ## Current pass
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
 
 ## Next recommended pass
 
@@ -10,11 +10,9 @@
 
 ## Lock state
 
-Docs-only build-lock is active.
+Docs-only scope amendment is active. The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
 
-The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
-
-No runtime/test/asset implementation is performed in this build-lock pass.
+No runtime, test, or asset implementation is permitted in this amendment. Do not stage, commit, or push.
 
 ## Current docs pass write allowlist
 
@@ -22,71 +20,71 @@ No runtime/test/asset implementation is performed in this build-lock pass.
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS.md`
+- `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS.md`
 
-## Design input lock
+## Frozen pre-existing implementation diff
 
-Read-only design/provenance input:
+Baseline `HEAD` and `origin/main` are `ace2750ad05d8c5df9ded4ffe7f9ef6a0ef68b5c` (`docs: lock benchbeep home startpage redesign`).
 
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/BenchBeep Startup Intro - Redesign.html`
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/markGold.png`
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/pcb-photo.png`
-
-- Do not edit or stage these files.
-- Do not import or runtime-reference the HTML, CSS, JavaScript, Google Fonts, or `_incoming` paths.
-- `markGold.png` already matches `assets/brand/benchbeep_mark.png` byte-for-byte; no mark write is armed.
-- `pcb-photo.png` may replace only the existing `assets/brand/pcb_board.png` contents.
-
-## Armed implementation pass
-
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
-
-## Armed implementation write allowlist
+The pre-existing unstaged implementation diff is exactly:
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 - `assets/brand/pcb_board.png`
 
+Its pre-pass binary diff hash is `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`. The cached diff is empty. None of these four files may change during this docs-only amendment, and the same hash is required after all docs edits.
+
+## Blocked audit and accepted human gates
+
+The latest Claude audit supplied by the human is recorded as:
+
+- `AUDIT_VERDICT: BLOCKED`
+- `SAFE_FOR_STAGING: NO`
+- Reason: invisible production decoy widgets keep stale integration tests falsely green.
+
+The human visual/Figma gate remains accepted. `VISUAL-FIRST TECHNICIAN WORKBENCH` is a human-accepted English eyebrow and is not part of this correction. True fullscreen remains intentional, and `lib/main.dart` stays excluded.
+
+## Armed implementation pass
+
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+
+## Exact armed implementation write allowlist
+
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/app/app.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/pcb_board.png`
+- `test/integration/pelle_sample_end_to_end_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
+
 If implementation needs any other file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
 
-## Locked implementation intent
+## Locked implementation correction
 
-- Preserve the current Home structure and BenchBeep black/gold identity.
-- Present four primary numbered choices:
-  1. `Loo projekt nullist` — disabled / `Tulekul`.
-  2. `Jätka avatud projektiga` — enabled only when `projectStateProvider` contains a project.
-  3. `Lae projekt` — expose the existing `Ava ZIP` and `Ava kaust` actions.
-  4. `Seadista telefon` — disabled / `Tulekul`.
-- Keep `Ava näidisprojekt` secondary and preserve its existing bundled-sample callback.
-- Show `Seaded` visibly but disabled / `Tulekul`.
-- Add functional `Välju` with a standard confirmation dialog.
-- Use neutral exit copy such as `Rakendus suletakse.`; do not claim that all data is saved or that every project is folder-backed.
-- Wire the confirmed exit through an app-owned callback using the already installed and initialized `window_manager` dependency.
-- Remove developer-facing English Home copy without changing routes or project-loading semantics.
-- Preserve the existing runtime asset paths and replace only `assets/brand/pcb_board.png` contents.
-
-## Future test intent
-
-- Assert the four Estonian choices and their enabled/disabled states.
-- Assert `Jätka avatud projektiga` cannot open Workbench without a loaded project and works when a project is loaded.
-- Preserve existing ZIP import, local-folder open, bundled-sample, and loaded-project navigation tests.
-- Assert `Seaded` is visible and disabled / `Tulekul`.
-- Assert `Välju` opens the confirmation dialog, `Tühista` does not exit, and confirmed `Välju` invokes the injected exit callback exactly once.
-- Assert exit copy does not claim that all data is saved.
-- Assert developer-facing English Home copy is absent.
-- Keep wide/narrow layout coverage and avoid brittle golden tests.
+- Remove `benchbeep_legacy_viewer_test_anchor`.
+- Remove the invisible `TraceBench Viewer` widget.
+- Remove `compatibilityLabel` and the invisible `Ava projekt` decoy behavior.
+- Add no `Opacity(0)`, `Offstage`, `ExcludeSemantics`, invisible, or test-only production compatibility anchor.
+- Update all three integration tests to real visible behavior.
+- Use real visible BenchBeep/Home content for the initial launcher assertion.
+- Tap `Ava näidisprojekt`.
+- Then tap the visible enabled `Jätka avatud projektiga` action.
+- Expect `Project overview`.
+- Preserve each test's existing destination assertions after `Project overview`.
+- Preserve ZIP, folder, sample, project-open, Workbench, exit, asset, and route behavior.
 
 ## Stop conditions
 
 Stop instead of implementing if the work requires:
 
-- a router, route, page, project-creation, phone-setup, settings, persistence, `pubspec`, package, font, or `lib/main.dart` change
-- a new asset path or an edit to `assets/brand/benchbeep_mark.png`
-- importing/copying/runtime-referencing `_incoming`, HTML, CSS, JavaScript, or Google Fonts
-- writer, schema, validator, materializer, tool, event, fact, projection, Project ZIP, sample, or Board Canvas changes
-- weakening existing ZIP, folder-open, sample, or loaded-project behavior
-- exit copy that asserts saved-state truth
+- any file outside the exact seven-file armed implementation allowlist
+- weakening or deleting an integration scenario
+- accepting a hidden compatibility widget as test coverage
+- a route, router, page, package, font, shared-theme, persistence, fullscreen, or `lib/main.dart` change
+- a writer, schema, validator, materializer, tool, event, fact, projection, Project ZIP, sample, or Board Canvas change
+- importing, copying, or runtime-referencing `_incoming` content
 
 ## Protected boundaries still in force
 
@@ -98,8 +96,11 @@ Stop instead of implementing if the work requires:
 
 ## Future implementation validation
 
-- `dart format lib/features/home/screens/benchbeep_home_screen.dart lib/app/app.dart test/widget/benchbeep_home_screen_test.dart`
+- `dart format lib/features/home/screens/benchbeep_home_screen.dart lib/app/app.dart test/widget/benchbeep_home_screen_test.dart test/integration/pelle_sample_end_to_end_test.dart test/integration/board_graph_end_to_end_test.dart test/integration/photo_list_end_to_end_test.dart`
 - `flutter test test/widget/benchbeep_home_screen_test.dart`
+- `flutter test test/integration/pelle_sample_end_to_end_test.dart`
+- `flutter test test/integration/board_graph_end_to_end_test.dart`
+- `flutter test test/integration/photo_list_end_to_end_test.dart`
 - `flutter test`
 - `python tools/validate_all.py`
 - `git status --short --branch`
@@ -107,9 +108,9 @@ Stop instead of implementing if the work requires:
 - `git diff --cached --name-status`
 - `git diff --check`
 
-Manual visual smoke is required before Claude audits the implementation.
+Manual visual/Figma acceptance remains recorded; the test-integrity correction must not be used to claim a new manual visual pass.
 
 ## Route
 
-Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
 Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`

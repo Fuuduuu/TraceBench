@@ -1,6 +1,6 @@
 # Current State
 
-Current pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS
+Current pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS
 Next recommended pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS
 
 ## First-read charter
@@ -11,67 +11,77 @@ If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may prop
 
 ## Status
 
-Docs-only build-lock for a minimal BenchBeep Home startup-page redesign implementation.
+Docs-only scope amendment for the existing BenchBeep Home startup-page redesign implementation.
 
-Verified prerequisite state:
+Verified baseline and frozen implementation state:
 
-- Baseline `ce2f3e0a69c73e15249a7fe3344ea7956a229fd7` (`docs: close out board canvas workbench visual alignment`) is `HEAD` and `origin/main`.
-- Route before this pass was `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
-- No active implementation lock was armed.
-- Tracked and cached diffs were clean.
-- `docs/POHIKIRI.md` remains the first-read charter and already owns the same four startup choices.
+- `HEAD` and `origin/main` are `ace2750ad05d8c5df9ded4ffe7f9ef6a0ef68b5c` (`docs: lock benchbeep home startpage redesign`).
+- The pre-existing unstaged implementation diff is exactly:
+  - `lib/features/home/screens/benchbeep_home_screen.dart`
+  - `lib/app/app.dart`
+  - `test/widget/benchbeep_home_screen_test.dart`
+  - `assets/brand/pcb_board.png`
+- The cached diff is empty.
+- The pre-pass implementation diff hash is `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
+- No current implementation, test, or asset file may change during this docs-only amendment; the same implementation diff hash is required after the pass.
 
-## Design input
+## Blocked audit and accepted human gates
 
-Read-only design/provenance input:
+The latest Claude audit supplied by the human is recorded as:
 
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/BenchBeep Startup Intro - Redesign.html`
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/markGold.png`
-- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/pcb-photo.png`
+- `AUDIT_VERDICT: BLOCKED`
+- `SAFE_FOR_STAGING: NO`
+- Reason: invisible production decoy widgets keep stale integration tests falsely green.
 
-The HTML informs layout, Estonian copy, four-choice hierarchy, settings/exit affordances, and the existing black/gold visual language only. HTML, CSS, JavaScript, Google Fonts, and `_incoming` paths must not enter runtime.
+The human visual/Figma gate remains accepted and is not reopened by this test-integrity correction.
 
-Asset inspection found:
+- `VISUAL-FIRST TECHNICIAN WORKBENCH` is a human-accepted English eyebrow and is not part of this correction.
+- True fullscreen remains intentional.
+- `lib/main.dart` remains excluded.
 
-- `markGold.png` is byte-identical to `assets/brand/benchbeep_mark.png`; no mark asset edit is needed.
-- `pcb-photo.png` has the same `602 x 862` dimensions as `assets/brand/pcb_board.png` but different content; the existing runtime path may be replaced without a new asset path or `pubspec.yaml` edit.
+## Armed implementation correction
 
-## Armed implementation slice
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` remains the next implementation pass and must:
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` may:
+- remove `benchbeep_legacy_viewer_test_anchor`
+- remove the invisible `TraceBench Viewer` widget
+- remove `compatibilityLabel` and the invisible `Ava projekt` decoy behavior
+- add no `Opacity(0)`, `Offstage`, `ExcludeSemantics`, invisible, or test-only production compatibility anchor
+- update all three stale integration tests to follow the real visible launcher workflow
+- preserve the already accepted visual/Figma result and all project-loading behavior
 
-- preserve the current Home structure and black/gold BenchBeep identity
-- show the four charter-aligned startup choices
-- keep project continuation disabled unless a project is loaded
-- reuse the existing ZIP import, local-folder open, bundled-sample, and loaded-project callbacks
-- show disabled `Tulekul` states for project creation, phone setup, and settings
-- add a standard exit-confirmation dialog and a functional application-close callback
-- replace developer-facing English Home copy with technician-facing Estonian copy
-- replace only the existing PCB brand asset contents
-- update focused Home widget tests while preserving existing project-loading behavior
-
-## Armed implementation allowlist
+## Expanded armed implementation allowlist
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 - `assets/brand/pcb_board.png`
+- `test/integration/pelle_sample_end_to_end_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
 
-`assets/brand/benchbeep_mark.png` is not armed because it already matches the accepted input exactly.
+## Required integration-test workflow
 
-## Boundaries
+Each of the three integration tests must:
 
-- No route, router, page, project-creation, phone-setup, settings-screen, persistence, package, font, or `pubspec` changes.
-- No HTML/CSS/JavaScript or `_incoming` runtime dependency.
-- Exit copy must not claim that all data is saved; a neutral close warning is required.
-- No Board Canvas or project truth changes.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
+1. assert real visible BenchBeep/Home launcher content initially
+2. tap `Ava näidisprojekt`
+3. tap the visible enabled `Jätka avatud projektiga` action
+4. expect `Project overview`
+5. preserve its existing destination assertions after `Project overview`
+
+## Preserved behavior and boundaries
+
+- Preserve ZIP, folder, sample, project-open, Workbench, exit, asset, and route behavior.
+- Preserve the existing BenchBeep black/gold visual direction and runtime asset paths.
+- Original design/provenance input remains input-only; no `_incoming` runtime dependency is permitted.
+- No route, router, page, package, font, shared-theme, fullscreen, or `lib/main.dart` change.
+- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics change unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
-- Stop with `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any other file.
 
 ## Route
 
-Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
 Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## Canonical owner pointers

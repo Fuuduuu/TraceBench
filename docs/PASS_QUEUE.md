@@ -2,68 +2,56 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## Queue status
 
-No active implementation lock is armed.
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS` is a docs-only build-lock.
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` is closed out after accepted implementation audit and human visual smoke.
+It arms the next narrow implementation pass:
+
+- `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## First-read charter
 
 Read `docs/POHIKIRI.md` before route, implementation, or audit decisions. If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human.
 
-## Recent closeout
+## Prerequisite closeout
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_POST_AUDIT_PASS` records:
+Baseline `ce2f3e0a69c73e15249a7fe3344ea7956a229fd7` records the accepted/pushed Board Canvas Workbench visual-alignment closeout and route release to `NEEDS_USER_DECISION`.
 
-- build-lock commit `e16b4f8a2ec24a99a67ac93c65d6465e9e313033` (`docs: lock board canvas workbench visual alignment`)
-- implementation commit `c2a8d85b84169df8bf7728c02943be46f3c2d5bd` (`style: align board canvas workbench visuals`)
-- Claude audit `ACCEPT_WITH_NITS / SAFE_FOR_STAGING: YES`
-- exact safe implementation set:
-  - `lib/features/board_canvas/screens/board_canvas_screen.dart`
-  - `test/widget/board_canvas_screen_test.dart`
-- human manual smoke PASS at wide and medium layouts
-- automated validation:
-  - Board Canvas widget tests 122/122 PASS
-  - `flutter test` 388/388 PASS
-  - `python tools/validate_all.py` 285/285 PASS
-  - `git diff --check` PASS
+## Next implementation intent
 
-## Closed implementation result
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` is a minimal Home startup-page redesign:
 
-- Board Canvas remains the central Workbench.
-- Existing Board Canvas and measure-panel local tokens now align with the accepted BenchBeep black/gold/cream tone.
-- Green ready/status remains distinct from gold active/selected emphasis.
-- Existing context-panel content remains behaviorally unchanged beneath a presentational frame.
-- Exact boundary copy is present: `AI/foto/rada ei ole fakt enne kinnitamist.`
-- Existing component creation, metadata edit, placement, measurement, selection, pan/zoom, fit/recenter, and standalone route behavior remains unchanged.
-- Measurement still requires explicit `Salvesta`.
+- preserve the existing black/gold Home identity and launcher ownership
+- show `Loo projekt nullist`, `Jätka avatud projektiga`, `Lae projekt`, and `Seadista telefon`
+- keep project creation and phone setup disabled as `Tulekul`
+- enable project continuation only when a project is loaded
+- preserve existing `Ava ZIP`, `Ava kaust`, and secondary `Ava näidisprojekt` behavior
+- show disabled `Seaded` / `Tulekul`
+- add functional `Välju` with a standard confirmation dialog and neutral, non-saved-state copy
+- remove developer-facing English Home copy
 
-## Known non-blocking documentation nit
+## Exact implementation allowlist
 
-- The medium smoke viewport dimensions were not recorded.
-- The medium screenshot attachment was not preserved in the audit packet.
-- Do not infer either missing detail.
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/app/app.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/pcb_board.png`
 
-## Boundaries preserved
+The accepted mark input is already byte-identical to `assets/brand/benchbeep_mark.png`, so that file is not armed.
 
-- No shared theme, Home, asset, font, package, `pubspec`, router, page, or `_incoming` runtime changes.
-- No AI candidate model/data/actions and no photo, trace, or history workflow.
-- No writer/schema/validator/materializer/tool/model/event/fact/projection/Project ZIP changes.
-- No painter geometry, hit testing, selection, pan/zoom, or fit/recenter changes.
+## Scope boundaries
 
-## Released implementation allowlist
-
-The closed implementation wrote only:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- Reuse existing loaded-project, ZIP import, local-folder open, and bundled-sample callbacks.
+- Use the already installed/initialized desktop window manager through the app-owned exit callback; do not add a package or edit `lib/main.dart`.
+- Do not add routes, pages, project creation, phone setup, settings behavior, or persistence.
+- Do not edit `pubspec.yaml`, router files, Board Canvas, writers, schemas, validators, materializers, tools, events, facts, projections, Project ZIP semantics, or `_incoming`.
+- Stop with `BLOCKED_ALLOWLIST_MISMATCH` if any other file is required.
 
 ## Scope gate rules
 
 - Do not stage, commit, or push from this pass.
-- Do not arm a new pass without a separate route/scope decision.
 - Keep `docs/POHIKIRI.md` as the first-read product charter and scope anchor.

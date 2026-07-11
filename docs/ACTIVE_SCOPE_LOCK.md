@@ -2,69 +2,114 @@
 
 ## Current pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
 
 ## Next recommended pass
 
-`NEEDS_USER_DECISION`
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## Lock state
 
-No active implementation lock is armed.
+Docs-only build-lock is active.
 
 The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
 
-The prior implementation lock for `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` is released by `BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_POST_AUDIT_PASS`.
+No runtime/test/asset implementation is performed in this build-lock pass.
 
-## Released implementation pass
+## Current docs pass write allowlist
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS.md`
 
-## Released implementation write allowlist
+## Design input lock
 
-The closed implementation wrote only:
+Read-only design/provenance input:
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/BenchBeep Startup Intro - Redesign.html`
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/markGold.png`
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/pcb-photo.png`
 
-## Recorded result
+- Do not edit or stage these files.
+- Do not import or runtime-reference the HTML, CSS, JavaScript, Google Fonts, or `_incoming` paths.
+- `markGold.png` already matches `assets/brand/benchbeep_mark.png` byte-for-byte; no mark write is armed.
+- `pcb-photo.png` may replace only the existing `assets/brand/pcb_board.png` contents.
 
-- Build-lock commit: `e16b4f8a2ec24a99a67ac93c65d6465e9e313033` (`docs: lock board canvas workbench visual alignment`)
-- Implementation commit: `c2a8d85b84169df8bf7728c02943be46f3c2d5bd` (`style: align board canvas workbench visuals`)
-- Claude audit: `ACCEPT_WITH_NITS / SAFE_FOR_STAGING: YES`
-- Human manual smoke: PASS at wide and medium layouts.
-- Exact boundary copy: `AI/foto/rada ei ole fakt enne kinnitamist.`
+## Armed implementation pass
 
-## Closed behavior
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
-- Board Canvas remains the central Workbench.
-- Local Board Canvas and measure-panel tokens provide the accepted black/gold/cream alignment.
-- Green ready/status remains distinct from gold active/selected emphasis.
-- Existing context-panel content is behaviorally unchanged beneath a presentational frame.
-- Existing component creation, metadata edit, visual placement, measurement, selection, pan/zoom, fit/recenter, and standalone route behavior remains unchanged.
-- Measurement still requires explicit `Salvesta`.
+## Armed implementation write allowlist
 
-## Known non-blocking documentation nit
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/app/app.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/pcb_board.png`
 
-- Medium smoke viewport dimensions were not recorded.
-- The medium screenshot attachment was not preserved in the audit packet.
-- Missing dimensions and attachment provenance must not be invented.
+If implementation needs any other file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+## Locked implementation intent
+
+- Preserve the current Home structure and BenchBeep black/gold identity.
+- Present four primary numbered choices:
+  1. `Loo projekt nullist` — disabled / `Tulekul`.
+  2. `Jätka avatud projektiga` — enabled only when `projectStateProvider` contains a project.
+  3. `Lae projekt` — expose the existing `Ava ZIP` and `Ava kaust` actions.
+  4. `Seadista telefon` — disabled / `Tulekul`.
+- Keep `Ava näidisprojekt` secondary and preserve its existing bundled-sample callback.
+- Show `Seaded` visibly but disabled / `Tulekul`.
+- Add functional `Välju` with a standard confirmation dialog.
+- Use neutral exit copy such as `Rakendus suletakse.`; do not claim that all data is saved or that every project is folder-backed.
+- Wire the confirmed exit through an app-owned callback using the already installed and initialized `window_manager` dependency.
+- Remove developer-facing English Home copy without changing routes or project-loading semantics.
+- Preserve the existing runtime asset paths and replace only `assets/brand/pcb_board.png` contents.
+
+## Future test intent
+
+- Assert the four Estonian choices and their enabled/disabled states.
+- Assert `Jätka avatud projektiga` cannot open Workbench without a loaded project and works when a project is loaded.
+- Preserve existing ZIP import, local-folder open, bundled-sample, and loaded-project navigation tests.
+- Assert `Seaded` is visible and disabled / `Tulekul`.
+- Assert `Välju` opens the confirmation dialog, `Tühista` does not exit, and confirmed `Välju` invokes the injected exit callback exactly once.
+- Assert exit copy does not claim that all data is saved.
+- Assert developer-facing English Home copy is absent.
+- Keep wide/narrow layout coverage and avoid brittle golden tests.
+
+## Stop conditions
+
+Stop instead of implementing if the work requires:
+
+- a router, route, page, project-creation, phone-setup, settings, persistence, `pubspec`, package, font, or `lib/main.dart` change
+- a new asset path or an edit to `assets/brand/benchbeep_mark.png`
+- importing/copying/runtime-referencing `_incoming`, HTML, CSS, JavaScript, or Google Fonts
+- writer, schema, validator, materializer, tool, event, fact, projection, Project ZIP, sample, or Board Canvas changes
+- weakening existing ZIP, folder-open, sample, or loaded-project behavior
+- exit copy that asserts saved-state truth
 
 ## Protected boundaries still in force
 
 - `events.jsonl` remains canonical truth; `known_facts.json` remains projection/cache.
 - AI/helper may not author canonical facts or events.
-- Photo pixels and visual traces are not facts or electrical nets.
-- Board Canvas renderer/painter writes nothing.
-- Existing explicit human save actions retain their separately accepted writer behavior.
+- Board Canvas and project truth surfaces remain unchanged.
 - No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
-- No shared theme, Home, asset, font, package, `pubspec`, router, page, or `_incoming` runtime changes.
-- No AI candidate model/data/actions and no photo, trace, or history workflow.
-- No painter geometry, hit-testing, selection, pan/zoom, or fit/recenter changes.
-- No new implementation pass is armed.
+
+## Future implementation validation
+
+- `dart format lib/features/home/screens/benchbeep_home_screen.dart lib/app/app.dart test/widget/benchbeep_home_screen_test.dart`
+- `flutter test test/widget/benchbeep_home_screen_test.dart`
+- `flutter test`
+- `python tools/validate_all.py`
+- `git status --short --branch`
+- `git diff --name-status`
+- `git diff --cached --name-status`
+- `git diff --check`
+
+Manual visual smoke is required before Claude audits the implementation.
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`

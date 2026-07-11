@@ -1,7 +1,7 @@
 # Current State
 
-Current pass: NEEDS_USER_DECISION
-Next recommended pass: NEEDS_USER_DECISION
+Current pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS
+Next recommended pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS
 
 ## First-read charter
 
@@ -11,72 +11,68 @@ If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may prop
 
 ## Status
 
-`BOARD_CANVAS_WORKBENCH_VISUAL_ALIGNMENT_IMPL_PASS` is closed out.
+Docs-only build-lock for a minimal BenchBeep Home startup-page redesign implementation.
 
-Implementation commit recorded:
+Verified prerequisite state:
 
-- `c2a8d85b84169df8bf7728c02943be46f3c2d5bd` — `style: align board canvas workbench visuals`
+- Baseline `ce2f3e0a69c73e15249a7fe3344ea7956a229fd7` (`docs: close out board canvas workbench visual alignment`) is `HEAD` and `origin/main`.
+- Route before this pass was `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
+- No active implementation lock was armed.
+- Tracked and cached diffs were clean.
+- `docs/POHIKIRI.md` remains the first-read charter and already owns the same four startup choices.
 
-Prior build-lock commit recorded:
+## Design input
 
-- `e16b4f8a2ec24a99a67ac93c65d6465e9e313033` — `docs: lock board canvas workbench visual alignment`
+Read-only design/provenance input:
 
-Claude audit result recorded:
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/BenchBeep Startup Intro - Redesign.html`
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/markGold.png`
+- `_incoming/ui_redesign/Starting page/TraceBench_NEW_startpage/assets/pcb-photo.png`
 
-- `AUDIT_VERDICT: ACCEPT_WITH_NITS`
-- `SAFE_FOR_STAGING: YES`
+The HTML informs layout, Estonian copy, four-choice hierarchy, settings/exit affordances, and the existing black/gold visual language only. HTML, CSS, JavaScript, Google Fonts, and `_incoming` paths must not enter runtime.
 
-Safe implementation set:
+Asset inspection found:
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+- `markGold.png` is byte-identical to `assets/brand/benchbeep_mark.png`; no mark asset edit is needed.
+- `pcb-photo.png` has the same `602 x 862` dimensions as `assets/brand/pcb_board.png` but different content; the existing runtime path may be replaced without a new asset path or `pubspec.yaml` edit.
 
-## Closed implementation result
+## Armed implementation slice
 
-- Board Canvas remains the central Workbench.
-- Local Board Canvas and measure-panel tokens align the existing dark UI with the BenchBeep black/gold/cream tone.
-- Green ready/status remains visually distinct from gold active/selected emphasis.
-- Existing context-panel content is behaviorally unchanged and receives only a presentational frame.
-- Exact non-canonical boundary copy is present: `AI/foto/rada ei ole fakt enne kinnitamist.`
-- Existing component creation, metadata edit, placement, measurement, and standalone route behavior remains unchanged.
-- Measurement still requires explicit `Salvesta`.
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` may:
 
-## Manual smoke recorded
+- preserve the current Home structure and black/gold BenchBeep identity
+- show the four charter-aligned startup choices
+- keep project continuation disabled unless a project is loaded
+- reuse the existing ZIP import, local-folder open, bundled-sample, and loaded-project callbacks
+- show disabled `Tulekul` states for project creation, phone setup, and settings
+- add a standard exit-confirmation dialog and a functional application-close callback
+- replace developer-facing English Home copy with technician-facing Estonian copy
+- replace only the existing PCB brand asset contents
+- update focused Home widget tests while preserving existing project-loading behavior
 
-- Human visual acceptance: PASS.
-- Wide smoke: `1918 x 1078`, seven screenshots reviewed across Safety, Placements, Inspector, Draft/metadata edit, Component creation, Measurement, and canvas without a context panel.
-- Wide result: no clipping or RenderFlex overflow observed; Board Canvas remained dominant; rail, context panel, scrolling, controls, hierarchy, contrast, boundary copy, and measurement save gating were accepted.
-- Medium smoke: human observations and acceptance supplied; no clipping or overflow; panel usable and scrollable; controls reachable; measurement usable; hierarchy and contrast accepted.
+## Armed implementation allowlist
 
-## Validation recorded
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/app/app.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/pcb_board.png`
 
-- `dart format`: PASS.
-- `flutter test test/widget/board_canvas_screen_test.dart`: 122/122 PASS.
-- `flutter test`: 388/388 PASS.
-- `python tools/validate_all.py`: 285/285 PASS.
-- `git diff --check`: PASS.
-- Exact two-file implementation allowlist: PASS.
-- Claude force-unwrap review: `contextPanelSlot!` is safe because it is reached only when `showContextPanel` is true, which requires `contextPanel != null`.
-
-## Known non-blocking documentation nit
-
-- Actual medium viewport dimensions were not recorded.
-- The medium screenshot attachment was not preserved in the audit packet.
-- No missing dimensions or attachment provenance are inferred.
+`assets/brand/benchbeep_mark.png` is not armed because it already matches the accepted input exactly.
 
 ## Boundaries
 
-- No shared theme, Home, asset, font, package, `pubspec`, router, page, or `_incoming` runtime changes.
-- No AI candidate model/data/actions and no photo, trace, or history workflow.
-- No painter geometry, hit-testing, selection, pan/zoom, or fit/recenter behavior changes.
+- No route, router, page, project-creation, phone-setup, settings-screen, persistence, package, font, or `pubspec` changes.
+- No HTML/CSS/JavaScript or `_incoming` runtime dependency.
+- Exit copy must not claim that all data is saved; a neutral close warning is required.
+- No Board Canvas or project truth changes.
 - No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
 - No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
-- No new implementation pass is armed.
+- Stop with `BLOCKED_ALLOWLIST_MISMATCH` if implementation needs any other file.
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_BUILD_LOCK_PASS`
+Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## Canonical owner pointers
 

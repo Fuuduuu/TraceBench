@@ -2,54 +2,100 @@
 
 ## Current pass
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
+`TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
 
-## Next recommended pass
+## Route
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+Current: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
+After compaction: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
-## Lock state
+## Current lock state
 
-Docs-only scope amendment is active. The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
+Docs-only route and scope lock. No documentation compaction, runtime/test/asset implementation, staging, commit, or push is permitted in this pass.
 
-No runtime, test, or asset implementation is permitted in this amendment. Do not stage, commit, or push.
+The active lock cannot override `docs/POHIKIRI.md`; conflicts stop for human decision.
 
-## Current docs pass write allowlist
+## Current scope-lock write allowlist
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS.md`
+- `docs/audit/TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS.md`
 
-## Frozen pre-existing implementation diff
+No other file may change in this scope-lock pass.
 
-Baseline `HEAD` and `origin/main` are `ace2750ad05d8c5df9ded4ffe7f9ef6a0ef68b5c` (`docs: lock benchbeep home startpage redesign`).
+## Frozen Home implementation diff
 
-The pre-existing unstaged implementation diff is exactly:
+Baseline `HEAD` and `origin/main`: `a789bd09c61f85fde3a28fb1de5b768d8e00866a` (`docs: expand home redesign test integrity scope`).
+
+The pre-existing unstaged Home diff is exactly:
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 - `assets/brand/pcb_board.png`
 
-Its pre-pass binary diff hash is `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`. The cached diff is empty. None of these four files may change during this docs-only amendment, and the same hash is required after all docs edits.
+Binary diff hash: `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
 
-## Blocked audit and accepted human gates
+The same four-file set and hash are required after this scope-lock pass and after the compaction pass. The cached diff must remain empty.
 
-The latest Claude audit supplied by the human is recorded as:
+## Armed compaction pass
 
-- `AUDIT_VERDICT: BLOCKED`
-- `SAFE_FOR_STAGING: NO`
-- Reason: invisible production decoy widgets keep stale integration tests falsely green.
+`TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
 
-The human visual/Figma gate remains accepted. `VISUAL-FIRST TECHNICIAN WORKBENCH` is a human-accepted English eyebrow and is not part of this correction. True fullscreen remains intentional, and `lib/main.dart` stays excluded.
+### Exact compaction write allowlist
 
-## Armed implementation pass
+- `AGENTS.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/MEMORY_REGISTRY.yml`
+- `docs/MEMORY_PROTOCOL.md`
+- `docs/FILE_MAP.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/TRUTH_INDEX.md`
+- `docs/SOURCES_INDEX_CURRENT.md`
+- `docs/UI_WORKFLOWS.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS.md`
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+If compaction requires any other file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
 
-## Exact armed implementation write allowlist
+### Locked compaction objective
+
+- Make the default read set exactly:
+  1. `AGENTS.md`
+  2. `docs/POHIKIRI.md`
+  3. `docs/CURRENT_STATE.md`
+  4. `docs/PASS_QUEUE.md`
+  5. `docs/ACTIVE_SCOPE_LOCK.md`
+- Make stable memory, semantics, prompt/model, audit, source/design, map, spec, schema, and archive documents task-specific / non-default.
+- Add `docs/POHIKIRI.md` directly after `AGENTS.md` in conflict order.
+- Compact `docs/PROJECT_MEMORY.md` to durable truth only.
+- Compact `docs/TRUTH_INDEX.md` to semantic boundaries and ownership pointers.
+- Remove stale source-index restrictions without changing product or canonical semantics.
+- Compact duplicated boundary prose in `docs/UI_WORKFLOWS.md`.
+- Correct only stale `docs/AUDIT_INDEX.md` statuses verified by audit artifacts and git history.
+- Keep active route docs compact.
+- Create no prompt-pattern, archive, new spec, or new source-index document.
+- Do not modify `docs/POHIKIRI.md`, `docs/PROMPTING_PROTOCOL.md`, or `docs/MODEL_ROUTING.md`.
+
+### Compaction stop conditions
+
+Stop if the work would:
+
+- remove unique durable truth without a surviving owner
+- move audit/pass history into active memory
+- change product, event, writer, validator, materializer, projection, Project ZIP, UI, route, fullscreen, or protected semantics
+- edit `lib/**`, `test/**`, `tests/**`, `tools/**`, `schemas/**`, `assets/**`, `pubspec*`, `windows/**`, or `_incoming/**`
+- require a file outside the exact compaction allowlist
+- change the frozen Home diff file set or hash
+
+## Preserved Home implementation correction
+
+After compaction, arm `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` with exactly:
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
@@ -59,58 +105,23 @@ The human visual/Figma gate remains accepted. `VISUAL-FIRST TECHNICIAN WORKBENCH
 - `test/integration/board_graph_end_to_end_test.dart`
 - `test/integration/photo_list_end_to_end_test.dart`
 
-If implementation needs any other file, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+The Home implementation must:
 
-## Locked implementation correction
+- remove hidden production test anchors, including the legacy viewer anchor and invisible compatibility copy
+- update all three integration tests to the real visible launcher workflow
+- preserve each integration scenario and its destination assertions
+- preserve ZIP, folder, sample, project-open, Workbench, exit, asset, route, accepted visual/Figma, English-eyebrow, and fullscreen behavior
+- keep `lib/main.dart` excluded
 
-- Remove `benchbeep_legacy_viewer_test_anchor`.
-- Remove the invisible `TraceBench Viewer` widget.
-- Remove `compatibilityLabel` and the invisible `Ava projekt` decoy behavior.
-- Add no `Opacity(0)`, `Offstage`, `ExcludeSemantics`, invisible, or test-only production compatibility anchor.
-- Update all three integration tests to real visible behavior.
-- Use real visible BenchBeep/Home content for the initial launcher assertion.
-- Tap `Ava näidisprojekt`.
-- Then tap the visible enabled `Jätka avatud projektiga` action.
-- Expect `Project overview`.
-- Preserve each test's existing destination assertions after `Project overview`.
-- Preserve ZIP, folder, sample, project-open, Workbench, exit, asset, and route behavior.
+## Validation
 
-## Stop conditions
+For this scope-lock pass and the armed compaction pass:
 
-Stop instead of implementing if the work requires:
-
-- any file outside the exact seven-file armed implementation allowlist
-- weakening or deleting an integration scenario
-- accepting a hidden compatibility widget as test coverage
-- a route, router, page, package, font, shared-theme, persistence, fullscreen, or `lib/main.dart` change
-- a writer, schema, validator, materializer, tool, event, fact, projection, Project ZIP, sample, or Board Canvas change
-- importing, copying, or runtime-referencing `_incoming` content
-
-## Protected boundaries still in force
-
-- `events.jsonl` remains canonical truth; `known_facts.json` remains projection/cache.
-- AI/helper may not author canonical facts or events.
-- Board Canvas and project truth surfaces remain unchanged.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics changes unless separately scoped.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
-
-## Future implementation validation
-
-- `dart format lib/features/home/screens/benchbeep_home_screen.dart lib/app/app.dart test/widget/benchbeep_home_screen_test.dart test/integration/pelle_sample_end_to_end_test.dart test/integration/board_graph_end_to_end_test.dart test/integration/photo_list_end_to_end_test.dart`
-- `flutter test test/widget/benchbeep_home_screen_test.dart`
-- `flutter test test/integration/pelle_sample_end_to_end_test.dart`
-- `flutter test test/integration/board_graph_end_to_end_test.dart`
-- `flutter test test/integration/photo_list_end_to_end_test.dart`
-- `flutter test`
-- `python tools/validate_all.py`
-- `git status --short --branch`
-- `git diff --name-status`
-- `git diff --cached --name-status`
-- `git diff --check`
-
-Manual visual/Figma acceptance remains recorded; the test-integrity correction must not be used to claim a new manual visual pass.
-
-## Route
-
-Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
-Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+- verify the frozen Home diff file set is unchanged
+- verify the frozen Home binary diff hash is unchanged
+- verify the cached diff is empty
+- run `python tools/validate_all.py`
+- run `git diff --check`
+- run `git diff --name-status`
+- run `git diff --cached --name-status`
+- run `git status --short --branch`

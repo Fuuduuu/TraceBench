@@ -1,95 +1,65 @@
 # Current State
 
-Current pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS
-Next recommended pass: BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS
+Current pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
+After compaction: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
 ## First-read charter
 
-`docs/POHIKIRI.md` is the tracked canonical product charter / first-read scope anchor.
-
-If a task conflicts with `docs/POHIKIRI.md`, stop and ask the human. AI may propose, guide, and organize; only human-confirmed information becomes canonical truth.
+`docs/POHIKIRI.md` remains the canonical product charter and first-read scope anchor. If a task conflicts with it, stop and ask the human.
 
 ## Status
 
-Docs-only scope amendment for the existing BenchBeep Home startup-page redesign implementation.
+This is a docs-only route and scope lock. It authorizes one bounded memory-routing and documentation-compaction pass; no compaction is performed here.
 
-Verified baseline and frozen implementation state:
+The earlier direct compaction attempt was blocked before edits because its PASS_ID and write surface were not named or authorized in the live route/scope docs. This scope lock resolves that routing prerequisite without changing runtime, tests, assets, product semantics, or the later Home correction.
 
-- `HEAD` and `origin/main` are `ace2750ad05d8c5df9ded4ffe7f9ef6a0ef68b5c` (`docs: lock benchbeep home startpage redesign`).
-- The pre-existing unstaged implementation diff is exactly:
-  - `lib/features/home/screens/benchbeep_home_screen.dart`
-  - `lib/app/app.dart`
-  - `test/widget/benchbeep_home_screen_test.dart`
-  - `assets/brand/pcb_board.png`
-- The cached diff is empty.
-- The pre-pass implementation diff hash is `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
-- No current implementation, test, or asset file may change during this docs-only amendment; the same implementation diff hash is required after the pass.
+Verified baseline:
 
-## Blocked audit and accepted human gates
+- `HEAD` and `origin/main`: `a789bd09c61f85fde3a28fb1de5b768d8e00866a` (`docs: expand home redesign test integrity scope`)
+- cached diff: empty
+- no leftover documentation changes from the blocked attempt
 
-The latest Claude audit supplied by the human is recorded as:
+## Frozen Home implementation diff
 
-- `AUDIT_VERDICT: BLOCKED`
-- `SAFE_FOR_STAGING: NO`
-- Reason: invisible production decoy widgets keep stale integration tests falsely green.
-
-The human visual/Figma gate remains accepted and is not reopened by this test-integrity correction.
-
-- `VISUAL-FIRST TECHNICIAN WORKBENCH` is a human-accepted English eyebrow and is not part of this correction.
-- True fullscreen remains intentional.
-- `lib/main.dart` remains excluded.
-
-## Armed implementation correction
-
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` remains the next implementation pass and must:
-
-- remove `benchbeep_legacy_viewer_test_anchor`
-- remove the invisible `TraceBench Viewer` widget
-- remove `compatibilityLabel` and the invisible `Ava projekt` decoy behavior
-- add no `Opacity(0)`, `Offstage`, `ExcludeSemantics`, invisible, or test-only production compatibility anchor
-- update all three stale integration tests to follow the real visible launcher workflow
-- preserve the already accepted visual/Figma result and all project-loading behavior
-
-## Expanded armed implementation allowlist
+The existing unstaged Home implementation diff remains exactly:
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 - `assets/brand/pcb_board.png`
-- `test/integration/pelle_sample_end_to_end_test.dart`
-- `test/integration/board_graph_end_to_end_test.dart`
-- `test/integration/photo_list_end_to_end_test.dart`
 
-## Required integration-test workflow
+Binary diff hash: `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
 
-Each of the three integration tests must:
+This file set and hash must remain unchanged during both this scope-lock pass and the compaction pass.
 
-1. assert real visible BenchBeep/Home launcher content initially
-2. tap `Ava näidisprojekt`
-3. tap the visible enabled `Jätka avatud projektiga` action
-4. expect `Project overview`
-5. preserve its existing destination assertions after `Project overview`
+## Armed compaction
 
-## Preserved behavior and boundaries
+`TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS` is armed with the exact write allowlist and stop conditions in `docs/ACTIVE_SCOPE_LOCK.md`.
 
-- Preserve ZIP, folder, sample, project-open, Workbench, exit, asset, and route behavior.
-- Preserve the existing BenchBeep black/gold visual direction and runtime asset paths.
-- Original design/provenance input remains input-only; no `_incoming` runtime dependency is permitted.
-- No route, router, page, package, font, shared-theme, fullscreen, or `lib/main.dart` change.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics change unless separately scoped.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad semantics change unless explicitly scoped.
+Its bounded outcome is:
+
+1. make the default read path exactly `AGENTS.md`, `docs/POHIKIRI.md`, `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md`
+2. make all stable memory, semantics, prompt/model, audit, source/design, map, spec, schema, and archive documents task-specific / non-default
+3. compact active memory and duplicated governance text without deleting unique durable truth
+4. correct only audit-index statuses supported by audit artifacts and git history
+5. create no prompt-pattern or archive documents
+
+## Preserved Home correction
+
+Immediately after compaction, route to `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`.
+
+The exact seven-file Home allowlist, hidden-production-anchor removal, visible-launcher integration-test workflow, and preserved ZIP/folder/sample/project-open/Workbench/exit/asset/route behavior remain locked in `docs/ACTIVE_SCOPE_LOCK.md`.
 
 ## Route
 
-Current: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_TEST_INTEGRITY_SCOPE_AMENDMENT_PASS`
-Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+Current: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
+Then: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
-## Canonical owner pointers
+## Canonical pointers
 
-- Product charter / first-read scope anchor: `docs/POHIKIRI.md`
-- Route state: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`
-- Audit/provenance ledger: `docs/AUDIT_INDEX.md`
-- Stable project memory and facts: `docs/PROJECT_MEMORY.md`, `docs/TRUTH_INDEX.md`
-- UI workflow policy: `docs/UI_WORKFLOWS.md`
-- Protected surface rules: `docs/PROTECTED_SURFACES.md`
-- Prompt/lifecycle/model-routing rules: `docs/PROMPTING_PROTOCOL.md`, `docs/PASS_LIFECYCLE.md`, `docs/MODEL_ROUTING.md`
+- Active allowlists and stop conditions: `docs/ACTIVE_SCOPE_LOCK.md`
+- Queue sequencing: `docs/PASS_QUEUE.md`
+- Audit provenance: `docs/AUDIT_INDEX.md`
+- Product charter: `docs/POHIKIRI.md`

@@ -7,84 +7,110 @@ rules:
   archive_is_canonical_truth: false
   audit_docs_are_canonical_truth: false
   memory_registry_is_canonical_truth: false
+  default_read_set:
+    - AGENTS.md
+    - docs/POHIKIRI.md
+    - docs/CURRENT_STATE.md
+    - docs/PASS_QUEUE.md
+    - docs/ACTIVE_SCOPE_LOCK.md
   conflict_order:
     - AGENTS.md
+    - docs/POHIKIRI.md
+    - docs/ACTIVE_SCOPE_LOCK.md
+    - docs/CURRENT_STATE.md
+    - docs/PASS_QUEUE.md
     - docs/PROJECT_MEMORY.md
     - docs/TRUTH_INDEX.md
     - docs/PROTECTED_SURFACES.md
     - schemas/*.json
     - docs/DATA_MODEL.md
-    - docs/ACTIVE_SCOPE_LOCK.md
-    - docs/CURRENT_STATE.md
-    - docs/PASS_QUEUE.md
+    - docs/UI_WORKFLOWS.md
+    - docs/PROMPTING_PROTOCOL.md
+    - docs/MODEL_ROUTING.md
     - docs/MEMORY_PROTOCOL.md
     - docs/MEMORY_REGISTRY.yml
+    - docs/FILE_MAP.md
+    - docs/SOURCES_INDEX_CURRENT.md
+    - docs/AUDIT_CONTRACT.md
     - docs/AUDIT_INDEX.md
-    - docs/audit/*
+    - docs/audit/**
+    - docs/sources/**
     - docs/archive/**
     - docs/PROJECT_STATE.yml
 
 layers:
-  first_read_context:
+  default_context:
     read_by_default: true
     files:
+      - AGENTS.md
+      - docs/POHIKIRI.md
       - docs/CURRENT_STATE.md
       - docs/PASS_QUEUE.md
       - docs/ACTIVE_SCOPE_LOCK.md
-      - docs/TRUTH_INDEX.md
-      - docs/FILE_MAP.md
-      - docs/MEMORY_PROTOCOL.md
 
-  canonical_truth:
-    read_by_default: true
+  stable_product_architecture:
+    read_by_default: false
     files:
       - docs/PROJECT_MEMORY.md
+
+  semantics_and_protected_contracts:
+    read_by_default: false
+    files:
       - docs/TRUTH_INDEX.md
-      - docs/MEMORY_PROTOCOL.md
-      - docs/ACTIVE_SCOPE_LOCK.md
       - docs/PROTECTED_SURFACES.md
-      - schemas/events.schema.json
-      - schemas/project_manifest.schema.json
+      - schemas/**
+      - docs/DATA_MODEL.md
+      - docs/EVENT_LOG_SPEC.md
 
-  active_lock_workflow:
-    read_by_default: true
+  ui_workflow:
+    read_by_default: false
     files:
-      - docs/CURRENT_STATE.md
-      - docs/PASS_QUEUE.md
+      - docs/UI_WORKFLOWS.md
+
+  prompt_and_model_routing:
+    read_by_default: false
+    files:
       - docs/PROMPTING_PROTOCOL.md
-      - docs/MEMORY_MAINTENANCE.md
       - docs/MODEL_ROUTING.md
-      - docs/ACTIVE_SCOPE_LOCK.md
-      - docs/SOURCES_INDEX_CURRENT.md
-      - docs/AUDIT_INDEX.md
-      - docs/PROTECTED_SURFACES.md
-      - docs/PROJECT_ZIP_SPEC.md
-      - docs/FLUTTER_UI_SPEC.md
-      - docs/PHOTO_FLOW_SPEC.md
+      - docs/PASS_LIFECYCLE.md
 
-  source_index:
-    read_by_default: true
+  documentation_governance:
+    read_by_default: false
     files:
-      - docs/SOURCES_INDEX_CURRENT.md
       - docs/MEMORY_REGISTRY.yml
-
-  maps:
-    read_by_default: false
-    files:
+      - docs/MEMORY_PROTOCOL.md
+      - docs/MEMORY_MAINTENANCE.md
       - docs/FILE_MAP.md
-      - docs/PROJECT_MINI_MAP.md
 
-  snapshot_debug:
+  source_and_design_intake:
     read_by_default: false
-    truth_level: non_canonical_legacy_snapshot
     files:
-      - docs/PROJECT_STATE.yml
-      - tools/validate_project_state.py
+      - docs/SOURCES_INDEX_CURRENT.md
+      - docs/sources/**
+      - _incoming/**
+
+  specs:
+    read_by_default: false
+    files:
+      - docs/spec/**
+      - docs/*_SPEC.md
+
+  implementation_owners:
+    read_by_default: false
+    files:
+      - lib/**
+      - tools/**
+      - schemas/**
+      - test/**
+      - tests/**
 
   audit_history:
     read_by_default: false
     truth_level: historical_evidence_only
     index: docs/AUDIT_INDEX.md
+    files:
+      - docs/AUDIT_CONTRACT.md
+      - docs/AUDIT_INDEX.md
     paths:
       - docs/audit/**
 
@@ -93,3 +119,11 @@ layers:
     truth_level: historical_only
     paths:
       - docs/archive/**
+      - docs/PASS_QUEUE_ARCHIVE.md
+
+  snapshot_debug:
+    read_by_default: false
+    truth_level: non_canonical_legacy_snapshot
+    files:
+      - docs/PROJECT_STATE.yml
+      - tools/validate_project_state.py

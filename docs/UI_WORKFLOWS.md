@@ -1,52 +1,39 @@
 # UI_WORKFLOWS.md
 
-> First-read charter: `docs/POHIKIRI.md`. UI workflows must preserve the Visual First charter and stop for human decision if a requested workflow conflicts with it.
-
-
 ## Purpose
 
-Concise UX/workflow policy for BenchBeep. This file does not authorize runtime writes by itself; active implementation scope still comes from `docs/ACTIVE_SCOPE_LOCK.md`.
+On-demand BenchBeep UX/workflow policy. It does not authorize implementation or canonical writes; active authority comes from `docs/ACTIVE_SCOPE_LOCK.md`.
 
-## Visual First rule
+UI work must preserve `docs/POHIKIRI.md` and stop for human decision on conflict.
+
+## Visual First
 
 BenchBeep is a local-first Visual First PCB repair workbench.
 
-Technician-facing core:
-- `Koht -> Väärtus -> Ühik -> Salvesta`
+Technician-facing core: `Koht -> Väärtus -> Ühik -> Salvesta`.
 
-The technician stays on the board. Board Canvas plus the right-side panel/menu is the primary workflow surface for normal component work.
+The technician stays on the board. Board Canvas plus its contextual right-side panel/menu is the primary surface for normal component work.
 
-AI may propose and organize, but the human confirms canonical facts.
+## Primary workflow
 
-## Primary technician workflow
+Where practical, normal work happens in or beside Board Canvas:
 
-Normal component work should happen in or beside Board Canvas where practical:
 - measurement
 - component identity creation
 - component metadata editing
 - visual placement confirmation
 
-The workflow should favor direct visual context over table/form detours.
+Direct visual context should outrank table/form detours.
 
-## Transitional legacy pages
+## Transitional standalone pages
 
-Old standalone Add/Edit/Measure-style pages are transitional migration/removal debt.
+Standalone Add/Edit/Measure-style pages may remain until scoped replacements exist, but they are transitional and must not be duplicated as a second primary workflow inside Board Canvas.
 
-They may remain available until scoped replacements exist, but they are not the primary technician workflow and must not be duplicated as a second workflow menu inside Board Canvas.
-
-## Canonical event split
+## Four event meanings
 
 - `component_created` = component identity/existence creation.
 - `component_updated` = component metadata update.
 - `component_visual_placement_confirmed` = visual placement confirmation.
 - `measurement_recorded` = measurement write.
 
-Visual placement must not create component identity, pins, contacts, pads, nets, traces, electrical facts, measurements, AI facts, or repair conclusions.
-
-## Data boundaries
-
-- events.jsonl is canonical truth.
-- known_facts.json is projection/cache.
-- Flutter must not directly mutate known_facts.json.
-- Human is the sensor; AI is the graph engine.
-- `_incoming` is design/provenance input only and must not become runtime truth.
+Canonical data and AI boundaries: `docs/TRUTH_INDEX.md`.

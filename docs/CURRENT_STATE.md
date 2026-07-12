@@ -1,28 +1,37 @@
 # Current State
 
-Current pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
-After compaction: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+Current pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
+Next recommended pass: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
 
-## First-read charter
+## Charter and baseline
 
-`docs/POHIKIRI.md` remains the canonical product charter and first-read scope anchor. If a task conflicts with it, stop and ask the human.
+`docs/POHIKIRI.md` is the canonical product charter. Conflicts stop for human decision.
 
-## Status
+Pushed baseline: `35314fc4de486b91c5730cb5fa99f12799674869` (`docs: lock memory routing and docs compaction`).
 
-This is a docs-only route and scope lock. It authorizes one bounded memory-routing and documentation-compaction pass; no compaction is performed here.
+## Current docs-only compaction
 
-The earlier direct compaction attempt was blocked before edits because its PASS_ID and write surface were not named or authorized in the live route/scope docs. This scope lock resolves that routing prerequisite without changing runtime, tests, assets, product semantics, or the later Home correction.
+This pass establishes effective project memory as:
 
-Verified baseline:
+```text
+five default files + task-specific loading
+```
 
-- `HEAD` and `origin/main`: `a789bd09c61f85fde3a28fb1de5b768d8e00866a` (`docs: expand home redesign test integrity scope`)
-- cached diff: empty
-- no leftover documentation changes from the blocked attempt
+Default read set:
+
+1. `AGENTS.md`
+2. `docs/POHIKIRI.md`
+3. `docs/CURRENT_STATE.md`
+4. `docs/PASS_QUEUE.md`
+5. `docs/ACTIVE_SCOPE_LOCK.md`
+
+All other memory, semantic, prompt/model, audit, source/design, map, protocol, spec, schema, archive, and implementation owners are task-specific / non-default.
+
+The pass compacts active/stable docs, preserves unique durable truth through canonical pointers and historical audit/git owners, and corrects only evidence-backed audit-index drift. It changes no product/runtime semantics.
 
 ## Frozen Home implementation diff
 
-The existing unstaged Home implementation diff remains exactly:
+The pre-existing unstaged Home diff remains exactly:
 
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `lib/app/app.dart`
@@ -31,35 +40,32 @@ The existing unstaged Home implementation diff remains exactly:
 
 Binary diff hash: `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
 
-This file set and hash must remain unchanged during both this scope-lock pass and the compaction pass.
+This pass must not change that file set or hash.
 
-## Armed compaction
+## Next Home implementation
 
-`TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS` is armed with the exact write allowlist and stop conditions in `docs/ACTIVE_SCOPE_LOCK.md`.
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` remains armed for exactly:
 
-Its bounded outcome is:
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `lib/app/app.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `assets/brand/pcb_board.png`
+- `test/integration/pelle_sample_end_to_end_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
 
-1. make the default read path exactly `AGENTS.md`, `docs/POHIKIRI.md`, `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md`
-2. make all stable memory, semantics, prompt/model, audit, source/design, map, spec, schema, and archive documents task-specific / non-default
-3. compact active memory and duplicated governance text without deleting unique durable truth
-4. correct only audit-index statuses supported by audit artifacts and git history
-5. create no prompt-pattern or archive documents
+The implementation must remove hidden production compatibility/test anchors, migrate all three integration tests to the real visible launcher workflow, preserve every scenario and destination assertion, and preserve ZIP/folder/sample/project-open/Workbench/exit/asset/route behavior.
 
-## Preserved Home correction
+## Boundaries
 
-Immediately after compaction, route to `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`.
-
-The exact seven-file Home allowlist, hidden-production-anchor removal, visible-launcher integration-test workflow, and preserved ZIP/folder/sample/project-open/Workbench/exit/asset/route behavior remain locked in `docs/ACTIVE_SCOPE_LOCK.md`.
-
-## Route
-
-Current: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
-Then: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+- No runtime, test, asset, schema, tool, route behavior, fullscreen, writer, event, fact, projection, Project ZIP, or protected semantic change.
+- `docs/POHIKIRI.md`, `docs/PROMPTING_PROTOCOL.md`, `docs/MODEL_ROUTING.md`, and `docs/MEMORY_MAINTENANCE.md` remain unchanged.
+- Do not stage, commit, or push.
 
 ## Canonical pointers
 
-- Active allowlists and stop conditions: `docs/ACTIVE_SCOPE_LOCK.md`
+- Active scope and exact allowlists: `docs/ACTIVE_SCOPE_LOCK.md`
 - Queue sequencing: `docs/PASS_QUEUE.md`
-- Audit provenance: `docs/AUDIT_INDEX.md`
-- Product charter: `docs/POHIKIRI.md`
+- Durable product/architecture memory: `docs/PROJECT_MEMORY.md` (on demand)
+- Semantic owners: `docs/TRUTH_INDEX.md` (on demand)
+- Audit lookup: `docs/AUDIT_INDEX.md` (on demand)

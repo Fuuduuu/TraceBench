@@ -1,146 +1,88 @@
 # MEMORY_PROTOCOL.md
 
-## TraceBench memory protocol
+## Purpose
 
-### 1) Scope of memory files
+TraceBench has no hidden project memory. Effective project memory is:
 
-#### PROJECT_MEMORY.md
-- Stable product truth.
-- Product promise, core rule, V1.0 scope, and non-negotiables.
-- Stable architecture invariants.
-- Does not store long pass history or temporary next-step planning.
+```text
+five default files + task-specific loading
+```
 
-#### CURRENT_STATE.md
-- Short handoff snapshot for active context.
-- Latest accepted snapshot, current pass, next recommended pass.
-- Validation baseline and compact state summary.
-- Updated whenever the pass state changes.
+This protocol is itself task-specific documentation-governance input; it is not part of the default read set and stores no live route or pass history.
 
-#### PASS_QUEUE.md
-- Single source for pass sequencing, current pass, completed history, next recommendation, countdown.
-- No architecture design or invariant prose beyond pass orchestration.
+## Default context
 
-#### ACTIVE_SCOPE_LOCK.md
-- Canonical owner of current-pass scope.
-- Contains only current pass, allowed/forbidden surfaces, and validation command.
+Read exactly these files by default:
 
-#### AUDIT_INDEX.md
-- Index of completed audit docs only.
-- No in-file detailed audit evidence.
+1. `AGENTS.md`
+2. `docs/POHIKIRI.md`
+3. `docs/CURRENT_STATE.md`
+4. `docs/PASS_QUEUE.md`
+5. `docs/ACTIVE_SCOPE_LOCK.md`
 
-#### docs/audit/*.md
-- Evidence and details for completed pass-level decisions.
-- Historical record only.
+Everything else loads only when the active scope or a canonical pointer makes it relevant.
 
-#### PROTECTED_SURFACES.md
-- High-risk surfaces and the rule requiring protected-surface handling.
-- No pass history.
+## Task-specific routing
 
-### 2) Fact ownership anti-drift rules
+| Task | Load on demand |
+|---|---|
+| Semantics, events, writers | `docs/TRUTH_INDEX.md`, `docs/PROTECTED_SURFACES.md`, exact relevant spec/schema/runtime owner |
+| Product or architecture | `docs/PROJECT_MEMORY.md`, exact relevant spec |
+| UI | `docs/UI_WORKFLOWS.md`, target screen and test |
+| Prompt or route workflow | `docs/PROMPTING_PROTOCOL.md`, `docs/MODEL_ROUTING.md` |
+| Design/source intake | `docs/SOURCES_INDEX_CURRENT.md`, exact design/source input |
+| Audit | `docs/AUDIT_CONTRACT.md`, `docs/AUDIT_INDEX.md`, one exact audit artifact |
+| Documentation governance | `docs/FILE_MAP.md`, `docs/MEMORY_PROTOCOL.md`, `docs/MEMORY_MAINTENANCE.md`, `docs/MEMORY_REGISTRY.yml` as needed |
 
-- One fact, one home.
-- If a fact repeats, the secondary file must be a pointer only.
-- `PROJECT_MEMORY.md` is for stable truth, not detailed pass drift history.
-- Current accepted handoff lives in `CURRENT_STATE.md`.
-- Pass sequencing and next step live in `PASS_QUEUE.md`.
-- Current pass scope lives in `ACTIVE_SCOPE_LOCK.md`.
-- Protected-surface boundaries live in `PROTECTED_SURFACES.md`.
-- Evidence details live only in pass audit files.
+Do not bulk-read audit history, archives, source history, specs, schemas, or `_incoming`.
 
-### 3) Promotion rules
+## One fact, one home
 
-- New stable invariant -> `PROJECT_MEMORY.md` (and relevant spec docs as needed).
-- Current pass handoff -> `CURRENT_STATE.md`.
-- Next pass/countdown -> `PASS_QUEUE.md`.
-- Scope lock -> `ACTIVE_SCOPE_LOCK.md`.
-- Risk/protected surface -> `PROTECTED_SURFACES.md`.
-- Evidence -> `docs/audit/*.md`.
+- Stable product and architecture truth: `docs/PROJECT_MEMORY.md` or the exact canonical spec.
+- Core product/human-AI rule: `docs/POHIKIRI.md`.
+- Semantic invariants and ownership routing: `docs/TRUTH_INDEX.md`.
+- Current handoff: `docs/CURRENT_STATE.md`.
+- Pass sequencing: `docs/PASS_QUEUE.md`.
+- Current allowlist and stop conditions: `docs/ACTIVE_SCOPE_LOCK.md`.
+- Protected-surface catalogue: `docs/PROTECTED_SURFACES.md`.
+- Evidence: one `docs/audit/*.md` artifact indexed by `docs/AUDIT_INDEX.md`.
 
-### 4) New information intake lifecycle
+When a fact appears outside its owner, use a compact pointer instead of repeated prose.
 
-Every new project fact must follow this flow:
+## Promotion rules
 
-1. Capture
-   - Identify the new fact.
-   - Identify source: user instruction, accepted Codex result, audit result, repo doc, schema/tool code, or external research.
-   - Do not store speculation as stable truth.
-2. Classify
-   - Assign the fact type:
-     - stable product truth
-     - current handoff
-     - next pass / queue item
-     - active scope lock
-     - protected surface
-     - architecture/spec fact
-     - audit evidence
-     - validation result
-     - deprecated/obsolete fact
-3. Locate canonical owner
-   - Use `docs/TRUTH_INDEX.md`.
-   - The fact must have exactly one canonical home.
-4. Obsolete check
-   - Before adding the new fact, check whether it changes, replaces, contradicts, or invalidates an older fact.
-5. Resolve old fact
-   - If an old fact is superseded:
-     - replace it in the canonical owner file
-     - remove duplicate stale mentions
-     - convert secondary mentions into pointers
-     - archive historical detail in `docs/audit/**/*.md` only if evidence value remains
-     - delete stale text if it has no historical value
-6. Update secondary pointers
-   - Update only allowed pointer locations.
-   - Do not duplicate full content.
-7. Validate
-   - Run required validation.
-   - For docs-only memory updates:
-     - `py -3 tools\validate_all.py`
-8. Report
-   - Output must state:
-     - new facts added
-     - old facts replaced
-     - files cleaned
-     - obsolete content removed or archived
-     - canonical owner used
+| Information class | Canonical destination |
+|---|---|
+| Durable product/architecture decision | `docs/PROJECT_MEMORY.md` and exact relevant spec |
+| Current pass handoff | `docs/CURRENT_STATE.md` |
+| Next pass or sequencing | `docs/PASS_QUEUE.md` |
+| Active scope | `docs/ACTIVE_SCOPE_LOCK.md` |
+| Protected boundary | `docs/PROTECTED_SURFACES.md` |
+| Semantic invariant/owner mapping | `docs/TRUTH_INDEX.md` |
+| Pass evidence | `docs/audit/*.md` plus `docs/AUDIT_INDEX.md` |
 
-If a new fact is not already clearly mapped, ask:
-- Where does this fact belong?
-- What old fact does this replace?
-- Is the old fact still useful as audit evidence?
-- Should the old fact be deleted, compressed, or archived?
+## New-information lifecycle
 
-If unresolved, pause before updating canonical owner files.
+1. Capture the fact and its evidence source; do not promote speculation.
+2. Classify it as durable truth, current route, scope, protected boundary, implementation/spec behavior, audit evidence, or obsolete content.
+3. Locate exactly one canonical owner.
+4. Check whether it replaces, contradicts, or invalidates older text.
+5. Replace the owner text, remove stale duplicates, and convert secondary copies to pointers.
+6. Preserve historical detail only where an audit artifact or git history has evidence value.
+7. Validate the scoped change and report added, replaced, repointed, and removed information.
 
-### 5) Subconscious / implicit context rule
+If the owner or obsolete handling is unresolved, stop before writing.
 
-TraceBench has no hidden project memory.
-The effective project memory is the first-read path:
+## Validation and no-hidden-memory rule
 
-1. `docs/CURRENT_STATE.md`
-2. `docs/PASS_QUEUE.md`
-3. `docs/ACTIVE_SCOPE_LOCK.md`
-4. `docs/TRUTH_INDEX.md`
-5. `docs/MEMORY_PROTOCOL.md`
-6. relevant spec/audit files only
+- For docs-only memory changes, run `python tools/validate_all.py` and the pass-specific git checks.
+- Do not rely on chat history, assistant memory, snapshots, or archives as implicit current truth.
+- If a fact matters later, place it in its canonical owner or add a pointer from the appropriate index.
+- `docs/PROJECT_STATE.yml`, audit history, archives, source history, and `_incoming` are never default current truth.
 
-Do not rely on old chat history as implicit memory.
-Do not assume facts not present in canonical files.
-If a fact matters for future work, place it in its canonical owner file.
+## Anti-bloat rules
 
-### 6) Docs update order
-
-- Read compact context first: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`.
-- Then read the minimal needed canonical owner for facts and relevant spec/audit docs.
-- Update only one layer per change when possible.
-
-### 7) Subconscious routing anti-bloat (docs-only)
-
-Preserve the current next recommended pass from `docs/PASS_QUEUE.md` unless the active pass explicitly changes queue routing.
-
-### 8) Anti-bloat rules for future prompts
-
-- Use pointers, not duplicated long history.
-- Keep `CURRENT_STATE.md` compact and bounded.
-- Keep `PASS_QUEUE.md` as pass routing owner, not architecture documentation.
-- Keep `ACTIVE_SCOPE_LOCK.md` limited to active scope.
-- Keep queue-driven routing as the source of truth for planned/next steps.
-
+- Keep active route docs operational and short.
+- Keep pass evidence in audit artifacts, not stable memory.
+- Keep implementation details in specs/runtime, not governance prose.
+- Replace superseded or duplicated text instead of appending another version.

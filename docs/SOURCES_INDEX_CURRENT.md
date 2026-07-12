@@ -2,141 +2,42 @@
 
 ## Purpose
 
-Source/design/reference index for TraceBench governance inputs.
+On-demand pointer for design, prototype, research, and external source intake. This file is not a route, scope, acceptance, audit, model-routing, or implementation-status owner.
 
-This file does not own current route, current scope, next route, or active implementation truth. Use the canonical live docs listed below for operational state.
+Load it only when the active task uses a specific design/source input, then inspect only that exact source.
 
-## Canonical governance pointers
+## Source classes
 
-- Current pass and next route: `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
-- Active scope lock: `docs/ACTIVE_SCOPE_LOCK.md`.
-- Accepted history and evidence of pass outcomes: `docs/AUDIT_INDEX.md` plus `docs/audit/*.md`.
-- Durable invariants: `docs/PROJECT_MEMORY.md` and `docs/PROTECTED_SURFACES.md`.
-- Documentation classification, read priority, stale-risk, and do-not-read-by-default guidance: `docs/FILE_MAP.md`.
-- Governance diagrams / routing diagrams:
-  - `docs/PASS_LIFECYCLE.md`
-  - `docs/ARCHITECTURE_BOUNDARIES.md`
-  - `docs/MODEL_ROUTING.md`
-- External/non-repo orientation pointer:
-  - `TraceBench_Project_Source_Guide.md` is orientation-only material outside the canonical repo docs. Do not assume it exists in this repository, and do not treat it as canonical governance.
+- `docs/sources/**`: tracked source/design provenance, never runtime truth.
+- `_incoming/**`: local external handoff, scratch, or design provenance; untracked/non-canonical unless a dedicated intake pass says otherwise.
+- Standalone HTML/CSS/JavaScript, screenshots, mockups, and external fonts: visual/product input only.
+- External orientation guides: pointers only; they do not override tracked repo owners.
 
-## Reference orientation notes
+## Current useful provenance pointers
 
-- Canonical live route owners remain `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`; this file intentionally does not repeat a current route snapshot.
-- Active-scope authority remains `docs/ACTIVE_SCOPE_LOCK.md` when a scope or implementation route is armed.
-- Accepted pass evidence and historical outcomes remain in `docs/AUDIT_INDEX.md`, `docs/audit/*.md`, `docs/PASS_QUEUE_ARCHIVE.md`, and git history.
-- Source/design entries here are reference and intake pointers only; they are not runtime truth and do not authorize implementation.
+- `TraceBench_Project_Source_Guide.md`: external orientation-only pointer; it may not exist in this repository and is never canonical governance.
+- `docs/sources/ideelabor/boardfact_measure_sheet/`: Measure Sheet prototype/design input.
+- `_incoming/ui_redesign/2026-06-14_workbench_home/`: Technician Workbench Home visual reference.
+- Other `_incoming/ui_redesign/**` inputs: inspect only when the active scope names the exact path.
 
-## CURRENT_STATE size/archive discipline
+These pointers record provenance only; they do not carry current route, acceptance, pass, or audit state.
 
-- `docs/CURRENT_STATE.md` is a bounded active handoff file, not a long historical log.
-- Keep only:
-  - current pass,
-  - next recommended pass,
-  - current phase,
-  - hard boundaries,
-  - short latest accepted summaries.
-- Move older narrative/history to `docs/audit/*.md`.
-- Use `docs/AUDIT_INDEX.md` as lookup and `docs/PASS_QUEUE.md` as routing owner.
-- Canonical maintenance trigger: compact `CURRENT_STATE.md` when it exceeds approximately 120 lines. See `docs/MEMORY_MAINTENANCE.md`.
+## Intake boundaries
 
-## AI read order
+- Do not import, package, runtime-reference, or stage `_incoming/**` unless an explicit intake/asset pass authorizes the exact file.
+- Do not treat a mockup, screenshot, photo, source note, candidate, or reference as canonical evidence.
+- No new event-writing or confirm/save behavior unless explicitly scoped.
+- Do not promote photo alignment, visual traces, damage regions, suspects, templates, or footprint families into identity, pin, net, measurement, electrical, fault, or probability truth.
+- Project ZIP expansion and release/tag mutations require separate explicit scope.
 
-Canonical read order lives in `docs/MEMORY_PROTOCOL.md` §5. Do not duplicate the ordered payload here.
+## Minimal intake record
 
-## Tool / AI routing logic
+For any used source, record only:
 
-Canonical owner: `docs/MODEL_ROUTING.md`.
+1. exact source path or URL
+2. provenance/classification
+3. useful non-binding design/product direction
+4. forbidden runtime/canonical uses
+5. the separately scoped runtime/asset destination, if any
 
-This file only points to the routing owner. Do not duplicate the full tool/model routing matrix here.
-
-## Risk routing quick map
-
-Canonical owner: `docs/MODEL_ROUTING.md`.
-
-Use this source index to find the routing document, then follow the canonical routing matrix there.
-
-## Pre-pass checklist
-
-1. What is the PASS_ID?
-2. What is the lane?
-3. Is this docs-only?
-4. Does it touch canonical truth?
-5. Does it introduce or modify a write path?
-6. Can a photo/reference image be mistaken for a fact?
-7. Is the file allowlist explicit?
-8. Are forbidden surfaces explicit?
-9. Are stop conditions explicit?
-10. Are validation commands explicit?
-
-## Required scoped prompt structure
-
-- `READ`: files/directories the helper may inspect.
-- `WRITE`: exact files/directories the helper may modify.
-- `NEVER`: forbidden files/artifacts/behaviors/features/semantic promotions.
-- `STOP CONDITIONS`: conditions where helper must stop and report.
-
-## Always-preserved forbidden surfaces
-
-- No event-writing UI.
-- No confirm/save/apply/promote controls.
-- No AI fact creation.
-- No photo-to-fact inference.
-- No photo alignment to identity/pin/net/measurement/fault proof.
-- No visual_trace to net promotion.
-- No damage to fault-proof promotion.
-- No suspect to probability promotion.
-- No template_id / footprint family to electrical identity promotion.
-- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- No Project ZIP contract expansion unless explicitly scoped.
-- No tag/release-object mutation unless manually performed by user and separately verified.
-
-## No self-approval rule (high risk)
-
-Canonical owner: `docs/MODEL_ROUTING.md`.
-
-High-risk Codex implementation must receive the non-Codex review path defined there before acceptance.
-
-## Active governance docs
-
-Canonical docs classification and read-priority mapping lives in `docs/FILE_MAP.md`. This source index does not maintain a separate governance-doc list.
-
-## Conflict order
-
-Canonical conflict order lives in `docs/MEMORY_REGISTRY.yml` at `rules.conflict_order`. Do not duplicate the ordered payload here.
-
-## Canonical truth
-
-- `docs/PROJECT_MEMORY.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `schemas/*.json`
-- `docs/PROTECTED_SURFACES.md`
-
-## Snapshot/debug only
-
-- `docs/PROJECT_STATE.yml`
-- `tools/validate_project_state.py`
-- `docs/PROJECT_STATE.yml` is non-canonical/deprioritized. Live state is owned by `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`.
-
-## Archive policy
-
-Archive files are never read by default.
-
-
-## Governance routing source
-
-Use `docs/FILE_MAP.md` for docs classification and `docs/MODEL_ROUTING.md` for helper/model routing.
-
-## Design/prototype source folders
-
-- docs/sources/ideelabor/boardfact_measure_sheet/: BoardFact Measure Sheet prototype bundle holding area for visual/product workflow input only. Claude Design / UX review returned `ACCEPT_WITH_NITS`; source files remain non-runtime design input, not production Flutter source, not Project ZIP content, and not evidence/canonical input.
-- `_incoming/ui_redesign/2026-06-14_workbench_home/`: local scratch/reference-only Technician Workbench Home design input for integrated workbench direction. Contains standalone HTML/CSS mockup material; it remains untracked, non-runtime, non-canonical, not Project ZIP content, and must not be copied into Flutter/runtime/assets.
-
-## Design-direction intake reference
-
-- `V2_BENCHBEEP_DESIGN_DIRECTION_INTAKE_PASS` records Claude design-direction recommendations as governed design intake only.
-- BenchBeep is the user-facing app/product name; TraceBench remains the repo/platform/project name; BoardFact remains a data-fact/subsystem name unless a specific surface earns it.
-- Direction: bench instrument identity, dark instrument-like UI, restrained panels/hairlines, IBM Plex Mono/Sans, and semantic colors where teal/copper = selected/confirmed/save, amber = measuring/armed/measured, and purple/unknown = draft/unsaved/unknown.
-- Recent accepted application: Add Component draft ghost uses purple/unknown-draft semantics.
-- Historical proposed order was token foundation / ThemeExtension scope-lock, then Home launcher / board-selection scope-lock, then menu system scope-lock; those tracks have progressed through accepted scope/implementation/closeout passes and live route truth now belongs only in canonical route docs.
-- This intake does not treat `_incoming`, screenshots, docs/sources, mockups, or design artifacts as runtime truth.
+Canonical data and AI boundaries: `docs/TRUTH_INDEX.md`.

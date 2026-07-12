@@ -2,30 +2,27 @@
 
 ## Current route
 
-Current: `TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current docs-only scope lock
+## Closed milestone
 
-`TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS` locks the code-map framework direction, task-specific loading, non-authorization boundaries, independent production/test qualification, committed-state and symbol-anchor rules, and the exact two-file bootstrap allowlist.
+`TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS` was pushed as
+`200d2705d9abbed8fcce8ec50bd47b2c62816871`.
 
-Current write set:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS.md`
-
-## Armed bootstrap
-
-`TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS` may create exactly:
+`TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS` was accepted and pushed as
+`e563835950de7ca5ba8b485ad0375b9f540dd11e`. It created only:
 
 - `docs/code_maps/CODE_MAP_STANDARD.md`
 - `docs/code_maps/CODE_MAP_INDEX.md`
 
-The bootstrap defines the standard and an actual-map-only index. It must not create a production map, test map, Board Canvas map, tool, linter, refactor, or `docs/FILE_MAP.md` change. The first production map requires a later separate pass.
+The index remains empty: no production or test code map exists.
 
-Detailed requirements: `docs/ACTIVE_SCOPE_LOCK.md` and `docs/audit/TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS.md`.
+## Queue state
 
-Do not stage, commit, or push from this scope-lock pass.
+No implementation, Board Canvas map, production map, test map, or other pass is
+armed. Any future map requires a separate human-selected scope decision and
+must follow the committed standard without treating the map as write authority.
+
+Closeout evidence:
+`docs/audit/TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_POST_AUDIT_PASS.md`.

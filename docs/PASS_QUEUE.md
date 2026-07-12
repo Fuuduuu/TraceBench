@@ -2,17 +2,17 @@
 
 ## Current route
 
-Current: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
-Next: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current pass
+## Closed implementation
 
-Bounded docs-only compaction: make the default read set exactly the five operational files, move every other owner to task-specific loading, compact duplicated/stale active memory, and correct only verified audit-index drift.
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` was accepted, audited, committed, and pushed as `f0e6aac852ff29c7b44558f5ca9722ed12ce4424` (`fix: align home tests with visible launcher workflow`).
 
-Exact current and next-pass allowlists live in `docs/ACTIVE_SCOPE_LOCK.md`.
+The exact implementation set, supplied Claude verdict, correction evidence, and validation record live in `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_POST_AUDIT_PASS.md`.
 
-## Next pass
+## Awaiting human decision
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` retains the seven-file Home/test/asset allowlist and the hidden-decoy plus visible-launcher integration-test correction.
+No automatic implementation follows this closeout. The human must select the next PASS_ID; protected or implementation work requires an appropriate new scope lock.
 
-Do not route through `NEEDS_USER_DECISION`. Do not stage, commit, or push from this pass.
+Do not stage, commit, or push from this pass.

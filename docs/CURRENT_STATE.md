@@ -1,71 +1,43 @@
 # Current State
 
-Current pass: `TRACEBENCH_MEMORY_ROUTING_AND_DOCS_COMPACTION_PASS`
-Next recommended pass: `BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS`
+Current pass: `NEEDS_USER_DECISION`
+Next recommended pass: `NEEDS_USER_DECISION`
 
 ## Charter and baseline
 
 `docs/POHIKIRI.md` is the canonical product charter. Conflicts stop for human decision.
 
-Pushed baseline: `35314fc4de486b91c5730cb5fa99f12799674869` (`docs: lock memory routing and docs compaction`).
+Pushed implementation baseline: `f0e6aac852ff29c7b44558f5ca9722ed12ce4424` (`fix: align home tests with visible launcher workflow`).
 
-## Current docs-only compaction
+## Closed Home redesign
 
-This pass establishes effective project memory as:
+`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` is accepted, audited, committed, and pushed.
 
-```text
-five default files + task-specific loading
-```
+- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
+- Hidden production compatibility/test anchors and legacy viewer copy are removed.
+- The three integration scenarios use the visible Home -> sample project -> enabled continuation -> Project overview workflow and retain their destination assertions.
+- Exact implementation files and validation evidence are recorded in `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_POST_AUDIT_PASS.md`.
 
-Default read set:
+## Preserved product decisions
 
-1. `AGENTS.md`
-2. `docs/POHIKIRI.md`
-3. `docs/CURRENT_STATE.md`
-4. `docs/PASS_QUEUE.md`
-5. `docs/ACTIVE_SCOPE_LOCK.md`
+- The accepted black/gold/cream Home design and four PÕHIKIRI-aligned startup choices remain.
+- ZIP and folder actions remain distinct; the sample project remains secondary.
+- Disabled / `Tulekul` states, dark neutral exit confirmation, and the accepted English eyebrow remain.
+- True fullscreen remains intentional; `lib/main.dart` is unchanged.
+- The accepted Figma visual gate is not reopened.
 
-All other memory, semantic, prompt/model, audit, source/design, map, protocol, spec, schema, archive, and implementation owners are task-specific / non-default.
+## Route
 
-The pass compacts active/stable docs, preserves unique durable truth through canonical pointers and historical audit/git owners, and corrects only evidence-backed audit-index drift. It changes no product/runtime semantics.
-
-## Frozen Home implementation diff
-
-The pre-existing unstaged Home diff remains exactly:
-
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/app/app.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `assets/brand/pcb_board.png`
-
-Binary diff hash: `7f4f129a9fbdbc6b22882a59dc25f8e271136d13`.
-
-This pass must not change that file set or hash.
-
-## Next Home implementation
-
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` remains armed for exactly:
-
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/app/app.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `assets/brand/pcb_board.png`
-- `test/integration/pelle_sample_end_to_end_test.dart`
-- `test/integration/board_graph_end_to_end_test.dart`
-- `test/integration/photo_list_end_to_end_test.dart`
-
-The implementation must remove hidden production compatibility/test anchors, migrate all three integration tests to the real visible launcher workflow, preserve every scenario and destination assertion, and preserve ZIP/folder/sample/project-open/Workbench/exit/asset/route behavior.
+No implementation pass remains armed. Future work requires a new human decision and a dedicated scope lock where applicable.
 
 ## Boundaries
 
-- No runtime, test, asset, schema, tool, route behavior, fullscreen, writer, event, fact, projection, Project ZIP, or protected semantic change.
-- `docs/POHIKIRI.md`, `docs/PROMPTING_PROTOCOL.md`, `docs/MODEL_ROUTING.md`, and `docs/MEMORY_MAINTENANCE.md` remain unchanged.
-- Do not stage, commit, or push.
+This closeout changes documentation only. It does not change runtime, tests, assets, routes, schemas, writers, events, facts, projections, Project ZIP behavior, or protected semantics.
 
 ## Canonical pointers
 
-- Active scope and exact allowlists: `docs/ACTIVE_SCOPE_LOCK.md`
-- Queue sequencing: `docs/PASS_QUEUE.md`
+- Active route and lock state: `docs/ACTIVE_SCOPE_LOCK.md`
+- Queue state: `docs/PASS_QUEUE.md`
+- Audit lookup: `docs/AUDIT_INDEX.md`
 - Durable product/architecture memory: `docs/PROJECT_MEMORY.md` (on demand)
 - Semantic owners: `docs/TRUTH_INDEX.md` (on demand)
-- Audit lookup: `docs/AUDIT_INDEX.md` (on demand)

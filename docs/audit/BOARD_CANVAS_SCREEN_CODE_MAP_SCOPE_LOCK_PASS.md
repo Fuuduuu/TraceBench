@@ -201,6 +201,35 @@ behavior, or `_incoming` change is authorized. Known scratch remains untouched.
 Claude Code performs the independent pre-staging audit, and the human owns exact
 staging, commit, and push.
 
+## Claude scope-lock audit and pushed result
+
+The completed independent scope-lock audit returned:
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+
+Accepted safe staging set:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_SCREEN_CODE_MAP_SCOPE_LOCK_PASS.md`
+
+The exact accepted set was pushed as:
+
+- `997ad916dcce9c8521dbc45cef1b63d525bd3280`
+- `docs: lock board canvas code map scope`
+
+The reconciled route remains unchanged:
+
+- Current: `BOARD_CANVAS_SCREEN_CODE_MAP_SCOPE_LOCK_PASS`
+- Next: `BOARD_CANVAS_SCREEN_CODE_MAP_PASS`
+
+This evidence satisfies the scope-lock audit prerequisite for the armed map
+pass. It does not create the production map, edit the code-map index, or alter
+the armed three-file map-pass allowlist.
+
 ## Validation record
 
 - `python tools/validate_all.py`: PASS; 285 tests.

@@ -61,6 +61,158 @@ ProjectState _inlineProjectState({
   );
 }
 
+const List<ComponentFact> _navigatorComponents = <ComponentFact>[
+  ComponentFact(componentId: 'R1', designator: 'R1', type: 'resistor'),
+  ComponentFact(componentId: 'R2', designator: 'R2', type: 'takisti'),
+  ComponentFact(componentId: 'R10', designator: 'R10', type: 'res'),
+  ComponentFact(componentId: 'R11', designator: 'R11', type: 'shunt'),
+  ComponentFact(componentId: 'R6', designator: 'R6', type: 'resistor'),
+  ComponentFact(componentId: 'R8', designator: 'R8', type: 'resistor'),
+  ComponentFact(componentId: 'R7', designator: 'R7', type: 'resistor'),
+  ComponentFact(componentId: 'C1', designator: 'C1', type: 'capacitor'),
+  ComponentFact(componentId: 'D1', designator: 'D1', type: 'schottky'),
+  ComponentFact(componentId: 'Q1', designator: 'Q1', type: 'mosfet'),
+  ComponentFact(componentId: 'U1', designator: 'U1', type: 'mcu'),
+  ComponentFact(componentId: 'J1', designator: 'J1', type: 'connector'),
+  ComponentFact(componentId: 'L1', designator: 'L1', type: 'inductor'),
+  ComponentFact(componentId: 'F1', designator: 'F1', type: 'fuse'),
+  ComponentFact(componentId: 'TP1', designator: 'TP1', type: 'testpoint'),
+  ComponentFact(componentId: 'X1', designator: 'X1', type: 'mystery'),
+];
+
+const List<ComponentVisualPlacementFact> _navigatorPlacements =
+    <ComponentVisualPlacementFact>[
+  ComponentVisualPlacementFact(
+    componentId: 'R1',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.12,
+    centerY: 0.18,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r1',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'R2',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.24,
+    centerY: 0.24,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r2',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'R10',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.36,
+    centerY: 0.3,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r10',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'R11',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.48,
+    centerY: 0.36,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r11',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'R7',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.6,
+    centerY: 0.42,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r7_a',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'R7',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'bottom',
+    centerX: 0.7,
+    centerY: 0.5,
+    rotationDeg: 0,
+    width: 0.06,
+    height: 0.03,
+    sourceEventId: 'evt_nav_r7_b',
+    status: 'user_confirmed_visual',
+  ),
+  ComponentVisualPlacementFact(
+    componentId: 'J1',
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: 0.82,
+    centerY: 0.62,
+    rotationDeg: 0,
+    width: 0.1,
+    height: 0.05,
+    sourceEventId: 'evt_nav_j1',
+    status: 'user_confirmed_visual',
+  ),
+];
+
+const List<MeasurementFact> _navigatorMeasurements = <MeasurementFact>[
+  MeasurementFact(
+    measurementId: 'M_nav_r2',
+    mode: 'resistance',
+    from: 'R2.1',
+    to: 'GND',
+    reading: 'numeric',
+    validityStatus: 'active',
+    powerState: 'off',
+    value: 1000,
+    unit: 'Ω',
+  ),
+  MeasurementFact(
+    measurementId: 'M_nav_r10',
+    mode: 'resistance',
+    from: 'R10',
+    to: 'GND',
+    reading: 'numeric',
+    validityStatus: 'active',
+    powerState: 'off',
+    value: 10000,
+    unit: 'Ω',
+  ),
+  MeasurementFact(
+    measurementId: 'M_nav_r8',
+    mode: 'resistance',
+    from: 'R8.2',
+    to: 'GND',
+    reading: 'numeric',
+    validityStatus: 'active',
+    powerState: 'off',
+    value: 2200,
+    unit: 'Ω',
+  ),
+];
+
+ProjectState _componentNavigatorState({String? projectDirectory}) {
+  return _inlineProjectState(
+    components: _navigatorComponents,
+    placements: _navigatorPlacements,
+    measurements: _navigatorMeasurements,
+    projectDirectory: projectDirectory,
+  );
+}
+
 Widget _harness({
   required ProjectState? projectState,
   Key? boardCanvasKey,
@@ -99,34 +251,115 @@ Widget _routerHarness({
   );
 }
 
-Future<void> _selectPlacement(WidgetTester tester, String label) async {
-  final chip = find.widgetWithText(ChoiceChip, label);
+Future<void> _selectPlacement(
+  WidgetTester tester,
+  String label, {
+  int placementIndex = 0,
+}) async {
+  final componentId =
+      RegExp(r'\(([^()]+)\)\s*$').firstMatch(label)?.group(1) ?? label;
+  final railPlacementFinder =
+      find.byKey(const Key('board_canvas_rail_placements_tool'));
+
+  if (railPlacementFinder.evaluate().isNotEmpty) {
+    await tester.tap(railPlacementFinder);
+    await tester.pumpAndSettle();
+
+    final categoryKeys = find
+        .byWidgetPredicate((widget) {
+          final key = widget.key;
+          return widget is InkWell &&
+              key is ValueKey<String> &&
+              key.value.startsWith('board_canvas_component_category_');
+        })
+        .evaluate()
+        .map((element) => element.widget.key)
+        .whereType<ValueKey<String>>()
+        .toList(growable: false);
+    final componentRow =
+        find.byKey(Key('board_canvas_component_row_$componentId'));
+    var componentFound = false;
+    for (final categoryKey in categoryKeys) {
+      final categoryRow = find.byKey(categoryKey);
+      await tester.ensureVisible(categoryRow);
+      await tester.tap(categoryRow);
+      await tester.pumpAndSettle();
+      if (componentRow.evaluate().isNotEmpty) {
+        componentFound = true;
+        break;
+      }
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_component_category_back'),
+      );
+    }
+    if (!componentFound) {
+      throw StateError(
+        'Component "$componentId" not found in the visible navigator.',
+      );
+    }
+
+    await _tapWidgetByKey(
+      tester,
+      Key('board_canvas_component_row_$componentId'),
+    );
+    final singlePlacement =
+        find.byKey(const Key('board_canvas_component_view_placement'));
+    if (singlePlacement.evaluate().isNotEmpty) {
+      if (placementIndex != 0) {
+        throw StateError(
+          'Component "$componentId" has only one visible placement.',
+        );
+      }
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_component_view_placement'),
+      );
+    } else {
+      final placementChoices = find.byWidgetPredicate((widget) {
+        final key = widget.key;
+        return widget is InkWell &&
+            key is ValueKey<String> &&
+            key.value.startsWith(
+              'board_canvas_component_placement_$componentId|',
+            );
+      });
+      if (placementChoices.evaluate().length <= placementIndex) {
+        throw StateError(
+          'Placement $placementIndex not found for component "$componentId".',
+        );
+      }
+      final choice = placementChoices.at(placementIndex);
+      await tester.ensureVisible(choice);
+      await tester.tap(choice);
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_rail_inspector_tool'),
+    );
+    return;
+  }
+
+  var chip = find.widgetWithText(ChoiceChip, label);
   if (chip.evaluate().isEmpty) {
     final placementDisclosureFinder =
         find.byKey(const Key('board_canvas_placement_selector_disclosure'));
     if (placementDisclosureFinder.evaluate().isNotEmpty) {
       await tester.tap(placementDisclosureFinder);
-    } else {
-      final railPlacementFinder =
-          find.byKey(const Key('board_canvas_rail_placements_tool'));
-      if (railPlacementFinder.evaluate().isNotEmpty) {
-        await tester.tap(railPlacementFinder);
-      }
+      await tester.pumpAndSettle();
+      chip = find.widgetWithText(ChoiceChip, label);
     }
-    await tester.pumpAndSettle();
-    final reopenedChip = find.widgetWithText(ChoiceChip, label);
-    if (reopenedChip.evaluate().isEmpty) {
-      throw StateError(
-          'Placement chip "$label" not found after opening disclosure.');
-    }
-    await tester.ensureVisible(reopenedChip.first);
-    await tester.pump();
-    await tester.tap(reopenedChip.first);
-    await tester.pump(const Duration(milliseconds: 16));
-    return;
   }
-  await tester.ensureVisible(chip.first);
-  await tester.tap(chip.first);
+  if (chip.evaluate().length <= placementIndex) {
+    throw StateError(
+      'Placement chip "$label" not found in the visible compact selector.',
+    );
+  }
+  final selectedChip = chip.at(placementIndex);
+  await tester.ensureVisible(selectedChip);
+  await tester.tap(selectedChip);
   await tester.pump(const Duration(milliseconds: 16));
 }
 
@@ -192,6 +425,109 @@ ProjectState _readProjectState(WidgetTester tester) {
     tester.element(find.byType(BoardCanvasScreen)),
     listen: false,
   ).read(projectStateProvider)!;
+}
+
+dynamic _boardCanvasPainter(WidgetTester tester) {
+  return tester
+      .widget<CustomPaint>(find.byKey(const Key('board_canvas_painter')))
+      .painter;
+}
+
+Set<String> _painterPreviewKeys(WidgetTester tester) {
+  try {
+    return Set<String>.from(
+      (_boardCanvasPainter(tester) as dynamic).previewKeys as Iterable,
+    );
+  } on NoSuchMethodError {
+    return const <String>{};
+  }
+}
+
+Set<String> _painterDimmedKeys(WidgetTester tester) {
+  try {
+    return Set<String>.from(
+      (_boardCanvasPainter(tester) as dynamic).dimmedPlacementKeys as Iterable,
+    );
+  } on NoSuchMethodError {
+    return const <String>{};
+  }
+}
+
+String? _painterSelectedComponentId(WidgetTester tester) {
+  try {
+    return (_boardCanvasPainter(tester) as dynamic).selectedComponentId
+        as String?;
+  } on NoSuchMethodError {
+    return null;
+  }
+}
+
+String? _painterSelectedPlacementKey(WidgetTester tester) {
+  return (_boardCanvasPainter(tester) as dynamic).selectedKey as String?;
+}
+
+Color _painterComponentSelectionColor(WidgetTester tester) =>
+    (_boardCanvasPainter(tester) as dynamic).componentSelectionColor as Color;
+
+Color _painterPlacementSelectionColor(WidgetTester tester) =>
+    (_boardCanvasPainter(tester) as dynamic).placementSelectionColor as Color;
+
+Color _painterHoverPreviewColor(WidgetTester tester) =>
+    (_boardCanvasPainter(tester) as dynamic).hoverPreviewColor as Color;
+
+double _painterComponentSelectionStrokeWidth(WidgetTester tester) =>
+    (_boardCanvasPainter(tester) as dynamic).componentSelectionStrokeWidth
+        as double;
+
+double _painterPlacementSelectionStrokeWidth(WidgetTester tester) =>
+    (_boardCanvasPainter(tester) as dynamic).placementSelectionStrokeWidth
+        as double;
+
+void _expectGoldNavigatorControlStyle(
+  ButtonStyle? style, {
+  required Color restingBackground,
+}) {
+  expect(style, isNotNull);
+  expect(
+    style!.foregroundColor?.resolve(const <WidgetState>{}),
+    const Color(0xFFE7C25A),
+  );
+  expect(
+    style.backgroundColor?.resolve(const <WidgetState>{}),
+    restingBackground,
+  );
+  expect(
+    style.side?.resolve(const <WidgetState>{})?.color,
+    const Color(0x996B5A30),
+  );
+  expect(
+    style.overlayColor?.resolve(const <WidgetState>{WidgetState.hovered}),
+    const Color(0xFFE7C25A).withValues(alpha: 0.12),
+  );
+  expect(
+    style.overlayColor?.resolve(const <WidgetState>{WidgetState.focused}),
+    const Color(0x33E7C25A),
+  );
+}
+
+List<String> _canvasSemanticsLabels(WidgetTester tester) {
+  final painterFinder = find.byKey(const Key('board_canvas_painter'));
+  final customPaint = tester.widget<CustomPaint>(painterFinder);
+  final semanticsBuilder = customPaint.painter?.semanticsBuilder;
+  expect(semanticsBuilder, isNotNull);
+  return semanticsBuilder!(tester.getSize(painterFinder))
+      .map((entry) => entry.properties.label ?? '')
+      .toList(growable: false);
+}
+
+Future<TestGesture> _hoverWidgetByKey(WidgetTester tester, Key key) async {
+  final finder = find.byKey(key);
+  expect(finder, findsOneWidget);
+  final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+  await gesture.addPointer(location: Offset.zero);
+  await gesture.moveTo(tester.getCenter(finder));
+  await tester.pump(const Duration(milliseconds: 16));
+  return gesture;
 }
 
 Map<String, dynamic> _placementWriterEventJson({
@@ -662,26 +998,1161 @@ void main() {
   });
 
   testWidgets(
-      'shows no-placements state when project has components but no placements',
+      'known unplaced components still render the workbench and component navigator',
       (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
           components: const [
-            ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+            ComponentFact(
+              componentId: 'cmp_r101',
+              designator: 'R101',
+              type: 'resistor',
+            ),
           ],
           placements: const [],
         ),
       ),
     );
+    await tester.pumpAndSettle();
 
-    expect(find.text('No confirmed visual placements yet.'), findsOneWidget);
     expect(
-      find.text(
-        'Board canvas is read-only in V1. Placement workflow is a future step.',
+        find.byKey(const Key('board_canvas_workspace_frame')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_rail_placements_tool')),
+      findsOneWidget,
+    );
+    expect(find.text('No confirmed visual placements yet.'), findsNothing);
+  });
+
+  testWidgets('component navigator maps types into the fixed category order',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+
+    expect(
+      find.byKey(const Key('board_canvas_component_navigator')),
+      findsOneWidget,
+    );
+    expect(find.text('Komponenditüübid'), findsOneWidget);
+
+    const categoryIds = <String>[
+      'resistors',
+      'capacitors',
+      'diodes',
+      'transistors',
+      'integrated_circuits',
+      'connectors',
+      'inductors_transformers',
+      'fuses',
+      'test_points',
+      'other_unknown',
+    ];
+    final tops = <double>[];
+    for (final categoryId in categoryIds) {
+      final row = find.byKey(
+        Key('board_canvas_component_category_$categoryId'),
+      );
+      expect(row, findsOneWidget);
+      tops.add(tester.getTopLeft(row).dy);
+    }
+    expect(tops, orderedEquals(tops.toList()..sort()));
+  });
+
+  testWidgets('component navigator maps supported aliases visibly',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const aliasesByCategory = <String, List<ComponentFact>>{
+      'resistors': [
+        ComponentFact(componentId: 'R_PULL_UP', type: 'pull-up'),
+        ComponentFact(componentId: 'R_PULL_DOWN', type: 'pull down'),
+      ],
+      'capacitors': [
+        ComponentFact(componentId: 'C_CAP', type: 'cap'),
+        ComponentFact(componentId: 'C_ET', type: 'kondensaator'),
+      ],
+      'diodes': [
+        ComponentFact(componentId: 'D_DIODE', type: 'diode'),
+        ComponentFact(componentId: 'D_ET', type: 'diood'),
+        ComponentFact(componentId: 'D_ZENER', type: 'zener'),
+        ComponentFact(componentId: 'D_LED', type: 'LED'),
+      ],
+      'transistors': [
+        ComponentFact(componentId: 'Q_TRANSISTOR', type: 'transistor'),
+        ComponentFact(componentId: 'Q_FET', type: 'FET'),
+        ComponentFact(componentId: 'Q_BJT', type: 'BJT'),
+      ],
+      'integrated_circuits': [
+        ComponentFact(componentId: 'U_IC', type: 'IC'),
+        ComponentFact(componentId: 'U_CONTROLLER', type: 'controller'),
+        ComponentFact(componentId: 'U_CHIP', type: 'chip'),
+        ComponentFact(componentId: 'U_REGULATOR', type: 'regulator'),
+        ComponentFact(componentId: 'U_OPAMP', type: 'opamp'),
+        ComponentFact(componentId: 'U_ET', type: 'mikroskeem'),
+      ],
+      'connectors': [
+        ComponentFact(componentId: 'J_SOCKET', type: 'socket'),
+        ComponentFact(componentId: 'J_HEADER', type: 'header'),
+        ComponentFact(componentId: 'J_PLUG', type: 'plug'),
+        ComponentFact(componentId: 'J_ET', type: 'konnektor'),
+      ],
+      'inductors_transformers': [
+        ComponentFact(componentId: 'L_COIL', type: 'coil'),
+        ComponentFact(componentId: 'L_CHOKE', type: 'choke'),
+        ComponentFact(componentId: 'T_TRANSFORMER', type: 'transformer'),
+        ComponentFact(componentId: 'L_ET', type: 'induktiivkomponent'),
+      ],
+      'fuses': [
+        ComponentFact(componentId: 'F_ET', type: 'kaitse'),
+        ComponentFact(componentId: 'F_PTC', type: 'PTC'),
+      ],
+      'test_points': [
+        ComponentFact(componentId: 'TP_SPACE', type: 'test point'),
+        ComponentFact(componentId: 'TP_SHORT', type: 'TP'),
+        ComponentFact(componentId: 'TP_ET', type: 'testpunkt'),
+      ],
+      'other_unknown': [
+        ComponentFact(componentId: 'X_BLANK'),
+        ComponentFact(componentId: 'X_UNKNOWN', type: 'unsupported-kind'),
+      ],
+    };
+    final components = aliasesByCategory.values
+        .expand((categoryComponents) => categoryComponents)
+        .toList(growable: false);
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: components,
+          placements: const [],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+
+    for (final category in aliasesByCategory.entries) {
+      await _tapWidgetByKey(
+        tester,
+        Key('board_canvas_component_category_${category.key}'),
+      );
+      for (final component in category.value) {
+        expect(
+          find.byKey(
+            Key('board_canvas_component_row_${component.componentId}'),
+          ),
+          findsOneWidget,
+        );
+      }
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_component_category_back'),
+      );
+    }
+  });
+
+  testWidgets('component navigator hides categories absent from the project',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [
+            ComponentFact(componentId: 'R1', type: 'resistor'),
+          ],
+          placements: const [],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+
+    expect(
+      find.byKey(const Key('board_canvas_component_category_resistors')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_capacitors')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_other_unknown')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('category rows show explicit normal placement counts',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+
+    final resistorCategory = find.byKey(
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.descendant(
+        of: resistorCategory,
+        matching: find.text('5 / 7 paigutatud'),
       ),
       findsOneWidget,
     );
+    expect(
+      find.descendant(
+        of: resistorCategory,
+        matching: find.text('2 paigutamata'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('category list separates placed and unplaced components',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    expect(
+      find.byKey(const Key('board_canvas_component_category_resistors')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+
+    final placedSection = find.byKey(
+      const Key('board_canvas_component_section_placed'),
+    );
+    final unplacedSection = find.byKey(
+      const Key('board_canvas_component_section_unplaced'),
+    );
+    expect(placedSection, findsOneWidget);
+    expect(unplacedSection, findsOneWidget);
+    expect(
+      find.descendant(
+        of: placedSection,
+        matching: find.byKey(const Key('board_canvas_component_row_R1')),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: unplacedSection,
+        matching: find.byKey(const Key('board_canvas_component_row_R6')),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('component rows sort measured first then by natural ID',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    expect(
+      find.byKey(const Key('board_canvas_component_category_resistors')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+
+    final orderedIds = <String>['R2', 'R10', 'R1', 'R7', 'R11'];
+    final tops = <double>[];
+    for (final componentId in orderedIds) {
+      final row = find.byKey(Key('board_canvas_component_row_$componentId'));
+      expect(row, findsOneWidget);
+      tops.add(tester.getTopLeft(row).dy);
+    }
+    expect(tops, orderedEquals(tops.toList()..sort()));
+
+    final unplacedIds = <String>['R8', 'R6'];
+    final unplacedTops = <double>[];
+    for (final componentId in unplacedIds) {
+      final row = find.byKey(Key('board_canvas_component_row_$componentId'));
+      expect(row, findsOneWidget);
+      unplacedTops.add(tester.getTopLeft(row).dy);
+    }
+    expect(unplacedTops, orderedEquals(unplacedTops.toList()..sort()));
+  });
+
+  testWidgets('component rows show measurement association copy',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    expect(
+      find.byKey(const Key('board_canvas_component_category_resistors')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+
+    final measuredRow = find.byKey(
+      const Key('board_canvas_component_row_R2'),
+    );
+    final unmeasuredRow = find.byKey(
+      const Key('board_canvas_component_row_R1'),
+    );
+    expect(
+      find.descendant(of: measuredRow, matching: find.text('1 mõõtmist')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: unmeasuredRow, matching: find.text('Mõõtmata')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('category hover previews matches and preserves canvas selection',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapCanvasAtNormalized(tester, x: 0.12, y: 0.18);
+
+    expect(
+      find.byKey(const Key('board_canvas_component_category_resistors')),
+      findsOneWidget,
+    );
+    final selectedBeforeHover = _painterSelectedPlacementKey(tester);
+    expect(selectedBeforeHover, 'R1|evt_nav_r1');
+
+    final hover = await _hoverWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    addTearDown(hover.removePointer);
+
+    expect(_painterSelectedPlacementKey(tester), selectedBeforeHover);
+    expect(
+      _painterPreviewKeys(tester),
+      containsAll(<String>{
+        'R1|evt_nav_r1',
+        'R2|evt_nav_r2',
+        'R7|evt_nav_r7_a',
+        'R7|evt_nav_r7_b',
+        'R10|evt_nav_r10',
+        'R11|evt_nav_r11',
+      }),
+    );
+    expect(_painterPreviewKeys(tester), isNot(contains('J1|evt_nav_j1')));
+  });
+
+  testWidgets('navigator actions use visible back paths and gold controls',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_back')),
+      findsOneWidget,
+    );
+    _expectGoldNavigatorControlStyle(
+      tester
+          .widget<TextButton>(
+            find.byKey(const Key('board_canvas_component_category_back')),
+          )
+          .style,
+      restingBackground: Colors.transparent,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R7'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_inspector')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_inspector_back')),
+      findsOneWidget,
+    );
+    _expectGoldNavigatorControlStyle(
+      tester
+          .widget<TextButton>(
+            find.byKey(const Key('board_canvas_component_inspector_back')),
+          )
+          .style,
+      restingBackground: Colors.transparent,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_inspector_back'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_list_resistors')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_back'),
+    );
+    expect(find.text('Komponenditüübid'), findsOneWidget);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R2'),
+    );
+    _expectGoldNavigatorControlStyle(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const Key('board_canvas_component_view_placement')),
+          )
+          .style,
+      restingBackground: const Color(0xFF2A2416),
+    );
+  });
+
+  testWidgets('component hover previews only its visible placements',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+
+    final hover = await _hoverWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R7'),
+    );
+    addTearDown(hover.removePointer);
+
+    expect(
+      _painterPreviewKeys(tester),
+      <String>{'R7|evt_nav_r7_a', 'R7|evt_nav_r7_b'},
+    );
+    expect(_painterSelectedPlacementKey(tester), isNull);
+    expect(_painterHoverPreviewColor(tester), const Color(0xFF9CB4AD));
+  });
+
+  testWidgets('component click selects component without selecting a placement',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R7'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_component_inspector')),
+      findsOneWidget,
+    );
+    expect(_painterSelectedComponentId(tester), 'R7');
+    expect(_painterSelectedPlacementKey(tester), isNull);
+    expect(
+      _painterComponentSelectionColor(tester),
+      const Color(0xFFE7C25A),
+    );
+    expect(
+      _painterComponentSelectionColor(tester),
+      isNot(const Color(0xFF2BC06F)),
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_component_placement_R7|evt_nav_r7_a'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+        const Key('board_canvas_component_placement_R7|evt_nav_r7_b'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('multiple placements require explicit placement selection',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R7'),
+    );
+
+    expect(_painterSelectedComponentId(tester), 'R7');
+    expect(_painterSelectedPlacementKey(tester), isNull);
+    expect(
+      find.byKey(
+        const Key('board_canvas_component_placement_R7|evt_nav_r7_a'),
+      ),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_placement_R7|evt_nav_r7_a'),
+    );
+
+    expect(_painterSelectedComponentId(tester), 'R7');
+    expect(_painterSelectedPlacementKey(tester), 'R7|evt_nav_r7_a');
+    expect(
+      _painterPlacementSelectionColor(tester),
+      const Color(0xFFE7C25A),
+    );
+    expect(
+      _painterPlacementSelectionStrokeWidth(tester),
+      greaterThan(_painterComponentSelectionStrokeWidth(tester)),
+    );
+    expect(
+      _painterDimmedKeys(tester),
+      equals(<String>{'R7|evt_nav_r7_b'}),
+    );
+    expect(_painterDimmedKeys(tester), isNot(contains('J1|evt_nav_j1')));
+  });
+
+  testWidgets('unplaced inspector starts no draft from row click',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final addWriter = _FakeAddComponentWriter();
+    final editWriter = _FakeEditComponentWriter();
+    final placementWriter = _FakePlacementWriter();
+    final measurementWriter = _FakeSaveMeasurementWriter();
+    final state = _componentNavigatorState();
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        addComponentWriter: addWriter,
+        editComponentWriter: editWriter,
+        placementWriter: placementWriter,
+        measurementWriter: measurementWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R6'),
+    );
+
+    expect(find.text('Pole veel canvasele paigutatud'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_component_place_action')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsNothing,
+    );
+    expect(addWriter.requests, isEmpty);
+    expect(editWriter.requests, isEmpty);
+    expect(placementWriter.requests, isEmpty);
+    expect(measurementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('Paiguta canvasele starts only the existing local placement flow',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('tracebench-navigator-placement-');
+    addTearDown(() => projectDirectory.deleteSync(recursive: true));
+    final addWriter = _FakeAddComponentWriter();
+    final editWriter = _FakeEditComponentWriter();
+    final placementWriter = _FakePlacementWriter(
+      event: _placementWriterEventJson(componentId: 'R6'),
+    );
+    final measurementWriter = _FakeSaveMeasurementWriter();
+    final state = _componentNavigatorState(
+      projectDirectory: projectDirectory.path,
+    );
+
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        addComponentWriter: addWriter,
+        editComponentWriter: editWriter,
+        placementWriter: placementWriter,
+        measurementWriter: measurementWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R6'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list')),
+      findsNothing,
+    );
+    expect(placementWriter.requests, isEmpty);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_place_action'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_add_component_template_list')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsNothing,
+    );
+    expect(placementWriter.requests, isEmpty);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key(
+        'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+      ),
+    );
+    expect(
+      find.byKey(
+          const Key('board_canvas_add_component_template_ghost_preview')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Vali canvasele paigutuse asukoht.'),
+      findsOneWidget,
+    );
+    var saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNull);
+    expect(placementWriter.requests, isEmpty);
+
+    await _tapCanvasAtNormalized(tester, x: 0.62, y: 0.38);
+    expect(placementWriter.requests, isEmpty);
+    saveButton = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(const Key('board_canvas_add_component_builder_save')),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(saveButton.onPressed, isNotNull);
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_add_component_builder_save'),
+    );
+
+    expect(placementWriter.requests, hasLength(1));
+    final request = placementWriter.requests.single;
+    expect(request.componentId, 'R6');
+    expect(request.coordinateSpace, 'board_normalized');
+    expect(request.boardSide, 'unknown');
+    expect(request.centerX, closeTo(0.62, 0.01));
+    expect(request.centerY, closeTo(0.38, 0.01));
+    expect(request.width, 1.0);
+    expect(request.height, 0.6);
+    expect(request.rotationDeg, 0);
+    expect(request.templateId, 'template_family_rect_2_top_bottom');
+    expect(request.sourcePhotoId, isNull);
+    expect(addWriter.requests, isEmpty);
+    expect(editWriter.requests, isEmpty);
+    expect(measurementWriter.requests, isEmpty);
+    final projectedState = _readProjectState(tester);
+    expect(projectedState.events, hasLength(1));
+    expect(
+      projectedState.events.single.payload['component_id'],
+      'R6',
+    );
+    expect(projectedState.isProjectionStale, isTrue);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('default component filter shows all components', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    expect(find.text('Peida mõõtmata'), findsOneWidget);
+    expect(
+      _canvasSemanticsLabels(tester).where(
+        (label) => label.startsWith('Board Canvas footprint visual R1 ('),
+      ),
+      isNotEmpty,
+    );
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_row_R1')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_row_R6')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('category rows show explicit filtered visibility counts',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _openWideContextMode(tester, placements: true);
+
+    final resistorCategory = find.byKey(
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.descendant(
+        of: resistorCategory,
+        matching: find.text('3 / 7 nähtaval'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: resistorCategory,
+        matching: find.text('4 peidetud'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('filtered category hover previews only visible placements',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _openWideContextMode(tester, placements: true);
+    final hover = await _hoverWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    addTearDown(hover.removePointer);
+
+    expect(
+      _painterPreviewKeys(tester),
+      equals(<String>{'R2|evt_nav_r2', 'R10|evt_nav_r10'}),
+    );
+  });
+
+  testWidgets('hide unmeasured removes menu rendering and hit eligibility',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    expect(
+      _canvasSemanticsLabels(tester).where(
+        (label) => label.startsWith('Board Canvas footprint visual R1 ('),
+      ),
+      isEmpty,
+    );
+    expect(
+      _canvasSemanticsLabels(tester).where(
+        (label) => label.startsWith('Board Canvas footprint visual R2 ('),
+      ),
+      isNotEmpty,
+    );
+
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_row_R1')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_row_R2')),
+      findsOneWidget,
+    );
+
+    await _tapCanvasAtNormalized(tester, x: 0.12, y: 0.18);
+    expect(_painterSelectedComponentId(tester), isNull);
+    expect(_painterSelectedPlacementKey(tester), isNull);
+  });
+
+  testWidgets('hiding selected component clears selection and inspector',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R1'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_inspector')),
+      findsOneWidget,
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_inspector')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_list_resistors')),
+      findsOneWidget,
+    );
+    expect(_painterSelectedComponentId(tester), isNull);
+  });
+
+  testWidgets('zero-visible category remains navigable', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _openWideContextMode(tester, placements: true);
+
+    final connectorCategory = find.byKey(
+      const Key('board_canvas_component_category_connectors'),
+    );
+    expect(connectorCategory, findsOneWidget);
+    expect(
+      find.descendant(
+        of: connectorCategory,
+        matching: find.text('0 / 1 nähtaval'),
+      ),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_connectors'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_empty')),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Kõik selle grupi komponendid on mõõtmata ja peidetud.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('zero-visible canvas keeps restore action available',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _inlineProjectState(
+      components: const [
+        ComponentFact(componentId: 'R1', type: 'resistor'),
+      ],
+      placements: const [
+        ComponentVisualPlacementFact(
+          componentId: 'R1',
+          coordinateSpace: 'board_normalized',
+          boardSide: 'top',
+          centerX: 0.4,
+          centerY: 0.5,
+          rotationDeg: 0,
+          width: 0.06,
+          height: 0.03,
+          sourceEventId: 'evt_zero_visible',
+          status: 'user_confirmed_visual',
+        ),
+      ],
+    );
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+
+    expect(
+      find.byKey(const Key('board_canvas_filter_canvas_empty')),
+      findsOneWidget,
+    );
+    expect(find.text('Kõik komponendid on mõõtmata'), findsOneWidget);
+    expect(find.text('Näita mõõtmata'), findsOneWidget);
+  });
+
+  testWidgets('Näita mõõtmata restores rows rendering and hit selection',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+
+    expect(find.text('Peida mõõtmata'), findsOneWidget);
+    expect(
+      _canvasSemanticsLabels(tester).where(
+        (label) => label.startsWith('Board Canvas footprint visual R1 ('),
+      ),
+      isNotEmpty,
+    );
+    await _tapCanvasAtNormalized(tester, x: 0.12, y: 0.18);
+    expect(_painterSelectedPlacementKey(tester), 'R1|evt_nav_r1');
+  });
+
+  testWidgets('navigator hover navigation and filter call no writer',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final addWriter = _FakeAddComponentWriter();
+    final editWriter = _FakeEditComponentWriter();
+    final placementWriter = _FakePlacementWriter();
+    final measurementWriter = _FakeSaveMeasurementWriter();
+    final state = _componentNavigatorState();
+    await tester.pumpWidget(
+      _harness(
+        projectState: state,
+        addComponentWriter: addWriter,
+        editComponentWriter: editWriter,
+        placementWriter: placementWriter,
+        measurementWriter: measurementWriter,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    final hover = await _hoverWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    addTearDown(hover.removePointer);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_back'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_hide_unmeasured_toggle')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+
+    expect(addWriter.requests, isEmpty);
+    expect(editWriter.requests, isEmpty);
+    expect(placementWriter.requests, isEmpty);
+    expect(measurementWriter.requests, isEmpty);
+    expect(state.events, isEmpty);
+  });
+
+  testWidgets('hide unmeasured Measure targets the first visible placement',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_measure_sheet_button'),
+    );
+
+    expect(_painterSelectedComponentId(tester), 'R2');
+    expect(_painterSelectedPlacementKey(tester), 'R2|evt_nav_r2');
+    expect(
+      find.byKey(const Key('board_canvas_integrated_measure_panel')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('medium navigator keeps all levels and filter action reachable',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1000, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
+    await tester.pumpAndSettle();
+    await _openWideContextMode(tester, placements: true);
+    expect(find.text('Komponenditüübid'), findsOneWidget);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_resistors'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_list_resistors')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R6'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_place_action')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_category_list_resistors')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_row_R6')),
+      findsNothing,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_hide_unmeasured_toggle'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_R6'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_place_action')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
@@ -2240,7 +3711,7 @@ void main() {
     expect(railText('Lisa'), findsOneWidget);
     expect(railText('Lisa komponent'), findsNothing);
     expect(find.text('Add Component'), findsNothing);
-    expect(railText('Paigutused'), findsOneWidget);
+    expect(railText('Komponendid'), findsOneWidget);
     expect(find.text('Placements'), findsNothing);
     expect(railText('Ohutus'), findsOneWidget);
     expect(find.text('Safety'), findsNothing);
@@ -3843,7 +5314,7 @@ void main() {
       find.byKey(const Key('board_canvas_component_workflow_measurement')),
       findsNothing,
     );
-    expect(find.text('Komponendid'), findsNothing);
+    expect(find.text('Komponendid'), findsOneWidget);
     expect(find.text('Loo komponent'), findsNWidgets(2));
     expect(find.text('Muuda andmeid'), findsOneWidget);
     expect(find.text('Mõõda komponenti'), findsNothing);
@@ -4486,10 +5957,10 @@ void main() {
       _harness(projectState: state, placementWriter: placementWriter),
     );
     await tester.pumpAndSettle();
-    await _openWideContextMode(tester, placements: true);
-    await _tapWidgetByKey(
+    await _selectPlacement(
       tester,
-      const Key('placement_selector_cmp_r101|evt_newer_v2'),
+      'R101 (cmp_r101)',
+      placementIndex: 1,
     );
     await tester.tap(
       find.byKey(const Key('board_canvas_rail_add_component_tool')),
@@ -5888,11 +7359,14 @@ void main() {
     expect(
       find.descendant(
         of: contextPanelFinder,
-        matching: find.text('Paigutused'),
+        matching: find.text('Komponenditüübid'),
       ),
       findsOneWidget,
     );
-    expect(find.widgetWithText(ChoiceChip, 'R101 (cmp_r101)'), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_component_category_other_unknown')),
+      findsOneWidget,
+    );
     expect(
       find.byKey(const Key('board_canvas_rail_placements_active')),
       findsOneWidget,
@@ -6331,6 +7805,9 @@ void main() {
 
   testWidgets('does not render photo_local placements on board canvas',
       (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       _harness(
         projectState: _inlineProjectState(
@@ -6341,9 +7818,28 @@ void main() {
     );
 
     expect(
-      find.text(
-        'No board-normalized placements available for this read-only canvas.',
-      ),
+        find.byKey(const Key('board_canvas_workspace_frame')), findsOneWidget);
+    expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+    expect(
+      _canvasSemanticsLabels(tester)
+          .where((label) => label.contains('cmp_photo')),
+      isEmpty,
+    );
+    await _openWideContextMode(tester, placements: true);
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_category_other_unknown'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_component_row_cmp_photo'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_component_view_placement')),
+      findsNothing,
+    );
+    expect(
+      find.text('Kinnitatud paigutus ei ole plaadi canvasel nähtav.'),
       findsOneWidget,
     );
   });

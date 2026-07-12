@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -55,6 +56,40 @@ const EdgeInsets _kCompactControlTilePadding =
 const EdgeInsets _kCompactControlChildrenPadding =
     EdgeInsets.fromLTRB(8, 0, 8, 6);
 
+ButtonStyle _benchBeepNavigatorControlStyle({required bool filled}) {
+  return ButtonStyle(
+    foregroundColor: const WidgetStatePropertyAll(_kBoardCanvasSignal),
+    backgroundColor: WidgetStatePropertyAll(
+      filled ? _kBoardCanvasSignalTint : Colors.transparent,
+    ),
+    overlayColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.pressed)) {
+        return _kBoardCanvasSignal.withValues(alpha: 0.28);
+      }
+      if (states.contains(WidgetState.focused)) {
+        return _kBoardCanvasSignal.withValues(alpha: 0.2);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return _kBoardCanvasSignal.withValues(alpha: 0.12);
+      }
+      return Colors.transparent;
+    }),
+    side: WidgetStateProperty.resolveWith((states) {
+      final emphasized = states.contains(WidgetState.focused) ||
+          states.contains(WidgetState.pressed);
+      return BorderSide(
+        color: emphasized
+            ? _kBoardCanvasSignal.withValues(alpha: 0.86)
+            : _kBoardCanvasRuleStrong.withValues(alpha: 0.6),
+        width: emphasized ? 1.2 : 1,
+      );
+    }),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+    ),
+  );
+}
+
 enum _WorkbenchContextPanelMode {
   hidden,
   inspector,
@@ -64,12 +99,184 @@ enum _WorkbenchContextPanelMode {
   safetyEvidence
 }
 
+enum _ComponentCategory {
+  resistors,
+  capacitors,
+  diodes,
+  transistors,
+  integratedCircuits,
+  connectors,
+  inductorsTransformers,
+  fuses,
+  testPoints,
+  otherUnknown,
+}
+
+extension on _ComponentCategory {
+  String get stableId {
+    switch (this) {
+      case _ComponentCategory.resistors:
+        return 'resistors';
+      case _ComponentCategory.capacitors:
+        return 'capacitors';
+      case _ComponentCategory.diodes:
+        return 'diodes';
+      case _ComponentCategory.transistors:
+        return 'transistors';
+      case _ComponentCategory.integratedCircuits:
+        return 'integrated_circuits';
+      case _ComponentCategory.connectors:
+        return 'connectors';
+      case _ComponentCategory.inductorsTransformers:
+        return 'inductors_transformers';
+      case _ComponentCategory.fuses:
+        return 'fuses';
+      case _ComponentCategory.testPoints:
+        return 'test_points';
+      case _ComponentCategory.otherUnknown:
+        return 'other_unknown';
+    }
+  }
+
+  String get label {
+    switch (this) {
+      case _ComponentCategory.resistors:
+        return 'Takistid';
+      case _ComponentCategory.capacitors:
+        return 'Kondensaatorid';
+      case _ComponentCategory.diodes:
+        return 'Dioodid';
+      case _ComponentCategory.transistors:
+        return 'Transistorid';
+      case _ComponentCategory.integratedCircuits:
+        return 'Mikroskeemid';
+      case _ComponentCategory.connectors:
+        return 'Konnektorid';
+      case _ComponentCategory.inductorsTransformers:
+        return 'Poolid ja trafod';
+      case _ComponentCategory.fuses:
+        return 'Kaitsmed';
+      case _ComponentCategory.testPoints:
+        return 'Testpunktid';
+      case _ComponentCategory.otherUnknown:
+        return 'Muud / tundmatu';
+    }
+  }
+}
+
+_ComponentCategory _componentCategoryFor(ComponentFact component) {
+  final kind = component.type?.trim().toLowerCase() ?? '';
+  if (kind == 'resistor' ||
+      kind == 'takisti' ||
+      kind == 'res' ||
+      kind.contains('pull-up') ||
+      kind.contains('pull down') ||
+      kind.contains('pull-down') ||
+      kind.contains('pull up') ||
+      kind.contains('shunt')) {
+    return _ComponentCategory.resistors;
+  }
+  if (kind == 'capacitor' || kind == 'cap' || kind == 'kondensaator') {
+    return _ComponentCategory.capacitors;
+  }
+  if (kind == 'diode' ||
+      kind == 'diood' ||
+      kind == 'zener' ||
+      kind == 'schottky' ||
+      kind == 'led') {
+    return _ComponentCategory.diodes;
+  }
+  if (kind == 'transistor' ||
+      kind == 'mosfet' ||
+      kind == 'fet' ||
+      kind == 'bjt') {
+    return _ComponentCategory.transistors;
+  }
+  if (kind == 'ic' ||
+      kind == 'mcu' ||
+      kind == 'controller' ||
+      kind == 'chip' ||
+      kind == 'regulator' ||
+      kind == 'opamp' ||
+      kind == 'mikroskeem') {
+    return _ComponentCategory.integratedCircuits;
+  }
+  if (kind == 'connector' ||
+      kind == 'socket' ||
+      kind == 'header' ||
+      kind == 'plug' ||
+      kind == 'konnektor') {
+    return _ComponentCategory.connectors;
+  }
+  if (kind == 'inductor' ||
+      kind == 'coil' ||
+      kind == 'choke' ||
+      kind == 'transformer' ||
+      kind.contains('induktiiv')) {
+    return _ComponentCategory.inductorsTransformers;
+  }
+  if (kind == 'fuse' || kind == 'kaitse' || kind == 'ptc') {
+    return _ComponentCategory.fuses;
+  }
+  if (kind == 'testpoint' ||
+      kind == 'test point' ||
+      kind == 'tp' ||
+      kind == 'testpunkt') {
+    return _ComponentCategory.testPoints;
+  }
+  return _ComponentCategory.otherUnknown;
+}
+
+String _componentPrimaryLabel(ComponentFact component) {
+  final designator = component.designator?.trim();
+  return designator == null || designator.isEmpty
+      ? component.componentId
+      : designator;
+}
+
+String _componentKindLabel(ComponentFact component) {
+  final kind = component.type?.trim();
+  return kind == null || kind.isEmpty ? 'tundmatu' : kind;
+}
+
+int _naturalComponentIdCompare(String left, String right) {
+  final tokenPattern = RegExp(r'\d+|\D+');
+  final leftTokens = tokenPattern
+      .allMatches(left.toLowerCase())
+      .map((match) => match.group(0)!)
+      .toList(growable: false);
+  final rightTokens = tokenPattern
+      .allMatches(right.toLowerCase())
+      .map((match) => match.group(0)!)
+      .toList(growable: false);
+  final commonLength = math.min(leftTokens.length, rightTokens.length);
+  for (var index = 0; index < commonLength; index++) {
+    final leftToken = leftTokens[index];
+    final rightToken = rightTokens[index];
+    final leftNumber = int.tryParse(leftToken);
+    final rightNumber = int.tryParse(rightToken);
+    final comparison = leftNumber != null && rightNumber != null
+        ? leftNumber.compareTo(rightNumber)
+        : leftToken.compareTo(rightToken);
+    if (comparison != 0) {
+      return comparison;
+    }
+  }
+  return leftTokens.length.compareTo(rightTokens.length);
+}
+
 abstract class CanvasSelection {
   const CanvasSelection();
 }
 
 class EmptyCanvasSelection extends CanvasSelection {
   const EmptyCanvasSelection();
+}
+
+class ComponentSelection extends CanvasSelection {
+  const ComponentSelection({required this.componentId});
+
+  final String componentId;
 }
 
 class ComponentPlacementSelection extends CanvasSelection {
@@ -411,6 +618,9 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   CanvasSelection _canvasSelection = const EmptyCanvasSelection();
+  _ComponentCategory? _componentNavigatorCategory;
+  Set<String> _previewPlacementKeys = const <String>{};
+  bool _hideUnmeasuredComponents = false;
   String? _selectedAddComponentTemplateId;
   int _addComponentTemplateTopContactMarkers = 0;
   int _addComponentTemplateRightContactMarkers = 0;
@@ -425,7 +635,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   String? _placementEditorDraftKey;
   _PlacementEditorDraftState? _placementEditorDraft;
   bool _addComponentPlacementSaveInFlight = false;
-  String? _addComponentTemplatePlacementContextKey;
   String? _addComponentTemplateSaveStatusMessage;
   String _rightPanelCreateComponentId = '';
   String _rightPanelCreateComponentLabel = '';
@@ -461,12 +670,82 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         : null;
   }
 
+  String? get _selectedComponentId {
+    final selection = _canvasSelection;
+    if (selection is ComponentSelection) {
+      return selection.componentId;
+    }
+    if (selection is ComponentPlacementSelection) {
+      return selection.componentId;
+    }
+    return null;
+  }
+
   void _setCanvasSelection(CanvasSelection selection) {
     _canvasSelection = selection;
   }
 
   void _clearCanvasSelection() {
     _setCanvasSelection(const EmptyCanvasSelection());
+  }
+
+  void _selectComponent(ComponentFact component) {
+    _setCanvasSelection(
+      ComponentSelection(componentId: component.componentId),
+    );
+  }
+
+  void _setPreviewPlacementKeys(Set<String> keys) {
+    if (setEquals(_previewPlacementKeys, keys)) {
+      return;
+    }
+    setState(() {
+      _previewPlacementKeys = Set<String>.unmodifiable(keys);
+    });
+  }
+
+  void _toggleHideUnmeasuredComponents(
+    Map<String, int> measurementCountsByComponentId,
+    Map<String, ComponentFact> componentsById,
+  ) {
+    setState(() {
+      final nextValue = !_hideUnmeasuredComponents;
+      if (nextValue) {
+        final selectedComponentId = _selectedComponentId;
+        if (selectedComponentId != null &&
+            (measurementCountsByComponentId[selectedComponentId] ?? 0) == 0) {
+          final selectedComponent = componentsById[selectedComponentId];
+          _clearCanvasSelection();
+          _componentNavigatorCategory = selectedComponent == null
+              ? null
+              : _componentCategoryFor(selectedComponent);
+          _contextPanelMode = _WorkbenchContextPanelMode.placements;
+          _inspectorVisible = true;
+          _canvasFocusMode = false;
+        }
+      }
+      _hideUnmeasuredComponents = nextValue;
+      _previewPlacementKeys = const <String>{};
+    });
+  }
+
+  void _beginUnplacedComponentPlacement(ComponentFact component) {
+    setState(() {
+      _contextPanelMode = _WorkbenchContextPanelMode.addComponentTemplates;
+      _inspectorVisible = true;
+      _canvasFocusMode = false;
+      _selectedAddComponentTemplateId = null;
+      _addComponentTemplateTopContactMarkers = 0;
+      _addComponentTemplateRightContactMarkers = 0;
+      _addComponentTemplateBottomContactMarkers = 0;
+      _addComponentTemplateLeftContactMarkers = 0;
+      _addComponentTemplateDraftLabel = _componentPrimaryLabel(component);
+      _resetAddComponentTemplateLocalDraftScalars();
+      _addComponentTemplateGhostDraftAnchor = null;
+      _addComponentTemplateGhostDraftCanvasSize = null;
+      _addComponentTemplateSaveStatusMessage = null;
+      _previewPlacementKeys = const <String>{};
+    });
   }
 
   void _selectComponentPlacement(
@@ -591,26 +870,30 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return ((value % 360) + 360) % 360;
   }
 
-  double _addComponentTemplateDraftCenterX(_PlacementEntry selectedEntry) {
+  double? _addComponentTemplateDraftCenterX(_PlacementSaveTarget target) {
     final draftAnchor = _addComponentTemplateGhostDraftAnchor;
     if (draftAnchor == null) {
-      return selectedEntry.placement.centerX.toDouble();
+      return target.existingCenterX;
     }
     final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
     if (canvasSize == null || canvasSize.width <= 0) {
-      return draftAnchor.dx;
+      return target.coordinateSpace == 'board_normalized'
+          ? null
+          : draftAnchor.dx;
     }
     return draftAnchor.dx / canvasSize.width;
   }
 
-  double _addComponentTemplateDraftCenterY(_PlacementEntry selectedEntry) {
+  double? _addComponentTemplateDraftCenterY(_PlacementSaveTarget target) {
     final draftAnchor = _addComponentTemplateGhostDraftAnchor;
     if (draftAnchor == null) {
-      return selectedEntry.placement.centerY.toDouble();
+      return target.existingCenterY;
     }
     final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
     if (canvasSize == null || canvasSize.height <= 0) {
-      return draftAnchor.dy;
+      return target.coordinateSpace == 'board_normalized'
+          ? null
+          : draftAnchor.dy;
     }
     return draftAnchor.dy / canvasSize.height;
   }
@@ -624,14 +907,16 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   }
 
   String? _addComponentTemplateCanonicalBoundsBlockReason(
-    _PlacementEntry selectedEntry,
+    _PlacementSaveTarget target,
   ) {
-    if (selectedEntry.placement.coordinateSpace.trim() != 'board_normalized') {
+    if (target.coordinateSpace.trim() != 'board_normalized') {
       return null;
     }
-    final centerX = _addComponentTemplateDraftCenterX(selectedEntry);
-    final centerY = _addComponentTemplateDraftCenterY(selectedEntry);
-    if (!_isBoardNormalizedCoordinateInBounds(centerX) ||
+    final centerX = _addComponentTemplateDraftCenterX(target);
+    final centerY = _addComponentTemplateDraftCenterY(target);
+    if (centerX == null ||
+        centerY == null ||
+        !_isBoardNormalizedCoordinateInBounds(centerX) ||
         !_isBoardNormalizedCoordinateInBounds(centerY) ||
         !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftWidth) ||
         !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftHeight)) {
@@ -702,22 +987,53 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
   String? _addComponentTemplateSaveBlockReason({
     required ProjectState projectState,
-    required _PlacementEntry? selectedEntry,
+    required _PlacementSaveTarget? target,
   }) {
-    if (selectedEntry == null) {
+    if (target == null) {
       return 'Vali olemasolev komponent enne salvestamist.';
     }
     if (_addComponentTemplateDraftLabel.trim().isEmpty) {
       return 'Lisa nimi enne salvestamist.';
     }
+    if (target.requiresExplicitAnchor &&
+        _addComponentTemplateGhostDraftAnchor == null) {
+      return 'Vali canvasele paigutuse asukoht.';
+    }
     final canonicalBoundsReason =
-        _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
+        _addComponentTemplateCanonicalBoundsBlockReason(target);
     if (canonicalBoundsReason != null) {
       return canonicalBoundsReason;
     }
     final projectDirectory = projectState.projectDirectory;
     if (projectDirectory == null || projectDirectory.trim().isEmpty) {
       return 'Salvestamiseks ava projekt kohalikust kaustast.';
+    }
+    return null;
+  }
+
+  _PlacementSaveTarget? _placementSaveTarget(
+    List<_PlacementEntry> entries,
+  ) {
+    final selection = _canvasSelection;
+    if (selection is ComponentPlacementSelection) {
+      for (final entry in entries) {
+        if (entry.key == selection.placementKey &&
+            entry.placement.componentId == selection.componentId) {
+          return _PlacementSaveTarget.fromEntry(entry);
+        }
+      }
+      return null;
+    }
+    if (selection is ComponentSelection) {
+      final hasConfirmedPlacement = entries.any(
+        (entry) => entry.placement.componentId == selection.componentId,
+      );
+      if (hasConfirmedPlacement) {
+        return null;
+      }
+      return _PlacementSaveTarget.firstBoardPlacement(
+        componentId: selection.componentId,
+      );
     }
     return null;
   }
@@ -876,9 +1192,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     String? fallbackComponentId,
   }) {
     final selection = _canvasSelection;
-    final componentId = selection is ComponentPlacementSelection
-        ? selection.componentId
-        : fallbackComponentId;
+    final componentId = switch (selection) {
+      ComponentSelection(:final componentId) => componentId,
+      ComponentPlacementSelection(:final componentId) => componentId,
+      _ => fallbackComponentId,
+    };
     if (componentId == null || componentId.trim().isEmpty) {
       return null;
     }
@@ -1115,34 +1433,39 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
   Future<void> _confirmAddComponentTemplatePlacement({
     required ProjectState projectState,
-    required _PlacementEntry selectedEntry,
+    required _PlacementSaveTarget target,
     required _AddComponentTemplateDefinition template,
   }) async {
     if (_addComponentPlacementSaveInFlight) {
       return;
     }
 
-    final placement = selectedEntry.placement;
     final canonicalBoundsBlockReason =
-        _addComponentTemplateCanonicalBoundsBlockReason(selectedEntry);
+        _addComponentTemplateCanonicalBoundsBlockReason(target);
     if (canonicalBoundsBlockReason != null) {
       _showAddComponentTemplateSaveStatus(canonicalBoundsBlockReason);
       return;
     }
-    final centerX = _addComponentTemplateDraftCenterX(selectedEntry);
-    final centerY = _addComponentTemplateDraftCenterY(selectedEntry);
+    final centerX = _addComponentTemplateDraftCenterX(target);
+    final centerY = _addComponentTemplateDraftCenterY(target);
+    if (centerX == null || centerY == null) {
+      _showAddComponentTemplateSaveStatus(
+        'Vali canvasele paigutuse asukoht.',
+      );
+      return;
+    }
     final request = V2PlacementWriterRequest(
-      componentId: placement.componentId,
-      coordinateSpace: placement.coordinateSpace,
-      boardSide: placement.boardSide,
+      componentId: target.componentId,
+      coordinateSpace: target.coordinateSpace,
+      boardSide: target.boardSide,
       centerX: centerX,
       centerY: centerY,
       rotationDeg: _addComponentTemplateDraftRotationDeg,
       width: _addComponentTemplateDraftWidth,
       height: _addComponentTemplateDraftHeight,
       templateId: template.id,
-      sourcePhotoId: placement.sourcePhotoId,
-      clientOperationId: _placementClientOperationIdFor(placement.componentId),
+      sourcePhotoId: target.sourcePhotoId,
+      clientOperationId: _placementClientOperationIdFor(target.componentId),
     );
 
     setState(() {
@@ -1233,38 +1556,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }
 
     final allPlacements = knownFacts.componentVisualPlacements;
-    if (allPlacements.isEmpty) {
-      return _buildScaffold(
-        context,
-        const _EmptyState(
-          title: 'No confirmed visual placements yet.',
-          subtitle:
-              'Board canvas is read-only in V1. Placement workflow is a future step.',
-        ),
-      );
-    }
-
-    final renderable = allPlacements
-        .where((placement) => placement.coordinateSpace == 'board_normalized')
-        .toList(growable: false);
-
-    if (renderable.isEmpty) {
-      return _buildScaffold(
-        context,
-        const _EmptyState(
-          title:
-              'No board-normalized placements available for this read-only canvas.',
-        ),
-      );
-    }
-
     final componentsById = <String, ComponentFact>{
       for (final component in knownFacts.components)
         component.componentId: component,
     };
     final knownPinsByComponentId = _knownPinVisualRefsByComponentId(knownFacts);
 
-    final entries = renderable
+    final allEntries = allPlacements
         .map(
           (placement) => _PlacementEntry(
             placement: placement,
@@ -1277,12 +1575,37 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
           ),
         )
         .toList(growable: false);
+    final entries = allEntries
+        .where(
+          (entry) => entry.placement.coordinateSpace == 'board_normalized',
+        )
+        .toList(growable: false);
     final photoToBoardAlignments = knownFacts.photoToBoardAlignments;
 
-    final selectedKey = _coerceSelection(entries);
+    final measurementCountByComponent = measurementCountsByComponents(
+      measurements: knownFacts.measurements,
+      componentIds: knownFacts.components
+          .map((component) => component.componentId)
+          .toSet(),
+    );
+    final visibleComponentIds = knownFacts.components
+        .where(
+          (component) =>
+              !_hideUnmeasuredComponents ||
+              (measurementCountByComponent[component.componentId] ?? 0) > 0,
+        )
+        .map((component) => component.componentId)
+        .toSet();
+    final visibleEntries = entries
+        .where(
+          (entry) => visibleComponentIds.contains(entry.placement.componentId),
+        )
+        .toList(growable: false);
+
+    final selectedKey = _coerceSelection(visibleEntries);
     _PlacementEntry? selectedEntry;
     if (selectedKey != null) {
-      for (final entry in entries) {
+      for (final entry in visibleEntries) {
         if (entry.key == selectedKey) {
           selectedEntry = entry;
           break;
@@ -1301,14 +1624,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             knownFacts.visualTraces,
             selectedEntry.placement.componentId,
           );
-    final measurementCountByComponent = measurementCountsByComponents(
-      measurements: knownFacts.measurements,
-      componentIds: entries.map((entry) => entry.placement.componentId).toSet(),
-    );
     final measurementValueBadgesByComponent =
         measurementValueBadgesByComponents(
       measurements: knownFacts.measurements,
-      componentIds: entries.map((entry) => entry.placement.componentId).toSet(),
+      componentIds:
+          visibleEntries.map((entry) => entry.placement.componentId).toSet(),
     );
     final eligibleMeasurementValueBadgeComponentIds =
         measurementValueBadgesByComponent.keys.toSet();
@@ -1338,23 +1658,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     final selectedPlacementDraft = selectedDraftEntry == null
         ? null
         : _placementEditorDraftFor(selectedDraftEntry);
-    _PlacementEntry? addComponentTemplatePlacementContextEntry;
-    final addComponentTemplatePlacementContextKey =
-        _addComponentTemplatePlacementContextKey;
-    if (addComponentTemplatePlacementContextKey != null) {
-      for (final entry in entries) {
-        if (entry.key == addComponentTemplatePlacementContextKey) {
-          addComponentTemplatePlacementContextEntry = entry;
-          break;
-        }
-      }
-    }
+    final placementSaveTarget = _placementSaveTarget(allEntries);
+    final addComponentTemplatePlacementContextEntry =
+        placementSaveTarget?.sourceEntry;
     final addComponentTemplateSaveBlockReason =
         selectedAddComponentTemplate == null
             ? null
             : _addComponentTemplateSaveBlockReason(
                 projectState: projectState,
-                selectedEntry: addComponentTemplatePlacementContextEntry,
+                target: placementSaveTarget,
               );
     final canConfirmAddComponentPlacement =
         selectedAddComponentTemplate != null &&
@@ -1384,13 +1696,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               builder: (context, constraints) {
                 final useWorkbenchShell = constraints.maxWidth >= 900;
                 final selector = _PlacementSelector(
-                  entries: entries,
+                  entries: visibleEntries,
                   selectedKey: selectedKey,
                   selectedLabel: selectedEntry?.selectorLabel,
                   onSelected: (value) {
                     setState(() {
-                      _selectComponentPlacementByKey(value, entries);
-                      _addComponentTemplatePlacementContextKey = value;
+                      _selectComponentPlacementByKey(value, visibleEntries);
                       if (_contextPanelMode !=
                           _WorkbenchContextPanelMode.measure) {
                         _contextPanelMode =
@@ -1410,8 +1721,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                 );
                 final canvas = _CanvasPanel(
-                  entries: entries,
+                  entries: visibleEntries,
                   selectedKey: selectedKey,
+                  selectedComponentId: _selectedComponentId,
+                  previewKeys: _previewPlacementKeys,
+                  hideUnmeasured: _hideUnmeasuredComponents,
+                  onToggleHideUnmeasured: () => _toggleHideUnmeasuredComponents(
+                    measurementCountByComponent,
+                    componentsById,
+                  ),
                   measurementCountsByComponentId: measurementCountByComponent,
                   measurementValueBadgesByComponentId:
                       measurementValueBadgesByComponent,
@@ -1437,10 +1755,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onPlacementSelected: (selection) {
                     setState(() {
                       _setCanvasSelection(selection);
-                      _addComponentTemplatePlacementContextKey =
-                          selection.placementKey;
                       if (_contextPanelMode !=
-                          _WorkbenchContextPanelMode.measure) {
+                              _WorkbenchContextPanelMode.measure &&
+                          _contextPanelMode !=
+                              _WorkbenchContextPanelMode.placements) {
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.inspector;
                       }
@@ -1450,9 +1768,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onCanvasTapEmpty: () {
                     setState(() {
                       _clearCanvasSelection();
-                      _addComponentTemplatePlacementContextKey = null;
                       if (_contextPanelMode !=
-                          _WorkbenchContextPanelMode.measure) {
+                              _WorkbenchContextPanelMode.measure &&
+                          _contextPanelMode !=
+                              _WorkbenchContextPanelMode.placements) {
                         _contextPanelMode = _WorkbenchContextPanelMode.hidden;
                       }
                     });
@@ -1607,20 +1926,56 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       contextPanel = metadata;
                       break;
                     case _WorkbenchContextPanelMode.placements:
-                      contextPanel = _PlacementSelector(
-                        entries: entries,
-                        selectedKey: selectedKey,
-                        selectedLabel: selectedEntry?.selectorLabel,
-                        initiallyExpanded: true,
-                        onSelected: (value) {
+                      contextPanel = _ComponentNavigatorPanel(
+                        components: knownFacts.components,
+                        entries: allEntries,
+                        canvasEntries: visibleEntries,
+                        visibleComponentIds: visibleComponentIds,
+                        hideUnmeasured: _hideUnmeasuredComponents,
+                        measurementCountsByComponentId:
+                            measurementCountByComponent,
+                        selectedCategory: _componentNavigatorCategory,
+                        selection: _canvasSelection,
+                        onCategorySelected: (category) {
                           setState(() {
-                            _selectComponentPlacementByKey(value, entries);
-                            _addComponentTemplatePlacementContextKey = value;
-                            _contextPanelMode =
-                                _WorkbenchContextPanelMode.inspector;
-                            _inspectorVisible = true;
+                            _clearCanvasSelection();
+                            _componentNavigatorCategory = category;
+                            _previewPlacementKeys = const <String>{};
                           });
                         },
+                        onBackToCategories: () {
+                          setState(() {
+                            _clearCanvasSelection();
+                            _componentNavigatorCategory = null;
+                            _previewPlacementKeys = const <String>{};
+                          });
+                        },
+                        onBackToCategory: () {
+                          setState(() {
+                            _clearCanvasSelection();
+                            _previewPlacementKeys = const <String>{};
+                          });
+                        },
+                        onComponentSelected: (component) {
+                          setState(() {
+                            _selectComponent(component);
+                            _previewPlacementKeys = const <String>{};
+                          });
+                        },
+                        onPlacementSelected: (entry) {
+                          setState(() {
+                            _selectComponentPlacement(entry);
+                            _previewPlacementKeys = const <String>{};
+                          });
+                        },
+                        onPlaceComponent: () {
+                          final component =
+                              componentsById[_selectedComponentId];
+                          if (component != null) {
+                            _beginUnplacedComponentPlacement(component);
+                          }
+                        },
+                        onPreviewKeysChanged: _setPreviewPlacementKeys,
                       );
                       break;
                     case _WorkbenchContextPanelMode.measure:
@@ -1823,8 +2178,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             ? () {
                                 _confirmAddComponentTemplatePlacement(
                                   projectState: projectState,
-                                  selectedEntry:
-                                      addComponentTemplatePlacementContextEntry!,
+                                  target: placementSaveTarget!,
                                   template: selectedAddComponentTemplate,
                                 );
                               }
@@ -1835,7 +2189,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                 'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
                         saveContextLabel:
                             addComponentTemplatePlacementContextEntry
-                                ?.selectorLabel,
+                                    ?.selectorLabel ??
+                                (placementSaveTarget == null
+                                    ? null
+                                    : _componentPrimaryLabel(
+                                        componentsById[placementSaveTarget
+                                                .componentId] ??
+                                            ComponentFact(
+                                              componentId: placementSaveTarget
+                                                  .componentId,
+                                            ),
+                                      )),
                         saveStatusMessage:
                             _addComponentTemplateSaveStatusMessage,
                       );
@@ -1879,8 +2243,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     onPressed: () {
                       setState(() {
                         if (_selectedPlacementKey == null &&
-                            entries.isNotEmpty) {
-                          _selectComponentPlacement(entries.first);
+                            visibleEntries.isNotEmpty) {
+                          _selectComponentPlacement(visibleEntries.first);
                         }
                         _contextPanelMode = _WorkbenchContextPanelMode.measure;
                         _inspectorVisible = true;
@@ -1891,14 +2255,15 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final focusPanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_rail_placements_tool'),
                     icon: Icons.format_list_bulleted_rounded,
-                    tooltip: 'Näita paigutusi parempoolses kontekstipaneelis',
-                    label: 'Paigutused',
+                    tooltip: 'Näita komponente parempoolses kontekstipaneelis',
+                    label: 'Komponendid',
                     modeKey: 'placements',
                     selected: _contextPanelMode ==
                         _WorkbenchContextPanelMode.placements,
                     onPressed: () {
                       setState(() {
                         _clearCanvasSelection();
+                        _componentNavigatorCategory = null;
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.placements;
                         _inspectorVisible = true;
@@ -1918,13 +2283,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     onPressed: () {
                       final placementContextEntry = selectedEntry;
                       setState(() {
-                        _addComponentTemplatePlacementContextKey =
-                            placementContextEntry?.key;
                         if (placementContextEntry != null) {
                           _seedAddComponentTemplateDraftFromPlacement(
                               placementContextEntry);
+                        } else if (_canvasSelection is ComponentSelection) {
+                          _clearCanvasSelection();
                         }
-                        _clearCanvasSelection();
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.addComponentTemplates;
                         _inspectorVisible = true;
@@ -5290,6 +5654,661 @@ class _AddComponentTemplateListTile extends StatelessWidget {
   }
 }
 
+class _ComponentNavigatorPanel extends StatelessWidget {
+  const _ComponentNavigatorPanel({
+    required this.components,
+    required this.entries,
+    required this.canvasEntries,
+    required this.visibleComponentIds,
+    required this.hideUnmeasured,
+    required this.measurementCountsByComponentId,
+    required this.selectedCategory,
+    required this.selection,
+    required this.onCategorySelected,
+    required this.onBackToCategories,
+    required this.onBackToCategory,
+    required this.onComponentSelected,
+    required this.onPlacementSelected,
+    required this.onPlaceComponent,
+    required this.onPreviewKeysChanged,
+  });
+
+  final List<ComponentFact> components;
+  final List<_PlacementEntry> entries;
+  final List<_PlacementEntry> canvasEntries;
+  final Set<String> visibleComponentIds;
+  final bool hideUnmeasured;
+  final Map<String, int> measurementCountsByComponentId;
+  final _ComponentCategory? selectedCategory;
+  final CanvasSelection selection;
+  final ValueChanged<_ComponentCategory> onCategorySelected;
+  final VoidCallback onBackToCategories;
+  final VoidCallback onBackToCategory;
+  final ValueChanged<ComponentFact> onComponentSelected;
+  final ValueChanged<_PlacementEntry> onPlacementSelected;
+  final VoidCallback onPlaceComponent;
+  final ValueChanged<Set<String>> onPreviewKeysChanged;
+
+  Set<String> get _placedComponentIds =>
+      entries.map((entry) => entry.placement.componentId).toSet();
+
+  List<ComponentFact> _componentsInCategory(_ComponentCategory category) {
+    return components
+        .where((component) => _componentCategoryFor(component) == category)
+        .toList(growable: false);
+  }
+
+  int _compareComponents(ComponentFact left, ComponentFact right) {
+    final leftMeasured =
+        (measurementCountsByComponentId[left.componentId] ?? 0) > 0;
+    final rightMeasured =
+        (measurementCountsByComponentId[right.componentId] ?? 0) > 0;
+    if (leftMeasured != rightMeasured) {
+      return leftMeasured ? -1 : 1;
+    }
+    return _naturalComponentIdCompare(left.componentId, right.componentId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final category = selectedCategory;
+    final selectedComponentId = switch (selection) {
+      ComponentSelection(:final componentId) => componentId,
+      ComponentPlacementSelection(:final componentId) => componentId,
+      _ => null,
+    };
+    ComponentFact? selectedComponent;
+    if (category != null &&
+        selectedComponentId != null &&
+        visibleComponentIds.contains(selectedComponentId)) {
+      for (final component in components) {
+        if (component.componentId == selectedComponentId &&
+            _componentCategoryFor(component) == category) {
+          selectedComponent = component;
+          break;
+        }
+      }
+    }
+    return KeyedSubtree(
+      key: const Key('board_canvas_component_navigator'),
+      child: category == null
+          ? _buildCategoryOverview(context)
+          : selectedComponent == null
+              ? _buildCategoryList(context, category)
+              : _buildComponentInspector(
+                  context,
+                  category,
+                  selectedComponent,
+                ),
+    );
+  }
+
+  Widget _buildCategoryOverview(BuildContext context) {
+    final theme = Theme.of(context);
+    final visibleCategories = _ComponentCategory.values
+        .where((category) => _componentsInCategory(category).isNotEmpty)
+        .toList(growable: false);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Komponenditüübid',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: _kBoardCanvasNavy,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: SingleChildScrollView(
+            key: const Key('board_canvas_component_categories'),
+            child: Column(
+              children: [
+                for (final category in visibleCategories) ...[
+                  _buildCategoryRow(context, category),
+                  if (category != visibleCategories.last)
+                    const SizedBox(height: 6),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryRow(
+    BuildContext context,
+    _ComponentCategory category,
+  ) {
+    final theme = Theme.of(context);
+    final categoryComponents = _componentsInCategory(category);
+    final visibleCount = categoryComponents
+        .where(
+          (component) => visibleComponentIds.contains(component.componentId),
+        )
+        .length;
+    final hiddenCount = categoryComponents.length - visibleCount;
+    final placedIds = _placedComponentIds;
+    final placedCount = categoryComponents
+        .where((component) => placedIds.contains(component.componentId))
+        .length;
+    final unplacedCount = categoryComponents.length - placedCount;
+    final previewKeys = canvasEntries
+        .where(
+          (entry) =>
+              entry.component != null &&
+              _componentCategoryFor(entry.component!) == category,
+        )
+        .map((entry) => entry.key)
+        .toSet();
+
+    return MouseRegion(
+      onEnter: (_) => onPreviewKeysChanged(previewKeys),
+      onExit: (_) => onPreviewKeysChanged(const <String>{}),
+      child: Semantics(
+        button: true,
+        label: hideUnmeasured
+            ? '${category.label}, $visibleCount / '
+                '${categoryComponents.length} nähtaval, '
+                '$hiddenCount peidetud'
+            : '${category.label}, $placedCount / '
+                '${categoryComponents.length} paigutatud, '
+                '$unplacedCount paigutamata',
+        child: Material(
+          color: _kBoardCanvasTile,
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            key: Key('board_canvas_component_category_${category.stableId}'),
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => onCategorySelected(category),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.label,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: _kBoardCanvasNavy,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          hideUnmeasured
+                              ? '$visibleCount / ${categoryComponents.length} '
+                                  'nähtaval'
+                              : '$placedCount / ${categoryComponents.length} '
+                                  'paigutatud',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: _kBoardCanvasMuted,
+                          ),
+                        ),
+                        Text(
+                          hideUnmeasured
+                              ? '$hiddenCount peidetud'
+                              : '$unplacedCount paigutamata',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: _kBoardCanvasDim,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    size: 20,
+                    color: _kBoardCanvasSignal,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryList(
+    BuildContext context,
+    _ComponentCategory category,
+  ) {
+    final theme = Theme.of(context);
+    final placedIds = _placedComponentIds;
+    final allCategoryComponents = _componentsInCategory(category);
+    final categoryComponents = allCategoryComponents
+        .where(
+          (component) => visibleComponentIds.contains(component.componentId),
+        )
+        .toList(growable: false);
+    final placed = categoryComponents
+        .where((component) => placedIds.contains(component.componentId))
+        .toList(growable: false)
+      ..sort(_compareComponents);
+    final unplaced = categoryComponents
+        .where((component) => !placedIds.contains(component.componentId))
+        .toList(growable: false)
+      ..sort(_compareComponents);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            key: const Key('board_canvas_component_category_back'),
+            onPressed: onBackToCategories,
+            style: _benchBeepNavigatorControlStyle(filled: false),
+            icon: const Icon(Icons.arrow_back_rounded, size: 17),
+            label: const Text('Komponenditüübid'),
+          ),
+        ),
+        Text(
+          category.label,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: _kBoardCanvasNavy,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (hideUnmeasured && categoryComponents.isEmpty)
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Kõik selle grupi komponendid on mõõtmata ja peidetud.',
+                key: const Key('board_canvas_component_category_empty'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: _kBoardCanvasMuted,
+                ),
+              ),
+            ),
+          )
+        else
+          Expanded(
+            child: SingleChildScrollView(
+              key: Key(
+                'board_canvas_component_category_list_${category.stableId}',
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildComponentSection(
+                    context,
+                    key: const Key('board_canvas_component_section_placed'),
+                    title: 'PAIGUTATUD',
+                    sectionComponents: placed,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildComponentSection(
+                    context,
+                    key: const Key('board_canvas_component_section_unplaced'),
+                    title: 'PAIGUTAMATA',
+                    sectionComponents: unplaced,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildComponentSection(
+    BuildContext context, {
+    required Key key,
+    required String title,
+    required List<ComponentFact> sectionComponents,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      key: key,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: _kBoardCanvasSignal,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 5),
+        if (sectionComponents.isEmpty)
+          Text(
+            'Komponente pole.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: _kBoardCanvasDim,
+            ),
+          )
+        else
+          for (var index = 0; index < sectionComponents.length; index++) ...[
+            _buildComponentRow(context, sectionComponents[index]),
+            if (index != sectionComponents.length - 1)
+              const SizedBox(height: 5),
+          ],
+      ],
+    );
+  }
+
+  Widget _buildComponentRow(
+    BuildContext context,
+    ComponentFact component,
+  ) {
+    final theme = Theme.of(context);
+    final measurementCount =
+        measurementCountsByComponentId[component.componentId] ?? 0;
+    final measurementLabel =
+        measurementCount == 0 ? 'Mõõtmata' : '$measurementCount mõõtmist';
+    final previewKeys = canvasEntries
+        .where(
+          (entry) => entry.placement.componentId == component.componentId,
+        )
+        .map((entry) => entry.key)
+        .toSet();
+
+    return MouseRegion(
+      onEnter: (_) => onPreviewKeysChanged(previewKeys),
+      onExit: (_) => onPreviewKeysChanged(const <String>{}),
+      child: Semantics(
+        button: true,
+        child: Material(
+          color: _kBoardCanvasTile,
+          borderRadius: BorderRadius.circular(7),
+          child: InkWell(
+            key: Key('board_canvas_component_row_${component.componentId}'),
+            borderRadius: BorderRadius.circular(7),
+            onTap: () => onComponentSelected(component),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(color: _kBoardCanvasRule),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _componentPrimaryLabel(component),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: _kBoardCanvasNavy,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          '${component.componentId} · '
+                          '${_componentKindLabel(component)}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: _kBoardCanvasMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    measurementLabel,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: measurementCount == 0
+                          ? _kBoardCanvasDim
+                          : _kBoardCanvasReady,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComponentInspector(
+    BuildContext context,
+    _ComponentCategory category,
+    ComponentFact component,
+  ) {
+    final theme = Theme.of(context);
+    final componentEntries = entries
+        .where(
+          (entry) => entry.placement.componentId == component.componentId,
+        )
+        .toList(growable: false);
+    final visibleComponentEntries = canvasEntries
+        .where(
+          (entry) => entry.placement.componentId == component.componentId,
+        )
+        .toList(growable: false);
+    final selectedPlacementKey = selection is ComponentPlacementSelection
+        ? (selection as ComponentPlacementSelection).placementKey
+        : null;
+    final measurementCount =
+        measurementCountsByComponentId[component.componentId] ?? 0;
+
+    return Column(
+      key: const Key('board_canvas_component_inspector'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            key: const Key('board_canvas_component_inspector_back'),
+            onPressed: onBackToCategory,
+            style: _benchBeepNavigatorControlStyle(filled: false),
+            icon: const Icon(Icons.arrow_back_rounded, size: 17),
+            label: Text(category.label),
+          ),
+        ),
+        Text(
+          _componentPrimaryLabel(component),
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: _kBoardCanvasNavy,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          '${component.componentId} · ${_componentKindLabel(component)}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          measurementCount == 0 ? 'Mõõtmata' : '$measurementCount mõõtmist',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color:
+                measurementCount == 0 ? _kBoardCanvasDim : _kBoardCanvasReady,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (componentEntries.isEmpty) ...[
+          Text(
+            'Pole veel canvasele paigutatud',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            key: const Key('board_canvas_component_place_action'),
+            onPressed: onPlaceComponent,
+            icon: const Icon(Icons.add_location_alt_outlined),
+            label: const Text('Paiguta canvasele'),
+          ),
+        ] else if (visibleComponentEntries.isEmpty) ...[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var index = 0;
+                      index < componentEntries.length;
+                      index++) ...[
+                    _buildPlacementSummary(context, componentEntries[index]),
+                    if (index != componentEntries.length - 1)
+                      const SizedBox(height: 6),
+                  ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Kinnitatud paigutus ei ole plaadi canvasel nähtav.',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: _kBoardCanvasMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ] else if (visibleComponentEntries.length == 1) ...[
+          _buildPlacementSummary(context, visibleComponentEntries.single),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            key: const Key('board_canvas_component_view_placement'),
+            onPressed: () =>
+                onPlacementSelected(visibleComponentEntries.single),
+            style: _benchBeepNavigatorControlStyle(filled: true),
+            icon: const Icon(Icons.center_focus_strong),
+            label: const Text('Vaata canvasel'),
+          ),
+        ] else ...[
+          Text(
+            'Vali paigutus',
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: _kBoardCanvasNavy,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var index = 0;
+                      index < visibleComponentEntries.length;
+                      index++) ...[
+                    _buildPlacementChoice(
+                      context,
+                      visibleComponentEntries[index],
+                      index: index,
+                      selected: visibleComponentEntries[index].key ==
+                          selectedPlacementKey,
+                    ),
+                    if (index != visibleComponentEntries.length - 1)
+                      const SizedBox(height: 6),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildPlacementSummary(
+    BuildContext context,
+    _PlacementEntry entry,
+  ) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        color: _kBoardCanvasTile,
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(color: _kBoardCanvasRule),
+      ),
+      child: Text(
+        '${entry.placement.boardSide} · '
+        '${entry.placement.coordinateSpace}',
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: _kBoardCanvasMuted,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlacementChoice(
+    BuildContext context,
+    _PlacementEntry entry, {
+    required int index,
+    required bool selected,
+  }) {
+    final theme = Theme.of(context);
+    return MouseRegion(
+      onEnter: (_) => onPreviewKeysChanged(<String>{entry.key}),
+      onExit: (_) => onPreviewKeysChanged(const <String>{}),
+      child: Semantics(
+        selected: selected,
+        button: true,
+        child: Material(
+          color: selected ? _kBoardCanvasSignalTint : _kBoardCanvasTile,
+          borderRadius: BorderRadius.circular(7),
+          child: InkWell(
+            key: Key('board_canvas_component_placement_${entry.key}'),
+            borderRadius: BorderRadius.circular(7),
+            onTap: () => onPlacementSelected(entry),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(
+                  color: selected ? _kBoardCanvasSignal : _kBoardCanvasRule,
+                  width: selected ? 2 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${index + 1}. paigutus · '
+                          '${entry.placement.boardSide}',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: _kBoardCanvasNavy,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          entry.placement.coordinateSpace,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: _kBoardCanvasMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    selected
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    size: 18,
+                    color: selected ? _kBoardCanvasSignal : _kBoardCanvasDim,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PlacementSelector extends StatelessWidget {
   const _PlacementSelector({
     required this.entries,
@@ -5402,6 +6421,10 @@ class _CanvasPanel extends StatefulWidget {
   const _CanvasPanel({
     required this.entries,
     required this.selectedKey,
+    required this.selectedComponentId,
+    required this.previewKeys,
+    required this.hideUnmeasured,
+    required this.onToggleHideUnmeasured,
     required this.measurementCountsByComponentId,
     required this.measurementValueBadgesByComponentId,
     required this.visibleMeasurementValueBadgeComponentIds,
@@ -5424,6 +6447,10 @@ class _CanvasPanel extends StatefulWidget {
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+  final String? selectedComponentId;
+  final Set<String> previewKeys;
+  final bool hideUnmeasured;
+  final VoidCallback onToggleHideUnmeasured;
   final Map<String, int> measurementCountsByComponentId;
   final Map<String, List<MeasurementFact>> measurementValueBadgesByComponentId;
   final Set<String> visibleMeasurementValueBadgeComponentIds;
@@ -5529,6 +6556,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   painter: _BoardPlacementPainter(
                     entries: widget.entries,
                     selectedKey: widget.selectedKey,
+                    selectedComponentId: widget.selectedComponentId,
+                    previewKeys: widget.previewKeys,
                     measurementCountsByComponentId:
                         widget.measurementCountsByComponentId,
                     colorScheme: theme.colorScheme,
@@ -5556,6 +6585,27 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   ),
                 ),
               ),
+              if (widget.hideUnmeasured && widget.entries.isEmpty)
+                const Positioned.fill(
+                  child: IgnorePointer(
+                    child: Center(
+                      child: DecoratedBox(
+                        key: Key('board_canvas_filter_canvas_empty'),
+                        decoration: BoxDecoration(
+                          color: _kBoardCanvasTile,
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          child: Text('Kõik komponendid on mõõtmata'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -5811,6 +6861,30 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   }
 
   Widget _buildCornerControls(BuildContext context) {
+    final hideUnmeasuredToggle = TextButton.icon(
+      key: const Key('board_canvas_hide_unmeasured_toggle'),
+      style: TextButton.styleFrom(
+        backgroundColor: widget.hideUnmeasured
+            ? _kBoardCanvasSignal
+            : _kBoardCanvasPaper.withValues(alpha: 0.92),
+        foregroundColor:
+            widget.hideUnmeasured ? _kBoardCanvasPaper : _kBoardCanvasNavy,
+        minimumSize: const Size(112, _kCompactControlTileHeight),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
+      icon: Icon(
+        widget.hideUnmeasured
+            ? Icons.visibility_outlined
+            : Icons.visibility_off_outlined,
+        size: _kCompactControlIconSize,
+      ),
+      label: Text(
+        widget.hideUnmeasured ? 'Näita mõõtmata' : 'Peida mõõtmata',
+      ),
+      onPressed: widget.onToggleHideUnmeasured,
+    );
     final measurementValueBadgeToggle = TextButton.icon(
       key: const Key('board_canvas_measurement_value_badge_global_toggle'),
       style: TextButton.styleFrom(
@@ -5868,6 +6942,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          hideUnmeasuredToggle,
+          const SizedBox(width: 6),
           if (widget.cornerFocusAction != null) ...[
             widget.cornerFocusAction!,
             const SizedBox(width: 6),
@@ -9125,6 +10201,57 @@ class _PlacementEntry {
   }
 }
 
+class _PlacementSaveTarget {
+  const _PlacementSaveTarget({
+    required this.componentId,
+    required this.coordinateSpace,
+    required this.boardSide,
+    required this.existingCenterX,
+    required this.existingCenterY,
+    required this.sourcePhotoId,
+    required this.requiresExplicitAnchor,
+    required this.sourceEntry,
+  });
+
+  factory _PlacementSaveTarget.fromEntry(_PlacementEntry entry) {
+    final placement = entry.placement;
+    return _PlacementSaveTarget(
+      componentId: placement.componentId,
+      coordinateSpace: placement.coordinateSpace,
+      boardSide: placement.boardSide,
+      existingCenterX: placement.centerX.toDouble(),
+      existingCenterY: placement.centerY.toDouble(),
+      sourcePhotoId: placement.sourcePhotoId,
+      requiresExplicitAnchor: false,
+      sourceEntry: entry,
+    );
+  }
+
+  factory _PlacementSaveTarget.firstBoardPlacement({
+    required String componentId,
+  }) {
+    return _PlacementSaveTarget(
+      componentId: componentId,
+      coordinateSpace: 'board_normalized',
+      boardSide: 'unknown',
+      existingCenterX: null,
+      existingCenterY: null,
+      sourcePhotoId: null,
+      requiresExplicitAnchor: true,
+      sourceEntry: null,
+    );
+  }
+
+  final String componentId;
+  final String coordinateSpace;
+  final String boardSide;
+  final double? existingCenterX;
+  final double? existingCenterY;
+  final String? sourcePhotoId;
+  final bool requiresExplicitAnchor;
+  final _PlacementEntry? sourceEntry;
+}
+
 class _MeasurementValueBadgeLayer extends StatelessWidget {
   const _MeasurementValueBadgeLayer({
     required this.entries,
@@ -9350,7 +10477,7 @@ enum _FootprintVisualKind {
 const Color _kFootprintSilk = Color(0xFFD3CD9A);
 const Color _kFootprintPad = Color(0xFF74E0A6);
 const Color _kFootprintCopper = Color(0xFFD8A24A);
-const Color _kFootprintSelected = Color(0xFF2BC06F);
+const Color _kFootprintSelected = _kBoardCanvasSignal;
 const Color _kFootprintFallback = Color(0xFF93A3B3);
 const double _kFootprintSelectionOutset = 8;
 
@@ -9709,14 +10836,40 @@ class _BoardPlacementPainter extends CustomPainter {
   _BoardPlacementPainter({
     required this.entries,
     required this.selectedKey,
+    required this.selectedComponentId,
+    required this.previewKeys,
     required this.measurementCountsByComponentId,
     required this.colorScheme,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
+  final String? selectedComponentId;
+  final Set<String> previewKeys;
   final Map<String, int> measurementCountsByComponentId;
   final ColorScheme colorScheme;
+
+  Color get componentSelectionColor => _kFootprintSelected;
+  Color get placementSelectionColor => _kFootprintSelected;
+  Color get hoverPreviewColor => const Color(0xFF9CB4AD);
+  double get componentSelectionStrokeWidth => 1.6;
+  double get placementSelectionStrokeWidth => 2.4;
+
+  Set<String> get dimmedPlacementKeys {
+    final componentId = selectedComponentId;
+    final placementKey = selectedKey;
+    if (componentId == null || placementKey == null) {
+      return const <String>{};
+    }
+    return entries
+        .where(
+          (entry) =>
+              entry.placement.componentId == componentId &&
+              entry.key != placementKey,
+        )
+        .map((entry) => entry.key)
+        .toSet();
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -9759,37 +10912,62 @@ class _BoardPlacementPainter extends CustomPainter {
       final center = _renderedPlacementCenter(entry, size);
       final bodySize = _renderedFootprintVisualSize(entry);
       final selected = entry.key == selectedKey;
+      final componentSelected =
+          entry.placement.componentId == selectedComponentId;
+      final componentOnlySelected = componentSelected && selectedKey == null;
+      final siblingDimmed =
+          componentSelected && selectedKey != null && !selected;
+      final previewed = previewKeys.contains(entry.key) &&
+          !selected &&
+          !componentOnlySelected &&
+          !siblingDimmed;
+      final emphasized = selected || componentOnlySelected;
       final visualKind = _footprintVisualKind(entry);
       final pinRenderPlan = _footprintPinRenderPlan(entry);
       final contactVisibilityState = _contactVisibilityStateForEntry(entry);
 
       final fillPaint = Paint()
-        ..color = selected
-            ? _kBoardCanvasSignalTint.withValues(alpha: 0.78)
-            : _kFootprintSilk.withValues(alpha: 0.07)
+        ..color = emphasized
+            ? _kBoardCanvasSignalTint.withValues(
+                alpha: selected ? 0.82 : 0.54,
+              )
+            : _kFootprintSilk.withValues(
+                alpha: siblingDimmed ? 0.025 : 0.07,
+              )
         ..style = PaintingStyle.fill;
 
       final strokePaint = Paint()
-        ..color = selected
-            ? _kFootprintSelected
-            : _kFootprintSilk.withValues(alpha: 0.82)
+        ..color = emphasized
+            ? _kFootprintSelected.withValues(
+                alpha: selected ? 1 : 0.86,
+              )
+            : _kFootprintSilk.withValues(
+                alpha: siblingDimmed ? 0.3 : 0.82,
+              )
         ..style = PaintingStyle.stroke
-        ..strokeWidth = selected ? 2.4 : 1.3;
+        ..strokeWidth = selected ? 2.8 : (componentOnlySelected ? 2 : 1.3);
 
       final padFillPaint = Paint()
-        ..color =
-            selected ? _kFootprintPad : _kFootprintPad.withValues(alpha: 0.88)
+        ..color = emphasized
+            ? _kFootprintPad
+            : _kFootprintPad.withValues(alpha: siblingDimmed ? 0.32 : 0.88)
         ..style = PaintingStyle.fill;
 
       final padStrokePaint = Paint()
-        ..color = selected ? _kBoardCanvasSignal : _kBoardCanvasNavyDeep
+        ..color = emphasized
+            ? _kBoardCanvasSignal
+            : _kBoardCanvasNavyDeep.withValues(
+                alpha: siblingDimmed ? 0.35 : 1,
+              )
         ..style = PaintingStyle.stroke
-        ..strokeWidth = selected ? 1.1 : 0.8;
+        ..strokeWidth = emphasized ? 1.1 : 0.8;
 
       final markerPaint = Paint()
-        ..color = selected
+        ..color = emphasized
             ? _kFootprintSelected
-            : _kFootprintSilk.withValues(alpha: 0.74)
+            : _kFootprintSilk.withValues(
+                alpha: siblingDimmed ? 0.28 : 0.74,
+              )
         ..style = PaintingStyle.fill;
 
       canvas.save();
@@ -9817,7 +10995,7 @@ class _BoardPlacementPainter extends CustomPainter {
         canvas: canvas,
         rect: rect,
         kind: visualKind,
-        selected: selected,
+        selected: emphasized,
       );
 
       if (_shouldDrawFootprintContacts(contactVisibilityState)) {
@@ -9850,11 +11028,26 @@ class _BoardPlacementPainter extends CustomPainter {
         canvas: canvas,
         bodyRect: rect,
         measurementCount: measurementCount,
-        selected: selected,
+        selected: emphasized,
       );
 
       if (selected) {
-        _drawSelectionRing(canvas, rect.inflate(_kFootprintSelectionOutset));
+        _drawSelectionRing(
+          canvas,
+          rect.inflate(_kFootprintSelectionOutset),
+          color: placementSelectionColor,
+          strokeWidth: placementSelectionStrokeWidth,
+        );
+      } else if (componentOnlySelected) {
+        _drawComponentSelectionRing(
+          canvas,
+          rect.inflate(_kFootprintSelectionOutset),
+        );
+      } else if (previewed) {
+        _drawHoverPreviewRing(
+          canvas,
+          rect.inflate(_kFootprintSelectionOutset),
+        );
       }
 
       canvas.restore();
@@ -9866,11 +11059,13 @@ class _BoardPlacementPainter extends CustomPainter {
           text: TextSpan(
             text: designator,
             style: TextStyle(
-              color: selected
+              color: emphasized
                   ? _kFootprintSelected
-                  : _kFootprintSilk.withValues(alpha: 0.9),
-              fontSize: selected ? 11 : 10.5,
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+                  : _kFootprintSilk.withValues(
+                      alpha: siblingDimmed ? 0.34 : 0.9,
+                    ),
+              fontSize: emphasized ? 11 : 10.5,
+              fontWeight: emphasized ? FontWeight.w800 : FontWeight.w700,
               letterSpacing: 0.5,
             ),
           ),
@@ -9957,19 +11152,54 @@ class _BoardPlacementPainter extends CustomPainter {
     }
   }
 
-  static void _drawSelectionRing(Canvas canvas, Rect rect) {
+  static void _drawSelectionRing(
+    Canvas canvas,
+    Rect rect, {
+    Color color = _kFootprintSelected,
+    double strokeWidth = 2.4,
+  }) {
+    final ring = RRect.fromRectAndRadius(rect, const Radius.circular(10));
+    final glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5
+      ..color = color.withValues(alpha: 0.32)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawRRect(ring, glowPaint);
     final ringPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..color = _kFootprintSelected.withValues(alpha: 0.88);
+      ..color = color;
+    canvas.drawRRect(ring, ringPaint);
+  }
+
+  void _drawComponentSelectionRing(Canvas canvas, Rect rect) {
+    final ringPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = componentSelectionStrokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = componentSelectionColor.withValues(alpha: 0.82);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(10)),
+      ringPaint,
+    );
+  }
+
+  void _drawHoverPreviewRing(Canvas canvas, Rect rect) {
+    final ringPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = hoverPreviewColor.withValues(alpha: 0.92);
     _drawDashedRRect(
       canvas,
       RRect.fromRectAndRadius(rect, const Radius.circular(10)),
       ringPaint,
-      dash: 5,
-      gap: 3.5,
+      dash: 4,
+      gap: 3,
     );
   }
 
@@ -10468,6 +11698,14 @@ class _BoardPlacementPainter extends CustomPainter {
           rect: rect,
           properties: SemanticsProperties(
             label: _footprintSemanticsLabel(entry),
+            selected: entry.key == selectedKey ||
+                (selectedKey == null &&
+                    entry.placement.componentId == selectedComponentId),
+            hint: previewKeys.contains(entry.key)
+                ? 'Ajutine hõljutuse eelvaade'
+                : dimmedPlacementKeys.contains(entry.key)
+                    ? 'Sama komponendi valimata paigutus'
+                    : null,
             textDirection: TextDirection.ltr,
           ),
         );
@@ -10483,6 +11721,10 @@ class _BoardPlacementPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _BoardPlacementPainter oldDelegate) {
     if (oldDelegate.selectedKey != selectedKey) {
+      return true;
+    }
+    if (oldDelegate.selectedComponentId != selectedComponentId ||
+        !setEquals(oldDelegate.previewKeys, previewKeys)) {
       return true;
     }
     if (oldDelegate.colorScheme != colorScheme) {

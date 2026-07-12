@@ -12,20 +12,25 @@ void main() {
     await tester.pumpWidget(
       const ProviderScope(child: TraceBenchApp()),
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
+    expect(find.text('Visuaalne remonditöölaud').hitTestable(), findsOneWidget);
 
-    expect(find.text('TraceBench Viewer'), findsOneWidget);
+    final sampleAction = find.text('Ava näidisprojekt');
+    await tester.ensureVisible(sampleAction);
+    await tester.tap(sampleAction);
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ava näidisprojekt'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Projekt avatud'), findsOneWidget);
 
-    expect(find.text('Ava projekt'), findsOneWidget);
-
-    await tester.tap(find.text('Ava projekt'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    final continueAction = find.text('Jätka avatud projektiga');
+    expect(continueAction.hitTestable(), findsOneWidget);
+    await tester.ensureVisible(continueAction);
+    await tester.tap(continueAction);
+    await tester.pumpAndSettle();
 
     expect(find.text('Project overview'), findsOneWidget);
     expect(
@@ -33,8 +38,7 @@ void main() {
 
     final overviewContext = tester.element(find.byType(ProjectOverviewScreen));
     GoRouter.of(overviewContext).go('/project/photos');
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
 
     expect(find.text('Foto tõendid'), findsAtLeast(1));
     expect(find.text('Foto ID: photo_top_backlight_001'), findsNothing);

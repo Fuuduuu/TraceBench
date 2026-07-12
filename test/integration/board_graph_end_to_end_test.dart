@@ -12,16 +12,25 @@ void main() {
     await tester.pumpWidget(
       const ProviderScope(child: TraceBenchApp()),
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    expect(find.text('TraceBench Viewer'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
+    expect(find.text('Visuaalne remonditöölaud').hitTestable(), findsOneWidget);
 
-    await tester.tap(find.text('Ava näidisprojekt'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.tap(find.text('Ava projekt'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    final sampleAction = find.text('Ava näidisprojekt');
+    await tester.ensureVisible(sampleAction);
+    await tester.tap(sampleAction);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Projekt avatud'), findsOneWidget);
+
+    final continueAction = find.text('Jätka avatud projektiga');
+    expect(continueAction.hitTestable(), findsOneWidget);
+    await tester.ensureVisible(continueAction);
+    await tester.tap(continueAction);
+    await tester.pumpAndSettle();
 
     expect(find.text('Project overview'), findsOneWidget);
     expect(find.byKey(const ValueKey('overview-board-graph-button')),
@@ -29,8 +38,7 @@ void main() {
 
     final overviewContext = tester.element(find.byType(ProjectOverviewScreen));
     GoRouter.of(overviewContext).go('/project/graph');
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
 
     expect(find.text('Board graph'), findsAtLeast(1));
     expect(find.textContaining('Q2'), findsAtLeast(1));

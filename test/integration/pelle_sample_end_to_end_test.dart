@@ -5,21 +5,31 @@ import 'package:flutter/widgets.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 
 void main() {
-  testWidgets('loads bundled Pelle sample and shows known facts', (tester) async {
+  testWidgets('loads bundled Pelle sample and shows known facts',
+      (tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: TraceBenchApp()),
     );
 
     await tester.pumpAndSettle();
 
-    expect(find.text('TraceBench Viewer'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
+    expect(find.text('Visuaalne remonditöölaud').hitTestable(), findsOneWidget);
 
-    await tester.tap(find.text('Ava näidisprojekt'));
+    final sampleAction = find.text('Ava näidisprojekt');
+    await tester.ensureVisible(sampleAction);
+    await tester.tap(sampleAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('Ava projekt'), findsOneWidget);
+    expect(find.text('Projekt avatud'), findsOneWidget);
 
-    await tester.tap(find.text('Ava projekt'));
+    final continueAction = find.text('Jätka avatud projektiga');
+    expect(continueAction.hitTestable(), findsOneWidget);
+    await tester.ensureVisible(continueAction);
+    await tester.tap(continueAction);
     await tester.pumpAndSettle();
 
     expect(find.text('Project overview'), findsOneWidget);
@@ -28,7 +38,8 @@ void main() {
     await tester.tap(otherActions);
     await tester.pumpAndSettle();
 
-    final componentsAction = find.byKey(const ValueKey('overview-components-button'));
+    final componentsAction =
+        find.byKey(const ValueKey('overview-components-button'));
     expect(componentsAction, findsOneWidget);
 
     await tester.ensureVisible(componentsAction);

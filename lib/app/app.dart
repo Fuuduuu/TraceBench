@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../features/home/screens/benchbeep_home_screen.dart';
 import '../features/home/screens/benchbeep_splash_screen.dart';
@@ -65,6 +66,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
           onOpenProjectFolder: _openProjectDirectory,
           onOpenProject: () => _openWorkbench(initialLocation: '/project'),
           onOpenWorkbench: _openWorkbench,
+          onExitRequested: windowManager.close,
         );
       },
     );

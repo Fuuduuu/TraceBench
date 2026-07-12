@@ -2,17 +2,24 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS`
+Next: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS`
 
-## Closed implementation
+## Current docs-only scope lock
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` was accepted, audited, committed, and pushed as `f0e6aac852ff29c7b44558f5ca9722ed12ce4424` (`fix: align home tests with visible launcher workflow`).
+`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS` records the human-approved Board Canvas component navigator direction, exact two-file future implementation allowlist, UI-local state boundaries, protected exclusions, dependency stops, and required test/validation gates.
 
-The exact implementation set, supplied Claude verdict, correction evidence, and validation record live in `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_POST_AUDIT_PASS.md`.
+Current write set is exactly the four route/ledger docs plus `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS.md`. No runtime, test, asset, route, package, schema, writer, tool, or product behavior changes are authorized in this pass.
 
-## Awaiting human decision
+## Next implementation
 
-No automatic implementation follows this closeout. The human must select the next PASS_ID; protected or implementation work requires an appropriate new scope lock.
+`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS` implements one three-level contextual right-panel navigator, fixed technician categories, placed/unplaced component lists, measurement-aware ordering and visibility, coherent typed component/placement selection, hover previews, and the persistent `Peida mõõtmata` / `Näita mõõtmata` canvas control.
 
-Do not stage, commit, or push from this pass.
+Future implementation write allowlist:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+See `docs/ACTIVE_SCOPE_LOCK.md` for the exact requirements and stop conditions. Do not route through `NEEDS_USER_DECISION` between this scope lock and implementation.
+
+Do not stage, commit, or push from this docs pass.

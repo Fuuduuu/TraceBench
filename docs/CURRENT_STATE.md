@@ -1,43 +1,43 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS`
+Next recommended pass: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS`
 
 ## Charter and baseline
 
 `docs/POHIKIRI.md` is the canonical product charter. Conflicts stop for human decision.
 
-Pushed implementation baseline: `f0e6aac852ff29c7b44558f5ca9722ed12ce4424` (`fix: align home tests with visible launcher workflow`).
+Verified pushed baseline: `25064a617571d79a56acd9f6759e936e5c47eeef` (`docs: close out benchbeep home startpage redesign`).
 
-## Closed Home redesign
+## Active objective
 
-`BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_PASS` is accepted, audited, committed, and pushed.
+This docs-only pass locks a scalable, UI-local Board Canvas component navigator in the existing contextual right panel:
 
-- Claude audit: `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
-- Hidden production compatibility/test anchors and legacy viewer copy are removed.
-- The three integration scenarios use the visible Home -> sample project -> enabled continuation -> Project overview workflow and retain their destination assertions.
-- Exact implementation files and validation evidence are recorded in `docs/audit/BENCHBEEP_HOME_STARTPAGE_REDESIGN_IMPL_POST_AUDIT_PASS.md`.
+`Komponenditüübid` -> selected category list -> selected component inspector.
 
-## Preserved product decisions
+The human-approved layout/density reference is `_incoming/ui_redesign/Components/Board Canvas Component Navigator Menu Design.html`. It remains untracked, unstaged, unchanged, and `DESIGN_INPUT_ONLY`; it must not be copied, imported, or runtime-referenced.
 
-- The accepted black/gold/cream Home design and four PÕHIKIRI-aligned startup choices remain.
-- ZIP and folder actions remain distinct; the sample project remains secondary.
-- Disabled / `Tulekul` states, dark neutral exit confirmation, and the accepted English eyebrow remain.
-- True fullscreen remains intentional; `lib/main.dart` is unchanged.
-- The accepted Figma visual gate is not reopened.
+## Armed implementation
 
-## Route
+`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS` may write exactly:
 
-No implementation pass remains armed. Future work requires a new human decision and a dedicated scope lock where applicable.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+The exact category, drill-down, measurement-filter, typed-selection, inspector, placement-dependency, test, validation, and stop rules are owned by `docs/ACTIVE_SCOPE_LOCK.md`.
 
 ## Boundaries
 
-This closeout changes documentation only. It does not change runtime, tests, assets, routes, schemas, writers, events, facts, projections, Project ZIP behavior, or protected semantics.
+The navigator, hover previews, selection, and hide-unmeasured state remain volatile UI-local presentation state. Navigation, hover, filtering, and drill-down write no events or project files.
+
+No writer, schema, validator, materializer, projection, Project ZIP, fact/event, placement, coordinate, component, measurement, net, trace, probe, pin, pad, electrical, route, package, asset, or `_incoming` semantics are opened.
+
+If implementation needs another file, stop with `BLOCKED_ALLOWLIST_MISMATCH`. If the existing local placement flow cannot place a known unplaced component within the two-file allowlist without writer/service/schema changes, stop with `BLOCKED_PLACEMENT_FLOW_DEPENDENCY`.
 
 ## Canonical pointers
 
-- Active route and lock state: `docs/ACTIVE_SCOPE_LOCK.md`
-- Queue state: `docs/PASS_QUEUE.md`
+- Active route and exact lock: `docs/ACTIVE_SCOPE_LOCK.md`
+- Queue: `docs/PASS_QUEUE.md`
+- Audit record: `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS.md`
 - Audit lookup: `docs/AUDIT_INDEX.md`
-- Durable product/architecture memory: `docs/PROJECT_MEMORY.md` (on demand)
 - Semantic owners: `docs/TRUTH_INDEX.md` (on demand)

@@ -1,43 +1,33 @@
 # Current State
 
-Current pass: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS`
-Next recommended pass: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS`
+Current pass: `NEEDS_USER_DECISION`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Charter and baseline
+## Charter and pushed baseline
 
-`docs/POHIKIRI.md` is the canonical product charter. Conflicts stop for human decision.
+`docs/POHIKIRI.md` remains the canonical product charter and conflict-stop authority.
 
-Verified pushed baseline: `25064a617571d79a56acd9f6759e936e5c47eeef` (`docs: close out benchbeep home startpage redesign`).
+Verified pushed baseline: `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d` (`feat: add board canvas component navigator`).
 
-## Active objective
+## Delivered outcome
 
-This docs-only pass locks a scalable, UI-local Board Canvas component navigator in the existing contextual right panel:
+The accepted Board Canvas implementation adds one scalable component navigator to the existing contextual right panel:
 
-`Komponenditüübid` -> selected category list -> selected component inspector.
+`Komponenditüübid` -> selected category component list -> selected component inspector.
 
-The human-approved layout/density reference is `_incoming/ui_redesign/Components/Board Canvas Component Navigator Menu Design.html`. It remains untracked, unstaged, unchanged, and `DESIGN_INPUT_ONLY`; it must not be copied, imported, or runtime-referenced.
+It includes the fixed technician category order and alias fallback, explicit normal/filtered counts, placed/unplaced sections, measured-first natural-ID sorting, UI-local component and explicit placement selection, hover previews, persistent `Peida mõõtmata` / `Näita mõõtmata`, filtered canvas/list/hit-test/badge behavior, zero-visible recovery states, and explicit unplaced-component placement behind the existing `Salvesta` boundary. Selection and navigator controls use the accepted BenchBeep gold treatment.
 
-## Armed implementation
+## Acceptance and evidence
 
-`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS` may write exactly:
+- Scope lock pushed as `9def907e6756501b22e99b86ff26b9a94e852988` (`docs: lock component category navigator scope`).
+- Implementation accepted, committed, and pushed as `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d`.
+- Human accepted the latest post-refinement Windows runtime before the final Claude audit.
+- Claude implementation audit: `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
+- Accepted non-blocking visual nit: `Kõik komponendid on mõõtmata` has restrained contrast.
+- Detailed behavior, validation, and boundary evidence: `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_POST_AUDIT_PASS.md`.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+## Boundaries and route
 
-The exact category, drill-down, measurement-filter, typed-selection, inspector, placement-dependency, test, validation, and stop rules are owned by `docs/ACTIVE_SCOPE_LOCK.md`.
+Hover, drill-down, filtering, and component selection remain volatile UI-local, zero-write state. Canonical placement remains behind explicit human save. No writer, schema, validator, materializer, projection, Project ZIP, route, package, asset, `_incoming`, event/fact, measurement, component-identity, or AI/OCR/CV semantics changed.
 
-## Boundaries
-
-The navigator, hover previews, selection, and hide-unmeasured state remain volatile UI-local presentation state. Navigation, hover, filtering, and drill-down write no events or project files.
-
-No writer, schema, validator, materializer, projection, Project ZIP, fact/event, placement, coordinate, component, measurement, net, trace, probe, pin, pad, electrical, route, package, asset, or `_incoming` semantics are opened.
-
-If implementation needs another file, stop with `BLOCKED_ALLOWLIST_MISMATCH`. If the existing local placement flow cannot place a known unplaced component within the two-file allowlist without writer/service/schema changes, stop with `BLOCKED_PLACEMENT_FLOW_DEPENDENCY`.
-
-## Canonical pointers
-
-- Active route and exact lock: `docs/ACTIVE_SCOPE_LOCK.md`
-- Queue: `docs/PASS_QUEUE.md`
-- Audit record: `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS.md`
-- Audit lookup: `docs/AUDIT_INDEX.md`
-- Semantic owners: `docs/TRUTH_INDEX.md` (on demand)
+The implementation lock is released. No implementation or docs pass is armed; the next repo pass requires an explicit human decision.

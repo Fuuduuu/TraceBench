@@ -2,24 +2,19 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS`
-Next: `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current docs-only scope lock
+## Closed Board Canvas component navigator line
 
-`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS` records the human-approved Board Canvas component navigator direction, exact two-file future implementation allowlist, UI-local state boundaries, protected exclusions, dependency stops, and required test/validation gates.
+- `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS` — accepted and pushed as `9def907e6756501b22e99b86ff26b9a94e852988` (`docs: lock component category navigator scope`).
+- `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS` — human visually accepted, Claude-audited `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`, committed and pushed as `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d` (`feat: add board canvas component navigator`).
+- `BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_POST_AUDIT_PASS` — this docs-only closeout releases the implementation lock and returns routing to human decision.
 
-Current write set is exactly the four route/ledger docs plus `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_SCOPE_LOCK_PASS.md`. No runtime, test, asset, route, package, schema, writer, tool, or product behavior changes are authorized in this pass.
+Detailed closeout evidence: `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_POST_AUDIT_PASS.md`.
 
-## Next implementation
+## Unarmed state
 
-`BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_PASS` implements one three-level contextual right-panel navigator, fixed technician categories, placed/unplaced component lists, measurement-aware ordering and visibility, coherent typed component/placement selection, hover previews, and the persistent `Peida mõõtmata` / `Näita mõõtmata` canvas control.
+No implementation or docs pass is armed. Do not begin another repo change until the human selects and scopes it.
 
-Future implementation write allowlist:
-
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
-
-See `docs/ACTIVE_SCOPE_LOCK.md` for the exact requirements and stop conditions. Do not route through `NEEDS_USER_DECISION` between this scope lock and implementation.
-
-Do not stage, commit, or push from this docs pass.
+The separately discussed large-file code-map framework remains an external strategy/design topic. This closeout does not arm it or any other future implementation.

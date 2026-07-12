@@ -2,25 +2,46 @@
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS`
 
-Verified pushed baseline: `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d` (`feat: add board canvas component navigator`).
+Baseline: `f858a0e7c2e87c827f553ab1476be1547d3416b1` (`docs: close out component category navigator`).
 
 `docs/POHIKIRI.md` remains the charter and conflict-stop authority.
 
-## Authority
+## Current docs-only authority
 
-No implementation or docs pass is armed. No runtime, test, docs, asset, route, package, schema, writer, tool, or `_incoming` file is authorized for a next pass until the human explicitly selects and scopes it.
+This pass may write exactly:
 
-The Board Canvas component navigator implementation lock is released. Detailed accepted implementation evidence is owned by `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_POST_AUDIT_PASS.md` and Git commit `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d`.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS.md`
+
+No runtime, test, schema, tool, `_incoming`, `docs/code_maps/**`, `docs/FILE_MAP.md`, Prompting Constitution, Board Canvas map, lint/tooling, or refactor change is authorized. Do not stage, commit, or push.
+
+## Armed bootstrap allowlist
+
+`TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS` may create exactly:
+
+- `docs/code_maps/CODE_MAP_STANDARD.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+
+If another file is required, stop with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+## Locked framework direction
+
+- Code maps live repo-locally under `docs/code_maps/**`, remain task-specific, and stay outside the five-file default read set.
+- Naming mirrors source paths; maps are descriptive rather than normative, symbol-anchored rather than line-anchored, and describe committed state only.
+- A map cannot authorize writes, refactors, protected changes, files, or scope. Canonical owners and the active pass always outrank maps.
+- Bootstrap v1 is Dart-focused. Production and test maps qualify independently.
+- `CODE_MAP_INDEX.md` lists actual maps only; an empty bootstrap index must not imply maps that do not yet exist.
+- The standard/bootstrap and the first production map remain separate passes.
+- Later mapped-file work reports `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or `NOT_APPLICABLE`.
+
+The bootstrap must define purpose and authority, deterministic path convention, qualification criteria, the standard template, impact evidence classes, write-class vocabulary, update/drift policy, Claude map-audit model, SNIPER integration, concision limits, and non-authorization rules.
 
 ## Preserved boundaries
 
-- Hover, drill-down, filtering, and component selection are volatile UI-local state and append no event.
-- Canonical placement remains written only after explicit human `Salvesta` action through the existing write boundary.
-- The canonical event split remains `component_created`, `component_updated`, `component_visual_placement_confirmed`, and `measurement_recorded`.
-- No writer/schema/materializer/validator/projection/Project ZIP/fact/event semantics change is open.
-- No facts/events/coordinates/net/path/trace/probe/pin/pad, component identity, measurement, AI/OCR/CV, electrical, route, package, asset, or `_incoming` change is open.
-
-Known untracked scratch/design/generated material remains outside any staging set.
+No event/fact, writer, schema, validator, materializer, projection, Project ZIP, route, package, asset, measurement, component identity, AI/OCR/CV, electrical, Board Canvas, runtime, or test behavior change is open. Known untracked scratch/design/generated material remains outside every staging set.

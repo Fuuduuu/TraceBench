@@ -1,33 +1,29 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_CODE_MAP_STANDARD_BOOTSTRAP_PASS`
 
 ## Charter and pushed baseline
 
 `docs/POHIKIRI.md` remains the canonical product charter and conflict-stop authority.
 
-Verified pushed baseline: `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d` (`feat: add board canvas component navigator`).
+Verified pushed baseline: `f858a0e7c2e87c827f553ab1476be1547d3416b1` (`docs: close out component category navigator`).
 
-## Delivered outcome
+## Active objective
 
-The accepted Board Canvas implementation adds one scalable component navigator to the existing contextual right panel:
+This docs-only pass locks a repo-local, task-specific code-map standard under future `docs/code_maps/**`. Maps will be descriptive, symbol-anchored, committed-state-only navigation and impact evidence. They will not be canonical runtime truth and cannot authorize writes, refactors, protected changes, files, or scope.
 
-`Komponenditüübid` -> selected category component list -> selected component inspector.
+The next bootstrap pass may create exactly:
 
-It includes the fixed technician category order and alias fallback, explicit normal/filtered counts, placed/unplaced sections, measured-first natural-ID sorting, UI-local component and explicit placement selection, hover previews, persistent `Peida mõõtmata` / `Näita mõõtmata`, filtered canvas/list/hit-test/badge behavior, zero-visible recovery states, and explicit unplaced-component placement behind the existing `Salvesta` boundary. Selection and navigator controls use the accepted BenchBeep gold treatment.
+- `docs/code_maps/CODE_MAP_STANDARD.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
 
-## Acceptance and evidence
+No production or test code map is authorized yet. The standard bootstrap and the first production map remain separate passes.
 
-- Scope lock pushed as `9def907e6756501b22e99b86ff26b9a94e852988` (`docs: lock component category navigator scope`).
-- Implementation accepted, committed, and pushed as `2dfe4c43bba1da2c9e2e2b5d2046e25c83a1bf1d`.
-- Human accepted the latest post-refinement Windows runtime before the final Claude audit.
-- Claude implementation audit: `ACCEPT_AS_IS`; `SAFE_FOR_STAGING: YES`.
-- Accepted non-blocking visual nit: `Kõik komponendid on mõõtmata` has restrained contrast.
-- Detailed behavior, validation, and boundary evidence: `docs/audit/BOARD_CANVAS_COMPONENT_CATEGORY_NAVIGATOR_IMPL_POST_AUDIT_PASS.md`.
+## Boundaries and evidence
 
-## Boundaries and route
+Code maps remain outside the five-file default read set and load only for the exact mapped task. Bootstrap v1 is Dart-focused; production and test maps qualify independently; the index lists actual maps only. Later mapped-file work reports `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or `NOT_APPLICABLE`.
 
-Hover, drill-down, filtering, and component selection remain volatile UI-local, zero-write state. Canonical placement remains behind explicit human save. No writer, schema, validator, materializer, projection, Project ZIP, route, package, asset, `_incoming`, event/fact, measurement, component-identity, or AI/OCR/CV semantics changed.
+No runtime, test, schema, tool, `_incoming`, Board Canvas map, prompting-constitution, automatic lint/tooling, refactor, or `docs/FILE_MAP.md` change is open.
 
-The implementation lock is released. No implementation or docs pass is armed; the next repo pass requires an explicit human decision.
+Detailed scope evidence: `docs/audit/TRACEBENCH_CODE_MAP_STANDARD_SCOPE_LOCK_PASS.md`.

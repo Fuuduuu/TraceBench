@@ -254,3 +254,23 @@ file extraction. No later retirement or cleanup pass is armed.
 
 Codex drafts this docs-only scope lock, Claude Code performs the independent
 read-only pre-staging audit, and the human owns exact staging, commit, and push.
+
+## Claude scope-lock audit reconciliation
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+- Blockers: none
+- Nits: none
+- Accepted staging set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`
+- Pushed scope-lock commit:
+  `5b3e3e0dd8970cd4aa377c3eb8a1002ae507d75d`
+  (`docs: lock board canvas project home route`)
+- Reconciliation gate confirmed `HEAD == origin/main` at that exact commit with
+  empty tracked and cached diffs.
+- Route remains `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS` ->
+  `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`.

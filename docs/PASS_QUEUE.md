@@ -2,25 +2,41 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS`
+Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
 
-## Closed milestone
+## Current docs-only scope lock
 
-`BOARD_CANVAS_SCREEN_CODE_MAP_SCOPE_LOCK_PASS` was pushed as
-`997ad916dcce9c8521dbc45cef1b63d525bd3280`; its audit evidence was reconciled
-as `09a9680dfca20328745f86e56400b8267a49ca8f`.
+This pass may write exactly the four operational route docs and
+`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`. It changes no
+runtime, tests, router, code map, standard, tool, or `_incoming` file.
 
-`BOARD_CANVAS_SCREEN_CODE_MAP_PASS` was accepted and pushed as
-`3ca031395425caa30de741b67309f22dec01f308`. It committed exactly the production
-map, its single index-row update, and the map-pass audit artifact. The map and
-index are `MAINTAINED` and safe for SNIPER use.
+## Armed implementation pass
 
-## Queue state
+After independent audit, acceptance, and push of this scope lock,
+`BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS` may write exactly:
 
-No test-file map, further production map, refactor, extraction, tooling, or
-implementation pass is armed. Any future work requires a new human-selected
-pass and exact allowlist; the maintained map cannot authorize it.
+- `lib/app/app.dart`
+- `lib/app/router.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/integration/projection_stale_banner_end_to_end_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/pelle_sample_end_to_end_test.dart`
 
-Closeout evidence:
-`docs/audit/BOARD_CANVAS_SCREEN_CODE_MAP_POST_AUDIT_PASS.md`.
+The pass canonicalizes `/project` to Board Canvas, keeps the launcher at `/`,
+redirects `/project/board-canvas` to `/project`, preserves the legacy overview
+at `/project/overview`, and preserves every existing project child route.
+
+## Queue boundary
+
+No test-file map, overview retirement, overview redesign, menu migration,
+refactor, extraction, tooling, or further implementation pass is armed. Board
+Canvas source and its maintained map remain excluded with disposition
+`REVIEWED_NO_CHANGE`.
+
+Scope evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`.

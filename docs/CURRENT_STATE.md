@@ -1,25 +1,28 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS`
+Next recommended pass: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
 
-## Charter and pushed baseline
+## Charter and baseline
 
 `docs/POHIKIRI.md` remains the canonical product charter and conflict-stop authority.
 
-Verified pushed baseline: `3ca031395425caa30de741b67309f22dec01f308`
-(`docs: add board canvas screen code map`).
+Verified pushed baseline: `2cd3288d1b51ec062b4ef416c641d153ce4be5cc`
+(`docs: close out board canvas screen code map`).
 
-## Latest accepted milestone
+## Active objective
 
-The first production code map now exists for
-`lib/features/board_canvas/screens/board_canvas_screen.dart`. The map and its
-single index row are `MAINTAINED`, and the final Claude audit accepted the map
-for SNIPER use and exact three-file staging.
+This docs-only pass locks the loaded-project route decision: `/` remains the
+BenchBeep launcher, `/project` becomes the canonical Board Canvas home,
+`/project/board-canvas` becomes a compatibility redirect, and
+`/project/overview` temporarily retains the legacy overview.
 
-The map remains descriptive and non-authorizing. Source and tests were
-unchanged, and no test-file map exists. The map-pass lock is released; no next
-map, refactor, extraction, tooling, or implementation pass is armed.
+The next pass is limited to two route owners and eight directly proven tests.
+Existing project child routes remain reachable. No overview deletion, visual
+redesign, Board Canvas source/map change, semantic change, or later cleanup pass
+is armed.
 
-Detailed closeout evidence:
-`docs/audit/BOARD_CANVAS_SCREEN_CODE_MAP_POST_AUDIT_PASS.md`.
+Board Canvas map disposition: `REVIEWED_NO_CHANGE`.
+
+Detailed scope evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`.

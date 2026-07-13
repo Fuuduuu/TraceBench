@@ -2,38 +2,78 @@
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS`
+Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
 
-Baseline: `3ca031395425caa30de741b67309f22dec01f308`
-(`docs: add board canvas screen code map`).
+Baseline: `2cd3288d1b51ec062b4ef416c641d153ce4be5cc`
+(`docs: close out board canvas screen code map`).
 
 `docs/POHIKIRI.md` remains the charter and conflict-stop authority.
 
-## Lock state
+## Current docs-only authority
 
-The Board Canvas production-map lock is released. No docs or implementation
-write allowlist is active, and no next pass is armed. A new human-selected pass
-and exact allowlist are required before further changes.
+This scope-lock pass may write exactly:
 
-## Maintained production map
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`
 
-- Source: `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- Map: `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
-- Map status: `MAINTAINED`
-- Index status: `MAINTAINED`
-- Claude map verdict: `ACCEPT_AS_IS`
-- Safe for SNIPER use: `YES`
+No code, test, router, code-map, standard, tool, asset, or `_incoming` change is
+authorized. Do not stage, commit, or push from this pass.
 
-The map is descriptive, committed-state-only, and non-authorizing. It cannot
-authorize a write, refactor, extraction, file, protected change, test map, or
-scope expansion. Source, tests, canonical owners, `docs/POHIKIRI.md`, and a
-future active scope lock continue to outrank it. No test-file map exists.
+## Human-locked route contract
+
+- `/` remains the BenchBeep startup launcher.
+- `/project` renders exactly one `BoardCanvasScreen` and is the canonical loaded-project home.
+- `/project/board-canvas` is a redirect-only compatibility route to `/project` with no loop or second Board Canvas state path.
+- `/project/overview` temporarily renders the existing `ProjectOverviewScreen`.
+- Existing project child routes remain reachable: components, add/edit
+  component, measurements, measurement compatibility redirect, measure sheet,
+  not-populated, pins, events, graph, known facts, photos, reference images, and
+  report.
+- Existing route names `board-canvas` and `project-overview` remain on their
+  semantic destinations where GoRouter uniqueness permits; the compatibility
+  redirect does not receive a duplicate name.
+
+## Armed implementation allowlist
+
+After this docs lock is independently audited, accepted, and pushed, the next
+pass may write exactly:
+
+- `lib/app/app.dart`
+- `lib/app/router.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `test/widget/board_canvas_screen_test.dart`
+- `test/widget/project_overview_screen_test.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/integration/projection_stale_banner_end_to_end_test.dart`
+- `test/integration/photo_list_end_to_end_test.dart`
+- `test/integration/board_graph_end_to_end_test.dart`
+- `test/integration/pelle_sample_end_to_end_test.dart`
+
+No wildcard, optional file, or automatic expansion is authorized. If another
+write is required, stop with `BLOCKED_ALLOWLIST_MISMATCH` or
+`BLOCKED_IMPLEMENTATION_ALLOWLIST_UNRESOLVED`.
+
+## Map and screen boundaries
+
+The maintained map for
+`lib/features/board_canvas/screens/board_canvas_screen.dart` is inspect-only.
+Disposition: `REVIEWED_NO_CHANGE`. Neither source nor map may change. If route
+canonicalization requires a Board Canvas source edit, stop with
+`DECOMPOSE_REQUIRED`.
+
+`BenchBeepHomeScreen`, `ProjectOverviewScreen`, `NewProjectWizardScreen`, and
+the legacy router `HomeScreen` are verify-only production surfaces. The
+overview renderer, actions, copy, colors, and layout remain unchanged; its
+existing Board Canvas action may exercise the compatibility redirect.
 
 ## Preserved boundaries
 
-No event/fact, writer, schema, validator, materializer, projection, Project ZIP,
-route, package, asset, measurement, component identity, AI/OCR/CV, electrical,
-Board Canvas runtime, test, standard, tool, refactor, extraction, or `_incoming`
-change is open. Known untracked scratch/design/generated material remains
-outside every staging set.
+No overview deletion or redesign, Board Canvas UI change, global menu, event,
+fact, writer, schema, validator, materializer, projection, Project ZIP format,
+route-package, dependency, canonical placement/coordinate/net/electrical,
+asset, `_incoming`, scratch cleanup, refactor, or extraction is authorized. No
+later cleanup or retirement pass is armed.

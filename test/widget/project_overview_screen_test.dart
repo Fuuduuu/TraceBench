@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
@@ -67,7 +68,7 @@ ProjectState _inlineProjectState({
 Future<ProviderContainer> _pumpProjectOverview(
   WidgetTester tester, {
   required ProjectState projectState,
-  String initialLocation = '/project',
+  String initialLocation = '/project/overview',
   bool useRouter = true,
 }) async {
   final container = ProviderContainer();
@@ -107,6 +108,21 @@ List<Map<String, dynamic>> _normalizedPlacementFacts() {
 }
 
 void main() {
+  testWidgets('/project/overview opens the retained named overview route',
+      (tester) async {
+    await _pumpProjectOverview(
+      tester,
+      projectState: _inlineProjectState(),
+    );
+    await tester.pumpAndSettle();
+
+    final overview = find.byType(ProjectOverviewScreen);
+    expect(overview, findsOneWidget);
+    final router = GoRouter.of(tester.element(overview));
+    expect(router.routeInformationProvider.value.uri.path, '/project/overview');
+    expect(router.namedLocation('project-overview'), '/project/overview');
+  });
+
   testWidgets('shows stale projection banner when projection is stale',
       (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
@@ -461,7 +477,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -517,7 +533,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -539,7 +555,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -561,7 +577,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -582,7 +598,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -626,7 +642,7 @@ void main() {
     final container = await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -662,7 +678,7 @@ void main() {
     await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();
@@ -697,7 +713,7 @@ void main() {
     final container = await _pumpProjectOverview(
       tester,
       projectState: projectState,
-      initialLocation: '/project',
+      initialLocation: '/project/overview',
       useRouter: true,
     );
     await tester.pumpAndSettle();

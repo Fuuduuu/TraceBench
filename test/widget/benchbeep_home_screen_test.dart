@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/home/screens/benchbeep_home_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/home_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -15,9 +19,10 @@ import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 class _FakeFilePicker extends FilePicker {
-  _FakeFilePicker(this.result);
+  _FakeFilePicker(this.result, {this.directoryPath});
 
   final FilePickerResult? result;
+  final String? directoryPath;
   var pickCount = 0;
   var directoryPickCount = 0;
   FileType? requestedType;
@@ -61,8 +66,70 @@ class _FakeFilePicker extends FilePicker {
     requestedDirectoryDialogTitle = dialogTitle;
     requestedDirectoryInitialDirectory = initialDirectory;
     requestedDirectoryLockParentWindow = lockParentWindow;
-    return null;
+    return directoryPath;
   }
+}
+
+Uint8List _bundledSampleZipBytes() {
+  const relativePaths = <String>[
+    'manifest.json',
+    'events.jsonl',
+    'known_facts.json',
+    'exports/customer_report.md',
+  ];
+  final archive = Archive();
+
+  for (final relativePath in relativePaths) {
+    final file = File(
+      <String>[
+        Directory.current.path,
+        'samples',
+        'pelle_pv20_minimal',
+        ...relativePath.split('/'),
+      ].join(Platform.pathSeparator),
+    );
+    final bytes = file.readAsBytesSync();
+    archive.addFile(ArchiveFile(relativePath, bytes.length, bytes));
+  }
+
+  final encoded = ZipEncoder().encode(archive);
+  if (encoded == null) {
+    throw StateError('Failed to encode bundled sample ZIP');
+  }
+  return Uint8List.fromList(encoded);
+}
+
+void _expectCanonicalBoardCanvas(WidgetTester tester) {
+  final boardCanvas = find.byType(BoardCanvasScreen);
+  expect(boardCanvas, findsOneWidget);
+  expect(
+    GoRouter.of(tester.element(boardCanvas))
+        .routeInformationProvider
+        .value
+        .uri
+        .path,
+    '/project',
+  );
+}
+
+Future<void> _waitForProjectState(ProviderContainer container) async {
+  final deadline = DateTime.now().add(const Duration(seconds: 3));
+  while (container.read(projectStateProvider) == null) {
+    if (DateTime.now().isAfter(deadline)) {
+      fail('Timed out waiting for project loading to finish');
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+  }
+}
+
+Future<void> _waitForLoadedProject(
+  WidgetTester tester,
+  ProviderContainer container,
+) async {
+  await tester.pump();
+  await tester.runAsync(() => _waitForProjectState(container));
+  await tester.pump();
+  await tester.pumpAndSettle();
 }
 
 ProjectState _directoryBackedProjectState(String projectDirectory) {
@@ -518,7 +585,7 @@ void main() {
     expect(find.byKey(const ValueKey('benchbeep_home_launcher')), findsNothing);
     expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
         findsOneWidget);
-    expect(find.text('Project overview'), findsOneWidget);
+    _expectCanonicalBoardCanvas(tester);
   });
 
   testWidgets('launcher open folder cancel leaves project state unchanged', (
@@ -572,6 +639,61 @@ void main() {
       find.text('Valitud kaust ei ole kehtiv TraceBenchi projekt.'),
       findsNothing,
     );
+  });
+
+  testWidgets('launcher open folder success opens canonical board canvas', (
+    tester,
+  ) async {
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final sampleDirectory = Directory(
+      <String>[
+        Directory.current.path,
+        'samples',
+        'pelle_pv20_minimal',
+      ].join(Platform.pathSeparator),
+    ).absolute.path;
+    final fakePicker = _FakeFilePicker(null, directoryPath: sampleDirectory);
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final openFolderButton =
+        find.byKey(const ValueKey('benchbeep_home_open_folder_button'));
+    await tester.ensureVisible(openFolderButton);
+    final openFolderAction = tester.widget<InkWell>(
+      find
+          .descendant(of: openFolderButton, matching: find.byType(InkWell))
+          .first,
+    );
+    expect(openFolderAction.onTap, isNotNull);
+    await tester.runAsync(() async {
+      openFolderAction.onTap!();
+      await _waitForProjectState(container);
+    });
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(fakePicker.directoryPickCount, 1);
+    expect(container.read(projectStateProvider), isNotNull);
+    _expectCanonicalBoardCanvas(tester);
   });
 
   testWidgets('open folder invalid selection shows clear error', (
@@ -782,7 +904,7 @@ void main() {
     expect(find.byKey(const ValueKey('benchbeep_home_launcher')), findsNothing);
     expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
         findsOneWidget);
-    expect(find.text('Board Canvas'), findsAtLeastNWidgets(1));
+    _expectCanonicalBoardCanvas(tester);
 
     expect(find.textContaining('Command menu'), findsNothing);
     expect(find.textContaining('Ctrl-K'), findsNothing);
@@ -836,6 +958,53 @@ void main() {
     expect(find.textContaining('Save beep'), findsNothing);
     expect(find.textContaining('Confirm'), findsNothing);
     expect(find.textContaining('Edit Layout'), findsNothing);
+  });
+
+  testWidgets('launcher ZIP success opens canonical board canvas', (
+    tester,
+  ) async {
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final zipBytes = _bundledSampleZipBytes();
+    final fakePicker = _FakeFilePicker(
+      FilePickerResult(<PlatformFile>[
+        PlatformFile(
+          name: 'pelle_pv20_minimal.zip',
+          size: zipBytes.length,
+          bytes: zipBytes,
+        ),
+      ]),
+    );
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final importButton =
+        find.byKey(const ValueKey('benchbeep_home_import_project_button'));
+    await tester.ensureVisible(importButton);
+    await tester.tap(importButton);
+    await _waitForLoadedProject(tester, container);
+
+    expect(fakePicker.pickCount, 1);
+    expect(container.read(projectStateProvider), isNotNull);
+    _expectCanonicalBoardCanvas(tester);
   });
 
   testWidgets('exit dialog cancels safely and confirms exactly once', (

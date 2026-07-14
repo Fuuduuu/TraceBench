@@ -29,7 +29,8 @@ GoRouter buildTraceBenchRouter({
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => homeBuilder?.call(context) ?? const HomeScreen(),
+        builder: (context, state) =>
+            homeBuilder?.call(context) ?? const HomeScreen(),
         routes: [
           GoRoute(
             path: 'new-project',
@@ -38,9 +39,14 @@ GoRouter buildTraceBenchRouter({
           ),
           GoRoute(
             path: 'project',
-            name: 'project-overview',
-            builder: (_, __) => const ProjectOverviewScreen(),
+            name: 'board-canvas',
+            builder: (_, __) => const BoardCanvasScreen(),
             routes: [
+              GoRoute(
+                path: 'overview',
+                name: 'project-overview',
+                builder: (_, __) => const ProjectOverviewScreen(),
+              ),
               GoRoute(
                 path: 'components',
                 name: 'component-list',
@@ -93,8 +99,7 @@ GoRouter buildTraceBenchRouter({
               ),
               GoRoute(
                 path: 'board-canvas',
-                name: 'board-canvas',
-                builder: (_, __) => const BoardCanvasScreen(),
+                redirect: (_, __) => '/project',
               ),
               GoRoute(
                 path: 'known-facts',

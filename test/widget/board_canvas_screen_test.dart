@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
@@ -239,7 +240,7 @@ Widget _harness({
 
 Widget _routerHarness({
   required ProjectState? projectState,
-  String initialLocation = '/project/board-canvas',
+  String initialLocation = '/project',
 }) {
   return ProviderScope(
     overrides: [
@@ -980,6 +981,41 @@ void main() {
 
     expect(find.text('Open a project to view its board.'), findsOneWidget);
     expect(find.text('renderer/painter writes: none'), findsOneWidget);
+  });
+
+  testWidgets('/project is the named canonical board canvas route',
+      (tester) async {
+    await tester.pumpWidget(_routerHarness(projectState: null));
+    await tester.pumpAndSettle();
+
+    final boardCanvas = find.byType(BoardCanvasScreen);
+    expect(boardCanvas, findsOneWidget);
+    final router = GoRouter.of(tester.element(boardCanvas));
+    expect(router.routeInformationProvider.value.uri.path, '/project');
+    expect(router.namedLocation('board-canvas'), '/project');
+    expect(router.namedLocation('project-overview'), '/project/overview');
+  });
+
+  testWidgets('/project/board-canvas redirects once to canonical /project',
+      (tester) async {
+    await tester.pumpWidget(
+      _routerHarness(
+        projectState: null,
+        initialLocation: '/project/board-canvas',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final boardCanvas = find.byType(BoardCanvasScreen);
+    expect(boardCanvas, findsOneWidget);
+    expect(
+      GoRouter.of(tester.element(boardCanvas))
+          .routeInformationProvider
+          .value
+          .uri
+          .path,
+      '/project',
+    );
   });
 
   testWidgets('shows no-components state when known facts have no components',

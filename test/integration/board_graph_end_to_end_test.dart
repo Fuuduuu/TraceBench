@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
-import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
+import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 
 void main() {
   testWidgets('loads board graph from bundled sample end-to-end',
@@ -32,12 +32,10 @@ void main() {
     await tester.tap(continueAction);
     await tester.pumpAndSettle();
 
-    expect(find.text('Project overview'), findsOneWidget);
-    expect(find.byKey(const ValueKey('overview-board-graph-button')),
-        findsOneWidget);
+    expect(find.byType(BoardCanvasScreen), findsOneWidget);
 
-    final overviewContext = tester.element(find.byType(ProjectOverviewScreen));
-    GoRouter.of(overviewContext).go('/project/graph');
+    GoRouter.of(tester.element(find.byType(BoardCanvasScreen)))
+        .go('/project/graph');
     await tester.pumpAndSettle();
 
     expect(find.text('Board graph'), findsAtLeast(1));

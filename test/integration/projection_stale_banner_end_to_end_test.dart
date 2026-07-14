@@ -23,7 +23,8 @@ void main() {
       ProviderScope(
         overrides: [projectStateProvider.overrideWith((_) => projectState)],
         child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/project'),
+          routerConfig:
+              buildTraceBenchRouter(initialLocation: '/project/overview'),
         ),
       ),
     );

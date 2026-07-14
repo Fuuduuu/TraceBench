@@ -97,7 +97,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
     );
   }
 
-  void _openWorkbench({String initialLocation = '/project/board-canvas'}) {
+  void _openWorkbench({String initialLocation = '/project'}) {
     _workbenchRouter?.dispose();
     _workbenchRouter = buildTraceBenchRouter(
       initialLocation: initialLocation,
@@ -127,8 +127,8 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
       );
     }
 
-    final router = _workbenchRouter ??
-        buildTraceBenchRouter(initialLocation: '/project/board-canvas');
+    final router =
+        _workbenchRouter ?? buildTraceBenchRouter(initialLocation: '/project');
 
     return MaterialApp.router(
       key: const ValueKey('benchbeep_workbench_router'),

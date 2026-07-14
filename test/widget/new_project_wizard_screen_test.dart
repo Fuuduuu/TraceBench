@@ -1,10 +1,12 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:trace_bench_viewer/app/router.dart';
+import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
-import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -33,6 +35,21 @@ class _FakeProjectCreator extends ProjectCreator {
       ProjectCreationRequest request) async {
     requests.add(request);
     return _handler(request);
+  }
+}
+
+class _FakeDirectoryPicker extends FilePicker {
+  _FakeDirectoryPicker(this.directoryPath);
+
+  final String directoryPath;
+
+  @override
+  Future<String?> getDirectoryPath({
+    String? dialogTitle,
+    String? initialDirectory,
+    bool lockParentWindow = false,
+  }) async {
+    return directoryPath;
   }
 }
 
@@ -82,10 +99,6 @@ Widget _buildWizardApp({
           platformInfo: platformInfo,
         ),
       ),
-      GoRoute(
-        path: '/project',
-        builder: (_, __) => const ProjectOverviewScreen(),
-      ),
     ],
   );
 
@@ -122,11 +135,26 @@ void main() {
       (_) async => ProjectCreationSuccess(_inlineProjectState(stale: false)),
     );
 
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    FilePicker.platform = _FakeDirectoryPicker('C:/tmp/projects');
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
     await tester.pumpWidget(
-      _buildWizardApp(
-        creator: creator,
-        directoryPicker: () async => 'C:/tmp/projects',
-        platformInfo: const _TestPlatformInfo(false),
+      ProviderScope(
+        overrides: [projectCreatorProvider.overrideWithValue(creator)],
+        child: MaterialApp.router(
+          routerConfig: buildTraceBenchRouter(initialLocation: '/new-project'),
+        ),
       ),
     );
     await tester.pump();
@@ -140,7 +168,16 @@ void main() {
     expect(creator.requests.single.deviceType, isEmpty);
     expect(creator.requests.single.model, isEmpty);
     expect(creator.requests.single.symptom, isEmpty);
-    expect(find.text('Project overview'), findsOneWidget);
+    final boardCanvas = find.byType(BoardCanvasScreen);
+    expect(boardCanvas, findsOneWidget);
+    expect(
+      GoRouter.of(tester.element(boardCanvas))
+          .routeInformationProvider
+          .value
+          .uri
+          .path,
+      '/project',
+    );
     expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
   });
 

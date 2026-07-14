@@ -1,39 +1,36 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS`
+Next recommended pass:
+`BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Charter and accepted baseline
+## Charter and baseline
 
 `docs/POHIKIRI.md` remains the canonical product charter and conflict-stop
 authority.
 
-The accepted and pushed project-home route implementation is
-`9dfb14c471b2c2fcdc7afc760f7310b7d837efa5`
-(`feat: make board canvas the project home`). Its Claude audit returned
-`ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES` with no blockers or nits.
+Verified baseline: `a02d87ea1bd71f2eebfc5dfd79ef4b5f3b916c7e`
+(`docs: close out board canvas project home route`). The prior project-home
+closeout is accepted, pushed, and audited at this commit.
 
-Accepted chain:
+## Active objective
 
-- scope lock `5b3e3e0dd8970cd4aa377c3eb8a1002ae507d75d`;
-- scope-audit reconciliation
-  `e682a5b44f57e19d0f7cebaa887a4ea2457bc5b9`;
-- active-lock sync `3082505921345feed2cae5e02d10cec824a450c0`;
-- implementation `9dfb14c471b2c2fcdc7afc760f7310b7d837efa5`.
+This docs-only pass locks one compact `Projekt` action into the existing Board
+Canvas rail/right-panel system. It opens an existing right-panel mode with
+seven zero-write links: BenchBeep Home, photo evidence, reference images,
+advanced graph, events, known facts, and report.
 
-## Closed outcome
+The future implementation is reserved to the Board Canvas screen and its
+focused widget test. It may not change routes, app/router owners, component or
+measurement workflows, canonical state, or the retained `/project/overview`
+route.
 
-- `/` remains the BenchBeep launcher.
-- `/project` is the canonical Board Canvas home.
-- `/project/board-canvas` redirects to `/project`.
-- `/project/overview` retains the legacy overview.
-- Existing project child routes remain reachable.
-- Board Canvas source and its maintained map stayed unchanged.
-- `ProjectOverviewScreen` stayed unchanged.
+Board Canvas map disposition: `REVIEWED_NO_CHANGE`. The change remains inside
+the existing Zone 1 screen-orchestration and Zone 11 rail/responsive-chrome
+responsibilities.
 
-No writer, event, fact, schema, projection, Project ZIP, dependency, or
-`_incoming` behavior changed. The implementation lock is released and no
-follow-up implementation pass is armed.
+The implementation is not active yet. The next pass is the required docs-only
+active-lock sync.
 
-Closeout evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_POST_AUDIT_PASS.md`.
+Scope evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS.md`.

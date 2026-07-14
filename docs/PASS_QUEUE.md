@@ -2,35 +2,46 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS`
+Next: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
-## Closed project-home route sequence
+## Current docs-only scope lock
 
-The accepted and pushed implementation
-`9dfb14c471b2c2fcdc7afc760f7310b7d837efa5`
-(`feat: make board canvas the project home`) made `/project` the canonical Board
-Canvas home while preserving `/` as the launcher, redirecting
-`/project/board-canvas` to `/project`, retaining the legacy overview at
-`/project/overview`, and keeping existing project child routes reachable.
+This pass changes only the four operational route docs and
+`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS.md`. It locks a
+compact `Projekt` rail action whose right-panel hub links only to existing
+routes.
 
-Claude returned `AUDIT_VERDICT: ACCEPT_AS_IS` and
-`SAFE_FOR_STAGING: YES`; the safe staging set matched the exact two-production
-and eight-test active-authority files. No blockers or nits were reported.
+## Future implementation reservation
 
-Accepted sequence:
+After this scope lock is independently audited, accepted, and pushed, the
+active-lock sync may promote
+`BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_PASS` with exactly:
 
-- scope lock `5b3e3e0dd8970cd4aa377c3eb8a1002ae507d75d`;
-- scope-audit reconciliation
-  `e682a5b44f57e19d0f7cebaa887a4ea2457bc5b9`;
-- active-lock sync `3082505921345feed2cae5e02d10cec824a450c0`;
-- implementation `9dfb14c471b2c2fcdc7afc760f7310b7d837efa5`.
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+These files are not current write authority. Implementation may not begin
+before the active-lock sync is accepted and pushed.
+
+The hub contains exactly:
+
+- BenchBeep Home -> `/`
+- Foto tõendid -> `/project/photos`
+- Viitepildid -> `/project/reference-images`
+- Advanced graph -> `/project/graph`
+- Sündmused -> `/project/events`
+- Teadaolevad faktid -> `/project/known-facts`
+- Raport -> `/project/report`
 
 ## Queue boundary
 
-The implementation lock is released. No overview retirement, menu migration,
-another route pass, or implementation pass is armed. Future work requires a
-new human decision and a dedicated scope lock where applicable.
+No overview retirement, router/app edit, new route, standalone menu page,
+component or measurement duplication, broad Board Canvas redesign, map edit,
+writer/schema/projection change, refactor, dependency, or `_incoming` work is
+armed.
 
-Closeout evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_POST_AUDIT_PASS.md`.
+Map disposition: `REVIEWED_NO_CHANGE`.
+
+Scope evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS.md`.

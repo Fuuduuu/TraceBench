@@ -2,18 +2,11 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS`
-Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
+Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
+Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_POST_AUDIT_PASS`
 
-## Current docs-only scope lock
+## Active implementation pass
 
-This pass may write exactly the four operational route docs and
-`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`. It changes no
-runtime, tests, router, code map, standard, tool, or `_incoming` file.
-
-## Armed implementation pass
-
-After independent audit, acceptance, and push of this scope lock,
 `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS` may write exactly:
 
 - `lib/app/app.dart`
@@ -31,6 +24,10 @@ The pass canonicalizes `/project` to Board Canvas, keeps the launcher at `/`,
 redirects `/project/board-canvas` to `/project`, preserves the legacy overview
 at `/project/overview`, and preserves every existing project child route.
 
+The scope lock was pushed as
+`5b3e3e0dd8970cd4aa377c3eb8a1002ae507d75d`; its accepted audit reconciliation
+was pushed as `e682a5b44f57e19d0f7cebaa887a4ea2457bc5b9`.
+
 ## Queue boundary
 
 No test-file map, overview retirement, overview redesign, menu migration,
@@ -39,4 +36,4 @@ Canvas source and its maintained map remain excluded with disposition
 `REVIEWED_NO_CHANGE`.
 
 Scope evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`.
+`docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.

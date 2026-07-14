@@ -2,45 +2,23 @@
 
 ## Route
 
-Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS`
-Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
+Current: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS`
+Next: `BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_POST_AUDIT_PASS`
 
-Baseline: `2cd3288d1b51ec062b4ef416c641d153ce4be5cc`
-(`docs: close out board canvas screen code map`).
+Baseline: `e682a5b44f57e19d0f7cebaa887a4ea2457bc5b9`
+(`docs: record project home route scope audit`).
 
 `docs/POHIKIRI.md` remains the charter and conflict-stop authority.
 
-## Current docs-only authority
+Accepted scope chain:
 
-This scope-lock pass may write exactly:
+- scope lock `5b3e3e0dd8970cd4aa377c3eb8a1002ae507d75d`;
+- scope-audit reconciliation
+  `e682a5b44f57e19d0f7cebaa887a4ea2457bc5b9`.
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/BOARD_CANVAS_PROJECT_HOME_ROUTE_SCOPE_LOCK_PASS.md`
+## Active implementation authority
 
-No code, test, router, code-map, standard, tool, asset, or `_incoming` change is
-authorized. Do not stage, commit, or push from this pass.
-
-## Human-locked route contract
-
-- `/` remains the BenchBeep startup launcher.
-- `/project` renders exactly one `BoardCanvasScreen` and is the canonical loaded-project home.
-- `/project/board-canvas` is a redirect-only compatibility route to `/project` with no loop or second Board Canvas state path.
-- `/project/overview` temporarily renders the existing `ProjectOverviewScreen`.
-- Existing project child routes remain reachable: components, add/edit
-  component, measurements, measurement compatibility redirect, measure sheet,
-  not-populated, pins, events, graph, known facts, photos, reference images, and
-  report.
-- Existing route names `board-canvas` and `project-overview` remain on their
-  semantic destinations where GoRouter uniqueness permits; the compatibility
-  redirect does not receive a duplicate name.
-
-## Armed implementation allowlist
-
-After this docs lock is independently audited, accepted, and pushed, the next
-pass may write exactly:
+`BOARD_CANVAS_PROJECT_HOME_ROUTE_IMPL_PASS` may write exactly:
 
 - `lib/app/app.dart`
 - `lib/app/router.dart`
@@ -55,7 +33,22 @@ pass may write exactly:
 
 No wildcard, optional file, or automatic expansion is authorized. If another
 write is required, stop with `BLOCKED_ALLOWLIST_MISMATCH` or
-`BLOCKED_IMPLEMENTATION_ALLOWLIST_UNRESOLVED`.
+`BLOCKED_IMPLEMENTATION_ALLOWLIST_UNRESOLVED`. Do not stage, commit, or push
+from this pass.
+
+## Human-locked route contract
+
+- `/` remains the BenchBeep startup launcher.
+- `/project` renders exactly one `BoardCanvasScreen` and is the canonical loaded-project home.
+- `/project/board-canvas` is a redirect-only compatibility route to `/project` with no loop or second Board Canvas state path.
+- `/project/overview` temporarily renders the existing `ProjectOverviewScreen`.
+- Existing project child routes remain reachable: components, add/edit
+  component, measurements, measurement compatibility redirect, measure sheet,
+  not-populated, pins, events, graph, known facts, photos, reference images, and
+  report.
+- Existing route names `board-canvas` and `project-overview` remain on their
+  semantic destinations where GoRouter uniqueness permits; the compatibility
+  redirect does not receive a duplicate name.
 
 ## Map and screen boundaries
 

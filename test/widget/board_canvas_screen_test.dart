@@ -421,6 +421,21 @@ Future<void> _tapWidgetByKey(WidgetTester tester, Key key) async {
   await tester.pump(const Duration(milliseconds: 16));
 }
 
+Future<void> _pumpUntilRouterPath(
+  WidgetTester tester,
+  GoRouter router,
+  String expectedPath,
+) async {
+  for (var attempt = 0; attempt < 20; attempt += 1) {
+    await tester.pump(const Duration(milliseconds: 16));
+    if (router.routeInformationProvider.value.uri.path == expectedPath) {
+      await tester.pumpAndSettle();
+      return;
+    }
+  }
+  expect(router.routeInformationProvider.value.uri.path, expectedPath);
+}
+
 ProjectState _readProjectState(WidgetTester tester) {
   return ProviderScope.containerOf(
     tester.element(find.byType(BoardCanvasScreen)),
@@ -7349,6 +7364,325 @@ void main() {
     expect(find.textContaining('Snap'), findsNothing);
     expect(find.textContaining('Grid'), findsNothing);
     expect(find.textContaining('Magnet'), findsNothing);
+  });
+
+  testWidgets('medium Workbench exposes Projekt rail action and exact hub',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1000, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _componentNavigatorState();
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(
+      find.byKey(const Key('board_canvas_rail_project_tool')),
+      findsOneWidget,
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_rail_project_tool'),
+    );
+
+    final hub = find.byKey(const Key('board_canvas_project_navigation_hub'));
+    final contextPanel = find.byKey(const Key('board_canvas_context_panel'));
+    expect(hub, findsOneWidget);
+    expect(contextPanel, findsOneWidget);
+    expect(
+      find.descendant(of: hub, matching: find.byType(OutlinedButton)),
+      findsNWidgets(7),
+    );
+    for (final label in const <String>[
+      'BenchBeep Home',
+      'Foto tõendid',
+      'Viitepildid',
+      'Advanced graph',
+      'Sündmused',
+      'Teadaolevad faktid',
+      'Raport',
+    ]) {
+      expect(
+          find.descendant(of: hub, matching: find.text(label)), findsOneWidget);
+    }
+    expect(
+      find.byKey(const Key('board_canvas_project_overview_action')),
+      findsNothing,
+    );
+    expect(
+      tester
+          .getSize(find.byKey(const Key('board_canvas_workbench_canvas_zone')))
+          .width,
+      greaterThan(tester.getSize(contextPanel).width),
+    );
+    expect(state.events, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('wide Workbench exposes Projekt rail action and exact hub',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _componentNavigatorState();
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_rail_project_tool'),
+    );
+
+    final hub = find.byKey(const Key('board_canvas_project_navigation_hub'));
+    final contextPanel = find.byKey(const Key('board_canvas_context_panel'));
+    expect(hub, findsOneWidget);
+    expect(contextPanel, findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_rail_project_active')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: hub, matching: find.byType(OutlinedButton)),
+      findsNWidgets(7),
+    );
+    expect(
+      tester
+          .getSize(find.byKey(const Key('board_canvas_workbench_canvas_zone')))
+          .width,
+      greaterThan(tester.getSize(contextPanel).width),
+    );
+    expect(state.events, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'Projekt hub actions navigate to exact existing routes without writes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const destinations = <({Key key, String label, String path})>[
+      (
+        key: Key('board_canvas_project_home_action'),
+        label: 'BenchBeep Home',
+        path: '/',
+      ),
+      (
+        key: Key('board_canvas_project_photos_action'),
+        label: 'Foto tõendid',
+        path: '/project/photos',
+      ),
+      (
+        key: Key('board_canvas_project_reference_images_action'),
+        label: 'Viitepildid',
+        path: '/project/reference-images',
+      ),
+      (
+        key: Key('board_canvas_project_graph_action'),
+        label: 'Advanced graph',
+        path: '/project/graph',
+      ),
+      (
+        key: Key('board_canvas_project_events_action'),
+        label: 'Sündmused',
+        path: '/project/events',
+      ),
+      (
+        key: Key('board_canvas_project_known_facts_action'),
+        label: 'Teadaolevad faktid',
+        path: '/project/known-facts',
+      ),
+      (
+        key: Key('board_canvas_project_report_action'),
+        label: 'Raport',
+        path: '/project/report',
+      ),
+    ];
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('board_canvas_project_hub_');
+    addTearDown(() {
+      if (projectDirectory.existsSync()) {
+        projectDirectory.deleteSync(recursive: true);
+      }
+    });
+    final state = _componentNavigatorState(
+      projectDirectory: projectDirectory.path,
+    );
+    final initialEvents = List<TraceBenchEvent>.of(state.events);
+    final addWriter = _FakeAddComponentWriter();
+    final editWriter = _FakeEditComponentWriter();
+    final placementWriter = _FakePlacementWriter();
+    final measurementWriter = _FakeSaveMeasurementWriter();
+
+    final productionRouter = buildTraceBenchRouter();
+    addTearDown(productionRouter.dispose);
+    for (final route in const <String, String>{
+      'home': '/',
+      'photos': '/project/photos',
+      'reference-images': '/project/reference-images',
+      'board-graph': '/project/graph',
+      'events': '/project/events',
+      'known-facts': '/project/known-facts',
+      'customer-report': '/project/report',
+    }.entries) {
+      expect(productionRouter.namedLocation(route.key), route.value);
+    }
+    expect(
+      productionRouter.namedLocation('project-overview'),
+      '/project/overview',
+    );
+
+    Widget destinationBuilder(
+      BuildContext context,
+      GoRouterState routeState,
+    ) {
+      return Scaffold(
+        body: Text(
+          routeState.uri.path,
+          key: const Key('project_navigation_test_destination'),
+        ),
+      );
+    }
+
+    final router = GoRouter(
+      initialLocation: '/project',
+      routes: [
+        GoRoute(path: '/', builder: destinationBuilder),
+        GoRoute(
+          path: '/project',
+          builder: (context, routeState) => const BoardCanvasScreen(),
+        ),
+        for (final destination in destinations.skip(1))
+          GoRoute(path: destination.path, builder: destinationBuilder),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => state),
+          v2AddComponentWriterProvider.overrideWith((_) => addWriter),
+          v2EditComponentWriterProvider.overrideWith((_) => editWriter),
+          v2PlacementWriterProvider.overrideWith((_) => placementWriter),
+          v2SaveMeasurementWriterProvider.overrideWithValue(measurementWriter),
+        ],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    for (final destination in destinations) {
+      if (router.routeInformationProvider.value.uri.path != '/project') {
+        router.go('/project');
+        await _pumpUntilRouterPath(tester, router, '/project');
+      }
+      final boardCanvas = find.byType(BoardCanvasScreen);
+      expect(boardCanvas, findsOneWidget);
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_rail_project_tool'),
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('board_canvas_project_navigation_hub')),
+          matching: find.text(destination.label),
+        ),
+        findsOneWidget,
+      );
+      await _tapWidgetByKey(tester, destination.key);
+      await _pumpUntilRouterPath(tester, router, destination.path);
+
+      expect(router.routeInformationProvider.value.uri.path, destination.path);
+      expect(addWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(placementWriter.requests, isEmpty);
+      expect(measurementWriter.requests, isEmpty);
+      expect(state.events, orderedEquals(initialEvents));
+      expect(state.isProjectionStale, isFalse);
+      expect(projectDirectory.listSync(recursive: true), isEmpty);
+      expect(tester.takeException(), isNull);
+    }
+  });
+
+  testWidgets(
+      'Projekt hub preserves existing panel modes and focus restoration',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final state = _componentNavigatorState();
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pump(const Duration(milliseconds: 16));
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_rail_project_tool'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_project_navigation_hub')),
+      findsOneWidget,
+    );
+
+    const existingModes = <({Key button, Key active})>[
+      (
+        button: Key('board_canvas_measure_sheet_button'),
+        active: Key('board_canvas_rail_measure_active'),
+      ),
+      (
+        button: Key('board_canvas_rail_add_component_tool'),
+        active: Key('board_canvas_rail_add_component_active'),
+      ),
+      (
+        button: Key('board_canvas_rail_inspector_tool'),
+        active: Key('board_canvas_rail_inspector_active'),
+      ),
+      (
+        button: Key('board_canvas_rail_placements_tool'),
+        active: Key('board_canvas_rail_placements_active'),
+      ),
+      (
+        button: Key('board_canvas_rail_safety_evidence_tool'),
+        active: Key('board_canvas_rail_safety_active'),
+      ),
+    ];
+    for (final mode in existingModes) {
+      await _tapWidgetByKey(tester, mode.button);
+      expect(find.byKey(mode.active), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_project_navigation_hub')),
+        findsNothing,
+      );
+    }
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_rail_project_tool'),
+    );
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_focus_toggle_button'),
+    );
+    expect(find.byKey(const Key('board_canvas_workbench_rail')), findsNothing);
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsNothing);
+    expect(
+      find.byKey(const Key('board_canvas_focus_restore_bar')),
+      findsOneWidget,
+    );
+
+    await _tapWidgetByKey(
+      tester,
+      const Key('board_canvas_focus_restore_button'),
+    );
+    expect(
+      find.byKey(const Key('board_canvas_project_navigation_hub')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('board_canvas_context_panel')), findsOneWidget);
+    expect(
+        find.byKey(const Key('board_canvas_workbench_rail')), findsOneWidget);
+    expect(state.events, isEmpty);
+    expect(state.isProjectionStale, isFalse);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('wide Workbench starts with hidden right context panel',

@@ -96,7 +96,8 @@ enum _WorkbenchContextPanelMode {
   placements,
   measure,
   addComponentTemplates,
-  safetyEvidence
+  safetyEvidence,
+  projectNavigation,
 }
 
 enum _ComponentCategory {
@@ -2209,6 +2210,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         initiallyExpanded: true,
                       );
                       break;
+                    case _WorkbenchContextPanelMode.projectNavigation:
+                      contextPanel = _ProjectNavigationHub(
+                        onNavigate: context.go,
+                      );
+                      break;
                   }
                   final contextPanelWidth = constraints.maxWidth >= 1180
                       ? _kWideContextPanelWidth
@@ -2329,6 +2335,22 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       });
                     },
                   );
+                  final projectPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey: const Key('board_canvas_rail_project_tool'),
+                    icon: Icons.folder_open_outlined,
+                    tooltip: 'Ava projekti navigatsioon',
+                    label: 'Projekt',
+                    modeKey: 'project',
+                    selected: _contextPanelMode ==
+                        _WorkbenchContextPanelMode.projectNavigation,
+                    onPressed: () {
+                      setState(() {
+                        _contextPanelMode =
+                            _WorkbenchContextPanelMode.projectNavigation;
+                        _inspectorVisible = true;
+                      });
+                    },
+                  );
                   return Row(
                     key: const Key('board_canvas_workbench_shell'),
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2339,6 +2361,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           inspectorTool: inspectorPanelToggle,
                           measureSheetTool: measurePanelToggle,
                           placementTool: focusPanelToggle,
+                          projectTool: projectPanelToggle,
                           safetyEvidenceTool: safetyPanelToggle,
                         ),
                         const SizedBox(width: 6),
@@ -2764,6 +2787,7 @@ class _WorkbenchToolRail extends StatelessWidget {
     required this.inspectorTool,
     required this.measureSheetTool,
     required this.placementTool,
+    required this.projectTool,
     required this.safetyEvidenceTool,
   });
 
@@ -2771,6 +2795,7 @@ class _WorkbenchToolRail extends StatelessWidget {
   final Widget inspectorTool;
   final Widget measureSheetTool;
   final Widget placementTool;
+  final Widget projectTool;
   final Widget safetyEvidenceTool;
 
   @override
@@ -2808,6 +2833,8 @@ class _WorkbenchToolRail extends StatelessWidget {
               const SizedBox(height: _kWorkbenchToolTileGap),
               placementTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
+              projectTool,
+              const SizedBox(height: _kWorkbenchToolTileGap),
               safetyEvidenceTool,
               const SizedBox(height: 6),
               const Divider(
@@ -2842,6 +2869,104 @@ class _WorkbenchToolRail extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ProjectNavigationHub extends StatelessWidget {
+  const _ProjectNavigationHub({required this.onNavigate});
+
+  final ValueChanged<String> onNavigate;
+
+  Widget _action({
+    required Key key,
+    required IconData icon,
+    required String label,
+    required String location,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        key: key,
+        style: _benchBeepNavigatorControlStyle(filled: false),
+        onPressed: () => onNavigate(location),
+        icon: Icon(icon, size: _kWorkbenchRailContentIconSize),
+        label: Text(label),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListView(
+      key: const Key('board_canvas_project_navigation_hub'),
+      padding: EdgeInsets.zero,
+      children: [
+        Text(
+          'Projekt',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: _kBoardCanvasNavy,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Ava projektiga seotud vaated. Navigeerimine ei kirjuta projekti.',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _kBoardCanvasMuted,
+          ),
+        ),
+        const SizedBox(height: 10),
+        _action(
+          key: const Key('board_canvas_project_home_action'),
+          icon: Icons.home_outlined,
+          label: 'BenchBeep Home',
+          location: '/',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_photos_action'),
+          icon: Icons.photo_camera_back_outlined,
+          label: 'Foto tõendid',
+          location: '/project/photos',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_reference_images_action'),
+          icon: Icons.image_outlined,
+          label: 'Viitepildid',
+          location: '/project/reference-images',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_graph_action'),
+          icon: Icons.account_tree_outlined,
+          label: 'Advanced graph',
+          location: '/project/graph',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_events_action'),
+          icon: Icons.history_outlined,
+          label: 'Sündmused',
+          location: '/project/events',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_known_facts_action'),
+          icon: Icons.fact_check_outlined,
+          label: 'Teadaolevad faktid',
+          location: '/project/known-facts',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_report_action'),
+          icon: Icons.description_outlined,
+          label: 'Raport',
+          location: '/project/report',
+        ),
+      ],
     );
   }
 }

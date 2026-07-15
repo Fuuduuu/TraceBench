@@ -2,45 +2,38 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_PASS`
-Next: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_POST_AUDIT_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Active implementation
+## Closed project-navigation-hub sequence
 
-Write authority is exactly:
+The accepted and pushed implementation
+`20f1c4421ab73cf431d291d6c47869b13a00b323`
+(`feat: add board canvas project navigation hub`) added one compact `Projekt`
+rail action whose existing right-panel mode exposes exactly seven existing-route
+links. `/project/overview` remains reachable but absent from the hub; routes,
+component and measurement workflows, and protected write behavior remain
+unchanged.
 
-- `lib/features/board_canvas/screens/board_canvas_screen.dart`
-- `test/widget/board_canvas_screen_test.dart`
+Claude returned `AUDIT_VERDICT: ACCEPT_WITH_NITS` and
+`SAFE_FOR_STAGING: YES`; the safe staging set matched the exact Board Canvas
+screen/widget-test implementation pair, with no blockers. Human visual review
+passed representative medium and wide layouts, all seven links, focus/panel
+behavior, overflow, and canvas-dominance checks.
 
-Add one compact `Projekt` rail action that opens an existing right-panel mode
-and exposes exactly:
+Accepted sequence:
 
-- BenchBeep Home -> `/`
-- Foto tõendid -> `/project/photos`
-- Viitepildid -> `/project/reference-images`
-- Advanced graph -> `/project/graph`
-- Sündmused -> `/project/events`
-- Teadaolevad faktid -> `/project/known-facts`
-- Raport -> `/project/report`
+- scope lock `7b795c49b26463ae535b0ea980524d85ff88fa5f`;
+- active-lock sync `b1409ce91dd4d26fe8829719888f3cfb5c62c6c1`;
+- implementation `20f1c4421ab73cf431d291d6c47869b13a00b323`.
 
-This is `UI_LOCAL / ZERO_WRITE` navigation. All existing routes and route
-names, `/project/overview`, current component and measurement workflows,
-focus mode, existing panel modes, Board Canvas visual dominance, and medium/
-wide reachability remain preserved.
+## Queue boundary
 
-## Audit and map gate
+The implementation lock is released. The unrelated intermittent Windows
+file-lock race in `measurement_write_screen_test.dart` is recorded only as a
+future test-hardening candidate. No overview retirement, test hardening,
+navigation pass, active-lock sync, or implementation pass is armed. Future
+work requires a new human decision and a dedicated scope lock where applicable.
 
-Map disposition: `REVIEWED_NO_CHANGE`. If the implementation creates material
-responsibility drift beyond the maintained map's existing zero-write GoRouter
-dependency, stop and require a separately scoped map pass.
-
-Human visual approval in medium and wide layouts is mandatory before Claude
-implementation audit. The future packet must say
-`USE ONLY AFTER MANUAL SMOKE PASS`.
-
-No overview retirement, router/app edit, new route, standalone surface,
-writer/project-state/projection write, workflow change, refactor, dependency,
-asset, `_incoming`, or code-map edit is armed.
-
-Sync evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.
+Closeout evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_POST_AUDIT_PASS.md`.

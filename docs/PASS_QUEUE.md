@@ -2,29 +2,18 @@
 
 ## Current route
 
-Current: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS`
-Next: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Current: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_PASS`
+Next: `BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_POST_AUDIT_PASS`
 
-## Current docs-only scope lock
+## Active implementation
 
-This pass changes only the four operational route docs and
-`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS.md`. It locks a
-compact `Projekt` rail action whose right-panel hub links only to existing
-routes.
-
-## Future implementation reservation
-
-After this scope lock is independently audited, accepted, and pushed, the
-active-lock sync may promote
-`BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_PASS` with exactly:
+Write authority is exactly:
 
 - `lib/features/board_canvas/screens/board_canvas_screen.dart`
 - `test/widget/board_canvas_screen_test.dart`
 
-These files are not current write authority. Implementation may not begin
-before the active-lock sync is accepted and pushed.
-
-The hub contains exactly:
+Add one compact `Projekt` rail action that opens an existing right-panel mode
+and exposes exactly:
 
 - BenchBeep Home -> `/`
 - Foto tõendid -> `/project/photos`
@@ -34,14 +23,24 @@ The hub contains exactly:
 - Teadaolevad faktid -> `/project/known-facts`
 - Raport -> `/project/report`
 
-## Queue boundary
+This is `UI_LOCAL / ZERO_WRITE` navigation. All existing routes and route
+names, `/project/overview`, current component and measurement workflows,
+focus mode, existing panel modes, Board Canvas visual dominance, and medium/
+wide reachability remain preserved.
 
-No overview retirement, router/app edit, new route, standalone menu page,
-component or measurement duplication, broad Board Canvas redesign, map edit,
-writer/schema/projection change, refactor, dependency, or `_incoming` work is
-armed.
+## Audit and map gate
 
-Map disposition: `REVIEWED_NO_CHANGE`.
+Map disposition: `REVIEWED_NO_CHANGE`. If the implementation creates material
+responsibility drift beyond the maintained map's existing zero-write GoRouter
+dependency, stop and require a separately scoped map pass.
 
-Scope evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_SCOPE_LOCK_PASS.md`.
+Human visual approval in medium and wide layouts is mandatory before Claude
+implementation audit. The future packet must say
+`USE ONLY AFTER MANUAL SMOKE PASS`.
+
+No overview retirement, router/app edit, new route, standalone surface,
+writer/project-state/projection write, workflow change, refactor, dependency,
+asset, `_incoming`, or code-map edit is armed.
+
+Sync evidence:
+`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_ACTIVE_LOCK_SYNC_PASS.md`.

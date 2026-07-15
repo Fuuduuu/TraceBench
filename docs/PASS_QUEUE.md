@@ -2,38 +2,43 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
 
-## Closed project-navigation-hub sequence
+## Locked governance amendment
 
-The accepted and pushed implementation
-`20f1c4421ab73cf431d291d6c47869b13a00b323`
-(`feat: add board canvas project navigation hub`) added one compact `Projekt`
-rail action whose existing right-panel mode exposes exactly seven existing-route
-links. `/project/overview` remains reachable but absent from the hub; routes,
-component and measurement workflows, and protected write behavior remain
-unchanged.
+The next Lane A docs-only pass may write exactly:
 
-Claude returned `AUDIT_VERDICT: ACCEPT_WITH_NITS` and
-`SAFE_FOR_STAGING: YES`; the safe staging set matched the exact Board Canvas
-screen/widget-test implementation pair, with no blockers. Human visual review
-passed representative medium and wide layouts, all seven links, focus/panel
-behavior, overflow, and canvas-dominance checks.
+- `AGENTS.md`
+- `docs/PROMPTING_PROTOCOL.md`
+- `docs/AUDIT_CONTRACT.md`
+- `docs/FILE_MAP.md`
+- `docs/code_maps/CODE_MAP_STANDARD.md`
 
-Accepted sequence:
+It will add compact owner-specific integration for:
 
-- scope lock `7b795c49b26463ae535b0ea980524d85ff88fa5f`;
-- active-lock sync `b1409ce91dd4d26fe8829719888f3cfb5c62c6c1`;
-- implementation `20f1c4421ab73cf431d291d6c47869b13a00b323`.
+- mandatory `TOOL_SKILL_CHECK` prompt/report fields;
+- task-specific `CODE_MAP_PREFLIGHT` for relevant Dart production/test work;
+- exactly one map disposition per relevant target;
+- code-map stop tokens and multi-zone decomposition;
+- map non-authorization and independent Claude audit duties; and
+- task-specific map loading outside the default five-file read set.
 
-## Queue boundary
+Detailed qualification, templates, evidence/write classes, SNIPER behavior,
+drift, maintenance, and map-audit mechanics remain owned only by
+`CODE_MAP_STANDARD.md`; other owners must link rather than duplicate them.
 
-The implementation lock is released. The unrelated intermittent Windows
-file-lock race in `measurement_write_screen_test.dart` is recorded only as a
-future test-hardening candidate. No overview retirement, test hardening,
-navigation pass, active-lock sync, or implementation pass is armed. Future
-work requires a new human decision and a dedicated scope lock where applicable.
+## Route boundary
 
-Closeout evidence:
-`docs/audit/BOARD_CANVAS_PROJECT_NAVIGATION_HUB_IMPL_POST_AUDIT_PASS.md`.
+No active-lock sync is required or authorized:
+
+`TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
+-> `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
+-> `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_POST_AUDIT_PASS`
+
+No `CODE_MAP_INDEX`, existing-map, runtime, test, schema, tool, package, asset,
+route, audit-history, `_incoming`, generator, linter, CI, hook, watcher,
+overview-retirement, or measurement-test-hardening work is armed.
+
+Scope-lock evidence:
+`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS.md`.

@@ -1,41 +1,50 @@
 # Current State
 
-Current pass: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
+Current pass: `NEEDS_USER_DECISION`
+Next recommended pass: `NEEDS_USER_DECISION`
 
 ## Charter and accepted baseline
 
 `docs/POHIKIRI.md` remains the canonical product charter and conflict-stop
 authority.
 
-Baseline `20b76d291fa1898da0fd4cadc0e6002b6bc9ddb8`
-(`docs: close out board canvas project navigation hub`) is accepted, pushed,
-and audited. Claude returned `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, blockers
-none, and nits none for that closeout.
+The code-map prompting governance amendment is accepted, pushed, and audited
+as `f5c34dc776ec1380c13c47053b0ff535e25ad1fa`
+(`docs: integrate code maps into prompting governance`). Claude returned
+`ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES`; blockers none; nits none. Its exact
+accepted set was `AGENTS.md`, `docs/PROMPTING_PROTOCOL.md`,
+`docs/AUDIT_CONTRACT.md`, `docs/FILE_MAP.md`, and
+`docs/code_maps/CODE_MAP_STANDARD.md`.
 
-## Active docs-only objective
+Accepted chain:
 
-This pass locks one later Lane A docs-only amendment that integrates mandatory
-tool/skill preflight and task-specific Dart code-map preflight into prompting,
-agent routing, audit checks, and documentation loading.
+- scope lock `5a9098016efe057b8e64145117dd79778a2a5f69`;
+- scope-audit reconciliation `7dd21a13f77f6e663d8e04de968043c67b3ec5be`;
+- governance amendment `f5c34dc776ec1380c13c47053b0ff535e25ad1fa`.
 
-The layered owner model is fixed:
+## Closed governance outcome
 
-- `docs/code_maps/CODE_MAP_STANDARD.md` owns map qualification, structure,
-  evidence/write classes, SNIPER use, drift, maintenance, and map audit.
-- `docs/PROMPTING_PROTOCOL.md` owns mandatory prompt fields and compact hooks.
-- `AGENTS.md` owns task-specific agent routing and stop behavior.
-- `docs/AUDIT_CONTRACT.md` owns independent audit checks.
-- `docs/FILE_MAP.md` owns documentation loading and ownership routing.
+TraceBench governance now requires mandatory `TOOL_SKILL_CHECK` for every
+Codex `PASS_ID` prompt and final report, plus conditional `CODE_MAP_PREFLIGHT`
+for work targeting or materially depending on Dart production/test files.
+Applicable preflights report map/index/qualification evidence, changed or
+inspect-only zones, dependencies, blast radius, write class, tests/helpers,
+and exactly one disposition: `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or
+`NOT_APPLICABLE`.
 
-No governance amendment is made in this scope-lock pass. The later amendment
-may write exactly those five owner documents. It may not edit
-`CODE_MAP_INDEX.md`, any existing map, runtime, tests, schemas, tools, packages,
-assets, `_incoming`, or route/audit docs.
+The exact code-map stop outcomes are `BLOCKED_CODE_MAP_REQUIRED`,
+`BLOCKED_CODE_MAP_STALE`, `BLOCKED_CODE_MAP_CONFLICT`,
+`BLOCKED_ALLOWLIST_MISMATCH`, and `DECOMPOSE_REQUIRED`. Detailed map lifecycle
+ownership remains in `CODE_MAP_STANDARD.md`; prompt hooks, agent routing,
+independent audit, and loading rules remain in their respective accepted
+owners.
 
-No active-lock sync is required or authorized. After this scope lock is
-accepted and pushed, the route proceeds directly to
-`TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`.
+Maps remain descriptive and non-authorizing. The default read set remains
+exactly five files; the standard, index, and applicable maintained maps remain
+on-demand. No map/index, runtime, test, schema, tool, package, asset, route, or
+protected product behavior changed.
 
-Scope-lock evidence:
-`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS.md`.
+The docs-only amendment authority is released and no follow-up pass is armed.
+
+Closeout evidence:
+`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_POST_AUDIT_PASS.md`.

@@ -2,43 +2,34 @@
 
 ## Current route
 
-Current: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Locked governance amendment
+## Closed code-map prompting integration
 
-The next Lane A docs-only pass may write exactly:
+The accepted and pushed governance amendment
+`f5c34dc776ec1380c13c47053b0ff535e25ad1fa`
+(`docs: integrate code maps into prompting governance`) changed exactly the
+five accepted owner documents. Claude returned `ACCEPT_AS_IS` and
+`SAFE_FOR_STAGING: YES`; blockers none; nits none.
 
-- `AGENTS.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- `docs/AUDIT_CONTRACT.md`
-- `docs/FILE_MAP.md`
-- `docs/code_maps/CODE_MAP_STANDARD.md`
+Accepted sequence:
 
-It will add compact owner-specific integration for:
+- scope lock `5a9098016efe057b8e64145117dd79778a2a5f69`;
+- scope-audit reconciliation `7dd21a13f77f6e663d8e04de968043c67b3ec5be`;
+- governance amendment `f5c34dc776ec1380c13c47053b0ff535e25ad1fa`.
 
-- mandatory `TOOL_SKILL_CHECK` prompt/report fields;
-- task-specific `CODE_MAP_PREFLIGHT` for relevant Dart production/test work;
-- exactly one map disposition per relevant target;
-- code-map stop tokens and multi-zone decomposition;
-- map non-authorization and independent Claude audit duties; and
-- task-specific map loading outside the default five-file read set.
+The closed outcome establishes mandatory tool/skill preflight, conditional
+Dart code-map preflight, three exact map dispositions, five exact stop
+outcomes, layered owner routing, non-authorization, the unchanged five-file
+default read set, and accepted-committed-state map maintenance.
 
-Detailed qualification, templates, evidence/write classes, SNIPER behavior,
-drift, maintenance, and map-audit mechanics remain owned only by
-`CODE_MAP_STANDARD.md`; other owners must link rather than duplicate them.
+## Queue boundary
 
-## Route boundary
+The docs-only amendment authority is released. No new code map, Board Canvas
+test-file map, measurement file-lock hardening, overview retirement, runtime
+implementation, active-lock sync, or protected-surface pass is armed. Future
+work requires a new human decision and a dedicated scope lock where applicable.
 
-No active-lock sync is required or authorized:
-
-`TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
--> `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
--> `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_POST_AUDIT_PASS`
-
-No `CODE_MAP_INDEX`, existing-map, runtime, test, schema, tool, package, asset,
-route, audit-history, `_incoming`, generator, linter, CI, hook, watcher,
-overview-retirement, or measurement-test-hardening work is armed.
-
-Scope-lock evidence:
-`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS.md`.
+Closeout evidence:
+`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_POST_AUDIT_PASS.md`.

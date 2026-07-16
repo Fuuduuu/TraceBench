@@ -6,7 +6,10 @@
 - Lane: A
 - Profile: MINI
 - Mode: docs-only code-map scope lock
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `d958d54142dacf4ffe14f89095009228e3882d2c`
+  (`docs: lock board canvas test code map scope`); Claude audit
+  `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; blockers none; nits none
 - Current: `BOARD_CANVAS_SCREEN_TEST_CODE_MAP_SCOPE_LOCK_PASS`
 - Next: `BOARD_CANVAS_SCREEN_TEST_CODE_MAP_PASS`
 
@@ -285,3 +288,35 @@ Lane A docs-only map pass.
 - No Dart, runtime, test, map, index, production-map, tool, `_incoming`, or
   scratch change was made.
 - `HEAD` remains `90432065e6702ff9199c7917b3f55fbe6f72e466`.
+
+## Claude scope-lock audit reconciliation
+
+The completed independent Claude scope-lock audit returned:
+
+- `AUDIT_VERDICT: ACCEPT_AS_IS`
+- `SAFE_FOR_STAGING: YES`
+- Blockers: none.
+- Nits: none.
+
+Accepted safe staging set:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_SCREEN_TEST_CODE_MAP_SCOPE_LOCK_PASS.md`
+
+Pushed scope-lock evidence:
+
+- Commit: `d958d54142dacf4ffe14f89095009228e3882d2c`
+- Subject: `docs: lock board canvas test code map scope`
+- Verified parent: `90432065e6702ff9199c7917b3f55fbe6f72e466`
+- Reconciliation gate:
+  `HEAD == origin/main == d958d54142dacf4ffe14f89095009228e3882d2c`
+- Tracked diff before reconciliation: empty.
+- Cached diff before reconciliation: empty.
+
+The original scope-lock body, metrics, qualification evidence, future
+allowlist, lifecycle, and validation history above remain unchanged. The
+updated top status and this reconciliation section supersede the former
+draft-time `DRAFTED / PENDING CLAUDE AUDIT` status.

@@ -32,6 +32,9 @@ The complete default set is exactly:
 | `docs/SOURCES_INDEX_CURRENT.md` | Source/design intake pointers | on-demand: design/source intake |
 | `docs/AUDIT_CONTRACT.md` | Audit requirements and verdict format | on-demand: audit |
 | `docs/AUDIT_INDEX.md` | Lookup index for exact pass evidence | on-demand: audit |
+| `docs/code_maps/CODE_MAP_STANDARD.md` | Detailed code-map qualification, lifecycle, structure, evidence/write classes, drift, maintenance, SNIPER, and map-audit owner | on-demand: applicable Dart qualification/lifecycle |
+| `docs/code_maps/CODE_MAP_INDEX.md` | Registry of actual maps and their current status | on-demand: Dart target map discovery/status |
+| `docs/code_maps/**` source-specific maps | Descriptive source-specific zones, dependencies, impact, boundaries, and linked tests | on-demand: exact applicable `MAINTAINED` map only |
 | `docs/MEMORY_REGISTRY.yml` | Machine-readable memory layers/conflict order | on-demand: docs governance |
 | `docs/MEMORY_PROTOCOL.md` | Memory ownership and intake policy | on-demand: docs governance |
 | `docs/MEMORY_MAINTENANCE.md` | Memory/current-state maintenance triggers | on-demand: docs governance |
@@ -56,6 +59,16 @@ The complete default set is exactly:
 
 - Use this file only for documentation ownership/routing work or when an active pointer requires it.
 - Use `docs/AUDIT_INDEX.md` to locate one audit artifact; do not bulk-read audit history.
+- Prompt construction routes to `docs/PROMPTING_PROTOCOL.md`.
+- Map lifecycle or qualification routes to
+  `docs/code_maps/CODE_MAP_STANDARD.md`; map discovery or status routes to
+  `docs/code_maps/CODE_MAP_INDEX.md`.
+- Exact responsibility zones, dependencies, impact, and tests route to the
+  applicable maintained source-specific map; independent audit routes to
+  `docs/AUDIT_CONTRACT.md`.
+- Code maps are task-specific and never part of the default read set. Source,
+  tests, canonical owners, `docs/POHIKIRI.md`, and active authority outrank
+  every map.
 - Historical/provenance files never override the five default route/authority files.
 - `_incoming/**` must not be imported, packaged, runtime-referenced, or treated as canonical truth.
 - Update this map only when ownership, classification, loading priority, or file lifecycle changes.

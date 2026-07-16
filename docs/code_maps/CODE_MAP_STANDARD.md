@@ -191,23 +191,52 @@ Assign a write class only from actual call-path evidence. UI labels, button
 copy, intent, or appearance are not write evidence. If the call path is not
 verified, record uncertainty rather than upgrading the class.
 
-## SNIPER integration
+## Prompt and SNIPER integration
 
-When a `MAINTAINED` map exists, a mapped-file SNIPER prompt names:
+For implementation, repair, diagnostic, QA, refactor, or review work targeting
+or materially depending on Dart production/test files, look up the target in
+`CODE_MAP_INDEX.md`. If no map exists, apply this Standard's qualification
+rules rather than assuming every Dart file needs a map. Only a verified
+`MAINTAINED` map may supply mapped-file planning inputs.
 
-- changed responsibility zone and stable symbols;
+For each relevant mapped target, the prompt and final report's
+`CODE_MAP_PREFLIGHT`, including any SNIPER form, names:
+
+- target map path and index status;
+- changed responsibility zone and stable symbols, or
+  `changed responsibility zone: none` for read-only diagnostic/review work;
 - inspect-only coupled zones;
 - explicitly excluded zones;
+- direct dependencies;
 - expected blast radius and evidence classes;
-- write class;
-- affected tests; and
-- map disposition: `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or
+- write class from verified call paths;
+- affected tests and helpers; and
+- exactly one map disposition: `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or
   `NOT_APPLICABLE`.
 
-If a proposed pass changes more than one independent responsibility zone, its
-map result is `DECOMPOSE_REQUIRED`; split the work or obtain a new explicit
-scope decision before implementation. A map narrows investigation but never
-expands the active allowlist.
+`REVIEWED_NO_CHANGE` requires actual map review showing the proposed or
+accepted work would not materially stale the map. `UPDATE_REQUIRED` applies
+when the current map is valid but the proposed or accepted work would
+materially stale it; maintain the map later in a separately scoped docs-only
+pass against accepted committed source. `NOT_APPLICABLE` requires index and
+qualification evidence that no applicable qualifying map exists or the target
+does not qualify. It is invalid when a qualifying target lacks its required
+current map.
+
+Use `BLOCKED_CODE_MAP_REQUIRED` when a qualifying relevant target lacks its
+required current map; `BLOCKED_CODE_MAP_STALE` when the pre-existing map is
+stale, `REVIEW_REQUIRED`, or unverifiable; `BLOCKED_CODE_MAP_CONFLICT` when map
+claims conflict with source, tests, canonical owners, or active authority; and
+`BLOCKED_ALLOWLIST_MISMATCH` when required work falls outside the active
+allowlist. These conditions stop before implementation. A current map that the
+proposed work would stale uses `UPDATE_REQUIRED`, not the stale-map blocker.
+
+Work crossing more than one independent changed responsibility zone stops with
+`DECOMPOSE_REQUIRED` unless a new explicit human scope decision authorizes the
+combination. `DECOMPOSE_REQUIRED` is not a disposition. A map narrows
+investigation but never expands the active allowlist; source, tests, canonical
+owners, `docs/POHIKIRI.md`, and the active lock outrank it. Speculation cannot
+authorize scope, and unfinished local work cannot update a map.
 
 ## Update and drift policy
 

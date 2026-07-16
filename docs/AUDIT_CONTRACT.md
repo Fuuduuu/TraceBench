@@ -22,6 +22,22 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - Audit-packet handoff: every TraceBench Codex PASS_ID response must end with a clearly separated, paste-ready `CLAUDE_AUDIT_PACKET`.
 - Visual/manual-smoke gate: visual or product-surface packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`; Claude audit must not approve a known-wrong visual draft.
 - Exact staging: accepted staging sets must list exact files; `git add .`, `git add -A`, and broad staging are forbidden.
+- Capability preflight: verify `TOOL_SKILL_CHECK` exists, the reported
+  capability was applicable, and its use did not widen the active allowlist.
+- Conditional code-map preflight: for implementation, repair, diagnostic, QA,
+  refactor, or review work targeting or materially depending on Dart
+  production/test files, verify `CODE_MAP_PREFLIGHT` against
+  `docs/code_maps/CODE_MAP_STANDARD.md`.
+- Code-map evidence: verify the index lookup and map status; named zones and
+  stable symbols against map and source; the diff against the declared zone and
+  active allowlist; and that inspect-only and excluded zones stayed unchanged.
+- Code-map impact: verify write class from actual call-path evidence, affected
+  tests against the impact matrix, and exactly one justified disposition per
+  relevant target. Block silent reliance on missing, stale, or conflicting maps
+  and verify that no such map authorized work.
+- Code-map lifecycle: verify `UPDATE_REQUIRED` routes to later docs-only map
+  maintenance against accepted committed source, and multi-zone work had a new
+  explicit human scope decision or stopped with `DECOMPOSE_REQUIRED`.
 
 ## Active-lock sync gate for protected implementation
 
@@ -107,6 +123,8 @@ Checks:
 - Confirm no direct writes bypass accepted writer/service boundaries when such boundaries exist.
 - Confirm idempotency, failure handling, and local UI projection behavior when scoped.
 - Confirm analyzer/lint residuals are either fixed or classified as known baseline/deferred issues.
+- For applicable Dart production/test work, apply the common conditional
+  code-map checks before accepting the implementation diff.
 
 Verdict options: `ACCEPT_AS_IS`, `NEEDS_SMALL_PATCH`, `REJECT`.
 

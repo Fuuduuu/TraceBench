@@ -10,6 +10,24 @@ Keep prompts compact, scoped, and auditable without losing safety.
 Canonical repo docs win over prompt/chat memory.
 Use `docs/MODEL_ROUTING.md` for helper/model role ownership and `docs/AUDIT_CONTRACT.md` for reusable audit contracts instead of repeating long stable blocks.
 
+## Tool and skill preflight
+
+Every Codex `PASS_ID` prompt must require a preflight before acting: inspect
+available repo-local skills, tools, helpers, fixtures, and scripts, then use the
+narrowest applicable capability. The prompt and final report must include:
+
+```text
+TOOL_SKILL_CHECK:
+- relevant skill/tool/helper found
+- capability actually used
+- why applicable
+- external tool required: YES/NO
+```
+
+`none applicable` is valid when supported by evidence. Capability choice never
+expands write authority. `external tool required: YES` is descriptive only; it
+does not authorize installation, invocation, a new file, or another surface.
+
 ## Codex final-output audit packet rule
 
 Every TraceBench Codex PASS_ID response must end with a clearly separated `CLAUDE_AUDIT_PACKET`.
@@ -22,6 +40,9 @@ The packet must be paste-ready for Claude Code and include:
 - focused audit checklist for the pass-specific risk;
 - validation commands/results to verify;
 - verdict format and safety gate.
+
+The surrounding final report must also include `TOOL_SKILL_CHECK` and, when
+applicable, `CODE_MAP_PREFLIGHT`.
 
 For visual or product-surface work, Codex still prepares the packet, but the packet must be marked:
 
@@ -70,11 +91,12 @@ No safety rails are relaxed:
 
 ## Required prompt fields (always)
 
-Every implementation/audit prompt must include:
+Every Codex `PASS_ID` prompt must include:
 
 - `PASS_ID`
 - `Lane` (`A` or `B`)
 - `Mode`
+- `TOOL_SKILL_CHECK`
 - `Goal`
 - `Gate`
 - `Read`
@@ -83,6 +105,65 @@ Every implementation/audit prompt must include:
 - `Validate`
 - `Output`
 - `Stop if`
+
+Include `CODE_MAP_PREFLIGHT` when the conditional rule below applies.
+
+## Conditional code-map preflight
+
+`CODE_MAP_PREFLIGHT` is required for implementation, repair, diagnostic, QA,
+refactor, or review work targeting or materially depending on Dart production
+or test files. Check `docs/code_maps/CODE_MAP_INDEX.md` first; use
+`docs/code_maps/CODE_MAP_STANDARD.md` for qualification and lifecycle, and load
+only the applicable maintained map for exact zones and impact.
+
+The prompt and final report must record, per relevant target:
+
+```text
+CODE_MAP_PREFLIGHT:
+- target files
+- CODE_MAP_INDEX lookup result
+- applicable map path/status
+- qualification result when no map exists
+- changed responsibility zone and stable symbols
+- inspect-only coupled zones
+- explicitly excluded zones
+- direct dependencies
+- expected blast radius with evidence classes
+- write class
+- affected tests/helpers
+- map disposition
+```
+
+For a read-only diagnostic or review that changes no source zone, report
+`changed responsibility zone: none` and name the inspected zones and symbols.
+
+Exactly one disposition applies per relevant target:
+
+- `REVIEWED_NO_CHANGE`
+- `UPDATE_REQUIRED`
+- `NOT_APPLICABLE`
+
+`NOT_APPLICABLE` is invalid when a qualifying target lacks a required current
+map. A qualifying target with a missing required map, or a pre-existing stale,
+`REVIEW_REQUIRED`, unverifiable, or conflicting map state, stops before
+implementation. A current map that proposed or accepted work would materially
+stale uses `UPDATE_REQUIRED`; maintain it later in a docs-only map pass against
+accepted committed source, never unfinished local work.
+
+Use the exact stop outcomes:
+
+- `BLOCKED_CODE_MAP_REQUIRED`
+- `BLOCKED_CODE_MAP_STALE`
+- `BLOCKED_CODE_MAP_CONFLICT`
+- `BLOCKED_ALLOWLIST_MISMATCH`
+- `DECOMPOSE_REQUIRED`
+
+`DECOMPOSE_REQUIRED` applies to more than one independent changed
+responsibility zone without a new explicit human scope decision; it is a stop
+outcome, not a fourth disposition. Maps remain task-specific, descriptive, and
+non-authorizing. Detailed qualification, evidence/write classes, drift,
+maintenance, disposition, and stop semantics stay owned by
+`CODE_MAP_STANDARD.md`.
 
 ## Hybrid prompt strategy (adopted)
 
@@ -108,6 +189,12 @@ PASS_ID: <ID>
 Lane: <LANE>
 Mode: <MODE>
 Goal: <1 narrow objective>
+
+TOOL_SKILL_CHECK:
+<required four-field preflight>
+
+CODE_MAP_PREFLIGHT:
+<conditional for relevant Dart production/test work; otherwise state why not applicable or omit>
 
 Gate:
 <git status/log/diff commands + expected state>

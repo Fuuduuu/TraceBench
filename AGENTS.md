@@ -32,6 +32,31 @@ All other documentation, memory, semantic, prompt/model, audit, source/design, m
 - Audit: `docs/AUDIT_CONTRACT.md`, `docs/AUDIT_INDEX.md`, and one exact audit artifact.
 - Documentation governance: `docs/FILE_MAP.md`, `docs/MEMORY_PROTOCOL.md`, `docs/MEMORY_MAINTENANCE.md`, and `docs/MEMORY_REGISTRY.yml` as needed.
 
+## Capability and code-map preflight
+
+Before every Codex `PASS_ID` action, inspect available repo-local skills,
+tools, helpers, fixtures, and scripts, use the narrowest applicable capability,
+and include `TOOL_SKILL_CHECK` in both the prompt and final report as defined by
+`docs/PROMPTING_PROTOCOL.md`. `none applicable` is valid with evidence. A
+capability cannot expand the active allowlist, and reporting an external tool
+as required is descriptive rather than authorization.
+
+For implementation, repair, diagnostic, QA, refactor, or review work targeting
+or materially depending on Dart production/test files:
+
+1. Check `docs/code_maps/CODE_MAP_INDEX.md` for the target.
+2. Load `docs/code_maps/CODE_MAP_STANDARD.md` for qualification or lifecycle
+   questions and the applicable `MAINTAINED` map for exact zones and impact.
+3. Complete the conditional `CODE_MAP_PREFLIGHT` required by
+   `docs/PROMPTING_PROTOCOL.md`.
+
+Code maps remain task-specific and outside the default five-file read set. They
+are descriptive and non-authorizing; source, tests, canonical owners,
+`docs/POHIKIRI.md`, and the active lock outrank them. Stop with the applicable
+`BLOCKED_CODE_MAP_REQUIRED`, `BLOCKED_CODE_MAP_STALE`,
+`BLOCKED_CODE_MAP_CONFLICT`, `BLOCKED_ALLOWLIST_MISMATCH`, or
+`DECOMPOSE_REQUIRED` outcome defined by the Standard and current scope.
+
 ## Workflow and pass discipline
 
 - One narrow PASS_ID at a time.

@@ -6,7 +6,10 @@
 - Lane: A
 - Profile: MINI
 - Mode: docs-only governance scope lock
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `5a9098016efe057b8e64145117dd79778a2a5f69`
+  (`docs: lock code map prompting integration`); Claude audit
+  `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; blockers none; nits none
 - Current: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS`
 - Next: `TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_PASS`
 
@@ -338,3 +341,29 @@ Nothing is staged, committed, or pushed.
 Claude Code performs the independent repo-local audit, and the human owns exact
 staging, commit, and push. This artifact remains
 `DRAFTED / PENDING CLAUDE AUDIT` and claims no staging permission.
+
+## Claude scope-lock audit reconciliation
+
+The original draft evidence above, including its draft-time present-tense
+status statement, remains verbatim as the pre-audit record. The current status
+at the top of this artifact and this later reconciliation supersede that
+historical status statement and record the returned audit and pushed commit
+evidence:
+
+- Audit verdict: `ACCEPT_AS_IS`.
+- Safe for staging: `YES`.
+- Blockers: none.
+- Nits: none.
+- Pushed commit: `5a9098016efe057b8e64145117dd79778a2a5f69`.
+- Subject: `docs: lock code map prompting integration`.
+- Verified parent: `20b76d291fa1898da0fd4cadc0e6002b6bc9ddb8`.
+- Reconciliation gate:
+  `HEAD == origin/main == 5a9098016efe057b8e64145117dd79778a2a5f69`.
+- Tracked diff before reconciliation: empty.
+- Cached diff before reconciliation: empty.
+- Accepted safe staging set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_SCOPE_LOCK_PASS.md`

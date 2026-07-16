@@ -2,34 +2,48 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `BOARD_CANVAS_SCREEN_TEST_CODE_MAP_SCOPE_LOCK_PASS`
+Next: `BOARD_CANVAS_SCREEN_TEST_CODE_MAP_PASS`
 
-## Closed code-map prompting integration
+## Current docs-only scope lock
 
-The accepted and pushed governance amendment
-`f5c34dc776ec1380c13c47053b0ff535e25ad1fa`
-(`docs: integrate code maps into prompting governance`) changed exactly the
-five accepted owner documents. Claude returned `ACCEPT_AS_IS` and
-`SAFE_FOR_STAGING: YES`; blockers none; nits none.
+The current pass may change exactly:
 
-Accepted sequence:
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/BOARD_CANVAS_SCREEN_TEST_CODE_MAP_SCOPE_LOCK_PASS.md`
 
-- scope lock `5a9098016efe057b8e64145117dd79778a2a5f69`;
-- scope-audit reconciliation `7dd21a13f77f6e663d8e04de968043c67b3ec5be`;
-- governance amendment `f5c34dc776ec1380c13c47053b0ff535e25ad1fa`.
+It locks lifecycle and scope only. It creates no code map or index row and has
+no Dart, runtime, or test authority.
 
-The closed outcome establishes mandatory tool/skill preflight, conditional
-Dart code-map preflight, three exact map dispositions, five exact stop
-outcomes, layered owner routing, non-authorization, the unchanged five-file
-default read set, and accepted-committed-state map maintenance.
+## Armed map pass
 
-## Queue boundary
+After this scope lock is independently audited, accepted, committed, and pushed,
+`BOARD_CANVAS_SCREEN_TEST_CODE_MAP_PASS` may write exactly:
 
-The docs-only amendment authority is released. No new code map, Board Canvas
-test-file map, measurement file-lock hardening, overview retirement, runtime
-implementation, active-lock sync, or protected-surface pass is armed. Future
-work requires a new human decision and a dedicated scope lock where applicable.
+- `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/audit/BOARD_CANVAS_SCREEN_TEST_CODE_MAP_PASS.md`
 
-Closeout evidence:
-`docs/audit/TRACEBENCH_CODE_MAP_PROMPTING_INTEGRATION_POST_AUDIT_PASS.md`.
+No fourth, wildcard, optional, source, test, or production-map file is
+authorized. No active-lock sync is required because the next pass remains Lane
+A docs-only map creation with no Dart authority.
+
+The test map is independently qualified as
+`AUTO — >3000 lines + 3+ test families`. It must describe accepted committed
+state, use stable symbols/helpers/harnesses/named test families rather than
+line anchors, contain at most 12 zones, target 120–220 lines, and remain
+descriptive and non-authorizing.
+
+Lifecycle: draft the map and one actual index row as `REVIEW_REQUIRED`; obtain
+Claude `MAP_VERDICT: ACCEPT_AS_IS / ACCEPT_WITH_NITS` and
+`SAFE_FOR_SNIPER_USE: YES`; synchronize both statuses to `MAINTAINED`; run the
+short final Claude audit; then the human may stage exactly the accepted three
+files. A blocked map verdict or `SAFE_FOR_SNIPER_USE: NO` forbids staging.
+
+The production Board Canvas map and both Dart source/test files remain
+unchanged. Test refactoring, splitting, harness repair, Windows file-lock
+hardening, generators, linters, watchers, hooks, CI gates, and implementation
+work remain outside the queue.

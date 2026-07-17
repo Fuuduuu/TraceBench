@@ -1,39 +1,46 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`
 
 ## Charter and accepted baseline
 
 `docs/POHIKIRI.md` remains the canonical product charter and conflict-stop
 authority.
 
-The Board Canvas test-code-map chain is accepted, pushed, and audited:
+The Board Canvas test-code-map closeout is accepted, pushed, and audited at
+`061ec7a0ce195e4d0560832631a25e55e3a0c1c2`
+(`docs: close out board canvas test code map`). Claude returned
+`AUDIT_VERDICT: ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES`; blockers none;
+nits none. The separate production and test Board Canvas maps remain
+`MAINTAINED`.
 
-- scope lock: `d958d54142dacf4ffe14f89095009228e3882d2c`;
-- scope-audit reconciliation:
-  `3a0f5bd50dbb653716662b3b6659c43ebf058f29`; and
-- maintained test map: `041d3a710ac3f35092532d831ffc04eb57e38ebc`
-  (`docs: add board canvas test code map`).
+## Active docs-only architecture decision lock
 
-Claude returned `MAP_VERDICT: ACCEPT_AS_IS`,
-`SAFE_FOR_SNIPER_USE: YES`, `AUDIT_VERDICT: ACCEPT_AS_IS`, and
-`SAFE_FOR_STAGING: YES`; blockers none; nits none.
+The human-confirmed Variant C repo-skills architecture is locked for one later
+decision pass. Canonical repo docs keep truth and authority; skills may own
+reusable judgment and workflow technique only; validators/tools own mechanical
+invariants; code maps remain descriptive; and each prompt owns its exact
+PASS_ID, baseline, allowlist, exclusions, and pass-specific delta.
 
-## Accepted outcome
+This scope lock changes only the four operational/audit owners and its new
+audit artifact. It creates or edits no skill, architecture spec, tool,
+validator, runtime, test, schema, package, asset, or `_incoming` file.
 
-The 202-line, 11-zone maintained map at
-`docs/code_maps/test/widget/board_canvas_screen_test.dart.md` describes the
-committed `test/widget/board_canvas_screen_test.dart` blob
-`1322c3384210806833922f2fe7019a5360ae2b83`. `CODE_MAP_INDEX.md` now lists
-separate maintained production and test Board Canvas maps. Both remain
-descriptive and non-authorizing; the test map is safe for SNIPER use.
+## Armed decision pass
 
-## Active authority
+After independent audit and push of this scope lock,
+`TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS` may write exactly:
 
-The Board Canvas test-map authority is released. No code-map, implementation,
-refactor, test split, file-lock hardening, tooling, or other pass is armed.
-The next action requires a new human decision and exact scope.
+- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
+- `docs/CODEX_TOOLING_POLICY.md`
+- `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS.md`
 
-Closeout evidence:
-`docs/audit/BOARD_CANVAS_SCREEN_TEST_CODE_MAP_POST_AUDIT_PASS.md`.
+The decision must define the exact eight-skill Variant C catalogue, existing
+skill dispositions, ownership and non-authorization, frontmatter/trigger and
+composition contracts, RED/GREEN pressure evidence, validator boundaries,
+narrow implementation batches, and lifecycle/drift rules. No active-lock sync
+is required for that Lane A docs-only decision.
+
+Scope-lock evidence:
+`docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md`.

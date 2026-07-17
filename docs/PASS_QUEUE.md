@@ -2,26 +2,31 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`
 
-## Completed Board Canvas test-map chain
+## Current docs-only scope lock
 
-The accepted sequence is complete:
+This pass records the human-confirmed Variant C architecture, reconciles the
+accepted Board Canvas test-map closeout, and reserves one separate docs-only
+architecture decision. It does not create or edit skills, tools, validators,
+the future spec, runtime, tests, or protected surfaces.
 
-- `d958d54142dacf4ffe14f89095009228e3882d2c` — scope lock;
-- `3a0f5bd50dbb653716662b3b6659c43ebf058f29` — scope-audit
-  reconciliation; and
-- `041d3a710ac3f35092532d831ffc04eb57e38ebc` — maintained test map,
-  maintained index row, and map-pass audit evidence.
+## Armed next pass
 
-Claude accepted the map for SNIPER use and accepted the exact three-file final
-diff for staging. The pushed map commit contains only the map, index, and
-map-pass audit artifact.
+After this scope lock is independently audited, accepted, committed, and
+pushed, the decision pass may write exactly:
 
-## No armed next pass
+- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
+- `docs/CODEX_TOOLING_POLICY.md`
+- `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS.md`
 
-No repo-skills architecture, Photo-to-Canvas lab, additional code map, runtime
-implementation, active-lock sync, test refactor/split, or file-lock hardening
-pass is queued. Any next pass requires a new human decision and scope lock when
-applicable.
+The decision pass must classify all five existing repo skills, define the
+eight-skill catalogue and trigger/composition boundaries, keep canonical docs
+authoritative, reserve mechanical checks for tools/validators, require
+meaningful RED/GREEN evidence for every new or materially rewritten skill, and
+decompose later skill implementation into narrow batches.
+
+No active-lock sync follows this scope lock. No skill implementation,
+Photo-to-Canvas work, automatic loader, plugin/MCP installation, tooling
+change, or all-eight-skills implementation batch is queued.

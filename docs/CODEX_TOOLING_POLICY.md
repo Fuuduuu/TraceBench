@@ -11,8 +11,37 @@ The repository has now introduced repo-local guidance assets:
 - `AGENTS.md`
 - `.agents/skills/tracebench-*`
 - `docs/CODEX_TOOLING_POLICY.md`
+- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
 
 No external plugins, MCP servers, or dependency/tool installers are enabled in this pass.
+
+## Repo-skill architecture
+
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` is the decision owner for
+the skill-system catalogue, trigger boundaries, composition, lifecycle,
+portability, and future implementation batches.
+
+Variant C contains exactly:
+
+- core: `tracebench-prompt-authoring`;
+- lifecycle: `tracebench-scope-lock`, `tracebench-code-map-lifecycle`,
+  `tracebench-audit-reconciliation`, and `tracebench-docs-closeout`;
+- specialized: `tracebench-flutter-widget-pass` and
+  `tracebench-v2-event-boundary`; and
+- mechanical guard: `tracebench-safe-staging`.
+
+The catalogue is an architecture target; the implemented inventory remains
+the existing five skills until separately scoped batches are accepted. All
+current and future `tracebench-*` skills remain repo-local. A skill owns
+reusable judgment and workflow technique only: it cannot authorize or expand
+writes, routes, staging, protected surfaces, or pass allowlists. Seven
+catalogue roles are project adapters or technology-specific extraction
+candidates; the V2 event boundary remains project-only. Generic or personal
+extraction requires a separate decision and pass.
+
+Tools and validators may later own proven deterministic checks, but this
+policy and architecture decision add no automatic loader, lint, hook, CI,
+installer, or validator behavior.
 
 ## Default policy
 
@@ -28,6 +57,8 @@ No external plugins, MCP servers, or dependency/tool installers are enabled in t
 - `AGENTS.md` as repo-level guidance.
 - `.agents/skills/tracebench-*` repo-local workflow skills.
 - `docs/CODEX_TOOLING_POLICY.md` as policy ledger.
+- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` as the repo-skill system
+  decision owner.
 
 ## Future optional MCP/plugin candidates
 
@@ -83,9 +114,8 @@ No external plugins, MCP servers, or dependency/tool installers are enabled in t
 
 ## TraceBench-specific combinations
 
-- Default coding: `AGENTS.md` + tracebench skills.
-- Flutter UI pass: `AGENTS.md` + `tracebench-flutter-widget-pass` (+ optional Dart/Flutter MCP after approval).
-- Docs closeout: `tracebench-docs-closeout` + `tracebench-safe-staging`.
-- V2 event passes: `tracebench-v2-event-boundary` + `tracebench-safe-staging`.
-- Design pass: GPT Pro/Claude design review first, then optional read-only Figma MCP, then Codex scope-lock.
-- Security pass: Codex Security only after explicit security scope-lock.
+Activate only independently triggered repo skills in the order and combinations
+defined by the architecture spec. `tracebench-safe-staging` is never implied by
+closeout or implementation; it applies only after an accepted audit and an
+explicit human staging instruction. Optional external tooling still requires
+the separate pass-specific approval above.

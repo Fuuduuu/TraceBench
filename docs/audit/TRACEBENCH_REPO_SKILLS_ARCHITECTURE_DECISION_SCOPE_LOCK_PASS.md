@@ -6,7 +6,10 @@
 - Lane: A
 - Profile: MINI
 - Mode: docs-only architecture scope lock
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `86c93679cd6ff5ab2844b5c3df0b4da1fcaf05e5`
+  (`docs: lock repo skills architecture decision`); Claude audit
+  `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; blockers none; nits none
 - Current: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
 - Next: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`
 
@@ -335,3 +338,36 @@ Nothing is staged, committed, or pushed.
 
 This artifact remains `DRAFTED / PENDING CLAUDE AUDIT` and claims no staging
 permission.
+
+## Claude scope-lock audit reconciliation
+
+The original draft evidence above, including its draft-time present-tense
+status statement, remains unchanged as the pre-audit record. The current
+status at the top of this artifact and this reconciliation section supersede
+that historical status statement and record the returned audit and pushed
+commit evidence:
+
+- Audit verdict: `ACCEPT_AS_IS`.
+- Safe for staging: `YES`.
+- Blockers: none.
+- Nits: none.
+- Pushed commit: `86c93679cd6ff5ab2844b5c3df0b4da1fcaf05e5`.
+- Subject: `docs: lock repo skills architecture decision`.
+- Verified parent: `061ec7a0ce195e4d0560832631a25e55e3a0c1c2`.
+- Reconciliation gate:
+  `HEAD == origin/main == 86c93679cd6ff5ab2844b5c3df0b4da1fcaf05e5`.
+- Tracked diff before reconciliation: empty.
+- Cached diff before reconciliation: empty.
+- Route remains:
+  `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS` ->
+  `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`.
+- Original accepted staging set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md`
+
+Git confirms the pushed commit contains exactly that accepted five-file set.
+This reconciliation changes no route, architecture decision, skill, spec,
+tool, validator, runtime, test, map, asset, or scratch surface.

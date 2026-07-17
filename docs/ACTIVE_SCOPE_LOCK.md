@@ -2,88 +2,63 @@
 
 ## Route
 
-Current: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
 `docs/POHIKIRI.md` remains the charter and conflict-stop authority.
 
 ## Current write authority
 
-This docs-only scope lock may write exactly:
+No implementation or docs pass is active. No file write authority is armed.
+A future pass requires a new explicit human decision and exact allowlist.
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS.md`
+## Accepted repo-skills decision
 
-No wildcard, optional expansion, skill implementation, tool/validator change,
-runtime/test change, staging, commit, or push is authorized.
+The repo-skills architecture decision is accepted and pushed at
+`9d6ec175ee9a4327b1683ca101ddb36b0acb48ec`
+(`docs: define repo skills architecture`). Its durable owner is
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`.
 
-## Locked Variant C direction
-
-The future architecture decision must define:
+The accepted decision establishes:
 
 - core: `tracebench-prompt-authoring`;
 - lifecycle: `tracebench-scope-lock`, `tracebench-code-map-lifecycle`,
   `tracebench-audit-reconciliation`, and `tracebench-docs-closeout`;
 - specialized: `tracebench-flutter-widget-pass` and
-  `tracebench-v2-event-boundary`; and
-- mechanical guard: `tracebench-safe-staging`.
+  `tracebench-v2-event-boundary`;
+- mechanical guard: `tracebench-safe-staging`;
+- all five existing skills: `formalize/rewrite`;
+- three missing roles remain unimplemented;
+- canonical docs remain truth and authority owners;
+- skills remain reusable judgment/workflow only and non-authorizing;
+- validators/tools remain mechanical-invariant owners;
+- code maps remain descriptive and non-authorizing;
+- each exact prompt owns its PASS_ID, baseline, allowlist, exclusions, stops,
+  pass-specific delta, and validation within live canonical authority; it may
+  narrow but never widen that authority;
+- every new/material skill rewrite requires RED/GREEN evidence;
+- portability/extraction labels are non-authorizing; and
+- future Markdown deletion requires an audited replacement, updated pointers,
+  preserved authority/history, no dangling references, and exact
+  docs-compaction authority.
 
-Canonical docs own truth, authority, routes, and semantic rules. Skills own
-reusable judgment/workflow technique only. Tools and validators own mechanical
-invariants. Code maps own descriptive responsibility/impact evidence. Each
-prompt owns its pass-specific identity, baseline, allowlist, exclusions, and
-delta. No skill may authorize or expand writes.
+The A-D batch labels, `Extraction candidate: YES` classifications, and
+Markdown dispositions are non-authorizing architecture decisions only.
 
-The five existing repo skills are preserved for inspection and default to
-`formalize/rewrite` in the decision unless source evidence justifies
-`preserve`, `split`, or `retire`. This lock does not decide implementation
-content or modify any `SKILL.md`.
+## Released authority
 
-## Future decision authority
+All pass-specific write authority from the repo-skills architecture scope-lock
+and decision passes is released. The accepted architecture spec remains the
+durable decision owner. This closeout does not arm:
 
-After this scope lock is independently audited, accepted, committed, and
-pushed, `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS` may write exactly:
+- Batch A, B, C, or D;
+- generic or personal skill extraction;
+- Markdown compaction or deletion;
+- Photo-to-Canvas work;
+- automatic loading, linting, hooks, CI, tooling, or validators;
+- active-lock sync; or
+- runtime, test, schema, package, asset, `_incoming`, or protected-surface
+  work.
 
-- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
-- `docs/CODEX_TOOLING_POLICY.md`
-- `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS.md`
-
-No fourth file, wildcard, optional expansion, or skill edit is authorized.
-The generic `docs/spec/**` ownership route already exists, so
-`docs/FILE_MAP.md` remains unchanged. Stop rather than widen scope if a genuine
-ownership conflict appears.
-
-## Decision requirements and boundaries
-
-The decision must cover purpose/non-goals, inventory/dispositions, Variant C,
-canonical precedence/non-authorization, exact triggers, required YAML
-frontmatter/content, composition, prompting and code-map relationships,
-lifecycle boundaries, validator-owned checks, RED/GREEN pressure evidence,
-narrow implementation batches, maintenance/deprecation/drift, and explicit
-risks/non-decisions.
-
-Skill paths remain `.agents/skills/<skill-name>/SKILL.md`; names use lowercase
-letters, numbers, and hyphens; descriptions begin `Use when...`, contain only
-triggering conditions, and do not summarize workflow. Skills must stay concise
-and pointer-based, with no current commit, active route, or pass-specific
-allowlist. Reusable supporting files require evidence that they are both
-reusable and too heavy for `SKILL.md`.
-
-Every new or materially rewritten skill later requires a meaningful RED/GREEN
-pressure scenario before acceptance. The decision must split later work into
-narrow batches rather than combine all eight skill changes.
-
-## Preserved surfaces and stops
-
-No Photo-to-Canvas architecture, skill implementation, `AGENTS.md`,
-`PROMPTING_PROTOCOL.md`, `AUDIT_CONTRACT.md`, `FILE_MAP.md`, code-map Standard
-or map, tool/validator, plugin/MCP, automatic loader, runtime, test, schema,
-package, asset, `_incoming`, scratch, route behavior, writer, event, fact,
-projection, Project ZIP, or protected-surface change is authorized.
-
-Stop on `BLOCKED_BASELINE_MISMATCH`, `BLOCKED_DIRTY_STATE`,
-`BLOCKED_ALLOWLIST_MISMATCH`, `BLOCKED_GOVERNANCE_CONFLICT`, or
-`BLOCKED_SKILL_INVENTORY_MISMATCH`.
+The architecture spec, tooling policy, decision artifact, all existing skills,
+and all protected owners remain unchanged by this closeout.

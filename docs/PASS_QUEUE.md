@@ -2,31 +2,27 @@
 
 ## Current route
 
-Current: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current docs-only scope lock
+## Completed repo-skills architecture decision chain
 
-This pass records the human-confirmed Variant C architecture, reconciles the
-accepted Board Canvas test-map closeout, and reserves one separate docs-only
-architecture decision. It does not create or edit skills, tools, validators,
-the future spec, runtime, tests, or protected surfaces.
+The accepted sequence is complete:
 
-## Armed next pass
+- `86c93679cd6ff5ab2844b5c3df0b4da1fcaf05e5` — architecture scope lock;
+- `0d0987c91e35e7b8d54cb21e8eaefabcb8cbb58f` — scope-lock audit
+  reconciliation; and
+- `9d6ec175ee9a4327b1683ca101ddb36b0acb48ec` — architecture decision.
 
-After this scope lock is independently audited, accepted, committed, and
-pushed, the decision pass may write exactly:
+Claude accepted the decision `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`;
+blockers none; nits none.
 
-- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
-- `docs/CODEX_TOOLING_POLICY.md`
-- `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_PASS.md`
+## No armed next pass
 
-The decision pass must classify all five existing repo skills, define the
-eight-skill catalogue and trigger/composition boundaries, keep canonical docs
-authoritative, reserve mechanical checks for tools/validators, require
-meaningful RED/GREEN evidence for every new or materially rewritten skill, and
-decompose later skill implementation into narrow batches.
+No Batch A, B, C, or D implementation is queued or authorized. No
+generic/personal skill extraction, Markdown compaction, Photo-to-Canvas work,
+validator/tool implementation, active-lock sync, runtime change, or test
+change is queued.
 
-No active-lock sync follows this scope lock. No skill implementation,
-Photo-to-Canvas work, automatic loader, plugin/MCP installation, tooling
-change, or all-eight-skills implementation batch is queued.
+Any next pass requires a new explicit human route decision, exact allowlist,
+and applicable scope/audit gates.

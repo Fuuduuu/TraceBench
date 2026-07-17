@@ -6,7 +6,10 @@
 - Lane: A
 - Profile: MINI
 - Mode: docs-only architecture closeout
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `a22ac3c75db15d6d0f8df2095f4bc4ddff99af26`
+  (`docs: close out repo skills architecture decision`); Claude audit
+  `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; blockers none; nits none
 - Route after: `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`
 
 This pass closes the accepted and pushed repo-skills architecture decision,
@@ -214,3 +217,39 @@ Nothing is staged, committed, or pushed.
 
 This artifact remains `DRAFTED / PENDING CLAUDE AUDIT`; these validation
 results grant no staging, commit, or push permission.
+
+## Claude closeout audit reconciliation
+
+The original draft-time body above, including its present-tense
+`DRAFTED / PENDING CLAUDE AUDIT` statements, remains unchanged as the
+pre-audit record. The current status at the top of this artifact and this
+reconciliation section supersede those historical status statements and
+record the returned closeout audit and pushed commit evidence:
+
+- Audit verdict: `ACCEPT_AS_IS`.
+- Safe for staging: `YES`.
+- Blockers: none.
+- Nits: none.
+- Pushed closeout commit:
+  `a22ac3c75db15d6d0f8df2095f4bc4ddff99af26`.
+- Subject: `docs: close out repo skills architecture decision`.
+- Verified parent: `9d6ec175ee9a4327b1683ca101ddb36b0acb48ec`.
+- Reconciliation gate:
+  `HEAD == origin/main == a22ac3c75db15d6d0f8df2095f4bc4ddff99af26`.
+- Tracked diff before reconciliation: empty.
+- Cached diff before reconciliation: empty.
+- Route remains: `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
+- Original accepted staging set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_REPO_SKILLS_ARCHITECTURE_DECISION_POST_AUDIT_PASS.md`
+
+Git confirms the pushed closeout commit contains exactly that accepted
+five-file set. The accepted closeout validation record above remains unchanged
+by construction; this evidence-only reconciliation does not rerun
+`tools/validate_all.py` because that tool may write outside the exact two-file
+authority. This reconciliation changes no route, architecture decision,
+Batch A artifact, skill, spec, policy, tool, validator, runtime, test, map,
+asset, `_incoming`, or scratch surface.

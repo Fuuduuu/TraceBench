@@ -6,7 +6,10 @@
 - Lane: A
 - Form: compact
 - Mode: docs-only active-lock sync; no implementation
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `5de88b9bb33d3aa8039a4adbfa0ff1bec69f68b8`
+  (`docs: sync repo skills batch A implementation lock`); Claude audit
+  `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; blockers none; nits none
 - Route at gate: `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS` ->
   `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`
 - Route after sync: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS` ->
@@ -190,3 +193,29 @@ byte-identically.
 
 This artifact remains `DRAFTED / PENDING CLAUDE AUDIT`; validation grants no
 implementation, staging, commit, or push permission.
+
+## Claude active-lock-sync audit reconciliation
+
+The original draft-time body above, including its pending statements, remains
+unchanged as historical pre-audit evidence. The human-supplied recovery
+evidence below supersedes those statements only through the top Status metadata
+and this appended reconciliation.
+
+- Audit verdict: `ACCEPT_AS_IS`.
+- Safe for staging: `YES`.
+- Blockers: none.
+- Nits: none.
+- Pushed sync commit:
+  `5de88b9bb33d3aa8039a4adbfa0ff1bec69f68b8`.
+- Subject: `docs: sync repo skills batch A implementation lock`.
+- Verified direct parent:
+  `e1126bd3062a0c471750c39d7dbc675f6a8ddb97`.
+- Exact accepted and committed set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
+- Claude did not rerun `tools/validate_all.py` because it writes into
+  `.codex/`; the draft-time 285/285 result remained unchanged historical
+  evidence.

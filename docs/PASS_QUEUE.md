@@ -2,29 +2,29 @@
 
 ## Current route
 
-Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS`
+Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS`
 
-## Current Batch A scope lock
+## Active Batch A implementation
 
-The current pass is docs-only and locks exactly new
-`tracebench-prompt-authoring`, `tracebench-scope-lock` as
-`formalize/rewrite`, and new `tracebench-audit-reconciliation`. It grants no
-skill or tooling-policy write authority.
+The implementation target contains only new `tracebench-prompt-authoring`,
+`tracebench-scope-lock` as `formalize/rewrite`, and new
+`tracebench-audit-reconciliation`. `docs/ACTIVE_SCOPE_LOCK.md` owns its exact
+five-path authority. Execution begins only after the active-lock sync is
+independently accepted, exactly committed, and pushed.
 
-## Conditional next pass
+## Required evidence
 
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS` is reserved after
-accepted and reconciled scope-lock evidence. Its sole purpose is to make
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS` current and synchronize that pass's
-exact allowlist and boundaries. It performs no implementation and creates or
-edits no skill.
+Implementation must complete genuine serialized RED/GREEN evidence for each
+skill before acceptance. RED precedes each new skill, the scope-lock rewrite
+uses its committed baseline skill, and ordinary discovery must be demonstrated
+without workflow injection or a permanent evaluator harness. Detailed
+contracts and hard stops remain in the accepted scope-lock evidence.
 
-## Unarmed implementation target
+## Lifecycle boundary
 
-Batch A implementation remains reserved, not active. Its exact future target
-is owned by `docs/ACTIVE_SCOPE_LOCK.md` and recorded in the current scope-lock
-artifact.
-No Batch B, C, or D, generic/personal extraction, Markdown compaction,
-Photo-to-Canvas, runtime, test, tool, validator, map, or protected work is
-queued.
+`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS` records the required
+implementation-to-audit sequence only; it is not active authority and no
+future files are armed. Batch B, C, and D, generic/personal extraction,
+external tooling, runtime, tests, tools, validators, maps, and protected work
+remain outside the queue.

@@ -2,33 +2,20 @@
 
 ## Route
 
-Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`
+Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS`
+Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS`
 
 `docs/POHIKIRI.md` remains the charter and conflict-stop authority. The
-accepted repo-skills architecture remains owned by
-`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`.
+accepted architecture remains owned by
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`. This active lock
+incorporates the accepted Batch A contract; detailed evidence is recorded in
+`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS.md`.
 
-## Current write authority
+## Transition gate and current sync authority
 
-This docs-only scope lock may write exactly:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS.md`
-
-No skill, spec, policy, implementation, staging, commit, or push authority is
-active. Exact current authority is owned here; detailed Batch A evidence and
-reserved contracts are recorded in the current audit artifact.
-
-## Reserved future sync
-
-Only after this scope lock is independently audited, accepted, committed,
-pushed, and reconciled may
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS` execute with this
-reserved five-file docs allowlist:
+The route above is the post-sync state. Until this exact sync is independently
+audited, accepted, exactly committed, and pushed, implementation may not begin.
+The current docs-only sync may write exactly:
 
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
@@ -36,13 +23,13 @@ reserved five-file docs allowlist:
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS.md`
 
-Its sole purpose is to make `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS` current
-and synchronize that pass's exact allowlist and boundaries. It creates or edits
-no skill. This selected sequence is not a universal rule owned by a skill.
+This transition authority creates or edits no skill, policy, implementation
+artifact, pressure evidence, stage, commit, or push.
 
-## Reserved future implementation target
+## Implementation authority after accepted and pushed sync
 
-The unarmed Batch A implementation target is exactly:
+After that transition gate is satisfied,
+`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS` may write exactly:
 
 - `.agents/skills/tracebench-prompt-authoring/SKILL.md`
 - `.agents/skills/tracebench-scope-lock/SKILL.md`
@@ -50,25 +37,51 @@ The unarmed Batch A implementation target is exactly:
 - `docs/CODEX_TOOLING_POLICY.md`
 - `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md`
 
-No sixth path or wildcard is reserved. Only an independently audited,
-accepted, committed, and pushed sync may make that target current write
-authority.
+No sixth path, wildcard, optional file, fixture, harness, helper, or supporting
+file is authorized.
 
-## Locked boundary
+## Locked Batch A contract
 
 Batch A contains only new `tracebench-prompt-authoring`,
 `tracebench-scope-lock` as `formalize/rewrite`, and new
-`tracebench-audit-reconciliation`. Each future skill requires its own genuine,
-serial RED/GREEN evidence before Batch A implementation acceptance. The
-current pass creates or edits no skill and runs no pressure test.
+`tracebench-audit-reconciliation`. Each skill uses matching lowercase-hyphen
+directory/name, YAML `name` and trigger-only third-person `description`, and a
+concise pointer-based non-authorizing body.
 
-Batch B, C, and D, generic/personal extraction, Markdown compaction,
-Photo-to-Canvas, runtime, tests, tools, validators, schemas, packages, assets,
-`_incoming`, code maps, and protected surfaces remain excluded.
+Implementation processes the skills serially. A genuine RED precedes creation
+of each new skill; the scope-lock rewrite RED uses its committed baseline
+skill. Each paired GREEN uses the identical task, model, reasoning level, and
+repo fixture with only ordinary candidate-skill availability changed. Ordinary
+discovery must be proven; evaluator prompts may not inject the workflow.
+Evaluators remain fresh-context, read-only, and response-only. No permanent
+harness or supporting file is allowed.
 
-## Validation and stops
+Stop with `BLOCKED_PRESSURE_TEST_CAPABILITY` when genuine evaluation is
+unavailable and `BLOCKED_PRESSURE_TEST_CONTRACT_GAP` when the paired contract
+cannot be preserved. Generic/personal extraction stays excluded and external
+tooling remains default-off.
 
-Run `python tools/validate_all.py` and the exact Git, route, index, inventory,
-and preservation checks in the current prompt and audit artifact. Stop on
-baseline, dirty-state, allowlist, unresolved governance, skill-inventory,
-pressure-contract, or independent-zone conflict.
+## Inspect-only and excluded surfaces
+
+The charter, route owners, audit/index owners, prompting/audit/model/lifecycle
+governance, protected-surface owner, architecture spec, accepted scope-lock and
+sync evidence, and all non-allowlisted skills are inspect-only during
+implementation. The post-audit PASS_ID is sequencing only and authorizes no
+file.
+
+Batch B, C, and D, `tracebench-code-map-lifecycle`, generic/personal
+extraction, Markdown compaction, Photo-to-Canvas, other skills or docs,
+`lib/**`, `test/**`, `tools/**`, validators, schemas, packages, assets,
+`_incoming`, code maps, runtime, writers, events, facts, projections, Project
+ZIP, and protected semantics remain excluded.
+
+## Staging, scratch, validation, and stops
+
+Known scratch remains outside authority and must stay preserved and unstaged.
+Neither this sync nor implementation has staging, commit, or push authority;
+independent Claude acceptance and explicit human exact-file authority remain
+mandatory.
+
+Run the exact validation and preservation checks in the governing pass. Stop
+on baseline, dirty-state, allowlist, governance, skill-inventory, pressure-test
+contract, or independent-zone conflict.

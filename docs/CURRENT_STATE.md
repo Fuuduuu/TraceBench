@@ -1,38 +1,36 @@
 # Current State
 
-Current pass: `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS`
+Current pass: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS`
 Next recommended pass:
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`
+`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS`
 
-## Charter and accepted architecture
+## Accepted authority chain
 
-`docs/POHIKIRI.md` remains the canonical product charter and conflict-stop
-authority. The accepted Variant C repo-skills decision remains owned by
-`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`; its completed closeout and
-audit reconciliation are pushed through
-`214cc91bf1595c9463e1ef7796c697d0a40bc536`.
+`docs/POHIKIRI.md` remains the charter and conflict-stop authority. The
+accepted Variant C architecture is owned by
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`. Batch A was locked at
+`043f1f6ec90622fe7c0629a3c46fed2f1355ca8f`, accepted by Claude
+`ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES` with blockers none and one deferred
+`docs/PASS_QUEUE.md` spacing nit, then reconciled at
+`e1126bd3062a0c471750c39d7dbc675f6a8ddb97`.
 
-## Active Batch A scope lock
+## Active Batch A implementation
 
-This docs-only pass locks Batch A exactly:
+Batch A remains exactly new `tracebench-prompt-authoring`,
+`tracebench-scope-lock` as `formalize/rewrite`, and new
+`tracebench-audit-reconciliation`. Its exact five-path implementation authority
+is owned by `docs/ACTIVE_SCOPE_LOCK.md` and becomes executable only after this
+active-lock sync is independently accepted, exactly committed, and pushed.
 
-- `tracebench-prompt-authoring` — new;
-- `tracebench-scope-lock` — `formalize/rewrite`; and
-- `tracebench-audit-reconciliation` — new.
+The architecture spec owns the shared format, trigger, lifecycle,
+non-authorization, and serialized genuine RED/GREEN contract. The accepted
+scope-lock and active-lock-sync artifacts record pass-specific evidence. This
+sync creates or edits no skill and runs no pressure evaluation.
 
-It creates or edits no skill. Detailed format, trigger, lifecycle,
-non-authorization, RED/GREEN, future allowlist, and preserved-surface contracts
-are recorded in
-`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS.md`.
+## Boundary
 
-## Reserved sequence
-
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS` is the selected
-conditional next pass only after this scope lock is independently audited,
-accepted, committed, pushed, and reconciled. The sync may make the Batch A
-implementation pass current and synchronize its exact authority, but creates
-or edits no skill. The implementation pass remains unarmed.
-
-No Batch B, C, or D work, generic/personal extraction, Markdown compaction,
-Photo-to-Canvas work, runtime, test, tool, validator, map, or protected change
-is active.
+Batch B, C, and D, generic/personal extraction, permanent evaluator harnesses
+or supporting files, external tooling, Markdown compaction, Photo-to-Canvas,
+runtime, tests, tools, validators, maps, and protected changes remain excluded.
+The next post-audit route records lifecycle sequencing only and authorizes no
+future file.

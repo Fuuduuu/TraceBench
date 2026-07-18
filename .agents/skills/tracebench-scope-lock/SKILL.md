@@ -1,42 +1,56 @@
-# tracebench-scope-lock
+---
+name: tracebench-scope-lock
+description: Use when the immediate executable phase is a docs-only TraceBench reservation of a future exact route, allowlist, boundaries, and stops.
+---
 
-Reusable workflow for TraceBench docs-only scope-lock passes.
+# TraceBench Scope Lock
 
-## When to use
+## Purpose
 
-Use when prompt contains `SCOPE_LOCK_PASS` / `scope lock`.
+Reserve one future TraceBench pass without implementing it or changing current
+authority by implication. A scope lock is a lifecycle phase, not a PASS_ID
+substring.
 
-## Required reads
+## Trigger boundary
 
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/PROTECTED_SURFACES.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- relevant open audit docs for the target route
+Use this skill when the requested work is semantically a docs-only reservation
+of a future route and exact scope. Do not use it for audit reconciliation,
+active-lock sync, implementation, or closeout merely because a name contains
+`SCOPE_LOCK_PASS`. In a mixed request, identify the immediate executable phase
+first; a later reserved scope lock does not trigger this skill during an
+immediate reconciliation, sync, implementation, or closeout. If the requested
+work combines those phases, decompose it. During an immediate reconciliation,
+select only the audit-reconciliation lifecycle skill and report this skill as
+not applicable; naming a later scope-lock phase does not make it applicable.
 
-## Required output
+## Canonical route
 
-- `MODEL_ROUTING_CHECK`
-- tool/plugin/download capability report
-- allowed files
-- forbidden surfaces
-- validation plan
-- scope drift check
-- next recommended pass
+Read the default five owners in `AGENTS.md`, then the task-specific audit,
+protected-surface, prompt/model, lifecycle, and implementation owners required
+by those files. Verified Git state and the live route owners outrank the brief.
 
-## Rules
+## Scope-lock sequence
 
-- no runtime implementation in scope-lock unless explicitly permitted by an allowlist
-- no protected surface changes without explicit pass-level scope and post-audit
-- no commits in-lock
-- maintain one-pass narrowness
-- stop if route-docs are inconsistent
+1. Verify the baseline, tracked/cached state, and current/next tuple in all
+   operational route owners.
+2. State current write authority separately from every reserved future
+   allowlist. Match it to the live `Current` PASS_ID and satisfied transition
+   evidence, not to the nearest retained transition-history heading. If those
+   signals disagree, stop instead of calling a stale list current. A
+   reservation is not executable authority.
+3. Identify lifecycle phases and responsibility zones. Reconciliation, sync,
+   implementation, and closeout stay separate; independent zones require
+   decomposition or a new human decision.
+4. Reserve one exact future PASS_ID, allowlist, inspect-only surfaces,
+   exclusions, scratch treatment, stops, validation, and acceptance contract.
+5. Reserve active-lock sync only when the selected sequence actually requires
+   it; active-lock sync is not a universal skill rule.
+6. Record the scope-lock artifact and ledger evidence only inside the current
+   docs allowlist, then emit the required read-only Claude audit packet.
 
-## Suggested workflow
+## Non-authorization
 
-1. verify preconditions and git consistency
-2. update `docs/ACTIVE_SCOPE_LOCK.md`, `docs/PASS_QUEUE.md`, and supporting governance rows if needed
-3. include only lock-scoped file changes
-4. run required validation commands
-5. emit closeout-style summary with next-pass recommendation
+This skill cannot reconcile an audit, activate reserved writes, implement,
+stage, commit, push, or resolve a conflict by broadening an allowlist. If live
+authority is inconsistent or the required reservation crosses independent
+zones, stop with the governing outcome instead of merging phases.

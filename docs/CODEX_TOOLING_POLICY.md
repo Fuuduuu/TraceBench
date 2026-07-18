@@ -30,9 +30,9 @@ Variant C contains exactly:
   `tracebench-v2-event-boundary`; and
 - mechanical guard: `tracebench-safe-staging`.
 
-The catalogue is an architecture target; the implemented inventory remains
-the existing five skills until separately scoped batches are accepted. All
-current and future `tracebench-*` skills remain repo-local. A skill owns
+The implemented inventory now contains seven repo-local skills;
+`tracebench-code-map-lifecycle` is the only catalogue role not yet implemented.
+All current and future `tracebench-*` skills remain repo-local. A skill owns
 reusable judgment and workflow technique only: it cannot authorize or expand
 writes, routes, staging, protected surfaces, or pass allowlists. Seven
 catalogue roles are project adapters or technology-specific extraction
@@ -42,6 +42,8 @@ extraction requires a separate decision and pass.
 Tools and validators may later own proven deterministic checks, but this
 policy and architecture decision add no automatic loader, lint, hook, CI,
 installer, or validator behavior.
+
+External tooling remains default-off.
 
 ## Default policy
 

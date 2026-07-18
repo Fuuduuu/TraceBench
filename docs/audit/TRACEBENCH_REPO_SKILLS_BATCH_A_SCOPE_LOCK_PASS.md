@@ -6,7 +6,11 @@
 - Lane: A
 - Form: compact
 - Mode: docs-only scope lock; no implementation
-- Status: `DRAFTED / PENDING CLAUDE AUDIT`
+- Status: accepted/pushed/audited as
+  `043f1f6ec90622fe7c0629a3c46fed2f1355ca8f`
+  (`docs: lock repo skills batch A scope`); Claude audit `ACCEPT_AS_IS` /
+  `SAFE_FOR_STAGING: YES`; blockers none; one deferred non-blocking
+  `docs/PASS_QUEUE.md` paragraph-spacing nit
 - Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS`
 - Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`
 
@@ -452,3 +456,55 @@ Future implementation additionally stops with
 
 This artifact remains `DRAFTED / PENDING CLAUDE AUDIT`; the validation record
 grants no staging, commit, or push permission.
+
+## Claude scope-lock audit reconciliation
+
+The original draft-time body above, including its pending statements, remains
+unchanged as historical pre-audit evidence. Those statements are superseded
+only by the top Status metadata and this appended reconciliation.
+
+- Audit verdict: `ACCEPT_AS_IS`.
+- Safe for staging: `YES`.
+- Blockers: none.
+- Nit: one non-blocking cosmetic note in `docs/PASS_QUEUE.md`: the “Unarmed
+  implementation target” reservation pointer and following exclusion list
+  render as one paragraph because no blank line separates them.
+- Nit disposition: deferred; it changes no governance, route, allowlist, or
+  authority meaning and is not fixed in this reconciliation.
+- Claude verified all fifteen scope-lock checklist items.
+- Claude did not rerun `tools/validate_all.py` because it writes into
+  `.codex/`; Claude edited, staged, committed, and pushed nothing.
+- The existing 285/285 draft-time validation remains unchanged historical
+  evidence by construction.
+- Pushed commit:
+  `043f1f6ec90622fe7c0629a3c46fed2f1355ca8f`.
+- Subject: `docs: lock repo skills batch A scope`.
+- Verified direct parent:
+  `214cc91bf1595c9463e1ef7796c697d0a40bc536`.
+- Exact committed set:
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS.md`
+- Original accepted safe staging set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS.md`
+- Reconciliation gate:
+  `HEAD == origin/main == 043f1f6ec90622fe7c0629a3c46fed2f1355ca8f`.
+- Tracked diff before reconciliation: empty.
+- Cached diff before reconciliation: empty.
+- The known 94-file, 43,936,062-byte scratch snapshot remains preserved and
+  unstaged.
+- Route remains:
+  `TRACEBENCH_REPO_SKILLS_BATCH_A_SCOPE_LOCK_PASS` ->
+  `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_ACTIVE_LOCK_SYNC_PASS`.
+- Current authority remains the existing five-file docs-only scope lock; this
+  two-file reconciliation neither activates the reserved sync nor arms the
+  unarmed implementation target.
+
+No closeout, sync, implementation, skill creation, lock release, staging,
+commit, or push is performed here.

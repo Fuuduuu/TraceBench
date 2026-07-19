@@ -2,29 +2,30 @@
 
 ## Current route
 
-Current: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS`
-Next: `TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Active Batch A implementation
+The route is the terminal, non-executable human-decision sentinel mandated by
+the committed human closeout authority amendment at
+`1fc4e0f47395a86a04e34253c96dfb1a5f8b5f65`. It is not a runnable PASS_ID and
+not a pass self-loop. The queue is empty and nothing is armed.
 
-The implementation target contains only new `tracebench-prompt-authoring`,
-`tracebench-scope-lock` as `formalize/rewrite`, and new
-`tracebench-audit-reconciliation`. `docs/ACTIVE_SCOPE_LOCK.md` owns its exact
-five-path authority. Execution begins only after the active-lock sync is
-independently accepted, exactly committed, and pushed.
+## Completed Batch A
 
-## Required evidence
-
-Implementation must complete genuine serialized RED/GREEN evidence for each
-skill before acceptance. RED precedes each new skill, the scope-lock rewrite
-uses its committed baseline skill, and ordinary discovery must be demonstrated
-without workflow injection or a permanent evaluator harness. Detailed
-contracts and hard stops remain in the accepted scope-lock evidence.
+Batch A — new `tracebench-prompt-authoring`, `tracebench-scope-lock` as
+`formalize/rewrite`, and new `tracebench-audit-reconciliation` — is completed
+and closed. The implemented inventory contains seven repo-local `tracebench-*`
+skills; `tracebench-code-map-lifecycle` is the only architecture catalogue
+role not yet implemented. Evidence is recorded in
+`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md` and
+`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS.md`.
 
 ## Lifecycle boundary
 
-`TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS` records the required
-implementation-to-audit sequence only; it is not active authority and no
-future files are armed. Batch B, C, and D, generic/personal extraction,
-external tooling, runtime, tests, tools, validators, maps, and protected work
-remain outside the queue.
+No Batch B, C, or D pass, recovery scope lock, active-lock sync,
+reconciliation pass, deferred-wording or live-authority repair, extraction,
+skill, runtime, test, tool, validator, map, schema, asset, or protected pass
+is armed. External tooling remains default-off. The two DEFERRED / UNPROVED /
+NON-BLOCKING evidence items recorded in the closeout artifact are not
+scheduled. Queueing any future pass requires a new explicit human route
+decision and, where governance requires it, a new scope lock.

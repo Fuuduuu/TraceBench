@@ -1,49 +1,59 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass:
-`NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_REPO_SKILLS_CATALOGUE_PARENT_LOCK`
+Next recommended pass: `TRACEBENCH_REPO_SKILLS_BATCH_B_IMPL_PASS`
 
-The route above is the terminal, non-executable human-decision sentinel
-mandated by the committed human closeout authority amendment at
-`1fc4e0f47395a86a04e34253c96dfb1a5f8b5f65`. It is not a runnable PASS_ID and
-not a pass self-loop. No pass is armed; any future work requires a new
-explicit human route decision.
+This route records the explicit human decision made against baseline
+`fdf9b1998c1cf998210d7ea28529c64672f57169` to finish the accepted eight-role
+repo-skill catalogue architecture. No parent or child authority becomes
+executable until the independent audit returns `SAFE_FOR_STAGING: YES` with no
+blocker, the exact three-file route decision is exactly committed and pushed,
+and `HEAD == origin/main ==` remote `main`.
 
-## Accepted authority chain
+The parent remains the current route owner while its four exact child passes
+run. Child passes do not churn the operational route owners. The route
+header's `Next` names the bundle entry child only. After Child 1, the
+executable child is the first incomplete child whose sequential gate in
+`docs/ACTIVE_SCOPE_LOCK.md` is satisfied. The unchanged entry header is not a
+second authorization requirement and is never permission to rerun Child 1.
 
-`docs/POHIKIRI.md` remains the charter and conflict-stop authority. The
-accepted Variant C architecture is owned by
-`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`. Batch A was locked at
-`043f1f6ec90622fe7c0629a3c46fed2f1355ca8f`, scope-audit reconciled at
-`e1126bd3062a0c471750c39d7dbc675f6a8ddb97`, active-lock synced at
-`5de88b9bb33d3aa8039a4adbfa0ff1bec69f68b8`, sync-audit reconciled at
-`0a0c2a627ba56a441c1a49ebf9e275968488157f`, implemented at
-`fb259edb3c73bdc9a2eedd5c10ef702ebd335c17` (independent post-commit recheck
-`ACCEPT_COMMIT_AS_PUSHED_WITH_DOCUMENTED_EXCEPTION`), corrected append-only at
-`8f600575a9b2a1bedc11e2424a3ec4e9161f049e` (`ACCEPT_WITH_NITS` /
-`SAFE_FOR_STAGING: YES`), and routed to closeout by the human authority
-amendment at `1fc4e0f47395a86a04e34253c96dfb1a5f8b5f65`.
+## Locked child sequence
 
-## Completed Batch A
+1. `TRACEBENCH_REPO_SKILLS_BATCH_B_IMPL_PASS`
+   - formalize/rewrite `tracebench-docs-closeout`;
+   - formalize/rewrite `tracebench-safe-staging`.
+2. `TRACEBENCH_REPO_SKILLS_BATCH_C_IMPL_PASS`
+   - create `tracebench-code-map-lifecycle`.
+3. `TRACEBENCH_REPO_SKILLS_BATCH_D_IMPL_PASS`
+   - formalize/rewrite `tracebench-flutter-widget-pass`;
+   - formalize/rewrite `tracebench-v2-event-boundary`.
+4. `TRACEBENCH_REPO_SKILLS_CATALOGUE_CLOSEOUT_PASS`
+   - reconcile the three accepted implementation children;
+   - retire this parent lock;
+   - return all route owners to `NEEDS_USER_DECISION`.
 
-Batch A is completed and closed. The implemented inventory contains seven
-repo-local `tracebench-*` skills; `tracebench-code-map-lifecycle` is the only
-architecture catalogue role not yet implemented. External tooling remains
-default-off. Detailed evidence is recorded in
-`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md` and
-`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_POST_AUDIT_PASS.md`.
+Each implementation child requires its own exact diff, individual RED/GREEN
+evidence for every new or materially rewritten skill, independent Claude
+audit, exact-file human staging, commit, and push. A later child is not
+executable until the preceding child satisfies every gate in the active lock.
 
-Two evidence items remain DEFERRED / UNPROVED / NON-BLOCKING, recorded in the
-closeout artifact: the scope-lock wording `report this skill as not
-applicable`, and affirmative live-authority binding. Neither is proved, fixed,
-accepted, closed, or scheduled; no repair pass is armed.
+## Accepted baseline
+
+Batch A remains completed and closed at
+`fdf9b1998c1cf998210d7ea28529c64672f57169`. Its three formalized skills and
+historical evidence are outside the new implementation allowlists and must
+remain byte-unchanged. The two Batch A items recorded as DEFERRED / UNPROVED /
+NON-BLOCKING remain unscheduled and are not silently claimed as proved by this
+bundle.
 
 ## Boundary
 
-All Batch A sync, implementation, human-amendment, and closeout authority is
-retired and historical; no writable allowlist is active. Batch B, C, and D,
-recovery scope locks, active-lock syncs, reconciliation passes,
-deferred-wording or live-authority repairs, generic/personal extraction,
-skills, runtime, tests, tools, validators, maps, schemas, assets, and
-protected work remain unarmed and require a new explicit human decision.
+This is a Lane A, repo-skill-documentation bundle. It authorizes only the
+exact child paths listed in `docs/ACTIVE_SCOPE_LOCK.md`. It does not authorize
+runtime, tests, tools, validators, schemas, packages, assets, code maps,
+protected semantics, generic or personal skill extraction, plugin or MCP
+installation, documentation compaction, scratch changes, or staging in the
+TraceBench repository or any real worktree. Agents may never commit or push.
+The sole synthetic-fixture exception for proving `tracebench-safe-staging`
+behavior is defined narrowly in the active lock and grants no live-repository
+authority.

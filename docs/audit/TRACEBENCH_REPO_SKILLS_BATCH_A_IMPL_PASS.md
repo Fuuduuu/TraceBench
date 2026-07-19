@@ -1808,3 +1808,114 @@ docs/code_maps/CODE_MAP_STANDARD.md
   reconstructed from memory, chat summaries, or pasted text. This section
   and this write use only the original raw captured records and the
   immutable pre-registration.
+
+## Post-commit validation correction and verbatim-evidence whitespace exception
+
+This is a labelled superseding validation correction based on a fresh,
+independent, read-only post-commit recheck. It appends evidence only and does
+not rewrite, delete, relabel, or re-score any historical content above.
+
+`POST_COMMIT_RECHECK_VERDICT:
+ACCEPT_COMMIT_AS_PUSHED_WITH_DOCUMENTED_EXCEPTION`
+
+### Superseded committed-state validation record
+
+The historical observations `Initial git diff --check: PASS.` and
+`git diff --check: PASS with informational LF-to-CRLF notices only.` remain
+unchanged above. They accurately described the command output observed when
+recorded, but they were incomplete false negatives for the eventual committed
+set because this then-untracked artifact was invisible to ordinary
+`git diff --check`.
+
+For the committed parent-to-commit range:
+
+```text
+git diff --check 0a0c2a627ba56a441c1a49ebf9e275968488157f fb259edb3c73bdc9a2eedd5c10ef702ebd335c17
+```
+
+Result: `FAIL`, exit `2`, with exactly 48 `blank-at-eol` findings in
+`docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md` at committed lines:
+
+- 1221;
+- 1268 through 1285;
+- 1506 through 1519; and
+- 1699 through 1713.
+
+All 48 findings are confined to the three four-tilde-fenced verbatim evaluator
+response blocks: 19 in RUN1 VOID, 14 in RUN2 FAILING, and 15 in GREEN PASS.
+Authored prose outside those blocks has zero findings, and the four ordinary
+skill/policy paths have zero findings.
+
+An initial backtick-only fence scan incorrectly classified these findings as
+outside verbatim evidence. The corrected containment scan recognized both the
+four-tilde outer fences and their nested backtick fences and placed every
+finding inside the three verbatim response blocks.
+
+### Path- and class-scoped exception
+
+The documented exception is limited to:
+
+- path: `docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md`;
+- whitespace class: `blank-at-eol` only; and
+- reason: the spaces are byte-preserved raw evaluator evidence.
+
+Normalizing those spaces would break all three registered raw-response hashes.
+This creates no repository-wide or general whitespace exemption, and the
+default parent-to-commit check remains truthfully recorded as failing.
+
+The ordinary four-path default check covered:
+
+- `.agents/skills/tracebench-audit-reconciliation/SKILL.md`;
+- `.agents/skills/tracebench-prompt-authoring/SKILL.md`;
+- `.agents/skills/tracebench-scope-lock/SKILL.md`; and
+- `docs/CODEX_TOOLING_POLICY.md`.
+
+Its result was `PASS`, exit `0`:
+
+```text
+git diff --check 0a0c2a627ba56a441c1a49ebf9e275968488157f fb259edb3c73bdc9a2eedd5c10ef702ebd335c17 -- .agents/skills/tracebench-audit-reconciliation/SKILL.md .agents/skills/tracebench-prompt-authoring/SKILL.md .agents/skills/tracebench-scope-lock/SKILL.md docs/CODEX_TOOLING_POLICY.md
+```
+
+The path- and class-scoped artifact diagnostic also returned `PASS`, exit `0`:
+
+```text
+git -c core.whitespace=-blank-at-eol diff --check 0a0c2a627ba56a441c1a49ebf9e275968488157f fb259edb3c73bdc9a2eedd5c10ef702ebd335c17 -- docs/audit/TRACEBENCH_REPO_SKILLS_BATCH_A_IMPL_PASS.md
+```
+
+The `-c` override was command-local only. Repository and global
+`core.whitespace` configuration remained unset.
+
+### Registered immutable evidence identities
+
+- Pre-registration SHA-256:
+  `b003d49bcd903f56712db49039c4bdb8d40bdab01a1ddf2d8d269c680468ccb0`.
+- RUN1 VOID raw-response SHA-256:
+  `02990278c15bfa75c7c2ff07d9f62d5309ab94358428f7401b949bfa2177b78f`;
+  19 trailing-space findings.
+- RUN2 FAILING raw-response SHA-256:
+  `4b6464a1352b81fdb398bca04b1986e96111f26a1bd8f8e7769a3bcbc57906e9`;
+  14 trailing-space findings.
+- GREEN PASS raw-response SHA-256:
+  `d638cee90aad21d722bcd0c3fd891ad163bb4bee8be137527447562cd4a2f602`;
+  15 trailing-space findings.
+- Combined trailing-space finding count: 48.
+
+Each embedded response block, after removing only the outer-fence-required
+terminal newline, hashes byte-identically to its raw Desktop capture.
+Normalizing the trailing spaces changes all three hashes and invalidates that
+byte-identity evidence.
+
+### Disposition and continuing boundaries
+
+- Pushed commit `fb259edb3c73bdc9a2eedd5c10ef702ebd335c17` is acceptable as
+  pushed; no history rewrite or whitespace normalization is required.
+- The exception is limited to this committed artifact and the
+  `blank-at-eol` evidence class; it creates no general whitespace exemption.
+- RED, GREEN, and P4 were not re-scored.
+- The prior deferred trigger wording and affirmative live-authority-binding
+  nits remain deferred and unproved.
+- This correction grants no route, write, staging, commit, or push authority.
+- Later post-audit reconciliation must use the recorded independent verdicts.
+- `tools/validate_all.py` was not rerun because this correction is
+  Markdown-only and that tool writes into `.codex`; the earlier 285/285 result
+  is preserved only as historical evidence, not claimed as fresh validation.

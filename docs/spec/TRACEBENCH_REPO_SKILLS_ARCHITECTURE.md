@@ -1,8 +1,50 @@
 # TraceBench Repo Skills Architecture
 
-Status: repo-local architecture decision. This document defines the skill
-system; it does not implement a skill, tool, validator, loader, route, or
-write authority.
+Status: historical repo-local architecture decision. Superseded for current
+skill inventory and workflow by the 2026-07-22 bounded process recovery; it
+does not grant current skill, route, batch, or write authority.
+
+## Current recovery disposition
+
+`docs/CODEX_TOOLING_POLICY.md` and the actual `.agents/skills/**` paths own the
+current inventory. Exactly `tracebench-prompt-authoring`,
+`tracebench-scope-lock`, and `tracebench-audit-reconciliation` remain qualified.
+The frontmatter-less `tracebench-docs-closeout`,
+`tracebench-flutter-widget-pass`, `tracebench-safe-staging`, and
+`tracebench-v2-event-boundary` files were removed; Git history preserves their
+former bytes. `tracebench-code-map-lifecycle` was never created.
+
+Sections 3–17 below are retained as historical rationale for the abandoned
+eight-role catalogue and batch programme. They must not be used to infer the
+current inventory, trigger boundaries, implementation batches, active-lock-sync
+steps, closeout sequence, or future work. Current prompt/audit workflow is owned
+by `docs/PROMPTING_PROTOCOL.md`, `docs/AUDIT_CONTRACT.md`, and
+`docs/PASS_LIFECYCLE.md`.
+
+### Prompt-trigger RED/GREEN evidence
+
+One byte-identical six-case, response-only fixture ran in fresh read-only
+`gpt-5.6-terra` contexts at low reasoning effort; no evaluator wrote a file and
+no harness was added. RED ran against committed baseline `76580e0`: cases A–D
+(design, strategy, ordinary answer, and new-chat orientation) returned
+`SKILL_APPLIES: NO / PACKET: NO`, case E (authorized executable prompt) returned
+`YES / YES`, and case F (real post-change audit handoff) returned `YES / YES`.
+RED therefore failed the frozen E expectation.
+
+GREEN ran against this recovery candidate and returned the frozen matrix:
+
+| Case | Skill applies | Packet |
+| --- | --- | --- |
+| A — design brief | `NO` | `NO` |
+| B — strategy | `NO` | `NO` |
+| C — ordinary answer | `NO` | `NO` |
+| D — new-chat orientation | `NO` | `NO` |
+| E — executable Codex PASS_ID prompt, no changes yet | `YES` | `NO` |
+| F — actual changed-file audit handoff | `YES` | `YES` |
+
+Both runs rejected word-pressure triggering and emitted no top-level packet for
+the evaluator itself. The pair proves the recovery-level trigger contract; it
+does not claim a permanent evaluator, loader harness, or broader skill quality.
 
 ## 1. Purpose, authority, and non-goals
 

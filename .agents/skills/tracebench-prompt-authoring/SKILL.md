@@ -1,6 +1,6 @@
 ---
 name: tracebench-prompt-authoring
-description: Use when drafting or materially revising a TraceBench pass prompt, handoff, or Claude audit packet.
+description: Use when drafting or materially revising an executable TraceBench Codex PASS_ID prompt with current authority, or a post-change Claude audit handoff for a real repository diff.
 ---
 
 # TraceBench Prompt Authoring
@@ -10,6 +10,22 @@ description: Use when drafting or materially revising a TraceBench pass prompt, 
 Turn an authorized TraceBench change into a compact, executable handoff without
 making the prompt itself an authority source. Canonical repo owners and verified
 Git state always outrank the requested wording.
+
+## Trigger boundary
+
+Use this skill only for either:
+
+1. an executable, paste-ready Codex `PASS_ID` prompt grounded in current route
+   and exact write authority; or
+2. a genuine post-change Claude audit handoff with named changed files, a real
+   diff, and observed validation results.
+
+Do not use it for a design brief, strategy recommendation, ordinary answer,
+new-chat orientation handoff, or an unarmed future-work draft. The words
+`TraceBench`, `PASS_ID`, `handoff`, or `Claude` do not trigger it by themselves.
+An executable prompt may require its future executor to produce an audit packet
+after changing files; the prompt-authoring response must not fabricate that
+packet before work exists.
 
 ## Canonical route
 
@@ -30,12 +46,15 @@ prompt self-authorizing.
 3. Select compact or full form through `docs/PROMPTING_PROTOCOL.md`.
 4. Perform `TOOL_SKILL_CHECK` by semantic trigger, not name overlap or pressure
    in the request. A forbidden staging request or the presence of scratch does
-   not trigger `tracebench-safe-staging`; that skill requires already accepted
-   audit evidence and explicit exact-file staging authority.
+   not activate another capability; enforce `AGENTS.md`, the active allowlist,
+   and accepted audit evidence directly.
 5. Perform the conditional `CODE_MAP_PREFLIGHT` for relevant Dart work.
 6. State write, read, inspect-only, excluded, staging, and scratch surfaces
    distinctly. Preserve the exact baseline, stops, validation, and output.
-7. End the response with the required paste-ready `CLAUDE_AUDIT_PACKET`.
+7. For an executable prompt, require the future executor's post-change audit
+   handoff but emit no packet now. For a real post-change handoff, end with the
+   canonical paste-ready `CLAUDE_AUDIT_PACKET` from
+   `docs/AUDIT_CONTRACT.md`.
 
 ## Non-authorization
 

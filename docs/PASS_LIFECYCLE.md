@@ -9,42 +9,44 @@ Canonical pass state remains in `docs/CURRENT_STATE.md` and `docs/PASS_QUEUE.md`
 flowchart TD
   Backlog["route / backlog decision"] --> Gate{"Scope lock needed?"}
   Gate -- "no" --> Pass["implementation / docs / test pass"]
-  Gate -- "yes" --> ScopeLock["scope-lock pass (DOCS_SYNC)"]
-  ScopeLock --> Pass
-  Pass --> Audit["post-pass audit"]
-  Audit -->|PASS| Closeout["docs-only closeout pass"]
-  Audit -->|PASS_WITH_NITS| Guard["narrow fixup / scope-lock follow-up"]
+  Gate -- "yes" --> ScopeLock["scope lock with exact implementation allowlist"]
+  ScopeLock --> ScopeAudit["independent scope-lock audit"]
+  ScopeAudit -->|"accepted + pushed"| Pass
+  Pass --> Audit["independent diff audit"]
+  Audit -->|"accepted"| Commit["exact human staging / commit / push"]
+  Audit -->|"nits or fix"| Guard["narrow fixup"]
   Guard --> Pass
-  Audit -->|NEEDS_FIX| Fix["small implementation fix"]
-  Fix --> Pass
-  Audit -->|REJECT| Reroute["route re-review / stop"]
-  Closeout --> Commit["user commit / push"]
-  Commit --> Drift{"docs drift needed?"}
-  Drift -->|"yes"| DriftPass["DOCS_DRIFT_MINI_CLEANUP_PASS"]
-  Drift -->|"no"| NextRoute["next route review + next pass"]
+  Audit -->|"reject or scope conflict"| Reroute["route re-review / stop"]
+  Commit --> Transition{"real route, authority, or durable-risk transition?"}
+  Transition -->|"no"| NextRoute["next product pass"]
+  Transition -->|"yes"| DocsUpdate["exceptional docs update; no recursive closeout"]
+  DocsUpdate --> NextRoute
 ```
 
 ## Audit-gate rules
 
-- Every TraceBench Codex PASS_ID response ends with a clearly separated, paste-ready `CLAUDE_AUDIT_PACKET`.
+- A Codex response hands off a `CLAUDE_AUDIT_PACKET` only after actual repository
+  changes exist for independent audit. `docs/PROMPTING_PROTOCOL.md` owns packet
+  timing and `docs/AUDIT_CONTRACT.md` owns its exact shape.
 - Visual/product-surface work requires manual smoke before Claude audit.
 - Visual/manual-smoke packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`.
 - Claude audit must not approve a known-wrong visual draft.
 - `Accepted` shorthand is valid only for clean `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, no blockers, and an exact expected staging set.
 - Any nit, blocker, route/hash mismatch, unexpected file, protected-surface concern, or unclear staging set requires the relevant Claude audit details.
 - Staging must be exact-file staging only; never `git add .`, never `git add -A`, and never broad-stage.
+- Do not create a new PASS_ID merely to copy an audit verdict. A meaningful
+  route/authority/risk update may use an exceptional docs action, but it does
+  not create another routine closeout or audit-of-audit loop.
 
-## Protected implementation active-lock sync
+## Protected implementation activation
 
-After a protected scope-lock is accepted/pushed, implementation may begin only when `docs/ACTIVE_SCOPE_LOCK.md` names the implementation pass and lists the exact runtime/test write allowlist.
-
-If the active lock still names the docs-only scope-lock or does not list the runtime/test allowlist, route first to:
-
-```text
-<IMPLEMENTATION_PASS>_ACTIVE_LOCK_SYNC_PASS
-```
-
-That active-lock sync pass is docs-only and must not implement runtime behavior.
+A protected scope-lock draft must already name the future implementation
+PASS_ID and exact runtime/test write allowlist. That implementation authority is
+conditional until the scope-lock diff is independently accepted and its exact
+commit is pushed; after those gates, implementation may proceed without a
+routine active-lock-sync pass. If an older or deficient lock lacks either the
+PASS_ID or allowlist, stop and amend the lock instead of inventing a sync pass.
+Protected-surface review and independent audit remain mandatory.
 
 ```mermaid
 flowchart LR

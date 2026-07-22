@@ -28,21 +28,18 @@ TOOL_SKILL_CHECK:
 expands write authority. `external tool required: YES` is descriptive only; it
 does not authorize installation, invocation, a new file, or another surface.
 
-## Codex final-output audit packet rule
+## Codex post-change audit handoff rule
 
-Every TraceBench Codex PASS_ID response must end with a clearly separated `CLAUDE_AUDIT_PACKET`.
+An executable PASS_ID prompt may require its future executor to prepare an audit
+handoff, but prompt drafting itself must not fabricate a completed-change
+`CLAUDE_AUDIT_PACKET`. Emit the packet only when named repository files actually
+changed and the response is handing the real diff plus validation evidence to
+independent Claude audit. Strategy, design briefs, ordinary answers, new-chat
+handoffs, and future-work prompt drafts do not emit one.
 
-The packet must be paste-ready for Claude Code and include:
-
-- PASS_ID, lane/type, and mode;
-- exact expected diff / safe staging set if accepted;
-- explicit `DO NOT edit/stage/commit/push`;
-- focused audit checklist for the pass-specific risk;
-- validation commands/results to verify;
-- verdict format and safety gate.
-
-The surrounding final report must also include `TOOL_SKILL_CHECK` and, when
-applicable, `CODE_MAP_PREFLIGHT`.
+`docs/AUDIT_CONTRACT.md` is the sole owner of the packet's exact input/header
+shape and required verdict fields. The surrounding post-change report must also
+include `TOOL_SKILL_CHECK` and, when applicable, `CODE_MAP_PREFLIGHT`.
 
 For visual or product-surface work, Codex still prepares the packet, but the packet must be marked:
 
@@ -80,7 +77,7 @@ For bounded low-risk sequences, GPT may define one parent-lock with **2–4 chil
 - Parent lock records exact child PASS_IDs and exact allowlists.
 - Parent lock sets explicit escalation conditions (e.g., any protected-surface drift).
 - Child passes can move Codex → Claude directly, without extra route-ledger churn when no protected boundary expands.
-- Parent lock expiry is explicit in the child pass closeout or route-review note.
+- Parent lock expiry is explicit in the next meaningful route/authority update.
 
 No safety rails are relaxed:
 
@@ -105,6 +102,10 @@ Every Codex `PASS_ID` prompt must include:
 - `Validate`
 - `Output`
 - `Stop if`
+
+`Lane` is exactly `A` or `B`. `Mode` names the work class, such as
+`DOCS_SYNC`, `FLUTTER_PASS`, `AUDIT_ONLY`, `SCHEMA_PASS`, or `TOOLS_PASS`;
+helper/model identity belongs to `docs/MODEL_ROUTING.md` and is never a Lane.
 
 Include `CODE_MAP_PREFLIGHT` when the conditional rule below applies.
 
@@ -171,7 +172,7 @@ maintenance, disposition, and stop semantics stay owned by
 - High-risk work: compact skeleton plus explicit boundary blocks.
 
 ### Low-risk examples
-- `DOCS_SYNC` closeout
+- exceptional `DOCS_SYNC` closeout
 - `DOCS_SYNC` scope lock
 - `AUDIT_ONLY` where no implementation is allowed
 
@@ -227,8 +228,8 @@ Stop if:
 
 ```text
 PASS_ID: <ID>
-Lane: AUDIT_ONLY
-Mode: audit only; no file changes
+Lane: <A | B>
+Mode: AUDIT_ONLY
 Goal: verify scope/boundaries/readiness
 Gate: git status/log/diff
 Read: targeted docs/spec/code/tests for audit
@@ -240,18 +241,18 @@ Output: verdict + boundary/readiness/risk summary + next pass
 Stop if: missing required evidence to answer audit safely
 ```
 
-### 2) `DOCS_SYNC` closeout
+### 2) exceptional `DOCS_SYNC` closeout
 
 ```text
 PASS_ID: <ID>
-Lane: DOCS_SYNC
-Mode: docs-only closeout
-Goal: record accepted audit/implementation result and route next pass
+Lane: A
+Mode: DOCS_SYNC
+Goal: record a real route, authority, or durable-risk transition
 Gate: git status/log/diff
 Read: CURRENT_STATE/PASS_QUEUE/ACTIVE_SCOPE_LOCK/AUDIT_INDEX + relevant audit file
-Write only: ledger/state/index docs + new audit closeout doc
+Write only: exact existing route/ledger/evidence owners; no artifact solely to copy a verdict
 Never: code/schema/tool/test/runtime/artifact files
-Do: record verdict, accepted/deferred state, non-blocking notes, next route
+Do: record the meaningful transition without creating a verdict-copy PASS_ID or recursive closeout
 Validate: py -3 tools\validate_all.py + git diff + git status
 Output: scope drift + changed files + closeout summary + next pass + final git status
 Stop if: closeout requires non-doc behavior changes
@@ -261,8 +262,8 @@ Stop if: closeout requires non-doc behavior changes
 
 ```text
 PASS_ID: <ID>
-Lane: DOCS_SYNC
-Mode: docs-only scope lock
+Lane: <A | B>
+Mode: DOCS_SYNC
 Goal: lock future implementation boundaries before code changes
 Gate: git status/log/diff
 Read: state/queue/lock/spec/audit inputs
@@ -278,8 +279,8 @@ Stop if: lock cannot be written without changing product behavior now
 
 ```text
 PASS_ID: <ID>
-Lane: FLUTTER_PASS
-Mode: narrow implementation
+Lane: <A | B>
+Mode: FLUTTER_PASS
 Goal: one feature/fixup in locked scope
 Gate: git status/log/diff + required baseline commits
 Read: exact feature/test/spec files only
@@ -295,8 +296,8 @@ Stop if: scope requires schema/tool/materializer/protected-surface change
 
 ```text
 PASS_ID: <ID>
-Lane: SCHEMA_PASS / VALIDATOR_FIX
-Mode: narrow schema+validator implementation
+Lane: B
+Mode: SCHEMA_PASS / VALIDATOR_FIX
 Goal: one event/model boundary-safe schema/validator increment
 Gate: git status/log/diff + baseline pass acceptance
 Read: schema/validator tests + relevant scope lock/audit docs
@@ -312,8 +313,8 @@ Stop if: change needs materializer/UI/model semantics not in scope
 
 ```text
 PASS_ID: <ID>
-Lane: TOOLS_PASS
-Mode: narrow materializer/projection implementation
+Lane: B
+Mode: TOOLS_PASS
 Goal: accepted-only projection behavior in locked scope
 Gate: git status/log/diff + baseline scope-lock acceptance
 Read: materializer/schema/tests/spec/audit lock docs
@@ -335,8 +336,8 @@ Stop if: pass requires Project ZIP contract or Dart/Flutter runtime changes
 
 ```text
 PASS_ID: <ID>
-Lane: QA_PASS
-Mode: narrow hardening/verification
+Lane: <A | B>
+Mode: QA_PASS
 Goal: improve determinism/coverage without scope expansion
 Gate: git status/log/diff
 Read: target implementation/tests/spec
@@ -352,8 +353,8 @@ Stop if: fix requires opening new feature scope
 
 ```text
 PASS_ID: <ID>
-Lane: REVIEW_ONLY
-Mode: architecture/evidence-boundary review
+Lane: <A | B>
+Mode: REVIEW_ONLY
 Goal: pass ordering, risk, and boundary decisions
 Provide: current accepted state + exact questions + options
 Expect: verdict + risks + recommended sequence + stop conditions
@@ -364,9 +365,9 @@ No implementation changes in this review prompt.
 
 ```text
 PASS_ID: <ID>
-Lane: AUDIT_ONLY
-Mode: repo-local independent audit
-Goal: verify scope compliance and test quality before closeout
+Lane: <A | B>
+Mode: AUDIT_ONLY
+Goal: verify scope compliance and test quality before exact human staging
 Provide: exact audit questions + gate + validate commands
 Expect: verdict + nits + block/non-block classification + next pass suggestion
 No edits allowed.
@@ -394,9 +395,12 @@ Stop and route to user/deep review if:
 - Lean prompts are default for Lane A.
 - No redundant implementation scope-lock is needed for low-risk polish inside an accepted lock.
 - Lane A does not require a separate repo-changing post-audit closeout unless routing changes, scope changes, or durable risk state changes.
+- Never create a new PASS_ID merely to copy an audit verdict into the repo.
 - Keep audit evidence explicit; no evidence should be dropped between routine child passes.
 - Prefer commit trailers or a single batched milestone audit record when the child pass sequence is routine.
-- No separate post-audit closeout pass is required unless it records useful state or protected/high-risk work requires it.
+- A separate post-audit docs action is exceptional and justified only by a real
+  route, authority, or durable-risk transition; protected/high-risk work alone
+  does not require a routine closeout pass.
 
 ## Accepted shorthand for clean TraceBench audits
 
@@ -415,7 +419,8 @@ Stop and route to user/deep review if:
   - scope concern
   - protected-surface warning
   - staging set mismatch.
-- For TraceBench pass responses, Codex must still emit a compact `CLAUDE_AUDIT_PACKET`.
+- A compact `CLAUDE_AUDIT_PACKET` is emitted only for an actual changed-file
+  diff being handed to audit, never for prompt drafting alone.
 - Packet checks should be token-light and limited to:
   - expected diff
   - current/next route
@@ -425,17 +430,14 @@ Stop and route to user/deep review if:
   - exact safe staging set when accepted.
 - Do not rely on full repeated role blocks for this policy check. Reference `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, `docs/PROTECTED_SURFACES.md`, and `docs/ACTIVE_SCOPE_LOCK.md` where relevant.
 
-## Active-lock sync before protected implementation
+## Protected implementation activation
 
-After a protected scope-lock is accepted/pushed, implementation may begin only when `docs/ACTIVE_SCOPE_LOCK.md` names the implementation pass and lists the exact runtime/test write allowlist.
-
-If `docs/ACTIVE_SCOPE_LOCK.md` still names the docs-only scope-lock or lacks the runtime/test allowlist, route first to:
-
-```text
-<IMPLEMENTATION_PASS>_ACTIVE_LOCK_SYNC_PASS
-```
-
-The active-lock sync pass is docs-only. It may record the accepted scope-lock commit, arm the implementation route, and list the narrow implementation allowlist, but it must not implement runtime behavior.
+A protected scope-lock draft must already name the future implementation
+PASS_ID and exact runtime/test write allowlist. The authority is conditional
+until independent acceptance and push of that exact lock; after those gates,
+implementation may start without a routine active-lock-sync pass. If an older
+or deficient lock lacks either item, stop and amend it instead of adding a sync
+pass. This removes ceremony, not protected-surface review or audit.
 
 ## Exact staging rule
 
@@ -449,7 +451,8 @@ TraceBench staging must be explicit:
 ## Lane A audit evidence discipline
 
 - Independent Claude audit remains required for Lane A parent-lock and amendment passes.
-- Codex must emit a `CLAUDE_AUDIT_PACKET` section in pass output.
+- Codex emits a `CLAUDE_AUDIT_PACKET` only when actual changed files are ready
+  for independent diff audit.
 - Prefer compact child-pass audit evidence batching when passes are routine and low-risk.
 - Preserve and carry forward prior audit evidence; do not silently collapse audit conclusions.
 
@@ -518,15 +521,8 @@ Do not duplicate helper/model role ownership blocks in prompts. Reference `docs/
 
 Future audits may use `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, and lean prompts instead of repeating full boundary or role lists, as long as repo docs remain canonical and protected-surface boundaries are still enforced.
 
-Lean audit prompts should use:
-
-```text
-PASS_ID: <id>
-TYPE: <scope-lock | implementation | docs-closeout | route-review | recovery | evidence-recheck>
-LANE: <model/helper lane>
-CODEX: <short summary: verdict, changed files, validation, route>
-FOCUS: <1-3 pass-specific risks>
-APPLY STANDARD AUDIT CONTRACT: <contract name>
-```
+Use the single lean audit prompt shape in `docs/AUDIT_CONTRACT.md`. This file
+owns only its `Lane: A | B`, `Mode` work-class semantics, and the post-change
+emission trigger; do not copy a second header template here.
 
 Use full prompts instead of lean prompts when new protected architecture, canonical event types, validator/materializer/writer/schema/Project ZIP behavior, AI/OCR/CV, Photo Markup, or Repair Map architecture is introduced, or when exact blocker patch instructions are required.

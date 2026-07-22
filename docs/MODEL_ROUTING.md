@@ -63,15 +63,13 @@ Prompt docs and operating docs should reference this file instead of duplicating
 - High-risk Codex implementation must receive non-Codex review before acceptance (typically Claude Code, and GPT Pro when evidence/architecture boundaries are at risk).
 - V2 backend surfaces are accepted through validator -> materializer -> writer service; UI write flows remain separately scoped/audited and not yet implemented.
 
-## Lane policy
+## Lane consumption
 
-- Lane A:
-  - default for low-risk work where semantic risk is low (no protected behavior activation, no route ambiguity, no canonical write-path impact).
-  - no broad scope expansion.
-  - Codex executes implementation/docs pass, Claude Code handles repo-local audit.
-- Lane B:
-  - default for protected surfaces, canonical data surfaces, renderer write semantics, route ambiguity, or any Canonical/architecture commitment risk.
-  - full prompt + GPT risk review + dedicated scope-lock + full audit sequence required.
+`docs/PROMPTING_PROTOCOL.md` is the sole owner of Lane classification (`A` or
+`B`) and `Mode` work classes. This file consumes that classification only to
+choose helpers: Lane A normally routes Codex to Claude Code; Lane B normally
+adds ChatGPT / GPT Pro risk review before Codex and Claude Code. These routing
+defaults do not define semantic risk or write authority.
 
 ### Lane A parent-lock / bundle mechanism
 
@@ -80,7 +78,8 @@ Prompt docs and operating docs should reference this file instead of duplicating
 - Child passes may execute Codex → Claude directly when scope is unchanged and risk remains low.
 - Parent lock must define clear escalation conditions and parent closure criteria.
 
-Model ownership still comes from this file for all lanes; prompts remain pointer-based to keep docs authoritative.
+Model ownership still comes from this file; Lane/Mode semantics remain in the
+Prompting Protocol and prompts remain pointer-based.
 
 ### Accepted shorthand guard (Lane A)
 

@@ -15,29 +15,29 @@ The repository has now introduced repo-local guidance assets:
 
 No external plugins, MCP servers, or dependency/tool installers are enabled in this pass.
 
-## Repo-skill architecture
+## Current repo-skill inventory
 
-`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` is the decision owner for
-the skill-system catalogue, trigger boundaries, composition, lifecycle,
-portability, and future implementation batches.
+This policy and the actual `.agents/skills/**` paths own the current inventory.
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` preserves the superseded
+eight-role architecture as historical rationale; its catalogue and batch plan
+are not current instructions.
 
-Variant C contains exactly:
+Exactly three loader-qualified repo-local skills remain active:
 
-- core: `tracebench-prompt-authoring`;
-- lifecycle: `tracebench-scope-lock`, `tracebench-code-map-lifecycle`,
-  `tracebench-audit-reconciliation`, and `tracebench-docs-closeout`;
-- specialized: `tracebench-flutter-widget-pass` and
-  `tracebench-v2-event-boundary`; and
-- mechanical guard: `tracebench-safe-staging`.
+- `tracebench-prompt-authoring`;
+- `tracebench-scope-lock`; and
+- `tracebench-audit-reconciliation`.
 
-The implemented inventory now contains seven repo-local skills;
-`tracebench-code-map-lifecycle` is the only catalogue role not yet implemented.
-All current and future `tracebench-*` skills remain repo-local. A skill owns
-reusable judgment and workflow technique only: it cannot authorize or expand
-writes, routes, staging, protected surfaces, or pass allowlists. Seven
-catalogue roles are project adapters or technology-specific extraction
-candidates; the V2 event boundary remains project-only. Generic or personal
-extraction requires a separate decision and pass.
+The stale frontmatter-less `tracebench-docs-closeout`,
+`tracebench-flutter-widget-pass`, `tracebench-safe-staging`, and
+`tracebench-v2-event-boundary` files were removed from the active skill path.
+Their useful invariants remain in canonical owners and their former bytes remain
+in Git history. `tracebench-code-map-lifecycle` was never created and is not
+scheduled. No eight-role catalogue programme is active.
+
+A skill owns reusable judgment and workflow technique only: it cannot authorize
+or expand writes, routes, staging, protected surfaces, or pass allowlists.
+Generic or personal extraction requires a separate human decision.
 
 Tools and validators may later own proven deterministic checks, but this
 policy and architecture decision add no automatic loader, lint, hook, CI,
@@ -57,10 +57,10 @@ External tooling remains default-off.
 ## Approved now
 
 - `AGENTS.md` as repo-level guidance.
-- `.agents/skills/tracebench-*` repo-local workflow skills.
+- The three current `.agents/skills/tracebench-*` workflow skills listed above.
 - `docs/CODEX_TOOLING_POLICY.md` as policy ledger.
-- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` as the repo-skill system
-  decision owner.
+- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` as superseded historical
+  rationale only.
 
 ## Future optional MCP/plugin candidates
 
@@ -116,8 +116,9 @@ External tooling remains default-off.
 
 ## TraceBench-specific combinations
 
-Activate only independently triggered repo skills in the order and combinations
-defined by the architecture spec. `tracebench-safe-staging` is never implied by
-closeout or implementation; it applies only after an accepted audit and an
-explicit human staging instruction. Optional external tooling still requires
-the separate pass-specific approval above.
+Activate only independently triggered current repo skills. Exact staging stays
+human-owned under `AGENTS.md`, the active allowlist, live Git state, and the
+accepted audit set; no skill grants staging authority. Flutter/code-map work and
+V2/protected work route through their canonical repo owners instead of deleted
+adapter skills. Optional external tooling still requires the separate
+pass-specific approval above.

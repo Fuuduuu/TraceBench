@@ -18,8 +18,11 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - Validation/log sanity: claimed validation must match command output; expected non-blocking warnings should be classified explicitly.
 - Artifact/docs hygiene: no generated artifacts, literal newline artifacts, tag/release mutations, or accidental runtime files unless scoped.
 - Findings ranking: rank findings as `BLOCKER`, `HIGH`, `MEDIUM`, `LOW`, or `NIT`.
-- Verdict and safety gate: return one verdict option and `safe_to_commit` or `safe_for_commit_push` as `YES` or `NO`.
-- Audit-packet handoff: every TraceBench Codex PASS_ID response must end with a clearly separated, paste-ready `CLAUDE_AUDIT_PACKET`.
+- Verdict and safety gate: return `AUDIT_VERDICT`, `SAFE_FOR_STAGING`, and the
+  exact `SAFE_STAGING_SET` using the canonical packet shape below.
+- Audit-packet handoff: apply the Prompting Protocol's post-change trigger; a
+  paste-ready `CLAUDE_AUDIT_PACKET` accompanies an actual changed-file diff, not
+  strategy, design, ordinary answers, new-chat context, or prompt drafting.
 - Visual/manual-smoke gate: visual or product-surface packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`; Claude audit must not approve a known-wrong visual draft.
 - Exact staging: accepted staging sets must list exact files; `git add .`, `git add -A`, and broad staging are forbidden.
 - Capability preflight: verify `TOOL_SKILL_CHECK` exists, the reported
@@ -39,30 +42,36 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
   maintenance against accepted committed source, and multi-zone work had a new
   explicit human scope decision or stopped with `DECOMPOSE_REQUIRED`.
 
-## Active-lock sync gate for protected implementation
+## Protected implementation activation gate
 
-After a protected scope-lock is accepted/pushed, implementation may start only when `docs/ACTIVE_SCOPE_LOCK.md` names the implementation pass and lists the exact runtime/test write allowlist.
+The scope-lock diff must already name the future implementation PASS_ID and its
+exact runtime/test allowlist. Auditors verify that activation remains
+conditional until independent acceptance and push of that exact lock. After
+those gates, implementation may proceed without a routine active-lock-sync
+pass. An older or deficient lock is amended; it is not routed through a new
+sync-pass ceremony.
 
-If the active lock still names the docs-only scope-lock, or if it lacks the runtime/test allowlist, auditors should require a docs-only `<IMPLEMENTATION_PASS>_ACTIVE_LOCK_SYNC_PASS` before implementation.
+## Lane audit implications
 
-The sync pass may arm the implementation route and allowlist, but must not implement runtime behavior.
+`docs/PROMPTING_PROTOCOL.md` is the sole owner of Lane classification (`A` or
+`B`) and Mode work classes. This contract consumes that classification:
 
-## Two-lane policy
-
-- Lane A pass families (docs-only sync, docs locks, scoped polish, QA hardening in accepted behavior, no protected behavior activation) use lean contract prompts by default.
-- Lane B pass families (schema/validator/materializer/writer, event/facts, Project ZIP, renderer writes, AI/OCR/CV, route ambiguity, Confirm/write/persistence commits, canonical semantics changes) require full contract detail and a complete decision trail.
 - Lane A still requires independent Claude audit before routing onward.
 - Even in Lane A, protected-surface checks in `docs/PROTECTED_SURFACES.md` and routing consistency checks in `docs/MODEL_ROUTING.md` remain mandatory.
 - Lane A outputs should include explicit audit evidence handoff:
-  - Codex reports must include `CLAUDE_AUDIT_PACKET`.
+  - post-change Codex reports with a real diff include `CLAUDE_AUDIT_PACKET`;
   - For routine child passes, prefer batched audit evidence or commit-trailer notes.
   - Do not drop existing audit evidence or suppress previous findings.
-- Do not add redundant post-audit passes unless they capture meaningful state, boundary decisions, or protected/high-risk risk transitions.
+- Do not create a new PASS_ID merely to copy a verdict. A docs closeout is
+  exceptional and justified only by a real route, authority, or durable-risk
+  transition; it must not spawn another routine closeout.
 
 ## Lane A evidence handoff requirement
 
-- `CLAUDE_AUDIT_PACKET` is required in Lane A closeout/lock/audit summary handoff to keep evidence continuity.
-- The packet should include: pass ID, lane/type, expected diff, focus, validation/run commands, and safety gate.
+- `CLAUDE_AUDIT_PACKET` is required when a Lane A changed-file diff is handed
+  to independent audit.
+- The packet should include: pass ID, lane, mode, expected diff, focus,
+  validation/run commands, and safety gate.
 - For routine bundle child passes, a combined milestone audit record is acceptable when risk and scope are unchanged.
 - Evidence may not be overwritten as "closed" without explicitly recording the boundary change reason.
 
@@ -93,7 +102,8 @@ The user must paste relevant audit details when Claude returns or mentions `ACCE
 
 ## Contract: scope-lock-post-audit
 
-Use after a docs-only scope lock is drafted and needs independent audit before closeout.
+Use after a docs-only scope lock is drafted and needs independent audit before
+exact human staging and push.
 
 Checks:
 
@@ -103,11 +113,13 @@ Checks:
 - Confirm forbidden surfaces include protected product and evidence surfaces relevant to the pass.
 - Confirm binding sources are named and compatible with the proposed future work.
 - Confirm validation commands for the future implementation are exact enough to run.
-- Confirm the next route is the post-audit or closeout path, not direct implementation unless already accepted.
+- Confirm the lock already names the future implementation PASS_ID and exact
+  allowlist, with activation conditional on acceptance and push.
 
 Verdict options: `ACCEPT_AS_IS`, `NEEDS_SMALL_PATCH`, `REJECT`.
 
-Return: findings, verdict, `safe_to_commit: YES/NO`.
+Return: findings plus canonical `AUDIT_VERDICT`, `SAFE_FOR_STAGING`, and
+`SAFE_STAGING_SET` fields.
 
 ## Contract: implementation-post-audit
 
@@ -128,11 +140,14 @@ Checks:
 
 Verdict options: `ACCEPT_AS_IS`, `NEEDS_SMALL_PATCH`, `REJECT`.
 
-Return: findings, verdict, `safe_to_commit: YES/NO`.
+Return: findings plus canonical `AUDIT_VERDICT`, `SAFE_FOR_STAGING`, and
+`SAFE_STAGING_SET` fields.
 
-## Contract: docs-closeout
+## Contract: exceptional docs-closeout
 
-Use to close out accepted and pushed passes.
+Use only when an accepted and pushed pass causes a real route, authority, or
+durable-risk transition that cannot truthfully wait for the next product pass.
+Do not use it merely to copy a verdict.
 
 Checks:
 
@@ -143,10 +158,13 @@ Checks:
 - Confirm current route is the closeout pass and next route is the accepted next pass.
 - Confirm no implementation behavior, tags, release objects, generated artifacts, or forbidden surfaces changed.
 - Confirm completed pass history stays completed and no audit artifact is pruned.
+- Confirm the update reuses existing evidence identity where applicable and
+  does not create another routine closeout or audit-of-audit loop.
 
 Verdict options: `PASS`, `NEEDS_PATCH`, `BLOCK`.
 
-Return: closeout summary, findings, verdict, `safe_for_commit_push: YES/NO`.
+Return: closeout summary and findings plus canonical `AUDIT_VERDICT`,
+`SAFE_FOR_STAGING`, and `SAFE_STAGING_SET` fields.
 
 ## Contract: route-review
 
@@ -163,7 +181,8 @@ Checks:
 
 Verdict options: `PASS`, `PASS_WITH_NITS`, `NEEDS_ROUTE_FIX`, `BLOCK`.
 
-Return: route decision, alternatives considered if useful, verdict, `safe_to_commit` or `safe_for_commit_push` as applicable.
+Return: route decision and useful alternatives plus canonical `AUDIT_VERDICT`,
+`SAFE_FOR_STAGING`, and `SAFE_STAGING_SET` fields.
 
 ## Contract: recovery / evidence-recheck
 
@@ -180,28 +199,37 @@ Checks:
 
 Verdict options: `PASS`, `NEEDS_PATCH`, `BLOCK`.
 
-Return: recovery summary, remaining risk if any, verdict, `safe_to_commit` or `safe_for_commit_push` as applicable.
+Return: recovery summary and remaining risk plus canonical `AUDIT_VERDICT`,
+`SAFE_FOR_STAGING`, and `SAFE_STAGING_SET` fields.
 
-## Lean prompt format
+## Canonical `CLAUDE_AUDIT_PACKET` input shape
 
-Use this standard prompt shape when a repo-local audit contract is enough:
+Use this single header/template when a changed-file diff is ready for
+repo-local independent audit:
 
 ```text
+CLAUDE_AUDIT_PACKET
+
 PASS_ID: <id>
+LANE: <A | B>
+MODE: AUDIT_ONLY
+APPLY STANDARD AUDIT CONTRACT: <contract name>
 
-TYPE:
-scope-lock | implementation | docs-closeout | route-review | recovery | evidence-recheck
+EXPECTED_DIFF:
+<exact changed-file set>
 
-LANE:
-<model/helper lane>
-
-CODEX:
-<short summary: verdict, changed files, validation, route>
+DO NOT edit, create, stage, commit, push, reset, or clean.
 
 FOCUS:
 <1-3 pass-specific risks>
 
-APPLY STANDARD AUDIT CONTRACT: <contract name>
+VALIDATION:
+<commands and observed results>
+
+RETURN:
+AUDIT_VERDICT: <contract verdict>
+SAFE_FOR_STAGING: YES / NO
+SAFE_STAGING_SET: <exact files or NONE>
 ```
 
 ## Lean-read rules for auditors
@@ -231,43 +259,55 @@ Use a full prompt instead of a lean prompt when:
 ### Scope-lock post-audit
 
 ```text
-PASS_ID: V2_EDIT_COMPONENT_SCOPE_LOCK_POST_AUDIT_PASS
-TYPE: scope-lock-post-audit
-LANE: CLAUDE_CODE_OPUS / AUDIT_ONLY
-CODEX: Scope lock drafted; changed governance docs only; validate_all PASS; next route closeout.
-FOCUS: identity update boundaries; writer adapter expectations; no direct Edit implementation.
+PASS_ID: V2_EDIT_COMPONENT_SCOPE_LOCK_PASS
+LANE: B
+MODE: AUDIT_ONLY
 APPLY STANDARD AUDIT CONTRACT: scope-lock-post-audit
+EXPECTED_DIFF: <exact governance files>
+DO NOT edit, create, stage, commit, push, reset, or clean.
+FOCUS: identity update boundaries; writer adapter expectations; no direct Edit implementation.
+VALIDATION: <commands and observed results>
+RETURN: AUDIT_VERDICT + SAFE_FOR_STAGING + exact SAFE_STAGING_SET
 ```
 
 ### Implementation post-audit
 
 ```text
-PASS_ID: V2_EDIT_COMPONENT_POST_AUDIT_PASS
-TYPE: implementation-post-audit
-LANE: CLAUDE_CODE_OPUS / AUDIT_ONLY
-CODEX: Implementation changed scoped UI/service/tests; focused tests PASS; full suite PASS; validate_all PASS.
-FOCUS: event type constraints; idempotent local projection; no unscoped writes.
+PASS_ID: V2_EDIT_COMPONENT_IMPL_PASS
+LANE: B
+MODE: AUDIT_ONLY
 APPLY STANDARD AUDIT CONTRACT: implementation-post-audit
+EXPECTED_DIFF: <exact implementation files>
+DO NOT edit, create, stage, commit, push, reset, or clean.
+FOCUS: event type constraints; idempotent local projection; no unscoped writes.
+VALIDATION: <commands and observed results>
+RETURN: AUDIT_VERDICT + SAFE_FOR_STAGING + exact SAFE_STAGING_SET
 ```
 
 ### Docs closeout
 
 ```text
 PASS_ID: V2_EDIT_COMPONENT_CLOSEOUT_PASS
-TYPE: docs-closeout
-LANE: CODEX / DOCS_SYNC_CLOSEOUT
-CODEX: Accepted implementation pushed; post-audit ACCEPT_AS_IS; route next to selected scope lock.
+LANE: A
+MODE: AUDIT_ONLY
+APPLY STANDARD AUDIT CONTRACT: exceptional docs-closeout
+EXPECTED_DIFF: <exact meaningful route/authority transition files>
+DO NOT edit, create, stage, commit, push, reset, or clean.
 FOCUS: closeout accuracy; route consistency; no forbidden surface changes.
-APPLY STANDARD AUDIT CONTRACT: docs-closeout
+VALIDATION: <commands and observed results>
+RETURN: AUDIT_VERDICT + SAFE_FOR_STAGING + exact SAFE_STAGING_SET
 ```
 
 ### Evidence recheck
 
 ```text
 PASS_ID: V2_EDIT_COMPONENT_EVIDENCE_RECHECK_PASS
-TYPE: evidence-recheck
-LANE: CODEX / RECOVERY
-CODEX: Recheck post-audit concern against current diff and binding specs; no implementation unless explicitly scoped.
-FOCUS: cited finding validity; binding-source conflict; minimum recovery path.
+LANE: A
+MODE: AUDIT_ONLY
 APPLY STANDARD AUDIT CONTRACT: recovery / evidence-recheck
+EXPECTED_DIFF: <exact recovery files>
+DO NOT edit, create, stage, commit, push, reset, or clean.
+FOCUS: cited finding validity; binding-source conflict; minimum recovery path.
+VALIDATION: <commands and observed results>
+RETURN: AUDIT_VERDICT + SAFE_FOR_STAGING + exact SAFE_STAGING_SET
 ```

@@ -67,6 +67,15 @@ are descriptive and non-authorizing; source, tests, canonical owners,
 - The human stages, commits, and pushes exact accepted files.
 - Stop when live git state or route docs disagree with the task.
 
+## Response provenance
+
+Start each user-facing result with one plain sentence that identifies the
+actual author and state. Use `Codex finished — here are the results.`, `Codex
+is blocked — <reason>.`, or `Codex finished reviewing Claude Fable 5's audit —
+here are the results.` as applicable. When relaying another helper's result
+without changing it, name that helper and add `relayed unchanged by Codex`.
+This is response copy, not a new audit field or governance schema.
+
 ## Git discipline
 
 Never use:

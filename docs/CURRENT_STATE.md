@@ -17,15 +17,19 @@ exists, and future work requires a new explicit human route decision.
 `NOT_EXECUTED / NOT_AUDITED / RETIRED_UNSTARTED`.
 
 Batch A remains completed and closed at
-`fdf9b1998c1cf998210d7ea28529c64672f57169`. Its accepted skill files and
-evidence remain unchanged. Its two recorded evidence items remain
-`DEFERRED / UNPROVED / NON-BLOCKING`; neither is claimed fixed, proved,
-closed, accepted, or scheduled.
+`fdf9b1998c1cf998210d7ea28529c64672f57169` as historical evidence; its former
+seven-file inventory is not the current inventory. The current qualified set is
+`tracebench-prompt-authoring`, `tracebench-scope-lock`, and
+`tracebench-audit-reconciliation`. The four frontmatter-less legacy skills were
+retired instead of activated, and `tracebench-code-map-lifecycle` was never
+created. Batch A's two recorded evidence items remain
+`DEFERRED / UNPROVED / NON-BLOCKING`; neither is claimed fixed, proved, closed,
+accepted, or scheduled.
 
 ## Boundary
 
-All unresolved catalogue roles and any future skill evaluation remain
-deferred. No skill, bridge, harness, evaluator, fixture, route, runtime, test,
-tool, schema, map, protected surface, staging, commit, or push work is armed.
-Detailed lifecycle and evidence history is preserved in the audit ledger and
-the abort-closeout artifact.
+The former eight-role catalogue programme is superseded for current operation;
+any new skill requires demonstrated need. This recovery arms no further skill,
+bridge, harness, evaluator, fixture, route, runtime, test, tool, schema, map,
+protected surface, staging, commit, or push work. Detailed historical lifecycle
+and evidence remain in the audit ledger and existing artifacts.

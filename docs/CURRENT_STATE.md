@@ -1,35 +1,29 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS`
+Next recommended pass: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_PASS`
 
-This is the terminal, non-executable human-decision sentinel. It is not a
-runnable PASS_ID or pass self-loop. No pass is armed, no writable allowlist
-exists, and future work requires a new explicit human route decision.
+The current pass is a Lane B docs-only protected-surface scope lock. It may
+change only the four operational/audit docs plus its new audit artifact; it
+does not implement `board_outline_confirmed`, projection, writer, Project ZIP,
+or wizard behavior.
 
-## Repo-skills lifecycle
+## Locked direction
 
-`TRACEBENCH_REPO_SKILLS_CATALOGUE_PARENT_LOCK` is
-`ABORTED_BY_HUMAN / RETIRED`. `TRACEBENCH_REPO_SKILLS_BATCH_B_IMPL_PASS`,
-`TRACEBENCH_REPO_SKILLS_BATCH_C_IMPL_PASS`,
-`TRACEBENCH_REPO_SKILLS_BATCH_D_IMPL_PASS`, and
-`TRACEBENCH_REPO_SKILLS_CATALOGUE_CLOSEOUT_PASS` are
-`NOT_EXECUTED / NOT_AUDITED / RETIRED_UNSTARTED`.
+The human selected one project-level, human-confirmed Visual/Layout fact:
+`board_outline_confirmed`. It uses normalized board geometry, optional paired
+physical dimensions, explicit supersession, and conflict projection with no
+latest-wins rule. It never establishes electrical, component, pin, placement,
+measurement, diagnostic, photo, template, or AI-authored truth.
 
-Batch A remains completed and closed at
-`fdf9b1998c1cf998210d7ea28529c64672f57169` as historical evidence; its former
-seven-file inventory is not the current inventory. The current qualified set is
-`tracebench-prompt-authoring`, `tracebench-scope-lock`, and
-`tracebench-audit-reconciliation`. The four frontmatter-less legacy skills were
-retired instead of activated, and `tracebench-code-map-lifecycle` was never
-created. Batch A's two recorded evidence items remain
-`DEFERRED / UNPROVED / NON-BLOCKING`; neither is claimed fixed, proved, closed,
-accepted, or scheduled.
+The exact event, geometry, supersession, projection, atomicity, allowlist, and
+stop contracts are locked in `docs/ACTIVE_SCOPE_LOCK.md` and recorded in the
+current audit artifact. The current V1 blank-project wizard contract remains
+unchanged.
 
-## Boundary
+## Activation gate
 
-The former eight-role catalogue programme is superseded for current operation;
-any new skill requires demonstrated need. This recovery arms no further skill,
-bridge, harness, evaluator, fixture, route, runtime, test, tool, schema, map,
-protected surface, staging, commit, or push work. Detailed historical lifecycle
-and evidence remain in the audit ledger and existing artifacts.
+The reserved implementation is not executable from this working-tree draft.
+It becomes eligible only after independent Claude Code acceptance with
+`SAFE_FOR_STAGING: YES`, exact human staging/commit/push of the accepted scope
+lock, and a no-drift gate. No active-lock-sync pass is allowed or required.

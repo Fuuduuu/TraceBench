@@ -2,21 +2,37 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS`
 
-## Queue state
+## Current pass
 
-The queue is empty. No executable, reserved, or future pass is armed, and no
-scope-lock or implementation allowlist remains available for execution.
+The current docs-only scope lock may write exactly:
 
-The accepted board-outline V2 event foundation was pushed as
-`ca93f2b029f127df3c2baff7a6f9f4bcd0830d15` and independently audited
-`ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`. The exceptional docs closeout records
-that completed evidence and releases the route; it does not activate another
-reconciliation, closeout, implementation, wizard, Board Canvas,
-candidate-persistence, Dart, Flutter, or product pass.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS.md`
 
-`NEEDS_USER_DECISION` is a non-executable sentinel, so the matching current and
-next values mean that no pass is queued. Any later work requires a new explicit
-human decision and its own authorized scope.
+It creates no archive and makes no historical disposition. Its audit entry is
+a `PRE-AUDIT SNAPSHOT` with no verdict or staging-safety claim.
+
+## Conditional next pass
+
+`TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` is the sole reserved next
+pass. It remains non-executable until this scope lock is independently audited
+and accepted, the human commits and pushes the exact accepted five-file set,
+and a fresh no-drift recheck confirms the accepted commit at local and live
+`main`.
+
+When those gates are satisfied, the next pass may write exactly:
+
+- `docs/AUDIT_INDEX.md`
+- `docs/archive/AUDIT_INDEX_ARCHIVE.md`
+- `docs/FILE_MAP.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`
+
+No source-package cleanup, repo-skill hardening, code-map expansion, runtime,
+schema, tool, test, Dart, Flutter, or protected-surface pass is queued or
+armed.

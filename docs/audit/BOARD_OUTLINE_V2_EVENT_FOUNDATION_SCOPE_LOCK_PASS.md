@@ -1,6 +1,6 @@
 # BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS
 
-Status: `DRAFTED / PENDING INDEPENDENT CLAUDE CODE AUDIT`
+Status: `ACCEPTED / COMMITTED / PUSHED / AUDITED` as `79e54fed43e58038adc98f1ded613646fe68308b`; final Claude re-audit `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; current two-file evidence reconciliation unstaged / pending independent `recovery / evidence-recheck` audit
 
 ## PASS_ID
 
@@ -306,7 +306,9 @@ Future implementation commands recorded in the active lock:
 - The approved ZIP remains covered by the unchanged scratch manifest and its
   exact verified SHA-256.
 
-No audit verdict or staging safety is claimed by this draft.
+At draft time, no audit verdict or staging safety was claimed. The appended
+audit reconciliation below records the later independent audit, accepted
+commit, and superseding evidence status.
 
 ## Stops preserved
 
@@ -315,3 +317,64 @@ insufficient current or future allowlist; canonical conflict outside the ten
 reserved files; inability to land validator and materializer atomically; any
 need to modify an inspect-only owner; validation failure outside authority; or
 any staging, commit, push, cleanup, pull, rebase, reset, or scope expansion.
+
+## Audit reconciliation — 2026-07-22
+
+This evidence-only reconciliation supersedes only the draft-time audit-status
+wording above. It preserves the historical technical record, does not reopen
+the accepted contract, does not change the route or authority, and does not
+activate implementation.
+
+### Audit chronology
+
+- The first independent Claude audit returned `NEEDS_SMALL_PATCH`.
+- The MEDIUM outline-supersession graph finding was closed.
+- The LOW physical-size semantics finding was closed.
+- The final Claude re-audit returned `ACCEPT_AS_IS` with
+  `SAFE_FOR_STAGING: YES` for exactly the original five-file scope-lock set.
+- The later post-push recheck accepted the technical contract and found only
+  stale governance/status wording requiring this evidence reconciliation. It
+  did not reopen the technical contract.
+
+### Accepted commit evidence
+
+- Commit: `79e54fed43e58038adc98f1ded613646fe68308b`
+- Subject: `docs: lock board outline v2 event foundation`
+- Parent: `b80b1e0a535b74b9c5466d6f17ad67119318a68c`
+- Accepted and committed set:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS.md`
+
+### Fresh reconciliation validation
+
+- `py -3 tools\validate_all.py`: `PASS` on the approved host run; all 285
+  discovered tests passed. The first restricted attempt was environment-blocked
+  by Windows temporary-file and `.codex` write permissions; the successful
+  rerun reported no repository defect.
+- `git diff --check`: `PASS`; line-ending conversion advisories only.
+- Working diff: exactly `docs/AUDIT_INDEX.md` and this existing artifact.
+- Cached/staged diff: empty.
+- Ledger integrity: exactly one matching PASS_ID row; only its status cell
+  changed, and its descriptive column plus every other row were preserved
+  byte-identically by whole-file reconstruction.
+- Artifact integrity: original draft body preserved except for the authorized
+  Status line and temporally corrected draft-time sentence; this labelled
+  section is append-only. Existing line-ending styles and UTF-8 no-BOM
+  encoding were preserved.
+- Route owners: unchanged and still agree on
+  `BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS` ->
+  `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_PASS`.
+- Scratch: unchanged at 16 roots, 143 files, 369,078,106 bytes, and manifest
+  SHA-256
+  `CE15B8833DAB7F432100DF37339059A26CC28870376B32C53441C09602D448EA`.
+- HEAD, local `origin/main`, local `refs/heads/main`, and live GitHub `main`
+  remain `79e54fed43e58038adc98f1ded613646fe68308b`.
+
+### Implementation gate
+
+The implementation remains blocked. This two-file reconciliation must receive
+its own independent `recovery / evidence-recheck` audit, then be staged,
+committed, and pushed exactly by the human, followed by a no-drift recheck.

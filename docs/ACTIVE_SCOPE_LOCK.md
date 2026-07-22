@@ -23,9 +23,12 @@ work. Its ledger row and artifact are `PRE-AUDIT SNAPSHOT` evidence only.
 ## Reserved future authority
 
 `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` is reserved but not active.
-After independent acceptance of this scope lock, an exact human commit/push,
+After independent acceptance of this amendment, an exact human commit/push,
 and a no-drift recheck, that pass may write exactly:
 
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/AUDIT_INDEX.md`
 - `docs/archive/AUDIT_INDEX_ARCHIVE.md`
 - `docs/FILE_MAP.md`
@@ -50,10 +53,26 @@ The future pass must:
    - `BOARD_CANVAS_SCREEN_TEST_CODE_MAP_POST_AUDIT_PASS`
 6. Update `docs/FILE_MAP.md` only to register the resulting active-index and
    archive roles; make no broader documentation-lifecycle change.
+7. Record both the complete pipe-prefixed-line count and the true PASS_ID
+   data-row count, excluding the markdown table header and separator from the
+   latter. Recompute both values from the live future baseline and do not reuse
+   the historical header-inclusive `753 -> 754` figures as true data-row
+   counts.
+8. Reconcile `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_POST_AUDIT_PASS` from the
+   supplied exact evidence: `AUDIT_VERDICT: PASS`, `SAFE_FOR_STAGING: YES`, and
+   pushed closeout commit
+   `fc2ec5d1a1601de8098c317ed0d587aa57071c3b`. Record it as
+   accepted/pushed/audited evidence, not pushed-but-unaudited evidence debt.
+9. Leave every other existing audit artifact byte-identical.
+10. After successful completion, update `docs/CURRENT_STATE.md`,
+    `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` to
+    `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`. State that the matching
+    values are a non-executable sentinel, not a self-loop, and create no
+    recursive closeout or audit-of-audit pass.
 
 If complete preservation cannot be proved before compaction, evidence is
 ambiguous, a required existing artifact would need modification, or the exact
-four-file future allowlist is insufficient, the future pass must stop.
+seven-file future allowlist is insufficient, the future pass must stop.
 
 ## Exclusions
 

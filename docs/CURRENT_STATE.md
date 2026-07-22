@@ -4,10 +4,10 @@ Current pass: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS`
 Next recommended pass: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS`
 
 The current pass is a docs-only scope lock for one later audit-index archive
-and compaction pass. It starts from accepted pushed baseline
-`fc2ec5d1a1601de8098c317ed0d587aa57071c3b` (`docs: close out board outline
-v2 event foundation`) and changes only the three route owners, the audit index,
-and its new scope-lock evidence artifact.
+and compaction pass. The original lock was pushed as
+`8e5f531be371442179e63588772dd0f40e0f3f17` (`docs: lock audit index archive
+compaction`). This append-only amendment changes only the three route owners,
+the existing audit-index row, and the existing scope-lock evidence artifact.
 
 ## Current authority
 
@@ -20,18 +20,29 @@ Its exact write allowlist is:
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS.md`
 
-The new audit record and ledger row are a `PRE-AUDIT SNAPSHOT`. They claim no
-independent verdict and no staging-safety decision.
+The audit record and ledger row remain a `PRE-AUDIT SNAPSHOT`. This uncommitted
+amendment claims no independent verdict and no staging-safety decision.
 
 ## Reserved next pass
 
 `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` is reserved, not active. It
-may begin only after this exact scope-lock diff is independently accepted,
-committed and pushed by the human, followed by a no-drift recheck. Its purpose
-is to preserve the complete pre-compaction ledger in the archive, reduce the
-active index to its authority/lookup contract and four named evidence anchors,
-and add a truthful evidence-based disposition register without rewriting any
-existing audit artifact.
+may begin only after this exact amendment diff is independently accepted,
+committed and pushed by the human, followed by a no-drift recheck. Its exact
+future write allowlist is:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/archive/AUDIT_INDEX_ARCHIVE.md`
+- `docs/FILE_MAP.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`
+
+The future pass must preserve the complete pre-compaction ledger, record both
+pipe-line and true PASS_ID data-row counts, reconcile the supplied accepted
+Board Outline closeout evidence, compact the active index, and then release all
+three route owners to the non-executable `NEEDS_USER_DECISION` ->
+`NEEDS_USER_DECISION` sentinel without a recursive closeout.
 
 Source-package cleanup, repo-skill hardening, and code-map expansion remain
 deferred and unarmed.

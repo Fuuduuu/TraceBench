@@ -232,3 +232,124 @@ allowlist insufficiency is a hard stop.
 
 This scope lock awaits independent Claude audit. No audit verdict is issued by
 Codex and no staging, commit, or push action is authorized by this artifact.
+
+## Append-only scope amendment — reserved successor allowlist repair
+
+Amendment status: `PRE-AUDIT SNAPSHOT` — no independent audit verdict or
+staging-safety decision is claimed for this uncommitted amendment.
+
+This section amends the already-pushed scope lock at
+`8e5f531be371442179e63588772dd0f40e0f3f17` (`docs: lock audit index archive
+compaction`). No preceding historical text is retracted, deleted, corrected in
+place, or rewritten. The earlier four-file reserved-successor allowlist remains
+historical pre-amendment evidence and is superseded as live authority by the
+seven-file list below.
+
+### Current authority remains unchanged
+
+The active current-pass allowlist remains exactly five files:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS.md`
+
+The route also remains unchanged during this amendment:
+
+- Current: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS`
+- Next: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS`
+
+### Amended reserved-successor authority
+
+After this exact amendment is independently accepted, committed and pushed by
+the human, and a fresh no-drift recheck passes, the reserved
+`TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` may write exactly:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/archive/AUDIT_INDEX_ARCHIVE.md`
+- `docs/FILE_MAP.md`
+- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`
+
+This amendment is necessary because the historical four-file successor list
+could archive and compact the ledger but could not update the three route
+owners after successful completion.
+
+### Corrected ledger-counting contract
+
+At this amendment's pushed starting baseline, `docs/AUDIT_INDEX.md` has 755
+pipe-prefixed lines: one markdown table header, one markdown separator, and 753
+true PASS_ID data rows. The historical header-inclusive `753 -> 754` figures in
+the preceding evidence must not be repeated as true data-row counts.
+
+The future pass must recompute its live starting inventory and separately
+record:
+
+- the pipe-prefixed-line count; and
+- the true PASS_ID data-row count after excluding the markdown table header and
+  separator row.
+
+Complete starting-ledger preservation must be proved before any deletion or
+compaction.
+
+### Supplied Board Outline closeout evidence
+
+The future pass must reconcile
+`BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_POST_AUDIT_PASS` from the human-supplied
+exact evidence:
+
+- `AUDIT_VERDICT: PASS`
+- `SAFE_FOR_STAGING: YES`
+- pushed closeout commit:
+  `fc2ec5d1a1601de8098c317ed0d587aa57071c3b`
+
+That closeout must be recorded as accepted/pushed/audited evidence, not as
+pushed-but-unaudited evidence debt. Every other existing audit artifact must
+remain byte-identical.
+
+### Required completion release
+
+After successful archive, evidence disposition, and compaction, the future
+pass must update `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and
+`docs/ACTIVE_SCOPE_LOCK.md` to:
+
+- Current: `NEEDS_USER_DECISION`
+- Next: `NEEDS_USER_DECISION`
+
+Those matching values are a non-executable sentinel, not a pass self-loop. The
+future pass releases the route directly and must not create a recursive
+closeout or audit-of-audit pass.
+
+No archive or compaction occurs in this amendment. Source-package cleanup,
+repo-skill hardening, code-map expansion, runtime, schema, tool, test, Dart,
+Flutter, package, asset, Project ZIP, `_incoming`, and protected semantic work
+remain deferred and unarmed.
+
+### Amendment validation evidence
+
+- `py -3 tools\validate_all.py`: PASS; 302 tests ran with zero failures.
+- `git diff --check`: PASS; line-ending conversion notices only.
+- exact changed-file set: PASS; the existing five-file current allowlist only.
+- cached/staged set: PASS; empty.
+- route and allowlists: PASS; all three owners retain the current/next tuple,
+  the current allowlist is exactly five paths, and the reserved-successor
+  allowlist is exactly seven paths.
+- audit-index structure: PASS; 755 pipe-prefixed lines, one header, one
+  separator, 753 true data rows, 753 unique PASS_ID values, no duplicate
+  PASS_ID, no new PASS_ID, and no glued `||` row.
+- append-only preservation: PASS; the complete 10,794-byte pre-amendment prefix
+  retains SHA-256
+  `BFFFF4F7C2B43FD90E33E9FC132DC0402236AA9F2B94BCB93710F40B76616081`.
+- archive/file-map/artifact boundary: PASS; no archive exists,
+  `docs/FILE_MAP.md` is unchanged, and no other audit artifact changed.
+- baseline refs: PASS; `HEAD`, local `origin/main`, and live
+  `refs/heads/main` remain
+  `8e5f531be371442179e63588772dd0f40e0f3f17`.
+- scratch inventory: PASS; the known 94 untracked files and 43,936,062 bytes
+  are unchanged.
+
+This amendment still awaits independent Claude audit. These validation results
+are not an acceptance verdict or staging-safety decision.

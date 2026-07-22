@@ -27,6 +27,7 @@ V2 canonical event types described by this spec and its audited foundation exten
 | `measurement_recorded` | accepted | Record a human-confirmed measurement reading. |
 | `component_created` | accepted | Record a human-created component entity. |
 | `component_updated` | accepted | Record a human-confirmed field-level component edit. |
+| `component_visual_placement_confirmed` | accepted | human-confirmed visual/documentation placement of an existing component. |
 | `board_outline_confirmed` | accepted foundation | Record one human-confirmed project-level Visual/Layout board outline. |
 | `event_invalidated` | accepted | Mark a prior event invalid for current projection without deletion or mutation. |
 

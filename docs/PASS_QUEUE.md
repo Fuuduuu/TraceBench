@@ -2,25 +2,21 @@
 
 ## Current route
 
-Current: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS`
-Next: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_PASS`
+Current: `NEEDS_USER_DECISION`
+Next: `NEEDS_USER_DECISION`
 
-## Current pass
+## Queue state
 
-Draft one Lane B docs-only protected-surface scope lock for the atomic board
-outline V2 event foundation. Current write authority is exactly the five paths
-named in `docs/ACTIVE_SCOPE_LOCK.md`; runtime, schemas, tools, tests, Dart,
-Flutter, wizard, Project ZIP, samples, assets, and `_incoming` are not writable.
+The queue is empty. No executable, reserved, or future pass is armed, and no
+scope-lock or implementation allowlist remains available for execution.
 
-## Reserved next pass
+The accepted board-outline V2 event foundation was pushed as
+`ca93f2b029f127df3c2baff7a6f9f4bcd0830d15` and independently audited
+`ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`. The exceptional docs closeout records
+that completed evidence and releases the route; it does not activate another
+reconciliation, closeout, implementation, wizard, Board Canvas,
+candidate-persistence, Dart, Flutter, or product pass.
 
-`BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_PASS` is one atomic `TOOLS_PASS` with
-the exact ten-file allowlist in `docs/ACTIVE_SCOPE_LOCK.md`. Its authority is
-reserved, not active, until this exact scope-lock diff is independently
-accepted and exactly staged, committed, and pushed by the human with no later
-route or baseline drift.
-
-No active-lock-sync, verdict-copy, recovery, reconciliation, or closeout pass
-is inserted between the accepted scope lock and its implementation. Later
-Dart/wizard integration, Canvas editing, and all candidate-persistence work
-remain separately scoped and unarmed.
+`NEEDS_USER_DECISION` is a non-executable sentinel, so the matching current and
+next values mean that no pass is queued. Any later work requires a new explicit
+human decision and its own authorized scope.

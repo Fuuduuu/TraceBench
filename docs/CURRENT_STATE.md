@@ -1,29 +1,29 @@
 # Current State
 
-Current pass: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS`
-Next recommended pass: `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_PASS`
+Current pass: `NEEDS_USER_DECISION`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-The current pass is a Lane B docs-only protected-surface scope lock. It may
-change only the four operational/audit docs plus its new audit artifact; it
-does not implement `board_outline_confirmed`, projection, writer, Project ZIP,
-or wizard behavior.
+The accepted board-outline V2 event foundation is complete and pushed as
+`ca93f2b029f127df3c2baff7a6f9f4bcd0830d15` after the accepted scope lock at
+`79e54fed43e58038adc98f1ded613646fe68308b` and its accepted evidence
+reconciliation at `ee7e63925c871f40aecc1c21a3d934f8eac372ec`. Independent
+Claude implementation-audit evidence records `ACCEPT_AS_IS` with
+`SAFE_FOR_STAGING: YES` for the exact ten-file implementation set.
 
-## Locked direction
+## Authority state
 
-The human selected one project-level, human-confirmed Visual/Layout fact:
-`board_outline_confirmed`. It uses normalized board geometry, optional paired
-physical dimensions, explicit supersession, and conflict projection with no
-latest-wins rule. It never establishes electrical, component, pin, placement,
-measurement, diagnostic, photo, template, or AI-authored truth.
+No executable pass is armed. No current, reserved, or future write allowlist
+remains active. Board Canvas, wizard, candidate-persistence, Dart, Flutter, and
+all other implementation work require a new explicit human decision and an
+appropriate scope lock.
 
-The exact event, geometry, supersession, projection, atomicity, allowlist, and
-stop contracts are locked in `docs/ACTIVE_SCOPE_LOCK.md` and recorded in the
-current audit artifact. The current V1 blank-project wizard contract remains
-unchanged.
+`NEEDS_USER_DECISION` is a non-executable sentinel. The matching current and
+next values therefore represent an empty route, not a pass self-loop.
 
-## Activation gate
+## Closeout evidence
 
-The reserved implementation is not executable from this working-tree draft.
-It becomes eligible only after independent Claude Code acceptance with
-`SAFE_FOR_STAGING: YES`, exact human staging/commit/push of the accepted scope
-lock, and a no-drift gate. No active-lock-sync pass is allowed or required.
+The exceptional docs closeout repairs the one missing canonical event-table
+row, records the accepted implementation evidence, and retires the historical
+scope-lock gating text as live authority without rewriting that historical
+artifact. Its new audit record is a `PRE-AUDIT SNAPSHOT` and claims no verdict
+for the closeout itself.

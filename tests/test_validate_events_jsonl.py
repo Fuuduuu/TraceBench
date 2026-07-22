@@ -6,6 +6,11 @@ import unittest
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
 def _run_validator(events_jsonl: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, "tools/validate_events_jsonl.py", events_jsonl],
@@ -88,6 +93,20 @@ def _v2_component_visual_placement_payload(**overrides):
     return payload
 
 
+def _v2_board_outline_payload(**overrides):
+    payload = {
+        "coordinate_space": "board_normalized",
+        "outer_polygon": [
+            {"x": 0.1, "y": 0.1},
+            {"x": 0.9, "y": 0.1},
+            {"x": 0.9, "y": 0.8},
+            {"x": 0.1, "y": 0.8},
+        ],
+    }
+    payload.update(overrides)
+    return payload
+
+
 def _v2_event(
     event_id="evt_200001",
     event_type="measurement_recorded",
@@ -129,6 +148,288 @@ def _v2_event(
 
 
 class ValidateV2EventsJsonlTests(unittest.TestCase):
+    def test_v2_board_outline_accepts_valid_geometry_variants(self):
+        polygons = {
+            "clockwise": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.1, "y": 0.8},
+            ],
+            "counter_clockwise": [
+                {"x": 0.1, "y": 0.8},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.1, "y": 0.1},
+            ],
+            "concave": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.55, "y": 0.4},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.1, "y": 0.8},
+            ],
+        }
+        for name, polygon in polygons.items():
+            with self.subTest(name=name):
+                payload = _v2_board_outline_payload(outer_polygon=polygon)
+                if name == "concave":
+                    payload.update(physical_width_mm=120.5, physical_height_mm=76.25)
+                path = _events_to_temp_jsonl(
+                    [_v2_event(event_type="board_outline_confirmed", payload=payload)]
+                )
+
+                result = _run_validator(path)
+
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_board_outline_rejects_envelope_payload_and_vertex_expansion(self):
+        cases = []
+
+        payload = _v2_board_outline_payload(outline_id="outline_1")
+        cases.append(("extra_payload", _v2_event(event_type="board_outline_confirmed", payload=payload)))
+
+        payload = _v2_board_outline_payload(coordinate_space="photo_local")
+        cases.append(("coordinate_space", _v2_event(event_type="board_outline_confirmed", payload=payload)))
+
+        payload = _v2_board_outline_payload()
+        payload.pop("outer_polygon")
+        cases.append(("missing_polygon", _v2_event(event_type="board_outline_confirmed", payload=payload)))
+
+        payload = _v2_board_outline_payload()
+        payload["outer_polygon"][0]["z"] = 0.0
+        cases.append(("extra_vertex", _v2_event(event_type="board_outline_confirmed", payload=payload)))
+
+        cases.extend(
+            [
+                (
+                    "ai_actor",
+                    _v2_event(
+                        event_type="board_outline_confirmed",
+                        payload=_v2_board_outline_payload(),
+                        actor_type="ai",
+                    ),
+                ),
+                (
+                    "non_explicit_source",
+                    _v2_event(
+                        event_type="board_outline_confirmed",
+                        payload=_v2_board_outline_payload(),
+                        source_type="renderer",
+                    ),
+                ),
+                (
+                    "not_confirmed",
+                    _v2_event(
+                        event_type="board_outline_confirmed",
+                        payload=_v2_board_outline_payload(),
+                        confirmed=False,
+                    ),
+                ),
+                (
+                    "status_forbidden",
+                    _v2_event(
+                        event_type="board_outline_confirmed",
+                        payload=_v2_board_outline_payload(),
+                        status="accepted",
+                    ),
+                ),
+                (
+                    "sequence_forbidden",
+                    _v2_event(
+                        event_type="board_outline_confirmed",
+                        payload=_v2_board_outline_payload(),
+                        sequence=1,
+                    ),
+                ),
+            ]
+        )
+
+        for name, event in cases:
+            with self.subTest(name=name):
+                result = _run_validator(_events_to_temp_jsonl([event]))
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_board_outline_rejects_invalid_numbers_and_unpaired_physical_size(self):
+        cases = []
+        for name, value in [
+            ("coordinate_bool", True),
+            ("coordinate_nan", float("nan")),
+            ("coordinate_inf", float("inf")),
+            ("coordinate_below", -0.01),
+            ("coordinate_above", 1.01),
+        ]:
+            payload = _v2_board_outline_payload()
+            payload["outer_polygon"][0]["x"] = value
+            cases.append((name, payload))
+
+        for name, overrides in [
+            ("width_only", {"physical_width_mm": 100.0}),
+            ("height_only", {"physical_height_mm": 60.0}),
+            ("physical_bool", {"physical_width_mm": True, "physical_height_mm": 60.0}),
+            ("physical_nan", {"physical_width_mm": float("nan"), "physical_height_mm": 60.0}),
+            ("physical_inf", {"physical_width_mm": 100.0, "physical_height_mm": float("inf")}),
+            ("physical_zero", {"physical_width_mm": 0.0, "physical_height_mm": 60.0}),
+            ("physical_negative", {"physical_width_mm": 100.0, "physical_height_mm": -1.0}),
+        ]:
+            cases.append((name, _v2_board_outline_payload(**overrides)))
+
+        for name, payload in cases:
+            with self.subTest(name=name):
+                result = _run_validator(
+                    _events_to_temp_jsonl(
+                        [_v2_event(event_type="board_outline_confirmed", payload=payload)]
+                    )
+                )
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_board_outline_rejects_invalid_polygon_topology(self):
+        cases = {
+            "too_few": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+            ],
+            "closing_duplicate": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.1, "y": 0.1},
+            ],
+            "duplicate_vertex": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.1, "y": 0.8},
+            ],
+            "collinear": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.5, "y": 0.5},
+                {"x": 0.9, "y": 0.9},
+            ],
+            "self_crossing": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.1, "y": 0.8},
+                {"x": 0.9, "y": 0.1},
+            ],
+            "overlapping_non_adjacent_edges": [
+                {"x": 0.1, "y": 0.1},
+                {"x": 0.9, "y": 0.1},
+                {"x": 0.9, "y": 0.8},
+                {"x": 0.1, "y": 0.8},
+                {"x": 0.7, "y": 0.1},
+                {"x": 0.3, "y": 0.1},
+            ],
+        }
+        for name, polygon in cases.items():
+            with self.subTest(name=name):
+                result = _run_validator(
+                    _events_to_temp_jsonl(
+                        [
+                            _v2_event(
+                                event_type="board_outline_confirmed",
+                                payload=_v2_board_outline_payload(outer_polygon=polygon),
+                            )
+                        ]
+                    )
+                )
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_board_outline_supersession_accepts_root_and_same_project_chain(self):
+        events = [
+            _v2_event(
+                event_id="evt_200001",
+                event_type="board_outline_confirmed",
+                payload=_v2_board_outline_payload(),
+                client_operation_id="op_outline_001",
+            ),
+            _v2_event(
+                event_id="evt_200002",
+                event_type="board_outline_confirmed",
+                payload=_v2_board_outline_payload(
+                    outer_polygon=[
+                        {"x": 0.05, "y": 0.05},
+                        {"x": 0.95, "y": 0.05},
+                        {"x": 0.95, "y": 0.85},
+                        {"x": 0.05, "y": 0.85},
+                    ]
+                ),
+                client_operation_id="op_outline_002",
+                supersedes_event_id="evt_200001",
+            ),
+        ]
+
+        result = _run_validator(_events_to_temp_jsonl(events))
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_v2_board_outline_supersession_rejects_type_and_project_mismatches(self):
+        outline = _v2_event(
+            event_id="evt_200001",
+            event_type="board_outline_confirmed",
+            payload=_v2_board_outline_payload(),
+            client_operation_id="op_outline_001",
+        )
+        measurement = _v2_event(
+            event_id="evt_200001",
+            event_type="measurement_recorded",
+            payload=_v2_measurement_payload(),
+            client_operation_id="op_measure_001",
+        )
+        cases = {
+            "outline_to_measurement": [
+                measurement,
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="board_outline_confirmed",
+                    payload=_v2_board_outline_payload(),
+                    client_operation_id="op_outline_002",
+                    supersedes_event_id="evt_200001",
+                ),
+            ],
+            "measurement_to_outline": [
+                outline,
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="measurement_recorded",
+                    payload=_v2_measurement_payload(measurement_id="meas_000002"),
+                    client_operation_id="op_measure_002",
+                    supersedes_event_id="evt_200001",
+                ),
+            ],
+            "cross_project_outline": [
+                outline,
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="board_outline_confirmed",
+                    payload=_v2_board_outline_payload(),
+                    project_id="prj_other",
+                    client_operation_id="op_outline_002",
+                    supersedes_event_id="evt_200001",
+                ),
+            ],
+            "future_outline_target": [
+                _v2_event(
+                    event_id="evt_200001",
+                    event_type="board_outline_confirmed",
+                    payload=_v2_board_outline_payload(),
+                    client_operation_id="op_outline_001",
+                    supersedes_event_id="evt_200002",
+                ),
+                _v2_event(
+                    event_id="evt_200002",
+                    event_type="board_outline_confirmed",
+                    payload=_v2_board_outline_payload(),
+                    client_operation_id="op_outline_002",
+                ),
+            ],
+        }
+        for name, events in cases.items():
+            with self.subTest(name=name):
+                result = _run_validator(_events_to_temp_jsonl(events))
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_v2_valid_measurement_recorded_passes(self):
         path = _events_to_temp_jsonl([_v2_event()])
 

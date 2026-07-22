@@ -282,9 +282,95 @@
         "additionalProperties": false
       }
     },
+    "board_outline": {
+      "type": "object",
+      "required": ["coordinate_space", "outer_polygon", "source_event_id"],
+      "properties": {
+        "coordinate_space": { "const": "board_normalized" },
+        "outer_polygon": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["x", "y"],
+            "properties": {
+              "x": { "type": "number", "minimum": 0, "maximum": 1 },
+              "y": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "physical_width_mm": { "type": "number", "exclusiveMinimum": 0 },
+        "physical_height_mm": { "type": "number", "exclusiveMinimum": 0 },
+        "source_event_id": { "type": "string", "minLength": 1 }
+      },
+      "dependentRequired": {
+        "physical_width_mm": ["physical_height_mm"],
+        "physical_height_mm": ["physical_width_mm"]
+      },
+      "additionalProperties": false
+    },
+    "board_outline_conflicts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["conflict_type", "source_event_ids", "candidates"],
+        "properties": {
+          "conflict_type": { "const": "board_outline_divergence" },
+          "source_event_ids": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "candidates": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["coordinate_space", "outer_polygon", "source_event_id"],
+              "properties": {
+                "coordinate_space": { "const": "board_normalized" },
+                "outer_polygon": {
+                  "type": "array",
+                  "minItems": 3,
+                  "items": {
+                    "type": "object",
+                    "required": ["x", "y"],
+                    "properties": {
+                      "x": { "type": "number", "minimum": 0, "maximum": 1 },
+                      "y": { "type": "number", "minimum": 0, "maximum": 1 }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "physical_width_mm": { "type": "number", "exclusiveMinimum": 0 },
+                "physical_height_mm": { "type": "number", "exclusiveMinimum": 0 },
+                "source_event_id": { "type": "string", "minLength": 1 }
+              },
+              "dependentRequired": {
+                "physical_width_mm": ["physical_height_mm"],
+                "physical_height_mm": ["physical_width_mm"]
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "measurements": { "type": "array" },
     "nets": { "type": "array" },
     "excluded_from_fault_candidates": { "type": "array" }
   },
+  "allOf": [
+    {
+      "not": {
+        "required": ["board_outline", "board_outline_conflicts"]
+      }
+    }
+  ],
   "additionalProperties": true
 }

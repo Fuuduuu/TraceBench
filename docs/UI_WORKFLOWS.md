@@ -29,11 +29,14 @@ Direct visual context should outrank table/form detours.
 
 Standalone Add/Edit/Measure-style pages may remain until scoped replacements exist, but they are transitional and must not be duplicated as a second primary workflow inside Board Canvas.
 
-## Four event meanings
+## Five event meanings
 
 - `component_created` = component identity/existence creation.
 - `component_updated` = component metadata update.
 - `component_visual_placement_confirmed` = visual placement confirmation.
+- `board_outline_confirmed` = project-level Visual/Layout board-outline confirmation.
 - `measurement_recorded` = measurement write.
+
+The board-outline event foundation currently has no armed wizard or Board Canvas authoring workflow. UI activation, candidate persistence, and confirmation affordances remain deferred to a separate scoped pass.
 
 Canonical data and AI boundaries: `docs/TRUTH_INDEX.md`.

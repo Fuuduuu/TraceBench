@@ -62,6 +62,20 @@ def _v2_component_payload(**overrides):
     return payload
 
 
+def _v2_board_outline_payload(**overrides):
+    payload = {
+        "coordinate_space": "board_normalized",
+        "outer_polygon": [
+            {"x": 0.1, "y": 0.1},
+            {"x": 0.9, "y": 0.1},
+            {"x": 0.9, "y": 0.8},
+            {"x": 0.1, "y": 0.8},
+        ],
+    }
+    payload.update(overrides)
+    return payload
+
+
 def _v2_event(
     event_id="evt_900001",
     event_type="measurement_recorded",
@@ -109,6 +123,46 @@ def _read_events(path: Path):
 
 
 class EventWriterServiceTests(unittest.TestCase):
+    def test_valid_board_outline_append_and_idempotency(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            candidate = _v2_event(
+                event_type="board_outline_confirmed",
+                payload=_v2_board_outline_payload(
+                    physical_width_mm=120.5,
+                    physical_height_mm=76.25,
+                ),
+            )
+
+            first = append_v2_event(events_path, candidate)
+            second = append_v2_event(events_path, candidate)
+
+            self.assertTrue(first.appended)
+            self.assertFalse(second.appended)
+            self.assertEqual(second.status, "existing")
+            self.assertEqual(_read_events(events_path), [candidate])
+
+    def test_invalid_board_outline_rejected_before_append(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            events_path.write_text("", encoding="utf-8")
+            candidate = _v2_event(
+                event_type="board_outline_confirmed",
+                payload=_v2_board_outline_payload(
+                    outer_polygon=[
+                        {"x": 0.1, "y": 0.1},
+                        {"x": 0.9, "y": 0.8},
+                        {"x": 0.1, "y": 0.8},
+                        {"x": 0.9, "y": 0.1},
+                    ]
+                ),
+            )
+
+            with self.assertRaises(EventValidationError):
+                append_v2_event(events_path, candidate)
+
+            self.assertEqual(events_path.read_text(encoding="utf-8"), "")
+
     def test_valid_v2_event_append(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             events_path = Path(tmpdir) / "events.jsonl"

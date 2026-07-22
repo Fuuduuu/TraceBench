@@ -44,6 +44,7 @@ AI may propose, organize, guide, surface uncertainty, find conflicts, and summar
 - `known_facts.json` is a materialized projection/cache and must remain regenerable from accepted events.
 - Only accepted human-confirmed events become current domain facts; non-accepted events remain evidence/history/review material.
 - Visual/Layout Graph remains separate from Electrical Net Graph.
+- A confirmed board outline is project-level Visual/Layout geometry only; physical dimensions are visual metadata and never electrical or diagnostic evidence.
 - Visual placement documents where an existing component appears; it does not confirm identity, contacts, pins, pads, nets, traces, measurements, electrical function, or fault cause.
 - UI-local drafts, imported/reference material, AI proposals, template metadata, and render/layout state remain non-canonical until an explicitly scoped human-confirmation path applies.
 - Any user-facing activity timeline remains derived, non-canonical, compact/non-dominant, and separate from `events.jsonl` and debug logs.
@@ -52,14 +53,17 @@ AI may propose, organize, guide, surface uncertainty, find conflicts, and summar
 
 Detailed semantic invariants and canonical-owner routing live in `docs/TRUTH_INDEX.md`.
 
-## Four canonical event meanings
+## Five canonical event meanings
 
 - `component_created` creates component identity/existence.
 - `component_updated` updates component metadata.
 - `component_visual_placement_confirmed` confirms visual/documentation placement.
+- `board_outline_confirmed` confirms one project-level Visual/Layout board outline.
 - `measurement_recorded` records a human-confirmed measurement.
 
 These meanings remain separate; one event must not silently promote into another semantic category.
+
+The `board_outline_confirmed` Python schema/validator/materializer foundation is implemented. Its canonical writer and Project ZIP behavior reuse the existing generic validation and regeneration boundaries. No wizard, Board Canvas authoring flow, candidate persistence, or Dart/Flutter activation is implied; those remain separately scoped future work.
 
 ## Local-first and Project ZIP non-negotiables
 

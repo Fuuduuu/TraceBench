@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import sys
 from collections import Counter
 from datetime import datetime
+from fractions import Fraction
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -132,6 +134,7 @@ REMOVE_COMPONENT_FORBIDDEN_KEYS = {
 MEASUREMENT_EVENT = "measurement_recorded"
 V2_SCHEMA_VERSION = "2.0-draft"
 V2_EVENT_TYPES = {
+    "board_outline_confirmed",
     "measurement_recorded",
     "component_created",
     "component_updated",
@@ -300,6 +303,12 @@ V2_PLACEMENT_FORBIDDEN_FIELDS = {
     "visual_contact_layout",
     "visual_contacts",
     "visual_pad_layout",
+}
+V2_BOARD_OUTLINE_ALLOWED_FIELDS = {
+    "coordinate_space",
+    "outer_polygon",
+    "physical_width_mm",
+    "physical_height_mm",
 }
 RESOLVABLE_CONFLICT_TYPES = {
     "measurement_contradiction",
@@ -838,12 +847,201 @@ def _validate_v2_event_invalidated(
         _error(errors, context, "event_invalidated human_note must be string when present")
 
 
+def _is_finite_number(value: object) -> bool:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    if isinstance(value, int):
+        return True
+    return math.isfinite(value)
+
+
+def _orientation(
+    first: tuple[Fraction, Fraction],
+    second: tuple[Fraction, Fraction],
+    third: tuple[Fraction, Fraction],
+) -> Fraction:
+    return (
+        (second[0] - first[0]) * (third[1] - first[1])
+        - (second[1] - first[1]) * (third[0] - first[0])
+    )
+
+
+def _point_on_segment(
+    point: tuple[Fraction, Fraction],
+    start: tuple[Fraction, Fraction],
+    end: tuple[Fraction, Fraction],
+) -> bool:
+    return (
+        _orientation(start, end, point) == 0
+        and min(start[0], end[0]) <= point[0] <= max(start[0], end[0])
+        and min(start[1], end[1]) <= point[1] <= max(start[1], end[1])
+    )
+
+
+def _segments_intersect(
+    first_start: tuple[Fraction, Fraction],
+    first_end: tuple[Fraction, Fraction],
+    second_start: tuple[Fraction, Fraction],
+    second_end: tuple[Fraction, Fraction],
+) -> bool:
+    first_turn = _orientation(first_start, first_end, second_start)
+    second_turn = _orientation(first_start, first_end, second_end)
+    third_turn = _orientation(second_start, second_end, first_start)
+    fourth_turn = _orientation(second_start, second_end, first_end)
+
+    if ((first_turn > 0 and second_turn < 0) or (first_turn < 0 and second_turn > 0)) and (
+        (third_turn > 0 and fourth_turn < 0) or (third_turn < 0 and fourth_turn > 0)
+    ):
+        return True
+    if first_turn == 0 and _point_on_segment(second_start, first_start, first_end):
+        return True
+    if second_turn == 0 and _point_on_segment(second_end, first_start, first_end):
+        return True
+    if third_turn == 0 and _point_on_segment(first_start, second_start, second_end):
+        return True
+    if fourth_turn == 0 and _point_on_segment(first_end, second_start, second_end):
+        return True
+    return False
+
+
+def _validate_v2_board_outline(payload: dict, context: str, errors: list[str]) -> None:
+    required = {"coordinate_space", "outer_polygon"}
+    missing = required - set(payload)
+    if missing:
+        _error(errors, context, f"board_outline_confirmed missing payload fields: {sorted(missing)}")
+
+    extra = sorted(set(payload) - V2_BOARD_OUTLINE_ALLOWED_FIELDS)
+    if extra:
+        _error(errors, context, f"board_outline_confirmed unexpected payload field(s): {extra}")
+
+    if payload.get("coordinate_space") != "board_normalized":
+        _error(errors, context, "board_outline_confirmed coordinate_space must be 'board_normalized'")
+
+    has_width = "physical_width_mm" in payload
+    has_height = "physical_height_mm" in payload
+    if has_width != has_height:
+        _error(
+            errors,
+            context,
+            "physical_width_mm and physical_height_mm must be present together",
+        )
+    for field in ("physical_width_mm", "physical_height_mm"):
+        if field not in payload:
+            continue
+        value = payload.get(field)
+        if not _is_finite_number(value) or value <= 0:
+            _error(errors, context, f"{field} must be a finite non-boolean number > 0")
+
+    polygon = payload.get("outer_polygon")
+    if not isinstance(polygon, list):
+        _error(errors, context, "outer_polygon must be an ordered array")
+        return
+    if len(polygon) < 3:
+        _error(errors, context, "outer_polygon must contain at least three vertices")
+
+    vertices: list[tuple[Fraction, Fraction]] = []
+    vertices_valid = True
+    for index, vertex in enumerate(polygon):
+        vertex_context = f"{context}.payload.outer_polygon[{index}]"
+        if not isinstance(vertex, dict):
+            _error(errors, vertex_context, "vertex must be object containing exactly x and y")
+            vertices_valid = False
+            continue
+        if set(vertex) != {"x", "y"}:
+            _error(errors, vertex_context, "vertex must contain exactly x and y")
+        x = vertex.get("x")
+        y = vertex.get("y")
+        if not _is_finite_number(x):
+            _error(errors, vertex_context, "x must be a finite non-boolean number")
+            vertices_valid = False
+        elif x < 0 or x > 1:
+            _error(errors, vertex_context, "x must be within inclusive range 0..1")
+            vertices_valid = False
+        if not _is_finite_number(y):
+            _error(errors, vertex_context, "y must be a finite non-boolean number")
+            vertices_valid = False
+        elif y < 0 or y > 1:
+            _error(errors, vertex_context, "y must be within inclusive range 0..1")
+            vertices_valid = False
+        if _is_finite_number(x) and _is_finite_number(y):
+            vertices.append((Fraction(str(x)), Fraction(str(y))))
+
+    if not vertices_valid or len(vertices) != len(polygon) or len(vertices) < 3:
+        return
+    if vertices[0] == vertices[-1]:
+        _error(errors, context, "outer_polygon closure is implicit; final vertex must not repeat first")
+    if len(set(vertices)) != len(vertices):
+        _error(errors, context, "outer_polygon contains duplicate vertices")
+        return
+
+    signed_double_area = sum(
+        vertices[index][0] * vertices[(index + 1) % len(vertices)][1]
+        - vertices[(index + 1) % len(vertices)][0] * vertices[index][1]
+        for index in range(len(vertices))
+    )
+    if signed_double_area == 0:
+        _error(errors, context, "outer_polygon must have non-zero area and not be all-collinear")
+
+    for first_index in range(len(vertices)):
+        first_end_index = (first_index + 1) % len(vertices)
+        for second_index in range(first_index + 1, len(vertices)):
+            second_end_index = (second_index + 1) % len(vertices)
+            if (
+                first_index == second_index
+                or first_end_index == second_index
+                or second_end_index == first_index
+            ):
+                continue
+            if _segments_intersect(
+                vertices[first_index],
+                vertices[first_end_index],
+                vertices[second_index],
+                vertices[second_end_index],
+            ):
+                _error(
+                    errors,
+                    context,
+                    "outer_polygon has a self-intersection or overlapping non-adjacent edges",
+                )
+                return
+
+
+def _validate_v2_outline_supersession(
+    event: dict,
+    context: str,
+    errors: list[str],
+    prior_events_by_id: dict[str, dict],
+) -> None:
+    supersedes_event_id = event.get("supersedes_event_id")
+    if not isinstance(supersedes_event_id, str):
+        return
+    target = prior_events_by_id.get(supersedes_event_id)
+    if target is None:
+        return
+
+    source_is_outline = event.get("event_type") == "board_outline_confirmed"
+    target_is_outline = (
+        target.get("schema_version") == V2_SCHEMA_VERSION
+        and target.get("event_type") == "board_outline_confirmed"
+    )
+    if source_is_outline != target_is_outline:
+        _error(
+            errors,
+            context,
+            "board outline supersession requires both source and target to be board_outline_confirmed",
+        )
+        return
+    if source_is_outline and event.get("project_id") != target.get("project_id"):
+        _error(errors, context, "board outline supersession target must belong to the same project")
+
+
 def _validate_v2_event(
     event: dict,
     line: int,
     errors: list[str],
     seen_event_ids: set[str],
     component_ids: set[str],
+    prior_events_by_id: dict[str, dict],
 ) -> None:
     context = f"line {line}"
     prior_event_ids = set(seen_event_ids)
@@ -915,8 +1113,11 @@ def _validate_v2_event(
         _error(errors, context, f"prohibited V2 canonical field present: {field}")
 
     _validate_v2_relation_fields(event, context, errors, prior_event_ids)
+    _validate_v2_outline_supersession(event, context, errors, prior_events_by_id)
 
-    if event_type == "measurement_recorded":
+    if event_type == "board_outline_confirmed":
+        _validate_v2_board_outline(payload, context, errors)
+    elif event_type == "measurement_recorded":
         _validate_v2_measurement(payload, context, errors)
     elif event_type == "component_created":
         _validate_v2_component_created(payload, context, errors, component_ids)
@@ -1749,6 +1950,7 @@ def main() -> None:
     conflict_type_by_id: dict[str, str] = {}
     claim_target_count: Counter[str] = Counter()
     v2_component_ids: set[str] = set()
+    prior_events_by_id: dict[str, dict] = {}
     for _, event in events:
         event_id = event.get("event_id")
         event_type = event.get("event_type")
@@ -1790,7 +1992,17 @@ def main() -> None:
 
     for line_no, event in events:
         if _is_v2_shaped_event(event):
-            _validate_v2_event(event, line_no, errors, seen_event_ids, v2_component_ids)
+            _validate_v2_event(
+                event,
+                line_no,
+                errors,
+                seen_event_ids,
+                v2_component_ids,
+                prior_events_by_id,
+            )
+            event_id = event.get("event_id")
+            if isinstance(event_id, str) and event_id not in prior_events_by_id:
+                prior_events_by_id[event_id] = event
             continue
 
         _validate_envelope(
@@ -1802,6 +2014,9 @@ def main() -> None:
             allowed_statuses,
             allowed_envelope_keys,
         )
+        event_id = event.get("event_id")
+        if isinstance(event_id, str) and event_id not in prior_events_by_id:
+            prior_events_by_id[event_id] = event
         sequence = event.get("sequence")
         if not isinstance(sequence, int):
             _error(errors, f"line {line_no}", "sequence must be integer for ordering")

@@ -248,7 +248,270 @@ def make_v2_component_visual_placement_payload(**overrides):
     return payload
 
 
+def make_v2_board_outline_payload(**overrides):
+    payload = {
+        "coordinate_space": "board_normalized",
+        "outer_polygon": [
+            {"x": 0.1, "y": 0.1},
+            {"x": 0.9, "y": 0.1},
+            {"x": 0.9, "y": 0.8},
+            {"x": 0.1, "y": 0.8},
+        ],
+    }
+    payload.update(overrides)
+    return payload
+
+
 class MaterializeKnownFactsTests(unittest.TestCase):
+    def test_board_outline_single_head_projects_exact_geometry(self):
+        payload = make_v2_board_outline_payload(
+            physical_width_mm=120.5,
+            physical_height_mm=76.25,
+            outline_id="must_not_project",
+            net_id="must_not_project",
+        )
+        data = run_materialize_events(
+            [make_v2_event("evt_200001", "board_outline_confirmed", payload)]
+        )
+
+        self.assertEqual(
+            data["board_outline"],
+            {
+                "coordinate_space": "board_normalized",
+                "outer_polygon": payload["outer_polygon"],
+                "physical_width_mm": 120.5,
+                "physical_height_mm": 76.25,
+                "source_event_id": "evt_200001",
+            },
+        )
+        self.assertNotIn("board_outline_conflicts", data)
+        self.assertNotIn("board_outline_history", data)
+        self.assertEqual(data["nets"], [])
+        self.assertEqual(data["measurements"], [])
+
+    def test_board_outline_all_invalidated_omits_projection_keys(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "board_outline_confirmed",
+                    make_v2_board_outline_payload(),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "board_outline",
+                        "reason": "wrong_outline",
+                    },
+                ),
+            ]
+        )
+
+        self.assertNotIn("board_outline", data)
+        self.assertNotIn("board_outline_conflicts", data)
+
+    def test_board_outline_independent_identical_roots_conflict_in_stream_order(self):
+        payload = make_v2_board_outline_payload()
+        data = run_materialize_events(
+            [
+                make_v2_event("evt_200009", "board_outline_confirmed", payload),
+                make_v2_event("evt_200001", "board_outline_confirmed", payload),
+            ]
+        )
+
+        self.assertNotIn("board_outline", data)
+        self.assertEqual(
+            data["board_outline_conflicts"],
+            [
+                {
+                    "conflict_type": "board_outline_divergence",
+                    "source_event_ids": ["evt_200009", "evt_200001"],
+                    "candidates": [
+                        {
+                            "coordinate_space": "board_normalized",
+                            "outer_polygon": payload["outer_polygon"],
+                            "source_event_id": "evt_200009",
+                        },
+                        {
+                            "coordinate_space": "board_normalized",
+                            "outer_polygon": payload["outer_polygon"],
+                            "source_event_id": "evt_200001",
+                        },
+                    ],
+                }
+            ],
+        )
+
+    def test_board_outline_chain_and_invalidation_head_rules(self):
+        outline_a = make_v2_event(
+            "evt_200001",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(),
+        )
+        outline_b = make_v2_event(
+            "evt_200002",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(
+                outer_polygon=[
+                    {"x": 0.05, "y": 0.05},
+                    {"x": 0.95, "y": 0.05},
+                    {"x": 0.95, "y": 0.85},
+                    {"x": 0.05, "y": 0.85},
+                ]
+            ),
+            supersedes_event_id="evt_200001",
+        )
+        outline_c = make_v2_event(
+            "evt_200003",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(
+                outer_polygon=[
+                    {"x": 0.02, "y": 0.02},
+                    {"x": 0.98, "y": 0.02},
+                    {"x": 0.98, "y": 0.88},
+                    {"x": 0.02, "y": 0.88},
+                ]
+            ),
+            supersedes_event_id="evt_200002",
+        )
+
+        ordinary_chain = run_materialize_events([outline_a, outline_b, outline_c])
+        self.assertEqual(ordinary_chain["board_outline"]["source_event_id"], "evt_200003")
+        self.assertNotIn("board_outline_conflicts", ordinary_chain)
+
+        middle_invalidated = run_materialize_events(
+            [
+                outline_a,
+                outline_b,
+                make_v2_event(
+                    "evt_200004",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200002",
+                        "target_entity_id": "board_outline",
+                        "reason": "middle_wrong",
+                    },
+                ),
+                outline_c,
+            ]
+        )
+        self.assertEqual(middle_invalidated["board_outline"]["source_event_id"], "evt_200003")
+        self.assertNotIn("board_outline_conflicts", middle_invalidated)
+
+        head_invalidated = run_materialize_events(
+            [
+                outline_a,
+                outline_b,
+                make_v2_event(
+                    "evt_200004",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200002",
+                        "target_entity_id": "board_outline",
+                        "reason": "head_wrong",
+                    },
+                ),
+            ]
+        )
+        self.assertEqual(head_invalidated["board_outline"]["source_event_id"], "evt_200001")
+
+        root_invalidated = run_materialize_events(
+            [
+                outline_a,
+                outline_b,
+                make_v2_event(
+                    "evt_200004",
+                    "event_invalidated",
+                    {
+                        "invalidates_event_id": "evt_200001",
+                        "target_entity_id": "board_outline",
+                        "reason": "root_wrong",
+                    },
+                ),
+            ]
+        )
+        self.assertEqual(root_invalidated["board_outline"]["source_event_id"], "evt_200002")
+
+    def test_board_outline_fork_projects_conflict_heads_in_stream_order(self):
+        root = make_v2_event(
+            "evt_200001",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(),
+        )
+        branch_one = make_v2_event(
+            "evt_200009",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(physical_width_mm=100.0, physical_height_mm=60.0),
+            supersedes_event_id="evt_200001",
+        )
+        branch_two = make_v2_event(
+            "evt_200002",
+            "board_outline_confirmed",
+            make_v2_board_outline_payload(
+                outer_polygon=[
+                    {"x": 0.2, "y": 0.2},
+                    {"x": 0.8, "y": 0.2},
+                    {"x": 0.8, "y": 0.7},
+                    {"x": 0.2, "y": 0.7},
+                ]
+            ),
+            supersedes_event_id="evt_200001",
+        )
+
+        data = run_materialize_events([root, branch_one, branch_two])
+
+        conflict = data["board_outline_conflicts"][0]
+        self.assertEqual(conflict["conflict_type"], "board_outline_divergence")
+        self.assertEqual(conflict["source_event_ids"], ["evt_200009", "evt_200002"])
+        self.assertEqual(
+            [candidate["source_event_id"] for candidate in conflict["candidates"]],
+            ["evt_200009", "evt_200002"],
+        )
+        self.assertNotIn("board_outline", data)
+
+    def test_board_outline_cross_type_supersession_cannot_hide_outline_on_unvalidated_input(self):
+        data = run_materialize_events(
+            [
+                make_v2_event(
+                    "evt_200001",
+                    "board_outline_confirmed",
+                    make_v2_board_outline_payload(),
+                ),
+                make_v2_event(
+                    "evt_200002",
+                    "measurement_recorded",
+                    make_v2_measurement_payload("meas_002"),
+                    supersedes_event_id="evt_200001",
+                ),
+            ]
+        )
+
+        self.assertEqual(data["board_outline"]["source_event_id"], "evt_200001")
+        self.assertNotIn("board_outline_conflicts", data)
+
+    def test_known_facts_schema_declares_strict_mutually_exclusive_outline_states(self):
+        schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+        properties = schema["properties"]
+
+        outline = properties["board_outline"]
+        self.assertFalse(outline["additionalProperties"])
+        self.assertEqual(
+            set(outline["required"]),
+            {"coordinate_space", "outer_polygon", "source_event_id"},
+        )
+        self.assertEqual(outline["properties"]["coordinate_space"]["const"], "board_normalized")
+        self.assertFalse(outline["properties"]["outer_polygon"]["items"]["additionalProperties"])
+
+        conflicts = properties["board_outline_conflicts"]
+        self.assertEqual(conflicts["minItems"], 1)
+        self.assertEqual(conflicts["maxItems"], 1)
+        self.assertEqual(
+            schema["allOf"],
+            [{"not": {"required": ["board_outline", "board_outline_conflicts"]}}],
+        )
+
     def test_component_visual_placement_later_v2_beats_earlier_v1_by_stream_order(self):
         data = run_materialize_events(
             [

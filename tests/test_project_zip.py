@@ -100,6 +100,91 @@ def _build_empty_project_dir(base_dir: Path, project_id: str = "prj_empty_001") 
 
 
 class ProjectZipTests(unittest.TestCase):
+    @staticmethod
+    def _append_outline_event(project_dir: Path) -> None:
+        event = {
+            "schema_version": "2.0-draft",
+            "event_id": "evt_900001",
+            "event_type": "board_outline_confirmed",
+            "created_at": "2026-07-22T10:00:00Z",
+            "project_id": "prj_pelle_pv20_001",
+            "client_operation_id": "op_outline_zip_001",
+            "actor": {"type": "human", "actor_id": "local_user"},
+            "source": {
+                "type": "explicit_user_confirmation",
+                "surface": "board_outline_test",
+                "action": "confirm_outline",
+            },
+            "confirmation": {
+                "confirmed": True,
+                "confirmed_at": "2026-07-22T10:00:00Z",
+                "label": "Confirm outline",
+            },
+            "payload": {
+                "coordinate_space": "board_normalized",
+                "outer_polygon": [
+                    {"x": 0.1, "y": 0.1},
+                    {"x": 0.9, "y": 0.1},
+                    {"x": 0.9, "y": 0.8},
+                    {"x": 0.1, "y": 0.8},
+                ],
+                "physical_width_mm": 120.5,
+                "physical_height_mm": 76.25,
+            },
+        }
+        with (project_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(event, separators=(",", ":"), ensure_ascii=False) + "\n")
+
+    def test_project_zip_validation_accepts_regenerated_board_outline_projection(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            self._append_outline_event(project_dir)
+
+            materialize_result = _run_tool(
+                [
+                    "tools/materialize_known_facts.py",
+                    str(project_dir / "events.jsonl"),
+                    str(project_dir / "known_facts.json"),
+                ]
+            )
+            self.assertEqual(materialize_result.returncode, 0, materialize_result.stdout + materialize_result.stderr)
+
+            validate_result = _validate_project_zip(project_dir)
+
+            self.assertEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            known_facts = json.loads((project_dir / "known_facts.json").read_text(encoding="utf-8"))
+            self.assertEqual(known_facts["board_outline"]["source_event_id"], "evt_900001")
+
+    def test_project_zip_validation_rejects_missing_board_outline_projection(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "pelle_pv20_minimal"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            self._append_outline_event(project_dir)
+            known_facts_path = project_dir / "known_facts.json"
+
+            materialize_result = _run_tool(
+                [
+                    "tools/materialize_known_facts.py",
+                    str(project_dir / "events.jsonl"),
+                    str(known_facts_path),
+                ]
+            )
+            self.assertEqual(materialize_result.returncode, 0, materialize_result.stdout + materialize_result.stderr)
+            known_facts = json.loads(known_facts_path.read_text(encoding="utf-8"))
+            known_facts.pop("board_outline", None)
+            known_facts_path.write_text(json.dumps(known_facts, indent=2) + "\n", encoding="utf-8")
+
+            validate_result = _validate_project_zip(project_dir)
+
+            self.assertNotEqual(validate_result.returncode, 0, validate_result.stdout + validate_result.stderr)
+            self.assertIn(
+                "known_facts.json does not match materialization output",
+                validate_result.stdout + validate_result.stderr,
+            )
+
     def test_export_project_zip_creates_required_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "project.zip"

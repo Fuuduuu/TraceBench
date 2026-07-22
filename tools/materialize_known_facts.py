@@ -211,6 +211,121 @@ def _v2_measurement_value_signature(measurement: dict) -> tuple[object, object, 
     )
 
 
+def _v2_is_explicit_human_confirmation(event: dict) -> bool:
+    actor = event.get("actor")
+    source = event.get("source")
+    confirmation = event.get("confirmation")
+    return (
+        isinstance(actor, dict)
+        and actor.get("type") == "human"
+        and isinstance(source, dict)
+        and source.get("type") == "explicit_user_confirmation"
+        and isinstance(confirmation, dict)
+        and confirmation.get("confirmed") is True
+    )
+
+
+def _v2_board_outline_candidate(event: dict) -> dict:
+    payload = event.get("payload", {})
+    candidate = {
+        "coordinate_space": copy.deepcopy(payload.get("coordinate_space")),
+        "outer_polygon": copy.deepcopy(payload.get("outer_polygon")),
+        "source_event_id": event.get("event_id"),
+    }
+    if "physical_width_mm" in payload and "physical_height_mm" in payload:
+        candidate["physical_width_mm"] = copy.deepcopy(payload["physical_width_mm"])
+        candidate["physical_height_mm"] = copy.deepcopy(payload["physical_height_mm"])
+    return candidate
+
+
+def _v2_board_outline_projection(raw_events: list[dict], project_id: str) -> dict[str, object]:
+    outline_events: list[tuple[int, dict]] = []
+    for event_index, event in enumerate(raw_events):
+        if not _is_v2_event(event) or event.get("event_type") != "board_outline_confirmed":
+            continue
+        if event.get("project_id") != project_id or not _v2_is_explicit_human_confirmation(event):
+            continue
+        event_id = event.get("event_id")
+        payload = event.get("payload")
+        if not isinstance(event_id, str) or not isinstance(payload, dict):
+            continue
+        outline_events.append((event_index, event))
+
+    if not outline_events:
+        return {}
+
+    outlines_by_id = {
+        event["event_id"]: (event_index, event)
+        for event_index, event in outline_events
+    }
+    invalidated_outline_ids: set[str] = set()
+    for invalidation_index, invalidation_event in enumerate(raw_events):
+        if (
+            not _is_v2_event(invalidation_event)
+            or invalidation_event.get("event_type") != "event_invalidated"
+            or invalidation_event.get("project_id") != project_id
+            or not _v2_is_explicit_human_confirmation(invalidation_event)
+        ):
+            continue
+        payload = invalidation_event.get("payload")
+        if not isinstance(payload, dict):
+            continue
+        invalidates_event_id = payload.get("invalidates_event_id") or invalidation_event.get(
+            "invalidates_event_id"
+        )
+        target = outlines_by_id.get(invalidates_event_id)
+        if target is not None and target[0] < invalidation_index:
+            invalidated_outline_ids.add(invalidates_event_id)
+
+    children_by_id: dict[str, list[str]] = {
+        event_id: []
+        for event_id in outlines_by_id
+    }
+    for source_index, source_event in outline_events:
+        source_id = source_event["event_id"]
+        target_id = source_event.get("supersedes_event_id")
+        if not isinstance(target_id, str):
+            continue
+        target = outlines_by_id.get(target_id)
+        if target is None or target[0] >= source_index:
+            continue
+        target_event = target[1]
+        if target_event.get("project_id") != source_event.get("project_id"):
+            continue
+        children_by_id[target_id].append(source_id)
+
+    has_non_invalidated_descendant: dict[str, bool] = {}
+    for _, event in reversed(outline_events):
+        event_id = event["event_id"]
+        has_non_invalidated_descendant[event_id] = any(
+            child_id not in invalidated_outline_ids
+            or has_non_invalidated_descendant.get(child_id, False)
+            for child_id in children_by_id.get(event_id, [])
+        )
+
+    heads = [
+        event
+        for _, event in outline_events
+        if event["event_id"] not in invalidated_outline_ids
+        and not has_non_invalidated_descendant[event["event_id"]]
+    ]
+    if not heads:
+        return {}
+
+    candidates = [_v2_board_outline_candidate(event) for event in heads]
+    if len(candidates) == 1:
+        return {"board_outline": candidates[0]}
+    return {
+        "board_outline_conflicts": [
+            {
+                "conflict_type": "board_outline_divergence",
+                "source_event_ids": [candidate["source_event_id"] for candidate in candidates],
+                "candidates": candidates,
+            }
+        ]
+    }
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         print("usage: materialize_known_facts.py <events.jsonl> <output.json>")
@@ -762,6 +877,7 @@ def main() -> int:
         known["measurement_conflicts"] = measurement_conflicts
     if orphaned_measurements:
         known["orphaned_measurements"] = orphaned_measurements
+    known.update(_v2_board_outline_projection(raw_events, project_id))
     component_pin_index = {}
     for pin in pins:
         component_id = pin.get("component_id")

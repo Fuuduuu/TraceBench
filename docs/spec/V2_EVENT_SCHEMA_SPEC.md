@@ -1,8 +1,10 @@
 # V2 Event Schema Spec
 
-Status: docs/spec requirements only. This is not a schema file, JSON schema, validator, materializer implementation, writer implementation, UI behavior, Project ZIP change, test file, or generated artifact.
+Status: canonical V2 requirements. The `board_outline_confirmed` schema/validator/materializer foundation is implemented; this document is not UI behavior, a Project ZIP contract change, or a generated artifact.
 
 Binding source: `docs/audit/V2_EVENT_WRITING_ARCHITECTURE_SCOPE_LOCK_RECORD_PASS.md`.
+
+Board-outline foundation binding source: `docs/ACTIVE_SCOPE_LOCK.md` under `BOARD_OUTLINE_V2_EVENT_FOUNDATION_SCOPE_LOCK_PASS`.
 
 ## 1. Scope And Authority
 
@@ -14,17 +16,18 @@ V2 canonical writes are append-only human-confirmed events.
 - AI/helper/OCR/CV/import inference/renderer surfaces never author canonical events or facts.
 - Derived display surfaces, including Activity Timeline, Board Canvas, Reference Images, helper suggestions, and debug logs, are not canonical write sources.
 
-This document defines requirements that later implementation passes must bind to. It intentionally does not define executable validation logic.
+This document defines requirements that executable schema, validator, materializer, writer, and Project ZIP owners must bind to. It intentionally does not itself define executable validation logic.
 
 ## 2. Canonical Event Types
 
-V2 initial canonical event types are fixed.
+V2 canonical event types described by this spec and its audited foundation extensions are fixed.
 
 | Event type | Status | Purpose |
 |---|---|---|
 | `measurement_recorded` | accepted | Record a human-confirmed measurement reading. |
 | `component_created` | accepted | Record a human-created component entity. |
 | `component_updated` | accepted | Record a human-confirmed field-level component edit. |
+| `board_outline_confirmed` | accepted foundation | Record one human-confirmed project-level Visual/Layout board outline. |
 | `event_invalidated` | accepted | Mark a prior event invalid for current projection without deletion or mutation. |
 
 Rejected aliases and non-initial event names:
@@ -44,7 +47,7 @@ Every canonical V2 event must declare `schema_version`.
 Requirements:
 
 - V2 requires a schema version bump distinct from the V1/V1.1 read-only-era event baseline.
-- The final V2 schema version label is not fixed here; it remains an open item for the later executable schema/validator pass.
+- The supported executable V2 schema version label is exactly `2.0-draft`.
 - Unsupported canonical event type or unsupported event `schema_version` must fail closed.
 - A reader must not silently ignore unknown canonical write events and then project `known_facts.json` as if complete.
 - On import, `events.jsonl` is validated first, then `known_facts.json` is regenerated or compared as projection/cache according to the accepted future import spec.
@@ -286,6 +289,56 @@ Rules:
 - Do not introduce `measurement_updated`.
 - Measurement correction uses a new `measurement_recorded` with `supersedes_event_id`.
 
+## 9A. `board_outline_confirmed` Foundation
+
+Purpose: append one explicit human-confirmed project-level Visual/Layout board-geometry fact. It never proves component identity, connectivity, pins, pads, nets, measurements, diagnosis, faults, or probability.
+
+The event uses the common strict V2 envelope with these fixed values:
+
+- `schema_version` is exactly `2.0-draft`;
+- `event_type` is exactly `board_outline_confirmed`;
+- `actor.type` is exactly `human`;
+- `source.type` is exactly `explicit_user_confirmation`;
+- `confirmation.confirmed` is exactly `true`;
+- `event_id`, `created_at`, `project_id`, `client_operation_id`, and `payload` are required;
+- `sequence` and `status` are not permitted.
+
+The payload permits exactly:
+
+| Field | Required | Shape / meaning |
+|---|---:|---|
+| `coordinate_space` | Yes | Exactly `board_normalized`; origin top-left, `+x` right, `+y` down. |
+| `outer_polygon` | Yes | Ordered array of at least three distinct `{x, y}` vertices; closure is implicit. |
+| `physical_width_mm` | Paired optional | Positive finite non-boolean number mapped to the polygon axis-aligned `max(x) - min(x)` extent. |
+| `physical_height_mm` | Paired optional | Positive finite non-boolean number mapped to the polygon axis-aligned `max(y) - min(y)` extent. |
+
+Geometry rules:
+
+- Vertex objects contain exactly `x` and `y`; both are finite non-boolean JSON numbers in inclusive range `0..1`.
+- The final array item must not repeat the first vertex. Duplicate vertices, zero-area/all-collinear polygons, self-intersections, and overlapping non-adjacent edges are invalid.
+- Concave polygons and either winding direction are valid. Holes and cutouts are unsupported.
+- Physical width and height are both present or both absent. They describe the polygon's axis-aligned bounding-box extents, not unused frame padding, oriented bounds, or edge lengths.
+
+Supersession is outline-specific:
+
+- A root may omit top-level `supersedes_event_id`; another root remains valid and creates a conflict.
+- An edit appends a new outline whose `supersedes_event_id` targets an earlier `board_outline_confirmed` in the same project.
+- If either source or target of `supersedes_event_id` is an outline, both must be outlines. This rule does not create a global same-type supersession rule for other event families.
+- `origin_event_id`, `corrects_event_id`, and `invalidates_event_id` do not replace an outline. Existing `event_invalidated` semantics remain unchanged.
+- Stream position and `created_at` never choose a winning outline.
+
+Projection builds a separate immutable outline graph per project using only earlier same-project outline-to-outline supersession edges. An invalidated intermediate remains part of ancestry traversal: a non-invalidated outline is a head only when it has no reachable non-invalidated descendant. Thus invalidating a current head may reveal the nearest prior valid ancestor, while invalidating an older or middle node does not hide a valid descendant.
+
+Projection states are exact and mutually exclusive:
+
+- zero heads: omit both `board_outline` and `board_outline_conflicts`;
+- one head: emit only `board_outline` with exact geometry, optional paired physical dimensions, and `source_event_id`;
+- multiple heads: emit only one project-level `board_outline_conflicts` item with `conflict_type: board_outline_divergence`, head IDs in raw stream order, and matching exact candidates in that order.
+
+Independent roots conflict even when their geometry is identical. No latest-wins rule or `board_outline_history` projection exists; `events.jsonl` retains complete history. A cross-type or cross-project supersession edge cannot affect outline heads, including for unvalidated materializer input.
+
+No `outline_id`, component/placement/contact/pin/pad/trace/net meaning, photo/template proof, measurement/diagnostic/fault/probability meaning, AI confidence, or AI/helper/OCR/CV-authored canonical event is introduced. Wizard and Board Canvas authoring remain deferred until separately scoped.
+
 ## 10. Relation Fields
 
 Allowed relation fields:
@@ -395,9 +448,9 @@ Forbidden promotions:
 - template/footprint hint to electrical identity
 - reference/candidate/note/helper/source value to measured value without explicit human confirmation as observed reading
 
-## 15. Later Validator Requirements
+## 15. Validator Requirements
 
-Future validator passes must cover these requirements:
+Executable validator support must cover these requirements:
 
 - actor/source/confirmation enforcement,
 - required `schema_version`,
@@ -411,11 +464,12 @@ Future validator passes must cover these requirements:
 - forbidden field/promotion rejection,
 - AI/helper/renderer/import-inference author rejection,
 - `board_graph.json` / `view_state.json` rejection when they appear as canonical references,
-- legacy and mixed-version stream handling.
+- legacy and mixed-version stream handling,
+- the complete `board_outline_confirmed` envelope, geometry, paired-size, and bidirectional supersession contract in section 9A.
 
-## 16. Later Materializer Requirements
+## 16. Materializer Requirements
 
-Future materializer passes must preserve:
+Executable materializer support must preserve:
 
 - regenerability of `known_facts.json` from `events.jsonl`,
 - value provenance,
@@ -426,17 +480,18 @@ Future materializer passes must preserve:
 - component history,
 - target history.
 
-Future materializer passes must:
+Executable materializer support must:
 
 - exclude invalidated events from current projection while retaining history,
 - surface conflicts instead of using latest-wins,
 - surface component-invalidation-dependent measurements instead of cascade-dropping,
 - keep reference/candidate/note/helper/source context non-canonical,
-- avoid projecting visual/photo/template/damage/suspect context as electrical fact or probability.
+- avoid projecting visual/photo/template/damage/suspect context as electrical fact or probability,
+- project the outline-only graph and exact zero/one/conflict states in section 9A without latest-wins behavior.
 
-## 17. Required Future Tests
+## 17. Required Tests
 
-Later implementation passes must add focused tests for:
+Implementation passes must keep focused tests for:
 
 - schema validation for all accepted event types,
 - rejected aliases and unknown canonical event types,
@@ -454,13 +509,13 @@ Later implementation passes must add focused tests for:
 - import/export compatibility,
 - forbidden artifact/reference rejection for `board_graph.json` and `view_state.json`,
 - no Reference Images canonical evidence promotion,
-- no visual trace to electrical net promotion.
+- no visual trace to electrical net promotion,
+- outline envelope/payload, finite geometry, topology, supersession, graph-head, writer-delegation, and Project ZIP regeneration behavior.
 
 ## 18. Open Items
 
 Open implementation/spec decisions for later passes:
 
-- final schema version label,
 - UUIDv7 vs ULID,
 - exact numeric and edge-state encoding,
 - measurement condition grouping and equivalence,

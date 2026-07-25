@@ -32,7 +32,7 @@ The complete default set is exactly:
 | `docs/SOURCES_INDEX_CURRENT.md` | Source/design intake pointers | on-demand: design/source intake |
 | `docs/AUDIT_CONTRACT.md` | Audit requirements and verdict format | on-demand: audit |
 | `docs/AUDIT_INDEX.md` | Compact active lookup surface for selected audit evidence anchors | on-demand: audit |
-| `docs/archive/AUDIT_INDEX_ARCHIVE.md` | Complete historical audit ledger and archive/compaction disposition owner | historical-only: explicit audit archaeology |
+| `docs/archive/AUDIT_INDEX_ARCHIVE.md` | Immutable historical audit-ledger snapshot; per-pass disposition registers live in corresponding `docs/audit/*.md` artifacts | historical-only: explicit audit archaeology |
 | `docs/code_maps/CODE_MAP_STANDARD.md` | Detailed code-map qualification, lifecycle, structure, evidence/write classes, drift, maintenance, SNIPER, and map-audit owner | on-demand: applicable Dart qualification/lifecycle |
 | `docs/code_maps/CODE_MAP_INDEX.md` | Registry of actual maps and their current status | on-demand: Dart target map discovery/status |
 | `docs/code_maps/**` source-specific maps | Descriptive source-specific zones, dependencies, impact, boundaries, and linked tests | on-demand: exact applicable `MAINTAINED` map only |

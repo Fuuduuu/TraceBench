@@ -2,27 +2,12 @@
 
 ## Current route
 
-Current: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
+Current: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current scope lock
+## Current repair
 
-The current Lane A docs-only pass may write exactly:
-
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS.md`
-
-It reserves but does not perform the FILE_MAP ownership-wording repair.
-
-## Conditional next pass
-
-`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` remains non-executable
-until this exact scope-lock diff is independently accepted, committed and
-pushed by the human, followed by a no-drift recheck. Its exact future allowlist
-is:
+The current accepted-lock Lane A docs-only repair may write exactly:
 
 - `docs/FILE_MAP.md`
 - `docs/CURRENT_STATE.md`
@@ -31,6 +16,13 @@ is:
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
 
-The future pass may correct only the inaccurate ownership wording and the
-minimum truthful route/audit/index records. It must not touch the archive.
-The Board Canvas code-map NIT remains deferred and unarmed.
+It corrects only the inaccurate FILE_MAP archive owner-role cell and the
+minimum truthful route, index, and audit records. It must not touch the archive,
+archive README, or any prior audit artifact.
+
+## Conditional next state
+
+The repair remains current and active until independent Claude audit and exact
+human commit/push. `NEEDS_USER_DECISION` remains a non-executable sentinel and
+arms no successor pass. The Board Canvas code-map NIT and all other deferred
+findings remain deferred and unarmed.

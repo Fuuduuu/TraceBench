@@ -15,9 +15,10 @@ closeout evidence in the active row and disposition register without modifying
 its immutable artifact, and registered the compact/archive roles in
 `docs/FILE_MAP.md`.
 
-The current seven-file diff remains unstaged and awaits independent Claude
-audit before exact human staging, commit, and push. This pending audit does not
-arm a successor pass or restore write authority.
+The pass was independently audited `ACCEPT_WITH_NITS` with
+`SAFE_FOR_STAGING: YES`, then committed and pushed as
+`bea022455bd5fb03abf698e39f3cef1b94a75532` (`docs: archive and compact audit
+index`). No successor or write authority is active.
 
 Source-package cleanup, repo-skill hardening, code-map expansion, runtime,
 schema, tool, test, and protected-surface work remain deferred and unarmed.

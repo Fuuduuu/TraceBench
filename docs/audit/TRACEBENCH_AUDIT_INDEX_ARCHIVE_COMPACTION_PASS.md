@@ -1,7 +1,8 @@
 # TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS
 
-Status: `PRE-AUDIT SNAPSHOT` — the real seven-file diff awaits independent
-Claude audit; no audit verdict or staging-safety decision is claimed here.
+Status: `AUDITED / COMMITTED / PUSHED` — Claude returned `ACCEPT_WITH_NITS`
+with `SAFE_FOR_STAGING: YES`; the execution evidence below is the preserved
+historical pre-push snapshot.
 
 PASS_ID: `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS`
 
@@ -215,3 +216,69 @@ remain deferred and unarmed.
 
 This real seven-file diff is unstaged and awaits independent Claude audit.
 Codex issues no acceptance verdict and performs no staging, commit, or push.
+
+## Post-push audit reconciliation
+
+Reconciliation kind: `POST_PUSH_AUDIT_EVIDENCE_RECONCILIATION`
+
+Reconciliation profile: `MINI`
+
+The preceding execution evidence remains the historical pre-push snapshot.
+This appended section supersedes only its temporal audit, staging, commit, and
+push status.
+
+- Claude verdict: `ACCEPT_WITH_NITS`
+- `SAFE_FOR_STAGING: YES`
+- Blocker findings: none
+- Pushed commit:
+  `bea022455bd5fb03abf698e39f3cef1b94a75532`
+- Subject: `docs: archive and compact audit index`
+- Parent: `73f0b1a9c52181c19a9ff28912279c6f16e70b92`
+- Exact committed set:
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/FILE_MAP.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/archive/AUDIT_INDEX_ARCHIVE.md`
+  - `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`
+- LOW, deferred and unarmed: `docs/FILE_MAP.md` describes the archive as the
+  disposition owner although the disposition register lives in this pass
+  artifact. A separate future docs pass may address that wording.
+- NIT, deferred and unarmed: the Board Canvas code-map anchor retains stale
+  status text. A separate evidence-based reconciliation may address it.
+- Route remains the non-executable `NEEDS_USER_DECISION` ->
+  `NEEDS_USER_DECISION` sentinel.
+- No new PASS_ID, audit-index row, audit artifact, successor, recursive
+  closeout, or write authority was created.
+
+### Fresh reconciliation validation
+
+- `py -3 tools\validate_all.py`: `PASS`; 302 tests ran in `37.823s`, all
+  `OK`, and `validate_all.py` reported `PASSED`.
+- `git diff --check`: `PASS`; line-ending conversion advisories only.
+- `git diff --name-status`: exactly the three route owners and this existing
+  artifact, all modified; no added path.
+- `git diff --cached --name-status`: empty.
+- Route equality: all three owners retain the non-executable
+  `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION` sentinel and no successor or
+  write authority.
+- Pushed evidence: commit, subject, parent, and exact seven-file committed set
+  match the post-push evidence above.
+- Inspect-only preservation:
+  - `docs/AUDIT_INDEX.md` SHA-256 remains
+    `64e8f285d3e554b0c57d91ecc03d4e2f85796afc5f6eedf40c09f2a0087bbce9`.
+  - `docs/FILE_MAP.md` SHA-256 remains
+    `402df6e34ee20e966d73ced7a854b45bf8be5a8689956a45da2d0e85f080136f`.
+  - `docs/archive/AUDIT_INDEX_ARCHIVE.md` SHA-256 remains
+    `eb16fd47fe8e9bb7c3f7a173467398dfb0a881d4fecec6402529fd14bb621780`.
+  - `docs/archive/README.md` SHA-256 remains
+    `e067eb02e2865a90038b3bdf422841372ae12f1f97ff341869a2cc4e8057ec65`.
+- Artifact preservation: the complete original body from `PASS_ID:` through
+  EOF is an exact prefix of the reconciled artifact; only the opening Status
+  metadata changed before that body, and this labelled section was appended.
+- Identity preservation: 641 tracked audit artifacts remain, this artifact
+  still contains exactly one matching PASS_ID declaration, the compact index
+  remains exactly four anchors, and it contains no row for this pass.
+- No staging, commit, push, pull, fetch, reset, clean, rebase, new PASS_ID, new
+  audit artifact, new index row, or successor was created.

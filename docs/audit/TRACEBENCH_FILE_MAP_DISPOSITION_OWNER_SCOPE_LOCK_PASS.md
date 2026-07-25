@@ -1,7 +1,9 @@
 # TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS
 
-Status: `PRE-AUDIT SNAPSHOT` — independent audit has not run; no audit verdict
-or staging-safety decision is claimed.
+Status: accepted, committed, pushed, and independently audited scope lock —
+Claude returned `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; the original
+execution body below remains the historical pre-push snapshot, and the
+appended reconciliation supersedes its pending-audit status.
 
 PASS_ID: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS`
 
@@ -180,3 +182,64 @@ authority-building phase.
 
 This scope-lock diff is unstaged and awaits independent Claude audit. Codex
 issues no acceptance verdict and performs no staging, commit, or push.
+
+## Post-push audit reconciliation
+
+This section reconciles the already-returned Claude audit and pushed Git
+evidence. It supersedes the historical pre-push status above without rewriting
+the original execution record or issuing a new verdict.
+
+### Audit and commit evidence
+
+- Claude returned `ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`.
+- No `BLOCKER`, `HIGH`, or `MEDIUM` findings were reported.
+- The accepted five-file set was committed and pushed as
+  `0167901f375d6b8e2d52810b85bab4075e02194c`
+  (`docs: lock file map disposition owner repair scope`), with parent
+  `d01e49930937f2311194059172ad1d326d2a197f`:
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS.md`
+- `LOW`: `docs/CURRENT_STATE.md` no longer names the archive-compaction pass
+  in its latest-completed section; that evidence remains preserved in the
+  corresponding audit artifacts.
+- `NIT`: staging must remain path-exact because scratch files exist.
+- `NIT`: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` appears once in
+  the audit-index description as the reserved future pass, not as a separate
+  ledger row.
+- The `LOW` and both `NIT` observations remain deferred and are not fixed by
+  this evidence-only reconciliation.
+
+### Route and lifecycle preservation
+
+- The route remains exactly
+  `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS` ->
+  `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`.
+- No new PASS_ID, ledger row, audit artifact, successor route, repair-pass
+  activation, or recursive closeout was created.
+- `docs/FILE_MAP.md`, the archive, the archive README, and all route owners
+  remain unchanged by this reconciliation.
+
+### Fresh reconciliation validation
+
+- `py -3 tools\validate_all.py`: `PASS`; 302 tests ran in `42.495s`, all
+  `OK`, and `validate_all.py` reported `PASSED` after the required unsandboxed
+  rerun. The initial sandbox-restricted invocation was non-evidentiary because
+  the environment denied required `.codex` and temporary-directory writes.
+- `git diff --check`: `PASS`; line-ending conversion advisories only.
+- Exact changed-file check: only `docs/AUDIT_INDEX.md` and this artifact.
+- `git diff --cached --name-status`: empty.
+- Audit-index reconstruction: exactly one existing status cell changed, its
+  description and all four prior anchors are byte-identical, five active
+  anchors remain, and no repair row exists.
+- Artifact reconstruction: the original execution body is byte-identical
+  after the opening Status metadata; exactly one reconciliation section was
+  appended.
+- Route-owner equality: all three owners remain
+  `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS` ->
+  `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`.
+- Inspect-only hashes, the 641-file other-audit-artifact manifest, and the
+  94-file known-scratch manifest remain unchanged.
+- The future repair artifact remains absent and nothing is staged.

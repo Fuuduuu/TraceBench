@@ -1,24 +1,38 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
 
-The matching values are a non-executable sentinel, not a pass self-loop. No
-pass, queue item, implementation, cleanup, or write allowlist is active.
+The current pass is a Lane A docs-only scope lock for one later correction to
+the inaccurate archive disposition-owner wording in `docs/FILE_MAP.md`. It
+does not perform that repair.
 
-## Latest completed work
+## Current authority
 
-`TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` preserved the complete
-starting audit ledger in `docs/archive/AUDIT_INDEX_ARCHIVE.md`, compacted the
-active lookup to four evidence anchors, reconciled the supplied Board Outline
-closeout evidence in the active row and disposition register without modifying
-its immutable artifact, and registered the compact/archive roles in
-`docs/FILE_MAP.md`.
+Only `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS` is active. Its
+exact write allowlist is:
 
-The pass was independently audited `ACCEPT_WITH_NITS` with
-`SAFE_FOR_STAGING: YES`, then committed and pushed as
-`bea022455bd5fb03abf698e39f3cef1b94a75532` (`docs: archive and compact audit
-index`). No successor or write authority is active.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS.md`
 
-Source-package cleanup, repo-skill hardening, code-map expansion, runtime,
-schema, tool, test, and protected-surface work remain deferred and unarmed.
+## Reserved repair
+
+`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` is reserved, not active. It
+may begin only after this exact scope lock is independently accepted, committed
+and pushed by the human, followed by a no-drift recheck.
+
+Its exact future write allowlist is:
+
+- `docs/FILE_MAP.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
+
+The archive remains the immutable historical ledger snapshot. Per-pass
+disposition registers live in their corresponding `docs/audit/*.md` artifacts.
+The stale Board Canvas code-map anchor status remains deferred and unarmed.

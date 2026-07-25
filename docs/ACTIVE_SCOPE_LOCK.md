@@ -2,20 +2,45 @@
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
 
-The matching values are a non-executable sentinel, not a pass self-loop.
+## Active authority
 
-## Authority
+Only `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS` is active. This
+Lane A docs-only pass may write exactly:
 
-No pass-specific write authority is active.
-`TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS` was independently audited
-`ACCEPT_WITH_NITS` with `SAFE_FOR_STAGING: YES`, then committed and pushed as
-`bea022455bd5fb03abf698e39f3cef1b94a75532` (`docs: archive and compact audit
-index`). No successor or write authority is reserved or armed.
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_SCOPE_LOCK_PASS.md`
 
-No recursive closeout, audit-of-audit pass, source-package cleanup,
-repo-skill hardening, code-map expansion, implementation, runtime, schema,
-tool, test, Dart, Flutter, package, asset, Project ZIP, `_incoming`, or
-protected-semantic authority is active.
+It must not edit `docs/FILE_MAP.md`, the archive, the archive README, any
+pre-existing audit artifact, or the stale Board Canvas code-map anchor.
+
+## Reserved future authority
+
+`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` is reserved but not active.
+After independent acceptance and exact human commit/push of this scope lock,
+plus a no-drift recheck, it may write exactly:
+
+- `docs/FILE_MAP.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
+
+The repair is docs-only and Lane A. It may change only the inaccurate wording
+that calls the archive the disposition owner and the minimum truthful
+route/audit/index records required by live governance.
+
+`docs/archive/AUDIT_INDEX_ARCHIVE.md` remains the immutable historical ledger
+snapshot. Per-pass disposition registers live in the corresponding
+`docs/audit/*.md` artifacts. The repair must not edit the archive itself.
+
+The Board Canvas code-map NIT, source-package cleanup, repo-skill hardening,
+code-map expansion, runtime, schema, tool, test, Dart, Flutter, package, asset,
+Project ZIP, `_incoming`, and protected-semantic work remain deferred and
+unarmed.

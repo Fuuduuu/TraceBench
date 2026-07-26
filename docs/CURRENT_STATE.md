@@ -1,31 +1,25 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS`
+Current pass: `NEEDS_USER_DECISION`
 Next recommended pass: `NEEDS_USER_DECISION`
 
-This Lane B docs-only post-audit closeout records the human-supplied Claude
-audit and pushed Git evidence for the ProjectCreator code-map repair. It is an
-evidence and authority transition, not a Wizard V2 activation or a new audit
-of the accepted map.
+This matching pair is the empty, non-executable decision sentinel. It is not
+an executable pass self-loop and grants no write authority.
 
-## Pushed repair evidence
+## Route release evidence
 
-The exact seven-file repair was committed and pushed as
-`5b6cf8970ba6914812a35f56005c3f6c71f8f058`
-(`docs: add ProjectCreator code map`). Human-supplied Claude results were
-`MAP_VERDICT: ACCEPT_WITH_NITS`, `AUDIT_VERDICT: PASS`, and
-`SAFE_FOR_STAGING: YES`.
+`BENCHBEEP_ROUTE_SENTINEL_RELEASE_PASS` releases the completed route pointer
+from `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS` to the
+decision sentinel. The pushed closeout remains recorded at
+`c16d17b7567ea6b23f347bffeec9dd84b2eaf3a3`
+(`docs: close out ProjectCreator code map repair`).
 
-Claude reported two cosmetic NIT observations. Their verbatim wording was not
-supplied to Codex, so this closeout preserves only their count,
-classification, and deferred status without inventing or fixing details.
+The prior closeout artifact and its ledger row remain unchanged historical
+PRE-AUDIT evidence. This route release does not supply, infer, or claim an
+audit verdict or staging-safety decision for that closeout.
 
 ## Authority release
 
-The prior seven-file repair allowlist is released. No active or current write
-allowlist remains, and no future or reserved allowlist, successor, or
-implementation authority is armed. The five-file closeout diff is an exhausted
-evidence boundary awaiting independent audit, not continuing write authority.
-
-`NEEDS_USER_DECISION` is the non-executable next-route sentinel and grants no
-authority. New Project Wizard V2 remains inactive and unreserved.
+No active or current write allowlist remains. No future or reserved allowlist,
+successor, implementation authority, or executable pass is armed. New Project
+Wizard V2 remains inactive, undesigned, and unreserved.

@@ -2,18 +2,28 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS`
 Next: `NEEDS_USER_DECISION`
 
-These matching values are a non-executable sentinel, not a pass self-loop.
-The executable queue is empty and no future allowlist is reserved.
+## Current docs-only repair
 
-`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` was independently audited
-`PASS` with `SAFE_FOR_STAGING: YES`; `ROUTE_RESULT`, `BOUNDARY_RESULT`, and
-`PRESERVATION_RESULT` were all `PASS`. The exact six-file set was committed
-and pushed as `81c2b7c0dcd14a3f10928ee952c83ea8afea383d`
-(`docs: repair file map disposition owner`).
+The current Lane B repair may write exactly:
 
-No successor, recursive closeout, audit-of-audit pass, current allowlist, or
-write authority is queued. The two cosmetic NIT observations, Board Canvas
-code-map NIT, and all other deferred findings remain deferred and unarmed.
+- `docs/code_maps/lib/shared/services/project_creator.dart.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS.md`
+
+It resolves only the missing maintained-map gate for
+`lib/shared/services/project_creator.dart`, adds exactly one registry entry,
+and records the minimum truthful route, ledger, and audit evidence.
+
+## Conditional next state
+
+The repair remains current pending independent Claude audit and exact human
+commit/push. `NEEDS_USER_DECISION` remains a non-executable sentinel. No
+future allowlist, Wizard V2 implementation pass, successor authority, or other
+code-map work is queued or reserved.

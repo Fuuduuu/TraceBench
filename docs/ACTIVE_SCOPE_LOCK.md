@@ -2,39 +2,23 @@
 
 ## Route
 
-Current: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
+Current: `NEEDS_USER_DECISION`
 Next: `NEEDS_USER_DECISION`
 
-## Active authority
+The matching values are a non-executable sentinel, not a pass self-loop.
 
-Only `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` is active. This
-accepted-lock Lane A docs-only pass may write exactly:
+## Authority
 
-- `docs/FILE_MAP.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
+No pass-specific write authority is active.
 
-It may change only the single inaccurate `docs/FILE_MAP.md` archive owner-role
-cell and the minimum truthful route, index, and audit records required by this
-pass. The corrected meaning must state that the archive is the immutable
-historical audit-ledger snapshot and that per-pass disposition registers live
-in corresponding `docs/audit/*.md` artifacts.
+`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` was independently audited
+`PASS` with `SAFE_FOR_STAGING: YES`; `ROUTE_RESULT`, `BOUNDARY_RESULT`, and
+`PRESERVATION_RESULT` were all `PASS`. The exact six-file set was committed
+and pushed as `81c2b7c0dcd14a3f10928ee952c83ea8afea383d`
+(`docs: repair file map disposition owner`).
 
-`docs/archive/AUDIT_INDEX_ARCHIVE.md` remains the immutable historical ledger
-snapshot. Per-pass disposition registers live in the corresponding
-`docs/audit/*.md` artifacts. The repair must not edit the archive itself.
-
-It must not edit the archive README, the existing scope-lock artifact, any
-other audit artifact, the stale Board Canvas code-map anchor, Project Sources,
-skill-inventory findings, runtime, schema, tool, test, Dart, Flutter, package,
-asset, Project ZIP, `_incoming`, or protected semantics.
-
-## Audit and release gate
-
-This repair remains active until its exact six-file diff is independently
-audited and accepted, then committed and pushed exactly by the human.
-`NEEDS_USER_DECISION` is the non-executable next-route sentinel and grants no
-write authority. No successor pass is reserved.
+No successor or write authority is reserved or armed. No recursive closeout,
+audit-of-audit pass, current allowlist, source-package cleanup, repo-skill
+hardening, code-map expansion, implementation, runtime, schema, tool, test,
+Dart, Flutter, package, asset, Project ZIP, `_incoming`, or protected-semantic
+authority is active.

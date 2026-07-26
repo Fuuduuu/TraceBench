@@ -2,27 +2,18 @@
 
 ## Current route
 
-Current: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
+Current: `NEEDS_USER_DECISION`
 Next: `NEEDS_USER_DECISION`
 
-## Current repair
+These matching values are a non-executable sentinel, not a pass self-loop.
+The executable queue is empty and no future allowlist is reserved.
 
-The current accepted-lock Lane A docs-only repair may write exactly:
+`TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS` was independently audited
+`PASS` with `SAFE_FOR_STAGING: YES`; `ROUTE_RESULT`, `BOUNDARY_RESULT`, and
+`PRESERVATION_RESULT` were all `PASS`. The exact six-file set was committed
+and pushed as `81c2b7c0dcd14a3f10928ee952c83ea8afea383d`
+(`docs: repair file map disposition owner`).
 
-- `docs/FILE_MAP.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
-
-It corrects only the inaccurate FILE_MAP archive owner-role cell and the
-minimum truthful route, index, and audit records. It must not touch the archive,
-archive README, or any prior audit artifact.
-
-## Conditional next state
-
-The repair remains current and active until independent Claude audit and exact
-human commit/push. `NEEDS_USER_DECISION` remains a non-executable sentinel and
-arms no successor pass. The Board Canvas code-map NIT and all other deferred
-findings remain deferred and unarmed.
+No successor, recursive closeout, audit-of-audit pass, current allowlist, or
+write authority is queued. The two cosmetic NIT observations, Board Canvas
+code-map NIT, and all other deferred findings remain deferred and unarmed.

@@ -1,8 +1,9 @@
 # TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS
 
-Status: `PRE-AUDIT SNAPSHOT` — the repair diff is unstaged and awaits
-independent Claude audit; no audit verdict or staging-safety decision is
-claimed.
+Status: accepted, committed, pushed, and independently audited repair — Claude
+returned `PASS` / `SAFE_FOR_STAGING: YES`; the original execution body below
+remains the historical pre-push snapshot, and the appended reconciliation
+supersedes its pending-audit status.
 
 PASS_ID: `TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS`
 
@@ -160,3 +161,70 @@ ZIP, `_incoming`, and protected-semantic work remain deferred and unarmed.
 
 This six-file repair diff is unstaged and awaits independent Claude audit.
 Codex issues no acceptance verdict and performs no staging, commit, or push.
+
+## Post-push audit reconciliation and route release
+
+This section records the already-returned Claude audit, exact human push, and
+resulting authority release. It supersedes the historical pre-push status above
+without rewriting the original execution record or creating a new pass.
+
+### Audit and pushed-commit evidence
+
+- Claude returned `PASS` / `SAFE_FOR_STAGING: YES`.
+- `ROUTE_RESULT: PASS`
+- `BOUNDARY_RESULT: PASS`
+- `PRESERVATION_RESULT: PASS`
+- No `BLOCKER`, `HIGH`, `MEDIUM`, or `LOW` findings were reported.
+- Claude also returned two cosmetic `NIT` observations. Both remain deferred
+  and are not fixed here. Their exact wording was not supplied in this
+  reconciliation handoff, so no wording is reconstructed or invented.
+- The accepted six-file set was committed and pushed as
+  `81c2b7c0dcd14a3f10928ee952c83ea8afea383d`
+  (`docs: repair file map disposition owner`), with parent
+  `f3e3401a9cd76984cbb450525878e8ab626b28e3`:
+  - `docs/FILE_MAP.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/audit/TRACEBENCH_FILE_MAP_DISPOSITION_OWNER_REPAIR_PASS.md`
+
+### Route and authority release
+
+- All three route owners now record
+  `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION`.
+- This matching pair is the repository's empty non-executable sentinel, not an
+  executable self-loop.
+- No executable pass, current allowlist, reserved pass, successor authority,
+  recursive closeout, or audit-of-audit loop remains active.
+- No new PASS_ID, ledger row, audit artifact, or successor was created.
+- `docs/FILE_MAP.md`, the archive, archive README, all prior audit artifacts,
+  and all deferred findings remain unchanged by this reconciliation.
+
+### Fresh reconciliation validation
+
+- `py -3 tools\validate_all.py`: `PASS`; 302 tests ran in `33.819s`, all
+  `OK`, and `validate_all.py` reported `PASSED`.
+- `git diff --check`: `PASS`; line-ending conversion advisories only.
+- `git diff --stat`: 5 files, 115 insertions, 80 deletions.
+- `git diff --numstat`:
+  `14/30 ACTIVE_SCOPE_LOCK`, `1/1 AUDIT_INDEX`, `18/26 CURRENT_STATE`,
+  `11/20 PASS_QUEUE`, and `71/3` for this artifact.
+- Exact changed-file check: only the five authorized reconciliation files.
+- `git diff --cached --name-status`: empty.
+- Route release: all three owners record the empty
+  `NEEDS_USER_DECISION` -> `NEEDS_USER_DECISION` sentinel, with no path
+  allowlist.
+- Audit-index reconstruction: only this pass's existing Status cell changed;
+  its PASS_ID, path, description, and all five other rows are byte-identical.
+- Artifact reconstruction: the original execution body is byte-identical
+  after the opening Status metadata; exactly one reconciliation-and-release
+  section was appended.
+- `docs/FILE_MAP.md` SHA-256 remains
+  `0537d4dd5735e0b4e192b4f7f5b4e3f4f5c0b18da2461996ef8fba87b356f1b8`.
+- The archive and archive README remain unchanged; all 642 other audit
+  artifacts retain manifest SHA-256
+  `1ef635377a72707c2f554309ac52322c495b27858ffc3af3cb88012ae9f5b477`.
+- Known scratch remains 94 files and 43,936,062 bytes with manifest SHA-256
+  `a637002037b650b27ba942001d3eb9cb07c4886b0aaaecb211684bf1a112d523`.
+- Nothing is staged.

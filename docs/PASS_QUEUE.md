@@ -2,22 +2,30 @@
 
 ## Current route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
 
-## Empty decision sentinel
+## Current docs-only scope lock
 
-The matching route pair is non-executable and grants no write authority. No
-pass is queued.
+The current pass records only the verified need for two maintained code maps.
+It changes no code map, index row, Dart source, test, runtime behavior, or
+Wizard V2 product contract.
 
-`BENCHBEEP_ROUTE_SENTINEL_RELEASE_PASS` releases the completed
-`TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS` pointer after its
-pushed closeout at `c16d17b7567ea6b23f347bffeec9dd84b2eaf3a3`
-(`docs: close out ProjectCreator code map repair`). It does not change the
-historical PRE-AUDIT status of that closeout or claim a verdict for it.
+The production target qualifies automatically through five or more
+independently testable behaviors. Its focused widget test qualifies at
+`SCORE 6/12`. Their deterministic maps and index rows are absent at baseline
+`d8d983f104bb66bec39e182ffcba1dd552005348`.
 
-## Queue and authority
+## Conditional next pass
 
-No active or current write allowlist remains. No future or reserved allowlist,
-successor authority, executable queue item, or implementation pass is armed.
-Wizard V2 remains inactive, undesigned, and unreserved.
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` may activate only after this
+scope-lock diff receives independent `scope-lock-post-audit` acceptance and
+the exact accepted files are pushed.
+
+That future pass is limited to the exact four-file allowlist in
+`docs/ACTIVE_SCOPE_LOCK.md`. It begins both maps and index rows as
+`REVIEW_REQUIRED`, requires independent map-to-code audit before
+`MAINTAINED`, and requires a final Claude diff audit before staging.
+
+No Wizard implementation pass, product behavior, or runtime authority is
+queued or reserved.

@@ -1,25 +1,28 @@
 # Current State
 
-Current pass: `NEEDS_USER_DECISION`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
 
-This matching pair is the empty, non-executable decision sentinel. It is not
-an executable pass self-loop and grants no write authority.
+This Lane A docs-only scope lock reserves one future code-map pass for the
+qualifying New Project Wizard production screen and focused widget test. It
+defines no Wizard V2 product behavior and reserves no implementation authority.
 
-## Route release evidence
+## Qualification evidence
 
-`BENCHBEEP_ROUTE_SENTINEL_RELEASE_PASS` releases the completed route pointer
-from `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS` to the
-decision sentinel. The pushed closeout remains recorded at
-`c16d17b7567ea6b23f347bffeec9dd84b2eaf3a3`
-(`docs: close out ProjectCreator code map repair`).
+At baseline `d8d983f104bb66bec39e182ffcba1dd552005348`,
+`lib/features/project/screens/new_project_wizard_screen.dart` qualifies
+automatically because it owns at least five independently testable behaviors.
+`test/widget/new_project_wizard_screen_test.dart` qualifies at `SCORE 6/12`.
 
-The prior closeout artifact and its ledger row remain unchanged historical
-PRE-AUDIT evidence. This route release does not supply, infer, or claim an
-audit verdict or staging-safety decision for that closeout.
+Both deterministic maps and both `docs/code_maps/CODE_MAP_INDEX.md` rows are
+absent. This scope lock changes no source responsibility zone; both target Dart
+files remain inspect-only.
 
-## Authority release
+## Conditional future reservation
 
-No active or current write allowlist remains. No future or reserved allowlist,
-successor, implementation authority, or executable pass is armed. New Project
-Wizard V2 remains inactive, undesigned, and unreserved.
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` is reserved only after this exact
+scope-lock diff is independently accepted and pushed. Its exact four-file
+future allowlist is owned by `docs/ACTIVE_SCOPE_LOCK.md`.
+
+The future pass creates only two descriptive maps, two index rows, and its own
+audit artifact. Wizard V2 implementation remains inactive and unreserved.

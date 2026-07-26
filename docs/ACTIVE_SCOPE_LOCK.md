@@ -2,30 +2,43 @@
 
 ## Route
 
-Current: `NEEDS_USER_DECISION`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
 
-## Authority release
+## Exact future allowlist
 
-No pass-specific write authority is active or reserved.
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` is conditionally reserved. It
+may activate only after this exact scope-lock diff is independently accepted
+and pushed. Its complete future write allowlist is:
 
-`BENCHBEEP_ROUTE_SENTINEL_RELEASE_PASS` releases the operational pointer from
-`TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS` after its pushed
-closeout at `c16d17b7567ea6b23f347bffeec9dd84b2eaf3a3`
-(`docs: close out ProjectCreator code map repair`).
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS.md`
 
-The matching `NEEDS_USER_DECISION` pair is the empty, non-executable decision
-sentinel, not an executable pass self-loop. It grants no authority.
+No other file is authorized.
 
-No active, current, future, reserved, implementation, or executable allowlist,
-pass, or successor authority remains. The five-file sentinel-release diff is
-an audit boundary only, not a continuing allowlist.
+## Future map-pass contract
 
-## Protected boundary
+The future pass must describe accepted committed source only, follow
+`docs/code_maps/CODE_MAP_STANDARD.md`, use stable symbol anchors rather than
+maintained line numbers, create exactly two map files and two index rows, and
+keep both maps descriptive and non-authorizing.
 
-The maintained ProjectCreator map, code-map index, original repair artifact,
-Dart, schemas, tests, tools, UI, router, events, writers, Project ZIP behavior,
-assets, `_incoming`, and the design ZIP remain unchanged.
+Both map files and index rows must begin as `REVIEW_REQUIRED`. Independent
+Claude map-to-code audit is required before changing them to `MAINTAINED`, and
+a final Claude diff audit is required before staging.
 
-Wizard V2 must not be retried, activated, reserved, or designed by this route
-release.
+The mapped production and test files are inspect-only. The future pass must not
+edit Dart, tests, schemas, tools, runtime, UI, assets, ZIP files, Project
+Sources, handoffs, or design inputs.
+
+## Excluded authority and stops
+
+No Wizard V2 behavior, implementation pass, project-name, directory,
+collision, persistence, event, outline, component, placement, router, writer,
+or protected-surface authority is active or reserved.
+
+Stop if either target no longer qualifies, either map requires a fifth file,
+source or test changes are needed, or any product/implementation decision is
+required.

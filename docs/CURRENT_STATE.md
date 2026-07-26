@@ -1,34 +1,31 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS`
+Current pass: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS`
 Next recommended pass: `NEEDS_USER_DECISION`
 
-The current Lane B docs-only pass resolves the known
-`BLOCKED_CODE_MAP_REQUIRED` gate for
-`lib/shared/services/project_creator.dart` by creating its maintained code map
-and adding exactly one registry entry. It does not retry, activate, or reserve
-New Project Wizard V2 implementation.
+This Lane B docs-only post-audit closeout records the human-supplied Claude
+audit and pushed Git evidence for the ProjectCreator code-map repair. It is an
+evidence and authority transition, not a Wizard V2 activation or a new audit
+of the accepted map.
 
-## Current authority
+## Pushed repair evidence
 
-Only `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS` is active. Its exact
-write allowlist is:
+The exact seven-file repair was committed and pushed as
+`5b6cf8970ba6914812a35f56005c3f6c71f8f058`
+(`docs: add ProjectCreator code map`). Human-supplied Claude results were
+`MAP_VERDICT: ACCEPT_WITH_NITS`, `AUDIT_VERDICT: PASS`, and
+`SAFE_FOR_STAGING: YES`.
 
-- `docs/code_maps/lib/shared/services/project_creator.dart.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS.md`
+Claude reported two cosmetic NIT observations. Their verbatim wording was not
+supplied to Codex, so this closeout preserves only their count,
+classification, and deferred status without inventing or fixing details.
 
-The pass remains current until independent Claude audit and exact human
-commit/push. `NEEDS_USER_DECISION` is the non-executable next-route sentinel
-and grants no write authority.
+## Authority release
 
-## Boundary
+The prior seven-file repair allowlist is released. No active or current write
+allowlist remains, and no future or reserved allowlist, successor, or
+implementation authority is armed. The five-file closeout diff is an exhausted
+evidence boundary awaiting independent audit, not continuing write authority.
 
-The map and registry entry describe only verified current source and focused
-test behavior. No Dart, schema, test, tool, UI, router, event, writer, Project
-ZIP, asset, `_incoming`, or design-input file may change. No future
-implementation allowlist or successor pass is reserved.
+`NEEDS_USER_DECISION` is the non-executable next-route sentinel and grants no
+authority. New Project Wizard V2 remains inactive and unreserved.

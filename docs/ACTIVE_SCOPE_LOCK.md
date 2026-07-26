@@ -2,39 +2,30 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS`
+Current: `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Active authority
+## Authority release
 
-Only `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS` is active. This Lane B
-docs-only pass may write exactly:
+No pass-specific write authority is active or reserved.
 
-- `docs/code_maps/lib/shared/services/project_creator.dart.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS.md`
+The exact seven-file authority of
+`TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_PASS` is released after its
+human-supplied Claude `MAP_VERDICT: ACCEPT_WITH_NITS`,
+`AUDIT_VERDICT: PASS`, and `SAFE_FOR_STAGING: YES`, followed by the exact
+pushed commit `5b6cf8970ba6914812a35f56005c3f6c71f8f058`
+(`docs: add ProjectCreator code map`).
 
-It may create the maintained map for
-`lib/shared/services/project_creator.dart`, add exactly one corresponding
-`docs/code_maps/CODE_MAP_INDEX.md` entry, and update only the minimum route,
-ledger, and audit evidence required by this pass.
+The current five-file closeout diff is an exhausted evidence boundary awaiting
+independent audit, not an active or continuing allowlist. No current, future,
+or reserved allowlist, successor, implementation, or executable authority
+remains.
 
-The map must be grounded in current committed source and focused tests. It is
-descriptive and non-authorizing; source, tests, canonical owners,
-`docs/POHIKIRI.md`, and this lock outrank it.
+## Protected boundary
 
-The pass must not edit Dart, schema, tests, tools, UI, router, events, writers,
-Project ZIP behavior, assets, `_incoming`, the design ZIP, `docs/FILE_MAP.md`,
-or any prior audit artifact. It must not retry, activate, or reserve New
-Project Wizard V2 implementation.
+The maintained ProjectCreator map, code-map index, original repair artifact,
+Dart, schemas, tests, tools, UI, router, events, writers, Project ZIP behavior,
+assets, `_incoming`, and the design ZIP remain unchanged.
 
-## Audit and release gate
-
-The exact seven-file diff remains active until independent Claude audit under
-`recovery / evidence-recheck` and exact human commit/push.
-`NEEDS_USER_DECISION` grants no write authority. No future implementation
-allowlist or successor pass is reserved.
+`NEEDS_USER_DECISION` grants no authority. Wizard V2 must not be retried,
+activated, reserved, or designed by this closeout.

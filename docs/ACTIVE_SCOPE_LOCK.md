@@ -2,127 +2,198 @@
 
 ## Route
 
-Current: `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS`
 
 ## Authority transition
 
-The completed `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` has no standing write
-authority. Its seven-file docs diff completed and was pushed at
-`9644e62ef9e8f81d00a3d38cff3e0606b2b93a73`; the pushed file set equals that
-pass's allowlist exactly, with no eighth file.
+Baseline `b228a0b8dcfaf9b779b8c5ac5d14d7be2b001c5e` contains the exact pushed
+result of `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`. Its seven-file authority
+is spent and retained only in Git and existing evidence.
 
-The former seven-file allowlist is spent and retained only in Git and its
-existing audit evidence. It grants no writes to this or any later pass. The
-explicit human route decision selected this pass from the non-executable
-`NEEDS_USER_DECISION` sentinel; no prior allowlist is inherited.
-
-That release is recorded here, inside this pass's normal route advance. No
-separate route-release, closeout, or pointer-reset `PASS_ID` is created for it:
-a spent or deficient lock is amended in place rather than routed through a
-sync-pass ceremony.
+The human's 2026-07-27 decision selected the BenchBeep
+`Loo projekt nullist` redesign from the non-executable
+`NEEDS_USER_DECISION` pointer. It authorizes only this docs-only scope lock.
+No prior allowlist or product authority is inherited.
 
 ## Exact current write allowlist
 
-`TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS` may write exactly:
+`TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS` may write exactly:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
-- `docs/AUDIT_CONTRACT.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS.md`
-- `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS.md`
 
-No other file is authorized.
+No sixth file is authorized.
 
-## Required outcomes
+## Reserved implementation pass
 
-- correct the archive attestation by naming the byte representation it
-  measured, and publish the Git object id as the durable anchor
-- keep the original compaction measurements verbatim; the correction is
-  append-only and does not rewrite the historical claim
-- give `docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md` a ledger
-  row so the correction is reachable from `docs/AUDIT_INDEX.md`
-- add the operative byte-representation rule for every future published hash or
-  byte-length attestation, and resolve the deferred surrounding-space `NIT` for
-  hash values published inside table cells
-- replace the unverifiable count `13` in operative contract text with a stated
-  counting method and the enumeration that method returns
-- record that the four active `PRE-AUDIT SNAPSHOT` rows and the four rows
-  previously called unreconciled are one population, not two
-- reassign those four rows from the never-created docs-hygiene lock to the
-  non-executable `NEEDS_USER_DECISION` sentinel
-- name the two further active rows that assert an unresolved audit position,
-  and place them under the same owner, without editing either row
-- release the spent seven-file authority in this pass's route advance
-- keep `Next` at the non-executable `NEEDS_USER_DECISION` sentinel
-- add exactly one new audit artifact and its ledger row
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
 
-## Frozen historical evidence
+Exact future write allowlist:
 
-`docs/audit/TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS.md` and its ledger row are
-completed, independently audited records. This pass does not rewrite them. The
-superseded count they contain is registered as a divergence in this pass's
-artifact and row instead, which is the disposition-register mechanism
-`docs/AUDIT_INDEX.md` already requires.
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
 
-The same rule applies to every other artifact that cites the superseded archive
-hash as historical evidence. An existing artifact is edited by this pass only
-where it hands a future reader a verification instruction that will fail.
+No third implementation file and no additional child pass are authorized.
+Future authority is conditional on independent acceptance and human push of
+this exact five-file scope lock.
 
-## Forbidden surfaces
+## Current behavior being temporarily replaced
 
-No Dart, test, schema, tool, asset, ZIP, runtime, `_incoming`, or
-`.agents/skills/**` file may change. `AGENTS.md`, `CLAUDE.md`,
-`docs/POHIKIRI.md`, `docs/PROJECT_MINI_MAP.md`, `docs/FILE_MAP.md`,
-`docs/MEMORY_REGISTRY.yml`, `docs/MEMORY_PROTOCOL.md`,
-`docs/PROMPTING_PROTOCOL.md`, `docs/PASS_LIFECYCLE.md`,
-`docs/archive/AUDIT_INDEX_ARCHIVE.md`, every code map, and every audit artifact
-outside the two named above remain outside this pass.
+The live Wizard has a working create flow. Its `wizard-create` CTA calls
+`ProjectCreator.createProject`. A
+`ProjectCreationSuccess` assigns the returned state to `projectStateProvider`
+and navigates to `/project`; typed creation failures are presented to the user.
+The focused Wizard widget suite covers the create CTA, destination
+precondition, successful state/routing path, selected typed failures, and the
+mobile picker gate.
 
-No `.gitattributes` is added and no file is renormalized by this pass.
+The future pass intentionally replaces that working UI with a temporary,
+non-creating Wizard foundation. `lib/app/router.dart` and both Home surfaces
+remain unchanged. Reintroducing final creation integration, including a
+functional final create CTA and service handoff, requires a later separate
+human route decision and is not authorized or reserved here.
 
-This pass defines no product behavior, implementation authority, protected
-surface, or executable successor.
+## Locked implementation behavior
 
-## Deferred: line-ending normalization
+The future pass may implement only:
 
-Repository line-ending normalization is deferred to a later pass that requires
-its own explicit human route decision. The deferral reason is severity order,
-not interference:
+- a six-step Wizard shell based on the exact inspect-only design handoff;
+- Step 1 fields for `Projekti nimi`, `Seadme nimetus`,
+  `Salvestuskoht`, and `Lisainfo`;
+- widget-local draft state for all four values;
+- parent-folder selection that stores only the returned path;
+- `Edasi` enabled only when the project name is nonblank and a parent path is
+  present;
+- visible but non-functional Steps 2–6;
+- forward/back navigation that preserves the draft; and
+- dirty-draft cancel confirmation, while an untouched draft may return
+  directly Home.
 
-- every tracked text blob in `HEAD` is already `LF`: `git grep -I -l -P '\r'
-  HEAD` returns `0` files. `-I` scans text blobs only, which is `864` of the
-  `875` tracked files; the excluded `11` are binary PNG assets, and the same
-  scan with `--text` returns exactly those `11`
-- a future `text=auto` normalization is therefore a content no-op for existing
-  blobs, and `git add --renormalize` would produce no blob change
-- every anchor published by this pass is a `blob`-representation value, so all
-  of them survive that later pass unchanged
+The implementation must preserve the existing BenchBeep identity and use only
+existing theme, icon, and asset solutions. User-visible copy is Estonian and
+state must not be communicated by color alone.
 
-Normalization removes a defect generator and cosmetic `git status` noise. This
-pass removes canonical text that is currently false about Git. The false text
-compounds, because later passes cite it; the generator does not, because it
-cannot corrupt already-`LF` blobs. That ordering is a severity judgment and is
-recorded as one.
+## Step 1 deliberate design exception
 
-## Verdict-recording and staging authority
+The zero-write boundary deliberately narrows the inspect-only design handoff:
 
-1. Complete and validate the exact seven-file Phase 1 docs diff.
-2. Independent audit covers the complete diff except the named empty verdict
-   block. The auditor must not be the session that wrote the diff.
-3. The returned verdict is copied into that block and mechanically mirrored in
-   this pass's existing ledger Status cell.
-4. A freeze proof must show that no other content or changed file moved.
-5. Only an accepted exact staging set may be staged by the human.
+- show no derived child-folder name preview;
+- do not check or claim that the selected parent is writable;
+- retain the selected parent path only in widget-local draft state;
+- enable `Edasi` only when the project name is nonblank and a parent path has
+  been selected;
+- create no directory or file; and
+- provide no collision or writability guarantee.
 
-No agent has authority to stage, commit, or push in this pass.
+The selected parent path itself may be displayed as draft input. It must not be
+presented as a validated final project path. This is an explicit design
+exception required by the temporary foundation's `UI_LOCAL`/`ZERO_WRITE`
+scope; canonical repo boundaries outrank the handoff.
+
+## Zero-write boundary
+
+The future pass must not:
+
+- call `ProjectCreator.createProject`;
+- assign a created project to application state or navigate to a created
+  project;
+- create or modify a directory, file, manifest, `events.jsonl`,
+  `known_facts.json`, event, fact, projection, outline, marker, component, or
+  Project ZIP artifact;
+- derive or display a child-folder preview, check or claim writability, or
+  promise collision-free or writable creation;
+- define or change project-name persistence, project-directory naming,
+  collision, overwrite, or final creation behavior;
+- implement a final create CTA or functional Step 2–6 workflow; or
+- add or change an asset, font, package, dependency, schema, writer,
+  materializer, router, Home screen, or adjacent runtime file.
+
+`lib/shared/services/project_creator.dart` and its persistence paths remain
+inspect-only.
+
+## Code-map and design-input boundary
+
+This docs-only pass has `CODE_MAP_DISPOSITION: NOT_APPLICABLE`. The maintained
+Wizard source and widget-test maps are read-only planning aids for the future
+two-file slice; they grant no authority and are not updated here.
+
+For `TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS`, the human explicitly
+authorizes one bounded combination of the responsibility zones named by those
+two maps, only as needed to replace the current create form with the locked
+UI-local foundation:
+
+- source-map zones: creator provider and injection seams; form and transient
+  state lifecycle; platform capability gate; directory selection; creation
+  request and submission; success projection and routing; failure and
+  capability feedback; rendering and interaction locking;
+- test-map zones: platform seam; creator seam and request capture; picker seam;
+  in-memory project fixture; isolated widget/router harness; destination
+  precondition; success request and routing; failure presentation; mobile
+  picker gate.
+
+This explicit multi-zone decision is bounded to the two future allowlist files
+and `UI_LOCAL`/`ZERO_WRITE` behavior. It authorizes no change to
+`ProjectCreator`, persistence, writers, schemas, materializers, Home, router,
+or any other file. The future implementation has:
+
+```text
+CODE_MAP_DISPOSITION: UPDATE_REQUIRED
+```
+
+After that implementation is accepted and committed, map maintenance must
+occur against the accepted committed source in a separate docs-only lock/map
+pass. This pass neither starts nor names that later pass.
+
+The exact design input is:
+
+`_incoming/ui_redesign/TraceBench_new_project_wizard/design_handoff_loo_projekt_nullist`
+
+It is high-fidelity external visual/product input only, not route, runtime
+truth, schema, acceptance evidence, or write authority. Its HTML, CSS,
+JavaScript, SVG, PNG, fonts, and other bytes must not be copied, imported,
+modified, staged, packaged, or referenced by runtime code. Canonical repo
+owners and runtime contracts outrank it.
+
+## Forbidden current surfaces
+
+The current pass may not change Dart, Flutter, tests, code maps, schemas,
+tools, assets, packages, writers, materializers, ZIP behavior, runtime files,
+`_incoming`, `AGENTS.md`, `docs/POHIKIRI.md`, task-specific specs, archive
+evidence, or `.agents/skills/**`.
+
+No board-outline, marker, component, canonical-event, creator-persistence,
+AI/OCR/photo/template/phone, Board Canvas redesign, or later Wizard authority
+is reserved.
+
+## Verdict recording and exact staging
+
+For this artifact-bearing pass, preserve:
+
+```text
+independent audit
+-> record returned verdict in the designated block and ledger Status cell
+-> prove the bounded recording freeze
+-> exact human staging
+```
+
+Staging, commit, and push remain human-owned. Broad staging commands are
+forbidden.
 
 ## Stops
 
-Stop if any eighth file is required, if the correction cannot be written
-without rewriting a completed audit artifact's original measurements, if
-resolving a ledger row would require inferring whether an audit ran from commit
-or push evidence, if validation exposes a scope-relevant failure, or if any
-product, implementation, or protected-surface decision is required.
+Stop if any sixth current file or third implementation file is required; if
+the two-file slice cannot remain `UI_LOCAL`/`ZERO_WRITE`; if the design
+handoff is missing or ambiguous; if any `ProjectCreator`, filesystem,
+application-project-state, persistence, event, projection, schema, writer,
+materializer, asset, package, router, Home, code-map, or `_incoming` change is
+needed; if project-name storage or directory naming must be decided; if
+validation exposes a scope-relevant failure; or if any protected decision
+cannot remain deferred.

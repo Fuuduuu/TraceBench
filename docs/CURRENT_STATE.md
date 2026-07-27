@@ -1,64 +1,68 @@
 # Current State
 
-Current pass: `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS`
 
-This Lane A docs sync repairs three defects in the evidence layer itself: an
-attestation that named no byte representation, a grandfathered set defined by
-an unreproducible count, and evidence debt assigned to an owner that was never
-created.
+This Lane A docs sync records the human's 2026-07-27 choice of the BenchBeep
+`Loo projekt nullist` redesign as the next priority and locks one narrow future
+implementation pass. It changes no product behavior now.
 
 ## Authority basis
 
-The explicit human route decision selected this pass from the non-executable
-`NEEDS_USER_DECISION` sentinel. Baseline
-`9644e62ef9e8f81d00a3d38cff3e0606b2b93a73` is the pushed
-`docs: add audit evidence recording protocol` commit. The seven-file authority
-of `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` is spent; its release is recorded
-in `docs/ACTIVE_SCOPE_LOCK.md` as part of this route advance rather than in a
-separate release pass.
+Baseline `b228a0b8dcfaf9b779b8c5ac5d14d7be2b001c5e`
+(`docs: repair archive attestation and evidence ownership`) contains the
+finished `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`. Entry evidence showed
+`HEAD == origin/main`, branch `main`, divergence `0 0`, and empty tracked and
+cached diffs. The prior seven-file repair authority is spent.
 
-## Current work
+The explicit human decision replaces the non-executable
+`NEEDS_USER_DECISION` pointer with this five-file docs-only lock. No prior
+allowlist is inherited and no separate closeout, release, or pointer-reset pass
+is created.
 
-- publish the corrected archive attestation with its byte representation named,
-  anchored on the Git object id
-- add the operative rule that every published hash or byte-length attestation
-  names its representation
-- replace the count `13` in operative contract text with a stated counting
-  method and its enumeration
-- reassign the four active `PRE-AUDIT SNAPSHOT` rows to `NEEDS_USER_DECISION`
-- name two further active rows that assert an unresolved audit position and
-  place them under the same owner, without editing either row
-- keep the route at this pass -> `NEEDS_USER_DECISION`
+## Locked implementation
 
-## Boundaries
+`TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS` may later change exactly:
 
-The exact authority is the seven documentation files named in
-`docs/ACTIVE_SCOPE_LOCK.md`. No Dart, test, schema, tool, asset, ZIP, runtime,
-`_incoming`, skill, product, or protected-surface behavior is changed. No
-`.gitattributes` is added and nothing is renormalized. No executable successor,
-closeout, or later write authority is reserved.
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
 
-## Corrected historical evidence boundary
+It is limited to a six-step Wizard shell, Step 1 project-data draft UI,
+step navigation, and dirty-draft cancel confirmation. All values remain
+widget-local. Steps 2–6 are visible but not implemented.
 
-The verdict-recording and no-self-referential-lifecycle rules still apply
-prospectively, unchanged, from `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS`
-onward.
+The live Wizard currently has a working `wizard-create` CTA:
+`_createProject` calls `ProjectCreator.createProject`; success assigns
+`projectStateProvider` and navigates to `/project`; typed creation failures are
+shown to the user; and focused widget tests cover that create flow. The future
+pass intentionally replaces this working UI with a temporary non-creating
+foundation. It must not call the creator or create a directory, file, manifest,
+event, projection, fact, or other persistent state. Home and router stay
+unchanged. Final creation integration requires a later separate route decision
+and is not authorized here.
 
-What changes is the description of the grandfathered set. It is now defined by
-a stated counting method owned by `docs/AUDIT_CONTRACT.md` rather than by the
-count `13`, which no committed ledger state reproduces. The method returns six
-records: four in the active ledger and two in the archive.
+Step 1 deliberately deviates from the design handoff: it shows no derived
+child-folder preview, performs and claims no writability check, retains only
+the selected parent path as widget-local draft state, gates `Edasi` solely on
+a nonblank project name plus a selected parent path, creates no directory or
+file, and gives no collision or writability guarantee.
 
-Those four active records are the same four rows earlier described separately
-as unreconciled. They were never two populations. They are owned by the
-non-executable `NEEDS_USER_DECISION` sentinel until an explicit human route
-decision assigns them to a named executable pass. Whether an independent audit
-actually ran for each remains undetermined in the repository, and a commit or
-push is still not evidence that it did.
+The human explicitly authorizes the future two-file pass to combine the
+affected responsibility zones named by the maintained Wizard source and test
+maps only for this `UI_LOCAL`/`ZERO_WRITE` foundation. It authorizes no
+`ProjectCreator`, persistence, writer, schema, materializer, Home, or router
+change. Its `CODE_MAP_DISPOSITION: UPDATE_REQUIRED`; after accepted committed
+implementation, map maintenance belongs to a separate unnamed and unarmed
+docs-only lock/map pass.
 
-The only docs-hygiene lock in the repository,
-`TRACEBENCH_DOCS_HYGIENE_SCOPE_LOCK_PASS`, was last recorded at `dbe9271` on
-2026-06-19, five weeks before these rows existed, and appears in no route owner
-today. It was never re-created for this work. No pass is assigned work here
-that does not exist.
+## Source and boundary
+
+The exact design handoff under
+`_incoming/ui_redesign/TraceBench_new_project_wizard/design_handoff_loo_projekt_nullist`
+is high-fidelity visual/product input only. It is inspect-only and must not be
+copied, imported, modified, staged, or runtime-referenced. Existing theme,
+icons, assets, source, tests, and canonical owners outrank it.
+
+No board-outline, marker, component, canonical event, creator persistence,
+schema, writer, materializer, package, asset, Project ZIP, AI/OCR/photo/
+template/phone, or Board Canvas redesign authority is created.

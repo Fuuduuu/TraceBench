@@ -351,3 +351,101 @@ Gate 2 is recorded and both maps are `MAINTAINED`. This pass now stops for
 gate 3, the final independent Claude audit of the complete eight-file diff.
 Codex claims no final acceptance, staging safety, safe staging set, committed,
 pushed, complete, or implementation-ready state.
+
+## Superseding audit reconciliation — 2026-07-27
+
+Reconciliation PASS_ID:
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_AUDIT_RECONCILIATION`
+
+Mode: `DOCS_SYNC / AUDIT_RECONCILIATION`
+
+This append-only section records later human-supplied audit/session evidence
+and Git-verifiable commit evidence. It preserves the complete draft-time body
+above as temporal history while superseding its former current-state claims.
+It performs no new map audit, changes no map or index-map content, and does not
+change the current/next route or active authority.
+
+### Superseded claims
+
+- Original lines 3-6 remain the accurate pre-gate-3 status, but no longer
+  describe the pushed pass after the returned gate-3 verdict and gate 4.
+- The original `Gates 3 and 4 remain open` statement remains preserved as the
+  pre-audit handoff state; both gates are now evidenced below.
+- The original gate-1 `SAFE_FOR_STAGING: NO` result remains accurate for that
+  earlier map-to-code audit, but is superseded as the final pass safety state
+  by the later gate-3 `SAFE_FOR_STAGING: YES` result.
+- The original final `## Audit state` remains the pre-gate-3 stop record; it is
+  superseded by this reconciliation without deletion or rewriting.
+
+### Returned gate-3 result
+
+The human supplied the following result from Claude Code's final independent
+audit of the complete eight-file Phase 2 diff:
+
+```text
+AUDIT_VERDICT: ACCEPT_AS_IS
+MAP_BODY_FREEZE_RESULT: PASS
+RECORDED_MAP_AUDIT_RESULT: PASS
+LEDGER_RESULT: PASS
+ROUTE_RESULT: PASS
+BOUNDARY_RESULT: PASS
+NO_FALSE_ACCEPTED_OR_PUSHED_CLAIM: YES
+SAFE_FOR_STAGING: YES
+SAFE_STAGING_SET:
+- docs/ACTIVE_SCOPE_LOCK.md
+- docs/AUDIT_INDEX.md
+- docs/CURRENT_STATE.md
+- docs/PASS_QUEUE.md
+- docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS.md
+- docs/code_maps/CODE_MAP_INDEX.md
+- docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md
+- docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md
+```
+
+The audit raised one `NIT`: the masked SHA-256 values published in the Phase 2
+report were not independently reproducible because the masking algorithm was
+unspecified. The auditor instead verified the map-body freeze by content
+comparison against the Phase 1 audited bodies.
+
+### Gate-4 completion and role deviation
+
+Git evidence verifies gate 4 completed as:
+
+- commit:
+  `3e5edad0956c852584543bc643ca7306caee9e8e`
+- parent:
+  `480d79d9a21ea8bb67dffbabd5e275d51a93b6d7`
+- subject: `docs: add New Project Wizard code maps`
+- committed set: exactly the eight files in the gate-3 safe staging set
+- commit stat: 8 files, 830 insertions, 71 deletions
+- pushed state: local `main`, local `origin/main`, and live
+  `refs/heads/main` all resolve to `3e5edad0956c852584543bc643ca7306caee9e8e`
+
+`docs/ACTIVE_SCOPE_LOCK.md` required exact human staging followed by commit and
+push, and `AGENTS.md` assigns those operations to the human by default. The
+human-supplied session record states that Claude Code performed the gate-3
+audit and then performed all three gate-4 operations under explicit human
+delegation, using this exact-file form:
+
+```text
+git add docs/ACTIVE_SCOPE_LOCK.md docs/AUDIT_INDEX.md docs/CURRENT_STATE.md docs/PASS_QUEUE.md docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS.md docs/code_maps/CODE_MAP_INDEX.md docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md
+```
+
+No `git add .` or `git add -A` was used. Combining the independent auditor and
+executor roles was an explicitly human-authorized deviation from the default
+role separation; it is recorded as a deviation, not presented as
+compliant-by-default or as a general precedent.
+
+### Reconciliation boundary and current state
+
+This reconciliation changes only this existing artifact and this pass's
+`docs/AUDIT_INDEX.md` status cell. It leaves
+`docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`, and
+`docs/PASS_QUEUE.md` unchanged. Marking the eight-file authority as spent would
+change active authority and exceeds the selected reconciliation skill, which
+requires route and authority to remain unchanged.
+
+The current two-file reconciliation is unstaged, uncommitted, unpushed, and
+not yet independently audited. It does not inherit the prior pass's acceptance
+or safe staging set; its own exact two-file diff requires the independent
+audit requested by the accompanying `CLAUDE_AUDIT_PACKET`.

@@ -20,6 +20,9 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
   `uncommitted`, `unpushed`, `not yet audited`, `awaits audit`, `stops before
   staging`, or an equivalent claim. Git reports staging position; prose does
   not.
+- Attestation representation: every published hash or byte-length value must
+  name the byte representation it measured and the command that produced it,
+  per the attestation rules below. An unlabelled value is a finding.
 - Binding-source check: when a pass cites specs, schemas, tools, or audit files, the diff must remain compatible with those binding sources.
 - Future allowlist / forbidden surfaces check: future implementation scopes must state exact allowed surfaces and forbidden surfaces.
 - Validation/log sanity: claimed validation must match command output; expected non-blocking warnings should be classified explicitly.
@@ -86,11 +89,85 @@ The verdict-recording and no-self-referential-lifecycle rules apply to every
 artifact or ledger row created or updated by
 `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` or a later pass.
 
-The 13 existing `PRE-AUDIT SNAPSHOT` ledger records and their artifacts remain
-historical evidence and are not rewritten by this protocol pass. Four remain
-unreconciled under the docs-hygiene lock. That lock must determine separately
-for each row whether an independent audit actually ran; a commit or push is
-not evidence that it did.
+The grandfathered set is defined by a counting method, not by a remembered
+total. A record is grandfathered when its ledger `Status` cell contains the
+literal `PRE-AUDIT SNAPSHOT`.
+
+Counting method: split each pipe-prefixed table row on `|`, so field 2 is
+`PASS_ID`, field 3 is `File`, and field 4 is `Status`; match the literal only
+in field 4. A mention inside a `Description` cell is not a record, and a
+line-scoped match that ignores the field boundary overcounts.
+
+Applying that method at `9644e62ef9e8f81d00a3d38cff3e0606b2b93a73` returns six
+records. In `docs/AUDIT_INDEX.md`:
+
+- `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS`
+- `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`
+- `BENCHBEEP_ROUTE_SENTINEL_RELEASE_PASS`
+- `TRACEBENCH_PROJECT_CREATOR_CODE_MAP_REPAIR_POST_AUDIT_PASS`
+
+In `docs/archive/AUDIT_INDEX_ARCHIVE.md`:
+
+- `TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_SCOPE_LOCK_PASS`
+- `BOARD_OUTLINE_V2_EVENT_FOUNDATION_IMPL_POST_AUDIT_PASS`
+
+The four active records are the same four rows previously described as
+unreconciled. They are one population, not two. The two archived records remain
+historical evidence and need no further decision.
+
+Whether an independent audit actually ran for each active record is
+undetermined in the repository; a commit or push is not evidence that it did.
+Determining it needs evidence the repository does not hold, so those four rows
+are owned by the non-executable `NEEDS_USER_DECISION` sentinel until an
+explicit human route decision assigns them to a named executable pass. They are
+not assigned to any lock that does not exist.
+
+Two further active rows assert an unresolved audit position without carrying
+the `PRE-AUDIT SNAPSHOT` label, so the method above excludes them while the
+same open question applies:
+
+- `TRACEBENCH_REPO_SKILLS_CATALOGUE_PARENT_ABORT_CLOSEOUT_PASS`
+- `BOARD_CANVAS_SCREEN_CODE_MAP_POST_AUDIT_PASS`
+
+They share the `NEEDS_USER_DECISION` owner. Neither row is rewritten, because
+choosing replacement wording would require inferring whether an audit ran.
+
+The superseded total `13` was published without a recorded derivation and is
+not reproducible from any committed ledger state. The artifact and ledger row
+that carry it are frozen history and are not rewritten; the divergence is
+registered by `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`.
+
+## Published hash and byte-length attestations
+
+A hash or byte length is meaningless without the byte representation it
+measured. This repository checks out text with CRLF and stores it with LF, so
+the same tracked file has two different valid hashes at the same time.
+
+Every published hash or byte-length attestation must name its representation
+using exactly one of:
+
+- `blob` — the bytes Git stores, read with `git cat-file blob <rev>:<path>`;
+- `worktree` — the bytes on disk after checkout filters have run.
+
+`blob` is the required representation for any value presented as durable,
+immutable, or reproducible, because it is identical in every clone regardless
+of platform or checkout settings. A `worktree` value may be published only as a
+local observation, and never as the anchor a future verifier is told to
+reproduce.
+
+Prefer the Git object id from `git rev-parse <rev>:<path>` as the primary
+anchor for a preserved snapshot. It proves object identity directly, needs no
+external hashing tool, and stays stable across normalization that does not
+change stored bytes.
+
+An attestation must also record the exact command that produced it, so the
+claim is re-runnable rather than merely asserted.
+
+When a hash is published inside a Markdown table cell, write it as a single
+backtick-delimited token with exactly one space between the value and each
+surrounding pipe, and never break the value across lines. A value split by a
+line break or padded unevenly cannot be extracted mechanically, which is the
+condition that lets an unverifiable value survive review.
 
 ## Protected implementation activation gate
 

@@ -282,3 +282,72 @@ push status.
   remains exactly four anchors, and it contains no row for this pass.
 - No staging, commit, push, pull, fetch, reset, clean, rebase, new PASS_ID, new
   audit artifact, new index row, or successor was created.
+
+## Appended correction by `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`
+
+Everything above is preserved verbatim as the historical record. This appended
+section corrects exactly one thing: a verification instruction that cannot
+succeed as written. No measurement above is edited or removed.
+
+### The defect
+
+The starting measurement above states that it was taken from the working-tree
+copy. With `core.autocrlf=true` and no tracked `.gitattributes`, staging strips
+one `CR` per line before the bytes reach Git, so the published anchor names a
+byte sequence Git never stored:
+
+| Representation | Byte length | SHA-256 |
+|---|---|---|
+| `worktree`, as published above | `284984` | `eb16fd47fe8e9bb7c3f7a173467398dfb0a881d4fecec6402529fd14bb621780` |
+| `blob`, what Git actually stores | `284219` | `94a404163d5b1a9acf718e4f81576e10a9c488bd89fc23642087ef549e3b734c` |
+| `worktree`, read today | `284990` | `a068b4e554d524e88c6939fe9e601105c3b4e3facbdf33b08d824ddb3b6ff419` |
+
+`284984 - 284219 = 765`, exactly the CRLF count this artifact recorded. Today's
+worktree copy is larger again, because checkout applied CRLF to the `6` lines
+that were bare LF at measurement time. The mixed line-ending inventory
+described above therefore survives in no current representation, and the
+instruction that reading the complete archive file reproduces the starting hash
+fails against both the stored blob and the file on disk.
+
+### The preservation claim still holds
+
+The substance of the compaction was correct, and is provable more directly than
+by content hash. The archive and the pre-compaction ledger are the same Git
+object:
+
+```text
+git rev-parse 73f0b1a9c52181c19a9ff28912279c6f16e70b92:docs/AUDIT_INDEX.md
+git rev-parse bea022455bd5fb03abf698e39f3cef1b94a75532:docs/archive/AUDIT_INDEX_ARCHIVE.md
+git rev-parse HEAD:docs/archive/AUDIT_INDEX_ARCHIVE.md
+```
+
+All three return `cf8a3ffc7a6589a360889e2b70ba02d9a98d1f6a`. `BYTE_IDENTICAL`
+is confirmed by object identity, which needs no external hashing tool and does
+not depend on checkout settings.
+
+### Use these anchors instead
+
+```text
+git rev-parse HEAD:docs/archive/AUDIT_INDEX_ARCHIVE.md
+-> cf8a3ffc7a6589a360889e2b70ba02d9a98d1f6a
+
+git cat-file blob HEAD:docs/archive/AUDIT_INDEX_ARCHIVE.md | sha256sum
+-> 94a404163d5b1a9acf718e4f81576e10a9c488bd89fc23642087ef549e3b734c
+
+git cat-file blob HEAD:docs/archive/AUDIT_INDEX_ARCHIVE.md | wc -c
+-> 284219
+```
+
+The superseded `worktree` values remain above as evidence of what was measured
+and how the error occurred. Other artifacts that cite the superseded hash as
+historical evidence are left unedited; the rule that prevents a recurrence is
+owned by `docs/AUDIT_CONTRACT.md`.
+
+### Reading the preserved body
+
+The body above predates the no-self-referential-lifecycle rule and contains a
+sentence describing its own staging and audit position at the moment it was
+written. Read it as a historical statement about that moment, not as a current
+claim. It is preserved rather than corrected because rewriting it would destroy
+the evidence of the state this correction documents. This appended section
+adds no such claim.

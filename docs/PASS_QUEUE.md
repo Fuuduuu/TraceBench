@@ -2,32 +2,40 @@
 
 ## Current route
 
-Current: `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS`
+Current: `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Current protocol pass
+## Current repair pass
 
-The human selected `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` from the
+The human selected `TRACEBENCH_EVIDENCE_INTEGRITY_REPAIR_PASS` from the
 non-executable `NEEDS_USER_DECISION` sentinel. It owns an exact seven-file
 docs-only change that:
 
-- makes `independent audit -> record returned verdict -> exact staging` the
-  canonical order
-- confines post-audit recording to one delimited artifact block and one
-  mechanical ledger Status-cell mirror
-- requires `SELF_REFERENCE_AUDIT` whenever a pass produces an artifact
-- prohibits an artifact or ledger row from asserting its own audit or staging
-  pipeline position
-- creates one evidence artifact and exactly one active-index row
+- names the byte representation of the archive attestation and anchors it on
+  the Git object id, which is verifiable in any clone
+- makes representation naming mandatory for every future published hash or
+  byte-length attestation
+- replaces the count `13` in operative contract text with a stated counting
+  method and the six records that method returns
+- records that the four active `PRE-AUDIT SNAPSHOT` rows and the four rows
+  previously called unreconciled are one population
+- reassigns those four rows from a lock that was never created to the
+  non-executable `NEEDS_USER_DECISION` sentinel
+- releases the spent seven-file authority inside this pass's route advance
+- creates one evidence artifact and exactly one new active-index row
 
 ## Evidence and history boundary
 
 The pass begins from pushed baseline
-`fd21a107e6918f355df185beaf2159d366ea0bdb`. Its rules apply to artifacts and
-ledger rows created or updated by this pass or later. The 13 existing
-`PRE-AUDIT SNAPSHOT` records and their artifacts are grandfathered as history
-and remain unchanged. Four unreconciled rows remain assigned to the
-docs-hygiene lock for evidence-by-evidence adjudication.
+`9644e62ef9e8f81d00a3d38cff3e0606b2b93a73`. It rewrites no completed artifact's
+original measurements. Superseded values stay in place as historical evidence
+and their divergence is registered in this pass's artifact and row.
+
+An existing artifact is edited only where it hands a future reader a
+verification instruction that will fail. Exactly one artifact meets that test:
+`docs/audit/TRACEBENCH_AUDIT_INDEX_ARCHIVE_COMPACTION_PASS.md`, whose recorded
+recipe for reproducing the archive hash cannot succeed as written. It is
+corrected append-only and gains the ledger row it never had.
 
 ## Sequencing
 
@@ -35,5 +43,23 @@ docs-hygiene lock for evidence-by-evidence adjudication.
 reserves no successor, and requires another explicit human route decision
 before any later pass.
 
-This protocol pass defines no closeout, route release, pointer reset,
+Known unarmed work, recorded here so it stops living only in chat. None of it
+is armed, reserved, or scheduled by this pass:
+
+- **line-ending normalization.** Add `.gitattributes` and normalize. Verified
+  content no-op for existing text blobs: `git grep -I -l -P '\r' HEAD` returns
+  `0` of the `864` tracked text blobs; the other `11` of `875` tracked files
+  are binary PNG assets excluded by that scan. Deferred on severity, not
+  interference.
+- **four `PRE-AUDIT SNAPSHOT` adjudications.** Requires evidence only the human
+  holds; cannot be resolved from the repository.
+- **routing completeness.** Top-level `docs/*.md` files absent from
+  `docs/FILE_MAP.md`, plus the missing `code_maps` and skills layers in
+  `docs/MEMORY_REGISTRY.yml`. Three separate counts of the unrouted set have
+  been reported. That pass must establish the number with a stated method and
+  publish the method with the number; no earlier count may be inherited.
+- **code-map coverage.** Unmapped Dart screens that may satisfy automatic
+  qualification under `docs/code_maps/CODE_MAP_STANDARD.md`.
+
+This repair pass defines no closeout, route release, pointer reset,
 implementation, or protected-surface pass.

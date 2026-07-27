@@ -19,10 +19,12 @@ The complete default set is exactly:
 | Path | Owner role | Loading rule |
 |---|---|---|
 | `AGENTS.md` | Repo-local workflow, safety, and routing instructions | `P1-default` |
+| `CLAUDE.md` | Auto-loaded Claude Code pointer to `AGENTS.md`, its default read set, live-state discipline, and Git rules | platform auto-load: pointer-only |
 | `docs/POHIKIRI.md` | Canonical product charter and conflict-stop anchor | `P1-default` |
 | `docs/CURRENT_STATE.md` | Current operational handoff | `P1-default` |
 | `docs/PASS_QUEUE.md` | Current/next pass sequencing | `P1-default` |
 | `docs/ACTIVE_SCOPE_LOCK.md` | Current allowlist, forbidden surfaces, validation, and stops | `P1-default` |
+| `docs/PROJECT_MINI_MAP.md` | Pasteable non-authorizing orientation card for assistants without repo access | on-demand: external/chat orientation |
 | `docs/PROJECT_MEMORY.md` | Durable product and architecture memory | on-demand: product/architecture |
 | `docs/TRUTH_INDEX.md` | Semantic invariant and canonical-owner index | on-demand: semantics/event/writer |
 | `docs/PROTECTED_SURFACES.md` | Protected-boundary catalogue | on-demand: protected work |
@@ -36,6 +38,7 @@ The complete default set is exactly:
 | `docs/code_maps/CODE_MAP_STANDARD.md` | Detailed code-map qualification, lifecycle, structure, evidence/write classes, drift, maintenance, SNIPER, and map-audit owner | on-demand: applicable Dart qualification/lifecycle |
 | `docs/code_maps/CODE_MAP_INDEX.md` | Registry of actual maps and their current status | on-demand: Dart target map discovery/status |
 | `docs/code_maps/**` source-specific maps | Descriptive source-specific zones, dependencies, impact, boundaries, and linked tests | on-demand: exact applicable `MAINTAINED` map only |
+| `.agents/skills/**` | Loader-qualified repo-local workflow skills; inventory owned by `docs/CODEX_TOOLING_POLICY.md` | on-demand: `TOOL_SKILL_CHECK` |
 | `docs/MEMORY_REGISTRY.yml` | Machine-readable memory layers/conflict order | on-demand: docs governance |
 | `docs/MEMORY_PROTOCOL.md` | Memory ownership and intake policy | on-demand: docs governance |
 | `docs/MEMORY_MAINTENANCE.md` | Memory/current-state maintenance triggers | on-demand: docs governance |

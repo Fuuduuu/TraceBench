@@ -2,60 +2,34 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
+Current: `TRACEBENCH_AGENT_ORIENTATION_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Current docs-only code-map Phase 2
+## Current docs sync
 
-Phase 1 verified two descriptive code-map bodies against committed source,
-recorded both maps and both index rows as `REVIEW_REQUIRED`, rebased the audit
-artifact to the amended lock, and advanced the route. Phase 2 records the
-independent map audit and promotes both maps and both index rows to
-`MAINTAINED`. It changes no Dart source, test, runtime behavior, or Wizard V2
-product contract.
+The human selected `TRACEBENCH_AGENT_ORIENTATION_PASS` after the completed
+Wizard route reached the non-executable `NEEDS_USER_DECISION` sentinel. The
+current pass makes the established five-file protocol reachable through:
 
-The production target qualifies automatically through five or more
-independently testable behaviors. Its focused widget test qualifies at
-`SCORE 6/12`. Their deterministic maps and index rows were absent at the
-original qualification baseline
-`d8d983f104bb66bec39e182ffcba1dd552005348`.
+- an auto-loaded, pointer-only `CLAUDE.md`
+- a pasteable `docs/PROJECT_MINI_MAP.md` for assistants without repo access
+- inbound ownership and capability-path pointers
+- coherent current route, authority, ledger, and audit evidence
 
-## Satisfied activation condition
+## Prior authority
 
-`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` activated after the amended scope
-lock was accepted and pushed as
-`480d79d9a21ea8bb67dffbabd5e275d51a93b6d7`.
+All four Wizard gates completed at
+`3e5edad0956c852584543bc643ca7306caee9e8e`; their superseding evidence was
+reconciled and pushed at
+`3e7ba9e97b5b45af158b8d7922915065d7677273`. The former eight-file authority
+is spent and grants no writes to this or any later pass.
 
-The active pass is limited to the exact amended eight-file allowlist in
-`docs/ACTIVE_SCOPE_LOCK.md`. Phase 1 stopped with both maps and both index rows
-at `REVIEW_REQUIRED`. The supplied independent audit returned
-`MAP_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_SNIPER_USE: YES`; Phase 2
-therefore promotes them to `MAINTAINED`. Final Claude diff audit remains
-required before staging.
+## Sequencing
 
-`NEEDS_USER_DECISION` is the proposed non-executable next pointer because no
-new successor is authorized or needed for Phase 2. No Wizard implementation
-pass, product behavior, or runtime authority is queued or reserved.
+`NEEDS_USER_DECISION` remains the truthful next pointer. It is non-executable,
+reserves no successor, and requires another explicit human route decision
+before any later pass.
 
-## Scope-lock amendment (accepted and pushed)
-
-`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS` amended the
-lock at baseline `363d86bf81266a6205fff2f0f07d9a302077065c` and was accepted
-and pushed as `480d79d9a21ea8bb67dffbabd5e275d51a93b6d7`.
-
-The exact four-file allowlist referenced above is superseded history. The live
-active allowlist is the exact eight-file list owned by
-`docs/ACTIVE_SCOPE_LOCK.md`, which adds `docs/CURRENT_STATE.md`,
-`docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, and `docs/AUDIT_INDEX.md` so
-the active pass can record its own route state and ledger row in-pass.
-
-At amendment time, `Current` and `Next` were deliberately unchanged because
-the amendment was an in-place fixup of the current lock rather than a second
-active pass. The amendment queued no new pass:
-`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` remained the same reserved
-successor.
-
-That condition is now satisfied. The code-map pass is `Current`, and
-`NEEDS_USER_DECISION` is `Next` without reserving a new executable successor.
-No closeout, route-release, or pointer-reset pass is queued or permitted for
-this route.
+This pass stops before staging for independent audit. No closeout,
+route-release, ceremony, pointer-reset, implementation, or protected-surface
+pass is queued.

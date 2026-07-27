@@ -22,6 +22,13 @@ Always read exactly these five files by default, in this order:
 
 All other documentation, memory, semantic, prompt/model, audit, source/design, map, spec, schema, archive, and implementation-owner material is task-specific. Load it only when the active scope or a canonical pointer requires it.
 
+## Agent orientation entry points
+
+`CLAUDE.md` is the compact auto-loaded Claude Code pointer into this file and
+the five-file default read set. `docs/PROJECT_MINI_MAP.md` is the pasteable
+orientation card for an assistant without repo access. Both are pointers only:
+neither owns current state, route, authority, or product truth.
+
 ## Task-specific routing
 
 - Semantics, events, or writers: `docs/TRUTH_INDEX.md`, `docs/PROTECTED_SURFACES.md`, and the exact relevant spec/schema/runtime owner.
@@ -34,12 +41,14 @@ All other documentation, memory, semantic, prompt/model, audit, source/design, m
 
 ## Capability and code-map preflight
 
-Before every Codex `PASS_ID` action, inspect available repo-local skills,
-tools, helpers, fixtures, and scripts, use the narrowest applicable capability,
-and include `TOOL_SKILL_CHECK` in both the prompt and final report as defined by
-`docs/PROMPTING_PROTOCOL.md`. `none applicable` is valid with evidence. A
-capability cannot expand the active allowlist, and reporting an external tool
-as required is descriptive rather than authorization.
+Before every Codex `PASS_ID` action, inspect loader-qualified repo-local skills
+at `.agents/skills/**`, using `docs/CODEX_TOOLING_POLICY.md` as their inventory
+owner, plus available tools, helpers, fixtures, and scripts. Use the narrowest
+applicable capability and include `TOOL_SKILL_CHECK` in both the prompt and
+final report as defined by `docs/PROMPTING_PROTOCOL.md`. `none applicable` is
+valid with evidence. A capability cannot expand the active allowlist, and
+reporting an external tool as required is descriptive rather than
+authorization.
 
 For implementation, repair, diagnostic, QA, refactor, or review work targeting
 or materially depending on Dart production/test files:

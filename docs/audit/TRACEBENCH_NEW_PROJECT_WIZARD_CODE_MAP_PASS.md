@@ -445,7 +445,8 @@ This reconciliation changes only this existing artifact and this pass's
 change active authority and exceeds the selected reconciliation skill, which
 requires route and authority to remain unchanged.
 
-The current two-file reconciliation is unstaged, uncommitted, unpushed, and
-not yet independently audited. It does not inherit the prior pass's acceptance
+The two-file reconciliation was independently audited `PASS` with
+`SAFE_FOR_STAGING: YES` and committed and pushed as
+`3e7ba9e97b5b45af158b8d7922915065d7677273`. It does not inherit the prior pass's acceptance
 or safe staging set; its own exact two-file diff requires the independent
 audit requested by the accompanying `CLAUDE_AUDIT_PACKET`.

@@ -30,6 +30,7 @@ is spent and grants no writes to this or any later pass.
 reserves no successor, and requires another explicit human route decision
 before any later pass.
 
-This pass stops before staging for independent audit. No closeout,
-route-release, ceremony, pointer-reset, implementation, or protected-surface
-pass is queued.
+The orientation pass was independently audited `PASS` with
+`SAFE_FOR_STAGING: YES` and committed and pushed as
+`d9fd44684e8b15239aadd16b8e348e358258cf3c`. No closeout, route-release,
+ceremony, pointer-reset, implementation, or protected-surface pass is queued.

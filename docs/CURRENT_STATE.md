@@ -35,5 +35,6 @@ No Dart, test, schema, tool, asset, ZIP, runtime, `_incoming`, skill, product,
 or protected-surface behavior is changed. Known routing/docs-hygiene findings
 remain with their existing owners.
 
-This pass reserves no successor and stops unstaged for independent Claude
-audit of its exact nine-file diff.
+The orientation pass reserves no successor. Its exact nine-file diff was
+independently audited `PASS` with `SAFE_FOR_STAGING: YES`, then committed and
+pushed as `d9fd44684e8b15239aadd16b8e348e358258cf3c`.

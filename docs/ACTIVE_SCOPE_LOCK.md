@@ -2,8 +2,8 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
+Next: `NEEDS_USER_DECISION`
 
 ## Exact future allowlist
 
@@ -39,9 +39,11 @@ both its PASS_ID and an allowlist, and is deficient only by narrowness.
 `docs/PASS_LIFECYCLE.md:47-48` is supporting analogy only; it governs protected
 implementation locks and is not triggered literally here.
 
-`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` remains conditionally reserved and
-may activate only after this exact amendment diff is independently accepted and
-pushed. Its complete future write allowlist is exactly:
+The activation condition for
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` is satisfied: the amendment was
+accepted and pushed as
+`480d79d9a21ea8bb67dffbabd5e275d51a93b6d7`. The pass is now active, and its
+complete write allowlist is exactly:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
@@ -52,13 +54,13 @@ pushed. Its complete future write allowlist is exactly:
 - `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
 - `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS.md`
 
-No other file is authorized. This amendment does not advance `Current` or
-`Next`, arms no implementation authority, and grants no Wizard V2 product,
+No other file is authorized. The amendment itself did not advance `Current` or
+`Next`, armed no implementation authority, and granted no Wizard V2 product,
 runtime, Dart, test, schema, tool, asset, or protected-surface authority.
 
-`Current` and `Next` are deliberately unchanged because this amendment is an
-in-place fixup of the current lock, not a second active pass. It opens no
-parallel PASS_ID beside
+At amendment time, `Current` and `Next` were deliberately unchanged because
+the amendment was an in-place fixup of the current lock, not a second active
+pass. It opened no parallel PASS_ID beside
 `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_PASS`, whose PASS_ID is
 already complete, committed, and pushed.
 
@@ -67,7 +69,7 @@ already complete, committed, and pushed.
 Both map files and both `docs/code_maps/CODE_MAP_INDEX.md` rows must begin as
 `REVIEW_REQUIRED`. An uncommitted worktree copy that already reads `MAINTAINED`
 carries no authority and must be reverted to `REVIEW_REQUIRED` inside the
-successor pass before its diff is offered for audit.
+active pass before its diff is offered for audit.
 
 Both required audits occur inside `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS`
 itself, before any staging, in this order:
@@ -80,17 +82,21 @@ itself, before any staging, in this order:
 3. Final independent Claude diff audit of the complete eight-file diff.
 4. Exact human `git add <file>` staging, then commit and push.
 
-The successor advances `Current` and `Next` itself within that same pass. No
-closeout, route-release, ceremony, or pointer-reset pass may be created for this
-route.
+Phase 1 advances `Current` to
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` and `Next` to the non-executable
+`NEEDS_USER_DECISION` sentinel. Phase 2 remains inside the same PASS_ID after a
+clean map-to-code audit; the sentinel reserves no executable successor. No
+closeout, route-release, ceremony, or pointer-reset pass may be created for
+this route.
 
 ## Future map-pass contract
 
-This section remains in force as amended: `## Amended exact future allowlist`
+This section governs the active pass as amended:
+`## Amended exact future allowlist`
 and `## Amended status and audit gates` above add the route and ledger
 obligations and the audit sequencing, and win on any conflict.
 
-The future pass must describe accepted committed source only, follow
+The active pass must describe accepted committed source only, follow
 `docs/code_maps/CODE_MAP_STANDARD.md`, use stable symbol anchors rather than
 maintained line numbers, create exactly two map files and two index rows, and
 keep both maps descriptive and non-authorizing.
@@ -99,7 +105,7 @@ Both map files and index rows must begin as `REVIEW_REQUIRED`. Independent
 Claude map-to-code audit is required before changing them to `MAINTAINED`, and
 a final Claude diff audit is required before staging.
 
-The mapped production and test files are inspect-only. The future pass must not
+The mapped production and test files are inspect-only. The active pass must not
 edit Dart, tests, schemas, tools, runtime, UI, assets, ZIP files, Project
 Sources, handoffs, or design inputs.
 
@@ -110,5 +116,5 @@ collision, persistence, event, outline, component, placement, router, writer,
 or protected-surface authority is active or reserved.
 
 Stop if either target no longer qualifies, any file outside the exact amended
-eight-file successor allowlist is required, source or test changes are needed,
+eight-file active-pass allowlist is required, source or test changes are needed,
 or any product/implementation decision is required.

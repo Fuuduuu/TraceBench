@@ -26,3 +26,24 @@ future allowlist is owned by `docs/ACTIVE_SCOPE_LOCK.md`.
 
 The future pass creates only two descriptive maps, two index rows, and its own
 audit artifact. Wizard V2 implementation remains inactive and unreserved.
+
+## Scope-lock amendment (route unchanged)
+
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS` amended the
+lock at baseline `363d86bf81266a6205fff2f0f07d9a302077065c`. The four-file
+future allowlist quoted above is superseded history; the live future authority
+is the exact eight-file list in `docs/ACTIVE_SCOPE_LOCK.md`, which adds the
+three route owners and `docs/AUDIT_INDEX.md`.
+
+The amendment was required because the four-file list left
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` unable to record its own route
+state or the ledger row `docs/AUDIT_CONTRACT.md` requires for every new audit
+artifact. That allowlist is insufficient, not absent.
+
+`Current pass` and `Next recommended pass` are deliberately unchanged by this
+amendment, which is an in-place fixup of the lock `Current pass` already names
+rather than a second active pass. Both map files and both index rows must begin
+as `REVIEW_REQUIRED`;
+the independent map-to-code audit, the promotion to `MAINTAINED`, and the final
+diff audit all occur inside the successor pass before any staging. No closeout
+or route-release pass may be created for this route.

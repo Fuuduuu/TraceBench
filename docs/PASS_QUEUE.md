@@ -29,3 +29,23 @@ That future pass is limited to the exact four-file allowlist in
 
 No Wizard implementation pass, product behavior, or runtime authority is
 queued or reserved.
+
+## Scope-lock amendment (queue unchanged)
+
+`TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS` amended the
+lock at baseline `363d86bf81266a6205fff2f0f07d9a302077065c` and is itself
+awaiting independent audit and push.
+
+The exact four-file allowlist referenced above is superseded history. The live
+future allowlist is the exact eight-file list owned by
+`docs/ACTIVE_SCOPE_LOCK.md`, which adds `docs/CURRENT_STATE.md`,
+`docs/PASS_QUEUE.md`, `docs/ACTIVE_SCOPE_LOCK.md`, and `docs/AUDIT_INDEX.md` so
+the successor can record its own route state and ledger row in-pass.
+
+`Current` and `Next` are deliberately unchanged, because this amendment is an
+in-place fixup of the current lock rather than a second active pass. The
+amendment queues no new
+pass: `TRACEBENCH_NEW_PROJECT_WIZARD_CODE_MAP_PASS` remains the same reserved
+successor, still conditional on this amendment being independently accepted and
+pushed. No closeout, route-release, or pointer-reset pass is queued or
+permitted for this route.

@@ -255,3 +255,81 @@ bounded freeze must prove that no other byte moved.
   authority, baseline, and workflow language
 - no touched file asserts this pass's own staging or audit-pipeline position
 - generic audit/staging rules are distinguished from claims about this pass
+
+## Audit evidence reconciliation after push
+
+This clearly labelled section supersedes only the missing repository audit and
+push evidence. It preserves all original draft-time and Phase 1 content above,
+including the empty designated verdict block.
+
+On 2026-07-28 the human supplied the exact returned independent Claude Code
+audit evidence below. The audit result is user-supplied evidence; the pushed
+commit is independently verifiable Git evidence. Commit or push evidence alone
+does not prove that an audit occurred.
+
+### Returned independent audit
+
+```text
+AUDIT_VERDICT: ACCEPT_AS_IS
+SAFE_FOR_STAGING: YES
+SAFE_STAGING_SET:
+- docs/ACTIVE_SCOPE_LOCK.md
+- docs/CURRENT_STATE.md
+- docs/PASS_QUEUE.md
+- docs/AUDIT_INDEX.md
+- docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS.md
+PHASE_2_RECORDING_AUTHORIZATION: YES
+SCOPE_RESULT: PASS
+ROUTE_RESULT: PASS
+BOUNDARY_RESULT: PASS
+LEDGER_RESULT: PASS
+CODE_MAP_RESULT: PASS
+STEP_1_RESULT: PASS
+DEFERRED_OWNERSHIP_RESULT: PASS
+SELF_REFERENCE_AUDIT: PASS
+TOOL_SKILL_CHECK: PASS
+```
+
+### Returned non-blocking NITs — verbatim
+
+```text
+NIT-1 — artifact:23-24 vs :108-110 phrasing.
+"No separate closeout, release, pointer-reset, **code-map**, or additional child pass is created" sits ~85 lines above "the maps **must be maintained** … in a separate docs-only lock/map pass." Both are true as written (present-tense "is created" vs. a future requirement explicitly not started here), and PASS_QUEUE:82 already dropped "code-map" from its equivalent list. A reader skimming only line 23 could misread it as forbidding the later map pass. Non-blocking.
+
+NIT-2 — artifact:216-217 wording.
+"no touched-doc validation finding was emitted before the permission failure" is true but implies doc validation is in the validator's remit for these files. It is not: the only `docs/` input anywhere in the chain is `docs/PROJECT_STATE.yml` via `tools/validate_project_state.py`, which is outside the changed set and verified unchanged. None of the five touched Markdown files is read by any validator. Non-blocking.
+
+"Neither NIT changes a boundary, route, allowlist, or fact. Neither requires a patch before staging."
+```
+
+Neither NIT is resolved by changing the audited scope content.
+
+### Pushed commit evidence
+
+- pushed commit object id:
+  `b61f299521e22aca2a126923f3a1bbbf2fa58808`, verified with
+  `git rev-parse HEAD` and `git rev-parse origin/main`
+- commit subject: `docs: lock new project wizard redesign scope`, verified
+  with `git show -s --format=%s HEAD`
+- parent/base commit object id:
+  `b228a0b8dcfaf9b779b8c5ac5d14d7be2b001c5e`, verified with
+  `git rev-parse HEAD^`
+- exact committed file set, verified with
+  `git diff-tree --no-commit-id --name-only -r HEAD`:
+  - `docs/ACTIVE_SCOPE_LOCK.md`
+  - `docs/AUDIT_INDEX.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/PASS_QUEUE.md`
+  - `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS.md`
+
+### Lifecycle reconciliation
+
+The authorized verdict recording was omitted before staging and push. This
+post-push reconciliation corrects the repository evidence without filling the
+historical empty verdict block or pretending that the required original order
+occurred.
+
+This reconciliation did not change the route tuple, future implementation
+allowlist, scope contract, or implementation authority. It created no new
+PASS_ID, audit artifact, route transition, scope lock, or implementation
+change.

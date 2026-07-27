@@ -2,27 +2,32 @@
 
 ## Current route
 
-Current: `TRACEBENCH_AGENT_ORIENTATION_PASS`
+Current: `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Current docs sync
+## Current protocol pass
 
-The human selected `TRACEBENCH_AGENT_ORIENTATION_PASS` after the completed
-Wizard route reached the non-executable `NEEDS_USER_DECISION` sentinel. The
-current pass makes the established five-file protocol reachable through:
+The human selected `TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` from the
+non-executable `NEEDS_USER_DECISION` sentinel. It owns an exact seven-file
+docs-only change that:
 
-- an auto-loaded, pointer-only `CLAUDE.md`
-- a pasteable `docs/PROJECT_MINI_MAP.md` for assistants without repo access
-- inbound ownership and capability-path pointers
-- coherent current route, authority, ledger, and audit evidence
+- makes `independent audit -> record returned verdict -> exact staging` the
+  canonical order
+- confines post-audit recording to one delimited artifact block and one
+  mechanical ledger Status-cell mirror
+- requires `SELF_REFERENCE_AUDIT` whenever a pass produces an artifact
+- prohibits an artifact or ledger row from asserting its own audit or staging
+  pipeline position
+- creates one evidence artifact and exactly one active-index row
 
-## Prior authority
+## Evidence and history boundary
 
-All four Wizard gates completed at
-`3e5edad0956c852584543bc643ca7306caee9e8e`; their superseding evidence was
-reconciled and pushed at
-`3e7ba9e97b5b45af158b8d7922915065d7677273`. The former eight-file authority
-is spent and grants no writes to this or any later pass.
+The pass begins from pushed baseline
+`fd21a107e6918f355df185beaf2159d366ea0bdb`. Its rules apply to artifacts and
+ledger rows created or updated by this pass or later. The 13 existing
+`PRE-AUDIT SNAPSHOT` records and their artifacts are grandfathered as history
+and remain unchanged. Four unreconciled rows remain assigned to the
+docs-hygiene lock for evidence-by-evidence adjudication.
 
 ## Sequencing
 
@@ -30,7 +35,5 @@ is spent and grants no writes to this or any later pass.
 reserves no successor, and requires another explicit human route decision
 before any later pass.
 
-The orientation pass was independently audited `PASS` with
-`SAFE_FOR_STAGING: YES` and committed and pushed as
-`d9fd44684e8b15239aadd16b8e348e358258cf3c`. No closeout, route-release,
-ceremony, pointer-reset, implementation, or protected-surface pass is queued.
+This protocol pass defines no closeout, route release, pointer reset,
+implementation, or protected-surface pass.

@@ -13,6 +13,13 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - No self-loop: current pass and next recommended pass must not be the same.
 - AUDIT_INDEX row check: new audit artifacts must have a ledger row; folded route-review rows are allowed only when explicit and traceable.
 - No completed pass reopened/pruned: prior audit history must not be deleted, rewritten, or marked active again unless a recovery pass explicitly authorizes it.
+- No self-referential lifecycle claims: an artifact or ledger row may state
+  time-invariant actions the pass performed and verifiable pushed-Git facts
+  such as commit hash, parent, subject, file set, and stat. It must not assert
+  its own current staging or audit-pipeline position with `is unstaged`,
+  `uncommitted`, `unpushed`, `not yet audited`, `awaits audit`, `stops before
+  staging`, or an equivalent claim. Git reports staging position; prose does
+  not.
 - Binding-source check: when a pass cites specs, schemas, tools, or audit files, the diff must remain compatible with those binding sources.
 - Future allowlist / forbidden surfaces check: future implementation scopes must state exact allowed surfaces and forbidden surfaces.
 - Validation/log sanity: claimed validation must match command output; expected non-blocking warnings should be classified explicitly.
@@ -41,6 +48,49 @@ Apply these checks to every contract unless the pass explicitly narrows them fur
 - Code-map lifecycle: verify `UPDATE_REQUIRED` routes to later docs-only map
   maintenance against accepted committed source, and multi-zone work had a new
   explicit human scope decision or stopped with `DECOMPOSE_REQUIRED`.
+
+## Verdict-recording gate: audit -> record verdict -> stage
+
+For every pass that creates or updates an audit artifact and ledger row, use
+this order:
+
+1. Prepare the complete Phase 1 diff. The artifact contains exactly one named,
+   clearly delimited, empty verdict block, and the ledger row describes what
+   the pass is without asserting its pipeline position.
+2. Name the verdict block's file, marker text, and current line range in the
+   `CLAUDE_AUDIT_PACKET`. The independent auditor reviews the complete Phase 1
+   diff except the empty block and returns the canonical `AUDIT_VERDICT`,
+   `SAFE_FOR_STAGING`, and `SAFE_STAGING_SET`.
+3. After that audit returns and before any staging, copy the returned verdict
+   into the designated block and mirror the same verdict, safety result, and
+   exact safe staging set in the pass's existing ledger Status cell. The block
+   is the only discretionary content filled after audit; the ledger edit is a
+   mechanical mirror of it. Both edits belong to the same exact staged set as
+   the audited pass.
+4. Freeze and compare the Phase 1 and Phase 2 forms. Prove that no byte outside
+   the designated block and the one named ledger Status cell moved, that the
+   changed-file set did not expand, and that the two verdict records agree.
+   This is the same bounded-exception principle as the map-body freeze: name
+   the exception, bound it, and prove that everything outside it stayed fixed.
+
+The auditor's Phase 1 result must expressly authorize only that bounded,
+mechanical Phase 2 recording. Any other content change requires another audit.
+
+The first validated use of the no-self-referential-lifecycle rule was
+`TRACEBENCH_AUDIT_EVIDENCE_RECONCILIATION`: its mechanical
+`SELF_REFERENCE_AUDIT` passed, and it required no follow-up evidence repair.
+
+### Prospective adoption and historical snapshots
+
+The verdict-recording and no-self-referential-lifecycle rules apply to every
+artifact or ledger row created or updated by
+`TRACEBENCH_AUDIT_EVIDENCE_PROTOCOL_PASS` or a later pass.
+
+The 13 existing `PRE-AUDIT SNAPSHOT` ledger records and their artifacts remain
+historical evidence and are not rewritten by this protocol pass. Four remain
+unreconciled under the docs-hygiene lock. That lock must determine separately
+for each row whether an independent audit actually ran; a commit or push is
+not evidence that it did.
 
 ## Protected implementation activation gate
 

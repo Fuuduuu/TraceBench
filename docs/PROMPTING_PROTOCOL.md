@@ -39,7 +39,19 @@ handoffs, and future-work prompt drafts do not emit one.
 
 `docs/AUDIT_CONTRACT.md` is the sole owner of the packet's exact input/header
 shape and required verdict fields. The surrounding post-change report must also
-include `TOOL_SKILL_CHECK` and, when applicable, `CODE_MAP_PREFLIGHT`.
+include `TOOL_SKILL_CHECK`, `SELF_REFERENCE_AUDIT` for any pass that creates or
+updates an audit artifact, and, when applicable, `CODE_MAP_PREFLIGHT`.
+
+For a pass with an audit artifact, the packet must name the designated empty
+verdict block and the exact ledger Status cell that will mechanically mirror
+the returned result. The required sequence is:
+
+```text
+independent audit -> record returned verdict -> exact staging
+```
+
+The bounded recording and freeze-proof requirements are owned by
+`docs/AUDIT_CONTRACT.md`.
 
 For visual or product-surface work, Codex still prepares the packet, but the packet must be marked:
 
@@ -108,6 +120,16 @@ Every Codex `PASS_ID` prompt must include:
 helper/model identity belongs to `docs/MODEL_ROUTING.md` and is never a Lane.
 
 Include `CODE_MAP_PREFLIGHT` when the conditional rule below applies.
+
+When a pass creates or updates an audit artifact, its `Output` field must also
+require:
+
+```text
+SELF_REFERENCE_AUDIT:
+- touched artifact, ledger, and route-owner files checked
+- no touched file asserts this pass's own staging or audit-pipeline position
+- generic policy examples distinguished from claims about the current pass
+```
 
 ## Conditional code-map preflight
 
@@ -210,13 +232,13 @@ Never:
 <forbidden surfaces>
 
 Do:
-<numbered required outcomes>
+<numbered required outcomes; artifact passes use independent audit -> record returned verdict -> exact staging>
 
 Validate:
 <exact commands>
 
 Output:
-<required report fields>
+<required report fields; include SELF_REFERENCE_AUDIT when an artifact is created or updated>
 
 Stop if:
 <hard stop conditions>
@@ -443,6 +465,11 @@ pass. This removes ceremony, not protected-surface review or audit.
 
 TraceBench staging must be explicit:
 
+- preserve the order `independent audit -> record returned verdict -> exact
+  staging`;
+- before staging, fill only the artifact's designated verdict block and the
+  matching ledger Status cell, then prove the bounded Phase 1-to-Phase 2 delta
+  required by `docs/AUDIT_CONTRACT.md`;
 - never use `git add .`;
 - never use `git add -A`;
 - never broad-stage unrelated changed files;

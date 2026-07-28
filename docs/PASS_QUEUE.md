@@ -2,18 +2,17 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Live consolidated scope queue
+## Live lock queue
 
-The explicit human in-place authority keeps one current PASS_ID and one exact
-nine-file docs/map allowlist. This current pass is the single consolidated
-scope phase; no additional amendment, scope, map prerequisite, sync, closeout,
-or audit-of-audit pass precedes implementation.
+The accepted Home-to-Wizard implementation is committed and pushed. One exact
+docs/map lock owns the map refresh, supplied implementation evidence, bounded
+scope-evidence reconciliation, and route release:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
@@ -27,22 +26,24 @@ Current write allowlist:
 - `docs/code_maps/CODE_MAP_INDEX.md`
 - `docs/code_maps/lib/app/app.dart.md`
 - `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
 - `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
 - `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
 
-No tenth current-pass file is authorized. The current pass maps only the
-accepted committed `HEAD` versions of `lib/app/app.dart`,
-`lib/features/home/screens/benchbeep_home_screen.dart`, and
-`test/widget/benchbeep_home_screen_test.dart`; the two local Wizard files are
-frozen carryover and not accepted map input.
+No thirteenth current-pass file is authorized. No Dart or test edit is
+authorized.
 
-All three maps and registry rows begin `REVIEW_REQUIRED`. Their bodies record
-the current disabled Home action and existing router seam, not the reserved
-future implementation. Independent map-to-code audit gates mechanical
-promotion to `MAINTAINED`; final independent audit covers the complete
-nine-file scope diff.
+All five affected maps and registry rows are `REVIEW_REQUIRED`. Their bodies
+record only committed `HEAD`
+`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`: active Home create navigation,
+the existing `/new-project` Wizard, honest six-step placeholder progress,
+draft/cancellation behavior, responsive tests, and the zero-write boundary.
+Independent map-to-code audit gates mechanical promotion of exactly those five
+map headers and five index cells to `MAINTAINED`.
 
-## Next implementation/build
+## Accepted implementation and route release
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS
@@ -50,7 +51,9 @@ Lane: A
 Mode: FLUTTER_PASS
 ```
 
-Exact implementation write allowlist:
+Committed and pushed as
+`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`
+(`feat: activate Home-to-Wizard flow`) with exactly:
 
 - `lib/features/project/screens/new_project_wizard_screen.dart`
 - `test/widget/new_project_wizard_screen_test.dart`
@@ -58,51 +61,32 @@ Exact implementation write allowlist:
 - `lib/features/home/screens/benchbeep_home_screen.dart`
 - `test/widget/benchbeep_home_screen_test.dart`
 
-No sixth implementation file.
+The human-supplied independent audit returned
+`AUDIT_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_STAGING: YES`. Both findings
+were non-blocking; their verbatim wording was not supplied, so this queue
+preserves their count/classification without inventing text.
 
-The human explicitly authorizes the coordinated five-file zone combination
-only for:
+The preceding nine-file scope result was independently
+`ACCEPT_AS_IS / SAFE_FOR_STAGING: YES` and pushed as
+`dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`. Its omitted final-verdict record is
+reconciled post-push only at the two designated evidence locations and does not
+claim the original required recording order occurred.
 
-```text
-Home
--> Loo projekt nullist
--> existing /new-project route
--> New Project Wizard foundation
-```
-
-The pass preserves the current six-step Wizard foundation, Step 1 local draft,
-forward/back retention, dirty-draft cancellation, mobile picker safety, and
-unrelated Home actions. It adds and threads the Home create-project callback,
-enables the deferred card without `Tulekul`, calls
-`_openWorkbench(initialLocation: '/new-project')`, and updates the focused Home
-and Wizard tests.
-
-`lib/app/router.dart`, `lib/features/project/screens/home_screen.dart`,
-`lib/shared/services/project_creator.dart`,
-`lib/shared/theme/app_theme.dart`, `pubspec.yaml`, and `pubspec.lock` are
-inspect-only. No creator call, project-state assignment from the new Home
-action, final project creation, filesystem/event/fact/projection/ZIP write,
-schema, writer, materializer, asset, package, tool, or `_incoming` change is
-authorized.
-
-The implementation must return:
+After this lock, the executable queue is empty:
 
 ```text
-CODE_MAP_DISPOSITION: UPDATE_REQUIRED
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
+Next: NEEDS_USER_DECISION
 ```
 
-After accepted and pushed implementation, one later unnamed
-lock/map-maintenance pass updates the affected maps from accepted committed
-source and finalizes routing. It is not named or executed here.
-
-Implementation authority is conditional on independent acceptance and push of
-the exact current nine-file scope. No additional pre-build pass is required.
+No successor PASS_ID or allowlist is armed. `Plaadi kontuur` is recorded only
+as a possible future human decision, not a scheduled or authorized pass.
 
 ## Superseded direct foundation reservation (historical)
 
 Every subsection below through `### Sequencing` preserves the original
-two-file foundation lock as historical scope evidence. Its direct current
-execution pointer is superseded by the live code-map reservation above.
+two-file foundation lock as historical scope evidence. Later scope and
+implementation work superseded and completed it; none of it is queued now.
 
 ### Current scope lock
 

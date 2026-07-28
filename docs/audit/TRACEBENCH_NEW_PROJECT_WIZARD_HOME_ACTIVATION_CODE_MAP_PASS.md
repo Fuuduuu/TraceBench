@@ -462,6 +462,39 @@ belong only inside:
 
 <!-- TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS_FINAL_DIFF_VERDICT_BLOCK_BEGIN -->
 
+### Returned final-diff evidence reconciled after push
+
+The human attests that the complete nine-file scope diff received:
+
+```text
+AUDIT_VERDICT: ACCEPT_AS_IS
+SAFE_FOR_STAGING: YES
+SCOPE_EVIDENCE_RECONCILIATION: POST_PUSH
+RECONCILIATION_AUTHORIZATION: YES
+ORIGINAL_PRE_STAGING_RECORDING_ORDER_CLAIMED: NO
+```
+
+Exact returned `SAFE_STAGING_SET`:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/app/app.dart.md`
+- `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
+- `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
+
+Git verifies that exact set was committed and pushed as
+`dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`
+(`docs: map and lock Home-to-Wizard implementation scope`), parent
+`bef91f2c851032b8234db94fb27e47ae3212adf2`.
+
+The required verdict recording was omitted before staging and push. This
+reconciliation records the supplied result retrospectively and does not
+represent that the original evidence-protocol order occurred.
+
 <!-- TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS_FINAL_DIFF_VERDICT_BLOCK_END -->
 
 Ledger mirror: the `Status` cell of the same matching row in

@@ -1,13 +1,77 @@
 # Current State
 
 Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS`
+
+## Live amendment state
+
+The human approved enabling BenchBeep Home `Loo projekt nullist` and routing it
+to the existing `/new-project` Wizard. The current docs action is the in-place,
+five-file
+`TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS`;
+it is neither a parallel route nor a closeout and creates no implementation
+authority.
+
+Manual smoke found no Wizard code defect requiring a patch, but staging of the
+existing two-file Wizard implementation is blocked because Home still renders
+`Loo projekt nullist` as disabled with `Tulekul`. The current Home source and
+widget test deliberately enforce that state. The human decision approves the
+direction, not the implementation.
+
+The next executable work is one docs-only pass:
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Its exact nine-file allowlist is:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/app/app.dart.md`
+- `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
+- `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
+
+That pass maps only accepted committed `HEAD` versions of the three Home
+activation targets, changes no Dart or tests, creates exactly three
+`REVIEW_REQUIRED` maps and three matching index rows, and completes its
+map-to-code audit before any `MAINTAINED` promotion. Its final independent
+audit covers the complete nine-file diff.
+
+On completion it records:
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS
+Next: NEEDS_USER_DECISION
+```
+
+No later runtime pass is named or reserved. Home activation remains deferred
+intent. The existing Wizard implementation files are frozen, untouched
+carryover outside both docs allowlists and require a fresh complete
+Home-to-Wizard manual smoke after later lawful implementation.
+
+Router, persistence, `ProjectCreator`, project creation, canonical writes, and
+all unrelated Home actions remain unchanged.
+
+## Superseded original scope record (historical)
 
 This Lane A docs sync records the human's 2026-07-27 choice of the BenchBeep
 `Loo projekt nullist` redesign as the next priority and locks one narrow future
 implementation pass. It changes no product behavior now.
 
-## Authority basis
+The original direct
+`TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS` ->
+`TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS` pointer and two-file allowlist
+below remain historical scope evidence. They are superseded for current
+execution sequencing by the live code-map route above.
+
+### Authority basis
 
 Baseline `b228a0b8dcfaf9b779b8c5ac5d14d7be2b001c5e`
 (`docs: repair archive attestation and evidence ownership`) contains the
@@ -20,7 +84,7 @@ The explicit human decision replaces the non-executable
 allowlist is inherited and no separate closeout, release, or pointer-reset pass
 is created.
 
-## Locked implementation
+### Locked implementation
 
 `TRACEBENCH_NEW_PROJECT_WIZARD_FOUNDATION_PASS` may later change exactly:
 
@@ -55,7 +119,7 @@ change. Its `CODE_MAP_DISPOSITION: UPDATE_REQUIRED`; after accepted committed
 implementation, map maintenance belongs to a separate unnamed and unarmed
 docs-only lock/map pass.
 
-## Source and boundary
+### Source and boundary
 
 The exact design handoff under
 `_incoming/ui_redesign/TraceBench_new_project_wizard/design_handoff_loo_projekt_nullist`

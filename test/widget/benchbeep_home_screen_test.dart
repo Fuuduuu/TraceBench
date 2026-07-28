@@ -13,6 +13,7 @@ import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/home/screens/benchbeep_home_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/home_screen.dart';
+import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -175,6 +176,7 @@ Widget _homeHarness({
   Future<void> Function()? onLoadBundledProject,
   Future<void> Function(BuildContext context)? onImportProject,
   Future<void> Function(BuildContext context)? onOpenProjectFolder,
+  VoidCallback? onCreateProject,
   VoidCallback? onOpenProject,
   VoidCallback? onOpenWorkbench,
   Future<void> Function()? onExitRequested,
@@ -185,6 +187,7 @@ Widget _homeHarness({
       onLoadBundledProject: onLoadBundledProject ?? () async {},
       onImportProject: onImportProject ?? (_) async {},
       onOpenProjectFolder: onOpenProjectFolder ?? (_) async {},
+      onCreateProject: onCreateProject ?? () {},
       onOpenProject: onOpenProject ?? () {},
       onOpenWorkbench: onOpenWorkbench ?? () {},
       onExitRequested: onExitRequested ?? () async {},
@@ -274,7 +277,18 @@ void main() {
     expect(find.text('Jätka avatud projektiga'), findsOneWidget);
     expect(find.text('Lae projekt'), findsAtLeastNWidgets(1));
     expect(find.text('Seadista telefon'), findsOneWidget);
-    expect(find.text('Tulekul'), findsNWidgets(3));
+    expect(find.text('Tulekul'), findsNWidgets(2));
+    final newProjectAction = tester.widget<InkWell>(
+      find
+          .descendant(
+            of: find.byKey(
+              const ValueKey('benchbeep_home_new_project_deferred'),
+            ),
+            matching: find.byType(InkWell),
+          )
+          .first,
+    );
+    expect(newProjectAction.onTap, isNotNull);
     final selectedCard = tester.widget<Container>(
       find
           .descendant(
@@ -302,7 +316,6 @@ void main() {
     );
     expect(continueAction.onTap, isNull);
     for (final disabledKey in [
-      const ValueKey('benchbeep_home_new_project_deferred'),
       const ValueKey('benchbeep_home_phone_setup_deferred'),
     ]) {
       final disabledAction = tester.widget<InkWell>(
@@ -373,6 +386,94 @@ void main() {
     expect(find.textContaining('Save beep'), findsNothing);
     expect(find.textContaining('Confirm'), findsNothing);
     expect(find.textContaining('Edit Layout'), findsNothing);
+  });
+
+  testWidgets(
+    'new project action is enabled, unbadged, and invokes only its callback',
+    (tester) async {
+      var createCount = 0;
+      var sampleCount = 0;
+      var zipCount = 0;
+      var folderCount = 0;
+      var openProjectCount = 0;
+      var openWorkbenchCount = 0;
+      var exitCount = 0;
+
+      await tester.pumpWidget(
+        _homeHarness(
+          onLoadBundledProject: () async => sampleCount += 1,
+          onImportProject: (_) async => zipCount += 1,
+          onOpenProjectFolder: (_) async => folderCount += 1,
+          onCreateProject: () => createCount += 1,
+          onOpenProject: () => openProjectCount += 1,
+          onOpenWorkbench: () => openWorkbenchCount += 1,
+          onExitRequested: () async => exitCount += 1,
+        ),
+      );
+
+      final action = find.byKey(
+        const ValueKey('benchbeep_home_new_project_deferred'),
+      );
+      expect(action, findsOneWidget);
+      expect(
+        find.descendant(of: action, matching: find.text('Tulekul')),
+        findsNothing,
+      );
+      expect(
+        tester
+            .widget<InkWell>(
+              find.descendant(of: action, matching: find.byType(InkWell)).first,
+            )
+            .onTap,
+        isNotNull,
+      );
+
+      await tester.tap(action);
+      await tester.pump();
+
+      expect(createCount, 1);
+      expect(sampleCount, 0);
+      expect(zipCount, 0);
+      expect(folderCount, 0);
+      expect(openProjectCount, 0);
+      expect(openWorkbenchCount, 0);
+      expect(exitCount, 0);
+    },
+  );
+
+  testWidgets('new project action opens the existing Wizard route', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final action = find.byKey(
+      const ValueKey('benchbeep_home_new_project_deferred'),
+    );
+    await tester.ensureVisible(action);
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+
+    final wizard = find.byType(NewProjectWizardScreen);
+    expect(find.byKey(const ValueKey('benchbeep_home_launcher')), findsNothing);
+    expect(
+      find.byKey(const ValueKey('benchbeep_workbench_router')),
+      findsOneWidget,
+    );
+    expect(wizard, findsOneWidget);
+    expect(
+      GoRouter.of(
+        tester.element(wizard),
+      ).routeInformationProvider.value.uri.path,
+      '/new-project',
+    );
+    expect(container.read(projectStateProvider), isNull);
   });
 
   testWidgets('launcher has no hidden legacy compatibility anchors', (

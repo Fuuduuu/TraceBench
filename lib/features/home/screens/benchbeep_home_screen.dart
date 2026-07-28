@@ -7,6 +7,7 @@ class BenchBeepHomeScreen extends StatefulWidget {
     required this.onLoadBundledProject,
     required this.onImportProject,
     required this.onOpenProjectFolder,
+    required this.onCreateProject,
     required this.onOpenProject,
     required this.onOpenWorkbench,
     required this.onExitRequested,
@@ -17,6 +18,7 @@ class BenchBeepHomeScreen extends StatefulWidget {
   final Future<void> Function() onLoadBundledProject;
   final Future<void> Function(BuildContext context)? onImportProject;
   final Future<void> Function(BuildContext context) onOpenProjectFolder;
+  final VoidCallback onCreateProject;
   final VoidCallback onOpenProject;
   final VoidCallback onOpenWorkbench;
   final Future<void> Function() onExitRequested;
@@ -98,6 +100,7 @@ class _BenchBeepHomeScreenState extends State<BenchBeepHomeScreen> {
               loadSelected: _showLoadDetail,
               showSampleAction: isCompact,
               onLoadBundledProject: widget.onLoadBundledProject,
+              onCreateProject: widget.onCreateProject,
               onOpenProject: widget.onOpenProject,
               onSelectLoad: _selectLoadDetail,
             );
@@ -423,6 +426,7 @@ class _LauncherRail extends StatelessWidget {
     required this.loadSelected,
     required this.showSampleAction,
     required this.onLoadBundledProject,
+    required this.onCreateProject,
     required this.onOpenProject,
     required this.onSelectLoad,
   });
@@ -431,6 +435,7 @@ class _LauncherRail extends StatelessWidget {
   final bool loadSelected;
   final bool showSampleAction;
   final Future<void> Function() onLoadBundledProject;
+  final VoidCallback onCreateProject;
   final VoidCallback onOpenProject;
   final VoidCallback onSelectLoad;
 
@@ -445,15 +450,14 @@ class _LauncherRail extends StatelessWidget {
           _SampleProjectButton(onPressed: onLoadBundledProject),
           const SizedBox(height: 10),
         ],
-        const _ModeButton(
-          key: ValueKey('benchbeep_home_new_project_deferred'),
+        _ModeButton(
+          key: const ValueKey('benchbeep_home_new_project_deferred'),
           index: '01',
           label: 'Loo projekt nullist',
           detail: 'plaadi kontuur ja komponendid',
-          badge: 'Tulekul',
-          enabled: false,
+          enabled: true,
           active: false,
-          onPressed: null,
+          onPressed: onCreateProject,
         ),
         const SizedBox(height: 11),
         _ModeButton(

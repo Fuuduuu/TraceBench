@@ -64,6 +64,8 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
           onLoadBundledProject: _loadBundledProject,
           onImportProject: _importProjectZip,
           onOpenProjectFolder: _openProjectDirectory,
+          onCreateProject: () =>
+              _openWorkbench(initialLocation: '/new-project'),
           onOpenProject: () => _openWorkbench(initialLocation: '/project'),
           onOpenWorkbench: _openWorkbench,
           onExitRequested: windowManager.close,

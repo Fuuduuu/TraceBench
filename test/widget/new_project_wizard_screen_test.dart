@@ -1,18 +1,9 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:trace_bench_viewer/app/router.dart';
-import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
-import 'package:trace_bench_viewer/shared/models/known_facts.dart';
-import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
-import 'package:trace_bench_viewer/shared/models/project_state.dart';
-import 'package:trace_bench_viewer/shared/services/project_creator.dart';
 import 'package:trace_bench_viewer/shared/services/python_runner.dart';
-import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 class _TestPlatformInfo extends PlatformInfo {
   const _TestPlatformInfo(this._isMobile);
@@ -23,243 +14,608 @@ class _TestPlatformInfo extends PlatformInfo {
   bool get isMobile => _isMobile;
 }
 
-class _FakeProjectCreator extends ProjectCreator {
-  _FakeProjectCreator(this._handler);
-
-  final Future<ProjectCreationResult> Function(ProjectCreationRequest request)
-      _handler;
-  final List<ProjectCreationRequest> requests = <ProjectCreationRequest>[];
-
-  @override
-  Future<ProjectCreationResult> createProject(
-      ProjectCreationRequest request) async {
-    requests.add(request);
-    return _handler(request);
-  }
-}
-
-class _FakeDirectoryPicker extends FilePicker {
-  _FakeDirectoryPicker(this.directoryPath);
-
-  final String directoryPath;
-
-  @override
-  Future<String?> getDirectoryPath({
-    String? dialogTitle,
-    String? initialDirectory,
-    bool lockParentWindow = false,
-  }) async {
-    return directoryPath;
-  }
-}
-
-ProjectState _inlineProjectState({bool stale = false}) {
-  return ProjectState(
-    manifest: ProjectManifest.fromJson({
-      'project_id': 'prj_a1b2c3d4',
-      'schema_version': '1.0',
-      'created_at': '2026-05-25T10:00:00Z',
-      'device_type': 'unknown',
-      'model': 'unknown',
-      'symptom': 'not_provided',
-    }),
-    knownFacts: KnownFacts.fromJson({
-      'project_id': 'prj_a1b2c3d4',
-      'components': <Map<String, dynamic>>[],
-      'pins': <Map<String, dynamic>>[],
-      'measurements': <Map<String, dynamic>>[],
-      'nets': <Map<String, dynamic>>[],
-      'photos': <Map<String, dynamic>>[],
-      'damage_regions': <Map<String, dynamic>>[],
-      'suspect_regions': <Map<String, dynamic>>[],
-      'visual_traces': <Map<String, dynamic>>[],
-      'excluded_from_fault_candidates': <Map<String, dynamic>>[],
-      'component_pin_index': <String, dynamic>{},
-    }),
-    events: const [],
-    customerReport: '# TraceBench Project Report',
-    projectDirectory: 'C:/tmp/prj_a1b2c3d4',
-    isProjectionStale: stale,
-  );
-}
-
 Widget _buildWizardApp({
-  required ProjectCreator creator,
-  required Future<String?> Function() directoryPicker,
-  required PlatformInfo platformInfo,
+  Future<String?> Function()? directoryPicker,
+  PlatformInfo platformInfo = const _TestPlatformInfo(false),
 }) {
   final router = GoRouter(
     initialLocation: '/new-project',
     routes: <RouteBase>[
       GoRoute(
+        path: '/',
+        builder: (_, __) => const Scaffold(
+          key: ValueKey('test-home'),
+          body: Center(child: Text('Test Home')),
+        ),
+      ),
+      GoRoute(
         path: '/new-project',
         builder: (_, __) => NewProjectWizardScreen(
-          projectCreator: creator,
           directoryPicker: directoryPicker,
           platformInfo: platformInfo,
         ),
       ),
     ],
   );
+  addTearDown(router.dispose);
 
-  return ProviderScope(
-    child: MaterialApp.router(routerConfig: router),
+  return MaterialApp.router(
+    theme: ThemeData(useMaterial3: true),
+    routerConfig: router,
   );
 }
 
+Future<void> _pumpFrames(
+  WidgetTester tester, {
+  int count = 3,
+}) async {
+  for (var index = 0; index < count; index += 1) {
+    await tester.pump(const Duration(milliseconds: 40));
+  }
+}
+
+Future<void> _enterText(
+  WidgetTester tester,
+  String key,
+  String value,
+) async {
+  final finder = find.byKey(ValueKey(key));
+  await tester.ensureVisible(finder);
+  await tester.enterText(finder, value);
+  await tester.pump();
+}
+
+Future<void> _tapKey(WidgetTester tester, String key) async {
+  final finder = find.byKey(ValueKey(key));
+  await tester.ensureVisible(finder);
+  await tester.tap(finder);
+  await _pumpFrames(tester);
+}
+
+Future<void> _completeStepOne(
+  WidgetTester tester, {
+  String projectName = 'Pelle PV20',
+  String deviceName = 'Põletikontroller',
+  String additionalInfo = 'Vahelduv väljalülitumine.',
+}) async {
+  await _enterText(tester, 'wizard-project-name', projectName);
+  await _enterText(tester, 'wizard-device-name', deviceName);
+  await _enterText(tester, 'wizard-additional-info', additionalInfo);
+  await _tapKey(tester, 'wizard-pick-folder');
+}
+
 void main() {
-  testWidgets('folder selection required before create', (tester) async {
-    final creator = _FakeProjectCreator(
-      (_) async => ProjectCreationSuccess(_inlineProjectState()),
-    );
-
-    await tester.pumpWidget(
-      _buildWizardApp(
-        creator: creator,
-        directoryPicker: () async => null,
-        platformInfo: const _TestPlatformInfo(false),
-      ),
-    );
-    await tester.pump();
-
-    await tester.tap(find.byKey(const ValueKey('wizard-create')));
-    await tester.pump();
-
-    expect(find.text('Vali projekti asukoht.'), findsOneWidget);
-    expect(creator.requests, isEmpty);
-  });
-
-  testWidgets('optional fields may be blank and create succeeds',
+  testWidgets('six-step shell renders the exact Estonian step labels',
       (tester) async {
-    final creator = _FakeProjectCreator(
-      (_) async => ProjectCreationSuccess(_inlineProjectState(stale: false)),
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
+    await tester.pump();
 
-    FilePicker? originalPicker;
-    try {
-      originalPicker = FilePicker.platform;
-    } catch (_) {
-      originalPicker = null;
+    for (final label in const <String>[
+      'Projekti andmed',
+      'Plaadi kontuur',
+      'Komponentide asetus',
+      'Probleemi kirjeldus',
+      'Kontroll ja kinnitus',
+      'Kokkuvõte',
+    ]) {
+      expect(find.text(label), findsWidgets);
     }
-    FilePicker.platform = _FakeDirectoryPicker('C:/tmp/projects');
-    addTearDown(() {
-      final pickerToRestore = originalPicker;
-      if (pickerToRestore != null) {
-        FilePicker.platform = pickerToRestore;
-      }
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [projectCreatorProvider.overrideWithValue(creator)],
-        child: MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: '/new-project'),
-        ),
-      ),
-    );
-    await tester.pump();
-
-    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('wizard-create')));
-    await tester.pumpAndSettle();
-
-    expect(creator.requests.length, 1);
-    expect(creator.requests.single.deviceType, isEmpty);
-    expect(creator.requests.single.model, isEmpty);
-    expect(creator.requests.single.symptom, isEmpty);
-    final boardCanvas = find.byType(BoardCanvasScreen);
-    expect(boardCanvas, findsOneWidget);
-    expect(
-      GoRouter.of(tester.element(boardCanvas))
-          .routeInformationProvider
-          .value
-          .uri
-          .path,
-      '/project',
-    );
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
   });
 
-  testWidgets('collision shows error', (tester) async {
-    final creator = _FakeProjectCreator(
-      (_) async => const ProjectCreationCollision(),
-    );
-
+  testWidgets('Step 1 renders all four locked fields', (tester) async {
     await tester.pumpWidget(
-      _buildWizardApp(
-        creator: creator,
-        directoryPicker: () async => 'C:/tmp/projects',
-        platformInfo: const _TestPlatformInfo(false),
-      ),
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
-    await tester.pump();
-
-    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('wizard-create')));
-    await tester.pump();
-
-    expect(find.text('Projektikaust on juba olemas.'), findsOneWidget);
-  });
-
-  testWidgets('materializer failure shows sanitized message', (tester) async {
-    final creator = _FakeProjectCreator(
-      (_) async => const ProjectCreationMaterializerFailed(
-        sanitizedMessage:
-            'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
-        rawDetail: 'C:\\Users\\demo\\Traceback: raw internals',
-      ),
-    );
-
-    await tester.pumpWidget(
-      _buildWizardApp(
-        creator: creator,
-        directoryPicker: () async => 'C:/tmp/projects',
-        platformInfo: const _TestPlatformInfo(false),
-      ),
-    );
-    await tester.pump();
-
-    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
-    await tester.pump();
-    await tester.tap(find.byKey(const ValueKey('wizard-create')));
     await tester.pump();
 
     expect(
-      find.text(
-        'Materialiseerimine ebaõnnestus. Kontrolli projekti sündmuste faili.',
+      find.byKey(const ValueKey('wizard-project-name')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-device-name')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-pick-folder')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-additional-info')),
+      findsOneWidget,
+    );
+    expect(find.text('Projekti nimi'), findsOneWidget);
+    expect(find.text('Seadme nimetus'), findsOneWidget);
+    expect(find.text('Salvestuskoht'), findsOneWidget);
+    expect(find.text('Lisainfo'), findsOneWidget);
+  });
+
+  testWidgets('Edasi is disabled without a nonblank project name',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-pick-folder');
+    await _enterText(tester, 'wizard-project-name', '   ');
+
+    final next = tester.widget<FilledButton>(
+      find.byKey(const ValueKey('wizard-next')),
+    );
+    expect(next.onPressed, isNull);
+  });
+
+  testWidgets('Edasi is disabled without a selected parent path',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => null),
+    );
+    await tester.pump();
+
+    await _enterText(tester, 'wizard-project-name', 'Pelle PV20');
+
+    final next = tester.widget<FilledButton>(
+      find.byKey(const ValueKey('wizard-next')),
+    );
+    expect(next.onPressed, isNull);
+  });
+
+  testWidgets('valid name and selected path advance to Step 2', (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _completeStepOne(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-2')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('wizard-placeholder-2')),
+        matching: find.text('Samm 2 / 6'),
       ),
       findsOneWidget,
     );
-    expect(find.textContaining('Traceback'), findsNothing);
-    expect(find.textContaining('C:\\Users\\'), findsNothing);
   });
 
-  testWidgets('mobile placeholder shown and directory picker is not opened',
+  testWidgets(
+      'selected parent path and safety copy state zero-write limitations',
       (tester) async {
-    var pickerOpened = false;
-    final creator = _FakeProjectCreator(
-      (_) async => const ProjectCreationMobilePlaceholder(),
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-pick-folder');
+
+    expect(find.text('C:/projects'), findsOneWidget);
+    expect(
+      find.text(
+        'Lõplik projekti loomine ei ole selles wizardis veel rakendatud.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Salvestuskoha valimine ei loo kausta ega faili.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Projekt luuakse alles wizardi lõpetamisel.'),
+      findsNothing,
+    );
+    expect(find.textContaining('projektikaust'), findsNothing);
+    expect(find.textContaining('kirjutatav'), findsNothing);
+    expect(find.textContaining('kollisioon'), findsNothing);
+  });
+
+  testWidgets('back and forward navigation preserve every Step 1 draft value',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _completeStepOne(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-back');
+
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-project-name')),
+          )
+          .controller!
+          .text,
+      'Pelle PV20',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-device-name')),
+          )
+          .controller!
+          .text,
+      'Põletikontroller',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-additional-info')),
+          )
+          .controller!
+          .text,
+      'Vahelduv väljalülitumine.',
+    );
+    expect(find.text('C:/projects'), findsOneWidget);
+
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-2')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Steps 2 through 6 are honest non-functional placeholders',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _completeStepOne(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    const labels = <int, String>{
+      2: 'Plaadi kontuur',
+      3: 'Komponentide asetus',
+      4: 'Probleemi kirjeldus',
+      5: 'Kontroll ja kinnitus',
+      6: 'Kokkuvõte',
+    };
+    for (final entry in labels.entries) {
+      final placeholder = find.byKey(
+        ValueKey('wizard-placeholder-${entry.key}'),
+      );
+      expect(placeholder, findsOneWidget);
+      expect(
+        find.descendant(
+          of: placeholder,
+          matching: find.text(entry.value),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: placeholder,
+          matching: find.text('Tulekul'),
+        ),
+        findsOneWidget,
+      );
+      if (entry.key < 6) {
+        await _tapKey(tester, 'wizard-next');
+      }
+    }
+
+    expect(find.byKey(const ValueKey('wizard-create')), findsNothing);
+    expect(find.text('Loo projekt ja ava töölaud'), findsNothing);
+    expect(find.byKey(const ValueKey('wizard-next')), findsNothing);
+  });
+
+  testWidgets('multiline Lisainfo accepts Enter without advancing',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _enterText(
+      tester,
+      'wizard-additional-info',
+      'Esimene rida\nTeine rida',
     );
 
+    final field = tester.widget<TextField>(
+      find.byKey(const ValueKey('wizard-additional-info')),
+    );
+    expect(field.controller!.text, 'Esimene rida\nTeine rida');
+    expect(field.keyboardType, TextInputType.multiline);
+    expect(field.textInputAction, TextInputAction.newline);
+    expect(
+      find.byKey(const ValueKey('wizard-step-1-editor')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('untouched cancellation returns Home without a dialog',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-cancel');
+
+    expect(find.byKey(const ValueKey('test-home')), findsOneWidget);
+    expect(
+      find.text('Katkestada projekti loomine?'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('touched cancellation shows the locked confirmation dialog',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _enterText(tester, 'wizard-device-name', 'Põletikontroller');
+    await _tapKey(tester, 'wizard-cancel');
+
+    expect(
+      find.text('Katkestada projekti loomine?'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Sisestatud andmeid ei salvestata.'),
+      findsOneWidget,
+    );
+    expect(find.text('Jätka loomist'), findsOneWidget);
+    expect(find.text('Katkesta'), findsWidgets);
+  });
+
+  testWidgets('Jätka loomist preserves draft values and current step',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _completeStepOne(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-cancel');
+    await _tapKey(tester, 'wizard-cancel-dialog-continue');
+
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-2')),
+      findsOneWidget,
+    );
+
+    await _tapKey(tester, 'wizard-back');
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-project-name')),
+          )
+          .controller!
+          .text,
+      'Pelle PV20',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-device-name')),
+          )
+          .controller!
+          .text,
+      'Põletikontroller',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-additional-info')),
+          )
+          .controller!
+          .text,
+      'Vahelduv väljalülitumine.',
+    );
+    expect(find.text('C:/projects'), findsOneWidget);
+  });
+
+  testWidgets('confirmed Katkesta returns Home', (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _enterText(tester, 'wizard-project-name', 'Pelle PV20');
+    await _tapKey(tester, 'wizard-cancel');
+    await _tapKey(tester, 'wizard-cancel-dialog-confirm');
+
+    expect(find.byKey(const ValueKey('test-home')), findsOneWidget);
+  });
+
+  testWidgets('mobile folder action does not invoke the picker',
+      (tester) async {
+    var pickerOpened = false;
     await tester.pumpWidget(
       _buildWizardApp(
-        creator: creator,
         directoryPicker: () async {
           pickerOpened = true;
-          return 'C:/tmp';
+          return 'C:/projects';
         },
         platformInfo: const _TestPlatformInfo(true),
       ),
     );
     await tester.pump();
 
-    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
+    await _tapKey(tester, 'wizard-pick-folder');
+
+    expect(
+      find.text('Uue projekti loomine tuleb järgmises versioonis.'),
+      findsOneWidget,
+    );
+    expect(pickerOpened, isFalse);
+    expect(find.text('C:/projects'), findsNothing);
+  });
+
+  testWidgets('wide desktop layout has no overflow', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await _pumpFrames(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-wide-layout')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('compact layout has no overflow', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await _pumpFrames(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-layout')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('progress distinguishes completion from viewed placeholders',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
     await tester.pump();
 
-    expect(find.text('Uue projekti loomine tuleb järgmises versioonis.'),
-        findsOneWidget);
-    expect(pickerOpened, isFalse);
+    final firstProgress = find.byKey(
+      const ValueKey('wizard-progress-step-1'),
+    );
+    expect(
+      find.descendant(
+        of: firstProgress,
+        matching: find.text('Praegune samm'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: firstProgress,
+        matching: find.byIcon(Icons.radio_button_checked),
+      ),
+      findsWidgets,
+    );
+
+    await _completeStepOne(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.descendant(
+        of: firstProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: firstProgress,
+        matching: find.byIcon(Icons.check_circle),
+      ),
+      findsWidgets,
+    );
+    final secondProgress = find.byKey(
+      const ValueKey('wizard-progress-step-2'),
+    );
+    expect(
+      find.descendant(
+        of: secondProgress,
+        matching: find.text('Praegune samm'),
+      ),
+      findsOneWidget,
+    );
+
+    for (var step = 2; step < 6; step += 1) {
+      await _tapKey(tester, 'wizard-next');
+    }
+
+    for (var step = 2; step < 6; step += 1) {
+      final placeholderProgress = find.byKey(
+        ValueKey('wizard-progress-step-$step'),
+      );
+      expect(
+        find.descendant(
+          of: placeholderProgress,
+          matching: find.text('Vaadatud'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: placeholderProgress,
+          matching: find.text('Valmis'),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: placeholderProgress,
+          matching: find.byIcon(Icons.visibility_outlined),
+        ),
+        findsWidgets,
+      );
+    }
+
+    final sixthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-6'),
+    );
+    expect(
+      find.descendant(
+        of: sixthProgress,
+        matching: find.text('Praegune samm'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: sixthProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('no creator, project-state, or project-route action is reachable',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _completeStepOne(tester);
+    for (var step = 1; step < 6; step += 1) {
+      await _tapKey(tester, 'wizard-next');
+    }
+
+    final context = tester.element(
+      find.byKey(const ValueKey('wizard-placeholder-6')),
+    );
+    expect(
+      GoRouter.of(context).routeInformationProvider.value.uri.path,
+      '/new-project',
+    );
+    expect(find.byKey(const ValueKey('wizard-create')), findsNothing);
+    expect(find.text('Loo projekt ja ava töölaud'), findsNothing);
+    expect(find.textContaining('/project'), findsNothing);
   });
 }

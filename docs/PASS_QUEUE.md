@@ -2,18 +2,15 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_REDESIGN_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS`
 
-## Live queue amendment
+## Live consolidated scope queue
 
-The human approved activating Home `Loo projekt nullist` so it opens the
-existing `/new-project` Wizard. The five-file
-`TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_SCOPE_LOCK_AMENDMENT_PASS`
-repairs the current lock in place; it is not a parallel route or closeout and
-does not authorize Home implementation.
-
-The next and only reserved pass is:
+The explicit human in-place authority keeps one current PASS_ID and one exact
+nine-file docs/map allowlist. This current pass is the single consolidated
+scope phase; no additional amendment, scope, map prerequisite, sync, closeout,
+or audit-of-audit pass precedes implementation.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS
@@ -21,7 +18,7 @@ Lane: A
 Mode: DOCS_SYNC
 ```
 
-Exact future write allowlist:
+Current write allowlist:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
@@ -33,31 +30,73 @@ Exact future write allowlist:
 - `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
 - `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
 
-No tenth file and no later runtime PASS_ID are reserved.
-
-The future pass maps only accepted committed `HEAD` versions of
-`lib/app/app.dart`,
+No tenth current-pass file is authorized. The current pass maps only the
+accepted committed `HEAD` versions of `lib/app/app.dart`,
 `lib/features/home/screens/benchbeep_home_screen.dart`, and
-`test/widget/benchbeep_home_screen_test.dart`. All three are live-verified as
-qualifying, absent from `CODE_MAP_INDEX.md`, and absent at their deterministic
-map paths. It changes no Dart or tests, creates exactly three maps and three
-index rows at `REVIEW_REQUIRED`, records actual call-path write classes, runs
-an independent map-to-code audit before clean promotion to `MAINTAINED`, cites
-its own audit artifact in promoted maps, and receives a final independent
-audit over the complete nine-file diff before exact human staging.
+`test/widget/benchbeep_home_screen_test.dart`; the two local Wizard files are
+frozen carryover and not accepted map input.
 
-Its completion route is:
+All three maps and registry rows begin `REVIEW_REQUIRED`. Their bodies record
+the current disabled Home action and existing router seam, not the reserved
+future implementation. Independent map-to-code audit gates mechanical
+promotion to `MAINTAINED`; final independent audit covers the complete
+nine-file scope diff.
+
+## Next implementation/build
 
 ```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS
-Next: NEEDS_USER_DECISION
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
 ```
 
-Home activation remains approved deferred intent, not current map truth or
-runtime authority. The current two-file Wizard implementation diff remains
-untouched carryover and is not accepted source for these maps. After a later
-lawful Home implementation, the complete Home-to-Wizard flow requires fresh
-manual smoke.
+Exact implementation write allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `lib/app/app.dart`
+- `lib/features/home/screens/benchbeep_home_screen.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+
+No sixth implementation file.
+
+The human explicitly authorizes the coordinated five-file zone combination
+only for:
+
+```text
+Home
+-> Loo projekt nullist
+-> existing /new-project route
+-> New Project Wizard foundation
+```
+
+The pass preserves the current six-step Wizard foundation, Step 1 local draft,
+forward/back retention, dirty-draft cancellation, mobile picker safety, and
+unrelated Home actions. It adds and threads the Home create-project callback,
+enables the deferred card without `Tulekul`, calls
+`_openWorkbench(initialLocation: '/new-project')`, and updates the focused Home
+and Wizard tests.
+
+`lib/app/router.dart`, `lib/features/project/screens/home_screen.dart`,
+`lib/shared/services/project_creator.dart`,
+`lib/shared/theme/app_theme.dart`, `pubspec.yaml`, and `pubspec.lock` are
+inspect-only. No creator call, project-state assignment from the new Home
+action, final project creation, filesystem/event/fact/projection/ZIP write,
+schema, writer, materializer, asset, package, tool, or `_incoming` change is
+authorized.
+
+The implementation must return:
+
+```text
+CODE_MAP_DISPOSITION: UPDATE_REQUIRED
+```
+
+After accepted and pushed implementation, one later unnamed
+lock/map-maintenance pass updates the affected maps from accepted committed
+source and finalizes routing. It is not named or executed here.
+
+Implementation authority is conditional on independent acceptance and push of
+the exact current nine-file scope. No additional pre-build pass is required.
 
 ## Superseded direct foundation reservation (historical)
 

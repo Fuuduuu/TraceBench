@@ -2,24 +2,23 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS`
 
-## Human lock and closeout authority
+## Human scope decision and current authority
 
-The human product/scope owner names this one post-build docs/map lock after the
-accepted, committed, and pushed Home-to-Wizard implementation. It updates maps
-from committed source, records supplied implementation evidence, performs the
-bounded scope-evidence reconciliation, and releases the next pointer to the
-non-executable `NEEDS_USER_DECISION` sentinel.
-
-This authority changes no Dart or test file and creates no runtime,
-implementation, contour, persistence, or protected-surface authority.
-
-## Current docs/map authority
+The human selected Wizard Step 2 `Plaadi kontuur v1` as the next product cycle
+and fixed the sequence:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
+SCOPE -> EHITUS -> LOCK
+```
+
+No prerequisite, sync, map, or other pass is inserted before implementation.
+The current docs-only authority is:
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
@@ -30,146 +29,162 @@ Exact current write allowlist:
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/code_maps/lib/app/app.dart.md`
-- `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
-- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-- `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
-- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS.md`
 
-No thirteenth file is authorized.
+No sixth current-pass file is authorized. The verified baseline is
+`HEAD == origin/main ==
+d50e3c13536abb01b60cef2dd170e0f3d4a94cd6`
+(`docs: lock accepted Home-to-Wizard flow`) on `main`, divergence `0 0`, with
+no substantive or cached diff. The prior lock's final audit and ledger record
+are accepted, and both Wizard target maps plus their index rows are
+`MAINTAINED`.
 
-The authority baseline is committed and pushed `HEAD == origin/main ==
-ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa` with subject
-`feat: activate Home-to-Wizard flow`. Its parent is
-`dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`, and the implementation commit
-contains exactly:
-
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
-- `test/widget/new_project_wizard_screen_test.dart`
-
-All five materially changed after their prior maintained maps. This pass
-updates each deterministic map from `git show HEAD:<source>` and changes only
-the five matching index Status cells to `REVIEW_REQUIRED`. Map bodies describe
-the accepted committed behavior:
-
-- Home exposes and threads `onCreateProject`;
-- `Loo projekt nullist` is enabled without `Tulekul`;
-- `TraceBenchApp` opens
-  `_openWorkbench(initialLocation: '/new-project')`;
-- the six-step Wizard remains widget-local and zero-write;
-- only completed Step 1 is `Valmis`; visited prior placeholder Steps 2–5 are
-  `Vaadatud`, while Step 6 remains current when reached and is never `Valmis`;
-- folder selection creates no folder or file and final creation is not
-  implemented;
-- draft retention, bounded navigation, mobile picker safety, and dirty-draft
-  cancellation remain active;
-- Step 6 exposes no final create action; and
-- eighteen Home tests plus eighteen Wizard tests cover the accepted flow and
-  boundaries.
-
-The bounded map lifecycle is:
+## Reserved implementation pass
 
 ```text
-update five map bodies and five index rows to REVIEW_REQUIRED
--> independent map-to-code audit
--> apply only audit-authorized corrections
--> promote exactly the five map headers and five index Status cells to
-   MAINTAINED only after a clean returned map audit
--> record the returned lock verdict in the designated artifact block and
-   matching ledger Status cell
--> exact human staging
-```
-
-## Accepted implementation and supplied audit evidence
-
-```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
 Lane: A
 Mode: FLUTTER_PASS
 ```
 
-Exact committed and pushed implementation set:
+Exact future write allowlist:
 
 - `lib/features/project/screens/new_project_wizard_screen.dart`
 - `test/widget/new_project_wizard_screen_test.dart`
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
 
-Git proves no sixth file in commit
-`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`. The human-supplied independent
-implementation audit returned:
+No third implementation file is authorized. Future authority becomes
+executable only after independent acceptance and human push of this exact
+five-file scope lock. No routine active-lock sync is required after those
+gates.
+
+## Locked behavior
+
+The future implementation may:
+
+- give Step 2 widget-local contour-point, selected-point, and open/closed
+  state;
+- add a point when the human taps empty editor canvas;
+- select and drag an existing point;
+- delete the selected point;
+- reset all points, selection, and closure;
+- enable explicit `Sulge kontuur` only with at least three points;
+- reopen the contour when the human moves, adds, or deletes after closure;
+- enable Step 2 `Edasi` only while the contour is closed;
+- preserve points and closure across Step 2 -> Step 3 -> Step 2 navigation;
+- mark every contour mutation as a dirty Wizard draft;
+- show `Valmis` for completed functional Step 2; and
+- keep visited placeholder Steps 3–6 as `Vaadatud`, never falsely complete.
+
+Wide and compact layouts must keep the editor, handles, controls, and Wizard
+navigation usable without overflow. Existing Step 1 behavior, six-step shell,
+dirty cancellation, zero-write final step, Home-to-Wizard route, and all
+unrelated Wizard behavior remain unchanged.
+
+## Human multi-zone authorization and code-map lifecycle
+
+The human explicitly authorizes one bounded combination of the maintained
+maps' responsibility zones only for:
+
+- Wizard Step 2 state and content;
+- the Step 2 navigation gate;
+- progress semantics;
+- dirty-cancel state;
+- the responsive editor and painter; and
+- focused Wizard tests for those behaviors.
+
+The applicable maps are:
+
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+  — `MAINTAINED`,
+  `AUTO — 5+ independently testable behaviors`;
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+  — `MAINTAINED`,
+  `SCORE 6/12 — multi-family responsive/navigation regression surface`.
+
+Their source and test anchors were verified against committed `HEAD`. The
+future implementation has:
 
 ```text
-AUDIT_VERDICT: ACCEPT_WITH_NITS
-SAFE_FOR_STAGING: YES
+CODE_MAP_DISPOSITION: UPDATE_REQUIRED
 ```
 
-Both returned findings were classified non-blocking. Their verbatim wording is
-not present in the repository or current authority handoff, so this record
-preserves two distinct NITs by count and classification without inventing
-their wording or remediation. The accepted safe staging set and the pushed
-commit are exactly the five paths above.
+After accepted and pushed implementation, one later unnamed LOCK pass updates
+exactly those two maps from accepted committed source. That later pass is not
+named, armed, or executed here.
 
-## Scope-evidence reconciliation boundary
+## Write and product boundary
 
-The predecessor consolidated scope received
-`AUDIT_VERDICT: ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES`, then was committed
-and pushed as `dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`
-(`docs: map and lock Home-to-Wizard implementation scope`) with exactly its
-nine authorized docs/map files.
+The complete future write class is `UI_LOCAL` + `ZERO_WRITE`.
 
-Its final-verdict recording was omitted before that push. This pass records the
-supplied result retrospectively only inside:
+- Contour points, selected point, closure, dirty state, and current step remain
+  transient widget state.
+- Coordinates are editor-local values only, not canonical
+  `board_normalized` data.
+- The contour is a human-created visual candidate only.
+- Closing the contour proves only that the human explicitly closed a visible
+  loop with at least three points.
+- The editor makes no self-intersection, dimension, board-identity,
+  electrical-meaning, or physical-validity claim.
 
-- the empty final-diff verdict block in
-  `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`;
-  and
-- the Status cell of that pass's existing `docs/AUDIT_INDEX.md` row.
+No AI, OCR, CV, photo, or template derivation is authorized. No
+`board_outline_confirmed` event, persistence, `ProjectCreator`, project-state
+assignment, directory/file creation, event, fact, projection, schema, writer,
+materializer, Project ZIP, canonical-coordinate, marker, component, contact,
+pin, measurement, net, or diagnosis behavior is authorized.
 
-The reconciliation explicitly does not claim that the required pre-staging
-recording order occurred. No other byte of the historical artifact or
-description cell is authorized to move.
+## Inspect-only and excluded surfaces
 
-## Route release and possible future decision
+Inspect-only:
 
-The live route is:
+- Board Canvas source, focused test, and both maintained maps;
+- Board Graph canvas;
+- footprint models;
+- Project Overview;
+- `lib/app/router.dart`;
+- Home and app sources/tests;
+- packages and `_incoming`.
 
-```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
-Next: NEEDS_USER_DECISION
-```
+Excluded from the current docs pass and reserved implementation:
 
-No successor implementation or docs pass is armed, reserved, or scheduled.
-`Plaadi kontuur` is recorded only as one possible future human product
-decision. It has no PASS_ID, allowlist, implementation authority, or route
-position.
+- every file outside the applicable exact allowlist;
+- Board Canvas, Board Graph, Project Overview, router, Home, and app edits;
+- marker or component placement behavior;
+- creator, persistence, project-state, canonical, event/fact/projection,
+  schema/writer/materializer, and ZIP behavior;
+- package, dependency, asset, font, theme, tool, or `_incoming` changes; and
+- full-screen/file rewrites or an extraction requiring a third Dart/test file.
 
-The existing `/new-project` route remains unchanged. Router, persistence,
-`ProjectCreator`, project-state assignment from the create action, canonical
-writes, schemas, packages, assets, tools, `_incoming`, and unrelated Home
-actions remain outside this docs/map lock.
+## Implementation validation and acceptance
 
-## Live exclusions and stops
+The reserved implementation must:
 
-The current lock creates no runtime, test, router, persistence,
-`ProjectCreator`, project-state, filesystem, event, fact, schema, writer,
-materializer, projection, Project ZIP, asset, package, `_incoming`, tool, or
-protected-surface write authority. Its maps are descriptive and
-non-authorizing.
+- format both exact Dart targets;
+- run `flutter analyze`;
+- run
+  `flutter test test/widget/new_project_wizard_screen_test.dart`;
+- run full `flutter test`;
+- run `py -3 tools\validate_all.py`;
+- run `git diff --check` and `git diff --cached --check`;
+- prove exactly the two allowlisted changed files and an empty staged set; and
+- complete manual smoke before the independent Claude audit packet is used.
 
-Stop if the current lock needs a thirteenth file; a Dart or test edit is
-required; any target ceases to qualify or cannot be proven from committed
-source; the implementation commit differs from its exact five-file audited
-set; scope reconciliation requires any byte outside the designated block and
-Status cell; any route owner disagrees; or any router, creator, persistence,
-package, asset, tool, `_incoming`, or protected-surface edit becomes necessary.
+Manual smoke covers add/select/drag/delete/reset/close/reopen behavior, Step 2
+gating and retention, dirty cancellation, wide and compact overflow, and the
+absence of any persistent or canonical write. If a focused test hangs or
+stalls, stop after at most two focused patch attempts without broadening
+scope.
+
+## Current exclusions and stops
+
+This docs-only scope pass changes no Dart, test, map, code-map index, runtime,
+schema, tool, asset, package, `_incoming`, or protected-surface behavior. It
+does not stage, commit, push, stash, reset, restore, clean, or delete.
+
+Stop if a sixth docs file is required; the implementation needs a third
+Dart/test file; either maintained map becomes stale, conflicting, or
+unverifiable before implementation; the contour cannot remain widget-local
+and zero-write; Board Canvas or canonical-coordinate behavior becomes
+necessary; or any protected surface cannot remain excluded.
 
 ## Superseded original lock (historical scope evidence)
 

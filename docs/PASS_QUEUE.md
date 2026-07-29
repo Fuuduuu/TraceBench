@@ -2,85 +2,78 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS`
 
-## Live lock queue
+## Current scope queue
 
-The accepted Home-to-Wizard implementation is committed and pushed. One exact
-docs/map lock owns the map refresh, supplied implementation evidence, bounded
-scope-evidence reconciliation, and route release:
+The human selected `Plaadi kontuur v1` and authorized one docs-only scope lock
+with no prerequisite pass:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
 
-Current write allowlist:
+Exact current write allowlist:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/code_maps/lib/app/app.dart.md`
-- `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
-- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-- `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
-- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS.md`
 
-No thirteenth current-pass file is authorized. No Dart or test edit is
-authorized.
+No sixth current-pass file is authorized. No Dart, test, map, code-map index,
+runtime, schema, tool, asset, package, or `_incoming` edit is authorized.
 
-All five affected maps and registry rows are `REVIEW_REQUIRED`. Their bodies
-record only committed `HEAD`
-`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`: active Home create navigation,
-the existing `/new-project` Wizard, honest six-step placeholder progress,
-draft/cancellation behavior, responsive tests, and the zero-write boundary.
-Independent map-to-code audit gates mechanical promotion of exactly those five
-map headers and five index cells to `MAINTAINED`.
-
-## Accepted implementation and route release
+## Reserved implementation queue
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_IMPL_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
 Lane: A
 Mode: FLUTTER_PASS
 ```
 
-Committed and pushed as
-`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`
-(`feat: activate Home-to-Wizard flow`) with exactly:
+Exact implementation write allowlist:
 
 - `lib/features/project/screens/new_project_wizard_screen.dart`
 - `test/widget/new_project_wizard_screen_test.dart`
-- `lib/app/app.dart`
-- `lib/features/home/screens/benchbeep_home_screen.dart`
-- `test/widget/benchbeep_home_screen_test.dart`
 
-The human-supplied independent audit returned
-`AUDIT_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_STAGING: YES`. Both findings
-were non-blocking; their verbatim wording was not supplied, so this queue
-preserves their count/classification without inventing text.
+No third implementation file is authorized. The future pass is limited to
+widget-local Step 2 contour state/content, the Step 2 navigation gate,
+functional progress semantics, dirty-cancel state, a responsive
+editor/painter, and focused Wizard tests.
 
-The preceding nine-file scope result was independently
-`ACCEPT_AS_IS / SAFE_FOR_STAGING: YES` and pushed as
-`dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`. Its omitted final-verdict record is
-reconciled post-push only at the two designated evidence locations and does not
-claim the original required recording order occurred.
+It may add, select, drag, delete, reset, explicitly close, reopen, and retain
+contour points only as transient editor-local state. Step 2 `Edasi` requires a
+closed contour with at least three points. A completed Step 2 may be `Valmis`;
+visited placeholder Steps 3–6 remain `Vaadatud`.
 
-After this lock, the executable queue is empty:
+Both target maps and their index rows are `MAINTAINED`. The future
+implementation has `CODE_MAP_DISPOSITION: UPDATE_REQUIRED`. After accepted and
+pushed implementation, one later unnamed LOCK pass updates the two maps from
+accepted committed source.
+
+## Sequencing
 
 ```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
-Next: NEEDS_USER_DECISION
+TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
+-> one later unnamed LOCK pass
 ```
 
-No successor PASS_ID or allowlist is armed. `Plaadi kontuur` is recorded only
-as a possible future human decision, not a scheduled or authorized pass.
+This is the human-selected `SCOPE -> EHITUS -> LOCK` workflow. Implementation
+activation is conditional on independent acceptance and human push of this
+exact five-file scope lock. The implementation then requires focused and full
+Flutter validation, manual smoke, and independent audit before exact human
+staging. No sync, code-map prerequisite, or other pass is inserted.
+
+The complete route remains `UI_LOCAL` + `ZERO_WRITE`. Board Canvas,
+canonical-coordinate, marker/component placement, AI/OCR/CV/photo/template,
+persistence, creator, project-state, event/fact/projection, schema/writer/
+materializer, ZIP, router, Home, app, package, asset, tool, and `_incoming`
+surfaces remain excluded.
 
 ## Superseded direct foundation reservation (historical)
 

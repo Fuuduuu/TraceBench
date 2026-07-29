@@ -1,80 +1,99 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS`
+Next recommended pass:
+`TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS`
 
-## Live implementation lock state
+## Live contour-v1 scope lock
 
-The accepted Home-to-Wizard implementation is committed and pushed as
-`ec2b82da1c112eaba12e4ae38ee323f8cd27d2fa`
-(`feat: activate Home-to-Wizard flow`) on `main`, with `HEAD == origin/main`
-and exactly five implementation files. The current authority is the single
-docs/map lock:
+The human selected Wizard Step 2 `Plaadi kontuur v1` as the next cycle. The
+active workflow is:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
+SCOPE -> EHITUS -> LOCK
+```
+
+No prerequisite pass is inserted. The current authority is the docs-only
+scope lock:
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
+
+It may change exactly:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/code_maps/lib/app/app.dart.md`
-- `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md`
-- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-- `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
-- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_CODE_MAP_PASS.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS.md`
 
-No thirteenth file is authorized. No runtime or test edit is authorized.
+No sixth current-pass file is authorized. The baseline is committed and
+pushed `HEAD == origin/main ==
+d50e3c13536abb01b60cef2dd170e0f3d4a94cd6`
+(`docs: lock accepted Home-to-Wizard flow`) on `main`, with divergence `0 0`
+and no substantive or cached diff. The predecessor Home-to-Wizard lock is
+accepted and pushed; its five affected map headers and index rows are
+`MAINTAINED`.
 
-All five affected maps and matching index rows are `REVIEW_REQUIRED` and
-describe only committed `HEAD` truth:
-
-- Home exposes and threads `onCreateProject`;
-- `Loo projekt nullist` is enabled without `Tulekul`;
-- the parent opens `_openWorkbench(initialLocation: '/new-project')`;
-- the Wizard has six steps, widget-local draft retention, bounded navigation,
-  dirty cancellation, responsive layouts, and no final create CTA;
-- completed Step 1 may be `Valmis`; visited prior placeholder Steps 2–5 are
-  `Vaadatud`, while Step 6 remains current when reached and is never `Valmis`;
-- selected folder copy promises no folder/file creation and says final
-  creation is not implemented; and
-- the focused Home and Wizard suites each contain eighteen widget tests.
-
-Independent map audit gates the bounded mechanical promotion of exactly five
-map `Status` headers and five matching index Status cells to `MAINTAINED`.
-
-## Accepted implementation evidence
-
-The human-supplied independent implementation audit returned
-`AUDIT_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_STAGING: YES` for the exact
-five-file implementation commit. Both findings were non-blocking. Their
-verbatim wording was not supplied to the repository or this handoff, so the
-lock record preserves two distinct NITs by count/classification without
-inventing text.
-
-The predecessor scope audit returned `AUDIT_VERDICT: ACCEPT_AS_IS` and
-`SAFE_FOR_STAGING: YES`; its exact nine-file result was pushed as
-`dbf0268001afd17ff5eee39bacf7ac82b97ee7d0`. The previously omitted verdict is
-reconciled post-push only inside its designated artifact block and ledger
-Status cell, explicitly without claiming that pre-staging recording occurred.
-
-## Route
+## Reserved implementation
 
 ```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS
-Next: NEEDS_USER_DECISION
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
 ```
 
-No implementation or docs successor is armed. `Plaadi kontuur` is only a
-possible future human decision; it has no PASS_ID, allowlist, schedule, or
-authority. Router, creator, persistence, project-state writes, canonical
-semantics, packages, assets, tools, and `_incoming` remain unchanged.
+Exact future write allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+No third implementation file is authorized. Activation is conditional on
+independent acceptance and human push of this exact five-file scope lock.
+
+The future pass makes Step 2 a widget-local contour editor: empty-canvas tap
+adds a point; a point can be selected and dragged; the selected point can be
+deleted; reset clears points, selection, and closure; and explicit
+`Sulge kontuur` requires at least three points. Moving, adding, or deleting
+after closure reopens the contour. Step 2 `Edasi` is enabled only while the
+contour is closed, and Step 2 -> Step 3 -> Step 2 preserves points and
+closure. Every contour mutation marks the Wizard draft dirty. A completed
+functional Step 2 may be `Valmis`; placeholder Steps 3–6 remain `Vaadatud`
+when visited. Wide and compact layouts must remain usable without overflow.
+
+The human multi-zone decision is bounded to Step 2 state/content, its
+navigation gate, progress semantics, dirty-cancel state, responsive
+editor/painter, and focused Wizard tests. Both target maps are `MAINTAINED`;
+the implementation has:
+
+```text
+CODE_MAP_DISPOSITION: UPDATE_REQUIRED
+```
+
+After accepted and pushed implementation, one later unnamed LOCK pass updates
+the two maps from accepted committed source. That pass is neither named nor
+executed here.
+
+## Boundary and route
+
+The reserved write class is `UI_LOCAL` + `ZERO_WRITE`. Coordinates are
+transient editor-local values, not canonical `board_normalized` data. The
+contour is a human-created visual candidate only and proves no
+self-intersection validity, dimensions, board identity, electrical meaning,
+or physical validity.
+
+AI, OCR, CV, photo/template derivation, persistence, `ProjectCreator`, project
+state, events, facts, projections, schemas, writers, materializers, Project
+ZIP, Board Canvas, marker/component placement, router, Home, app, packages,
+assets, tools, and `_incoming` remain unchanged.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
+```
 
 ## Superseded original scope record (historical)
 

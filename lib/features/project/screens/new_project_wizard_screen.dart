@@ -12,7 +12,7 @@ const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   ),
   _WizardStepDefinition(
     label: 'Plaadi kontuur',
-    detail: 'nähtav, funktsioon tulekul',
+    detail: 'joonista ja sulge visuaalne kandidaat',
     icon: Icons.gesture_outlined,
   ),
   _WizardStepDefinition(
@@ -58,6 +58,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       TextEditingController();
 
   String? _selectedParentPath;
+  final List<Offset> _contourPoints = <Offset>[];
+  int? _selectedContourPointIndex;
+  int? _draggingContourPointIndex;
+  int? _draggingContourPointer;
+  bool _contourClosed = false;
   int _currentStep = 0;
   bool _draftTouched = false;
   bool _isPickingFolder = false;
@@ -70,6 +75,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   bool get _canAdvanceFromStepOne {
     return _projectNameController.text.trim().isNotEmpty &&
         (_selectedParentPath?.trim().isNotEmpty ?? false);
+  }
+
+  bool get _canAdvanceFromContour {
+    return _contourClosed && _contourPoints.length >= 3;
   }
 
   void _handleDraftTextChanged(String _) {
@@ -123,6 +132,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     if (_currentStep == 0 && !_canAdvanceFromStepOne) {
       return;
     }
+    if (_currentStep == 1 && !_canAdvanceFromContour) {
+      return;
+    }
     if (_currentStep >= _wizardSteps.length - 1) {
       return;
     }
@@ -137,6 +149,145 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     }
     setState(() {
       _currentStep -= 1;
+    });
+  }
+
+  Offset _normalizedContourPoint(Offset localPosition, Size editorSize) {
+    if (editorSize.width <= 0 || editorSize.height <= 0) {
+      return Offset.zero;
+    }
+    return Offset(
+      (localPosition.dx / editorSize.width).clamp(0.0, 1.0).toDouble(),
+      (localPosition.dy / editorSize.height).clamp(0.0, 1.0).toDouble(),
+    );
+  }
+
+  Offset _contourPointOnCanvas(Offset point, Size editorSize) {
+    return Offset(
+      point.dx * editorSize.width,
+      point.dy * editorSize.height,
+    );
+  }
+
+  int? _contourPointAt(Offset localPosition, Size editorSize) {
+    const hitRadius = 26.0;
+    int? closestIndex;
+    var closestDistance = double.infinity;
+    for (var index = 0; index < _contourPoints.length; index += 1) {
+      final distance =
+          (_contourPointOnCanvas(_contourPoints[index], editorSize) -
+                  localPosition)
+              .distance;
+      if (distance <= hitRadius && distance < closestDistance) {
+        closestIndex = index;
+        closestDistance = distance;
+      }
+    }
+    return closestIndex;
+  }
+
+  void _handleContourTap(TapUpDetails details, Size editorSize) {
+    final selectedIndex = _contourPointAt(details.localPosition, editorSize);
+    if (selectedIndex != null) {
+      setState(() {
+        _selectedContourPointIndex = selectedIndex;
+      });
+      return;
+    }
+
+    setState(() {
+      _contourPoints.add(
+        _normalizedContourPoint(details.localPosition, editorSize),
+      );
+      _selectedContourPointIndex = _contourPoints.length - 1;
+      _contourClosed = false;
+      _draftTouched = true;
+    });
+  }
+
+  void _handleContourPointerDown(
+    PointerDownEvent details,
+    Size editorSize,
+  ) {
+    final selectedIndex = _contourPointAt(details.localPosition, editorSize);
+    setState(() {
+      _selectedContourPointIndex = selectedIndex;
+      _draggingContourPointIndex = selectedIndex;
+      _draggingContourPointer = selectedIndex == null ? null : details.pointer;
+    });
+  }
+
+  void _handleContourPointerMove(
+    PointerMoveEvent details,
+    Size editorSize,
+  ) {
+    if (details.pointer != _draggingContourPointer) {
+      return;
+    }
+    final selectedIndex = _draggingContourPointIndex;
+    if (selectedIndex == null ||
+        selectedIndex < 0 ||
+        selectedIndex >= _contourPoints.length) {
+      return;
+    }
+    final nextPoint =
+        _normalizedContourPoint(details.localPosition, editorSize);
+    if (_contourPoints[selectedIndex] == nextPoint) {
+      return;
+    }
+    setState(() {
+      _contourPoints[selectedIndex] = nextPoint;
+      _contourClosed = false;
+      _draftTouched = true;
+    });
+  }
+
+  void _handleContourPointerEnd(PointerEvent details) {
+    if (details.pointer != _draggingContourPointer) {
+      return;
+    }
+    _draggingContourPointIndex = null;
+    _draggingContourPointer = null;
+  }
+
+  void _deleteSelectedContourPoint() {
+    final selectedIndex = _selectedContourPointIndex;
+    if (selectedIndex == null ||
+        selectedIndex < 0 ||
+        selectedIndex >= _contourPoints.length) {
+      return;
+    }
+    setState(() {
+      _contourPoints.removeAt(selectedIndex);
+      _selectedContourPointIndex = null;
+      _draggingContourPointIndex = null;
+      _draggingContourPointer = null;
+      _contourClosed = false;
+      _draftTouched = true;
+    });
+  }
+
+  void _resetContour() {
+    if (_contourPoints.isEmpty) {
+      return;
+    }
+    setState(() {
+      _contourPoints.clear();
+      _selectedContourPointIndex = null;
+      _draggingContourPointIndex = null;
+      _draggingContourPointer = null;
+      _contourClosed = false;
+      _draftTouched = true;
+    });
+  }
+
+  void _closeContour() {
+    if (_contourPoints.length < 3 || _contourClosed) {
+      return;
+    }
+    setState(() {
+      _contourClosed = true;
+      _draftTouched = true;
     });
   }
 
@@ -439,8 +590,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   Widget _buildProgressTile(int index, {required bool compact}) {
     final step = _wizardSteps[index];
     final isCurrent = index == _currentStep;
-    final isComplete = index == 0 && index < _currentStep;
-    final isViewed = index > 0 && index < _currentStep;
+    final isComplete =
+        index < _currentStep && (index == 0 || (index == 1 && _contourClosed));
+    final isViewed = index >= 2 && index < _currentStep;
     final status = isCurrent
         ? 'Praegune samm'
         : isComplete
@@ -572,9 +724,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(compact ? 16 : 28),
-            child: _currentStep == 0
-                ? _buildStepOne(compact: compact)
-                : _buildPlaceholder(_currentStep),
+            child: switch (_currentStep) {
+              0 => _buildStepOne(compact: compact),
+              1 => _buildContourStep(compact: compact),
+              _ => _buildPlaceholder(_currentStep),
+            },
           ),
           _buildActionBar(compact: compact),
         ],
@@ -670,6 +824,285 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 ],
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContourStep({required bool compact}) {
+    return KeyedSubtree(
+      key: const ValueKey('wizard-contour-editor'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildStepHeading(
+            eyebrow: 'Samm 2 / ${_wizardSteps.length}',
+            title: 'Plaadi kontuur',
+            description:
+                'Lisa vähemalt kolm punkti, liiguta neid vajadusel ja sulge '
+                'kontuur eraldi toiminguga.',
+            required: true,
+          ),
+          const SizedBox(height: 22),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stacked = compact || constraints.maxWidth < 780;
+              final canvas = _buildContourCanvas(
+                height: stacked ? 300 : 430,
+              );
+              final controls = _buildContourControls();
+              if (stacked) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    canvas,
+                    const SizedBox(height: 16),
+                    controls,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: canvas),
+                  const SizedBox(width: 18),
+                  SizedBox(width: 286, child: controls),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 18),
+          Container(
+            decoration: BoxDecoration(
+              color: _WizardPalette.activeFill,
+              border: Border.all(color: _WizardPalette.edgeGold),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            padding: const EdgeInsets.all(14),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(
+                  Icons.visibility_outlined,
+                  color: _WizardPalette.gold,
+                  size: 20,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'See on inimese loodud visuaalne kandidaat. Sulgemine ei '
+                    'kinnita plaadi mõõte, identiteeti, füüsilist kehtivust '
+                    'ega elektrilist tähendust.',
+                    style: TextStyle(
+                      color: _WizardPalette.muted,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContourCanvas({required double height}) {
+    final count = _contourPoints.length;
+    final status = _contourClosed ? 'suletud' : 'avatud';
+    return Semantics(
+      container: true,
+      label: 'Kontuuriredaktor',
+      value: '$count punkti, kontuur $status',
+      child: Container(
+        height: height,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: _WizardPalette.inset,
+          border: Border.all(color: _WizardPalette.edgeGold),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final editorSize = constraints.biggest;
+            return Listener(
+              onPointerDown: (details) =>
+                  _handleContourPointerDown(details, editorSize),
+              onPointerMove: (details) =>
+                  _handleContourPointerMove(details, editorSize),
+              onPointerUp: _handleContourPointerEnd,
+              onPointerCancel: _handleContourPointerEnd,
+              child: GestureDetector(
+                key: const ValueKey('wizard-contour-canvas'),
+                behavior: HitTestBehavior.opaque,
+                onTapUp: (details) => _handleContourTap(details, editorSize),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    CustomPaint(
+                      key: const ValueKey('wizard-contour-painter'),
+                      painter: _WizardContourPainter(
+                        points: List<Offset>.unmodifiable(_contourPoints),
+                        selectedIndex: _selectedContourPointIndex,
+                        closed: _contourClosed,
+                      ),
+                    ),
+                    if (_contourPoints.isEmpty)
+                      const IgnorePointer(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.touch_app_outlined,
+                                  color: _WizardPalette.goldDim,
+                                  size: 34,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Puuduta tühja ala, et lisada esimene punkt.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: _WizardPalette.muted,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContourControls() {
+    final pointCount = _contourPoints.length;
+    final pointCountLabel = pointCount == 1 ? '1 punkt' : '$pointCount punkti';
+    final selectedIndex = _selectedContourPointIndex;
+    final selectionLabel = selectedIndex == null
+        ? 'Ühtegi punkti pole valitud'
+        : 'Punkt ${selectedIndex + 1} valitud';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: _WizardPalette.panel2,
+        border: Border.all(color: _WizardPalette.edge),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildContourStateRow(
+            key: const ValueKey('wizard-contour-point-count'),
+            icon: Icons.scatter_plot_outlined,
+            label: pointCountLabel,
+          ),
+          const SizedBox(height: 10),
+          _buildContourStateRow(
+            key: const ValueKey('wizard-contour-selection'),
+            icon: selectedIndex == null
+                ? Icons.touch_app_outlined
+                : Icons.ads_click_outlined,
+            label: selectionLabel,
+          ),
+          const SizedBox(height: 10),
+          _buildContourStateRow(
+            key: const ValueKey('wizard-contour-status'),
+            icon:
+                _contourClosed ? Icons.lock_outline : Icons.lock_open_outlined,
+            label: _contourClosed ? 'Kontuur suletud' : 'Kontuur avatud',
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            key: const ValueKey('wizard-contour-close'),
+            onPressed:
+                pointCount >= 3 && !_contourClosed ? _closeContour : null,
+            icon: const Icon(Icons.join_full),
+            label: const Text('Sulge kontuur'),
+            style: FilledButton.styleFrom(
+              backgroundColor: _WizardPalette.goldBright,
+              foregroundColor: const Color(0xFF241C0A),
+              disabledBackgroundColor: _WizardPalette.edge,
+              disabledForegroundColor: _WizardPalette.faint,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            key: const ValueKey('wizard-contour-delete'),
+            onPressed:
+                selectedIndex == null ? null : _deleteSelectedContourPoint,
+            icon: const Icon(Icons.delete_outline),
+            label: const Text('Kustuta valitud punkt'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _WizardPalette.warningBright,
+              side: const BorderSide(color: _WizardPalette.warning),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+            ),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            key: const ValueKey('wizard-contour-reset'),
+            onPressed: pointCount == 0 ? null : _resetContour,
+            icon: const Icon(Icons.restart_alt),
+            label: const Text('Nulli kontuur'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _WizardPalette.cream,
+              side: const BorderSide(color: _WizardPalette.edgeGold),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+            ),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'Punkti valimiseks puuduta seda. Liigutamiseks lohista valitud '
+            'punkti. Muudatus avab suletud kontuuri uuesti.',
+            style: TextStyle(
+              color: _WizardPalette.faint,
+              fontSize: 12.5,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContourStateRow({
+    required Key key,
+    required IconData icon,
+    required String label,
+  }) {
+    return Container(
+      key: key,
+      decoration: BoxDecoration(
+        color: _WizardPalette.inset,
+        border: Border.all(color: _WizardPalette.edge),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+      child: Row(
+        children: <Widget>[
+          Icon(icon, color: _WizardPalette.goldDim, size: 19),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: _WizardPalette.cream,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),
@@ -916,8 +1349,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   Widget _buildActionBar({required bool compact}) {
-    final canGoNext =
-        _currentStep == 0 ? _canAdvanceFromStepOne : _currentStep < 5;
+    final canGoNext = switch (_currentStep) {
+      0 => _canAdvanceFromStepOne,
+      1 => _canAdvanceFromContour,
+      _ => _currentStep < 5,
+    };
     final back = _currentStep == 0
         ? null
         : OutlinedButton.icon(
@@ -996,6 +1432,133 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               ],
             ),
     );
+  }
+}
+
+class _WizardContourPainter extends CustomPainter {
+  const _WizardContourPainter({
+    required this.points,
+    required this.selectedIndex,
+    required this.closed,
+  });
+
+  final List<Offset> points;
+  final int? selectedIndex;
+  final bool closed;
+
+  Offset _onCanvas(Offset point, Size size) {
+    return Offset(point.dx * size.width, point.dy * size.height);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final gridPaint = Paint()
+      ..color = _WizardPalette.edge.withValues(alpha: 0.42)
+      ..strokeWidth = 1;
+    for (var division = 1; division < 10; division += 1) {
+      final x = size.width * division / 10;
+      final y = size.height * division / 10;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
+    if (points.length >= 2) {
+      final path = Path()
+        ..moveTo(
+          _onCanvas(points.first, size).dx,
+          _onCanvas(points.first, size).dy,
+        );
+      for (final point in points.skip(1)) {
+        final canvasPoint = _onCanvas(point, size);
+        path.lineTo(canvasPoint.dx, canvasPoint.dy);
+      }
+      if (closed && points.length >= 3) {
+        path.close();
+        canvas.drawPath(
+          path,
+          Paint()
+            ..color = _WizardPalette.gold.withValues(alpha: 0.12)
+            ..style = PaintingStyle.fill,
+        );
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = closed ? _WizardPalette.ready : _WizardPalette.goldBright
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = closed ? 3 : 2.4
+          ..strokeJoin = StrokeJoin.round
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
+    for (var index = 0; index < points.length; index += 1) {
+      final canvasPoint = _onCanvas(points[index], size);
+      final selected = selectedIndex == index;
+      if (selected) {
+        canvas.drawCircle(
+          canvasPoint,
+          13,
+          Paint()
+            ..color = _WizardPalette.gold.withValues(alpha: 0.22)
+            ..style = PaintingStyle.fill,
+        );
+        canvas.drawCircle(
+          canvasPoint,
+          12,
+          Paint()
+            ..color = _WizardPalette.gold
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2,
+        );
+      }
+      canvas.drawCircle(
+        canvasPoint,
+        8,
+        Paint()
+          ..color = selected ? _WizardPalette.goldBright : _WizardPalette.cream
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawCircle(
+        canvasPoint,
+        8,
+        Paint()
+          ..color = _WizardPalette.background
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4,
+      );
+
+      final label = TextPainter(
+        text: TextSpan(
+          text: '${index + 1}',
+          style: const TextStyle(
+            color: _WizardPalette.background,
+            fontSize: 9,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      label.paint(
+        canvas,
+        canvasPoint - Offset(label.width / 2, label.height / 2),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _WizardContourPainter oldDelegate) {
+    if (oldDelegate.closed != closed ||
+        oldDelegate.selectedIndex != selectedIndex ||
+        oldDelegate.points.length != points.length) {
+      return true;
+    }
+    for (var index = 0; index < points.length; index += 1) {
+      if (oldDelegate.points[index] != points[index]) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

@@ -17,7 +17,7 @@ const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   ),
   _WizardStepDefinition(
     label: 'Komponentide asetus',
-    detail: 'nähtav, funktsioon tulekul',
+    detail: 'paiguta visuaalsed kandidaadid',
     icon: Icons.location_on_outlined,
   ),
   _WizardStepDefinition(
@@ -63,6 +63,12 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   int? _draggingContourPointIndex;
   int? _draggingContourPointer;
   bool _contourClosed = false;
+  final List<_WizardComponentCandidate> _componentCandidates =
+      <_WizardComponentCandidate>[];
+  int _nextComponentDraftKey = 1;
+  int? _selectedComponentDraftKey;
+  int? _draggingComponentDraftKey;
+  int? _draggingComponentPointer;
   int _currentStep = 0;
   bool _draftTouched = false;
   bool _isPickingFolder = false;
@@ -291,6 +297,149 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     });
   }
 
+  Offset _normalizedComponentPosition(
+    Offset localPosition,
+    Size editorSize,
+  ) {
+    if (editorSize.width <= 0 || editorSize.height <= 0) {
+      return Offset.zero;
+    }
+    return Offset(
+      (localPosition.dx / editorSize.width).clamp(0.0, 1.0).toDouble(),
+      (localPosition.dy / editorSize.height).clamp(0.0, 1.0).toDouble(),
+    );
+  }
+
+  Offset _componentPositionOnCanvas(Offset position, Size editorSize) {
+    return Offset(
+      position.dx * editorSize.width,
+      position.dy * editorSize.height,
+    );
+  }
+
+  int? _componentCandidateKeyAt(
+    Offset localPosition,
+    Size editorSize,
+  ) {
+    const hitRadius = 28.0;
+    int? closestKey;
+    var closestDistance = double.infinity;
+    for (final candidate in _componentCandidates) {
+      final distance =
+          (_componentPositionOnCanvas(candidate.position, editorSize) -
+                  localPosition)
+              .distance;
+      if (distance <= hitRadius && distance < closestDistance) {
+        closestKey = candidate.draftKey;
+        closestDistance = distance;
+      }
+    }
+    return closestKey;
+  }
+
+  void _handleComponentTap(TapUpDetails details, Size editorSize) {
+    final selectedKey = _componentCandidateKeyAt(
+      details.localPosition,
+      editorSize,
+    );
+    if (selectedKey != null) {
+      setState(() {
+        _selectedComponentDraftKey = selectedKey;
+      });
+      return;
+    }
+
+    setState(() {
+      final candidate = _WizardComponentCandidate(
+        draftKey: _nextComponentDraftKey,
+        position: _normalizedComponentPosition(
+          details.localPosition,
+          editorSize,
+        ),
+      );
+      _nextComponentDraftKey += 1;
+      _componentCandidates.add(candidate);
+      _selectedComponentDraftKey = candidate.draftKey;
+      _draftTouched = true;
+    });
+  }
+
+  void _handleComponentPointerDown(
+    PointerDownEvent details,
+    Size editorSize,
+  ) {
+    final selectedKey = _componentCandidateKeyAt(
+      details.localPosition,
+      editorSize,
+    );
+    setState(() {
+      _selectedComponentDraftKey = selectedKey;
+      _draggingComponentDraftKey = selectedKey;
+      _draggingComponentPointer = selectedKey == null ? null : details.pointer;
+    });
+  }
+
+  void _handleComponentPointerMove(
+    PointerMoveEvent details,
+    Size editorSize,
+  ) {
+    if (details.pointer != _draggingComponentPointer) {
+      return;
+    }
+    final draggingKey = _draggingComponentDraftKey;
+    if (draggingKey == null) {
+      return;
+    }
+    final candidateIndex = _componentCandidates.indexWhere(
+      (candidate) => candidate.draftKey == draggingKey,
+    );
+    if (candidateIndex < 0) {
+      return;
+    }
+    final nextPosition = _normalizedComponentPosition(
+      details.localPosition,
+      editorSize,
+    );
+    if (_componentCandidates[candidateIndex].position == nextPosition) {
+      return;
+    }
+    setState(() {
+      _componentCandidates[candidateIndex] =
+          _componentCandidates[candidateIndex].movedTo(nextPosition);
+      _draftTouched = true;
+    });
+  }
+
+  void _handleComponentPointerEnd(PointerEvent details) {
+    if (details.pointer != _draggingComponentPointer) {
+      return;
+    }
+    setState(() {
+      _draggingComponentDraftKey = null;
+      _draggingComponentPointer = null;
+    });
+  }
+
+  void _deleteSelectedComponentCandidate() {
+    final selectedKey = _selectedComponentDraftKey;
+    if (selectedKey == null) {
+      return;
+    }
+    final candidateIndex = _componentCandidates.indexWhere(
+      (candidate) => candidate.draftKey == selectedKey,
+    );
+    if (candidateIndex < 0) {
+      return;
+    }
+    setState(() {
+      _componentCandidates.removeAt(candidateIndex);
+      _selectedComponentDraftKey = null;
+      _draggingComponentDraftKey = null;
+      _draggingComponentPointer = null;
+      _draftTouched = true;
+    });
+  }
+
   Future<void> _cancelWizard() async {
     if (!_draftTouched) {
       context.go('/');
@@ -404,6 +553,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 ),
               ),
               child: SingleChildScrollView(
+                physics: _draggingComponentDraftKey == null
+                    ? null
+                    : const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(padding),
                 child: Center(
                   child: ConstrainedBox(
@@ -727,6 +879,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             child: switch (_currentStep) {
               0 => _buildStepOne(compact: compact),
               1 => _buildContourStep(compact: compact),
+              2 => _buildComponentPlacementStep(compact: compact),
               _ => _buildPlaceholder(_currentStep),
             },
           ),
@@ -1079,6 +1232,275 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   Widget _buildContourStateRow({
+    required Key key,
+    required IconData icon,
+    required String label,
+  }) {
+    return Container(
+      key: key,
+      decoration: BoxDecoration(
+        color: _WizardPalette.inset,
+        border: Border.all(color: _WizardPalette.edge),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+      child: Row(
+        children: <Widget>[
+          Icon(icon, color: _WizardPalette.goldDim, size: 19),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: _WizardPalette.cream,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComponentPlacementStep({required bool compact}) {
+    return KeyedSubtree(
+      key: const ValueKey('wizard-component-editor'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildStepHeading(
+            eyebrow: 'Samm 3 / ${_wizardSteps.length}',
+            title: 'Komponentide asetus',
+            description:
+                'Lisa käsitsi üldised visuaalsed kandidaadid ning liiguta '
+                'neid plaadi kontuuri taustal.',
+            required: false,
+          ),
+          const SizedBox(height: 22),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stacked = compact || constraints.maxWidth < 780;
+              final canvas = _buildComponentCanvas(
+                height: stacked ? 300 : 430,
+              );
+              final controls = _buildComponentControls();
+              if (stacked) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    canvas,
+                    const SizedBox(height: 16),
+                    controls,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: canvas),
+                  const SizedBox(width: 18),
+                  SizedBox(width: 286, child: controls),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 18),
+          Container(
+            decoration: BoxDecoration(
+              color: _WizardPalette.activeFill,
+              border: Border.all(color: _WizardPalette.edgeGold),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            padding: const EdgeInsets.all(14),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(
+                  Icons.visibility_outlined,
+                  color: _WizardPalette.gold,
+                  size: 20,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Kandidaadid on inimese loodud visuaalsed ettepanekud. '
+                    'Need ei kinnita komponendi identiteeti, tüüpi, väärtust, '
+                    'tähist, korpust, jalajälge, jalgu, kontakte, plaadipoolt, '
+                    'ühendusi, võrku, mõõtmist ega diagnoosi.',
+                    style: TextStyle(
+                      color: _WizardPalette.muted,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComponentCanvas({required double height}) {
+    final count = _componentCandidates.length;
+    final countLabel = count == 1 ? '1 kandidaat' : '$count kandidaati';
+    final selectedKey = _selectedComponentDraftKey;
+    final selection = selectedKey == null
+        ? 'ühtegi kandidaati pole valitud'
+        : 'kandidaat $selectedKey valitud';
+    return Semantics(
+      container: true,
+      label: 'Komponentide asetuse redaktor',
+      value: '$countLabel, $selection',
+      child: Container(
+        height: height,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: _WizardPalette.inset,
+          border: Border.all(color: _WizardPalette.edgeGold),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final editorSize = constraints.biggest;
+            return Listener(
+              onPointerDown: (details) =>
+                  _handleComponentPointerDown(details, editorSize),
+              onPointerMove: (details) =>
+                  _handleComponentPointerMove(details, editorSize),
+              onPointerUp: _handleComponentPointerEnd,
+              onPointerCancel: _handleComponentPointerEnd,
+              child: GestureDetector(
+                key: const ValueKey('wizard-component-canvas'),
+                behavior: HitTestBehavior.opaque,
+                onTapUp: (details) => _handleComponentTap(details, editorSize),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    CustomPaint(
+                      key: const ValueKey('wizard-component-painter'),
+                      painter: _WizardComponentPlacementPainter(
+                        guideContourPoints:
+                            List<Offset>.unmodifiable(_contourPoints),
+                        guideClosed: _contourClosed,
+                        candidates:
+                            List<_WizardComponentCandidate>.unmodifiable(
+                          _componentCandidates,
+                        ),
+                        selectedDraftKey: _selectedComponentDraftKey,
+                      ),
+                    ),
+                    if (_componentCandidates.isEmpty)
+                      const IgnorePointer(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.add_location_alt_outlined,
+                                  color: _WizardPalette.goldDim,
+                                  size: 34,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Puuduta tühja ala, et lisada üldine '
+                                  'komponent-kandidaat.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: _WizardPalette.muted,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComponentControls() {
+    final candidateCount = _componentCandidates.length;
+    final candidateCountLabel = switch (candidateCount) {
+      0 => '0 komponent-kandidaati',
+      1 => '1 komponent-kandidaat',
+      _ => '$candidateCount komponent-kandidaati',
+    };
+    final selectedKey = _selectedComponentDraftKey;
+    final selectionLabel = selectedKey == null
+        ? 'Ühtegi kandidaati pole valitud'
+        : 'Kandidaat $selectedKey valitud';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: _WizardPalette.panel2,
+        border: Border.all(color: _WizardPalette.edge),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildComponentStateRow(
+            key: const ValueKey('wizard-component-count'),
+            icon: Icons.widgets_outlined,
+            label: candidateCountLabel,
+          ),
+          const SizedBox(height: 10),
+          _buildComponentStateRow(
+            key: const ValueKey('wizard-component-selection'),
+            icon: selectedKey == null
+                ? Icons.touch_app_outlined
+                : Icons.ads_click_outlined,
+            label: selectionLabel,
+          ),
+          const SizedBox(height: 10),
+          _buildComponentStateRow(
+            key: const ValueKey('wizard-component-contour-guide'),
+            icon: Icons.visibility_outlined,
+            label: _contourClosed
+                ? 'Suletud kontuur on ainult visuaalne juhis'
+                : 'Kontuur pole suletud',
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            key: const ValueKey('wizard-component-delete'),
+            onPressed:
+                selectedKey == null ? null : _deleteSelectedComponentCandidate,
+            icon: const Icon(Icons.delete_outline),
+            label: const Text('Kustuta valitud kandidaat'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _WizardPalette.warningBright,
+              side: const BorderSide(color: _WizardPalette.warning),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+            ),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'Tühja ala puudutus lisab kandidaadi. Valimiseks puuduta '
+            'kandidaati ning liigutamiseks lohista seda. Kontuur ei piira '
+            'paigutust.',
+            style: TextStyle(
+              color: _WizardPalette.faint,
+              fontSize: 12.5,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComponentStateRow({
     required Key key,
     required IconData icon,
     required String label,
@@ -1555,6 +1977,144 @@ class _WizardContourPainter extends CustomPainter {
     }
     for (var index = 0; index < points.length; index += 1) {
       if (oldDelegate.points[index] != points[index]) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+class _WizardComponentCandidate {
+  const _WizardComponentCandidate({
+    required this.draftKey,
+    required this.position,
+  });
+
+  final int draftKey;
+  final Offset position;
+
+  _WizardComponentCandidate movedTo(Offset nextPosition) {
+    return _WizardComponentCandidate(
+      draftKey: draftKey,
+      position: nextPosition,
+    );
+  }
+}
+
+class _WizardComponentPlacementPainter extends CustomPainter {
+  const _WizardComponentPlacementPainter({
+    required this.guideContourPoints,
+    required this.guideClosed,
+    required this.candidates,
+    required this.selectedDraftKey,
+  });
+
+  final List<Offset> guideContourPoints;
+  final bool guideClosed;
+  final List<_WizardComponentCandidate> candidates;
+  final int? selectedDraftKey;
+
+  Offset _onCanvas(Offset point, Size size) {
+    return Offset(point.dx * size.width, point.dy * size.height);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (guideClosed && guideContourPoints.length >= 3) {
+      final path = Path();
+      final first = _onCanvas(guideContourPoints.first, size);
+      path.moveTo(first.dx, first.dy);
+      for (final point in guideContourPoints.skip(1)) {
+        final canvasPoint = _onCanvas(point, size);
+        path.lineTo(canvasPoint.dx, canvasPoint.dy);
+      }
+      path.close();
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = _WizardPalette.gold.withValues(alpha: 0.07)
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = _WizardPalette.goldDim.withValues(alpha: 0.72)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeJoin = StrokeJoin.round,
+      );
+    }
+
+    for (final candidate in candidates) {
+      final canvasPoint = _onCanvas(candidate.position, size);
+      final selected = candidate.draftKey == selectedDraftKey;
+      if (selected) {
+        canvas.drawCircle(
+          canvasPoint,
+          17,
+          Paint()
+            ..color = _WizardPalette.gold.withValues(alpha: 0.2)
+            ..style = PaintingStyle.fill,
+        );
+        canvas.drawCircle(
+          canvasPoint,
+          16,
+          Paint()
+            ..color = _WizardPalette.gold
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2,
+        );
+      }
+      canvas.drawCircle(
+        canvasPoint,
+        11,
+        Paint()
+          ..color = selected ? _WizardPalette.goldBright : _WizardPalette.cream
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawCircle(
+        canvasPoint,
+        11,
+        Paint()
+          ..color = _WizardPalette.background
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+      );
+      final markerPaint = Paint()
+        ..color = _WizardPalette.background
+        ..strokeWidth = 1.6
+        ..strokeCap = StrokeCap.round;
+      canvas.drawLine(
+        canvasPoint - const Offset(4.5, 0),
+        canvasPoint + const Offset(4.5, 0),
+        markerPaint,
+      );
+      canvas.drawLine(
+        canvasPoint - const Offset(0, 4.5),
+        canvasPoint + const Offset(0, 4.5),
+        markerPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _WizardComponentPlacementPainter oldDelegate) {
+    if (oldDelegate.guideClosed != guideClosed ||
+        oldDelegate.selectedDraftKey != selectedDraftKey ||
+        oldDelegate.guideContourPoints.length != guideContourPoints.length ||
+        oldDelegate.candidates.length != candidates.length) {
+      return true;
+    }
+    for (var index = 0; index < guideContourPoints.length; index += 1) {
+      if (oldDelegate.guideContourPoints[index] != guideContourPoints[index]) {
+        return true;
+      }
+    }
+    for (var index = 0; index < candidates.length; index += 1) {
+      final candidate = candidates[index];
+      final oldCandidate = oldDelegate.candidates[index];
+      if (oldCandidate.draftKey != candidate.draftKey ||
+          oldCandidate.position != candidate.position) {
         return true;
       }
     }

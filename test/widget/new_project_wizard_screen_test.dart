@@ -166,6 +166,100 @@ Future<void> _closeContour(WidgetTester tester) async {
   await _tapKey(tester, 'wizard-contour-close');
 }
 
+Future<void> _openComponentPlacementStep(WidgetTester tester) async {
+  await _openContourStep(tester);
+  await _closeContour(tester);
+  await _tapKey(tester, 'wizard-next');
+}
+
+Rect _componentCanvasRect(WidgetTester tester) {
+  return tester.getRect(
+    find.byKey(const ValueKey('wizard-component-canvas')),
+  );
+}
+
+Future<void> _tapComponentAt(
+  WidgetTester tester,
+  Offset normalizedPosition,
+) async {
+  final canvas = find.byKey(const ValueKey('wizard-component-canvas'));
+  await tester.ensureVisible(canvas);
+  await tester.pump();
+  final rect = _componentCanvasRect(tester);
+  await tester.tapAt(
+    rect.topLeft +
+        Offset(
+          rect.width * normalizedPosition.dx,
+          rect.height * normalizedPosition.dy,
+        ),
+  );
+  await _pumpFrames(tester);
+}
+
+Future<void> _dragComponentCandidate(
+  WidgetTester tester, {
+  required Offset from,
+  required Offset to,
+}) async {
+  final canvas = find.byKey(const ValueKey('wizard-component-canvas'));
+  await tester.ensureVisible(canvas);
+  await tester.pump();
+  final rect = _componentCanvasRect(tester);
+  final start =
+      rect.topLeft + Offset(rect.width * from.dx, rect.height * from.dy);
+  final delta = Offset(
+    rect.width * (to.dx - from.dx),
+    rect.height * (to.dy - from.dy),
+  );
+  final gesture = await tester.startGesture(start);
+  await gesture.moveTo(start + delta * 0.5);
+  await tester.pump(const Duration(milliseconds: 16));
+  await gesture.moveTo(start + delta);
+  await tester.pump(const Duration(milliseconds: 16));
+  await gesture.up();
+  await _pumpFrames(tester);
+}
+
+dynamic _componentPainter(WidgetTester tester) {
+  return tester
+      .widget<CustomPaint>(
+        find.byKey(const ValueKey('wizard-component-painter')),
+      )
+      .painter;
+}
+
+List<dynamic> _paintedComponentCandidates(WidgetTester tester) {
+  return List<dynamic>.from(
+    (_componentPainter(tester) as dynamic).candidates as Iterable,
+  );
+}
+
+List<int> _paintedComponentDraftKeys(WidgetTester tester) {
+  return _paintedComponentCandidates(tester)
+      .map((candidate) => (candidate as dynamic).draftKey as int)
+      .toList(growable: false);
+}
+
+List<Offset> _paintedComponentPositions(WidgetTester tester) {
+  return _paintedComponentCandidates(tester)
+      .map((candidate) => (candidate as dynamic).position as Offset)
+      .toList(growable: false);
+}
+
+int? _paintedSelectedComponentDraftKey(WidgetTester tester) {
+  return (_componentPainter(tester) as dynamic).selectedDraftKey as int?;
+}
+
+List<Offset> _paintedComponentGuidePoints(WidgetTester tester) {
+  return List<Offset>.from(
+    (_componentPainter(tester) as dynamic).guideContourPoints as Iterable,
+  );
+}
+
+bool _paintedComponentGuideIsClosed(WidgetTester tester) {
+  return (_componentPainter(tester) as dynamic).guideClosed as bool;
+}
+
 void main() {
   testWidgets('six-step shell renders the exact Estonian step labels',
       (tester) async {
@@ -474,7 +568,8 @@ void main() {
     expect(_paintedContourPoints(tester), hasLength(3));
   });
 
-  testWidgets('Step 3 round-trip retains contour points and closure',
+  testWidgets(
+      'Step 3 starts empty, renders the closed contour guide, and stays ungated',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -483,11 +578,30 @@ void main() {
 
     await _openContourStep(tester);
     await _closeContour(tester);
+    final contourPoints = _paintedContourPoints(tester);
     await _tapKey(tester, 'wizard-next');
 
     expect(
-      find.byKey(const ValueKey('wizard-placeholder-3')),
+      find.byKey(const ValueKey('wizard-component-editor')),
       findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-3')),
+      findsNothing,
+    );
+    expect(find.text('Tulekul'), findsNothing);
+    expect(find.text('0 komponent-kandidaati'), findsOneWidget);
+    expect(find.text('Ühtegi kandidaati pole valitud'), findsOneWidget);
+    expect(_paintedComponentCandidates(tester), isEmpty);
+    expect(_paintedComponentGuidePoints(tester), contourPoints);
+    expect(_paintedComponentGuideIsClosed(tester), isTrue);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNotNull,
     );
 
     await _tapKey(tester, 'wizard-back');
@@ -499,6 +613,176 @@ void main() {
     expect(_paintedContourPoints(tester), hasLength(3));
     expect(_paintedContourIsClosed(tester), isTrue);
     expect(find.text('Kontuur suletud'), findsOneWidget);
+  });
+
+  testWidgets('empty-canvas tap adds and selects one generic candidate',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.08, 0.9));
+
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+    final position = _paintedComponentPositions(tester).single;
+    expect(position.dx, closeTo(0.08, 0.001));
+    expect(position.dy, closeTo(0.9, 0.001));
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
+    expect(find.text('1 komponent-kandidaat'), findsOneWidget);
+    expect(find.text('Kandidaat 1 valitud'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('wizard-component-count')),
+        matching: find.byIcon(Icons.widgets_outlined),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('wizard-component-selection')),
+        matching: find.byIcon(Icons.ads_click_outlined),
+      ),
+      findsOneWidget,
+    );
+
+    await _tapComponentAt(tester, const Offset(0.08, 0.9));
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+  });
+
+  testWidgets(
+      'selection and dragging change only the selected clamped position',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.25, 0.35));
+    await _tapComponentAt(tester, const Offset(0.75, 0.35));
+    await _tapComponentAt(tester, const Offset(0.25, 0.35));
+
+    expect(find.text('Kandidaat 1 valitud'), findsOneWidget);
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.25, 0.35),
+      to: const Offset(1.4, 1.3),
+    );
+
+    var positions = _paintedComponentPositions(tester);
+    expect(positions.first.dx, closeTo(1.0, 0.001));
+    expect(positions.first.dy, closeTo(1.0, 0.001));
+    expect(positions.last.dx, closeTo(0.75, 0.001));
+    expect(positions.last.dy, closeTo(0.35, 0.001));
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
+
+    await _tapComponentAt(tester, const Offset(0.75, 0.35));
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.75, 0.35),
+      to: const Offset(-0.4, -0.3),
+    );
+
+    positions = _paintedComponentPositions(tester);
+    expect(positions.first.dx, closeTo(1.0, 0.001));
+    expect(positions.first.dy, closeTo(1.0, 0.001));
+    expect(positions.last.dx, closeTo(0.0, 0.001));
+    expect(positions.last.dy, closeTo(0.0, 0.001));
+    expect(_paintedSelectedComponentDraftKey(tester), 2);
+    expect(find.text('2 komponent-kandidaati'), findsOneWidget);
+  });
+
+  testWidgets('deletion removes only the selected stable draft candidate',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.2, 0.35));
+    await _tapComponentAt(tester, const Offset(0.5, 0.55));
+    await _tapComponentAt(tester, const Offset(0.8, 0.35));
+    final positionsBefore = _paintedComponentPositions(tester);
+    await _tapComponentAt(tester, const Offset(0.5, 0.55));
+    await _tapKey(tester, 'wizard-component-delete');
+
+    expect(_paintedComponentDraftKeys(tester), const <int>[1, 3]);
+    expect(
+      _paintedComponentPositions(tester),
+      <Offset>[positionsBefore.first, positionsBefore.last],
+    );
+    expect(_paintedSelectedComponentDraftKey(tester), isNull);
+    expect(find.text('2 komponent-kandidaati'), findsOneWidget);
+    expect(find.text('Ühtegi kandidaati pole valitud'), findsOneWidget);
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.byKey(const ValueKey('wizard-component-delete')),
+          )
+          .onPressed,
+      isNull,
+    );
+  });
+
+  testWidgets('Step 4 round-trip retains candidate keys and positions',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.18, 0.82));
+    await _tapComponentAt(tester, const Offset(0.72, 0.42));
+    final keysBefore = _paintedComponentDraftKeys(tester);
+    final positionsBefore = _paintedComponentPositions(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-4')),
+      findsOneWidget,
+    );
+    final thirdProgress = find.byKey(
+      const ValueKey('wizard-progress-step-3'),
+    );
+    expect(
+      find.descendant(
+        of: thirdProgress,
+        matching: find.text('Vaadatud'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: thirdProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+
+    await _tapKey(tester, 'wizard-back');
+    expect(_paintedComponentDraftKeys(tester), keysBefore);
+    expect(_paintedComponentPositions(tester), positionsBefore);
+  });
+
+  testWidgets('candidate mutation participates in dirty-draft cancellation',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.3, 0.7));
+    await _tapKey(tester, 'wizard-cancel');
+
+    expect(find.text('Katkestada projekti loomine?'), findsOneWidget);
+    expect(find.text('Sisestatud andmeid ei salvestata.'), findsOneWidget);
   });
 
   testWidgets('contour mutation participates in dirty-draft cancellation',
@@ -596,20 +880,17 @@ void main() {
     );
   });
 
-  testWidgets('Steps 3 through 6 remain honest non-functional placeholders',
+  testWidgets('Steps 4 through 6 remain honest non-functional placeholders',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
     await tester.pump();
 
-    await _completeStepOne(tester);
-    await _tapKey(tester, 'wizard-next');
-    await _closeContour(tester);
+    await _openComponentPlacementStep(tester);
     await _tapKey(tester, 'wizard-next');
 
     const labels = <int, String>{
-      3: 'Komponentide asetus',
       4: 'Probleemi kirjeldus',
       5: 'Kontroll ja kinnitus',
       6: 'Kokkuvõte',
@@ -831,6 +1112,79 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Step 3 wide desktop layout is operable without overflow',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.35, 0.55));
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.35, 0.55),
+      to: const Offset(0.65, 0.72),
+    );
+
+    expect(
+      find.byKey(const ValueKey('wizard-wide-layout')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-editor')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-delete')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Step 3 compact layout is operable without overflow',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.35, 0.55));
+    final componentCanvas = find.byKey(
+      const ValueKey('wizard-component-canvas'),
+    );
+    await tester.ensureVisible(componentCanvas);
+    await tester.pump();
+    final pageScroll = Scrollable.of(tester.element(componentCanvas)).position;
+    final scrollOffsetBeforeDrag = pageScroll.pixels;
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.35, 0.55),
+      to: const Offset(0.65, 0.72),
+    );
+    final movedPosition = _paintedComponentPositions(tester).single;
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-layout')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-editor')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-delete')),
+      findsOneWidget,
+    );
+    expect(movedPosition.dx, closeTo(0.65, 0.001));
+    expect(movedPosition.dy, closeTo(0.72, 0.001));
+    expect(pageScroll.pixels, closeTo(scrollOffsetBeforeDrag, 0.001));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('progress distinguishes completion from viewed placeholders',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
@@ -961,10 +1315,9 @@ void main() {
     );
     await tester.pump();
 
-    await _completeStepOne(tester);
-    await _tapKey(tester, 'wizard-next');
-    await _closeContour(tester);
-    for (var step = 2; step < 6; step += 1) {
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.35, 0.65));
+    for (var step = 3; step < 6; step += 1) {
       await _tapKey(tester, 'wizard-next');
     }
 

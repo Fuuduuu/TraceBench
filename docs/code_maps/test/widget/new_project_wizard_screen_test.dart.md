@@ -3,199 +3,191 @@
 - Source: `test/widget/new_project_wizard_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 6/12 — multi-family responsive/navigation regression surface`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- Qualification: `SCORE 8/12 — 27-test multi-family contour/navigation/responsive protected-boundary surface`
+- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS.md`
 
 ## File purpose
 
 Exercises the accepted six-step zero-write New Project Wizard through injected
-platform and picker seams. Its eighteen widget tests cover exact Estonian
-labels, Step 1 fields and gates, selected-path safety copy, navigation and draft
-retention, placeholder honesty, cancellation, responsive layout, progress
-semantics, and the absence of any creator/project-state/final-create path. The
-suite performs no project-directory, event, fact, projection, materializer,
-ZIP, or other persistent write.
+platform and picker seams. Its 27 widget tests cover Step 1 foundation
+behavior, the functional Step 2 contour editor, navigation and state
+retention, dirty cancellation, honest progress, responsive layouts, and the
+absence of any creator, project-state, canonical, or persistent-write path.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Platform seam | `_TestPlatformInfo`, `isMobile` | Supplies deterministic mobile or non-mobile platform state. |
-| Picker seam | `_buildWizardApp`, `directoryPicker`, local `pickerOpened` | Injects deterministic picker closures and proves the mobile gate suppresses picker invocation. |
-| Isolated route harness | `_buildWizardApp`, `GoRouter`, `/`, `/new-project` | Hosts only Home and Wizard routes and injects picker/platform dependencies. |
-| Interaction helpers | `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne` | Pump bounded frames, drive stable widget keys, and populate the complete Step 1 draft without advancing the Wizard. |
-| Shell and field contract | six-step and four-field tests | Verifies exact labels and locked Step 1 inputs. |
-| Gate and path contract | disabled-gate tests, valid advance, path/copy test | Proves the name/path preconditions, raw selected-path display, and honest zero-write copy. |
-| Navigation and placeholder contract | retention, placeholder, multiline tests | Proves draft preservation, Steps 2–6 visibility, and multiline input behavior. |
-| Cancellation contract | untouched, dirty, continue, confirmed-cancel tests | Covers direct Home return and both dialog outcomes. |
-| Responsive contract | wide desktop and compact no-overflow tests | Exercises both product layout branches without Flutter exceptions. |
-| Progress semantics | `progress distinguishes completion from viewed placeholders` | Proves only completed Step 1 is `Valmis` and visited placeholder steps are `Vaadatud`. |
-| Protected boundary | `no creator, project-state, or project-route action is reachable` | Traverses to Step 6 and proves no create CTA or `/project` transition exists. |
+| Platform and picker seams | `_TestPlatformInfo`, `_buildWizardApp`, `directoryPicker`, local `pickerOpened` | Supplies deterministic platform state and zero-write picker closures. |
+| Isolated route harness | `_buildWizardApp`, `GoRouter`, `/`, `/new-project` | Hosts only transient Home and Wizard destinations. |
+| Shared interaction helpers | `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne`, `_openContourStep` | Drives stable keys, bounded frames, Step 1 completion, and Step 2 entry. |
+| Contour geometry helpers | `_contourCanvasRect`, `_tapContourAt`, `_dragContourPoint` | Converts normalized test positions to rendered canvas input and performs bounded raw-pointer drags. |
+| Painter inspection helpers | `_contourPainter`, `_paintedContourPoints`, `_paintedContourIsClosed`, `_addTriangle`, `_closeContour` | Reads private painter state dynamically and constructs a reusable closed triangle. |
+| Step 1 and shell contract | six-step, field, gate, path/copy, retention, multiline tests | Preserves accepted Step 1 and six-step foundation behavior. |
+| Contour empty/add/gate contract | `Step 2 starts empty...`, `empty-canvas taps...`, `explicit closure...` | Proves empty state, point addition, the three-point close precondition, and the closed-only `Edasi` gate. |
+| Contour edit contract | drag/clamp, delete, reset, reopen tests | Proves selection, editor-bound dragging, deletion, reset, and reopen after every post-closure mutation. |
+| Retention and dirty contract | `Step 3 round-trip...`, `contour mutation participates...` | Proves Step 2 state retention and cancellation after contour work. |
+| Placeholder and progress contract | placeholder traversal, progress test | Proves functional Step 2 completion, `Vaadatud` for Steps 3–5, and terminal Step 6 as current. |
+| Responsive and protected boundary | wide/compact tests, `no creator...` | Exercises both layout branches and proves no create/project route is reachable. |
 
 ## State and data flow
 
-1. `[D]` Tests construct `_TestPlatformInfo` and pass deterministic
-   `directoryPicker` closures through `_buildWizardApp`.
-2. `[D]` `_buildWizardApp` creates a `GoRouter` with `/` and `/new-project`,
-   starts at `/new-project`, and renders `NewProjectWizardScreen`.
-3. `[D]` `_completeStepOne` uses `_enterText` for project name, device name,
-   and additional information, then uses `_tapKey` on `wizard-pick-folder`.
-   Tests that advance invoke `_tapKey` on `wizard-next` separately.
-4. `[D]` Shell tests assert the six exact labels and the four Step 1 controls.
-5. `[D]` Gate tests vary project name and selected path independently and
-   inspect `wizard-next.onPressed`.
-6. `[D]` The path/copy test selects a folder, asserts the returned path, and
-   verifies final creation is not implemented and selection creates no folder
-   or file.
-7. `[D]` Retention tests populate all fields, navigate forward/back, and prove
-   every value plus the selected path remains.
-8. `[D]` Placeholder traversal advances through Steps 2–6, verifies each
-   keyed placeholder and honest copy, and proves no next action on Step 6.
-9. `[D]` Cancellation tests observe the router at `/` only for untouched or
-   confirmed cancellation; continue leaves the draft and current step intact.
-10. `[D]` Responsive tests set wide and compact view sizes and assert no
-    exception before resetting the view in teardown.
-11. `[D]` Progress tests inspect status text within keyed progress tiles while
-    advancing through placeholders.
-12. `[D]` The final boundary test traverses the Wizard and proves creator,
-    project-state, create-action, and `/project` observables are absent.
+1. `[D]` `_buildWizardApp` injects deterministic picker/platform values into
+   `NewProjectWizardScreen`, starts at `/new-project`, and exposes `/` only for
+   cancellation.
+2. `[D]` `_completeStepOne` enters the three text fields and taps the folder
+   action but does not advance. `_openContourStep` adds the separate
+   `wizard-next` tap.
+3. `[D]` `_tapContourAt` locates `wizard-contour-canvas`, converts an
+   editor-normalized test position to rendered coordinates, taps, and pumps
+   bounded frames.
+4. `[D]` `_dragContourPoint` converts normalized endpoints, starts one gesture,
+   performs two pointer moves with bounded pumps, releases it, and pumps the
+   resulting state.
+5. `[D]` Painter helpers dynamically read the private painter's point snapshot
+   and closure flag without importing or exposing its private type.
+6. `[D]` `_addTriangle` adds three points; `_closeContour` then taps the
+   explicit close action. Tests add navigation separately.
+7. `[D]` Contour tests inspect rendered text/icons, button callbacks, painter
+   points, clamped values, closure, and route state. They operate only on
+   widget/test state.
+8. `[D]` The Step 3 round-trip test closes, advances, returns, and re-reads the
+   retained painter state.
+9. `[D]` Progress tests close Step 2 before advancing, then verify Step 2
+   `Valmis` and visited Steps 3–5 `Vaadatud`.
+10. `[D]` The final traversal remains on `/new-project` and proves no create
+    action or `/project` transition exists.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `flutter_test` | test driver | Pumps widgets, drives keyed actions, changes view size, and asserts visible state. |
-| Flutter Material | widget harness | Supplies `MaterialApp.router`, fields, buttons, labels, and keys. |
-| `NewProjectWizardScreen` | mapped subject | Supplies the widget plus picker and platform injection seams. |
-| `PlatformInfo` | outbound test seam | Controls the mobile capability gate. |
-| GoRouter | outbound navigation harness | Hosts `/` and `/new-project` and exposes the resulting path. |
+| `flutter_test` | test driver | Pumps widgets, drives pointer/key actions, changes view size, and asserts UI/painter state. |
+| Flutter Material | widget harness | Supplies router app, controls, geometry, icons, `CustomPaint`, and keys. |
+| `NewProjectWizardScreen` | mapped subject | Supplies picker/platform seams and all Wizard behavior under test. |
+| `PlatformInfo` | outbound test seam | Controls the mobile picker gate. |
+| GoRouter | outbound navigation harness | Hosts `/` and `/new-project` and exposes the current URI. |
 
-There is no Riverpod, `ProjectCreator`, `ProjectCreationRequest`,
-`projectStateProvider`, project-model, Board Canvas, or materializer fixture.
+There is no Riverpod, creator, project request/state, Board Canvas, filesystem,
+event/fact, projection, materializer, or ZIP fixture.
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Injected `directoryPicker` closures and local `pickerOpened` | `ZERO_WRITE` | Return configured strings or observe whether the mobile-gated picker was invoked; they perform no filesystem work. |
-| `_TestPlatformInfo` | `ZERO_WRITE` | Returns a configured capability flag only. |
-| `_buildWizardApp` and route observation | `ZERO_WRITE` | Create and inspect transient test/router state only. |
-| `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne`, view changes, and navigation | `UI_LOCAL` | Mutate widget/test presentation state and reset viewport state through teardown. |
-| Cancellation and progress observations | `ZERO_WRITE` | Drive transient UI/router state without project persistence. |
+| Picker closures, painter inspection, route and finder expectations | `ZERO_WRITE` | Return configured values or observe transient state without host or canonical writes. |
+| Text/key helpers, contour taps/drags, navigation, dialogs, and viewport changes | `UI_LOCAL` | Mutate only the widget/test binding state; viewport state is reset in teardown. |
+| `_TestPlatformInfo` | `ZERO_WRITE` | Returns one configured capability flag. |
 
-No test invokes a real or fake creator, constructs a creation request, assigns
-application project state, writes a directory/file, appends a canonical
-event/fact, runs a materializer, writes a projection, or creates Project ZIP
-output.
+No test invokes a creator, assigns project state, writes a directory/file,
+appends an event/fact, materializes a projection, or creates ZIP output.
 
 ## Zero-write zones
 
-- `[D]` Injected `directoryPicker` closures return configured paths without
-  operating on the host filesystem.
-- `[D]` The mobile test's local `pickerOpened` boolean proves the picker
-  closure remains uninvoked.
-- `[D]` `_TestPlatformInfo` is a pure capability value.
-- `[D]` The router harness contains only transient Home/Wizard destinations.
-- `[D]` Finder, copy, geometry, semantics, and route expectations persist
-  nothing.
-- `[D]` Every draft value remains inside the widget under test.
-- `[D]` Step 6 has no create action, creator seam, project state, or `/project`
-  destination.
+- `[D]` Injected picker closures return strings and touch no filesystem.
+- `[D]` Normalized contour positions and painter snapshots remain in test/UI
+  memory.
+- `[D]` The route harness contains no `/project` route or project-state owner.
+- `[D]` No creator fake, persistent fixture, temp directory, event, fact,
+  projection, or ZIP helper exists.
+- `[D]` View-size changes are transient and reset through teardown.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Platform seam | `[D]` `isMobile` controls picker availability. | Subject `_isMobile`, `_pickFolder` | `ZERO_WRITE` | Mobile picker test |
-| Picker seam | `[D]` Injected closures provide the selected path; local `pickerOpened` proves mobile suppression. | Subject picker state and gate | `ZERO_WRITE` | Path/copy, gate, retention, traversal, and mobile tests |
-| Route harness | `[D]` Only `/` and `/new-project` exist. | Subject cancellation | `ZERO_WRITE` | All cancellation and no-project-route tests |
-| Step shell and fields | `[D]` Exact labels/keys define accepted UI. | `_wizardSteps`, `_buildStepOne` | `ZERO_WRITE` | Shell and four-field tests |
-| Step 1 gate | `[D]` Name and path are tested independently. | `_canAdvanceFromStepOne`, action bar | `UI_LOCAL` | Two disabled tests and valid advance |
-| Draft retention | `[D]` Values survive step rebuilds. | Controllers, selected path, navigation | `UI_LOCAL` | Back/forward retention |
-| Placeholder/final boundary | `[D]` Traversal observes copy and no final action. | `_buildPlaceholder`, action bar | `ZERO_WRITE` | Steps 2–6; protected boundary |
-| Cancellation | `[D]` Dirty state selects dialog and route outcomes. | `_draftTouched`, `_cancelWizard` | `UI_LOCAL`; `ZERO_WRITE` | Untouched, continue, confirm |
-| Responsive layout | `[D]` View size drives wide/compact branches. | Subject `LayoutBuilder`s | `ZERO_WRITE` | Wide and compact no-overflow |
-| Progress status | `[D]` Keyed tiles distinguish functional completion from viewing. | `_buildProgressTile` | `ZERO_WRITE` | Progress semantics |
+| Step 2 entry/empty state | `[D]` Shared helper enters the editor after valid Step 1. | Step 1 gate and picker | `UI_LOCAL` | Valid advance; empty state |
+| Tap/add and close gate | `[D]` Normalized taps add points and button callbacks expose availability. | Subject hit testing and action bar | `UI_LOCAL` | Add/below-three; explicit closure |
+| Drag/clamp | `[D]` Two raw-pointer moves drive one selected point beyond bounds. | Canvas geometry and scroll shell | `UI_LOCAL` | Select/drag/clamp |
+| Delete/reset/reopen | `[D]` Keyed controls and painter state expose mutation results. | Selection, closure, dirty state | `UI_LOCAL` | Delete; reset; reopen |
+| Painter state | `[D]` Dynamic helpers read point and closure fields. | Private painter implementation | `ZERO_WRITE` | Closure, mutation, round-trip |
+| Retention | `[D]` State is compared after Step 3 and back. | Navigation and progress | `UI_LOCAL` | Step 3 round-trip |
+| Dirty cancellation | `[D]` Contour mutation precedes cancel dialog assertions. | Shared Step 1 helper | `UI_LOCAL` | Contour mutation cancellation |
+| Progress/placeholders | `[D]` Closed Step 2 is complete; later placeholders are viewed. | Progress tiles and placeholder traversal | `ZERO_WRITE` | Progress; Steps 3–6 |
+| Responsive layout | `[D]` Two view sizes exercise wide and compact Step 2. | Subject breakpoints and scroll | `ZERO_WRITE` | Wide 1440×900; compact 390×760 |
+| Protected boundary | `[D]` Final traversal finds no create action or project route. | Harness route graph | `ZERO_WRITE` | `no creator...` |
 
 ## Relevant tests and helpers
 
-The eighteen `testWidgets` cases cover:
+The nine contour-specific test titles are:
 
-- exact six-step labels;
-- all four Step 1 fields;
-- missing-name and missing-path gate halves;
-- valid advance and selected-path/zero-write copy;
-- full Step 1 draft retention;
-- visible non-functional Steps 2–6;
-- multiline additional information;
-- untouched, continue, and confirmed cancellation;
-- mobile picker suppression;
-- wide and compact no-overflow behavior;
-- `Valmis` versus `Vaadatud`; and
-- absence of creator, project state, create CTA, and `/project`.
+- `Step 2 starts empty and keeps Edasi disabled`;
+- `empty-canvas taps add points but closure needs three`;
+- `a point can be selected, dragged, and clamped to the editor`;
+- `selected point can be deleted`;
+- `reset clears points, selection, closure, and the Step 2 gate`;
+- `explicit closure paints a closed loop and enables Edasi`;
+- `adding, moving, and deleting after closure each reopen it`;
+- `Step 3 round-trip retains contour points and closure`; and
+- `contour mutation participates in dirty-draft cancellation`.
+
+The remaining eighteen tests preserve shell/Step 1 fields and gates, honest
+zero-write copy, Step 1 retention, placeholder traversal, multiline input,
+three cancellation branches, mobile picker suppression, wide/compact
+overflow, progress semantics, and absence of a creation route.
 
 Key helpers are `_TestPlatformInfo`, `_buildWizardApp`, `_pumpFrames`,
-`_enterText`, `_tapKey`, and `_completeStepOne`. `_completeStepOne` enters
-project name, device name, and additional information, then taps
-`wizard-pick-folder`; it deliberately does not tap `wizard-next`.
+`_enterText`, `_tapKey`, `_completeStepOne`, `_openContourStep`,
+`_tapContourAt`, `_dragContourPoint`, painter inspection, `_addTriangle`, and
+`_closeContour`.
 
 ## Dangerous combinations
 
-- `[D]` Changing helper setup and gate assertions together can hide a required
-  field regression.
-- `[D]` Changing the route harness and cancellation assertions together can
-  conceal unwanted persistence or destination behavior.
-- `[D]` Changing draft-entry helpers and retention expectations together can
-  erase evidence of a lost field.
-- `[D]` Changing placeholder traversal and progress assertions together can
-  relabel viewed non-functional steps as complete.
-- `[D]` Changing view sizes and overflow expectations together can miss a
-  responsive breakpoint regression.
-- `[D]` Adding a creator fake or project-state fixture would weaken the explicit
-  proof that no creation path is reachable.
+- `[D]` Changing normalized helper geometry and subject hit testing together
+  can make a broken drag appear correct.
+- `[D]` Changing `_addTriangle`, `_closeContour`, and closure assertions
+  together can hide the explicit close precondition.
+- `[D]` Changing shared Step 1 setup and dirty-cancel assertions together can
+  hide which mutation armed dirty state.
+- `[D]` Changing painter internals and dynamic inspection together can erase
+  closed-loop evidence.
+- `[D]` Adding creator, filesystem, project-state, or canonical fixtures would
+  weaken the explicit zero-write proof.
 
 ## Safe SNIPER slices
 
 These are descriptive candidates only and authorize no work.
 
-- One gate half: the relevant field setup and disabled-button assertion;
-  exclude picker or route changes.
-- Safety copy only: the selected-path/copy test and `_WizardSafetyCard`;
-  exclude navigation semantics.
-- Draft retention only: `_completeStepOne`, explicit forward/back key taps, and
-  value assertions.
-- Cancellation only: the three cancellation tests and isolated route harness.
-- Progress semantics only: keyed progress tiles and the
-  `Valmis`/`Vaadatud` assertions.
-- One responsive branch only: its view size and no-exception assertion.
-- Final zero-write boundary only: Step 6 traversal plus absence of create and
-  `/project` observables.
+- One contour mutation test plus its keyed control/painter assertions.
+- Drag/clamp only: `_dragContourPoint`, point inspection, and the matching
+  subject geometry handlers.
+- Closure gate only: `_addTriangle`, `_closeContour`, button state, and the
+  explicit-closure test.
+- Retention only: close, advance/back, and retained point/closure assertions.
+- One responsive size only with explicit teardown.
+- Step 1, cancellation, progress, or final-boundary regression only; preserve
+  all contour helpers unless their contract changes.
 
 ## Future extraction seams
 
 Descriptive, non-authorizing possibilities:
 
-- `[S]` Draft-entry helpers may be shared if individual gate conditions remain
-  independently visible.
-- `[S]` Progress-tile assertions may be separated from traversal if functional
-  completion and viewing stay distinct.
-- `[S]` View-size setup may become a helper if teardown remains explicit.
+- `[S]` Canvas geometry helpers may be shared if normalized semantics and
+  rendered-coordinate conversion remain explicit.
+- `[S]` Painter inspection could use a public semantic seam only through a
+  separately authorized production/test change.
+- `[S]` Step setup helpers may be split if gate conditions remain independently
+  visible.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when named helpers, keys, tests, labels, routes, or
-screen anchors change; `FLOW_DRIFT` when picker, draft, navigation,
-cancellation, or progress ordering changes; `BOUNDARY_DRIFT` when creator,
-project state, persistent work, or a final create action enters the suite;
-`TEST_DRIFT` when covered variants or assertions change; and
-`STRUCTURE_DRIFT` when the isolated harness or helper responsibilities move.
+Review for `SYMBOL_DRIFT` when helpers, keys, titles, routes, painter fields, or
+screen anchors change; `FLOW_DRIFT` when Step 1/Step 2 setup, gestures,
+mutation, closure, retention, or cancellation ordering changes;
+`BOUNDARY_DRIFT` when persistent/canonical fixtures enter; `TEST_DRIFT` when
+covered variants or assertions change; and `STRUCTURE_DRIFT` when the harness
+or contour tests move to another file.
 
 ## Known uncertainty
 
-- `[D]` No test covers picker exceptions, picker cancellation, whitespace-only
-  picker output, or completion after unmount.
-- `[D]` Responsive tests prove no Flutter exception at two sizes but do not
-  exhaust every intermediate width.
-- `[D]` The no-creation test proves the reachable UI and route graph contain no
-  create path; static absence is additionally established by source inspection.
-- `[P]` Future functional behavior for placeholder steps is outside this map.
+- `[D]` `contour mutation participates in dirty-draft cancellation` is not
+  independently regression-sensitive to the contour mutation because
+  `_openContourStep` calls `_completeStepOne`, which already dirties Step 1.
+  Production source independently proves add, move, delete, reset, and close
+  set `_draftTouched`.
+- `[D]` Responsive tests cover two fixed sizes, not every intermediate width or
+  real touch/mouse device.
+- `[D]` Dynamic painter inspection couples the suite to private painter field
+  names even though it avoids a public production seam.
+- `[D]` Zero-write is established by source/call-path inspection and reachable
+  UI assertions, not by a filesystem monitor.

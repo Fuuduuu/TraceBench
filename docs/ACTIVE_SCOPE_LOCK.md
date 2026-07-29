@@ -2,10 +2,93 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Human scope decision and current authority
+## Current docs/map LOCK authority
+
+The accepted implementation is committed and pushed at
+`05c24b8f19b2055de7873b931936dd387de8169f`
+(`feat: add Wizard contour editor`), parent
+`e425d858addf91abe8d5c1402652c4e2ad59dabb`. The current authority is:
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Exact current write allowlist:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS.md`
+
+No ninth file is authorized. Entry evidence is `main`,
+`HEAD == origin/main == 05c24b8f19b2055de7873b931936dd387de8169f`,
+divergence `0 0`, an empty staged set, and an empty substantive worktree diff.
+Pre-existing porcelain-only tracked paths are content-identical to `HEAD`;
+known scratch and four stashes remain outside authority.
+
+## Accepted implementation and map state
+
+The implementation commit changes exactly the Wizard source and focused
+widget-test file. It implements widget-local contour points, selection,
+raw-pointer dragging, editor-bound clamping, delete, reset, explicit closure,
+reopen after mutation, closed-only Step 2 `Edasi`, Step 3 round-trip
+retention, dirty mutations, functional progress, responsive painting, and
+text/icon state semantics.
+
+Human-supplied evidence records all nine manual-smoke checks `PASS`; a
+temporary `FRESH_CONTEXT_SAME_TOOL` technical audit substitution, explicitly
+not equivalent to independent Claude audit;
+`TECHNICAL_AUDIT_VERDICT: ACCEPT_WITH_NITS`;
+`TECHNICAL_SAFE_FOR_STAGING: YES`; and boundary, behavior, zero-write, tests,
+map disposition, and diff identity `PASS`.
+
+Validation evidence records targeted analysis `PASS`, focused Wizard tests
+`27/27 PASS`, final full Flutter tests `449/449 PASS`, `validate_all.py`
+`302/302 PASS`, and diff checks `PASS`. One first full Flutter run had an
+unrelated measurement double-tap failure that passed in isolation and did not
+reproduce in the final clean reruns.
+
+The non-blocking NIT is retained: the contour dirty-cancellation test reaches
+Step 2 through `_completeStepOne`, which already dirties Step 1. Committed
+source independently marks add, move, delete, reset, and close mutations
+dirty.
+
+Both refreshed maps and their two matching index rows are
+`REVIEW_REQUIRED`. A clean final audit may change only those four status
+locations to `MAINTAINED`, fill the existing empty LOCK verdict block, and
+mechanically mirror it in the unique matching ledger Status cell. No
+additional pass is permitted.
+
+The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`. Points are
+transient editor-normalized values, not canonical `board_normalized` data.
+Closure creates no identity, dimension, physical-validity, electrical,
+component, contact, pin, measurement, net, diagnosis, event, fact, projection,
+or persistent claim.
+
+No runtime/test, Board Canvas, router, Home, creator, project-state,
+persistence, schema, writer, materializer, Project ZIP, package, asset, tool,
+`_incoming`, scratch, or protected-surface change is authorized.
+
+Stop if a ninth file is required; map claims cannot be proven from committed
+`05c24b8`; runtime/test content changes; route or ledger owners conflict; map
+promotion needs a body change; or a protected surface cannot remain unchanged.
+
+## Superseded contour-v1 scope and implementation authority (historical)
+
+The following level-three sections preserve the predecessor scope and
+implementation reservation. Their embedded `current` and `future` wording is
+historical and does not override the LOCK authority above.
+
+### Human scope decision and current authority
 
 The human selected Wizard Step 2 `Plaadi kontuur v1` as the next product cycle
 and fixed the sequence:
@@ -39,7 +122,7 @@ no substantive or cached diff. The prior lock's final audit and ledger record
 are accepted, and both Wizard target maps plus their index rows are
 `MAINTAINED`.
 
-## Reserved implementation pass
+### Reserved implementation pass
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
@@ -57,7 +140,7 @@ executable only after independent acceptance and human push of this exact
 five-file scope lock. No routine active-lock sync is required after those
 gates.
 
-## Locked behavior
+### Locked behavior
 
 The future implementation may:
 
@@ -80,7 +163,7 @@ navigation usable without overflow. Existing Step 1 behavior, six-step shell,
 dirty cancellation, zero-write final step, Home-to-Wizard route, and all
 unrelated Wizard behavior remain unchanged.
 
-## Human multi-zone authorization and code-map lifecycle
+### Human multi-zone authorization and code-map lifecycle
 
 The human explicitly authorizes one bounded combination of the maintained
 maps' responsibility zones only for:
@@ -112,7 +195,7 @@ After accepted and pushed implementation, one later unnamed LOCK pass updates
 exactly those two maps from accepted committed source. That later pass is not
 named, armed, or executed here.
 
-## Write and product boundary
+### Write and product boundary
 
 The complete future write class is `UI_LOCAL` + `ZERO_WRITE`.
 
@@ -132,7 +215,7 @@ assignment, directory/file creation, event, fact, projection, schema, writer,
 materializer, Project ZIP, canonical-coordinate, marker, component, contact,
 pin, measurement, net, or diagnosis behavior is authorized.
 
-## Inspect-only and excluded surfaces
+### Inspect-only and excluded surfaces
 
 Inspect-only:
 
@@ -154,7 +237,7 @@ Excluded from the current docs pass and reserved implementation:
 - package, dependency, asset, font, theme, tool, or `_incoming` changes; and
 - full-screen/file rewrites or an extraction requiring a third Dart/test file.
 
-## Implementation validation and acceptance
+### Implementation validation and acceptance
 
 The reserved implementation must:
 
@@ -174,7 +257,7 @@ absence of any persistent or canonical write. If a focused test hangs or
 stalls, stop after at most two focused patch attempts without broadening
 scope.
 
-## Current exclusions and stops
+### Current exclusions and stops
 
 This docs-only scope pass changes no Dart, test, map, code-map index, runtime,
 schema, tool, asset, package, `_incoming`, or protected-surface behavior. It

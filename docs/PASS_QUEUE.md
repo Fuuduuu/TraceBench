@@ -2,16 +2,16 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current scope queue
+## Current LOCK queue
 
-The human selected `Plaadi kontuur v1` and authorized one docs-only scope lock
-with no prerequisite pass:
+The accepted and pushed contour implementation completes the `EHITUS` phase.
+The one human-authorized LOCK phase is:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
@@ -22,58 +22,52 @@ Exact current write allowlist:
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS.md`
 
-No sixth current-pass file is authorized. No Dart, test, map, code-map index,
-runtime, schema, tool, asset, package, or `_incoming` edit is authorized.
+No ninth file is authorized. No Dart, test, router, Home, Board Canvas,
+creator, project-state, persistence, event, fact, projection, ZIP, canonical
+coordinate, package, asset, tool, `_incoming`, or scratch edit is authorized.
 
-## Reserved implementation queue
+## Implementation and map evidence
+
+Committed and pushed implementation:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
-Lane: A
-Mode: FLUTTER_PASS
+05c24b8f19b2055de7873b931936dd387de8169f
+parent: e425d858addf91abe8d5c1402652c4e2ad59dabb
+subject: feat: add Wizard contour editor
 ```
 
-Exact implementation write allowlist:
+The commit changes exactly the Wizard source and focused test. Human-supplied
+evidence records all nine manual-smoke checks `PASS`, a temporary
+`FRESH_CONTEXT_SAME_TOOL` technical audit substitution that is not equivalent
+to independent Claude audit, `TECHNICAL_AUDIT_VERDICT: ACCEPT_WITH_NITS`, and
+`TECHNICAL_SAFE_FOR_STAGING: YES`.
 
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `test/widget/new_project_wizard_screen_test.dart`
-
-No third implementation file is authorized. The future pass is limited to
-widget-local Step 2 contour state/content, the Step 2 navigation gate,
-functional progress semantics, dirty-cancel state, a responsive
-editor/painter, and focused Wizard tests.
-
-It may add, select, drag, delete, reset, explicitly close, reopen, and retain
-contour points only as transient editor-local state. Step 2 `Edasi` requires a
-closed contour with at least three points. A completed Step 2 may be `Valmis`;
-visited placeholder Steps 3–6 remain `Vaadatud`.
-
-Both target maps and their index rows are `MAINTAINED`. The future
-implementation has `CODE_MAP_DISPOSITION: UPDATE_REQUIRED`. After accepted and
-pushed implementation, one later unnamed LOCK pass updates the two maps from
-accepted committed source.
+The accepted implementation materially changed both maintained map targets.
+Their refreshed map headers and matching index rows are now
+`REVIEW_REQUIRED`. A final clean map/lock audit may mechanically promote those
+two headers and two rows to `MAINTAINED`, fill the existing empty verdict
+block, and mirror the same result in the unique LOCK ledger Status cell.
 
 ## Sequencing
 
 ```text
 TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_SCOPE_PASS
 -> TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_IMPL_PASS
--> one later unnamed LOCK pass
+-> TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
 ```
 
-This is the human-selected `SCOPE -> EHITUS -> LOCK` workflow. Implementation
-activation is conditional on independent acceptance and human push of this
-exact five-file scope lock. The implementation then requires focused and full
-Flutter validation, manual smoke, and independent audit before exact human
-staging. No sync, code-map prerequisite, or other pass is inserted.
+This completes the selected `SCOPE -> EHITUS -> LOCK` route. No additional
+pass, prerequisite, closeout, map child, or executable successor is created.
 
-The complete route remains `UI_LOCAL` + `ZERO_WRITE`. Board Canvas,
-canonical-coordinate, marker/component placement, AI/OCR/CV/photo/template,
-persistence, creator, project-state, event/fact/projection, schema/writer/
-materializer, ZIP, router, Home, app, package, asset, tool, and `_incoming`
-surfaces remain excluded.
+The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`. Contour values
+remain transient editor-normalized UI state and establish no canonical board,
+geometry, electrical, measurement, component, or diagnostic fact.
 
 ## Superseded direct foundation reservation (historical)
 

@@ -2,18 +2,17 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS`
 
-## Current docs/map LOCK authority
+## Current docs-only scope authority
 
-The accepted implementation is committed and pushed at
-`05c24b8f19b2055de7873b931936dd387de8169f`
-(`feat: add Wizard contour editor`), parent
-`e425d858addf91abe8d5c1402652c4e2ad59dabb`. The current authority is:
+The human selected Wizard Step 3 `Komponentide asetus v1` as the next
+`SCOPE -> EHITUS -> LOCK` cycle. No prerequisite or separate map pass is
+inserted. The current authority is:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
@@ -24,63 +23,121 @@ Exact current write allowlist:
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS.md`
+
+No sixth current-pass file is authorized.
+
+Entry evidence is branch `main`,
+`HEAD == origin/main == 8e7b075f25a37d70f22d3d38ac26fdb61346ee52`,
+divergence `0 0`, with no substantive or cached diff. Pre-existing
+porcelain-only tracked paths are content-identical to `HEAD`; known scratch
+and four stashes remain outside authority. The completed contour-v1 LOCK is
+the pushed predecessor at this baseline.
+
+## Reserved implementation pass
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact future write allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+No third implementation file is authorized. Future implementation authority
+becomes executable only after independent acceptance and human push of this
+exact five-file scope lock.
+
+## Locked implementation behavior
+
+The future pass may:
+
+- replace only the Step 3 placeholder with a private component-candidate
+  editor;
+- display the closed Step 2 contour as a read-only visual guide;
+- add one generic candidate through an empty-canvas action;
+- select and drag a candidate while clamping its center to editor bounds;
+- delete the selected candidate;
+- preserve candidates and positions across Step 3 -> Step 4 -> Step 3;
+- mark every candidate mutation as a dirty Wizard draft;
+- express candidate count and selection with text/icon semantics as well as
+  color;
+- keep the 1440x900 wide and 390x760 compact layouts operable; and
+- keep Steps 4–6 as placeholders.
+
+Each candidate contains only a widget-local draft key and transient
+editor-local position. The Step 2 contour is visual guidance only; there is no
+hard polygon containment. Step 3 remains optional, gains no `Edasi` gate, and
+remains `Vaadatud` after a visit rather than becoming `Valmis`. Version 1 adds
+no bulk reset or placement limit.
+
+Existing Step 1 and Step 2 behavior, the Step 2 closed-contour gate,
+cancellation routing, the Home-to-Wizard route, final zero-write behavior, and
+all unrelated Wizard behavior remain unchanged.
+
+## Human multi-zone authorization and code-map lifecycle
+
+The human authorizes one bounded combination only for:
+
+- Step 3 widget-local state and content;
+- its private candidate editor and painter;
+- read-only contour background rendering;
+- candidate addition, selection, dragging, editor-bound clamping, and selected
+  deletion;
+- dirty-cancel state;
+- existing navigation retention and optional Step 3 progress semantics;
+- responsive rendering; and
+- focused Wizard tests.
+
+Both exact implementation targets and their matching index rows are currently
+`MAINTAINED`:
+
 - `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+  — `AUTO — 5+ independently testable behaviors`;
 - `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_CONTOUR_V1_LOCK_PASS.md`
+  —
+  `SCORE 8/12 — 27-test multi-family contour/navigation/responsive protected-boundary surface`.
 
-No ninth file is authorized. Entry evidence is `main`,
-`HEAD == origin/main == 05c24b8f19b2055de7873b931936dd387de8169f`,
-divergence `0 0`, an empty staged set, and an empty substantive worktree diff.
-Pre-existing porcelain-only tracked paths are content-identical to `HEAD`;
-known scratch and four stashes remain outside authority.
+Their committed anchors match `HEAD`. The future implementation has:
 
-## Accepted implementation and map state
+```text
+CODE_MAP_DISPOSITION: UPDATE_REQUIRED
+```
 
-The implementation commit changes exactly the Wizard source and focused
-widget-test file. It implements widget-local contour points, selection,
-raw-pointer dragging, editor-bound clamping, delete, reset, explicit closure,
-reopen after mutation, closed-only Step 2 `Edasi`, Step 3 round-trip
-retention, dirty mutations, functional progress, responsive painting, and
-text/icon state semantics.
+After accepted and pushed implementation, one later unnamed LOCK updates the
+two maps from accepted committed source. That phase is not named, armed, or
+executed here.
 
-Human-supplied evidence records all nine manual-smoke checks `PASS`; a
-temporary `FRESH_CONTEXT_SAME_TOOL` technical audit substitution, explicitly
-not equivalent to independent Claude audit;
-`TECHNICAL_AUDIT_VERDICT: ACCEPT_WITH_NITS`;
-`TECHNICAL_SAFE_FOR_STAGING: YES`; and boundary, behavior, zero-write, tests,
-map disposition, and diff identity `PASS`.
+## Write and product boundary
 
-Validation evidence records targeted analysis `PASS`, focused Wizard tests
-`27/27 PASS`, final full Flutter tests `449/449 PASS`, `validate_all.py`
-`302/302 PASS`, and diff checks `PASS`. One first full Flutter run had an
-unrelated measurement double-tap failure that passed in isolation and did not
-reproduce in the final clean reruns.
+The complete write class is `UI_LOCAL` + `ZERO_WRITE`.
 
-The non-blocking NIT is retained: the contour dirty-cancellation test reaches
-Step 2 through `_completeStepOne`, which already dirties Step 1. Committed
-source independently marks add, move, delete, reset, and close mutations
-dirty.
+- Candidates are human-created visual proposals only.
+- Candidate keys and positions never leave private Wizard draft state.
+- Coordinates are transient editor-local values, not canonical
+  `board_normalized` coordinates or placement facts.
+- A candidate proves no component identity, type, value, designator, package,
+  footprint, pins, contacts, board side, electrical connectivity, net
+  membership, measurement, diagnosis, or physical validity.
+- The contour supplies no hard containment or validity claim.
 
-Both refreshed maps and their two matching index rows are
-`REVIEW_REQUIRED`. A clean final audit may change only those four status
-locations to `MAINTAINED`, fill the existing empty LOCK verdict block, and
-mechanically mirror it in the unique matching ledger Status cell. No
-additional pass is permitted.
+No category/type/footprint/template selection, size, rotation, snapping, grid,
+polygon containment, Add Component, Board Canvas, provider, `ProjectCreator`,
+project state, persistence, event, fact, projection, schema, writer,
+materializer, Project ZIP, AI/OCR/CV/photo/template derivation, router, Home,
+app, package, asset, tool, `_incoming`, or scratch change is authorized.
 
-The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`. Points are
-transient editor-normalized values, not canonical `board_normalized` data.
-Closure creates no identity, dimension, physical-validity, electrical,
-component, contact, pin, measurement, net, diagnosis, event, fact, projection,
-or persistent claim.
+Inspect-only surfaces include the existing Step 1/Step 2 Wizard zones, Board
+Canvas source/test/maps, Add Component and its canonical writer seams, Board
+Graph, footprint models/library, router, Home, app, packages, and `_incoming`.
 
-No runtime/test, Board Canvas, router, Home, creator, project-state,
-persistence, schema, writer, materializer, Project ZIP, package, asset, tool,
-`_incoming`, scratch, or protected-surface change is authorized.
-
-Stop if a ninth file is required; map claims cannot be proven from committed
-`05c24b8`; runtime/test content changes; route or ledger owners conflict; map
-promotion needs a body change; or a protected surface cannot remain unchanged.
+Stop if a sixth scope file, third implementation file, hard containment,
+canonical writer or project-state seam, Board Canvas change, or non-local
+coordinate authority becomes necessary; if either map becomes stale or
+conflicting before implementation; or if route/ledger owners disagree.
 
 ## Superseded contour-v1 scope and implementation authority (historical)
 

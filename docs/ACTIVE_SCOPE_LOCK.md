@@ -2,114 +2,107 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current docs-only scope authority
+## Current docs/map LOCK authority
 
-The human selected Wizard Step 3 `Komponentide asetus v1` as the next
-`SCOPE -> EHITUS -> LOCK` cycle. No prerequisite or separate map pass is
-inserted. The current authority is:
+The accepted and pushed Wizard component-placement-v1 implementation is now
+under one bounded docs/map LOCK:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
 
-Exact current write allowlist:
+Baseline authority is branch `main`,
+`HEAD == origin/main == d83e27e291eb31447f9539d1d3b7443648e67355`,
+parent `3e27cdbcdcada20ef4afb3eff69f36097a15937a`, subject
+`feat: add Wizard component placement editor`, and divergence `0 0`.
+The exact implementation commit changed only:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+Entry verification found no substantive or cached diff. Pre-existing
+porcelain-only tracked paths were content-identical to `HEAD`; known scratch
+remains outside authority.
+
+Exact current eight-file write allowlist:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS.md`
-
-No sixth current-pass file is authorized.
-
-Entry evidence is branch `main`,
-`HEAD == origin/main == 8e7b075f25a37d70f22d3d38ac26fdb61346ee52`,
-divergence `0 0`, with no substantive or cached diff. Pre-existing
-porcelain-only tracked paths are content-identical to `HEAD`; known scratch
-and four stashes remain outside authority. The completed contour-v1 LOCK is
-the pushed predecessor at this baseline.
-
-## Reserved implementation pass
-
-```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS
-Lane: A
-Mode: FLUTTER_PASS
-```
-
-Exact future write allowlist:
-
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `test/widget/new_project_wizard_screen_test.dart`
-
-No third implementation file is authorized. Future implementation authority
-becomes executable only after independent acceptance and human push of this
-exact five-file scope lock.
-
-## Locked implementation behavior
-
-The future pass may:
-
-- replace only the Step 3 placeholder with a private component-candidate
-  editor;
-- display the closed Step 2 contour as a read-only visual guide;
-- add one generic candidate through an empty-canvas action;
-- select and drag a candidate while clamping its center to editor bounds;
-- delete the selected candidate;
-- preserve candidates and positions across Step 3 -> Step 4 -> Step 3;
-- mark every candidate mutation as a dirty Wizard draft;
-- express candidate count and selection with text/icon semantics as well as
-  color;
-- keep the 1440x900 wide and 390x760 compact layouts operable; and
-- keep Steps 4–6 as placeholders.
-
-Each candidate contains only a widget-local draft key and transient
-editor-local position. The Step 2 contour is visual guidance only; there is no
-hard polygon containment. Step 3 remains optional, gains no `Edasi` gate, and
-remains `Vaadatud` after a visit rather than becoming `Valmis`. Version 1 adds
-no bulk reset or placement limit.
-
-Existing Step 1 and Step 2 behavior, the Step 2 closed-contour gate,
-cancellation routing, the Home-to-Wizard route, final zero-write behavior, and
-all unrelated Wizard behavior remain unchanged.
-
-## Human multi-zone authorization and code-map lifecycle
-
-The human authorizes one bounded combination only for:
-
-- Step 3 widget-local state and content;
-- its private candidate editor and painter;
-- read-only contour background rendering;
-- candidate addition, selection, dragging, editor-bound clamping, and selected
-  deletion;
-- dirty-cancel state;
-- existing navigation retention and optional Step 3 progress semantics;
-- responsive rendering; and
-- focused Wizard tests.
-
-Both exact implementation targets and their matching index rows are currently
-`MAINTAINED`:
-
+- `docs/code_maps/CODE_MAP_INDEX.md`
 - `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-  — `AUTO — 5+ independently testable behaviors`;
 - `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-  —
-  `SCORE 8/12 — 27-test multi-family contour/navigation/responsive protected-boundary surface`.
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS.md`
 
-Their committed anchors match `HEAD`. The future implementation has:
+No ninth file, Dart/test edit, scope-artifact edit, or third map is authorized.
 
-```text
-CODE_MAP_DISPOSITION: UPDATE_REQUIRED
-```
+## Accepted implementation and audit evidence
 
-After accepted and pushed implementation, one later unnamed LOCK updates the
-two maps from accepted committed source. That phase is not named, armed, or
-executed here.
+Human-attested manual smoke passed all eight locked behaviors:
+
+1. adding multiple candidates;
+2. candidate selection and dragging;
+3. clamping against editor edges;
+4. selected-only deletion;
+5. Step 3 -> Step 4 -> Step 3 retention;
+6. optional Step 3, `Vaadatud`, and ungated `Edasi`;
+7. wide and compact layouts; and
+8. zero-write behavior.
+
+The temporary final read-only implementation audit returned
+`AUDIT_VERDICT: ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES`. Its auditor was a
+`FRESH_CONTEXT_SAME_TOOL`, not an independent Claude Code context. The
+human-authorized exception covered only that implementation audit while Claude
+was unavailable; it changes no permanent repository policy, future auditor
+rule, product boundary, or protected-surface boundary.
+
+Accepted validation against the unchanged implementation diff was: focused
+Wizard tests `34/34`; full tests `456/456`; serial full tests `456/456`;
+validator `302/302`; exact formatting, targeted analysis, and diff checks
+`PASS`.
+
+## Committed behavior
+
+The implementation:
+
+- keeps candidates private to the Wizard as stable local draft keys plus
+  editor-normalized positions;
+- paints the closed Step 2 contour as read-only guidance;
+- adds on empty-canvas tap, selects on candidate hit, drags only the selected
+  candidate, clamps its center to editor edges, and deletes only that selected
+  stable key;
+- retains candidate keys and positions across Step 3 -> Step 4 -> Step 3;
+- assigns `_draftTouched` on candidate add, move, and delete;
+- keeps Step 3 optional and ungated, with visited state `Vaadatud`;
+- disables ancestor Wizard scrolling only while a hit candidate owns the drag,
+  leaving ordinary empty-canvas page scrolling available;
+- preserves Step 1 and Step 2 behavior; and
+- leaves Steps 4–6 as placeholders with no creation path.
+
+## Code-map preflight and lifecycle
+
+Both implementation targets entered the implementation as `MAINTAINED`.
+Material source and test changes made their final disposition
+`UPDATE_REQUIRED`. This LOCK updates only their two maps from committed
+`d83e27e...` truth.
+
+The two map headers and their two exact
+`docs/code_maps/CODE_MAP_INDEX.md` rows are now `REVIEW_REQUIRED`. Their
+qualifications remain:
+
+- production:
+  `AUTO — 5+ independently testable behaviors`;
+- test:
+  `SCORE 8/12 — 34-test multi-family contour/component/navigation/responsive protected-boundary surface`.
+
+The map bodies, masked header/index status cells, and matching ledger row are
+frozen in the LOCK artifact for bounded final audit.
 
 ## Write and product boundary
 
@@ -128,16 +121,26 @@ No category/type/footprint/template selection, size, rotation, snapping, grid,
 polygon containment, Add Component, Board Canvas, provider, `ProjectCreator`,
 project state, persistence, event, fact, projection, schema, writer,
 materializer, Project ZIP, AI/OCR/CV/photo/template derivation, router, Home,
-app, package, asset, tool, `_incoming`, or scratch change is authorized.
+app, package, asset, tool, `_incoming`, scratch, or protected-surface change is
+authorized.
 
-Inspect-only surfaces include the existing Step 1/Step 2 Wizard zones, Board
-Canvas source/test/maps, Add Component and its canonical writer seams, Board
-Graph, footprint models/library, router, Home, app, packages, and `_incoming`.
+## Bounded final audit authority
 
-Stop if a sixth scope file, third implementation file, hard containment,
-canonical writer or project-state seam, Board Canvas change, or non-local
-coordinate authority becomes necessary; if either map becomes stale or
-conflicting before implementation; or if route/ledger owners disagree.
+The final audit is part of this same LOCK and may modify only:
+
+1. the two map header status cells, `REVIEW_REQUIRED` -> `MAINTAINED`;
+2. the two matching index status cells, `REVIEW_REQUIRED` -> `MAINTAINED`;
+3. the designated empty verdict block in
+   `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS.md`;
+4. the matching `docs/AUDIT_INDEX.md` row's `Status` cell.
+
+It must verify the exact eight-file diff, preserve both map bodies and all
+other index/ledger cells, and leave the route at this LOCK ->
+`NEEDS_USER_DECISION`. No extra pass is created.
+
+Stop if a ninth file, runtime/test/source change, scope-artifact edit, third
+map, map-body correction, nonlocal coordinate authority, canonical or
+persistent seam, route change, or protected-surface change becomes necessary.
 
 ## Superseded contour-v1 scope and implementation authority (historical)
 

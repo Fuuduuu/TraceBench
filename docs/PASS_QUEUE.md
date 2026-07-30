@@ -2,77 +2,78 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current scope queue
+## Current LOCK queue
 
-The human selected Wizard Step 3 `Komponentide asetus v1` as the next
-`SCOPE -> EHITUS -> LOCK` cycle. The current docs-only authority is:
+The accepted and pushed Step 3 component-placement implementation is being
+closed by one docs/map LOCK:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
 
-Exact current write allowlist:
+Implementation identity:
+
+- commit:
+  `d83e27e291eb31447f9539d1d3b7443648e67355`
+  (`feat: add Wizard component placement editor`);
+- parent:
+  `3e27cdbcdcada20ef4afb3eff69f36097a15937a`;
+- exact committed set:
+  `lib/features/project/screens/new_project_wizard_screen.dart` and
+  `test/widget/new_project_wizard_screen_test.dart`.
+
+Exact LOCK authority:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS.md`
 
-No sixth file is authorized. No Dart, test, map, code-map index, runtime,
-schema, package, asset, tool, `_incoming`, or scratch edit is authorized.
+No ninth file is authorized. The source, test, component-placement scope
+artifact, third maps, and all unrelated docs are inspect-only.
 
-## Reserved implementation queue
+## Accepted evidence and map state
 
-```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS
-Lane: A
-Mode: FLUTTER_PASS
-```
+Human manual smoke is `8/8 PASS`. The temporary implementation audit returned
+`ACCEPT_AS_IS` with `SAFE_FOR_STAGING: YES` from a
+`FRESH_CONTEXT_SAME_TOOL`. It was expressly not equivalent to a Claude-
+independent audit, applied only while Claude was unavailable, and changed no
+permanent policy or boundary.
 
-Exact future write allowlist:
+Accepted validation is focused `34/34`, full `456/456`, serial full `456/456`,
+validator `302/302`, targeted analysis `PASS`, exact formatting `PASS`, and
+diff checks `PASS`.
 
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `test/widget/new_project_wizard_screen_test.dart`
-
-No third implementation file is authorized. The reservation becomes
-executable only after independent acceptance and human push of this exact
-five-file scope lock.
-
-The implementation may make only Step 3 functional: a private, widget-local
-generic candidate editor using the closed Step 2 contour as a read-only guide.
-It covers empty-canvas add, select, drag with editor-bound center clamping,
-selected deletion, Step 4 round-trip retention, dirty mutations, text/icon
-state semantics, and wide/compact rendering. Step 3 stays optional with no
-`Edasi` gate and remains `Vaadatud`; Steps 4–6 stay placeholders.
-
-The candidate model is limited to a local draft key and transient editor-local
-position. There is no hard polygon containment, category/type/footprint/
-template choice, size, rotation, snapping, grid, bulk reset, placement limit,
-canonical coordinate, persistent state, or protected write.
-
-Both implementation targets and their index rows are `MAINTAINED` at current
-`HEAD`. Material implementation changes require:
-
-```text
-CODE_MAP_DISPOSITION: UPDATE_REQUIRED
-```
+Both target map bodies now describe the committed candidate key/position
+model, read-only guide, add/select/drag/clamp/delete flows, Step 4 retention,
+dirty assignments, optional/ungated `Vaadatud` semantics, responsive
+pointer/scroll behavior, focused coverage, and `UI_LOCAL` + `ZERO_WRITE`
+boundaries. Their headers and two exact index rows remain `REVIEW_REQUIRED`
+until the bounded final audit.
 
 ## Sequencing
 
 ```text
 TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS
 -> TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
 ```
 
-After accepted and pushed implementation, the selected workflow proceeds to
-one bounded LOCK phase. That later LOCK is not named or executed here. No
-prerequisite or separate map pass is inserted.
+The final audit belongs to this LOCK and may only promote the two map headers
+and two exact index rows to `MAINTAINED`, fill the artifact's existing verdict
+block, and mirror that result into the matching ledger `Status` cell. It may
+not alter either map body, any other index/ledger cell, the route, or a ninth
+file. No extra closeout or map pass is inserted.
 
 The implementation remains `UI_LOCAL` + `ZERO_WRITE`. It changes no Add
 Component, Board Canvas, provider, creator/project-state, persistence,

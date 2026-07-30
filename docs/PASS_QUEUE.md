@@ -2,83 +2,78 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
 
-## Current LOCK queue
+## Current SCOPE queue
 
-The accepted and pushed Step 3 component-placement implementation is being
-closed by one docs/map LOCK:
+The human selected optional Wizard Step 4 `Foto ja joondamine v1` and fixed:
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
-Lane: A
-Mode: DOCS_SYNC
+SCOPE -> EHITUS -> LOCK
 ```
 
-Implementation identity:
+The current docs-only pass changes exactly the four route/ledger owners plus
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS.md`.
+No Dart, test, map, or map-index file changes during SCOPE.
 
-- commit:
-  `d83e27e291eb31447f9539d1d3b7443648e67355`
-  (`feat: add Wizard component placement editor`);
-- parent:
-  `3e27cdbcdcada20ef4afb3eff69f36097a15937a`;
-- exact committed set:
-  `lib/features/project/screens/new_project_wizard_screen.dart` and
-  `test/widget/new_project_wizard_screen_test.dart`.
+Verified entry is branch `main`,
+`HEAD == origin/main == 4dcec544acd0fbcee416c219cef1a10f52a4280f`,
+divergence `0 0`, empty staged/substantive diffs, released route
+`NEEDS_USER_DECISION`, accepted predecessor ledger evidence, and maintained
+Wizard maps.
 
-Exact LOCK authority:
-
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS.md`
-
-No ninth file is authorized. The source, test, component-placement scope
-artifact, third maps, and all unrelated docs are inspect-only.
-
-## Accepted evidence and map state
-
-Human manual smoke is `8/8 PASS`. The temporary implementation audit returned
-`ACCEPT_AS_IS` with `SAFE_FOR_STAGING: YES` from a
-`FRESH_CONTEXT_SAME_TOOL`. It was expressly not equivalent to a Claude-
-independent audit, applied only while Claude was unavailable, and changed no
-permanent policy or boundary.
-
-Accepted validation is focused `34/34`, full `456/456`, serial full `456/456`,
-validator `302/302`, targeted analysis `PASS`, exact formatting `PASS`, and
-diff checks `PASS`.
-
-Both target map bodies now describe the committed candidate key/position
-model, read-only guide, add/select/drag/clamp/delete flows, Step 4 retention,
-dirty assignments, optional/ungated `Vaadatud` semantics, responsive
-pointer/scroll behavior, focused coverage, and `UI_LOCAL` + `ZERO_WRITE`
-boundaries. Their headers and two exact index rows remain `REVIEW_REQUIRED`
-until the bounded final audit.
-
-## Sequencing
+## Reserved EHITUS
 
 ```text
-TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_SCOPE_PASS
--> TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_IMPL_PASS
--> TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
+
+The pass adds one optional native-desktop photo-view step, shifts placeholders
+to Steps 5–7, derives numbering from `_wizardSteps.length`, keeps Step 4
+ungated/`Vaadatud`, retains parent-owned path/transform state, renders the
+photo below fixed read-only guides, provides translate/zoom/rotate plus
+a visible `0–100%` opacity slider defaulting to `65%`, `Nulli vaade`,
+replace, and separate `Eemalda foto`, preserves cancel/navigation/resize
+state, handles render failure honestly, marks all locked mutations dirty, and
+stays operable at 1440x900 and 390x760. Opacity is clamped to `0.0..1.0`;
+`0%` hides only the image layer, retains the draft and fixed guides, and shows
+`Foto peidetud`, while `100%` is fully visible. Reset changes only
+translation, scale, and rotation and preserves opacity; remove clears the
+complete photo draft.
+
+It is `UI_LOCAL` + `ZERO_WRITE`. No source mutation, project photo copy,
+canonical alignment/coordinates, fact/event, reference solver, provider,
+creator/project state, filesystem write, AI/OCR/CV, router, Board Canvas,
+existing project-photo workflow, schema, materializer, package, asset, ZIP,
+or protected surface is queued.
+
+## Sequencing and map lifecycle
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+-> one later unnamed LOCK
 -> NEEDS_USER_DECISION
 ```
 
-The final audit belongs to this LOCK and may only promote the two map headers
-and two exact index rows to `MAINTAINED`, fill the artifact's existing verdict
-block, and mirror that result into the matching ledger `Status` cell. It may
-not alter either map body, any other index/ledger cell, the route, or a ninth
-file. No extra closeout or map pass is inserted.
+There is no prerequisite or separate map pass. Existing Wizard maps remain
+`MAINTAINED` during EHITUS and have final disposition `UPDATE_REQUIRED`. The
+two new files are qualified in the later LOCK from accepted committed source;
+no map is pre-created. Manual smoke precedes the final implementation audit.
 
-The implementation remains `UI_LOCAL` + `ZERO_WRITE`. It changes no Add
-Component, Board Canvas, provider, creator/project-state, persistence,
-event/fact/projection, schema/writer/materializer, ZIP, AI/OCR/CV/photo,
-router, Home, app, package, asset, tool, or `_incoming` behavior.
+Stop on a fifth implementation file, a map edit during EHITUS, unsupported
+mobile/web promise, parent-state violation, persistent/canonical path,
+unrelated cleanup, or protected-surface expansion.
 
 ## Superseded direct foundation reservation (historical)
 

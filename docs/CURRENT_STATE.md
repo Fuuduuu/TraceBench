@@ -1,110 +1,111 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
 
-## Live component-placement-v1 LOCK
+## Live photo-alignment-v1 scope
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
 
-The accepted implementation is pushed on branch `main` as
-`d83e27e291eb31447f9539d1d3b7443648e67355`
-(`feat: add Wizard component placement editor`), with parent
-`3e27cdbcdcada20ef4afb3eff69f36097a15937a`. Its exact committed set is:
+At entry, branch `main` has
+`HEAD == origin/main == 4dcec544acd0fbcee416c219cef1a10f52a4280f`
+(`docs: lock Wizard component placement v1`), divergence `0 0`, no staged
+paths, and no substantive worktree diff. Pre-existing tracked porcelain
+entries are content-identical to `HEAD`; known scratch remains outside
+authority.
 
-- `lib/features/project/screens/new_project_wizard_screen.dart`
-- `test/widget/new_project_wizard_screen_test.dart`
+The predecessor component-placement LOCK is accepted and pushed, its final
+ledger record is accepted, and both Wizard maps plus their index rows are
+`MAINTAINED`. Its route released to `NEEDS_USER_DECISION`; this human decision
+opens a fresh authority rather than extending the spent LOCK.
 
-Entry verification found `HEAD == origin/main == d83e27e...`, divergence
-`0 0`, an empty staged set, and no substantive worktree diff. Pre-existing
-porcelain-only tracked paths were content-identical to `HEAD`; known scratch
-remains outside authority.
-
-This LOCK has exactly eight authority files:
+This SCOPE pass changes exactly:
 
 - `docs/ACTIVE_SCOPE_LOCK.md`
 - `docs/CURRENT_STATE.md`
 - `docs/PASS_QUEUE.md`
 - `docs/AUDIT_INDEX.md`
-- `docs/code_maps/CODE_MAP_INDEX.md`
-- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
-- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS.md`
 
-No ninth file, runtime file, test file, prior scope artifact, or third map is
-authorized.
+No Dart, test, map, map-index, package, asset, schema, tool, or `_incoming`
+file changes now.
 
-## Accepted implementation evidence
+## Reserved implementation
 
-The human-attested manual smoke gate passed all eight locked checks: multiple
-candidate addition; selection and dragging; editor-edge clamping;
-selected-only deletion; Step 3 -> Step 4 -> Step 3 retention; optional Step 3,
-`Vaadatud`, and ungated `Edasi`; wide and compact layouts; and zero-write
-behavior.
+`TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS` is reserved with
+exactly four implementation files:
 
-The temporary final read-only implementation audit returned
-`AUDIT_VERDICT: ACCEPT_AS_IS` and `SAFE_FOR_STAGING: YES`. The auditor was a
-`FRESH_CONTEXT_SAME_TOOL`; this is not equivalent to an independent Claude
-Code audit. The human exception applied only to that implementation audit
-while Claude was unavailable. It changes no permanent repository policy,
-role-separation rule, product boundary, or protected-surface boundary.
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
 
-Accepted validation against the unchanged two-file implementation diff was:
-focused Wizard tests `34/34`, full tests `456/456`, serial full tests
-`456/456`, repository validator `302/302`, targeted analysis `PASS`, exact
-formatting `PASS`, and staged/unstaged diff checks `PASS`.
+No fifth implementation file is authorized. Activation is conditional on an
+accepted independent audit and human push of this exact five-file scope lock.
 
-## Committed behavior and boundary
+## Locked product behavior
 
-Committed Step 3 is the locked widget-local generic candidate editor:
+The future pass inserts optional Step 4 `Foto ja joondamine`, shifts the
+current Steps 4–6 to Steps 5–7 while preserving their labels, details, icons,
+and optional/required badge semantics, and derives every count, number, bound,
+and final-step decision from `_wizardSteps.length`. Step 4 stays ungated and
+becomes `Vaadatud`, never `Valmis`.
 
-- candidates contain only stable local draft keys and editor-normalized
-  positions;
-- the closed Step 2 contour is a read-only painting guide;
-- empty-canvas tap adds; hit tap selects; pointer drag clamps to editor edges;
-- deletion removes only the selected stable candidate;
-- candidate keys and positions survive Step 3 -> Step 4 -> Step 3;
-- add, move, and delete each assign the dirty-draft state;
-- Step 3 is optional, stays ungated, and becomes `Vaadatud`, not `Valmis`;
-- candidate dragging suppresses ancestor Wizard scrolling, while an
-  empty-canvas pointer leaves ordinary page scrolling available; and
-- Steps 4–6 remain placeholders while Step 1 and Step 2 behavior remains
-  intact.
+A native desktop picker may return one `jpg`, `jpeg`, `png`, or `webp` path.
+Cancel preserves the existing draft. Accepted selection/replacement starts at
+centered `BoxFit.contain`, zero normalized translation, scale `1.0`, and
+rotation `0.0`, with finite opacity `0.65` clamped to `0.0..1.0`. The photo
+can be translated, zoomed within `0.25..8.0`, rotated with radians normalized
+to `[-π, π)`, and adjusted through a visible `0–100%` opacity slider. At
+`0%`, only the image layer is fully hidden, the draft remains selected, and
+the UI shows `Foto peidetud`; `100%` is fully visible.
 
-The implementation is `UI_LOCAL` + `ZERO_WRITE`. Candidate positions are not
-canonical `board_normalized` coordinates and candidates establish no identity,
-type, value, designator, package, footprint, pins, contacts, board side,
-connectivity, net, measurement, diagnosis, or physical-validity claim. No
-provider, `ProjectCreator`, project state, persistence, event, fact,
-projection, schema, writer, materializer, Project ZIP, AI/OCR/CV/photo, Board
-Canvas, Add Component, router, Home, app, package, asset, tool, `_incoming`, or
-protected-surface behavior changed.
+Only the photo transforms or changes opacity. The closed contour and component
+candidates remain fixed read-only guides in their existing editor-normalized
+coordinates above the photo, including at `0%`. Step 3/4/5 navigation and
+responsive resize retain path, translation, scale, rotation, and opacity.
+Accepted selection, transform or opacity changes, reset, replacement, and
+removal mark the Wizard draft dirty. `Nulli vaade` resets translation, scale,
+and rotation only, preserving the selected path and current opacity;
+`Eemalda foto` separately clears the complete photo draft. Decode/render
+failure remains visible and non-destructive. Both 1440x900 and 390x760 remain
+operable.
 
-## Code-map lifecycle and bounded final audit
+## Platform, ownership, and boundary
 
-The two maps were updated from committed `HEAD` truth. Their headers and exact
-`docs/code_maps/CODE_MAP_INDEX.md` rows are frozen at `REVIEW_REQUIRED`.
+Version 1 makes no mobile/web picker promise. The Wizard parent owns the
+authoritative nullable path, editor-normalized translation, finite bounded
+scale, normalized rotation, finite clamped opacity, and dirty state. The child
+editor owns only gesture-lifetime ephemeral state; no provider, singleton,
+route handoff, or child-only authoritative controller is allowed.
 
-The final audit may change only:
+The implementation is `UI_LOCAL` + `ZERO_WRITE`. `Joondamine` is only a
+presentation transform. There is no source copy/modification, project photo
+file, sidecar/ledger/hash/EXIF, fact/event, canonical coordinate output,
+reference point or solver, creator/project state/provider/filesystem write,
+AI/OCR/CV, router, Board Canvas, existing project-photo workflow, schema,
+validator, materializer, package, asset, or Project ZIP authority.
 
-- the two map header status cells from `REVIEW_REQUIRED` to `MAINTAINED`;
-- the two matching index status cells from `REVIEW_REQUIRED` to `MAINTAINED`;
-- the designated empty verdict block in the LOCK artifact; and
-- the matching `docs/AUDIT_INDEX.md` ledger `Status` cell.
+## Code-map plan and route
 
-It must preserve the frozen map bodies, all other index/ledger content, the
-route, and all boundaries. The audit completes this same LOCK; no extra pass is
-created. After that bounded result is recorded, the human may stage only the
-accepted material subset of this exact eight-file authority.
+The existing Wizard source/test maps are `MAINTAINED` now and become
+`UPDATE_REQUIRED` after material implementation. The two new files are absent
+and must be qualified only in the later unnamed LOCK from committed source.
+No maps are created or updated during EHITUS, and no prerequisite or separate
+map pass exists.
 
 ```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_PLACEMENT_V1_LOCK_PASS
-Next: NEEDS_USER_DECISION
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
 ```
+
+After accepted and pushed implementation, one unnamed LOCK updates the
+existing maps, qualifies both new files, and then routes to
+`NEEDS_USER_DECISION`. Its `PASS_ID` is not reserved here.
 
 ## Superseded original scope record (historical)
 

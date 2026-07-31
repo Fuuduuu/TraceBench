@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +15,78 @@ class _TestPlatformInfo extends PlatformInfo {
 
   @override
   bool get isMobile => _isMobile;
+}
+
+class _MutableTestPlatformInfo extends PlatformInfo {
+  _MutableTestPlatformInfo(this.isMobile);
+
+  @override
+  bool isMobile;
+}
+
+class _FakePhotoFilePicker extends FilePicker {
+  _FakePhotoFilePicker(Iterable<Object?> outcomes)
+      : _outcomes = List<Object?>.of(outcomes);
+
+  final List<Object?> _outcomes;
+  var pickCount = 0;
+  FileType? requestedType;
+  List<String>? requestedExtensions;
+  bool? requestedWithData;
+  bool? requestedAllowMultiple;
+
+  @override
+  Future<FilePickerResult?> pickFiles({
+    String? dialogTitle,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    Function(FilePickerStatus)? onFileLoading,
+    bool allowCompression = true,
+    int compressionQuality = 30,
+    bool allowMultiple = false,
+    bool withData = false,
+    bool withReadStream = false,
+    bool lockParentWindow = false,
+    bool readSequential = false,
+  }) async {
+    pickCount += 1;
+    requestedType = type;
+    requestedExtensions = allowedExtensions;
+    requestedWithData = withData;
+    requestedAllowMultiple = allowMultiple;
+    final outcome = _outcomes.removeAt(0);
+    if (outcome is Exception) {
+      throw outcome;
+    }
+    if (outcome == null) {
+      return null;
+    }
+    final path = outcome as String;
+    return FilePickerResult(<PlatformFile>[
+      PlatformFile(
+        name: path.split(RegExp(r'[/\\]')).last,
+        path: path,
+        size: 1,
+      ),
+    ]);
+  }
+}
+
+void _installPhotoPicker(_FakePhotoFilePicker picker) {
+  FilePicker? originalPicker;
+  try {
+    originalPicker = FilePicker.platform;
+  } catch (_) {
+    originalPicker = null;
+  }
+  FilePicker.platform = picker;
+  addTearDown(() {
+    final pickerToRestore = originalPicker;
+    if (pickerToRestore != null) {
+      FilePicker.platform = pickerToRestore;
+    }
+  });
 }
 
 Widget _buildWizardApp({
@@ -86,6 +161,7 @@ Future<void> _completeStepOne(
 
 Future<void> _openContourStep(WidgetTester tester) async {
   await _completeStepOne(tester);
+  await _tapKey(tester, 'wizard-next');
   await _tapKey(tester, 'wizard-next');
 }
 
@@ -170,6 +246,21 @@ Future<void> _openComponentPlacementStep(WidgetTester tester) async {
   await _openContourStep(tester);
   await _closeContour(tester);
   await _tapKey(tester, 'wizard-next');
+}
+
+Future<void> _openPhotoAlignmentStep(WidgetTester tester) async {
+  await _completeStepOne(tester);
+  await _tapKey(tester, 'wizard-next');
+}
+
+dynamic _photoEditor(WidgetTester tester) {
+  return tester.widget(
+    find.byKey(const ValueKey('wizard-photo-editor')),
+  );
+}
+
+dynamic _photoTransform(WidgetTester tester) {
+  return (_photoEditor(tester) as dynamic).transform;
 }
 
 Rect _componentCanvasRect(WidgetTester tester) {
@@ -261,7 +352,7 @@ bool _paintedComponentGuideIsClosed(WidgetTester tester) {
 }
 
 void main() {
-  testWidgets('six-step shell renders the exact Estonian step labels',
+  testWidgets('seven-step shell renders the exact Estonian step labels',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -272,6 +363,7 @@ void main() {
 
     for (final label in const <String>[
       'Projekti andmed',
+      'Foto ja joondamine',
       'Plaadi kontuur',
       'Komponentide asetus',
       'Probleemi kirjeldus',
@@ -351,19 +443,19 @@ void main() {
     await _tapKey(tester, 'wizard-next');
 
     expect(
-      find.byKey(const ValueKey('wizard-contour-editor')),
+      find.byKey(const ValueKey('wizard-photo-step')),
       findsOneWidget,
     );
     expect(
       find.descendant(
-        of: find.byKey(const ValueKey('wizard-contour-editor')),
-        matching: find.text('Samm 2 / 6'),
+        of: find.byKey(const ValueKey('wizard-photo-step')),
+        matching: find.text('Samm 2 / 7'),
       ),
       findsOneWidget,
     );
   });
 
-  testWidgets('Step 2 starts empty and keeps Edasi disabled', (tester) async {
+  testWidgets('Step 3 starts empty and keeps Edasi disabled', (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
@@ -465,7 +557,7 @@ void main() {
     expect(find.text('Kontuur avatud'), findsOneWidget);
   });
 
-  testWidgets('reset clears points, selection, closure, and the Step 2 gate',
+  testWidgets('reset clears points, selection, closure, and the Step 3 gate',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -569,7 +661,7 @@ void main() {
   });
 
   testWidgets(
-      'Step 3 starts empty, renders the closed contour guide, and stays ungated',
+      'Step 4 starts empty, renders the closed contour guide, and stays ungated',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -586,7 +678,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.byKey(const ValueKey('wizard-placeholder-3')),
+      find.byKey(const ValueKey('wizard-placeholder-4')),
       findsNothing,
     );
     expect(find.text('Tulekul'), findsNothing);
@@ -727,7 +819,7 @@ void main() {
     );
   });
 
-  testWidgets('Step 4 round-trip retains candidate keys and positions',
+  testWidgets('Step 4 to Step 5 round-trip retains candidate geometry',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -744,22 +836,22 @@ void main() {
     await _tapKey(tester, 'wizard-next');
 
     expect(
-      find.byKey(const ValueKey('wizard-placeholder-4')),
+      find.byKey(const ValueKey('wizard-placeholder-5')),
       findsOneWidget,
     );
-    final thirdProgress = find.byKey(
-      const ValueKey('wizard-progress-step-3'),
+    final fourthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-4'),
     );
     expect(
       find.descendant(
-        of: thirdProgress,
+        of: fourthProgress,
         matching: find.text('Vaadatud'),
       ),
       findsOneWidget,
     );
     expect(
       find.descendant(
-        of: thirdProgress,
+        of: fourthProgress,
         matching: find.text('Valmis'),
       ),
       findsNothing,
@@ -768,6 +860,493 @@ void main() {
     await _tapKey(tester, 'wizard-back');
     expect(_paintedComponentDraftKeys(tester), keysBefore);
     expect(_paintedComponentPositions(tester), positionsBefore);
+  });
+
+  testWidgets('Step 2 is optional, ungated, and becomes Vaadatud',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-photo-step')),
+      findsOneWidget,
+    );
+    expect(find.text('Foto ja joondamine'), findsWidgets);
+    expect(find.text('Valikuline'), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNotNull,
+    );
+
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.byKey(const ValueKey('wizard-contour-editor')),
+      findsOneWidget,
+    );
+    final secondProgress = find.byKey(
+      const ValueKey('wizard-progress-step-2'),
+    );
+    expect(
+      find.descendant(
+        of: secondProgress,
+        matching: find.text('Vaadatud'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: secondProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('desktop picker uses the locked filter and default photo view',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/photos/board.JPG']);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+
+    expect(picker.pickCount, 1);
+    expect(picker.requestedType, FileType.custom);
+    expect(
+      picker.requestedExtensions,
+      const <String>['jpg', 'jpeg', 'png', 'webp'],
+    );
+    expect(picker.requestedAllowMultiple, isFalse);
+    expect(picker.requestedWithData, isFalse);
+    expect(
+      find.byKey(const ValueKey('wizard-photo-editor')),
+      findsOneWidget,
+    );
+    final editor = _photoEditor(tester) as dynamic;
+    final transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/board.JPG');
+    expect(transform.translation as Offset, Offset.zero);
+    expect(transform.scale as double, 1.0);
+    expect(transform.rotation as double, 0.0);
+    expect(transform.opacity as double, 0.65);
+    expect(find.text('65%'), findsWidgets);
+  });
+
+  testWidgets('photo stays below independent contour and candidate geometry',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>[
+      'C:/photos/front.png',
+      'C:/photos/back.webp',
+    ]);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(0.17, -0.11),
+    );
+    (_photoEditor(tester) as dynamic).onScaleChanged(1.8);
+    (_photoEditor(tester) as dynamic).onRotationChanged(0.4);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(0.0);
+    await tester.pump();
+
+    expect(
+      find.byKey(const ValueKey('wizard-photo-guide-painter')),
+      findsNothing,
+    );
+    await _tapKey(tester, 'wizard-next');
+
+    final contourStack = tester.widget<Stack>(
+      find.byKey(const ValueKey('wizard-contour-stack')),
+    );
+    final contourPhotoIndex = contourStack.children.indexWhere(
+      (child) => child.key == const ValueKey('wizard-contour-photo-layer'),
+    );
+    final contourPainterIndex = contourStack.children.indexWhere(
+      (child) => child.key == const ValueKey('wizard-contour-painter'),
+    );
+    expect(contourPhotoIndex, greaterThanOrEqualTo(0));
+    expect(contourPhotoIndex, lessThan(contourPainterIndex));
+    final contourPhotoView = tester.widget(
+      find.byKey(const ValueKey('wizard-contour-photo-view')),
+    ) as dynamic;
+    final contourPhotoTransform = contourPhotoView.transform as dynamic;
+    expect(contourPhotoView.photoPath as String, 'C:/photos/front.png');
+    expect(
+      contourPhotoTransform.translation as Offset,
+      const Offset(0.17, -0.11),
+    );
+    expect(contourPhotoTransform.scale as double, 1.8);
+    expect(contourPhotoTransform.rotation as double, closeTo(0.4, 0.000001));
+    expect(contourPhotoTransform.opacity as double, 0.0);
+    expect(
+      tester
+          .widget<Opacity>(
+            find.byKey(const ValueKey('wizard-photo-opacity-layer')),
+          )
+          .opacity,
+      0.0,
+    );
+    expect(find.text('Foto peidetud'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('wizard-contour-painter')),
+      findsOneWidget,
+    );
+
+    await _closeContour(tester);
+    final contourBefore = _paintedContourPoints(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    final componentStack = tester.widget<Stack>(
+      find.byKey(const ValueKey('wizard-component-stack')),
+    );
+    final componentPhotoIndex = componentStack.children.indexWhere(
+      (child) => child.key == const ValueKey('wizard-component-photo-layer'),
+    );
+    final componentPainterIndex = componentStack.children.indexWhere(
+      (child) => child.key == const ValueKey('wizard-component-painter'),
+    );
+    expect(componentPhotoIndex, greaterThanOrEqualTo(0));
+    expect(componentPhotoIndex, lessThan(componentPainterIndex));
+    final componentPhotoView = tester.widget(
+      find.byKey(const ValueKey('wizard-component-photo-view')),
+    ) as dynamic;
+    expect(componentPhotoView.photoPath as String, 'C:/photos/front.png');
+    expect(_paintedComponentGuidePoints(tester), contourBefore);
+    expect(_paintedComponentGuideIsClosed(tester), isTrue);
+
+    await _tapComponentAt(tester, const Offset(0.68, 0.57));
+    final candidateKeysBefore = _paintedComponentDraftKeys(tester);
+    final candidatePositionsBefore = _paintedComponentPositions(tester);
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-photo-replace');
+
+    await _tapKey(tester, 'wizard-next');
+    expect(_paintedContourPoints(tester), contourBefore);
+    final replacedContourPhotoView = tester.widget(
+      find.byKey(const ValueKey('wizard-contour-photo-view')),
+    ) as dynamic;
+    expect(replacedContourPhotoView.photoPath as String, 'C:/photos/back.webp');
+    await _tapKey(tester, 'wizard-next');
+    expect(_paintedComponentDraftKeys(tester), candidateKeysBefore);
+    expect(_paintedComponentPositions(tester), candidatePositionsBefore);
+    expect(_paintedComponentGuidePoints(tester), contourBefore);
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-photo-remove');
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-contour-photo-layer')),
+      findsNothing,
+    );
+    expect(_paintedContourPoints(tester), contourBefore);
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-component-photo-layer')),
+      findsNothing,
+    );
+    expect(_paintedComponentDraftKeys(tester), candidateKeysBefore);
+    expect(_paintedComponentPositions(tester), candidatePositionsBefore);
+  });
+
+  testWidgets('picker cancel and exception preserve the current photo draft',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>[
+      'C:/photos/board.png',
+      null,
+      StateError('picker failed'),
+    ]);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(0.18, -0.12),
+    );
+    (_photoEditor(tester) as dynamic).onScaleChanged(2.4);
+    (_photoEditor(tester) as dynamic).onRotationChanged(0.7);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(0.31);
+    await tester.pump();
+    final beforeCancel = _photoTransform(tester) as dynamic;
+
+    await _tapKey(tester, 'wizard-photo-replace');
+
+    var editor = _photoEditor(tester) as dynamic;
+    var transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/board.png');
+    expect(transform.translation as Offset, beforeCancel.translation as Offset);
+    expect(transform.scale as double, beforeCancel.scale as double);
+    expect(transform.rotation as double, beforeCancel.rotation as double);
+    expect(transform.opacity as double, beforeCancel.opacity as double);
+
+    await _tapKey(tester, 'wizard-photo-replace');
+
+    editor = _photoEditor(tester) as dynamic;
+    transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/board.png');
+    expect(transform.translation as Offset, const Offset(0.18, -0.12));
+    expect(transform.scale as double, 2.4);
+    expect(transform.rotation as double, closeTo(0.7, 0.000001));
+    expect(transform.opacity as double, 0.31);
+    expect(find.text('Foto valimine ebaõnnestus.'), findsOneWidget);
+  });
+
+  testWidgets('parent clamps scale and opacity and normalizes rotation',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/photos/board.webp']);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+
+    (_photoEditor(tester) as dynamic).onScaleChanged(0.01);
+    await tester.pump();
+    expect((_photoTransform(tester) as dynamic).scale as double, 0.25);
+    (_photoEditor(tester) as dynamic).onScaleChanged(50.0);
+    await tester.pump();
+    expect((_photoTransform(tester) as dynamic).scale as double, 8.0);
+
+    (_photoEditor(tester) as dynamic).onRotationChanged(3 * math.pi);
+    await tester.pump();
+    final rotation = (_photoTransform(tester) as dynamic).rotation as double;
+    expect(rotation, closeTo(-math.pi, 0.000001));
+    expect(rotation, greaterThanOrEqualTo(-math.pi));
+    expect(rotation, lessThan(math.pi));
+
+    (_photoEditor(tester) as dynamic).onOpacityChanged(-4.0);
+    await tester.pump();
+    expect((_photoTransform(tester) as dynamic).opacity as double, 0.0);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(4.0);
+    await tester.pump();
+    expect((_photoTransform(tester) as dynamic).opacity as double, 1.0);
+
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(double.infinity, 0.25),
+    );
+    await tester.pump();
+    final translation =
+        (_photoTransform(tester) as dynamic).translation as Offset;
+    expect(translation.dx.isFinite, isTrue);
+    expect(translation.dy.isFinite, isTrue);
+  });
+
+  testWidgets(
+      'reset preserves photo and opacity; replace resets; remove clears',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>[
+      'C:/photos/front.jpg',
+      'C:/photos/back.jpeg',
+    ]);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(0.22, -0.16),
+    );
+    (_photoEditor(tester) as dynamic).onScaleChanged(3.0);
+    (_photoEditor(tester) as dynamic).onRotationChanged(1.2);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(0.27);
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-photo-reset');
+
+    var editor = _photoEditor(tester) as dynamic;
+    var transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/front.jpg');
+    expect(transform.translation as Offset, Offset.zero);
+    expect(transform.scale as double, 1.0);
+    expect(transform.rotation as double, 0.0);
+    expect(transform.opacity as double, 0.27);
+
+    await _tapKey(tester, 'wizard-photo-replace');
+
+    editor = _photoEditor(tester) as dynamic;
+    transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/back.jpeg');
+    expect(transform.translation as Offset, Offset.zero);
+    expect(transform.scale as double, 1.0);
+    expect(transform.rotation as double, 0.0);
+    expect(transform.opacity as double, 0.65);
+
+    await _tapKey(tester, 'wizard-photo-remove');
+
+    expect(
+      find.byKey(const ValueKey('wizard-photo-editor')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-photo-empty')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('photo draft survives Step 2-3-4 navigation and resize',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/photos/board.png']);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(0.19, -0.23),
+    );
+    (_photoEditor(tester) as dynamic).onScaleChanged(1.75);
+    (_photoEditor(tester) as dynamic).onRotationChanged(-0.8);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(0.42);
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-contour-editor')),
+      findsOneWidget,
+    );
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-component-editor')),
+      findsOneWidget,
+    );
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+
+    final editor = _photoEditor(tester) as dynamic;
+    final transform = _photoTransform(tester) as dynamic;
+    expect(editor.photoPath as String, 'C:/photos/board.png');
+    expect(transform.translation as Offset, const Offset(0.19, -0.23));
+    expect(transform.scale as double, 1.75);
+    expect(transform.rotation as double, closeTo(-0.8, 0.000001));
+    expect(transform.opacity as double, 0.42);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('compact photo drag moves the photo without moving page scroll',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/photos/board.png']);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    final canvas = find.byKey(const ValueKey('wizard-photo-canvas'));
+    await tester.ensureVisible(canvas);
+    await tester.pump();
+    final pageScroll = Scrollable.of(tester.element(canvas)).position;
+    final scrollOffsetBeforeDrag = pageScroll.pixels;
+    final rect = tester.getRect(canvas);
+    final gesture = await tester.startGesture(rect.center);
+    await gesture.moveBy(const Offset(35, 22.5));
+    await tester.pump(const Duration(milliseconds: 16));
+    await gesture.moveBy(const Offset(35, 22.5));
+    await tester.pump(const Duration(milliseconds: 16));
+    await gesture.up();
+    await tester.pump();
+
+    final translation =
+        (_photoTransform(tester) as dynamic).translation as Offset;
+    expect(pageScroll.pixels, closeTo(scrollOffsetBeforeDrag, 0.001));
+    expect(translation.dx, greaterThan(0));
+    expect(translation.dy, greaterThan(0));
+
+    final title = find.byKey(const ValueKey('wizard-step-title'));
+    await tester.ensureVisible(title);
+    await tester.pump();
+    final scrollBeforePageDrag = pageScroll.pixels;
+    await tester.drag(title, const Offset(0, -180));
+    await tester.pump();
+    expect(pageScroll.pixels, greaterThan(scrollBeforePageDrag));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('mobile photo action is honest and never invokes the picker',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/photos/board.png']);
+    _installPhotoPicker(picker);
+    final platformInfo = _MutableTestPlatformInfo(false);
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        platformInfo: platformInfo,
+      ),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    platformInfo.isMobile = true;
+    await tester.pump();
+    await _tapKey(tester, 'wizard-photo-pick');
+
+    expect(picker.pickCount, 0);
+    expect(
+      find.text(
+        'Foto valimine on selles versioonis saadaval ainult '
+        'töölauarakenduses.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-photo-editor')),
+      findsNothing,
+    );
   });
 
   testWidgets('candidate mutation participates in dirty-draft cancellation',
@@ -875,12 +1454,12 @@ void main() {
 
     await _tapKey(tester, 'wizard-next');
     expect(
-      find.byKey(const ValueKey('wizard-contour-editor')),
+      find.byKey(const ValueKey('wizard-photo-step')),
       findsOneWidget,
     );
   });
 
-  testWidgets('Steps 4 through 6 remain honest non-functional placeholders',
+  testWidgets('Steps 5 through 7 remain honest non-functional placeholders',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -891,9 +1470,9 @@ void main() {
     await _tapKey(tester, 'wizard-next');
 
     const labels = <int, String>{
-      4: 'Probleemi kirjeldus',
-      5: 'Kontroll ja kinnitus',
-      6: 'Kokkuvõte',
+      5: 'Probleemi kirjeldus',
+      6: 'Kontroll ja kinnitus',
+      7: 'Kokkuvõte',
     };
     for (final entry in labels.entries) {
       final placeholder = find.byKey(
@@ -914,7 +1493,7 @@ void main() {
         ),
         findsOneWidget,
       );
-      if (entry.key < 6) {
+      if (entry.key < 7) {
         await _tapKey(tester, 'wizard-next');
       }
     }
@@ -1000,7 +1579,7 @@ void main() {
     await _tapKey(tester, 'wizard-cancel-dialog-continue');
 
     expect(
-      find.byKey(const ValueKey('wizard-contour-editor')),
+      find.byKey(const ValueKey('wizard-photo-step')),
       findsOneWidget,
     );
 
@@ -1112,7 +1691,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Step 3 wide desktop layout is operable without overflow',
+  testWidgets('Step 4 wide desktop layout is operable without overflow',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -1143,7 +1722,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Step 3 compact layout is operable without overflow',
+  testWidgets('Step 4 compact layout is operable without overflow',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(390, 760));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -1240,29 +1819,56 @@ void main() {
       findsOneWidget,
     );
 
-    await _closeContour(tester);
     await _tapKey(tester, 'wizard-next');
 
     expect(
       find.descendant(
         of: secondProgress,
-        matching: find.text('Valmis'),
+        matching: find.text('Vaadatud'),
       ),
       findsOneWidget,
     );
     expect(
       find.descendant(
         of: secondProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+    final thirdProgress = find.byKey(
+      const ValueKey('wizard-progress-step-3'),
+    );
+    expect(
+      find.descendant(
+        of: thirdProgress,
+        matching: find.text('Praegune samm'),
+      ),
+      findsOneWidget,
+    );
+
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.descendant(
+        of: thirdProgress,
+        matching: find.text('Valmis'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: thirdProgress,
         matching: find.byIcon(Icons.check_circle),
       ),
       findsWidgets,
     );
 
-    for (var step = 3; step < 6; step += 1) {
+    for (var step = 4; step < 7; step += 1) {
       await _tapKey(tester, 'wizard-next');
     }
 
-    for (var step = 3; step < 6; step += 1) {
+    for (var step = 4; step < 7; step += 1) {
       final placeholderProgress = find.byKey(
         ValueKey('wizard-progress-step-$step'),
       );
@@ -1289,19 +1895,19 @@ void main() {
       );
     }
 
-    final sixthProgress = find.byKey(
-      const ValueKey('wizard-progress-step-6'),
+    final seventhProgress = find.byKey(
+      const ValueKey('wizard-progress-step-7'),
     );
     expect(
       find.descendant(
-        of: sixthProgress,
+        of: seventhProgress,
         matching: find.text('Praegune samm'),
       ),
       findsOneWidget,
     );
     expect(
       find.descendant(
-        of: sixthProgress,
+        of: seventhProgress,
         matching: find.text('Valmis'),
       ),
       findsNothing,
@@ -1317,12 +1923,12 @@ void main() {
 
     await _openComponentPlacementStep(tester);
     await _tapComponentAt(tester, const Offset(0.35, 0.65));
-    for (var step = 3; step < 6; step += 1) {
+    for (var step = 4; step < 7; step += 1) {
       await _tapKey(tester, 'wizard-next');
     }
 
     final context = tester.element(
-      find.byKey(const ValueKey('wizard-placeholder-6')),
+      find.byKey(const ValueKey('wizard-placeholder-7')),
     );
     expect(
       GoRouter.of(context).routeInformationProvider.value.uri.path,

@@ -1,14 +1,23 @@
+import 'dart:math' as math;
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/services/python_runner.dart';
+import '../widgets/new_project_wizard_photo_editor.dart';
 
 const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   _WizardStepDefinition(
     label: 'Projekti andmed',
     detail: 'nimi ja salvestuskoht',
     icon: Icons.description_outlined,
+  ),
+  _WizardStepDefinition(
+    label: 'Foto ja joondamine',
+    detail: 'valikuline lokaalne foto vaade',
+    icon: Icons.photo_outlined,
   ),
   _WizardStepDefinition(
     label: 'Plaadi kontuur',
@@ -69,6 +78,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   int? _selectedComponentDraftKey;
   int? _draggingComponentDraftKey;
   int? _draggingComponentPointer;
+  String? _photoPath;
+  NewProjectWizardPhotoTransform _photoTransform =
+      const NewProjectWizardPhotoTransform();
+  bool _isPickingPhoto = false;
+  String? _photoPickerError;
   int _currentStep = 0;
   bool _draftTouched = false;
   bool _isPickingFolder = false;
@@ -77,6 +91,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     final info = widget.platformInfo ?? const DefaultPlatformInfo();
     return info.isMobile;
   }
+
+  bool get _canPickPhoto => !kIsWeb && !_isMobile;
 
   bool get _canAdvanceFromStepOne {
     return _projectNameController.text.trim().isNotEmpty &&
@@ -134,11 +150,171 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     });
   }
 
+  Future<void> _pickPhoto() async {
+    if (!_canPickPhoto) {
+      _showMessage(
+        'Foto valimine on selles versioonis saadaval ainult '
+        'töölauarakenduses.',
+      );
+      return;
+    }
+    if (_isPickingPhoto) {
+      return;
+    }
+
+    setState(() {
+      _isPickingPhoto = true;
+      _photoPickerError = null;
+    });
+
+    String? path;
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: const <String>['jpg', 'jpeg', 'png', 'webp'],
+        withData: false,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        path = result.files.single.path;
+      }
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isPickingPhoto = false;
+        _photoPickerError = 'Foto valimine ebaõnnestus.';
+      });
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+    final selectedPath = path?.trim();
+    if (selectedPath == null || selectedPath.isEmpty) {
+      setState(() {
+        _isPickingPhoto = false;
+      });
+      return;
+    }
+    final extensionSeparator = selectedPath.lastIndexOf('.');
+    final extension = extensionSeparator < 0
+        ? ''
+        : selectedPath.substring(extensionSeparator + 1).toLowerCase();
+    const supportedExtensions = <String>{'jpg', 'jpeg', 'png', 'webp'};
+    if (!supportedExtensions.contains(extension)) {
+      setState(() {
+        _isPickingPhoto = false;
+        _photoPickerError = 'Vali JPG-, JPEG-, PNG- või WEBP-vormingus foto.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isPickingPhoto = false;
+      _photoPickerError = null;
+      _photoPath = selectedPath;
+      _photoTransform = const NewProjectWizardPhotoTransform();
+      _draftTouched = true;
+    });
+  }
+
+  void _setPhotoTranslation(Offset translation) {
+    final current = _photoTransform.translation;
+    final next = Offset(
+      translation.dx.isFinite ? translation.dx : current.dx,
+      translation.dy.isFinite ? translation.dy : current.dy,
+    );
+    if (next == current) {
+      return;
+    }
+    setState(() {
+      _photoTransform = _photoTransform.copyWith(translation: next);
+      _draftTouched = true;
+    });
+  }
+
+  void _setPhotoScale(double scale) {
+    if (!scale.isFinite) {
+      return;
+    }
+    final next = scale
+        .clamp(
+          NewProjectWizardPhotoEditor.minimumScale,
+          NewProjectWizardPhotoEditor.maximumScale,
+        )
+        .toDouble();
+    if (next == _photoTransform.scale) {
+      return;
+    }
+    setState(() {
+      _photoTransform = _photoTransform.copyWith(scale: next);
+      _draftTouched = true;
+    });
+  }
+
+  double _normalizedPhotoRotation(double rotation) {
+    if (!rotation.isFinite) {
+      return _photoTransform.rotation;
+    }
+    const fullTurn = 2 * math.pi;
+    final normalized = (rotation + math.pi) % fullTurn - math.pi;
+    return normalized == -0.0 ? 0.0 : normalized;
+  }
+
+  void _setPhotoRotation(double rotation) {
+    final next = _normalizedPhotoRotation(rotation);
+    if (next == _photoTransform.rotation) {
+      return;
+    }
+    setState(() {
+      _photoTransform = _photoTransform.copyWith(rotation: next);
+      _draftTouched = true;
+    });
+  }
+
+  void _setPhotoOpacity(double opacity) {
+    if (!opacity.isFinite) {
+      return;
+    }
+    final next = opacity.clamp(0.0, 1.0).toDouble();
+    if (next == _photoTransform.opacity) {
+      return;
+    }
+    setState(() {
+      _photoTransform = _photoTransform.copyWith(opacity: next);
+      _draftTouched = true;
+    });
+  }
+
+  void _resetPhotoView() {
+    setState(() {
+      _photoTransform = NewProjectWizardPhotoTransform(
+        opacity: _photoTransform.opacity,
+      );
+      _draftTouched = true;
+    });
+  }
+
+  void _removePhoto() {
+    if (_photoPath == null) {
+      return;
+    }
+    setState(() {
+      _photoPath = null;
+      _photoTransform = const NewProjectWizardPhotoTransform();
+      _photoPickerError = null;
+      _draftTouched = true;
+    });
+  }
+
   void _goNext() {
     if (_currentStep == 0 && !_canAdvanceFromStepOne) {
       return;
     }
-    if (_currentStep == 1 && !_canAdvanceFromContour) {
+    if (_currentStep == 2 && !_canAdvanceFromContour) {
       return;
     }
     if (_currentStep >= _wizardSteps.length - 1) {
@@ -686,9 +862,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Kuus sammu',
-            style: TextStyle(
+          Text(
+            '${_wizardSteps.length} sammu',
+            style: const TextStyle(
               color: _WizardPalette.cream,
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -743,8 +919,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     final step = _wizardSteps[index];
     final isCurrent = index == _currentStep;
     final isComplete =
-        index < _currentStep && (index == 0 || (index == 1 && _contourClosed));
-    final isViewed = index >= 2 && index < _currentStep;
+        index < _currentStep && (index == 0 || (index == 2 && _contourClosed));
+    final isViewed = index >= 1 && index < _currentStep && !isComplete;
     final status = isCurrent
         ? 'Praegune samm'
         : isComplete
@@ -878,8 +1054,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             padding: EdgeInsets.all(compact ? 16 : 28),
             child: switch (_currentStep) {
               0 => _buildStepOne(compact: compact),
-              1 => _buildContourStep(compact: compact),
-              2 => _buildComponentPlacementStep(compact: compact),
+              1 => _buildPhotoAlignmentStep(compact: compact),
+              2 => _buildContourStep(compact: compact),
+              3 => _buildComponentPlacementStep(compact: compact),
               _ => _buildPlaceholder(_currentStep),
             },
           ),
@@ -948,7 +1125,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildStepHeading(
-            eyebrow: 'Samm 1 / 6',
+            eyebrow: 'Samm 1 / ${_wizardSteps.length}',
             title: 'Projekti andmed',
             description:
                 'Sisesta projekti mustandi põhiandmed. Ainult nimi ja valitud '
@@ -990,7 +1167,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildStepHeading(
-            eyebrow: 'Samm 2 / ${_wizardSteps.length}',
+            eyebrow: 'Samm 3 / ${_wizardSteps.length}',
             title: 'Plaadi kontuur',
             description:
                 'Lisa vähemalt kolm punkti, liiguta neid vajadusel ja sulge '
@@ -1091,8 +1268,22 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 behavior: HitTestBehavior.opaque,
                 onTapUp: (details) => _handleContourTap(details, editorSize),
                 child: Stack(
+                  key: const ValueKey('wizard-contour-stack'),
                   fit: StackFit.expand,
                   children: <Widget>[
+                    if (_photoPath != null)
+                      Positioned.fill(
+                        key: const ValueKey('wizard-contour-photo-layer'),
+                        child: IgnorePointer(
+                          child: NewProjectWizardPhotoLayer(
+                            key: const ValueKey(
+                              'wizard-contour-photo-view',
+                            ),
+                            photoPath: _photoPath!,
+                            transform: _photoTransform,
+                          ),
+                        ),
+                      ),
                     CustomPaint(
                       key: const ValueKey('wizard-contour-painter'),
                       painter: _WizardContourPainter(
@@ -1269,7 +1460,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildStepHeading(
-            eyebrow: 'Samm 3 / ${_wizardSteps.length}',
+            eyebrow: 'Samm 4 / ${_wizardSteps.length}',
             title: 'Komponentide asetus',
             description:
                 'Lisa käsitsi üldised visuaalsed kandidaadid ning liiguta '
@@ -1375,8 +1566,22 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 behavior: HitTestBehavior.opaque,
                 onTapUp: (details) => _handleComponentTap(details, editorSize),
                 child: Stack(
+                  key: const ValueKey('wizard-component-stack'),
                   fit: StackFit.expand,
                   children: <Widget>[
+                    if (_photoPath != null)
+                      Positioned.fill(
+                        key: const ValueKey('wizard-component-photo-layer'),
+                        child: IgnorePointer(
+                          child: NewProjectWizardPhotoLayer(
+                            key: const ValueKey(
+                              'wizard-component-photo-view',
+                            ),
+                            photoPath: _photoPath!,
+                            transform: _photoTransform,
+                          ),
+                        ),
+                      ),
                     CustomPaint(
                       key: const ValueKey('wizard-component-painter'),
                       painter: _WizardComponentPlacementPainter(
@@ -1531,6 +1736,200 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     );
   }
 
+  Widget _buildPhotoAlignmentStep({required bool compact}) {
+    final path = _photoPath;
+    return KeyedSubtree(
+      key: const ValueKey('wizard-photo-step'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildStepHeading(
+            eyebrow: 'Samm 2 / ${_wizardSteps.length}',
+            title: 'Foto ja joondamine',
+            description:
+                'Vali üks kohalik foto ja kohanda ainult selle widget-local '
+                'vaadet. Samm on valikuline ega kirjuta projekti.',
+            required: false,
+          ),
+          const SizedBox(height: 22),
+          if (path == null)
+            _buildPhotoEmptyState()
+          else ...[
+            Container(
+              key: const ValueKey('wizard-photo-selected-path'),
+              decoration: BoxDecoration(
+                color: _WizardPalette.inset,
+                border: Border.all(color: _WizardPalette.edgeGold),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 13,
+                vertical: 10,
+              ),
+              child: Row(
+                children: <Widget>[
+                  const Icon(
+                    Icons.photo_outlined,
+                    color: _WizardPalette.goldDim,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      path,
+                      style: const TextStyle(
+                        color: _WizardPalette.cream,
+                        fontFamily: 'monospace',
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 13),
+            NewProjectWizardPhotoEditor(
+              key: const ValueKey('wizard-photo-editor'),
+              photoPath: path,
+              transform: _photoTransform,
+              onTranslationChanged: _setPhotoTranslation,
+              onScaleChanged: _setPhotoScale,
+              onRotationChanged: _setPhotoRotation,
+              onOpacityChanged: _setPhotoOpacity,
+              onReset: _resetPhotoView,
+              onReplace: _pickPhoto,
+              onRemove: _removePhoto,
+              compact: compact,
+            ),
+          ],
+          if (_photoPickerError != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              key: const ValueKey('wizard-photo-picker-error'),
+              decoration: BoxDecoration(
+                color: _WizardPalette.panel2,
+                border: Border.all(color: _WizardPalette.warning),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: <Widget>[
+                  const Icon(
+                    Icons.error_outline,
+                    color: _WizardPalette.warningBright,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      _photoPickerError!,
+                      style: const TextStyle(
+                        color: _WizardPalette.cream,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 18),
+          Container(
+            key: const ValueKey('wizard-photo-boundary-note'),
+            decoration: BoxDecoration(
+              color: _WizardPalette.activeFill,
+              border: Border.all(color: _WizardPalette.edgeGold),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            padding: const EdgeInsets.all(14),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(
+                  Icons.lock_outline,
+                  color: _WizardPalette.gold,
+                  size: 20,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'UI_LOCAL · ZERO_WRITE. Foto tee ja vaade püsivad ainult '
+                    'selles Wizardi mustandis. Joondamine ei loo kinnitatud '
+                    'fotofakti, koordinaati, sündmust ega projektifaili.',
+                    style: TextStyle(
+                      color: _WizardPalette.muted,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhotoEmptyState() {
+    final supported = _canPickPhoto;
+    return Container(
+      key: const ValueKey('wizard-photo-empty'),
+      constraints: const BoxConstraints(minHeight: 300),
+      decoration: BoxDecoration(
+        color: _WizardPalette.inset,
+        border: Border.all(color: _WizardPalette.edgeGold),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Icon(
+            Icons.add_photo_alternate_outlined,
+            color: _WizardPalette.goldDim,
+            size: 42,
+          ),
+          const SizedBox(height: 13),
+          const Text(
+            'Foto pole valitud',
+            style: TextStyle(
+              color: _WizardPalette.cream,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            supported
+                ? 'Toetatud vormingud: JPG, JPEG, PNG ja WEBP.'
+                : 'Foto valimine pole selles v1 versioonis mobiilis ega '
+                    'veebis saadaval.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: _WizardPalette.muted,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            key: const ValueKey('wizard-photo-pick'),
+            onPressed: _isPickingPhoto ? null : _pickPhoto,
+            icon: const Icon(Icons.folder_open_outlined),
+            label: Text(_isPickingPhoto ? 'Valin…' : 'Vali foto'),
+            style: FilledButton.styleFrom(
+              backgroundColor: _WizardPalette.goldBright,
+              foregroundColor: const Color(0xFF241C0A),
+              disabledBackgroundColor: _WizardPalette.edge,
+              disabledForegroundColor: _WizardPalette.faint,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPlaceholder(int index) {
     final step = _wizardSteps[index];
     final isSummary = index == _wizardSteps.length - 1;
@@ -1550,7 +1949,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             eyebrow: 'Samm ${index + 1} / ${_wizardSteps.length}',
             title: step.label,
             description: step.detail,
-            required: index == 1 || index >= 4,
+            required: index >= _wizardSteps.length - 2,
           ),
           const SizedBox(height: 32),
           _WizardPlaceholder(
@@ -1773,8 +2172,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   Widget _buildActionBar({required bool compact}) {
     final canGoNext = switch (_currentStep) {
       0 => _canAdvanceFromStepOne,
-      1 => _canAdvanceFromContour,
-      _ => _currentStep < 5,
+      2 => _canAdvanceFromContour,
+      _ => _currentStep < _wizardSteps.length - 1,
     };
     final back = _currentStep == 0
         ? null

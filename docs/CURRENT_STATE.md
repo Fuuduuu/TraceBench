@@ -1,9 +1,107 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS`
 Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
 
-## Live photo-alignment-v1 scope
+## Live photo-first ordering correction
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+At entry, branch `main` has
+`HEAD == origin/main == 0a585156de6d2f6b0eb2b9ae04db28811148f854`
+(`docs: lock Wizard photo alignment v1 scope`), parent
+`4dcec544acd0fbcee416c219cef1a10f52a4280f`, divergence `0 0`, and no staged
+paths. The material implementation worktree is exactly the same four-file
+reservation already in force; no fifth implementation path exists.
+
+This correction changes exactly:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS.md`
+
+It changes no Dart, test, map, map index, package, asset, schema, tool,
+protected surface, or prior scope artifact.
+
+## Frozen implementation carryover
+
+The same implementation pass and exact allowlist remain reserved:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
+
+The frozen filtered Git-blob identities are respectively
+`8eef894ce85bbf4b6a0ca8b6544e614ce4977ebc`,
+`235fc48e6ac7682a6cc6bb904e13614959cfbe47`,
+`1eeb5fcb8768c13f307a170eab12c4db2ddb59c9`, and
+`c8962ed69115f244a3e2afdfba19fad890ad9acf`, measured by
+`git hash-object --path=<path> -- <path>`. Exact local worktree-byte identities
+and commands are recorded in the active lock and correction artifact. These
+four files remain untouched throughout this docs-only pass.
+
+## Revised product order and layering
+
+The Wizard is ordered exactly:
+
+1. `Projekti andmed`
+2. `Foto ja joondamine`
+3. `Plaadi kontuur`
+4. `Komponentide asetus`
+5. `Probleemi kirjeldus`
+6. `Kontroll ja kinnitus`
+7. `Kokkuvõte`
+
+Step 2 photo remains optional, ungated, and visited-only `Vaadatud`. It owns
+photo selection and editable translation, scale, rotation, and opacity, and
+shows no future contour/component overlay. Step 3 shows that photo as a
+read-only background while contour points remain editable above it. Step 4
+shows the photo and contour as fixed read-only guides while component
+candidates remain editable above them. Without a photo, Steps 3 and 4 continue
+normally.
+
+Photo path, transform, and opacity persist across Steps 2-4 and responsive
+resize. Changing or removing the photo later affects only its own bottom
+layer; contour points and component candidates retain their local identities
+and editor-normalized positions. Reusing one transient normalized photo view
+across editor canvases creates no canonical coordinate conversion.
+
+All accepted picker, opacity, reset, replace, remove, render-error, dirty,
+platform, parent-state, compact/wide, `UI_LOCAL`, and `ZERO_WRITE` contracts
+remain unchanged. Step counts and final-step logic remain length-derived.
+
+## Map disposition and route
+
+The existing Wizard maps remain unchanged `MAINTAINED` records of committed
+`HEAD`, while the material implementation has disposition `UPDATE_REQUIRED`.
+The two new files are qualified later, only from accepted committed source in
+the unnamed LOCK. No map work occurs during this correction or EHITUS.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+```
+
+After independent acceptance and human push of this exact correction, the
+existing implementation pass resumes on the same four files. Manual smoke and
+the final implementation audit precede the later unnamed LOCK and eventual
+`NEEDS_USER_DECISION` route.
+
+## Superseded accepted Step-4 photo scope (historical)
+
+The accepted prior photo scope remains immutable and supplies all compatible
+non-ordering constraints. Its Step-4 placement, Step 3/4/5 navigation wording,
+and guide overlays inside the photo editor are superseded. The following
+level-three sections are retained historical evidence.
+
+### Live photo-alignment-v1 scope
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS
@@ -34,7 +132,7 @@ This SCOPE pass changes exactly:
 No Dart, test, map, map-index, package, asset, schema, tool, or `_incoming`
 file changes now.
 
-## Reserved implementation
+### Reserved implementation
 
 `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS` is reserved with
 exactly four implementation files:
@@ -47,7 +145,7 @@ exactly four implementation files:
 No fifth implementation file is authorized. Activation is conditional on an
 accepted independent audit and human push of this exact five-file scope lock.
 
-## Locked product behavior
+### Locked product behavior
 
 The future pass inserts optional Step 4 `Foto ja joondamine`, shifts the
 current Steps 4–6 to Steps 5–7 while preserving their labels, details, icons,
@@ -75,7 +173,7 @@ and rotation only, preserving the selected path and current opacity;
 failure remains visible and non-destructive. Both 1440x900 and 390x760 remain
 operable.
 
-## Platform, ownership, and boundary
+### Platform, ownership, and boundary
 
 Version 1 makes no mobile/web picker promise. The Wizard parent owns the
 authoritative nullable path, editor-normalized translation, finite bounded
@@ -90,7 +188,7 @@ reference point or solver, creator/project state/provider/filesystem write,
 AI/OCR/CV, router, Board Canvas, existing project-photo workflow, schema,
 validator, materializer, package, asset, or Project ZIP authority.
 
-## Code-map plan and route
+### Code-map plan and route
 
 The existing Wizard source/test maps are `MAINTAINED` now and become
 `UPDATE_REQUIRED` after material implementation. The two new files are absent

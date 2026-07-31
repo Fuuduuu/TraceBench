@@ -2,10 +2,106 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS`
 Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
 
-## Current SCOPE queue
+## Current correction SCOPE queue
+
+The human supersedes only the accepted Step-4 placement of
+`Foto ja joondamine`. This docs-only correction freezes the in-progress
+four-file implementation and preserves the existing EHITUS identity and
+allowlist.
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 0a585156de6d2f6b0eb2b9ae04db28811148f854`,
+divergence `0 0`, empty staged set, and exactly four material implementation
+paths. The correction changes only the four route/ledger owners plus
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS.md`.
+
+## Frozen carryover and reserved EHITUS
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact unchanged implementation allowlist and frozen carryover:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
+
+No fifth implementation file is queued. The four exact worktree/blob identity
+pairs are recorded in `docs/ACTIVE_SCOPE_LOCK.md` and the correction artifact;
+they may change only after this correction is accepted and pushed and the same
+EHITUS pass resumes.
+
+## Revised implementation queue
+
+The queued order is now:
+
+```text
+1 Projekti andmed
+2 Foto ja joondamine
+3 Plaadi kontuur
+4 Komponentide asetus
+5 Probleemi kirjeldus
+6 Kontroll ja kinnitus
+7 Kokkuvõte
+```
+
+Step 2 is optional, ungated, and visited-only `Vaadatud`; it owns selection
+and editable photo transform/opacity and contains no contour/component guide
+overlay. Step 3 renders the same photo as an inert background under editable
+contour points. Step 4 renders the same photo plus fixed contour guide under
+editable candidates. No photo is a valid state for both editors. Photo state
+persists through Steps 2-4 and resize, while later photo mutation never moves
+contour points or candidate identities/positions.
+
+All numbering is length-derived. The Step 3 contour gate and `Valmis`, Step 4
+optional `Vaadatud`, picker/filter/cancel/error behavior, default `65%`
+opacity, `0%` hidden-with-draft-retained state, `100%`, reset preserving
+opacity, replacement, separate full removal, parent-owned state, dirty
+mutations, native-desktop platform boundary, wide/compact interaction, and
+`UI_LOCAL` + `ZERO_WRITE` limits remain queued unchanged. No canonical
+coordinate conversion is introduced.
+
+Focused tests must be reordered for the exact catalogue, progress and
+navigation; prove the photo-only Step 2 editor; prove the read-only photo
+background in Step 3 and photo-plus-contour guides in Step 4; prove no-photo
+operation; prove unchanged contour/candidate positions across later photo
+changes; and preserve all accepted photo/contour/component and zero-write
+coverage.
+
+## Sequencing and map lifecycle
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+-> one later unnamed LOCK
+-> NEEDS_USER_DECISION
+```
+
+The existing Wizard maps remain committed-HEAD `MAINTAINED` records but the
+material implementation disposition is `UPDATE_REQUIRED`. The two new files
+are qualified only in the later LOCK from accepted committed source. No map
+edit or separate map pass is queued during EHITUS.
+
+Stop on any change to the four implementation blobs during this correction,
+a fifth implementation file, canonical coordinate conversion, contour or
+candidate motion coupled to photo mutation, unsupported platform/persistence
+promise, map edit during EHITUS, unrelated cleanup, or protected-surface
+expansion.
+
+## Superseded accepted Step-4 queue (historical)
+
+The following accepted queue text remains as immutable history for compatible
+non-ordering decisions. Its Step-4 placement, Step 3/4/5 retention wording,
+and photo-editor guide overlay are superseded by the current queue above.
+
+### Current SCOPE queue
 
 The human selected optional Wizard Step 4 `Foto ja joondamine v1` and fixed:
 
@@ -23,7 +119,7 @@ divergence `0 0`, empty staged/substantive diffs, released route
 `NEEDS_USER_DECISION`, accepted predecessor ledger evidence, and maintained
 Wizard maps.
 
-## Reserved EHITUS
+### Reserved EHITUS
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
@@ -57,7 +153,7 @@ creator/project state, filesystem write, AI/OCR/CV, router, Board Canvas,
 existing project-photo workflow, schema, materializer, package, asset, ZIP,
 or protected surface is queued.
 
-## Sequencing and map lifecycle
+### Sequencing and map lifecycle
 
 ```text
 TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS

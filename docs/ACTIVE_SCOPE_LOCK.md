@@ -2,10 +2,216 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS`
 Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
 
-## Current docs-only scope authority
+## Current photo-first correction authority
+
+The human supersedes only the accepted placement of `Foto ja joondamine` at
+Step 4. This Lane A docs-only correction makes photo alignment Step 2, keeps
+the existing implementation `PASS_ID` and four-file allowlist, and freezes the
+four material implementation worktree files without changing a Dart, test, or
+map byte.
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 0a585156de6d2f6b0eb2b9ae04db28811148f854`
+(`docs: lock Wizard photo alignment v1 scope`), parent
+`4dcec544acd0fbcee416c219cef1a10f52a4280f`, divergence `0 0`, and an empty
+staged set. The material implementation carryover is exactly the following
+four paths and no fifth path:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
+
+The two existing targets are tracked modifications and the two new targets
+are untracked. Their frozen identities are:
+
+| Target | `worktree` identity from `git hash-object --no-filters -- <path>` | filtered `blob` identity from `git hash-object --path=<path> -- <path>` |
+| --- | --- | --- |
+| `lib/features/project/screens/new_project_wizard_screen.dart` | `aad2ef7c2c742d7eaaf0ceab361e70a2a2c82c59` | `8eef894ce85bbf4b6a0ca8b6544e614ce4977ebc` |
+| `lib/features/project/widgets/new_project_wizard_photo_editor.dart` | `7aaf6f934a0ff487c54de8645069cd9080bf41fa` | `235fc48e6ac7682a6cc6bb904e13614959cfbe47` |
+| `test/widget/new_project_wizard_screen_test.dart` | `72778d7bdb0a6e8f2956d8d88e1419f52d969f38` | `1eeb5fcb8768c13f307a170eab12c4db2ddb59c9` |
+| `test/widget/new_project_wizard_photo_editor_test.dart` | `6bc49f7bd785f94098b666a7a24bf2263b54758f` | `c8962ed69115f244a3e2afdfba19fad890ad9acf` |
+
+The `worktree` values are local on-disk observations. The filtered `blob`
+values describe the exact Git-normalized content carried into the resumed
+implementation. Both representations must compare equal before and after this
+correction pass.
+
+Exact current write allowlist:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS.md`
+
+No sixth current-pass file is authorized. In particular, the accepted
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS.md`
+artifact remains byte-identical historical evidence.
+
+## Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+The exact implementation allowlist remains unchanged:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_photo_editor_test.dart`
+
+No fifth implementation file is authorized. The frozen carryover may change
+again only when this correction is independently accepted and pushed and the
+same implementation pass resumes.
+
+## Revised seven-step order
+
+The Wizard order is now exactly:
+
+1. `Projekti andmed`
+2. `Foto ja joondamine`
+3. `Plaadi kontuur`
+4. `Komponentide asetus`
+5. `Probleemi kirjeldus`
+6. `Kontroll ja kinnitus`
+7. `Kokkuvõte`
+
+All displayed numbering, totals, progress entries, navigation bounds, and
+final-step decisions continue to derive from `_wizardSteps.length`. Step 2 is
+optional and ungated. Once visited it is `Vaadatud`, never `Valmis`. Step 3
+retains its closed-contour `Edasi` gate and `Valmis` semantics; Step 4 remains
+optional, ungated, and visited-only `Vaadatud`. Steps 5–7 preserve their
+placeholder labels and existing optional/required badge semantics.
+
+## Revised photo and overlay contract
+
+- Step 2 owns photo selection plus editable translation, scale, rotation, and
+  opacity. It displays the photo alone; future contour/component overlays are
+  removed from the Step 2 photo editor.
+- Step 3 displays the same photo and transform as a read-only background while
+  the human adds, selects, drags, deletes, resets, closes, or reopens contour
+  points above it. Photo gestures are inactive there.
+- Step 4 displays the same photo as the bottom read-only background, the same
+  closed contour as a fixed read-only guide above it, and editable component
+  candidates above those layers. Photo and contour gestures are inactive
+  there.
+- Without a selected photo, Steps 3 and 4 retain their accepted normal contour
+  and component behavior with no missing-photo gate.
+- Photo path, normalized translation, scale, normalized rotation, and opacity
+  persist through Step 2 <-> Step 3 <-> Step 4 navigation and responsive
+  rebuilds.
+- Replacing, resetting, transforming, hiding, or removing the photo changes
+  only the photo draft/layer. Existing contour points and component candidates
+  keep their exact local identities and positions and never move with it.
+- All three editors use the same transient editor-normalized presentation
+  convention. Reusing the photo transform in each editor is not a conversion
+  of contour or candidate values and creates no canonical coordinate output.
+
+## Preserved photo, platform, and ownership contract
+
+Every non-ordering decision in the accepted photo-alignment scope remains in
+force. A supported native desktop picker selects at most one `jpg`, `jpeg`,
+`png`, or `webp` source path. Cancel preserves the complete current draft;
+mobile and web receive no picker/import/storage promise. Initial selection and
+accepted replacement use centered `BoxFit.contain`, translation `Offset.zero`,
+scale `1.0`, rotation `0.0`, and opacity `0.65`.
+
+Translation remains finite and editor-normalized, scale remains finite and
+clamped to `0.25..8.0`, rotation remains finite and normalized to `[-π, π)`,
+and opacity remains finite and clamped to `0.0..1.0`. Visible controls retain
+zoom, rotate, the `0-100%` opacity slider, `Nulli vaade`, replace, and separate
+`Eemalda foto` actions. At `0%`, only the photo is hidden, the complete draft
+remains, and `Foto peidetud` is visible; `100%` is fully visible. `Nulli vaade`
+resets translation, scale, and rotation only and preserves path and opacity.
+Remove clears the complete photo draft. Render failure stays honest,
+recoverable, and non-destructive.
+
+The Wizard parent remains authoritative for nullable path, normalized
+translation, bounded scale, normalized rotation, clamped opacity, contour,
+component candidates, and shared dirty state. The child owns gesture-lifetime
+ephemeral state only. Effective photo selection, transform, opacity, reset,
+replacement, and removal mutations mark the Wizard draft dirty; cancel and
+render failure do not. Existing contour/component dirty behavior remains
+unchanged. Wide 1440x900 and compact 390x760 layouts remain operable, including
+editor gesture ownership versus ordinary page scrolling.
+
+## Code-map preflight and boundary
+
+This docs-only correction changes no Dart responsibility zone and edits no
+map or map index. Both existing Wizard maps and their index rows remain
+`MAINTAINED` records of committed `HEAD`; the already-material four-file
+worktree means their implementation disposition is `UPDATE_REQUIRED`. The two
+new files remain unqualified until the later unnamed LOCK inspects accepted
+committed source. No map is created or updated during EHITUS.
+
+The implementation remains `UI_LOCAL` + `ZERO_WRITE`. No source copy or
+modification, project photo file, sidecar, ledger, hash, EXIF, event, fact,
+projection, canonical `photo_local` or `board_normalized` output, reference
+point, affine/homography solver, project state, `ProjectCreator`, provider,
+filesystem write, AI/OCR/CV, router, Board Canvas, `PhotoListScreen`, Reference
+Images, schema, validator, writer, materializer, Project ZIP, package, asset,
+or protected-surface change is authorized.
+
+## Revised implementation test and transition contract
+
+Focused coverage must update the seven-step catalogue, Step 2 optional/
+`Vaadatud` progress, Step 3 contour gate/completion, Step 4 optional/
+`Vaadatud` progress, length-derived navigation, and Step 2/3/4 round trips.
+It must prove the photo-only Step 2 editor, read-only photo background beneath
+editable contour in Step 3, read-only photo plus contour beneath editable
+candidates in Step 4, no-photo operation, fixed contour/candidate identities
+when the photo changes, transform/opacity retention through navigation and
+resize, and all already accepted picker/opacity/reset/replace/remove/error/
+dirty/responsive/zero-write behavior.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+```
+
+Required sequence:
+
+```text
+independent correction-scope audit
+-> bounded verdict recording
+-> exact human staging, commit, and push of the five docs
+-> resume TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+-> manual smoke
+-> final read-only implementation audit
+-> exact human staging, commit, and push of the four implementation files
+-> one later unnamed LOCK
+-> NEEDS_USER_DECISION
+```
+
+Stop on a fifth implementation file, any Dart/test/map change during this
+correction, any canonical coordinate conversion, any movement of contour or
+candidates with the photo, authoritative child state, unsupported platform or
+persistence promise, unrelated cleanup, or protected-surface expansion.
+
+## Superseded accepted Step-4 photo scope (historical)
+
+The accepted
+`TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_SCOPE_PASS` remains immutable
+evidence and still supplies every compatible non-ordering contract. Its
+placement of the photo editor at Step 4, its Step 3/4/5 retention numbering,
+and its contour/component overlays inside the photo editor are superseded by
+the current authority above. Every `current`, `future`, and route statement in
+the following level-three sections is historical.
+
+### Current docs-only scope authority
 
 The human selected optional Wizard Step 4 `Foto ja joondamine v1` and fixed
 the lifecycle to:
@@ -46,7 +252,7 @@ No sixth current-pass file is authorized. No Dart, test, map, map-index,
 prior scope artifact, runtime, schema, package, asset, tool, or `_incoming`
 change is authorized in this SCOPE pass.
 
-## Reserved implementation authority
+### Reserved implementation authority
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
@@ -65,7 +271,7 @@ No fifth implementation file is authorized. The reservation becomes
 executable only after an independent audit accepts this exact five-file scope
 diff and the human stages, commits, and pushes only the accepted files.
 
-## Locked behavior
+### Locked behavior
 
 The implementation must:
 
@@ -108,7 +314,7 @@ clears the complete photo draft. An accepted replacement installs the new
 path with its initial translation, scale, rotation, and default opacity
 `0.65`. Cancel and render failure do not mutate any retained draft value.
 
-## Platform and state ownership
+### Platform and state ownership
 
 Version 1 promises native desktop file selection only. Mobile and web must not
 invoke or claim a working picker; they may show an honest unsupported state.
@@ -125,7 +331,7 @@ child editor receives values and mutation callbacks and may own only
 gesture-lifetime ephemeral state. No provider, singleton, route handoff, or
 child-only authoritative controller may own or retain the draft.
 
-## Code-map preflight and lifecycle
+### Code-map preflight and lifecycle
 
 The current docs-only disposition is `NOT_APPLICABLE`; no map changes now.
 The existing Wizard production and test targets enter implementation with
@@ -141,7 +347,7 @@ committed source. That LOCK records each qualification result and creates a
 map/index row only when the Code Map Standard requires it. No map is created
 or updated during EHITUS, and there is no prerequisite or separate map pass.
 
-## Write and canonical boundaries
+### Write and canonical boundaries
 
 The complete implementation write class is `UI_LOCAL` + `ZERO_WRITE`.
 The label `joondamine`, the photo view transform including opacity, the
@@ -162,7 +368,7 @@ Existing Step 1, Step 2, Step 3, cancellation, routing, and zero-write behavior
 must remain intact. Current Steps 4–6 change only by becoming Steps 5–7 and
 remaining honest placeholders.
 
-## Acceptance and transition
+### Acceptance and transition
 
 Implementation requires focused coverage of selection/cancel/filtering,
 default `65%` opacity, slider-to-rendered-opacity behavior, `0%` hiding only

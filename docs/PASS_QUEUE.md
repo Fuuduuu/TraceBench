@@ -2,98 +2,87 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current correction SCOPE queue
-
-The human supersedes only the accepted Step-4 placement of
-`Foto ja joondamine`. This docs-only correction freezes the in-progress
-four-file implementation and preserves the existing EHITUS identity and
-allowlist.
-
-Verified entry is branch `main`,
-`HEAD == origin/main == 0a585156de6d2f6b0eb2b9ae04db28811148f854`,
-divergence `0 0`, empty staged set, and exactly four material implementation
-paths. The correction changes only the four route/ledger owners plus
-`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS.md`.
-
-## Frozen carryover and reserved EHITUS
+## Current LOCK queue
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
 Lane: A
-Mode: FLUTTER_PASS
+Mode: DOCS_SYNC
 ```
 
-Exact unchanged implementation allowlist and frozen carryover:
+Committed implementation authority is
+`7f9ca14d1b4227113a665a6b5e4242eeb9f7a8ea`, parent
+`9fd8dd31e1541d41878daf5c9618a86a37ca39fb`, with exact source/test set:
 
 - `lib/features/project/screens/new_project_wizard_screen.dart`
 - `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
 - `test/widget/new_project_wizard_screen_test.dart`
 - `test/widget/new_project_wizard_photo_editor_test.dart`
 
-No fifth implementation file is queued. The four exact worktree/blob identity
-pairs are recorded in `docs/ACTIVE_SCOPE_LOCK.md` and the correction artifact;
-they may change only after this correction is accepted and pushed and the same
-EHITUS pass resumes.
+Human manual smoke is `PASS`. The attributed Claude implementation audit is
+`ACCEPT_WITH_NITS` and safe for the exact implementation set, with order,
+layering, ownership, boundary, and validation all `PASS`. Recorded validation
+is focused `50/50`, full Flutter `472/472`, validator `302/302`, targeted
+analysis `PASS`, and diff checks `PASS`.
 
-## Revised implementation queue
+## Map lifecycle
 
-The queued order is now:
+The accepted implementation made the two existing Wizard maps
+`UPDATE_REQUIRED`; this LOCK refreshes them from committed `HEAD`. Both new
+files qualify:
+
+- photo editor production: `AUTO — 5+ independently testable behaviors`;
+- photo editor focused test: `SCORE 7/12 — multi-family photo-layer/transform/gesture/responsive boundary coverage`.
+
+The current registry contains all four actual maps. Every changed/new map
+header and matching registry Status cell is `REVIEW_REQUIRED`.
+
+The exact current docs/map authority is:
+
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/code_maps/lib/features/project/widgets/new_project_wizard_photo_editor.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS.md`
+
+No eleventh file is queued.
+
+## Bounded final audit and release
+
+A clean final comparison is bounded to:
+
+- verifying this exact LOCK diff against committed source, supplied
+  implementation/manual-smoke evidence, and the four qualification results;
+- promoting only the four map headers and four matching index rows from
+  `REVIEW_REQUIRED` to `MAINTAINED`;
+- filling only the designated verdict-block interior; and
+- mechanically mirroring that returned result into the matching ledger Status
+  cell.
+
+It may not change map bodies, another metadata field, another registry row,
+the ledger Description cell, route prose, source, tests, scope artifacts, or
+any other content. No extra pass is created.
 
 ```text
-1 Projekti andmed
-2 Foto ja joondamine
-3 Plaadi kontuur
-4 Komponentide asetus
-5 Probleemi kirjeldus
-6 Kontroll ja kinnitus
-7 Kokkuvõte
-```
-
-Step 2 is optional, ungated, and visited-only `Vaadatud`; it owns selection
-and editable photo transform/opacity and contains no contour/component guide
-overlay. Step 3 renders the same photo as an inert background under editable
-contour points. Step 4 renders the same photo plus fixed contour guide under
-editable candidates. No photo is a valid state for both editors. Photo state
-persists through Steps 2-4 and resize, while later photo mutation never moves
-contour points or candidate identities/positions.
-
-All numbering is length-derived. The Step 3 contour gate and `Valmis`, Step 4
-optional `Vaadatud`, picker/filter/cancel/error behavior, default `65%`
-opacity, `0%` hidden-with-draft-retained state, `100%`, reset preserving
-opacity, replacement, separate full removal, parent-owned state, dirty
-mutations, native-desktop platform boundary, wide/compact interaction, and
-`UI_LOCAL` + `ZERO_WRITE` limits remain queued unchanged. No canonical
-coordinate conversion is introduced.
-
-Focused tests must be reordered for the exact catalogue, progress and
-navigation; prove the photo-only Step 2 editor; prove the read-only photo
-background in Step 3 and photo-plus-contour guides in Step 4; prove no-photo
-operation; prove unchanged contour/candidate positions across later photo
-changes; and preserve all accepted photo/contour/component and zero-write
-coverage.
-
-## Sequencing and map lifecycle
-
-```text
-TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
--> TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
--> one later unnamed LOCK
+TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
 -> NEEDS_USER_DECISION
 ```
 
-The existing Wizard maps remain committed-HEAD `MAINTAINED` records but the
-material implementation disposition is `UPDATE_REQUIRED`. The two new files
-are qualified only in the later LOCK from accepted committed source. No map
-edit or separate map pass is queued during EHITUS.
+`NEEDS_USER_DECISION` is non-executable. There is no reserved successor or
+runtime allowlist.
 
-Stop on any change to the four implementation blobs during this correction,
-a fifth implementation file, canonical coordinate conversion, contour or
-candidate motion coupled to photo mutation, unsupported platform/persistence
-promise, map edit during EHITUS, unrelated cleanup, or protected-surface
-expansion.
+The cycle remains `UI_LOCAL` + `ZERO_WRITE`. No source copy, project photo,
+canonical alignment/coordinate, provider, project state, event, fact,
+projection, writer, materializer, AI/OCR/CV, router, Board Canvas, ZIP,
+package, asset, tool, or protected-surface work is queued.
 
 ## Superseded accepted Step-4 queue (historical)
 

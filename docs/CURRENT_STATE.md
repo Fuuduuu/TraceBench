@@ -1,98 +1,91 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live photo-first ordering correction
+## Live photo-alignment-v1 LOCK
 
 ```text
-PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
 Lane: A
 Mode: DOCS_SYNC
 ```
 
-At entry, branch `main` has
-`HEAD == origin/main == 0a585156de6d2f6b0eb2b9ae04db28811148f854`
-(`docs: lock Wizard photo alignment v1 scope`), parent
-`4dcec544acd0fbcee416c219cef1a10f52a4280f`, divergence `0 0`, and no staged
-paths. The material implementation worktree is exactly the same four-file
-reservation already in force; no fifth implementation path exists.
-
-This correction changes exactly:
-
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/AUDIT_INDEX.md`
-- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS.md`
-
-It changes no Dart, test, map, map index, package, asset, schema, tool,
-protected surface, or prior scope artifact.
-
-## Frozen implementation carryover
-
-The same implementation pass and exact allowlist remain reserved:
+Entry is branch `main` with
+`HEAD == origin/main == 7f9ca14d1b4227113a665a6b5e4242eeb9f7a8ea`,
+parent `9fd8dd31e1541d41878daf5c9618a86a37ca39fb`, subject
+`feat: add photo-first Wizard alignment flow`, divergence `0 0`, empty
+staged and substantive tracked diffs, and the exact committed implementation
+set:
 
 - `lib/features/project/screens/new_project_wizard_screen.dart`
 - `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
 - `test/widget/new_project_wizard_screen_test.dart`
 - `test/widget/new_project_wizard_photo_editor_test.dart`
 
-The frozen filtered Git-blob identities are respectively
-`8eef894ce85bbf4b6a0ca8b6544e614ce4977ebc`,
-`235fc48e6ac7682a6cc6bb904e13614959cfbe47`,
-`1eeb5fcb8768c13f307a170eab12c4db2ddb59c9`, and
-`c8962ed69115f244a3e2afdfba19fad890ad9acf`, measured by
-`git hash-object --path=<path> -- <path>`. Exact local worktree-byte identities
-and commands are recorded in the active lock and correction artifact. These
-four files remain untouched throughout this docs-only pass.
+The human-supplied manual-smoke result is `PASS`. The supplied Claude
+implementation audit returned `ACCEPT_WITH_NITS`,
+`SAFE_FOR_STAGING: YES`, and `PASS` for order, layering, ownership,
+boundary, and validation. Attributed validation is focused tests `50/50`,
+full Flutter tests `472/472`, validator `302/302`, targeted analysis
+`PASS`, and diff checks `PASS`.
 
-## Revised product order and layering
+The durable implementation findings remain:
 
-The Wizard is ordered exactly:
+- `LOW`: hardcoded visible ordinals have limited regression coverage;
+- `LOW`: three smoke items relied on the global `PASS` plus automated
+  coverage;
+- `NIT`: obsolete guide-absence keys;
+- `NIT`: the label test checks membership rather than exact order; and
+- `NIT`: 28 pre-existing analyzer issues are outside the implementation
+  allowlist.
 
-1. `Projekti andmed`
-2. `Foto ja joondamine`
-3. `Plaadi kontuur`
-4. `Komponentide asetus`
-5. `Probleemi kirjeldus`
-6. `Kontroll ja kinnitus`
-7. `Kokkuvõte`
+## Current docs/map authority
 
-Step 2 photo remains optional, ungated, and visited-only `Vaadatud`. It owns
-photo selection and editable translation, scale, rotation, and opacity, and
-shows no future contour/component overlay. Step 3 shows that photo as a
-read-only background while contour points remain editable above it. Step 4
-shows the photo and contour as fixed read-only guides while component
-candidates remain editable above them. Without a photo, Steps 3 and 4 continue
-normally.
+This LOCK changes only:
 
-Photo path, transform, and opacity persist across Steps 2-4 and responsive
-resize. Changing or removing the photo later affects only its own bottom
-layer; contour points and component candidates retain their local identities
-and editor-normalized positions. Reusing one transient normalized photo view
-across editor canvases creates no canonical coordinate conversion.
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/AUDIT_INDEX.md`
+- `docs/code_maps/CODE_MAP_INDEX.md`
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+- `docs/code_maps/lib/features/project/widgets/new_project_wizard_photo_editor.dart.md`
+- `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md`
+- `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS.md`
 
-All accepted picker, opacity, reset, replace, remove, render-error, dirty,
-platform, parent-state, compact/wide, `UI_LOCAL`, and `ZERO_WRITE` contracts
-remain unchanged. Step counts and final-step logic remain length-derived.
+No eleventh file is authorized. Dart, tests, accepted scope artifacts, runtime,
+project state, persistence, canonical surfaces, router, Board Canvas, packages,
+assets, tools, and scratch remain outside authority.
 
-## Map disposition and route
+## Map qualification and route
 
-The existing Wizard maps remain unchanged `MAINTAINED` records of committed
-`HEAD`, while the material implementation has disposition `UPDATE_REQUIRED`.
-The two new files are qualified later, only from accepted committed source in
-the unnamed LOCK. No map work occurs during this correction or EHITUS.
+The existing Wizard screen and integration-test maps are refreshed from
+committed `HEAD`. The new photo editor qualifies automatically through five
+or more independently testable behaviors. Its seven-test focused suite
+qualifies at `SCORE 7/12` through multi-family photo-layer, transform,
+gesture, responsive, and zero-write coverage.
+
+All four map headers and matching index rows are `REVIEW_REQUIRED`. A clean
+final comparison may change only those eight status locations, the designated
+verdict-block interior, and the matching ledger Status cell; it may not change
+a map body, route owner, description cell, runtime/test file, or any other
+content.
 
 ```text
-Current: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_FIRST_ORDER_SCOPE_PASS
-Next: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_IMPL_PASS
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
+Next: NEEDS_USER_DECISION
 ```
 
-After independent acceptance and human push of this exact correction, the
-existing implementation pass resumes on the same four files. Manual smoke and
-the final implementation audit precede the later unnamed LOCK and eventual
-`NEEDS_USER_DECISION` route.
+The route returns to the non-executable decision sentinel. No successor or
+extra pass is armed.
+
+The committed implementation and this LOCK remain `UI_LOCAL` +
+`ZERO_WRITE`: photo path/transform/opacity, contour, and candidates stay
+Wizard-local; no file copy, canonical photo/alignment, provider, project-state,
+event, fact, projection, writer, materializer, AI/OCR/CV, ZIP, router, or
+protected-surface authority exists.
 
 ## Superseded accepted Step-4 photo scope (historical)
 

@@ -1,9 +1,82 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live problem-description-v1 SCOPE
+## Live problem-description-v1 LOCK
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Entry is pushed implementation commit
+`0ed2b8bfec2c87165be20cc2f5f9e0e4fc67862f`, parent
+`64e596a7a5ddb7bd6b8c91ff07138086fa5a4694`, subject
+`feat: add Wizard problem description v1`, with `HEAD == origin/main`,
+divergence `0 0`, empty staged/substantive tracked diffs, and exactly four
+committed implementation paths/blobs:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart` —
+  `d7370594a1cbfe894f5fc130644376b3ad9e0029`;
+- `lib/features/project/widgets/new_project_wizard_problem_description.dart`
+  — `ae80dbbb43ea02ce901963dadb7910d71dcf0be3`;
+- `test/widget/new_project_wizard_screen_test.dart` —
+  `6d13096b4d7ff4f2f2bff60b70329fe5530f0a16`; and
+- `test/widget/new_project_wizard_problem_description_test.dart` —
+  `84d3da9fe51936ad3000e7b5c2e1a9139a28e683`.
+
+Human manual smoke is `14/14 PASS`; the supplied final independent
+implementation audit is `FINAL_VERDICT: ACCEPTED`; and the implementation
+contract is `23/23 PASS`. Scope-audit `LOW-1` is discharged by the committed
+same-value controller synchronization guard and focused cursor/selection
+test. Attributed validation is exact four-file format `4 files, 0 changed`,
+targeted analysis `no issues`, repository analysis with `28` unchanged
+pre-existing info-level issues outside the four files, focused widget tests
+`64/64 PASS`, full Flutter `493/493 PASS`, validator `302 tests, OK`, and Git
+diff checks `PASS`; validation changed no repository content.
+
+Accepted non-blocking evidence remains unpatched: nested semantics may be
+verbose, the visible Step 5 ordinal is hardcoded while the total is derived,
+and one unrelated pre-existing measurement test uses a fixed delay.
+
+This Phase 1 LOCK changes exactly the four route/ledger owners, the code-map
+index, four actual maps, and
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS.md`
+— ten paths total. It refreshes the Wizard screen and 55-test integration maps
+from committed `HEAD`. The 473-line child production file qualifies
+automatically through 5+ independently testable behaviors (`7/12` worksheet),
+and its 415-line nine-test file qualifies at `SCORE 8/12`. Both deterministic
+maps are created. Every actual map header and matching index row is
+`REVIEW_REQUIRED` for one independent Phase 2 map/LOCK audit.
+
+Phase 2 may only promote those four map headers and four matching index Status
+cells to `MAINTAINED`, fill the designated LOCK verdict block, and
+mechanically mirror the result into the matching ledger Status cell. Map
+bodies, qualifications, metadata, ledger Description, route prose, runtime,
+tests, and every other byte are frozen.
+
+The accepted implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`.
+Problem text stays raw human observation state in the Wizard parent. No
+runtime, persistence/filesystem/provider/project-state/canonical write,
+problem/diagnosis fact, AI/OCR/CV/summarization/classification,
+component/electrical inference, event/projection/schema/validator/writer/
+materializer, router, Home, Board Canvas, package, asset, tool, `_incoming`,
+or protected-surface authority is opened.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No Interaction Polish or other
+implementation successor is armed.
+
+## Accepted problem-description-v1 SCOPE/EHITUS (historical)
+
+All current, future, and route language below this heading is historical and
+does not override the LOCK state above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS

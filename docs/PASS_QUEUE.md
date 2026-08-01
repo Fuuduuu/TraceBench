@@ -2,10 +2,72 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current problem-description-v1 SCOPE/EHITUS queue
+## Current problem-description-v1 LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+The accepted and pushed implementation is
+`0ed2b8bfec2c87165be20cc2f5f9e0e4fc67862f`, parent
+`64e596a7a5ddb7bd6b8c91ff07138086fa5a4694`, and contains exactly the Wizard
+screen, new problem-description child, Wizard integration test, and new child
+test with Git blobs `d7370594a1cbfe894f5fc130644376b3ad9e0029`,
+`ae80dbbb43ea02ce901963dadb7910d71dcf0be3`,
+`6d13096b4d7ff4f2f2bff60b70329fe5530f0a16`, and
+`84d3da9fe51936ad3000e7b5c2e1a9139a28e683`.
+
+Human manual smoke is `14/14 PASS`, the supplied final implementation audit is
+`ACCEPTED`, the contract is `23/23 PASS`, and scope-audit `LOW-1` is discharged
+by the same-value synchronization guard plus cursor/selection test. Accepted
+validation is format `4 files, 0 changed`, targeted analysis `no issues`,
+repository analysis `28` unchanged pre-existing info issues, focused `64/64`,
+full Flutter `493/493`, validator `302 tests, OK`, and diff checks `PASS`.
+
+The exact Phase 1 material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+8. `docs/code_maps/lib/features/project/widgets/new_project_wizard_problem_description.dart.md`
+9. `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md`
+10. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS.md`
+
+The existing production map remains automatic; the integration map remains
+`SCORE 11/12` and now describes 55 tests. The 473-line child production file
+qualifies automatically with a `7/12` worksheet; the 415-line nine-test child
+suite qualifies at `SCORE 8/12`. All four maps and matching registry rows are
+`REVIEW_REQUIRED`.
+
+One independent Phase 2 audit may promote exactly those four headers/rows,
+fill only the LOCK verdict-block interior, and mechanically mirror its result
+into the one matching ledger Status cell. No body, qualification, metadata,
+Description, route, source, test, or other byte may change; no extra pass is
+queued.
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The queue remains `UI_LOCAL` + `ZERO_WRITE`. `NEEDS_USER_DECISION` is
+non-executable; Interaction Polish, persistence, canonical problem data,
+AI/diagnosis, component/electrical behavior, packages/assets/tools,
+`_incoming`, and protected surfaces remain unarmed.
+
+## Accepted problem-description-v1 SCOPE/EHITUS queue (historical)
+
+All current, future, transition, and queue language below this heading is
+historical and does not override the LOCK queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS

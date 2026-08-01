@@ -2,10 +2,128 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current problem-description-v1 SCOPE authority
+## Current problem-description-v1 LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 0ed2b8bfec2c87165be20cc2f5f9e0e4fc67862f`,
+parent `64e596a7a5ddb7bd6b8c91ff07138086fa5a4694`, subject
+`feat: add Wizard problem description v1`, divergence `0 0`, empty staged and
+substantive tracked diffs, and the exact four-file committed implementation.
+Known porcelain-only tracked entries are content-identical to `HEAD`; known
+scratch remains outside authority.
+
+Exact committed Git blob identities:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart` —
+  `d7370594a1cbfe894f5fc130644376b3ad9e0029`;
+- `lib/features/project/widgets/new_project_wizard_problem_description.dart`
+  — `ae80dbbb43ea02ce901963dadb7910d71dcf0be3`;
+- `test/widget/new_project_wizard_screen_test.dart` —
+  `6d13096b4d7ff4f2f2bff60b70329fe5530f0a16`; and
+- `test/widget/new_project_wizard_problem_description_test.dart` —
+  `84d3da9fe51936ad3000e7b5c2e1a9139a28e683`.
+
+### Exact current Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+8. `docs/code_maps/lib/features/project/widgets/new_project_wizard_problem_description.dart.md`
+9. `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md`
+10. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS.md`
+
+No eleventh file is authorized. The four implementation files, accepted SCOPE
+artifact, runtime, packages, assets, schemas, tools, `_incoming`, scratch,
+router, Home, Board Canvas, project state, persistence, canonical surfaces,
+and protected surfaces are outside current write authority.
+
+### Accepted implementation and validation evidence
+
+Human manual smoke is `14/14 PASS`. The supplied final independent
+implementation audit is `FINAL_VERDICT: ACCEPTED`, with implementation
+contract `23/23 PASS`. Scope-audit `LOW-1` is discharged by the committed
+same-value synchronization guard and focused cursor/selection test. No
+implementation staging or history rewrite is required, and no further
+implementation audit is authorized.
+
+Attributed validation is exact formatting `4 files, 0 changed`, targeted
+analysis `no issues`, repository analysis with `28` unchanged pre-existing
+info-level issues outside the four files, focused widget tests `64/64 PASS`,
+full Flutter `493/493 PASS`, `tools/validate_all.py` `302 tests, OK`, and Git
+diff checks `PASS`; validation changed no repository content.
+
+Accepted findings remain evidence only: possible nested-semantics verbosity,
+the fixed visible Step 5 ordinal beside a derived total, and a fixed delay in
+an unrelated pre-existing measurement test. This LOCK patches none of them.
+
+### Map refresh and qualification
+
+The committed 3,201-line Wizard production map remains
+`AUTO — 5+ independently testable behaviors`. The 2,812-line, 55-test Wizard
+integration map remains `SCORE 11/12` and now includes Step 5 gating,
+progress, all-five-value retention, effective/no-op dirty behavior, earlier-
+step and Step 6 round trips, responsive operation, unchanged Steps 1–4,
+placeholder Steps 6–7, child-suite linkage, and `ZERO_WRITE` traversal.
+
+The 473-line production child scores `7/12` with five non-size dimensions
+above zero and also qualifies automatically through 5+ independently testable
+behaviors. The 415-line nine-test child suite scores `8/12` with five non-size
+dimensions above zero, has no automatic rule, and qualifies by score. Both new
+maps exist at deterministic paths. Every refreshed/created map header and
+matching index Status cell is `REVIEW_REQUIRED`.
+
+### Bounded Phase 2 mutation authority
+
+A clean independent Phase 2 map/LOCK audit may change only:
+
+1. `REVIEW_REQUIRED` -> `MAINTAINED` in the four actual map Status headers;
+2. `REVIEW_REQUIRED` -> `MAINTAINED` in the four matching index Status cells;
+3. the designated verdict-block interior in the matching LOCK artifact; and
+4. the matching `docs/AUDIT_INDEX.md` Status cell as a mechanical mirror.
+
+It may not change a map body, qualification, Source, Type, Audit evidence,
+another index/ledger cell, ledger Description, route prose, runtime/test file,
+accepted SCOPE artifact, qualification result, or any other byte. No extra
+pass is created.
+
+### Boundary, release, and stops
+
+The accepted implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`.
+Problem values are raw human observations retained only by the Wizard parent;
+the child owns controllers/focus presentation state. Completion trims only for
+validity. There is no project creation, filesystem/persistence/provider/
+project-state/canonical write, problem or diagnosis fact, AI/OCR/CV/
+summarization/classification, component/electrical inference, event/fact/
+projection/schema/validator/writer/materializer/ZIP, router, Home, Board
+Canvas, package, asset, tool, `_incoming`, or protected-surface authority.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. Stop on an eleventh file, a map not
+derived from committed `HEAD`, any runtime/test/SCOPE-artifact edit, a
+speculative map, a Phase 2 edit outside the exact cells above, canonical or
+persistent expansion, validator failure, or any protected-surface change.
+
+## Accepted problem-description-v1 SCOPE/EHITUS authority (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the LOCK authority above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS

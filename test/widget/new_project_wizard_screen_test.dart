@@ -1,6 +1,8 @@
 import 'dart:math' as math;
+import 'dart:ui' show SemanticsAction;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -276,6 +278,41 @@ Future<void> _completeProblemDescription(WidgetTester tester) async {
     'Toitekaabel vahetatud',
   );
   await _tapKey(tester, 'wizard-problem-occurrence-intermittent');
+}
+
+Future<void> _openReviewStep(WidgetTester tester) async {
+  await _openProblemDescriptionStep(tester);
+  await _completeProblemDescription(tester);
+  await _tapKey(tester, 'wizard-next');
+}
+
+Finder _progressStep(int stepNumber) {
+  return find.byKey(ValueKey('wizard-progress-step-$stepNumber'));
+}
+
+void _expectProgressStatus(int stepNumber, String status) {
+  expect(
+    find.descendant(
+      of: _progressStep(stepNumber),
+      matching: find.text(status),
+    ),
+    findsOneWidget,
+  );
+}
+
+bool _progressHasTapAction(WidgetTester tester, int stepNumber) {
+  return tester
+      .getSemantics(_progressStep(stepNumber))
+      .getSemanticsData()
+      .hasAction(SemanticsAction.tap);
+}
+
+bool _progressHasButtonFlag(WidgetTester tester, int stepNumber) {
+  return tester
+      .getSemantics(_progressStep(stepNumber))
+      .getSemanticsData()
+      .flagsCollection
+      .isButton;
 }
 
 Future<void> _openPhotoAlignmentStep(WidgetTester tester) async {
@@ -827,7 +864,7 @@ void main() {
   });
 
   testWidgets(
-      'Step 4 exposes four accessible shapes and the default next style',
+      'Step 4 exposes the compact status shape rotation and boundary contract',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -837,6 +874,30 @@ void main() {
     await tester.pump();
 
     await _openComponentPlacementStep(tester);
+
+    final status = find.byKey(
+      const ValueKey('wizard-component-status'),
+    );
+    expect(status, findsOneWidget);
+    for (final detailKey in const <String>[
+      'wizard-component-count',
+      'wizard-component-selection',
+      'wizard-component-contour-guide',
+      'wizard-component-style-summary',
+    ]) {
+      expect(
+        find.descendant(
+          of: status,
+          matching: find.byKey(ValueKey(detailKey)),
+        ),
+        findsOneWidget,
+      );
+    }
+
+    final shapeGrid = find.byKey(
+      const ValueKey('wizard-component-shape-grid'),
+    );
+    expect(shapeGrid, findsOneWidget);
 
     const shapeChoices = <String, String>{
       'wizard-component-shape-circle': 'Ümar',
@@ -853,6 +914,15 @@ void main() {
       );
     }
     expect(find.byType(ChoiceChip), findsNWidgets(4));
+    final shapeRects = shapeChoices.keys
+        .map((key) => tester.getRect(find.byKey(ValueKey(key))))
+        .toList(growable: false);
+    expect(shapeRects[0].width, closeTo(shapeRects[1].width, 0.001));
+    expect(shapeRects[0].width, closeTo(shapeRects[2].width, 0.001));
+    expect(shapeRects[0].width, closeTo(shapeRects[3].width, 0.001));
+    expect(shapeRects[0].top, closeTo(shapeRects[1].top, 0.001));
+    expect(shapeRects[2].top, closeTo(shapeRects[3].top, 0.001));
+    expect(shapeRects[2].top, greaterThan(shapeRects[0].bottom));
 
     final summary = find.byKey(
       const ValueKey('wizard-component-style-summary'),
@@ -887,17 +957,120 @@ void main() {
       '100%',
     );
 
-    const rotationControls = <String, String>{
-      'wizard-component-rotate-minus': 'Pööra markerit −15°',
-      'wizard-component-rotate-plus': 'Pööra markerit +15°',
-      'wizard-component-rotate-reset': 'Nulli markeri pööre 0°',
+    const rotationControls = <String, (String, IconData)>{
+      'wizard-component-rotate-minus': (
+        'Pööra markerit 15° vasakule',
+        Icons.rotate_left,
+      ),
+      'wizard-component-rotate-plus': (
+        'Pööra markerit 15° paremale',
+        Icons.rotate_right,
+      ),
+      'wizard-component-rotate-reset': (
+        'Nulli markeri pööre 0°',
+        Icons.refresh,
+      ),
     };
     for (final entry in rotationControls.entries) {
       final control = find.byKey(ValueKey(entry.key));
       expect(control, findsOneWidget);
-      expect(tester.getSemantics(control).label, entry.value);
+      final iconButton = find.descendant(
+        of: control,
+        matching: find.byType(IconButton),
+      );
+      expect(iconButton, findsOneWidget);
+      expect(tester.widget<IconButton>(iconButton).tooltip, entry.value.$1);
+      expect(tester.getSemantics(control).label, contains(entry.value.$1));
+      expect(
+        find.descendant(of: control, matching: find.byIcon(entry.value.$2)),
+        findsOneWidget,
+      );
     }
+
+    final rotationValue = find.byKey(
+      const ValueKey('wizard-component-rotation-value'),
+    );
+    expect(rotationValue, findsOneWidget);
+    expect(find.descendant(of: rotationValue, matching: find.text('0°')),
+        findsOneWidget);
+    expect(tester.getSemantics(rotationValue).label, 'Markeri pööre: 0°');
+
+    const boundaryCopy =
+        'Kandidaadid on inimese loodud visuaalsed ettepanekud. Need ei '
+        'kinnita komponendi identiteeti, tüüpi, väärtust, tähist, korpust, '
+        'jalajälge, jalgu, kontakte, plaadipoolt, ühendusi, võrku, mõõtmist '
+        'ega diagnoosi ning ei loo püsivat ega kanoonilist fakti.';
+    final boundary = find.byKey(
+      const ValueKey('wizard-component-boundary-note'),
+    );
+    expect(boundary, findsOneWidget);
+    expect(find.descendant(of: boundary, matching: find.text(boundaryCopy)),
+        findsOneWidget);
     expect(_paintedComponentCandidates(tester), isEmpty);
+  });
+
+  testWidgets(
+      'rotation readout is signed and reset preserves non-rotation data',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    await _setComponentSize(tester, 1.6);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapComponentAt(tester, const Offset(0.42, 0.58));
+    final beforeReset = _paintedComponentStyles(tester).single;
+
+    await _tapKey(tester, 'wizard-component-rotate-reset');
+    final afterReset = _paintedComponentStyles(tester).single;
+    expect(afterReset.draftKey, beforeReset.draftKey);
+    expect(afterReset.position, beforeReset.position);
+    expect(afterReset.shape, beforeReset.shape);
+    expect(afterReset.sizeScale, beforeReset.sizeScale);
+    expect(afterReset.rotation, 0.0);
+    expect(find.text('0°'), findsWidgets);
+    expect(
+      tester
+          .getSemantics(
+            find.byKey(
+              const ValueKey('wizard-component-rotation-value'),
+            ),
+          )
+          .label,
+      'Markeri pööre: 0°',
+    );
+
+    await _tapKey(tester, 'wizard-component-rotate-minus');
+    expect(find.text('-15°'), findsOneWidget);
+    expect(
+      tester
+          .getSemantics(
+            find.byKey(
+              const ValueKey('wizard-component-rotation-value'),
+            ),
+          )
+          .label,
+      'Markeri pööre: -15°',
+    );
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    expect(find.text('+15°'), findsOneWidget);
+    expect(
+      tester
+          .getSemantics(
+            find.byKey(
+              const ValueKey('wizard-component-rotation-value'),
+            ),
+          )
+          .label,
+      'Markeri pööre: +15°',
+    );
   });
 
   testWidgets('a new marker inherits the complete current style',
@@ -1270,6 +1443,91 @@ void main() {
 
     await _tapComponentAt(tester, const Offset(0.08, 0.9));
     expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+  });
+
+  testWidgets('user-paced empty taps each add exactly one candidate',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+
+    Future<void> tapEmptySpace(
+      Offset normalizedPosition, {
+      int? expectedSelectionBeforeCompletion,
+    }) async {
+      final canvasFinder =
+          find.byKey(const ValueKey('wizard-component-canvas'));
+      await tester.ensureVisible(canvasFinder);
+      await tester.pump();
+      final canvas = _componentCanvasRect(tester);
+      final gesture = await tester.startGesture(
+        canvas.topLeft +
+            Offset(
+              normalizedPosition.dx * canvas.width,
+              normalizedPosition.dy * canvas.height,
+            ),
+        kind: PointerDeviceKind.mouse,
+      );
+      await tester.pump();
+      if (expectedSelectionBeforeCompletion != null) {
+        expect(
+          _paintedSelectedComponentDraftKey(tester),
+          expectedSelectionBeforeCompletion,
+        );
+      }
+      await gesture.up();
+      await _pumpFrames(tester);
+    }
+
+    await tapEmptySpace(const Offset(0.2, 0.3));
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+
+    await tapEmptySpace(
+      const Offset(0.8, 0.7),
+      expectedSelectionBeforeCompletion: 1,
+    );
+    expect(_paintedComponentDraftKeys(tester), const <int>[1, 2]);
+
+    await tapEmptySpace(const Offset(0.2, 0.75));
+    expect(_paintedComponentDraftKeys(tester), const <int>[1, 2, 3]);
+    expect(_paintedSelectedComponentDraftKey(tester), 3);
+  });
+
+  testWidgets('pointer cancellation never adds a component candidate',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.3, 0.4));
+    final canvasFinder = find.byKey(const ValueKey('wizard-component-canvas'));
+    await tester.ensureVisible(canvasFinder);
+    await tester.pump();
+    final canvas = _componentCanvasRect(tester);
+
+    final candidateGesture = await tester.startGesture(
+      canvas.topLeft + Offset(canvas.width * 0.3, canvas.height * 0.4),
+      kind: PointerDeviceKind.mouse,
+    );
+    await tester.pump();
+    await candidateGesture.cancel();
+    await _pumpFrames(tester);
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+
+    final emptyGesture = await tester.startGesture(
+      canvas.topLeft + Offset(canvas.width * 0.8, canvas.height * 0.75),
+      kind: PointerDeviceKind.mouse,
+    );
+    await tester.pump();
+    await emptyGesture.cancel();
+    await _pumpFrames(tester);
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
   });
 
   testWidgets(
@@ -2609,10 +2867,192 @@ void main() {
       find.byKey(const ValueKey('wizard-component-delete')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('wizard-component-status')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-shape-grid')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-component-boundary-note')),
+      findsOneWidget,
+    );
     expect(movedPosition.dx, closeTo(0.65, 0.001));
     expect(movedPosition.dy, closeTo(0.72, 0.001));
     expect(pageScroll.pixels, closeTo(scrollOffsetBeforeDrag, 0.001));
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('active and unvisited progress tiles are inert and non-dirty',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    expect(_progressHasTapAction(tester, 1), isFalse);
+    expect(_progressHasButtonFlag(tester, 1), isFalse);
+    expect(_progressHasTapAction(tester, 2), isFalse);
+    expect(_progressHasButtonFlag(tester, 2), isFalse);
+    _expectProgressStatus(1, 'Praegune samm');
+    _expectProgressStatus(2, 'Järgmine samm');
+
+    await tester.tap(_progressStep(1));
+    await tester.tap(_progressStep(2));
+    await _pumpFrames(tester);
+    expect(find.byKey(const ValueKey('wizard-step-1-editor')), findsOneWidget);
+
+    await _tapKey(tester, 'wizard-cancel');
+    expect(find.byKey(const ValueKey('test-home')), findsOneWidget);
+    expect(find.text('Katkestada projekti loomine?'), findsNothing);
+  });
+
+  testWidgets(
+      'visited tiles navigate backward and gate-valid forward in wide and compact views',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-square');
+    await _setComponentSize(tester, 1.4);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapComponentAt(tester, const Offset(0.64, 0.46));
+    final candidateBefore = _paintedComponentStyles(tester).single;
+    await _tapKey(tester, 'wizard-next');
+    await _completeProblemDescription(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+
+    for (final stepNumber in const <int>[1, 3, 5]) {
+      _expectProgressStatus(stepNumber, 'Valmis');
+    }
+    for (final stepNumber in const <int>[2, 4, 6]) {
+      _expectProgressStatus(stepNumber, 'Vaadatud');
+    }
+    _expectProgressStatus(7, 'Praegune samm');
+    expect(_progressHasTapAction(tester, 4), isTrue);
+    expect(_progressHasButtonFlag(tester, 4), isTrue);
+
+    await _tapKey(tester, 'wizard-progress-step-4');
+    expect(
+        find.byKey(const ValueKey('wizard-component-editor')), findsOneWidget);
+    expect(_paintedComponentStyles(tester).single, candidateBefore);
+
+    await _tapKey(tester, 'wizard-progress-step-7');
+    expect(find.byKey(const ValueKey('wizard-placeholder-7')), findsOneWidget);
+    expect(_progressHasTapAction(tester, 7), isFalse);
+    expect(_progressHasButtonFlag(tester, 7), isFalse);
+
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await _pumpFrames(tester);
+    await _tapKey(tester, 'wizard-progress-step-2');
+    expect(find.byKey(const ValueKey('wizard-photo-step')), findsOneWidget);
+    expect(_progressHasTapAction(tester, 3), isTrue);
+    await _tapKey(tester, 'wizard-progress-step-3');
+    expect(find.byKey(const ValueKey('wizard-contour-editor')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Step 1 gate status and forward navigation update after editing',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openReviewStep(tester);
+    await _tapKey(tester, 'wizard-progress-step-1');
+    await _enterText(tester, 'wizard-project-name', '   ');
+
+    _expectProgressStatus(1, 'Praegune samm');
+    expect(
+      find.descendant(
+        of: _progressStep(1),
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+    _expectProgressStatus(3, 'Valmis');
+    _expectProgressStatus(5, 'Valmis');
+    expect(_progressHasTapAction(tester, 6), isFalse);
+
+    await tester.tap(_progressStep(6));
+    await _pumpFrames(tester);
+    expect(find.byKey(const ValueKey('wizard-step-1-editor')), findsOneWidget);
+
+    await _enterText(tester, 'wizard-project-name', 'Pelle PV20');
+    expect(_progressHasTapAction(tester, 6), isTrue);
+    await _tapKey(tester, 'wizard-progress-step-6');
+    expect(find.byKey(const ValueKey('wizard-placeholder-6')), findsOneWidget);
+  });
+
+  testWidgets(
+      'Step 3 and Step 5 visited statuses invalidate restore and guard forward navigation',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openReviewStep(tester);
+    await _tapKey(tester, 'wizard-progress-step-3');
+    await _dragContourPoint(
+      tester,
+      from: const Offset(0.2, 0.25),
+      to: const Offset(0.24, 0.31),
+    );
+    expect(_paintedContourIsClosed(tester), isFalse);
+    await _tapKey(tester, 'wizard-progress-step-2');
+    _expectProgressStatus(3, 'Vaadatud');
+    expect(
+      find.descendant(
+        of: _progressStep(3),
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+    expect(_progressHasTapAction(tester, 6), isFalse);
+
+    await _tapKey(tester, 'wizard-progress-step-3');
+    await _tapKey(tester, 'wizard-contour-close');
+    await _tapKey(tester, 'wizard-progress-step-2');
+    _expectProgressStatus(3, 'Valmis');
+    await _tapKey(tester, 'wizard-progress-step-6');
+
+    await _tapKey(tester, 'wizard-progress-step-5');
+    await _enterText(tester, 'wizard-problem-description', '   ');
+    await _tapKey(tester, 'wizard-progress-step-4');
+    _expectProgressStatus(5, 'Vaadatud');
+    expect(
+      find.descendant(
+        of: _progressStep(5),
+        matching: find.text('Valmis'),
+      ),
+      findsNothing,
+    );
+    expect(_progressHasTapAction(tester, 6), isFalse);
+
+    await _tapKey(tester, 'wizard-progress-step-5');
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      'Seade ei käivitu.',
+    );
+    await _tapKey(tester, 'wizard-progress-step-4');
+    _expectProgressStatus(5, 'Valmis');
+    await _tapKey(tester, 'wizard-progress-step-6');
+    expect(find.byKey(const ValueKey('wizard-placeholder-6')), findsOneWidget);
   });
 
   testWidgets('progress distinguishes completion from viewed placeholders',

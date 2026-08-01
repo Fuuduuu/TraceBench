@@ -2,10 +2,84 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
 
-## Current LOCK queue
+## Current SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+The human selected smaller, shape-aware, scalable, rotatable Wizard Step 4
+component markers from the released `NEEDS_USER_DECISION` sentinel. This pass
+changes exactly five docs-only scope/route/ledger/evidence paths. Its defined
+transition is:
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS
+-> one later unnamed LOCK
+```
+
+No prerequisite, map pass, extra implementation pass, or third implementation
+file is queued.
+
+## Reserved EHITUS
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+The pass adds only candidate-local visual shape (`Ümar`, `Ruut`,
+`Ristkülik`, `Ümardatud ristkülik`), canvas-relative size scale
+`0.50..2.50`, and normalized rotation. Default current style is
+`Ümar · 100% · 0°`. No-selection controls edit the next current style without
+dirtying; selected controls mutate only the selected candidate and also become
+the next current style. New candidates inherit style and deletion retains it.
+
+At `100%`, the minor dimension is approximately `3.5%` of the editor's
+shortest side. Shape aspect ratios are `1:1`, `1:1`, approximately `1.8:1`,
+and approximately `2.2:1`. Rotation controls use `-15°`, `+15°`, and reset;
+rotation is stored in `[-π, π)`. Selection highlighting and an at-least
+`28x28` invisible target follow the complete rotated shape. Style never moves
+the center; drag changes only position; edge clipping does not rewrite state.
+
+All current add/select/drag/delete/order/key, optional `Vaadatud`, no-contour-
+containment, photo/no-photo, layering, navigation, resize, wide/compact, and
+zero-write behavior remains queued as regression coverage. Manual smoke is
+required before implementation audit.
+
+## Map lifecycle and boundaries
+
+The Wizard source/test maps and their index rows are `MAINTAINED` at committed
+`HEAD`. No map or index changes during SCOPE or EHITUS. Material implementation
+makes both maps `UPDATE_REQUIRED`, and the later unnamed LOCK refreshes only
+those two maps from accepted committed source.
+
+This queue is `UI_LOCAL` + `ZERO_WRITE`. It opens no component identity,
+package, footprint, pin, contact, board-side, net, measurement, canonical
+coordinate, provider, project state, persistence, event, fact, projection,
+writer, materializer, ZIP, AI/OCR/CV, photo/contour semantics, router, Home,
+Board Canvas, package, asset, or protected-surface authority.
+
+Stop on a third implementation file, stale/conflicting map, canonical
+conversion, photo/contour mutation, persistent state, dirty no-selection
+style controls, or any feature beyond local marker visuals and focused tests.
+
+## Accepted predecessor photo-alignment-v1 LOCK queue (historical)
+
+All current, promotion, and release language in the following level-three
+subsections is historical and does not override the queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
@@ -28,7 +102,7 @@ layering, ownership, boundary, and validation all `PASS`. Recorded validation
 is focused `50/50`, full Flutter `472/472`, validator `302/302`, targeted
 analysis `PASS`, and diff checks `PASS`.
 
-## Map lifecycle
+### Map lifecycle
 
 The accepted implementation made the two existing Wizard maps
 `UPDATE_REQUIRED`; this LOCK refreshes them from committed `HEAD`. Both new
@@ -55,7 +129,7 @@ The exact current docs/map authority is:
 
 No eleventh file is queued.
 
-## Bounded final audit and release
+### Bounded final audit and release
 
 A clean final comparison is bounded to:
 

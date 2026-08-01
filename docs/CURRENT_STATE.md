@@ -1,9 +1,86 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
 
-## Live photo-alignment-v1 LOCK
+## Live component-marker-visuals-v2 scope
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Entry is branch `main` with
+`HEAD == origin/main == 0dfc8d1ab0e90576a35f1d1ab876e2b8767f86d0`,
+parent `7f9ca14d1b4227113a665a6b5e4242eeb9f7a8ea`, subject
+`docs: lock photo-first Wizard alignment v1`, divergence `0 0`, and empty
+staged and substantive tracked diffs. Five porcelain-only tracked entries and
+known scratch remain untouched and outside this pass. The accepted predecessor
+route was `NEEDS_USER_DECISION`; this human selection opens a fresh scope.
+
+This docs-only pass changes exactly the four live route/ledger owners and
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS.md`.
+It changes no Dart, test, map, map index, runtime, package, asset, schema,
+tool, `_incoming`, scratch, or protected surface.
+
+## Reserved implementation and behavior
+
+`TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS` is
+reserved with exactly:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`;
+- `test/widget/new_project_wizard_screen_test.dart`.
+
+No third implementation file is authorized. Step 4 candidates remain
+Wizard-local and gain only a visual shape, canvas-relative finite size scale
+`0.50..2.50`, and finite rotation normalized to `[-π, π)`, alongside their
+stable draft key and editor-normalized center. Exact shapes are `Ümar`,
+`Ruut`, `Ristkülik`, and `Ümardatud ristkülik`; the default is `Ümar`.
+
+With no selection, side-panel controls edit the `Järgmine:` current style and
+do not dirty the draft. With a selection, controls load and mutate only that
+candidate, become the next current style, and summarize as `Valitud:`. New
+candidates inherit current style; delete retains it. Size uses a visible
+`50–250%` slider, defaults to `100%`, and derives the minor dimension from
+approximately `3.5%` of the editor's shortest side. Rotation uses visible
+`-15°`, `+15°`, and `0°` controls plus a signed-degree summary. A circular
+marker ignores rotation visually without destroying its stored value.
+
+The shape-aware selection highlight follows rendered geometry. An invisible
+target covers the complete rotated shape and is at least `28x28`. Visual
+style never moves the normalized center; edge clipping is allowed without
+state rewrite. Drag changes position only. Candidate style survives Step
+2/3/4 navigation, Step 4/5 round trips, photo changes, responsive resize, and
+wide/compact transitions.
+
+## Maps, boundary, and route
+
+Both exact target maps and their index rows are `MAINTAINED` at committed
+`HEAD`. This scope makes no map/index edit. Material implementation gives both
+maps disposition `UPDATE_REQUIRED`; one later unnamed LOCK updates only those
+two maps from accepted committed source.
+
+The implementation remains `UI_LOCAL` + `ZERO_WRITE`. Shapes are visual only:
+no component identity/package/footprint/pin/contact/board-side/net semantics,
+provider/project state, persistence, canonical coordinate, event/fact/
+projection, writer/materializer/ZIP, AI/OCR/CV, photo/contour mutation,
+router, Home, Board Canvas, package, asset, or protected-surface authority is
+opened.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS
+```
+
+The future pass is conditional on independent acceptance and human push of
+this exact five-file scope lock. Manual smoke remains required before its
+implementation audit.
+
+## Accepted predecessor photo-alignment-v1 LOCK (historical)
+
+All `live`, current-authority, and route language in the following
+level-three subsections is historical and does not override the route above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
@@ -40,7 +117,7 @@ The durable implementation findings remain:
 - `NIT`: 28 pre-existing analyzer issues are outside the implementation
   allowlist.
 
-## Current docs/map authority
+### Prior docs/map authority
 
 This LOCK changes only:
 
@@ -59,7 +136,7 @@ No eleventh file is authorized. Dart, tests, accepted scope artifacts, runtime,
 project state, persistence, canonical surfaces, router, Board Canvas, packages,
 assets, tools, and scratch remain outside authority.
 
-## Map qualification and route
+### Map qualification and route
 
 The existing Wizard screen and integration-test maps are refreshed from
 committed `HEAD`. The new photo editor qualifies automatically through five

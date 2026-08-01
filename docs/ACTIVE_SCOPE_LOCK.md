@@ -2,10 +2,211 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
 
-## Current photo-alignment-v1 LOCK authority
+## Current component-marker-visuals-v2 scope authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 0dfc8d1ab0e90576a35f1d1ab876e2b8767f86d0`,
+parent `7f9ca14d1b4227113a665a6b5e4242eeb9f7a8ea`, subject
+`docs: lock photo-first Wizard alignment v1`, divergence `0 0`, and empty
+staged and substantive tracked diffs. Five pre-existing tracked porcelain
+entries remain content-identical to `HEAD`; known scratch remains outside
+authority. The predecessor photo-alignment LOCK is accepted and pushed, its
+four qualifying maps and index rows are `MAINTAINED`, and its route released
+to the non-executable `NEEDS_USER_DECISION` sentinel.
+
+Exact current docs-only write allowlist:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS.md`
+
+No sixth current-pass file is authorized. No Dart, test, map, code-map index,
+runtime, package, asset, schema, tool, `_incoming`, scratch, or protected-
+surface change belongs to this SCOPE pass.
+
+## Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact implementation write allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+No third implementation file is authorized. Activation is conditional on
+independent acceptance and human push of this exact five-file scope lock. The
+workflow is `SCOPE -> EHITUS -> LOCK`; there is no prerequisite or separate
+map pass.
+
+## Locked marker draft and current-style behavior
+
+Each component candidate remains a Wizard-parent-owned, widget-local draft
+with exactly a stable local `draftKey`, editor-normalized center position,
+visual shape, visual size scale, and normalized visual rotation. These values
+are presentation state only and never establish a package, footprint, pin,
+contact, board-side, electrical, or component-identity fact.
+
+The exact shape choices are:
+
+- `Ümar`;
+- `Ruut`;
+- `Ristkülik`; and
+- `Ümardatud ristkülik`.
+
+`Ümar` is the default. With no candidate selected, the Step 4 side-panel
+controls edit only the current style for the next candidate and the summary
+starts `Järgmine:`. Selecting a candidate loads that candidate's shape, size,
+and rotation into the same controls; effective edits mutate that selected
+candidate only, become the current style for the next candidate, and the
+summary starts `Valitud:`. A newly added candidate receives the current style.
+Deleting a candidate clears selection but retains the current style. Changing
+current-style controls while no candidate is selected does not mutate the
+candidate list and does not mark the Wizard draft dirty.
+
+## Locked size and rotation model
+
+Size scale is finite and clamped to the inclusive range `0.50..2.50`, defaults
+to `1.00`, and is shown through a labelled `50–250%` slider plus visible
+percentage. Rendered size is canvas-relative: the marker's minor dimension is
+derived from the editor's shortest side, and `100%` is approximately `3.5%`
+of that side, materially smaller than the current fixed 22-pixel marker.
+Aspect ratios are `1:1` for `Ümar` and `Ruut`, approximately `1.8:1` for
+`Ristkülik`, and approximately `2.2:1` for `Ümardatud ristkülik`.
+
+An effective size change preserves center, key, shape, and rotation and marks
+the Wizard draft dirty only when it mutates a selected candidate. Responsive
+resize recomputes pixels from the stored scale without rewriting normalized
+state.
+
+Rotation is a finite radians value normalized to `[-π, π)`. Visible controls
+rotate by `-15°`, rotate by `+15°`, and reset to `0°`; a signed degree value is
+shown in the current-style summary. Rotation occurs about the candidate
+center and preserves key, position, shape, and size. `Ümar` ignores rotation
+visually; its rotation controls may be disabled, but choosing `Ümar` must not
+destroy the stored rotation. Effective selected-candidate rotation changes
+mark the draft dirty; no-selection current-style changes do not.
+
+Example summaries are:
+
+- `Järgmine: Ristkülik · 100% · 0°`;
+- `Valitud: Ruut · 140% · 30°`.
+
+Stable keys and accessibility labels are required for all four shape choices,
+the size slider, rotate-minus, rotate-plus, rotation reset, and the current-
+style summary.
+
+## Rendering, hit testing, and retained interaction
+
+Step 4 paints the photo as the inert bottom layer, the closed contour as an
+inert guide above it, and shape-aware editable candidates on top. All four
+shapes must be visibly distinct. Selected fill/stroke treatment must remain
+distinct from unselected treatment, and the selected highlight follows the
+rendered shape rather than using the current fixed 17-pixel circular halo.
+
+Each candidate has an invisible pointer target that covers its complete
+rotated rendered bounds and is at least `28x28` logical pixels. Selection and
+dragging must work over the complete visible shape, including rotated corners
+and elongated bodies. Shape, size, and rotation never move the normalized
+center. At editor edges the rendered shape may clip; rendering or resizing
+must not rewrite the center to compensate.
+
+Existing add, select, drag, selected-only delete, insertion order, stable keys,
+empty-canvas behavior, absence of contour containment, photo/no-photo
+operation, and optional ungated Step 4 `Vaadatud` semantics remain intact.
+Dragging changes only normalized position and preserves shape, size, rotation,
+and key. Marker drafts and current style survive Step 2/3/4 navigation,
+Step 4/5 round trips, wide/compact transitions, responsive resize, and later
+photo replacement or removal. Photo changes never mutate contour points or
+candidate geometry/style.
+
+## CODE_MAP_PREFLIGHT and lifecycle
+
+The existing target maps and matching `CODE_MAP_INDEX.md` rows are
+`MAINTAINED` at committed `HEAD`:
+
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+  — `AUTO — 5+ independently testable behaviors`;
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+  — `SCORE 9/12 — 43-test multi-family photo/contour/component/navigation/responsive protected-boundary surface`.
+
+The human expressly authorizes one coherent multi-zone implementation limited
+to the production map's candidate state/interaction, component editor/layered
+guides, dirty cancellation, responsive gestures, and painter zones, plus the
+test map's component geometry/painter helpers, component contract, retention,
+layering, responsive, accessibility, and protected-boundary zones. Inspect-
+only coupled zones are photo/contour state and layering, Step 4 progress and
+gating, navigation, cancellation, and the final zero-write traversal.
+
+The current docs-only disposition is `NOT_APPLICABLE`; no map or index changes
+now. Material implementation makes both maps `UPDATE_REQUIRED` after EHITUS.
+Maps must not be updated from unfinished local source. One later unnamed LOCK
+refreshes only these two maps from accepted committed source.
+
+## Implementation acceptance and manual smoke
+
+Focused tests must cover all four shapes; default `Ümar`/`100%`/`0°` rendering
+at the smaller canvas-relative size; current-style inheritance; loading and
+independent editing of a selected candidate; editing one candidate without
+changing another; shape/size/rotation center and key invariance; drag style
+preservation; deletion with current-style retention; rotated full-shape hit
+targets; navigation/resize/photo-change retention; photo-plus-contour layer
+order; compact/wide operability; accessibility keys/labels; dirty-state rules;
+and `ZERO_WRITE` traversal while preserving all existing Wizard behavior.
+
+The implementation must format exactly the two Dart targets, run targeted
+analysis, the focused Wizard suite, full Flutter tests,
+`py -3 tools\validate_all.py`, both diff checks, and prove the exact two-file
+substantive set with an empty staged set.
+
+Manual smoke is required before implementation audit and must verify shape
+choice/inheritance, selected-only edits, apparent marker size at wide and
+compact layouts, rotated edge hit testing, drag/style preservation, deletion
+style retention, navigation/resize/photo retention, ordinary no-photo use,
+and the zero-write boundary.
+
+## Boundary, exclusions, route, and stops
+
+The reserved implementation is `UI_LOCAL` + `ZERO_WRITE`. No provider,
+singleton, route handoff, project state, `ProjectCreator`, persistence,
+filesystem write, canonical coordinate or `board_normalized` output, event,
+fact, projection, schema, writer, validator, materializer, Project ZIP,
+component identity, type, value, designator, package, footprint, pin, pad,
+contact, board-side, net, measurement, diagnosis, AI, OCR, CV, snapping, grid,
+polygon containment, photo/contour semantics, router, Home, Board Canvas,
+package, asset, tool, or protected-surface change is authorized.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS
+```
+
+Stop if a sixth scope file or third implementation file is required; either
+target map is stale, conflicting, or not `MAINTAINED` before EHITUS; candidate
+style cannot remain Wizard-local; any canonical coordinate conversion or
+photo/contour rewrite becomes necessary; current controls cannot avoid dirty
+state without a selected candidate; any persistent/protected behavior becomes
+reachable; or scope expands beyond marker visuals and their focused tests.
+
+## Accepted predecessor photo-alignment-v1 LOCK (historical)
+
+All `current`, authority, route, and promotion language in the following
+level-three subsections is historical. The accepted artifact and Git history
+remain the durable predecessor evidence.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS
@@ -28,7 +229,7 @@ Exact committed implementation set:
 - `test/widget/new_project_wizard_screen_test.dart`
 - `test/widget/new_project_wizard_photo_editor_test.dart`
 
-## Exact current write allowlist
+### Exact prior write allowlist
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
@@ -46,7 +247,7 @@ runtime, package, asset, schema, tool, `_incoming`, scratch, router, Home,
 Board Canvas, project state, persistence, or protected-surface write belongs
 to this LOCK.
 
-## Accepted implementation evidence
+### Accepted implementation evidence
 
 The human supplied `MANUAL_SMOKE: PASS` for the accepted photo-first Wizard
 implementation. The supplied Claude implementation audit returned:
@@ -79,7 +280,7 @@ Preserved findings:
 - `NIT`: 28 pre-existing analyzer issues are outside the implementation
   allowlist.
 
-## Committed behavior and ownership
+### Committed behavior and ownership
 
 The seven-step order is:
 
@@ -112,7 +313,7 @@ photo draft; render error stays visible and non-destructive. Photo state
 persists through Steps 2–4 and resize, and photo mutation never moves contour
 points or candidate keys/positions.
 
-## CODE_MAP_PREFLIGHT and qualification
+### CODE_MAP_PREFLIGHT and qualification
 
 The accepted implementation materially changed the two existing
 `MAINTAINED` maps, so both entered this LOCK with disposition
@@ -132,7 +333,7 @@ and matching `CODE_MAP_INDEX.md` Status cell is `REVIEW_REQUIRED`. Maps are
 descriptive and non-authorizing; committed source and tests remain
 authoritative.
 
-## Bounded final-audit authority
+### Bounded final-audit authority
 
 A clean final map/LOCK comparison may authorize only:
 
@@ -161,7 +362,7 @@ No clean promotion changes a map body, another metadata field, another index
 row, the ledger Description cell, a route owner, runtime/test source, scope
 artifact, or any other content. No extra pass is created.
 
-## Boundary, release, and stops
+### Boundary, release, and stops
 
 The implementation and LOCK are `UI_LOCAL` + `ZERO_WRITE`. The path and
 view transform remain presentation state, not canonical photo/alignment

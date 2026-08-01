@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
+import 'package:trace_bench_viewer/features/project/widgets/new_project_wizard_problem_description.dart';
 import 'package:trace_bench_viewer/shared/services/python_runner.dart';
 
 class _TestPlatformInfo extends PlatformInfo {
@@ -246,6 +247,35 @@ Future<void> _openComponentPlacementStep(WidgetTester tester) async {
   await _openContourStep(tester);
   await _closeContour(tester);
   await _tapKey(tester, 'wizard-next');
+}
+
+Future<void> _openProblemDescriptionStep(WidgetTester tester) async {
+  await _openComponentPlacementStep(tester);
+  await _tapKey(tester, 'wizard-next');
+}
+
+Future<void> _completeProblemDescription(WidgetTester tester) async {
+  await _enterText(
+    tester,
+    'wizard-problem-description',
+    '  Toide katkeb.\nVahel taastub.  ',
+  );
+  await _enterText(
+    tester,
+    'wizard-problem-when',
+    'Pärast soojenemist',
+  );
+  await _enterText(
+    tester,
+    'wizard-problem-symptoms',
+    'LED vilgub\nja kostab klõps',
+  );
+  await _enterText(
+    tester,
+    'wizard-problem-attempts',
+    'Toitekaabel vahetatud',
+  );
+  await _tapKey(tester, 'wizard-problem-occurrence-intermittent');
 }
 
 Future<void> _openPhotoAlignmentStep(WidgetTester tester) async {
@@ -1335,8 +1365,12 @@ void main() {
     await _tapKey(tester, 'wizard-next');
 
     expect(
-      find.byKey(const ValueKey('wizard-placeholder-5')),
+      find.byKey(const ValueKey('wizard-problem-editor')),
       findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-5')),
+      findsNothing,
     );
     final fourthProgress = find.byKey(
       const ValueKey('wizard-progress-step-4'),
@@ -2058,18 +2092,236 @@ void main() {
     );
   });
 
-  testWidgets('Steps 5 through 7 remain honest non-functional placeholders',
+  testWidgets(
+      'Step 5 gates empty and whitespace text then completes with raw input',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openProblemDescriptionStep(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-problem-editor')),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    const whitespaceOnly = '  \n  ';
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      whitespaceOnly,
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-problem-description')),
+          )
+          .controller!
+          .text,
+      whitespaceOnly,
+    );
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    const rawDescription = '  Toide katkeb.\nVahel taastub.  ';
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      rawDescription,
+    );
+    await _enterText(tester, 'wizard-problem-when', 'Koormuse all');
+    await _enterText(tester, 'wizard-problem-symptoms', 'LED vilgub');
+    await _enterText(tester, 'wizard-problem-attempts', 'Kaabel vahetatud');
+    await _tapKey(tester, 'wizard-problem-occurrence-continuous');
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNotNull,
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('wizard-problem-description')),
+          )
+          .controller!
+          .text,
+      rawDescription,
+    );
+
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-6')),
+      findsOneWidget,
+    );
+    final fifthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-5'),
+    );
+    expect(
+      find.descendant(of: fifthProgress, matching: find.text('Valmis')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'all five Step 5 values survive photo contour candidate changes and resize',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>[
+      'C:/photos/problem-context.png',
+    ]);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openProblemDescriptionStep(tester);
+    await _completeProblemDescription(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-back');
+
+    String fieldText(String key) => tester
+        .widget<TextField>(find.byKey(ValueKey<String>(key)))
+        .controller!
+        .text;
+
+    void expectCompleteDraft() {
+      expect(fieldText('wizard-problem-description'),
+          '  Toide katkeb.\nVahel taastub.  ');
+      expect(fieldText('wizard-problem-when'), 'Pärast soojenemist');
+      expect(
+        fieldText('wizard-problem-symptoms'),
+        'LED vilgub\nja kostab klõps',
+      );
+      expect(fieldText('wizard-problem-attempts'), 'Toitekaabel vahetatud');
+      expect(
+        tester
+            .widget<ChoiceChip>(
+              find.byKey(
+                const ValueKey('wizard-problem-occurrence-intermittent'),
+              ),
+            )
+            .selected,
+        isTrue,
+      );
+    }
+
+    expectCompleteDraft();
+    await _tapKey(tester, 'wizard-back');
+    await _tapComponentAt(tester, const Offset(0.32, 0.68));
+    await _tapKey(tester, 'wizard-next');
+    expectCompleteDraft();
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _dragContourPoint(
+      tester,
+      from: const Offset(0.2, 0.25),
+      to: const Offset(0.24, 0.31),
+    );
+    expect(_paintedContourIsClosed(tester), isFalse);
+    await _tapKey(tester, 'wizard-contour-close');
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    expectCompleteDraft();
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-photo-pick');
+    (_photoEditor(tester) as dynamic).onScaleChanged(1.35);
+    await tester.pump();
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    expectCompleteDraft();
+    expect(picker.pickCount, 1);
+
+    final editorBefore = tester.widget<NewProjectWizardProblemDescription>(
+      find.byType(NewProjectWizardProblemDescription),
+    );
+    editorBefore.onChanged(editorBefore.value);
+    await tester.pump();
+    final editorAfter = tester.widget<NewProjectWizardProblemDescription>(
+      find.byType(NewProjectWizardProblemDescription),
+    );
+    expect(identical(editorAfter, editorBefore), isTrue);
+
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await _pumpFrames(tester);
+    expect(
+      find.byKey(const ValueKey('wizard-problem-compact-layout')),
+      findsOneWidget,
+    );
+    expectCompleteDraft();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('effective Step 5 edit participates in dirty cancellation',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
     await tester.pump();
 
-    await _openComponentPlacementStep(tester);
+    await _openProblemDescriptionStep(tester);
+    await _enterText(
+      tester,
+      'wizard-problem-symptoms',
+      'Kuuldav klõps',
+    );
+    await _tapKey(tester, 'wizard-cancel');
+
+    expect(find.text('Katkestada projekti loomine?'), findsOneWidget);
+    expect(find.text('Sisestatud andmeid ei salvestata.'), findsOneWidget);
+  });
+
+  testWidgets('Step 5 is functional while Steps 6 and 7 stay placeholders',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openProblemDescriptionStep(tester);
+    expect(
+      find.byKey(const ValueKey('wizard-problem-editor')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-placeholder-5')),
+      findsNothing,
+    );
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      'Seade ei käivitu.',
+    );
     await _tapKey(tester, 'wizard-next');
 
     const labels = <int, String>{
-      5: 'Probleemi kirjeldus',
       6: 'Kontroll ja kinnitus',
       7: 'Kokkuvõte',
     };
@@ -2463,36 +2715,51 @@ void main() {
       findsWidgets,
     );
 
-    for (var step = 4; step < 7; step += 1) {
-      await _tapKey(tester, 'wizard-next');
-    }
+    await _tapKey(tester, 'wizard-next');
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      'Seade ei käivitu.',
+    );
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
 
-    for (var step = 4; step < 7; step += 1) {
-      final placeholderProgress = find.byKey(
-        ValueKey('wizard-progress-step-$step'),
-      );
-      expect(
-        find.descendant(
-          of: placeholderProgress,
-          matching: find.text('Vaadatud'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: placeholderProgress,
-          matching: find.text('Valmis'),
-        ),
-        findsNothing,
-      );
-      expect(
-        find.descendant(
-          of: placeholderProgress,
-          matching: find.byIcon(Icons.visibility_outlined),
-        ),
-        findsWidgets,
-      );
-    }
+    final fourthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-4'),
+    );
+    expect(
+      find.descendant(of: fourthProgress, matching: find.text('Vaadatud')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: fourthProgress, matching: find.text('Valmis')),
+      findsNothing,
+    );
+    final fifthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-5'),
+    );
+    expect(
+      find.descendant(of: fifthProgress, matching: find.text('Valmis')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: fifthProgress,
+        matching: find.byIcon(Icons.check_circle),
+      ),
+      findsWidgets,
+    );
+    final sixthProgress = find.byKey(
+      const ValueKey('wizard-progress-step-6'),
+    );
+    expect(
+      find.descendant(of: sixthProgress, matching: find.text('Vaadatud')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: sixthProgress, matching: find.text('Valmis')),
+      findsNothing,
+    );
 
     final seventhProgress = find.byKey(
       const ValueKey('wizard-progress-step-7'),
@@ -2522,9 +2789,14 @@ void main() {
 
     await _openComponentPlacementStep(tester);
     await _tapComponentAt(tester, const Offset(0.35, 0.65));
-    for (var step = 4; step < 7; step += 1) {
-      await _tapKey(tester, 'wizard-next');
-    }
+    await _tapKey(tester, 'wizard-next');
+    await _enterText(
+      tester,
+      'wizard-problem-description',
+      'Seade ei käivitu.',
+    );
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
 
     final context = tester.element(
       find.byKey(const ValueKey('wizard-placeholder-7')),

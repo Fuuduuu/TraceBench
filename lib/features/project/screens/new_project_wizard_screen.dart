@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../shared/services/python_runner.dart';
 import '../widgets/new_project_wizard_photo_editor.dart';
+import '../widgets/new_project_wizard_problem_description.dart';
 
 const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   _WizardStepDefinition(
@@ -31,7 +32,7 @@ const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   ),
   _WizardStepDefinition(
     label: 'Probleemi kirjeldus',
-    detail: 'nähtav, funktsioon tulekul',
+    detail: 'inimese teada olevad tähelepanekud',
     icon: Icons.notes_outlined,
   ),
   _WizardStepDefinition(
@@ -84,6 +85,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   String? _photoPath;
   NewProjectWizardPhotoTransform _photoTransform =
       const NewProjectWizardPhotoTransform();
+  NewProjectWizardProblemDescriptionDraft _problemDescriptionDraft =
+      const NewProjectWizardProblemDescriptionDraft();
   bool _isPickingPhoto = false;
   String? _photoPickerError;
   int _currentStep = 0;
@@ -106,8 +109,24 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     return _contourClosed && _contourPoints.length >= 3;
   }
 
+  bool get _canAdvanceFromProblemDescription {
+    return _problemDescriptionDraft.description.trim().isNotEmpty;
+  }
+
   void _handleDraftTextChanged(String _) {
     setState(() {
+      _draftTouched = true;
+    });
+  }
+
+  void _handleProblemDescriptionChanged(
+    NewProjectWizardProblemDescriptionDraft next,
+  ) {
+    if (next == _problemDescriptionDraft) {
+      return;
+    }
+    setState(() {
+      _problemDescriptionDraft = next;
       _draftTouched = true;
     });
   }
@@ -318,6 +337,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       return;
     }
     if (_currentStep == 2 && !_canAdvanceFromContour) {
+      return;
+    }
+    if (_currentStep == 4 && !_canAdvanceFromProblemDescription) {
       return;
     }
     if (_currentStep >= _wizardSteps.length - 1) {
@@ -1017,8 +1039,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   Widget _buildProgressTile(int index, {required bool compact}) {
     final step = _wizardSteps[index];
     final isCurrent = index == _currentStep;
-    final isComplete =
-        index < _currentStep && (index == 0 || (index == 2 && _contourClosed));
+    final isComplete = index < _currentStep &&
+        (index == 0 ||
+            (index == 2 && _contourClosed) ||
+            (index == 4 && _canAdvanceFromProblemDescription));
     final isViewed = index >= 1 && index < _currentStep && !isComplete;
     final status = isCurrent
         ? 'Praegune samm'
@@ -1156,6 +1180,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               1 => _buildPhotoAlignmentStep(compact: compact),
               2 => _buildContourStep(compact: compact),
               3 => _buildComponentPlacementStep(compact: compact),
+              4 => _buildProblemDescriptionStep(compact: compact),
               _ => _buildPlaceholder(_currentStep),
             },
           ),
@@ -2195,6 +2220,31 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     );
   }
 
+  Widget _buildProblemDescriptionStep({required bool compact}) {
+    return KeyedSubtree(
+      key: const ValueKey('wizard-problem-step'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildStepHeading(
+            eyebrow: 'Samm 5 / ${_wizardSteps.length}',
+            title: 'Probleemi kirjeldus',
+            description: 'Kirjelda oma sõnadega ainult tähelepanekuid, '
+                'mida ise tead. See samm ei paku diagnoosi ega loo '
+                'projektiandmeid.',
+            required: true,
+          ),
+          const SizedBox(height: 24),
+          NewProjectWizardProblemDescription(
+            value: _problemDescriptionDraft,
+            onChanged: _handleProblemDescriptionChanged,
+            compact: compact,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPlaceholder(int index) {
     final step = _wizardSteps[index];
     final isSummary = index == _wizardSteps.length - 1;
@@ -2438,6 +2488,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     final canGoNext = switch (_currentStep) {
       0 => _canAdvanceFromStepOne,
       2 => _canAdvanceFromContour,
+      4 => _canAdvanceFromProblemDescription,
       _ => _currentStep < _wizardSteps.length - 1,
     };
     final back = _currentStep == 0

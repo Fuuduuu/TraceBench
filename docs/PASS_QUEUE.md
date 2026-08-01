@@ -2,10 +2,90 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
 
-## Current LOCK queue
+## Current problem-description-v1 SCOPE/EHITUS queue
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+The human selected one functional, required Wizard Step 5 for human-entered
+problem observations from the released `NEEDS_USER_DECISION` sentinel. This
+SCOPE changes exactly five documentation paths and defines:
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+-> TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS
+-> one later unnamed LOCK
+```
+
+No prerequisite, separate map pass, extra implementation pass, or fifth
+implementation file is queued.
+
+## Reserved EHITUS
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `lib/features/project/widgets/new_project_wizard_problem_description.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+- `test/widget/new_project_wizard_problem_description_test.dart`
+
+Step order remains exactly seven items, and only Step 5 replaces its
+placeholder. It is required and gated by trimmed non-empty primary text;
+valid passed progress reads `Valmis`, raw input remains unmodified, and Steps
+6–7 remain placeholders.
+
+The parent owns one immutable draft with exactly description, occurrence,
+when-occurs, symptoms, and attempts. The enum is exactly unknown, continuous,
+and intermittent, with unknown/Teadmata as a valid non-dirty default. The
+child accepts `value`, `onChanged`, and `compact`, owns controllers/focus only,
+and exposes the exact required/optional fields, occurrence choices, stable
+keys, semantics, and visible human-observation boundary note.
+
+Only effective value changes dirty the draft. Raw values retain across Step
+5/6 and earlier-step navigation, compact/wide transition, resize, and
+photo/contour/marker rebuild, with no cross-mutation. Wide and compact layouts
+must remain scrollable, editable, accessible, and overflow-free. Focused child
+and Wizard integration tests cover the value contract, keys/copy,
+synchronization/no-op callbacks, gating/progress, dirty precision, retention,
+unchanged Steps 1–4, placeholder Steps 6–7, and zero-write traversal. Manual
+smoke is required after implementation.
+
+## Map lifecycle and boundary
+
+The existing Wizard maps and index rows remain `MAINTAINED` during SCOPE and
+EHITUS; new implementation files/maps are absent. Material implementation
+gives all four targets `UPDATE_REQUIRED` disposition. The later unnamed LOCK
+refreshes the two existing maps and qualifies each new file from accepted
+committed source, creating no speculative or empty map.
+
+This queue remains `UI_LOCAL` + `ZERO_WRITE`. It opens no project creation,
+persistence/filesystem/provider/project-state/canonical write, diagnosis or
+problem fact, event/projection/schema/validator/writer/materializer,
+AI/OCR/CV/summarization/classification, component/electrical inference,
+router, Home, Board Canvas, package, asset, tool, or protected-surface
+authority.
+
+Stop on a sixth SCOPE file, fifth implementation file, map/index edit before
+LOCK, changed accepted Step 1–4 or Step 6–7 behavior, authoritative child or
+global state, persistence/canonical semantics, automated interpretation, or
+any protected-surface change.
+
+## Accepted component-marker-visuals-v2 LOCK queue (historical)
+
+All current, future, transition, and queue language below this heading is
+historical and does not override the SCOPE/EHITUS queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS

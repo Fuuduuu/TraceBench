@@ -2,10 +2,140 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
 
-## Current component-marker-visuals-v2 LOCK authority
+## Current problem-description-v1 SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 38b3edc334b9dc098377e48b883a33eba3e1dbff`,
+parent `4a5495f768c212699684151fd0c4c59ad58c3f4b`, subject
+`docs: lock Wizard component marker visuals v2`, and divergence `0 0`.
+The staged and substantive tracked diffs are empty. Known porcelain-only
+tracked entries and untracked scratch remain untouched outside authority. The
+accepted predecessor route released to the non-executable
+`NEEDS_USER_DECISION` sentinel.
+
+### Exact current docs-only write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS.md`
+
+No sixth SCOPE file is authorized. Dart, tests, maps, the code-map index,
+packages, assets, schemas, tools, router, `_incoming`, scratch, and protected
+surfaces remain outside this pass.
+
+### Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Activation is conditional on independent acceptance and human push of this
+exact five-file SCOPE lock. Its exact implementation write allowlist is:
+
+1. `lib/features/project/screens/new_project_wizard_screen.dart`
+2. `lib/features/project/widgets/new_project_wizard_problem_description.dart`
+3. `test/widget/new_project_wizard_screen_test.dart`
+4. `test/widget/new_project_wizard_problem_description_test.dart`
+
+No fifth implementation file is authorized.
+
+### Locked Step 5 contract
+
+The accepted seven-step order remains Project data, Photo and alignment,
+Board contour, Component placement, Problem description, Review and
+confirmation, Summary. Only Step 5 changes from a placeholder into the
+required `Probleemi kirjeldus` editor; Steps 6 and 7 remain placeholders.
+Step 5 may advance only when the raw primary description is non-empty after
+`trim()`, and it reports `Valmis` only after it is behind the current step and
+valid. Completion checks may trim, but stored user text is never silently
+trimmed, rewritten, normalized, summarized, or truncated.
+
+The parent Wizard owns one immutable public
+`NewProjectWizardProblemDescriptionDraft` whose exact values are
+`description`, `occurrence`, `whenOccurs`, `symptoms`, and `attempts`.
+Occurrence has exactly `unknown`, `continuous`, and `intermittent`, defaults
+to `unknown` / `Teadmata`, and never gates completion. The child
+`NewProjectWizardProblemDescription` receives only `value`, `onChanged`, and
+`compact`; controllers and focus state are presentation-only.
+
+The required multiline `Probleemi põhikirjeldus` uses key
+`wizard-problem-description`. Exact optional multiline fields are
+`wizard-problem-when`, `wizard-problem-symptoms`, and
+`wizard-problem-attempts`; the three occurrence keys are
+`wizard-problem-occurrence-continuous`,
+`wizard-problem-occurrence-intermittent`, and
+`wizard-problem-occurrence-unknown`. The editor root is
+`wizard-problem-editor`, and the visible human-observation boundary note is
+`wizard-problem-boundary-note`.
+
+Only effective changes to the five draft values dirty the Wizard. Initial
+construction, parent-to-controller synchronization, focus/cursor movement,
+navigation, a repeated occurrence selection, and identical assignments do
+not. The complete raw draft survives Step 5/6 and earlier-step round trips,
+wide/compact changes, responsive resize, and unrelated photo, contour, or
+marker rebuilds, without cross-mutating another Wizard draft zone.
+
+Wide presentation may use two columns; compact presentation stacks every
+field. Both keep the primary description and occurrence prominent, preserve
+ordinary page scrolling and text editing, expose visible required/optional
+copy plus stable semantics, and avoid color-only status. The parent catalogue,
+index-4 dispatch, initial draft, completion getter, `_goNext`, action-bar,
+progress, required-heading, and effective-mutation paths may change only as
+needed for this Step 5 contract; numbering and bounds remain length-derived.
+
+The child and integration tests must cover the exact value/enum/keys/copy,
+raw-text callbacks, whitespace validity, external controller synchronization,
+no-op occurrence behavior, wide/compact operation, gating/progress,
+retention, dirty-state precision, unchanged Steps 1–4, placeholder Steps 6–7,
+and zero-write traversal. Manual smoke is required after implementation.
+
+### Code-map lifecycle, boundary, and stops
+
+The existing Wizard source/test maps remain `MAINTAINED` descriptions of
+committed `HEAD`; the two new targets and their maps do not exist. No map or
+index edit occurs in SCOPE or EHITUS. Material implementation gives all four
+targets `UPDATE_REQUIRED` disposition; for the new files this routes
+qualification to the later LOCK rather than authorizing speculative maps.
+That unnamed LOCK refreshes the two existing maps and qualifies each new file
+under `CODE_MAP_STANDARD`, creating a map/index row only when it qualifies.
+
+The scope remains `UI_LOCAL` + `ZERO_WRITE`. It opens no project creation or
+persistence, filesystem write, provider/project-state mutation, canonical
+problem/diagnosis model, event, fact, projection, schema, validator, writer,
+materializer, AI/OCR/CV, summarization, classification, generated diagnosis,
+component/electrical inference, router, Home, Board Canvas, package, asset,
+tool, or protected-surface authority. Human text is observation input only;
+the application does not infer a cause or execute, recommend, validate,
+approve, or repeat reported attempts.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS
+```
+
+Stop on a sixth SCOPE file, fifth implementation file, baseline/route/staging
+mismatch, Dart/test/map/index change during SCOPE, provider or persistent
+state, canonical semantics, automated interpretation, altered accepted Step
+1–4 behavior, non-placeholder Step 6/7 behavior, or any protected-surface
+change.
+
+## Accepted component-marker-visuals-v2 LOCK authority (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the SCOPE authority above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS

@@ -1,9 +1,81 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
 
-## Live component-marker-visuals-v2 LOCK
+## Live problem-description-v1 SCOPE
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Entry is `main` at
+`HEAD == origin/main == 38b3edc334b9dc098377e48b883a33eba3e1dbff`,
+parent `4a5495f768c212699684151fd0c4c59ad58c3f4b`, subject
+`docs: lock Wizard component marker visuals v2`, divergence `0 0`, with empty
+staged and substantive tracked diffs. Preserved porcelain-only tracked entries
+and known scratch remain outside the pass. The predecessor released to
+`NEEDS_USER_DECISION`; this human selection opens a fresh docs-only scope.
+
+This pass changes exactly the four route/ledger owners plus
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS.md`.
+It reserves `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS`
+with exactly the Wizard screen, a new problem-description child, the focused
+Wizard test, and a new focused child test. No fifth implementation file is
+authorized.
+
+The seven-step order stays unchanged. Step 5 alone becomes a required
+human-observation editor: its primary raw description must be non-whitespace
+to enable `Edasi`, and a valid passed Step 5 reports `Valmis`; Steps 6–7 remain
+placeholders. The immutable public draft owns exactly description, occurrence,
+when-occurs, symptoms, and attempts. Occurrence is exactly unknown,
+continuous, or intermittent, defaults to unknown, and does not gate progress.
+The Wizard parent is authoritative; the child receives `value`, `onChanged`,
+and `compact` and owns presentation controllers/focus only.
+
+The editor exposes the required `Probleemi põhikirjeldus`, exact optional
+when/symptoms/attempts fields, explicit Pidev/Vahelduv/Teadmata choice, stable
+keys and semantics, and a visible note limiting content to human-known
+observations. It neither diagnoses nor infers components or electrical
+relationships. Reported attempts are historical text only, never executable
+or endorsed instructions.
+
+Effective changes to any of the five values dirty the parent draft; initial
+defaults, synchronization, focus/cursor, navigation, repeated selections, and
+identical assignments do not. Raw values survive forward/back navigation,
+earlier-step round trips, responsive resize, compact/wide rebuilds, and
+unrelated photo/contour/marker changes without cross-mutation. Wide and compact
+presentations retain page scrolling, text editing, visible required/optional
+copy, and accessibility semantics.
+
+The existing Wizard source/test maps remain `MAINTAINED` at committed `HEAD`;
+the two new implementation files and maps are absent. SCOPE and EHITUS edit no
+map/index. Material implementation gives all four targets an
+`UPDATE_REQUIRED` disposition; one later unnamed LOCK refreshes existing maps
+and qualifies new files from accepted committed source, creating only maps
+that qualify.
+
+The route is `UI_LOCAL` + `ZERO_WRITE`. It authorizes no project creation,
+filesystem/persistence/provider/project-state/canonical write, problem or
+diagnosis fact, event/projection/schema/validator/writer/materializer,
+AI/OCR/CV/summarization/classification, component/electrical inference,
+router, Home, Board Canvas, package, asset, tool, or protected-surface change.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_IMPL_PASS
+```
+
+The reserved pass is conditional on independent acceptance and human push of
+this exact five-file scope lock. Manual smoke remains required after its
+implementation and before the final implementation audit.
+
+## Accepted component-marker-visuals-v2 LOCK (historical)
+
+All current, future, and route language below this heading is historical and
+does not override the SCOPE state above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS

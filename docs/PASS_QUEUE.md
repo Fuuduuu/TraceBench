@@ -2,10 +2,66 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current SCOPE queue
+## Current LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+The accepted and pushed implementation is
+`4a5495f768c212699684151fd0c4c59ad58c3f4b`, parent
+`660d629d7a046023b1f51651bec94afe8e39d8ad`, and changes exactly:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`;
+- `test/widget/new_project_wizard_screen_test.dart`.
+
+Human manual smoke is `13/13 PASS`. The supplied implementation audit is
+`ACCEPT_WITH_NITS` and safe for that exact implementation set. Candidate
+model/current style/shape/size/rotation/hit/dirty/retention, route, boundary,
+validation, and code-map disposition results passed. Focused tests are
+`52/52`, full Flutter tests `481/481`, and the validator `302/302`; formatting,
+targeted analysis, and diff checks passed.
+
+The two accepted residuals require no implementation patch: the 8-pixel
+visibility floor flattens approximately the 50%–76% compact scale range, and
+`Ümar` keeps enabled rotation controls whose stored value has no circle visual
+effect.
+
+This LOCK refreshes exactly the two existing Wizard maps from committed
+`HEAD`. Production remains `AUTO — 5+ independently testable behaviors`; the
+52-test suite recalculates to `SCORE 11/12`. Both map headers and only their
+matching registry rows are `REVIEW_REQUIRED`.
+
+The exact current docs/map authority is eight files: the four route/ledger
+owners, code-map index, two Wizard maps, and
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS.md`.
+No ninth file is queued.
+
+A clean final audit may only promote the two map headers and two matching
+index Status cells to `MAINTAINED`, fill the existing designated verdict
+block, and mechanically mirror the same result into the matching ledger
+Status cell. It may not change a map body or qualification, another cell,
+ledger Description, route owner, source/test, accepted scope artifact, or any
+other byte. No extra pass is queued.
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The route remains `UI_LOCAL` + `ZERO_WRITE` and releases to the non-executable
+decision sentinel. No runtime successor, canonical/persistent authority, or
+protected-surface work is armed.
+
+## Accepted component-marker-visuals-v2 SCOPE/EHITUS queue (historical)
+
+All current, future, transition, and queue language below this heading is
+historical and does not override the LOCK queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS

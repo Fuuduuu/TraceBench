@@ -1,9 +1,71 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live component-marker-visuals-v2 scope
+## Live component-marker-visuals-v2 LOCK
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Entry is pushed implementation commit
+`4a5495f768c212699684151fd0c4c59ad58c3f4b`, parent
+`660d629d7a046023b1f51651bec94afe8e39d8ad`, subject
+`feat: add Wizard component marker visuals v2`, on `main` with
+`HEAD == origin/main`, divergence `0 0`, and empty staged and substantive
+tracked diffs. Five porcelain-only tracked entries and known scratch remain
+untouched outside this pass.
+
+The commit changes exactly the Wizard screen and its focused widget test, with
+Git blob identities `0f1168d2f7741172cda6e7327688e8ecc3c52dca` and
+`e12d41c556e635278ff981115fe434d9f5706561`. Human manual smoke is
+`13/13 PASS`. The supplied implementation audit returned
+`ACCEPT_WITH_NITS`, `SAFE_FOR_STAGING: YES`, and pass results for candidate
+model, current style, shape, size, rotation, hit testing, dirty state,
+retention, route, boundary, validation, and the required map update.
+
+Accepted validation is focused Wizard `52/52`, full Flutter `481/481`,
+validator `302/302`, plus exact formatting, targeted analysis, and diff checks
+`PASS`. Accepted residuals are the human-approved compact lower-slider range
+flattening from the 8-pixel visibility floor and enabled `Ümar` rotation
+controls that retain stored rotation without visual effect.
+
+This docs/map LOCK changes exactly the four route/ledger owners, the code-map
+index, the two existing Wizard maps, and its one audit artifact. Both maps are
+refreshed from committed `HEAD`, set to `REVIEW_REQUIRED`, and remain
+descriptive and non-authorizing. Production qualification remains
+`AUTO — 5+ independently testable behaviors`; the 52-test map recalculates to
+`SCORE 11/12` from current committed source and test evidence.
+
+A clean final audit may promote only the two map headers and their two matching
+index Status cells to `MAINTAINED`, fill the existing designated verdict
+block, and mechanically mirror the result into the matching ledger Status
+cell. It may not change map bodies, qualifications, another cell, ledger
+Description, route prose, source/tests, or any other byte, and creates no
+extra pass.
+
+The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`; marker style
+and derived render/hit geometry remain transient presentation state. No
+identity, package, footprint, contact/pin/net, measurement/diagnosis,
+canonical coordinate, provider/project state, persistence, filesystem,
+event/fact/projection/schema/writer/materializer/ZIP, AI/OCR/CV,
+photo/contour semantic, router, Home, Board Canvas, package, asset, tool, or
+protected-surface authority is opened.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No successor is armed.
+
+## Accepted component-marker-visuals-v2 scope (historical)
+
+All current, future, and route language below this heading is historical and
+does not override the LOCK state above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS

@@ -3,17 +3,18 @@
 - Source: `test/widget/new_project_wizard_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 9/12 — 43-test multi-family photo/contour/component/navigation/responsive protected-boundary surface`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS.md`
+- Qualification: `SCORE 11/12 — 52-test multi-family marker/photo/contour/navigation/responsive protected-boundary surface`
+- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS.md`
 
 ## File purpose
 
 Exercises the seven-step zero-write New Project Wizard through controlled
-platform, folder-picker, photo-picker, router, viewport, pointer, and private
-painter seams. Its 43 widget tests preserve Step 1, contour, component,
-cancellation, and final-boundary behavior while proving the photo-first Step 2,
-read-only photo reuse below Steps 3–4, invariant guide geometry, retention,
-honest progress, and responsive operability.
+platform, folder-picker, photo-picker, router, viewport, pointer, semantics,
+and private painter/marker-geometry seams. Its 52 widget tests preserve Step
+1, contour, component, cancellation, and final-boundary behavior while proving
+the photo-first Step 2, read-only photo reuse below Steps 3–4, independent
+marker shape/size/rotation, current-style inheritance, geometric hit testing,
+retention, honest progress, and responsive operability.
 
 ## Responsibility zones
 
@@ -24,10 +25,10 @@ honest progress, and responsive operability.
 | Shared field and navigation helpers | `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne`, `_openPhotoAlignmentStep`, `_openContourStep`, `_openComponentPlacementStep` | Drives the photo-first order and each accepted gate through stable keys. |
 | Contour geometry and painter inspection | `_contourCanvasRect`, `_tapContourAt`, `_dragContourPoint`, `_contourPainter`, `_paintedContourPoints`, `_addTriangle`, `_closeContour` | Converts normalized test input, mutates contour state, and reads immutable private painter snapshots. |
 | Photo editor and transform inspection | `_photoEditor`, `_photoTransform`, photo picker tests | Reads the child editor’s parent-supplied path/transform callbacks and checks filter, bounds, opacity, reset, replace, remove, and retention. |
-| Component geometry and painter inspection | `_componentCanvasRect`, `_tapComponentAt`, `_dragComponentCandidate`, `_componentPainter`, `_paintedComponentDraftKeys`, `_paintedComponentPositions` | Drives candidate interactions and observes keys, positions, selection, and the contour guide. |
+| Component style, geometry, and painter inspection | `_componentCanvasRect`, `_tapComponentAt`, `_tapComponentFromCentreOffset`, `_dragComponentFromCentreOffset`, `_componentGeometry`, `_paintedComponentStyles`, `_setComponentSize` | Drives candidate controls and centre/edge pointers, then observes immutable key/position/style snapshots, derived paths/bounds/targets, selection, and the contour guide. |
 | Step 1 and catalogue contract | seven-step label, field, gate, path/copy, retention, multiline tests | Preserves the foundation and checks the seven accepted labels and initial navigation. |
 | Contour contract | Step 3 empty/add/drag/delete/reset/close/reopen tests | Proves editor-normalized mutation and the closed-only Step 3 `Edasi` gate. |
-| Component contract | Step 4 empty/guide/add/drag/delete/round-trip tests | Proves optional generic placement, stable keys, clamping, selected-only deletion, and retained geometry. |
+| Component contract | Step 4 empty/guide/style/inheritance/geometry/hit/add/drag/delete/round-trip tests | Proves optional generic placement, four visual shapes, next-versus-selected style, immutable candidate isolation, responsive size/rotation geometry, deterministic targets, stable keys, clamping, selected-only deletion, and retention. |
 | Photo-first layering contract | optional/Vaadatud, desktop picker, photo-below-guides, cancel/exception, bounds, reset/replace/remove tests | Proves parent ownership, photo-only Step 2, inert bottom layers in Steps 3–4, and fixed contour/candidate state after photo changes. |
 | Retention, progress, placeholders, and dirty contract | Step 2-3-4/resize, candidate/contour dirty, Steps 5–7, progress tests | Proves one retained local draft, viewed versus complete semantics, and honest non-functional later steps. |
 | Responsive and protected boundary | compact photo drag, wide/compact contour/component tests, mobile actions, `no creator...` | Exercises 1440×900 and 390×760, gesture-versus-scroll behavior, unsupported platform copy, and zero-write traversal. |
@@ -43,7 +44,8 @@ honest progress, and responsive operability.
    `_openContourStep` advances again through ungated Step 2;
    `_openComponentPlacementStep` closes Step 3 before advancing.
 4. `[D]` Contour/component helpers convert normalized values through the
-   rendered rectangle and use bounded pumps. Dynamic painter inspection avoids
+   rendered rectangle and use bounded pumps. Component edge helpers drive raw
+   offsets from marker centers; dynamic painter/geometry inspection avoids
    exposing private production types.
 5. `[D]` Photo helpers read the child widget and its authoritative transform
    dynamically; tests invoke callbacks to verify the parent’s clamping,
@@ -64,13 +66,23 @@ honest progress, and responsive operability.
     Step 2 → Step 3 → Step 4 → Step 2 and a viewport change.
 11. `[D]` Compact photo dragging records the ancestor scroll offset and
     requires photo translation to change while the page offset remains fixed.
-12. `[D]` Existing contour and candidate suites retain their normalized
-    geometry, closure, key, selection, clamp, and mutation behavior in the
-    reordered catalogue.
-13. `[D]` Progress coverage distinguishes Step 1/closed Step 3 `Valmis`
+12. `[D]` Marker tests require four keyed/semantic shape controls, default and
+    inherited current style, selected-only immutable updates, rotation
+    normalization/circle preservation, responsive size/floor/ratios, and
+    shape-aware painter geometry.
+13. `[D]` Centre-offset pointer tests require elongated ends and rotated
+    corners to select/drag, at-least-56×56 hit bounds, closest-center overlap
+    selection, and insertion-order ties.
+14. `[D]` Existing contour and candidate tests retain normalized geometry,
+    closure, key/order, selection, clamp, add/drag/delete, and mutation
+    behavior in the reordered catalogue.
+15. `[D]` Candidate/current style snapshots survive Step 4 ↔ Step 5, earlier
+    steps, wide-to-compact resize, and photo transform/replacement/removal;
+    rendered pixels respond to canvas size without stored-value mutation.
+16. `[D]` Progress coverage distinguishes Step 1/closed Step 3 `Valmis`
     from viewed Step 2/Step 4/placeholders and reaches Step 7 without a create
     action.
-14. `[D]` The final traversal remains on `/new-project` and finds no
+17. `[D]` The final traversal remains on `/new-project` and finds no
     creator, project-state, filesystem, canonical, or project-route action.
 
 ## Direct dependencies
@@ -93,7 +105,7 @@ fact, projection, materializer, Board Canvas, or ZIP helper.
 | --- | --- | --- |
 | Picker closures and `_FakePhotoFilePicker` | `ZERO_WRITE` | Return in-memory results and never open or copy a source file. |
 | Text, taps, drags, callbacks, navigation, dialogs, and viewport changes | `UI_LOCAL` | Mutate only widget/test-binding state; teardown resets global seams and size. |
-| Dynamic photo/painter inspection | `ZERO_WRITE` | Reads immutable transient snapshots without adding a production output path. |
+| Dynamic photo/painter/marker-geometry inspection | `ZERO_WRITE` | Reads immutable transient snapshots and derived presentation paths/bounds without adding a production output path. |
 | Route assertions | `ZERO_WRITE` | Observe only the isolated harness URI. |
 
 No test assigns project state, calls `ProjectCreator`, writes a source/project
@@ -106,6 +118,8 @@ output.
   mutation is used.
 - `[D]` Photo transforms, contour points, candidates, and painter snapshots
   remain in memory.
+- `[D]` Candidate style snapshots and marker paths, sizes, rotations, rotated
+  bounds, and hit rectangles are inspected as transient derived values only.
 - `[D]` The router has no `/project` destination.
 - `[D]` View size and global picker replacement are restored by teardown.
 - `[D]` Protected-boundary assertions inspect reachable UI, not persistence.
@@ -119,7 +133,9 @@ output.
 | Photo transform | `[D]` Child callbacks expose parent normalization. | child editor focused suite | `UI_LOCAL` | defaults; clamps; reset/replace/remove |
 | Layer order/invariance | `[D]` Stack child indexes and snapshots establish bottom photo layers. | contour/component painters | `ZERO_WRITE` | photo below independent geometry |
 | Contour editor | `[D]` Existing gesture/painter helpers retain Step 3 behavior. | reordered setup and photo layer | `UI_LOCAL` | add/drag/delete/reset/close/reopen |
-| Component editor | `[D]` Existing key/position helpers retain Step 4 behavior. | reordered setup and both guide layers | `UI_LOCAL` | add/drag/clamp/delete/round-trip |
+| Component current style | `[D]` keyed controls and candidate snapshots distinguish next style from selected mutation. | selection, dirty cancellation, navigation | `UI_LOCAL` | defaults; inheritance; isolation; delete retention |
+| Component geometry/hit | `[D]` painter geometry exposes responsive paths, ratios, rotation, bounds, and target rectangles. | raw pointer helpers and candidate ordering | `ZERO_WRITE` | 8px floor; default size; elongated/rotated edges; 56px target; overlaps |
+| Component editor | `[D]` key/position/style helpers retain Step 4 behavior. | reordered setup and both guide layers | `UI_LOCAL` | add/drag/clamp/style preservation/delete/round-trip |
 | Retention/resize | `[D]` Parent draft is compared across three steps and view sizes. | progress and responsive shell | `UI_LOCAL` | photo draft survives navigation/resize |
 | Dirty cancellation | `[D]` Mutations precede dialog checks. | already-dirty shared setup | `UI_LOCAL` | contour/candidate cancellation plus source |
 | Progress/placeholders | `[D]` Status copy is read at each visited step. | catalogue and gates | `ZERO_WRITE` | optional Step 2; progress; Steps 5–7 |
@@ -128,11 +144,11 @@ output.
 
 ## Relevant tests and helpers
 
-The 43-test suite contains:
+The 52-test suite contains:
 
 - 7 Step 1/catalogue/foundation tests;
 - 7 contour-specific interaction and closure tests;
-- 6 component guide/interaction/retention tests;
+- 15 component guide/style/geometry/hit/interaction/retention tests;
 - 10 photo order/picker/layer/transform/retention/platform tests;
 - 7 draft/cancellation/placeholder tests;
 - 5 responsive/progress tests; and
@@ -140,8 +156,10 @@ The 43-test suite contains:
 
 Key helpers are `_buildWizardApp`, `_completeStepOne`, the three step-entry
 helpers, `_FakePhotoFilePicker`, `_installPhotoPicker`, `_photoEditor`,
-`_photoTransform`, both normalized geometry families, and both dynamic
-painter-inspection families.
+`_photoTransform`, both normalized geometry families,
+`_tapComponentFromCentreOffset`, `_dragComponentFromCentreOffset`,
+`_componentGeometry`, `_paintedComponentStyles`, `_setComponentSize`, and the
+dynamic painter-inspection families.
 
 ## Dangerous combinations
 
@@ -153,6 +171,12 @@ painter-inspection families.
   together can hide photo/guide inversion.
 - `[D]` Changing dynamic painter fields and invariance expectations together
   can erase fixed-geometry evidence.
+- `[D]` Changing current-style controls, candidate snapshot helpers, and
+  inheritance/isolation assertions together can hide cross-candidate or dirty-
+  state regressions.
+- `[D]` Changing marker geometry fields, centre-offset pointer helpers, and
+  edge/overlap expectations together can make an incomplete target appear
+  correct.
 - `[D]` Changing gesture helpers and ancestor-offset assertions together can
   hide page movement.
 - `[D]` Adding creator, filesystem, canonical, or project-state fixtures
@@ -170,6 +194,10 @@ These are descriptive candidates only and authorize no work.
   `Stack`; preserve independent geometry snapshots.
 - One contour or candidate mutation family plus its normalized input and
   painter helper.
+- One candidate-style mutation plus `_paintedComponentStyles`, its control,
+  invariance assertions, and next-versus-selected summary.
+- One marker-geometry or hit-target rule plus `_componentGeometry`, the
+  matching centre-offset pointer helper, and painter/hit assertion.
 - One progress/placeholder expectation plus exact step-entry helpers.
 - One responsive size with explicit teardown and scroll-offset evidence.
 
@@ -186,10 +214,11 @@ Descriptive, non-authorizing possibilities:
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when helper, key, route, callback, painter, or
-stack anchors change; `FLOW_DRIFT` when step entry, picker, layer, gesture,
+Review for `SYMBOL_DRIFT` when helper, key, route, callback, candidate field,
+geometry, painter, or stack anchors change; `FLOW_DRIFT` when step entry,
+picker, current-style inheritance, selection, hit testing, layer, gesture,
 retention, dirty, or progress order changes; `BOUNDARY_DRIFT` when
-persistent/canonical fixtures enter; `TEST_DRIFT` when the 43-test families
+persistent/canonical fixtures enter; `TEST_DRIFT` when the 52-test families
 or assertions change; and `STRUCTURE_DRIFT` when screen integration moves to
 another suite.
 
@@ -200,7 +229,12 @@ another suite.
 - `[D]` Visible ordinal coverage is selective even though step count,
   progress count, navigation bounds, and final detection are exercised.
 - `[D]` Dirty-cancellation setup is already dirty from earlier steps;
-  production assignments independently prove mutation coverage.
+  production assignments independently prove selected-style/add/move/delete
+  mutation coverage and exclude next-style-only changes.
+- `[D]` The compact 8-pixel render floor intentionally collapses part of the
+  lower slider range without mutating the stored size scale.
+- `[D]` Circle rotation controls remain enabled and the suite proves retained
+  stored rotation rather than a visual rotational difference.
 - `[D]` Actual desktop image decoding and deleted-path behavior require
   manual smoke; this suite uses synthetic picker paths and widget structure.
 - `[D]` Zero-write is proved by harness/call-path inspection rather than a

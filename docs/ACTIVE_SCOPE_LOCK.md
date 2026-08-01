@@ -2,10 +2,111 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current component-marker-visuals-v2 scope authority
+## Current component-marker-visuals-v2 LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 4a5495f768c212699684151fd0c4c59ad58c3f4b`,
+parent `660d629d7a046023b1f51651bec94afe8e39d8ad`, subject
+`feat: add Wizard component marker visuals v2`, and divergence `0 0`.
+The staged and substantive tracked diffs are empty. Five pre-existing tracked
+porcelain entries remain content-identical to `HEAD`; known scratch remains
+outside authority.
+
+Exact committed implementation set and Git blob identities:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart` —
+  `0f1168d2f7741172cda6e7327688e8ecc3c52dca`;
+- `test/widget/new_project_wizard_screen_test.dart` —
+  `e12d41c556e635278ff981115fe434d9f5706561`.
+
+### Exact current write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS.md`
+
+No ninth file is authorized. Dart, tests, the accepted scope artifact,
+runtime, package, asset, schema, tool, `_incoming`, scratch, router, Home,
+Board Canvas, project state, persistence, canonical surfaces, and protected
+surfaces remain outside this LOCK write authority.
+
+### Accepted implementation evidence
+
+Human manual smoke is `13/13 PASS`. The supplied implementation audit is
+`AUDIT_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_STAGING: YES`, limited to the
+exact two-file implementation set. Candidate model, current style, shape,
+size, rotation, hit testing, dirty state, retention, route, boundary,
+validation, and code-map disposition results all passed. Recorded validation
+is exact formatting `PASS`, targeted analysis `PASS`, focused Wizard tests
+`52/52`, full Flutter tests `481/481`, validator `302/302`, and both diff
+checks `PASS`.
+
+Accepted implementation findings require no patch:
+
+- `LOW`: the 8-pixel render floor flattens approximately the 50%–76% compact
+  slider range; the human accepted the visibility trade-off; and
+- `NIT`: rotation controls remain enabled for `Ümar`, which has no visual
+  rotation but retains its stored value for later shape changes.
+
+### Refreshed maps and bounded final audit
+
+The accepted implementation made the two prior `MAINTAINED` maps
+`UPDATE_REQUIRED`. This LOCK refreshes both from committed `HEAD`:
+
+- production remains `AUTO — 5+ independently testable behaviors`;
+- the 2,540-line, 52-test focused suite recalculates to
+  `SCORE 11/12 — 52-test multi-family marker/photo/contour/navigation/responsive protected-boundary surface`.
+
+Both refreshed map headers and only their matching `CODE_MAP_INDEX.md` rows
+are `REVIEW_REQUIRED`. A clean final audit may only promote those four status
+locations to `MAINTAINED`, fill the existing designated verdict block, and
+mechanically mirror the result into the matching ledger Status cell. It may
+not change either map body or qualification, another index/ledger cell, the
+ledger Description, route owners, implementation source/tests, the accepted
+scope artifact, or any other byte. No extra pass is created.
+
+### Boundary, release, and stops
+
+The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`. Candidate keys,
+editor-normalized centers, visual shape/size/rotation, selection, and current
+style remain transient Wizard state. Derived pixels, paths, rotated bounds,
+and hit targets are presentation-only. There is no component identity,
+package, footprint, pin/contact/polarity/board-side/net/measurement/diagnosis,
+canonical coordinate, provider, project state, persistence, file write,
+event, fact, projection, schema, validator, writer, materializer, Project ZIP,
+AI/OCR/CV, snapping, grid, contour containment, photo/contour semantic,
+router, Home, Board Canvas, package, asset, tool, or protected-surface
+authority.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No successor or runtime allowlist is
+armed. Stop on a ninth file, a map body not derived from committed `HEAD`, any
+runtime/test/scope-artifact edit, a final-audit edit outside the four status
+locations plus designated verdict/ledger recording, canonical or persistent
+expansion, or any protected-surface change.
+
+## Accepted component-marker-visuals-v2 scope (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the LOCK authority above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_COMPONENT_MARKER_VISUALS_V2_SCOPE_PASS

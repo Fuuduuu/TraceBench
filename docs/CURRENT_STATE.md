@@ -1,9 +1,108 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS`
+Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS`
 
-## Live problem-description-v1 LOCK
+## Live interaction-polish-v1 SCOPE
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 9cb83f2053c73010b8c1f82a52db1393a2f125e5`,
+parent `0ed2b8bfec2c87165be20cc2f5f9e0e4fc67862f`, subject
+`docs: lock Wizard problem description v1`, divergence `0 0`, and empty
+staged and substantive tracked diffs. The predecessor LOCK released to the
+non-executable `NEEDS_USER_DECISION` sentinel. Known porcelain-only tracked
+entries remain content-identical to `HEAD`; known scratch remains outside
+authority.
+
+This docs-only SCOPE changes exactly the four route/ledger owners plus
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS.md`.
+It reserves
+`TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS` with exactly:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`; and
+- `test/widget/new_project_wizard_screen_test.dart`.
+
+No sixth SCOPE file or third implementation file is authorized.
+
+The future implementation makes three bounded Wizard refinements. Every
+completed tap on empty Step 4 canvas space adds exactly one independent
+candidate even after another candidate was selected; candidate taps only
+select, candidate drags only move, and cancellation/drag completion add
+nothing. Stable unique keys, current-style inheritance, and effective-only
+dirty rules remain intact, and EHITUS must fix the actual gesture/state root
+cause rather than mask it in tests.
+
+Step 4 keeps its canvas, photo/contour layers, candidate model, geometry, hit
+testing, and zero-write meaning while replacing the three large state rows
+with one compact status area. Shape controls become an equal-width `2×2` grid
+in the exact order `Ümar | Ruut` then
+`Ristkülik | Ümardatud ristkülik`; size remains `50–250%` with visible current
+percentage; rotation uses keyed curved left/right icon controls for `-15°` and
+`+15°`, reset-to-`0°`, and a signed-degree readout. Delete remains visibly
+destructive and disabled without selection. Wide and compact layouts stay
+scrollable and overflow-free. The compact boundary keeps every committed
+denial with this exact meaning:
+
+```text
+Kandidaadid on inimese loodud visuaalsed ettepanekud. Need ei kinnita
+komponendi identiteeti, tüüpi, väärtust, tähist, korpust, jalajälge, jalgu,
+kontakte, plaadipoolt, ühendusi, võrku, mõõtmist ega diagnoosi ning ei loo
+püsivat ega kanoonilist fakti.
+```
+
+Visited progress becomes parent-owned independently of the current step.
+The active tile has no action; visited tiles are directly navigable in wide
+and compact views; unvisited future tiles are disabled. Backward navigation
+to a visited step is allowed. Forward navigation to a visited step is allowed
+only when every Step 1, Step 3, or Step 5 gate crossed on that route is
+currently valid through `_canAdvanceFromStepOne`, `_canAdvanceFromContour`,
+and `_canAdvanceFromProblemDescription`. The active step is `Praegune samm`.
+A visited required Step 1/3/5 is `Valmis` whenever its current getter is true,
+whether behind or ahead of the active step; if that gate becomes false after
+back-navigation and editing, the still-visited step immediately becomes
+`Vaadatud`. Visited optional steps and placeholders are `Vaadatud`; unvisited
+steps are `Järgmine samm`. Status must not be inferred merely from
+`index < _currentStep`. Focused tests must invalidate each previously visited
+required step through back-navigation, prove the dynamic status change and
+blocked gate-crossing forward action, and prove `Valmis` returns only after
+the actual gate is restored. Direct navigation changes only current/visited
+presentation state, never dirties the draft, and exposes button semantics
+only where an action is genuinely available.
+
+The exact seven-step order; Step 1, photo, contour, candidate, and problem
+drafts; Step 1/3/5 gate definitions; Steps 6–7 placeholders; raw Step 5 value
+and synchronization behavior; candidate geometry/minimum hit target; layer
+order; cancellation; and `UI_LOCAL` + `ZERO_WRITE` remain unchanged. No
+project creation or persistence is opened.
+
+Both exact implementation maps and index rows are `MAINTAINED` at this
+baseline. SCOPE changes no map or map index. Material EHITUS gives both maps
+`UPDATE_REQUIRED`; one later unnamed LOCK refreshes both from accepted
+committed source. Manual smoke is required after implementation and before
+the final implementation audit.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS
+```
+
+The implementation reservation activates only after independent acceptance
+and human push of this exact five-file scope lock. No component identity,
+package/footprint/pin/contact/net, measurement, diagnosis, canonical
+coordinate, provider/project state, persistence/filesystem, event/fact/
+projection/schema/writer/materializer/ZIP, AI/OCR/CV, router, package, asset,
+tool, `_incoming`, or protected-surface authority is opened.
+
+## Accepted problem-description-v1 LOCK (historical)
+
+All current, future, and route language below this heading is historical and
+does not override the interaction-polish-v1 SCOPE state above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS

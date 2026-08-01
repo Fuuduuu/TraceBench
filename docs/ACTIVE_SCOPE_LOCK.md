@@ -2,10 +2,232 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS`
+Next: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS`
 
-## Current problem-description-v1 LOCK authority
+## Current interaction-polish-v1 SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 9cb83f2053c73010b8c1f82a52db1393a2f125e5`,
+parent `0ed2b8bfec2c87165be20cc2f5f9e0e4fc67862f`, subject
+`docs: lock Wizard problem description v1`, divergence `0 0`, and empty
+staged and substantive tracked diffs. The accepted predecessor route released
+to the non-executable `NEEDS_USER_DECISION` sentinel. Known porcelain-only
+tracked entries remain content-identical to `HEAD`; known scratch remains
+outside authority.
+
+### Exact current docs-only write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS.md`
+
+No sixth SCOPE file is authorized. Dart, tests, maps, the code-map index,
+packages, assets, schemas, tools, router, `_incoming`, scratch, and protected
+surfaces remain outside this pass.
+
+### Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS
+```
+
+Activation is conditional on independent acceptance and human push of this
+exact five-file SCOPE lock. Its exact implementation write allowlist is:
+
+1. `lib/features/project/screens/new_project_wizard_screen.dart`
+2. `test/widget/new_project_wizard_screen_test.dart`
+
+No third implementation file is authorized. No widget extraction, package,
+asset, tool, map, or map-index edit belongs to EHITUS.
+
+### Multiple-candidate placement contract
+
+- Every completed tap on empty Step 4 canvas space adds exactly one candidate,
+  including when another candidate was selected before pointer-down.
+- Repeated empty-space taps create multiple independent candidates. Each new
+  candidate becomes selected, receives one stable unique draft key, and
+  inherits current shape, size, and rotation.
+- A completed tap on an existing candidate selects it and adds nothing.
+- Dragging an existing candidate moves only that candidate and adds nothing.
+  Pointer cancellation and drag completion add nothing.
+- Selection, deselection, and repeated selection do not dirty the draft.
+  Effective add, move, selected-style change, and delete retain their current
+  dirty rules; no-selection current-style edits remain non-dirty.
+- EHITUS must identify and fix the actual pointer/gesture/state root cause.
+  Changing only tests, coordinates, delays, or gesture helpers to hide the
+  failure is not an accepted repair.
+
+### Compact Step 4 panel contract
+
+The existing canvas, photo layer, contour guide, candidate model, normalized
+geometry, shape-aware hit testing, style inheritance, selection, and
+`UI_LOCAL` + `ZERO_WRITE` meaning remain unchanged.
+
+- Reduce Step 4 heading and boundary-note height without weakening meaning.
+- Replace the three large candidate/selection/contour rows with one compact
+  status area keyed `wizard-component-status`. The area contains candidate
+  count, selection state, contour-guide state, and the current/selected style
+  summary; existing detail keys may remain inside this one area.
+- Shape controls use one keyed equal-width grid
+  `wizard-component-shape-grid` in this exact `2×2` order:
+  `Ümar | Ruut`, then `Ristkülik | Ümardatud ristkülik`. Existing four shape
+  choice keys remain stable.
+- Size remains finite `0.50..2.50`, visibly labelled `50–250%`, and shows the
+  current percentage. The existing `wizard-component-size-slider` key and
+  size semantics remain stable.
+- Rotation uses `Icons.rotate_left` and `Icons.rotate_right` for `-15°` and
+  `+15°`. Exact controls are:
+  - `wizard-component-rotate-minus`, tooltip and semantics
+    `Pööra markerit 15° vasakule`;
+  - `wizard-component-rotate-plus`, tooltip and semantics
+    `Pööra markerit 15° paremale`;
+  - `wizard-component-rotate-reset`, tooltip and semantics
+    `Nulli markeri pööre 0°`.
+- A visible signed-degree value uses key
+  `wizard-component-rotation-value` and semantics
+  `Markeri pööre: <signed value>°`. Reset remains available and sets exactly
+  `0°` without changing key, position, shape, or size.
+- `wizard-component-delete` remains clearly destructive, selected-only, and
+  disabled with no selection.
+- Wide and compact branches remain page-scrollable, usable, and free of
+  overflow. No new child widget or implementation file is allowed.
+
+The compact visible boundary copy keeps every committed denial and is exactly:
+
+```text
+Kandidaadid on inimese loodud visuaalsed ettepanekud. Need ei kinnita
+komponendi identiteeti, tüüpi, väärtust, tähist, korpust, jalajälge, jalgu,
+kontakte, plaadipoolt, ühendusi, võrku, mõõtmist ega diagnoosi ning ei loo
+püsivat ega kanoonilist fakti.
+```
+
+It uses key `wizard-component-boundary-note` and remains visible in wide and
+compact layouts.
+
+### Direct visited-step navigation contract
+
+Visited progress is parent-owned independently of `_currentStep` and is
+updated only when a step is actually entered.
+
+- The active step has no navigation action.
+- Every already visited non-active step is directly navigable in wide and
+  compact progress views; unvisited future steps are disabled.
+- Backward navigation to any visited step is allowed.
+- Forward navigation to a previously visited step is allowed only when every
+  mandatory gate crossed from the current step to that target is currently
+  valid: Step 1 uses `_canAdvanceFromStepOne`, Step 3 uses
+  `_canAdvanceFromContour`, and Step 5 uses
+  `_canAdvanceFromProblemDescription`.
+- A direct jump may never bypass Step 1, Step 3, or Step 5. Failed-gate and
+  unavailable tiles perform no navigation.
+- Direct navigation mutates only current/visited presentation state and never
+  changes `_draftTouched` or any Step 1/photo/contour/candidate/problem value.
+- Once visited, a step remains visibly distinguishable after navigating
+  backward. Status is derived from active state, independent visitation, and
+  current gate validity, never merely from `index < _currentStep`:
+  - the active step is `Praegune samm`;
+  - a visited required Step 1, Step 3, or Step 5 is `Valmis` whenever its
+    corresponding current gate getter above is true, whether that step is
+    behind or ahead of the active step;
+  - a visited required step whose current gate becomes false immediately
+    loses `Valmis` and remains `Vaadatud`;
+  - a visited optional step or visited placeholder is `Vaadatud`; and
+  - an unvisited step is `Järgmine samm`.
+- Navigable tiles expose enabled button semantics and pointer/keyboard action.
+  Active and unavailable tiles expose no misleading tap action or button
+  semantics. Wide and compact behavior must agree.
+
+### Preserved behavior and focused acceptance
+
+Preserve the exact seven-step order, all current Step 1/photo/contour/
+candidate/problem draft values, Step 1/3/5 gate definitions, Steps 6–7
+placeholders, raw Step 5 synchronization behavior, candidate geometry and
+minimum hit target, photo/contour/candidate layering, current cancellation,
+and no project creation or persistence.
+
+The focused Wizard test must prove repeated exact-one candidate additions;
+select/add and drag/add separation; cancellation; stable keys/style; compact
+status and exact `2×2` controls; curved rotation icons, exact tooltips,
+semantics, reset, and signed value; wide/compact overflow; backward and
+gate-valid forward visited navigation; active no-op; unvisited disablement;
+all three no-bypass gates; each previously visited required Step 1/3/5 losing
+`Valmis`, remaining `Vaadatud`, and blocking gate-crossing forward navigation
+after its data is made invalid through back-navigation, then regaining
+`Valmis` only when its actual gate is restored; navigation dirty precision;
+existing Step 1–5 retention; Steps 6–7 placeholders; and `ZERO_WRITE`
+traversal.
+
+Human manual smoke must pass before the final implementation audit and cover
+three or more candidates, select versus add, drag without add, the `2×2`
+shapes, rotation icons/reset/value, compact/wide overflow, current/visited/
+unvisited navigation, all three gates, navigation-only cancellation, Steps
+1–5 retention, Steps 6–7 placeholders, and `ZERO_WRITE`.
+
+### CODE_MAP_PREFLIGHT and lifecycle
+
+Both implementation targets and their deterministic maps/index rows are
+`MAINTAINED` at committed `HEAD`:
+
+- `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+  — `AUTO — 5+ independently testable behaviors`;
+- `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+  — `SCORE 11/12 — 55-test multi-family problem/marker/photo/contour/navigation/responsive protected-boundary surface`.
+
+The human expressly authorizes the coherent multi-zone combination limited to
+candidate state/interaction, Step 4 controls/presentation, navigation/progress/
+actions, responsive shell, and their focused test/helper zones. Photo,
+contour, problem-draft, cancellation, gate, layer, geometry, and zero-write
+zones are inspect-only except where this contract explicitly requires their
+preservation or navigation gating.
+
+The current docs-only disposition is `NOT_APPLICABLE`; no map or index changes
+now. Material EHITUS gives both target maps `UPDATE_REQUIRED`. One later
+unnamed LOCK refreshes exactly those maps from accepted committed source and
+returns the route to `NEEDS_USER_DECISION`.
+
+### Boundary, route, validation, and stops
+
+The complete reservation is `UI_LOCAL` + `ZERO_WRITE`. It authorizes only
+transient Wizard interaction/presentation state. It authorizes no component
+identity, package, footprint, pin, contact, board-side, net, electrical
+relationship, measurement, diagnosis, canonical coordinate, project state,
+provider, persistence, filesystem write, event, fact, projection, schema,
+validator, writer, materializer, Project ZIP, AI, OCR, CV, router, package,
+asset, tool, `_incoming`, or protected-surface change.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS
+Next: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS
+```
+
+The future implementation must format both exact Dart targets, run targeted
+analysis, the focused Wizard suite, full Flutter tests,
+`py -3 tools/validate_all.py`, both diff checks, and prove exactly the two
+allowlisted substantive files with an empty staged set. Manual smoke precedes
+the final implementation audit.
+
+Stop on a sixth SCOPE file, third implementation file, stale/conflicting/non-
+`MAINTAINED` map, separate widget extraction, changed candidate geometry or
+gate definition, persistent/canonical/protected behavior, package/asset/tool/
+map edit during EHITUS, validation failure, or any scope beyond the exact
+interaction-polish contract.
+
+## Accepted problem-description-v1 LOCK authority (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the interaction-polish-v1 SCOPE authority
+above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS

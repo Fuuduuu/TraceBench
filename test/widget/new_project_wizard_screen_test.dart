@@ -311,12 +311,67 @@ Future<void> _dragComponentCandidate(
   await _pumpFrames(tester);
 }
 
+Future<void> _tapComponentFromCentreOffset(
+  WidgetTester tester, {
+  required Offset centre,
+  required Offset canvasOffset,
+}) async {
+  final canvas = find.byKey(const ValueKey('wizard-component-canvas'));
+  await tester.ensureVisible(canvas);
+  await tester.pump();
+  final rect = _componentCanvasRect(tester);
+  final centreOnCanvas = Offset(
+    rect.width * centre.dx,
+    rect.height * centre.dy,
+  );
+  await tester.tapAt(rect.topLeft + centreOnCanvas + canvasOffset);
+  await _pumpFrames(tester);
+}
+
+Future<void> _dragComponentFromCentreOffset(
+  WidgetTester tester, {
+  required Offset centre,
+  required Offset canvasOffset,
+  required Offset dragDelta,
+}) async {
+  final canvas = find.byKey(const ValueKey('wizard-component-canvas'));
+  await tester.ensureVisible(canvas);
+  await tester.pump();
+  final rect = _componentCanvasRect(tester);
+  final centreOnCanvas = Offset(
+    rect.width * centre.dx,
+    rect.height * centre.dy,
+  );
+  final start = rect.topLeft + centreOnCanvas + canvasOffset;
+  final gesture = await tester.startGesture(start);
+  await gesture.moveTo(start + dragDelta * 0.5);
+  await tester.pump(const Duration(milliseconds: 16));
+  await gesture.moveTo(start + dragDelta);
+  await tester.pump(const Duration(milliseconds: 16));
+  await gesture.up();
+  await _pumpFrames(tester);
+}
+
 dynamic _componentPainter(WidgetTester tester) {
   return tester
       .widget<CustomPaint>(
         find.byKey(const ValueKey('wizard-component-painter')),
       )
       .painter;
+}
+
+dynamic _componentGeometry(
+  WidgetTester tester,
+  int draftKey,
+) {
+  final geometries = List<dynamic>.from(
+    (_componentPainter(tester) as dynamic).markerGeometries(
+      _componentCanvasRect(tester).size,
+    ) as Iterable,
+  );
+  return geometries.singleWhere(
+    (geometry) => (geometry as dynamic).draftKey == draftKey,
+  );
 }
 
 List<dynamic> _paintedComponentCandidates(WidgetTester tester) {
@@ -349,6 +404,40 @@ List<Offset> _paintedComponentGuidePoints(WidgetTester tester) {
 
 bool _paintedComponentGuideIsClosed(WidgetTester tester) {
   return (_componentPainter(tester) as dynamic).guideClosed as bool;
+}
+
+typedef _ComponentStyleSnapshot = ({
+  int draftKey,
+  Offset position,
+  String shape,
+  double sizeScale,
+  double rotation,
+});
+
+List<_ComponentStyleSnapshot> _paintedComponentStyles(
+  WidgetTester tester,
+) {
+  return _paintedComponentCandidates(tester).map((candidate) {
+    final value = candidate as dynamic;
+    return (
+      draftKey: value.draftKey as int,
+      position: value.position as Offset,
+      shape: value.shape.toString().split('.').last,
+      sizeScale: value.sizeScale as double,
+      rotation: value.rotation as double,
+    );
+  }).toList(growable: false);
+}
+
+Future<void> _setComponentSize(
+  WidgetTester tester,
+  double value,
+) async {
+  final slider = tester.widget<Slider>(
+    find.byKey(const ValueKey('wizard-component-size-slider')),
+  );
+  slider.onChanged!(value);
+  await _pumpFrames(tester);
 }
 
 void main() {
@@ -707,6 +796,416 @@ void main() {
     expect(find.text('Kontuur suletud'), findsOneWidget);
   });
 
+  testWidgets(
+      'Step 4 exposes four accessible shapes and the default next style',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+
+    const shapeChoices = <String, String>{
+      'wizard-component-shape-circle': 'Ümar',
+      'wizard-component-shape-square': 'Ruut',
+      'wizard-component-shape-rectangle': 'Ristkülik',
+      'wizard-component-shape-rounded-rectangle': 'Ümardatud ristkülik',
+    };
+    for (final entry in shapeChoices.entries) {
+      final choice = find.byKey(ValueKey(entry.key));
+      expect(choice, findsOneWidget);
+      expect(
+        tester.getSemantics(choice).label,
+        contains(entry.value),
+      );
+    }
+    expect(find.byType(ChoiceChip), findsNWidgets(4));
+
+    final summary = find.byKey(
+      const ValueKey('wizard-component-style-summary'),
+    );
+    expect(summary, findsOneWidget);
+    expect(find.text('Järgmine: Ümar · 100% · 0°'), findsOneWidget);
+    expect(
+      tester.getSemantics(summary).label,
+      contains('Järgmine: Ümar · 100% · 0°'),
+    );
+
+    final slider = tester.widget<Slider>(
+      find.byKey(const ValueKey('wizard-component-size-slider')),
+    );
+    expect(slider.min, 0.5);
+    expect(slider.max, 2.5);
+    expect(slider.value, 1.0);
+    expect(
+      tester
+          .getSemantics(
+            find.byKey(const ValueKey('wizard-component-size-slider')),
+          )
+          .label,
+      contains('Markeri suurus'),
+    );
+    expect(
+      tester
+          .getSemantics(
+            find.byKey(const ValueKey('wizard-component-size-slider')),
+          )
+          .value,
+      '100%',
+    );
+
+    const rotationControls = <String, String>{
+      'wizard-component-rotate-minus': 'Pööra markerit −15°',
+      'wizard-component-rotate-plus': 'Pööra markerit +15°',
+      'wizard-component-rotate-reset': 'Nulli markeri pööre 0°',
+    };
+    for (final entry in rotationControls.entries) {
+      final control = find.byKey(ValueKey(entry.key));
+      expect(control, findsOneWidget);
+      expect(tester.getSemantics(control).label, entry.value);
+    }
+    expect(_paintedComponentCandidates(tester), isEmpty);
+  });
+
+  testWidgets('a new marker inherits the complete current style',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    await _setComponentSize(tester, 1.4);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+
+    expect(_paintedComponentCandidates(tester), isEmpty);
+    expect(
+      find.text('Järgmine: Ristkülik · 140% · 30°'),
+      findsOneWidget,
+    );
+
+    await _tapComponentAt(tester, const Offset(0.22, 0.31));
+    final inherited = _paintedComponentStyles(tester).single;
+    expect(inherited.draftKey, 1);
+    expect(inherited.position.dx, closeTo(0.22, 0.001));
+    expect(inherited.position.dy, closeTo(0.31, 0.001));
+    expect(inherited.shape, 'rectangle');
+    expect(inherited.sizeScale, closeTo(1.4, 0.000001));
+    expect(inherited.rotation, closeTo(math.pi / 6, 0.000001));
+    expect(
+      find.text('Valitud: Ristkülik · 140% · 30°'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+      'selection loads style and selected edits preserve independent geometry',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-square');
+    await _setComponentSize(tester, 0.8);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapComponentAt(tester, const Offset(0.25, 0.35));
+    await _tapComponentAt(tester, const Offset(0.75, 0.35));
+
+    await _tapKey(tester, 'wizard-component-shape-rounded-rectangle');
+    await _setComponentSize(tester, 2.0);
+    await _tapKey(tester, 'wizard-component-rotate-minus');
+    final secondBefore = _paintedComponentStyles(tester).last;
+
+    await _tapComponentAt(tester, const Offset(0.25, 0.35));
+    expect(
+      find.text('Valitud: Ruut · 80% · 30°'),
+      findsOneWidget,
+    );
+    final firstObjectBefore = _paintedComponentCandidates(tester).first;
+    final firstBefore = _paintedComponentStyles(tester).first;
+
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    var styles = _paintedComponentStyles(tester);
+    expect(
+        identical(_paintedComponentCandidates(tester).first, firstObjectBefore),
+        isFalse);
+    expect(
+      (firstObjectBefore as dynamic).shape.toString().split('.').last,
+      'square',
+    );
+    expect(styles.first.draftKey, firstBefore.draftKey);
+    expect(styles.first.position, firstBefore.position);
+    expect(styles.first.shape, 'rectangle');
+    expect(styles.first.sizeScale, firstBefore.sizeScale);
+    expect(styles.first.rotation, firstBefore.rotation);
+    expect(styles.last, secondBefore);
+
+    await _setComponentSize(tester, 1.6);
+    styles = _paintedComponentStyles(tester);
+    expect(styles.first.draftKey, firstBefore.draftKey);
+    expect(styles.first.position, firstBefore.position);
+    expect(styles.first.shape, 'rectangle');
+    expect(styles.first.sizeScale, closeTo(1.6, 0.000001));
+    expect(styles.first.rotation, firstBefore.rotation);
+    expect(styles.last, secondBefore);
+
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    styles = _paintedComponentStyles(tester);
+    expect(styles.first.draftKey, firstBefore.draftKey);
+    expect(styles.first.position, firstBefore.position);
+    expect(styles.first.shape, 'rectangle');
+    expect(styles.first.sizeScale, closeTo(1.6, 0.000001));
+    expect(styles.first.rotation, closeTo(math.pi / 4, 0.000001));
+    expect(styles.last, secondBefore);
+
+    await _tapKey(tester, 'wizard-component-shape-circle');
+    styles = _paintedComponentStyles(tester);
+    expect(styles.first.shape, 'circle');
+    expect(styles.first.rotation, closeTo(math.pi / 4, 0.000001));
+    expect(find.text('Valitud: Ümar · 160% · 45°'), findsOneWidget);
+  });
+
+  testWidgets('rotation normalizes and drag-delete retains the current style',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-rounded-rectangle');
+    await _setComponentSize(tester, 1.6);
+    for (var index = 0; index < 13; index += 1) {
+      await _tapKey(tester, 'wizard-component-rotate-plus');
+    }
+    await _tapComponentAt(tester, const Offset(0.4, 0.52));
+
+    var style = _paintedComponentStyles(tester).single;
+    expect(style.rotation, greaterThanOrEqualTo(-math.pi));
+    expect(style.rotation, lessThan(math.pi));
+    expect(style.rotation, closeTo(-11 * math.pi / 12, 0.000001));
+
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.4, 0.52),
+      to: const Offset(0.63, 0.7),
+    );
+    final moved = _paintedComponentStyles(tester).single;
+    expect(moved.draftKey, style.draftKey);
+    expect(moved.position.dx, closeTo(0.63, 0.001));
+    expect(moved.position.dy, closeTo(0.7, 0.001));
+    expect(moved.shape, style.shape);
+    expect(moved.sizeScale, style.sizeScale);
+    expect(moved.rotation, style.rotation);
+
+    await _tapKey(tester, 'wizard-component-delete');
+    expect(_paintedComponentCandidates(tester), isEmpty);
+    expect(
+      find.text('Järgmine: Ümardatud ristkülik · 160% · -165°'),
+      findsOneWidget,
+    );
+
+    await _tapComponentAt(tester, const Offset(0.2, 0.25));
+    style = _paintedComponentStyles(tester).single;
+    expect(style.draftKey, 2);
+    expect(style.shape, 'roundedRectangle');
+    expect(style.sizeScale, closeTo(1.6, 0.000001));
+    expect(style.rotation, closeTo(-11 * math.pi / 12, 0.000001));
+  });
+
+  testWidgets('marker geometry uses relative size, floor, and shape ratios',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _setComponentSize(tester, 0.5);
+    await _tapComponentAt(tester, const Offset(0.5, 0.5));
+
+    var geometry = _componentGeometry(tester, 1) as dynamic;
+    expect(geometry.minorDimension as double, 8.0);
+    expect((geometry.markerSize as Size).width, 8.0);
+    expect((geometry.markerSize as Size).height, 8.0);
+    expect((geometry.hitBounds as Rect).width, greaterThanOrEqualTo(56.0));
+    expect((geometry.hitBounds as Rect).height, greaterThanOrEqualTo(56.0));
+    expect(
+      (geometry.localPath as Path).contains(const Offset(3.9, 3.9)),
+      isFalse,
+    );
+
+    await _tapKey(tester, 'wizard-component-shape-square');
+    geometry = _componentGeometry(tester, 1) as dynamic;
+    expect((geometry.markerSize as Size).aspectRatio, 1.0);
+    expect(
+      (geometry.localPath as Path).contains(const Offset(3.9, 3.9)),
+      isTrue,
+    );
+
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    geometry = _componentGeometry(tester, 1) as dynamic;
+    expect((geometry.markerSize as Size).aspectRatio, closeTo(1.8, 0.000001));
+
+    await _tapKey(tester, 'wizard-component-shape-rounded-rectangle');
+    geometry = _componentGeometry(tester, 1) as dynamic;
+    expect((geometry.markerSize as Size).aspectRatio, closeTo(2.2, 0.000001));
+    final markerSize = geometry.markerSize as Size;
+    expect(
+      (geometry.localPath as Path).contains(
+        Offset(markerSize.width / 2 - 0.1, markerSize.height / 2 - 0.1),
+      ),
+      isFalse,
+    );
+  });
+
+  testWidgets('default marker is smaller than the predecessor fixed marker',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.5, 0.5));
+    final canvasSize = _componentCanvasRect(tester).size;
+    final geometry = _componentGeometry(tester, 1) as dynamic;
+    final expectedMinor = math.max(
+      8.0,
+      canvasSize.shortestSide * 0.035,
+    );
+
+    expect(
+      geometry.minorDimension as double,
+      closeTo(expectedMinor, 0.000001),
+    );
+    expect(geometry.minorDimension as double, lessThan(22.0));
+  });
+
+  testWidgets('rotated rectangle corners and elongated ends stay draggable',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    await _setComponentSize(tester, 2.5);
+    await _tapComponentAt(tester, const Offset(0.5, 0.5));
+    var geometry = _componentGeometry(tester, 1) as dynamic;
+    final unrotatedSize = geometry.markerSize as Size;
+    final endOffset = Offset(unrotatedSize.width / 2 - 1, 0);
+
+    await _tapComponentFromCentreOffset(
+      tester,
+      centre: const Offset(0.5, 0.5),
+      canvasOffset: endOffset,
+    );
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
+
+    await _dragComponentFromCentreOffset(
+      tester,
+      centre: const Offset(0.5, 0.5),
+      canvasOffset: endOffset,
+      dragDelta: const Offset(36, 24),
+    );
+    final moved = _paintedComponentPositions(tester).single;
+    expect(moved.dx, greaterThan(0.5));
+    expect(moved.dy, greaterThan(0.5));
+
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    geometry = _componentGeometry(tester, 1) as dynamic;
+    final markerSize = geometry.markerSize as Size;
+    final rotation = geometry.effectiveRotation as double;
+    final localCorner = Offset(
+      markerSize.width * 0.46,
+      markerSize.height * 0.46,
+    );
+    final rotatedCorner = Offset(
+      localCorner.dx * math.cos(rotation) - localCorner.dy * math.sin(rotation),
+      localCorner.dx * math.sin(rotation) + localCorner.dy * math.cos(rotation),
+    );
+
+    await _tapComponentFromCentreOffset(
+      tester,
+      centre: moved,
+      canvasOffset: rotatedCorner,
+    );
+    expect(_paintedComponentDraftKeys(tester), const <int>[1]);
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
+    expect(
+      (geometry.rotatedBounds as Rect).contains(
+        (geometry.centre as Offset) + rotatedCorner,
+      ),
+      isTrue,
+    );
+  });
+
+  testWidgets('overlapping targets choose closest centre then insertion order',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openComponentPlacementStep(tester);
+    await _tapComponentAt(tester, const Offset(0.35, 0.5));
+    await _tapComponentAt(tester, const Offset(0.7, 0.5));
+    await _dragComponentCandidate(
+      tester,
+      from: const Offset(0.7, 0.5),
+      to: const Offset(0.41, 0.5),
+    );
+
+    final rect = _componentCanvasRect(tester);
+    final positions = _paintedComponentPositions(tester);
+    final firstCentre = Offset(
+      positions.first.dx * rect.width,
+      positions.first.dy * rect.height,
+    );
+    final secondCentre = Offset(
+      positions.last.dx * rect.width,
+      positions.last.dy * rect.height,
+    );
+    final midpoint = Offset.lerp(firstCentre, secondCentre, 0.5)!;
+
+    await tester.tapAt(rect.topLeft + midpoint);
+    await _pumpFrames(tester);
+    expect(_paintedSelectedComponentDraftKey(tester), 1);
+
+    final towardSecond = Offset.lerp(midpoint, secondCentre, 0.2)!;
+    await tester.tapAt(rect.topLeft + towardSecond);
+    await _pumpFrames(tester);
+    expect(_paintedSelectedComponentDraftKey(tester), 2);
+    expect(_paintedComponentDraftKeys(tester), const <int>[1, 2]);
+  });
+
   testWidgets('empty-canvas tap adds and selects one generic candidate',
       (tester) async {
     await tester.pumpWidget(
@@ -860,6 +1359,106 @@ void main() {
     await _tapKey(tester, 'wizard-back');
     expect(_paintedComponentDraftKeys(tester), keysBefore);
     expect(_paintedComponentPositions(tester), positionsBefore);
+  });
+
+  testWidgets(
+      'candidate and current style survive navigation resize and photo changes',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>[
+      'C:/photos/front.png',
+      'C:/photos/replacement.webp',
+    ]);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    await _tapKey(tester, 'wizard-next');
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-component-shape-rounded-rectangle');
+    await _setComponentSize(tester, 1.8);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapComponentAt(tester, const Offset(0.58, 0.55));
+
+    final styleBefore = _paintedComponentStyles(tester);
+    final renderedMinorBefore =
+        (_componentGeometry(tester, 1) as dynamic).minorDimension as double;
+    expect(
+      find.text('Valitud: Ümardatud ristkülik · 180% · 30°'),
+      findsOneWidget,
+    );
+
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-back');
+    expect(_paintedComponentStyles(tester), styleBefore);
+    expect(
+      find.text('Valitud: Ümardatud ristkülik · 180% · 30°'),
+      findsOneWidget,
+    );
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    (_photoEditor(tester) as dynamic).onTranslationChanged(
+      const Offset(0.14, -0.08),
+    );
+    (_photoEditor(tester) as dynamic).onScaleChanged(1.7);
+    (_photoEditor(tester) as dynamic).onRotationChanged(0.35);
+    (_photoEditor(tester) as dynamic).onOpacityChanged(0.28);
+    await tester.pump();
+    await _tapKey(tester, 'wizard-photo-replace');
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+
+    expect(_paintedComponentStyles(tester), styleBefore);
+    expect(
+      find.text('Valitud: Ümardatud ristkülik · 180% · 30°'),
+      findsOneWidget,
+    );
+    expect(
+      (tester.widget(
+        find.byKey(const ValueKey('wizard-component-photo-view')),
+      ) as dynamic)
+          .photoPath as String,
+      'C:/photos/replacement.webp',
+    );
+
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await tester.pump();
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('wizard-component-canvas')),
+    );
+    await tester.pump();
+    final renderedMinorAfter =
+        (_componentGeometry(tester, 1) as dynamic).minorDimension as double;
+    expect(_paintedComponentStyles(tester), styleBefore);
+    expect(renderedMinorAfter, lessThan(renderedMinorBefore));
+    expect(
+      find.text('Valitud: Ümardatud ristkülik · 180% · 30°'),
+      findsOneWidget,
+    );
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-photo-remove');
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+
+    expect(
+      find.byKey(const ValueKey('wizard-component-photo-layer')),
+      findsNothing,
+    );
+    expect(_paintedComponentStyles(tester), styleBefore);
+    expect(
+      find.text('Valitud: Ümardatud ristkülik · 180% · 30°'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Step 2 is optional, ungated, and becomes Vaadatud',

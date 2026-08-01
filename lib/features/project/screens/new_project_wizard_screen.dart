@@ -78,6 +78,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   int? _selectedComponentDraftKey;
   int? _draggingComponentDraftKey;
   int? _draggingComponentPointer;
+  _WizardComponentShape _componentCurrentShape = _WizardComponentShape.circle;
+  double _componentCurrentSizeScale = 1.0;
+  double _componentCurrentRotation = 0.0;
   String? _photoPath;
   NewProjectWizardPhotoTransform _photoTransform =
       const NewProjectWizardPhotoTransform();
@@ -486,26 +489,107 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     );
   }
 
-  Offset _componentPositionOnCanvas(Offset position, Size editorSize) {
-    return Offset(
-      position.dx * editorSize.width,
-      position.dy * editorSize.height,
+  String _componentShapeLabel(_WizardComponentShape shape) {
+    return switch (shape) {
+      _WizardComponentShape.circle => 'Ümar',
+      _WizardComponentShape.square => 'Ruut',
+      _WizardComponentShape.rectangle => 'Ristkülik',
+      _WizardComponentShape.roundedRectangle => 'Ümardatud ristkülik',
+    };
+  }
+
+  double _normalizedComponentRotation(double rotation) {
+    if (!rotation.isFinite) {
+      return _componentCurrentRotation;
+    }
+    const fullTurn = 2 * math.pi;
+    final normalized = (rotation + math.pi) % fullTurn - math.pi;
+    return normalized == -0.0 ? 0.0 : normalized;
+  }
+
+  void _setComponentShape(_WizardComponentShape shape) {
+    if (shape == _componentCurrentShape) {
+      return;
+    }
+    setState(() {
+      _componentCurrentShape = shape;
+      final selectedIndex = _selectedComponentCandidateIndex;
+      if (selectedIndex != null) {
+        _componentCandidates[selectedIndex] =
+            _componentCandidates[selectedIndex].copyWith(shape: shape);
+        _draftTouched = true;
+      }
+    });
+  }
+
+  void _setComponentSizeScale(double sizeScale) {
+    if (!sizeScale.isFinite) {
+      return;
+    }
+    final next = sizeScale.clamp(0.5, 2.5).toDouble();
+    if (next == _componentCurrentSizeScale) {
+      return;
+    }
+    setState(() {
+      _componentCurrentSizeScale = next;
+      final selectedIndex = _selectedComponentCandidateIndex;
+      if (selectedIndex != null) {
+        _componentCandidates[selectedIndex] =
+            _componentCandidates[selectedIndex].copyWith(sizeScale: next);
+        _draftTouched = true;
+      }
+    });
+  }
+
+  void _setComponentRotation(double rotation) {
+    final next = _normalizedComponentRotation(rotation);
+    if (next == _componentCurrentRotation) {
+      return;
+    }
+    setState(() {
+      _componentCurrentRotation = next;
+      final selectedIndex = _selectedComponentCandidateIndex;
+      if (selectedIndex != null) {
+        _componentCandidates[selectedIndex] =
+            _componentCandidates[selectedIndex].copyWith(rotation: next);
+        _draftTouched = true;
+      }
+    });
+  }
+
+  int? get _selectedComponentCandidateIndex {
+    final selectedKey = _selectedComponentDraftKey;
+    if (selectedKey == null) {
+      return null;
+    }
+    final index = _componentCandidates.indexWhere(
+      (candidate) => candidate.draftKey == selectedKey,
     );
+    return index < 0 ? null : index;
+  }
+
+  void _loadComponentCurrentStyle(_WizardComponentCandidate candidate) {
+    _componentCurrentShape = candidate.shape;
+    _componentCurrentSizeScale = candidate.sizeScale;
+    _componentCurrentRotation = candidate.rotation;
   }
 
   int? _componentCandidateKeyAt(
     Offset localPosition,
     Size editorSize,
   ) {
-    const hitRadius = 28.0;
     int? closestKey;
     var closestDistance = double.infinity;
     for (final candidate in _componentCandidates) {
-      final distance =
-          (_componentPositionOnCanvas(candidate.position, editorSize) -
-                  localPosition)
-              .distance;
-      if (distance <= hitRadius && distance < closestDistance) {
+      final geometry = _WizardComponentMarkerGeometry.fromCandidate(
+        candidate,
+        editorSize,
+      );
+      if (!geometry.hitBounds.contains(localPosition)) {
+        continue;
+      }
+      final distance = (geometry.centre - localPosition).distance;
+      if (distance < closestDistance) {
         closestKey = candidate.draftKey;
         closestDistance = distance;
       }
@@ -519,8 +603,12 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       editorSize,
     );
     if (selectedKey != null) {
+      final selectedCandidate = _componentCandidates.firstWhere(
+        (candidate) => candidate.draftKey == selectedKey,
+      );
       setState(() {
         _selectedComponentDraftKey = selectedKey;
+        _loadComponentCurrentStyle(selectedCandidate);
       });
       return;
     }
@@ -532,6 +620,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
           details.localPosition,
           editorSize,
         ),
+        shape: _componentCurrentShape,
+        sizeScale: _componentCurrentSizeScale,
+        rotation: _componentCurrentRotation,
       );
       _nextComponentDraftKey += 1;
       _componentCandidates.add(candidate);
@@ -548,10 +639,18 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       details.localPosition,
       editorSize,
     );
+    final selectedCandidate = selectedKey == null
+        ? null
+        : _componentCandidates.firstWhere(
+            (candidate) => candidate.draftKey == selectedKey,
+          );
     setState(() {
       _selectedComponentDraftKey = selectedKey;
       _draggingComponentDraftKey = selectedKey;
       _draggingComponentPointer = selectedKey == null ? null : details.pointer;
+      if (selectedCandidate != null) {
+        _loadComponentCurrentStyle(selectedCandidate);
+      }
     });
   }
 
@@ -1644,6 +1743,12 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     final selectionLabel = selectedKey == null
         ? 'Ühtegi kandidaati pole valitud'
         : 'Kandidaat $selectedKey valitud';
+    final stylePrefix = selectedKey == null ? 'Järgmine' : 'Valitud';
+    final sizePercent = (_componentCurrentSizeScale * 100).round();
+    final rotationDegrees = (_componentCurrentRotation * 180 / math.pi).round();
+    final styleSummary =
+        '$stylePrefix: ${_componentShapeLabel(_componentCurrentShape)} · '
+        '$sizePercent% · $rotationDegrees°';
 
     return Container(
       decoration: BoxDecoration(
@@ -1677,6 +1782,121 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 : 'Kontuur pole suletud',
           ),
           const SizedBox(height: 16),
+          Semantics(
+            key: const ValueKey('wizard-component-style-summary'),
+            container: true,
+            label: styleSummary,
+            child: Text(
+              styleSummary,
+              style: const TextStyle(
+                color: _WizardPalette.cream,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Kuju',
+            style: TextStyle(
+              color: _WizardPalette.goldDim,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 7,
+            runSpacing: 7,
+            children: <Widget>[
+              _buildComponentShapeChoice(
+                key: const ValueKey('wizard-component-shape-circle'),
+                shape: _WizardComponentShape.circle,
+                label: 'Ümar',
+              ),
+              _buildComponentShapeChoice(
+                key: const ValueKey('wizard-component-shape-square'),
+                shape: _WizardComponentShape.square,
+                label: 'Ruut',
+              ),
+              _buildComponentShapeChoice(
+                key: const ValueKey('wizard-component-shape-rectangle'),
+                shape: _WizardComponentShape.rectangle,
+                label: 'Ristkülik',
+              ),
+              _buildComponentShapeChoice(
+                key: const ValueKey(
+                  'wizard-component-shape-rounded-rectangle',
+                ),
+                shape: _WizardComponentShape.roundedRectangle,
+                label: 'Ümardatud ristkülik',
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Suurus · $sizePercent%',
+            style: const TextStyle(
+              color: _WizardPalette.goldDim,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          Semantics(
+            label: 'Markeri suurus',
+            value: '$sizePercent%',
+            slider: true,
+            child: Slider(
+              key: const ValueKey('wizard-component-size-slider'),
+              value: _componentCurrentSizeScale,
+              min: 0.5,
+              max: 2.5,
+              divisions: 200,
+              label: '$sizePercent%',
+              semanticFormatterCallback: (value) => '${(value * 100).round()}%',
+              onChanged: _setComponentSizeScale,
+              activeColor: _WizardPalette.goldBright,
+              inactiveColor: _WizardPalette.edge,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Pööre',
+            style: TextStyle(
+              color: _WizardPalette.goldDim,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 7,
+            runSpacing: 7,
+            children: <Widget>[
+              _buildComponentRotationControl(
+                key: const ValueKey('wizard-component-rotate-minus'),
+                semanticsLabel: 'Pööra markerit −15°',
+                label: '−15°',
+                onPressed: () => _setComponentRotation(
+                  _componentCurrentRotation - math.pi / 12,
+                ),
+              ),
+              _buildComponentRotationControl(
+                key: const ValueKey('wizard-component-rotate-plus'),
+                semanticsLabel: 'Pööra markerit +15°',
+                label: '+15°',
+                onPressed: () => _setComponentRotation(
+                  _componentCurrentRotation + math.pi / 12,
+                ),
+              ),
+              _buildComponentRotationControl(
+                key: const ValueKey('wizard-component-rotate-reset'),
+                semanticsLabel: 'Nulli markeri pööre 0°',
+                label: '0°',
+                onPressed: () => _setComponentRotation(0),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           OutlinedButton.icon(
             key: const ValueKey('wizard-component-delete'),
             onPressed:
@@ -1701,6 +1921,51 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildComponentShapeChoice({
+    required Key key,
+    required _WizardComponentShape shape,
+    required String label,
+  }) {
+    return ChoiceChip(
+      key: key,
+      label: Text(label),
+      selected: _componentCurrentShape == shape,
+      onSelected: (_) => _setComponentShape(shape),
+      selectedColor: _WizardPalette.activeFill,
+      backgroundColor: _WizardPalette.inset,
+      side: BorderSide(
+        color: _componentCurrentShape == shape
+            ? _WizardPalette.gold
+            : _WizardPalette.edgeGold,
+      ),
+      labelStyle: TextStyle(
+        color: _componentCurrentShape == shape
+            ? _WizardPalette.goldBright
+            : _WizardPalette.cream,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  Widget _buildComponentRotationControl({
+    required Key key,
+    required String semanticsLabel,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Semantics(
+      key: key,
+      button: true,
+      label: semanticsLabel,
+      child: ExcludeSemantics(
+        child: OutlinedButton(
+          onPressed: onPressed,
+          child: Text(label),
+        ),
       ),
     );
   }
@@ -2383,20 +2648,87 @@ class _WizardContourPainter extends CustomPainter {
   }
 }
 
+enum _WizardComponentShape {
+  circle,
+  square,
+  rectangle,
+  roundedRectangle,
+}
+
 class _WizardComponentCandidate {
-  const _WizardComponentCandidate({
+  factory _WizardComponentCandidate({
+    required int draftKey,
+    required Offset position,
+    _WizardComponentShape shape = _WizardComponentShape.circle,
+    double sizeScale = 1.0,
+    double rotation = 0.0,
+  }) {
+    return _WizardComponentCandidate._(
+      draftKey: draftKey,
+      position: position,
+      shape: shape,
+      sizeScale: _normalizedSizeScale(sizeScale, fallback: 1.0),
+      rotation: _normalizedRotation(rotation, fallback: 0.0),
+    );
+  }
+
+  const _WizardComponentCandidate._({
     required this.draftKey,
     required this.position,
+    required this.shape,
+    required this.sizeScale,
+    required this.rotation,
   });
 
   final int draftKey;
   final Offset position;
+  final _WizardComponentShape shape;
+  final double sizeScale;
+  final double rotation;
+
+  static double _normalizedSizeScale(
+    double value, {
+    required double fallback,
+  }) {
+    if (!value.isFinite) {
+      return fallback;
+    }
+    return value.clamp(0.5, 2.5).toDouble();
+  }
+
+  static double _normalizedRotation(
+    double value, {
+    required double fallback,
+  }) {
+    if (!value.isFinite) {
+      return fallback;
+    }
+    const fullTurn = 2 * math.pi;
+    final normalized = (value + math.pi) % fullTurn - math.pi;
+    return normalized == -0.0 ? 0.0 : normalized;
+  }
+
+  _WizardComponentCandidate copyWith({
+    Offset? position,
+    _WizardComponentShape? shape,
+    double? sizeScale,
+    double? rotation,
+  }) {
+    return _WizardComponentCandidate._(
+      draftKey: draftKey,
+      position: position ?? this.position,
+      shape: shape ?? this.shape,
+      sizeScale: sizeScale == null
+          ? this.sizeScale
+          : _normalizedSizeScale(sizeScale, fallback: this.sizeScale),
+      rotation: rotation == null
+          ? this.rotation
+          : _normalizedRotation(rotation, fallback: this.rotation),
+    );
+  }
 
   _WizardComponentCandidate movedTo(Offset nextPosition) {
-    return _WizardComponentCandidate(
-      draftKey: draftKey,
-      position: nextPosition,
-    );
+    return copyWith(position: nextPosition);
   }
 }
 
@@ -2415,6 +2747,12 @@ class _WizardComponentPlacementPainter extends CustomPainter {
 
   Offset _onCanvas(Offset point, Size size) {
     return Offset(point.dx * size.width, point.dy * size.height);
+  }
+
+  Iterable<_WizardComponentMarkerGeometry> markerGeometries(Size size) sync* {
+    for (final candidate in candidates) {
+      yield _WizardComponentMarkerGeometry.fromCandidate(candidate, size);
+    }
   }
 
   @override
@@ -2444,55 +2782,51 @@ class _WizardComponentPlacementPainter extends CustomPainter {
       );
     }
 
-    for (final candidate in candidates) {
-      final canvasPoint = _onCanvas(candidate.position, size);
-      final selected = candidate.draftKey == selectedDraftKey;
+    for (final geometry in markerGeometries(size)) {
+      final selected = geometry.draftKey == selectedDraftKey;
+      canvas.save();
+      canvas.translate(geometry.centre.dx, geometry.centre.dy);
+      canvas.rotate(geometry.effectiveRotation);
       if (selected) {
-        canvas.drawCircle(
-          canvasPoint,
-          17,
+        canvas.drawPath(
+          geometry.localPath,
           Paint()
-            ..color = _WizardPalette.gold.withValues(alpha: 0.2)
-            ..style = PaintingStyle.fill,
-        );
-        canvas.drawCircle(
-          canvasPoint,
-          16,
-          Paint()
-            ..color = _WizardPalette.gold
+            ..color = _WizardPalette.gold.withValues(alpha: 0.72)
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 2,
+            ..strokeWidth = 5
+            ..strokeJoin = StrokeJoin.round,
         );
       }
-      canvas.drawCircle(
-        canvasPoint,
-        11,
+      canvas.drawPath(
+        geometry.localPath,
         Paint()
           ..color = selected ? _WizardPalette.goldBright : _WizardPalette.cream
           ..style = PaintingStyle.fill,
       );
-      canvas.drawCircle(
-        canvasPoint,
-        11,
+      canvas.drawPath(
+        geometry.localPath,
         Paint()
           ..color = _WizardPalette.background
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5,
+          ..strokeWidth = 1.5
+          ..strokeJoin = StrokeJoin.round,
       );
+      final markerArm = math.max(2.0, geometry.minorDimension * 0.28);
       final markerPaint = Paint()
         ..color = _WizardPalette.background
-        ..strokeWidth = 1.6
+        ..strokeWidth = math.max(1.2, geometry.minorDimension * 0.1)
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(
-        canvasPoint - const Offset(4.5, 0),
-        canvasPoint + const Offset(4.5, 0),
+        Offset(-markerArm, 0),
+        Offset(markerArm, 0),
         markerPaint,
       );
       canvas.drawLine(
-        canvasPoint - const Offset(0, 4.5),
-        canvasPoint + const Offset(0, 4.5),
+        Offset(0, -markerArm),
+        Offset(0, markerArm),
         markerPaint,
       );
+      canvas.restore();
     }
   }
 
@@ -2513,12 +2847,103 @@ class _WizardComponentPlacementPainter extends CustomPainter {
       final candidate = candidates[index];
       final oldCandidate = oldDelegate.candidates[index];
       if (oldCandidate.draftKey != candidate.draftKey ||
-          oldCandidate.position != candidate.position) {
+          oldCandidate.position != candidate.position ||
+          oldCandidate.shape != candidate.shape ||
+          oldCandidate.sizeScale != candidate.sizeScale ||
+          oldCandidate.rotation != candidate.rotation) {
         return true;
       }
     }
     return false;
   }
+}
+
+class _WizardComponentMarkerGeometry {
+  const _WizardComponentMarkerGeometry._({
+    required this.draftKey,
+    required this.centre,
+    required this.minorDimension,
+    required this.markerSize,
+    required this.effectiveRotation,
+    required this.localPath,
+    required this.rotatedBounds,
+    required this.hitBounds,
+  });
+
+  factory _WizardComponentMarkerGeometry.fromCandidate(
+    _WizardComponentCandidate candidate,
+    Size canvasSize,
+  ) {
+    final shortestSide = canvasSize.shortestSide;
+    final relativeMinor = shortestSide.isFinite
+        ? shortestSide * 0.035 * candidate.sizeScale
+        : 0.0;
+    final minorDimension = math.max(8.0, relativeMinor);
+    final aspectRatio = switch (candidate.shape) {
+      _WizardComponentShape.circle => 1.0,
+      _WizardComponentShape.square => 1.0,
+      _WizardComponentShape.rectangle => 1.8,
+      _WizardComponentShape.roundedRectangle => 2.2,
+    };
+    final markerSize = Size(minorDimension * aspectRatio, minorDimension);
+    final localRect = Rect.fromCenter(
+      center: Offset.zero,
+      width: markerSize.width,
+      height: markerSize.height,
+    );
+    final localPath = switch (candidate.shape) {
+      _WizardComponentShape.circle => Path()..addOval(localRect),
+      _WizardComponentShape.square || _WizardComponentShape.rectangle => Path()
+        ..addRect(localRect),
+      _WizardComponentShape.roundedRectangle => Path()
+        ..addRRect(
+          RRect.fromRectAndRadius(
+            localRect,
+            Radius.circular(minorDimension * 0.32),
+          ),
+        ),
+    };
+    final effectiveRotation = candidate.shape == _WizardComponentShape.circle
+        ? 0.0
+        : candidate.rotation;
+    final cosine = math.cos(effectiveRotation).abs();
+    final sine = math.sin(effectiveRotation).abs();
+    final rotatedWidth = markerSize.width * cosine + markerSize.height * sine;
+    final rotatedHeight = markerSize.width * sine + markerSize.height * cosine;
+    final centre = Offset(
+      candidate.position.dx * canvasSize.width,
+      candidate.position.dy * canvasSize.height,
+    );
+    final rotatedBounds = Rect.fromCenter(
+      center: centre,
+      width: rotatedWidth,
+      height: rotatedHeight,
+    );
+    final hitBounds = Rect.fromCenter(
+      center: centre,
+      width: math.max(56.0, rotatedWidth),
+      height: math.max(56.0, rotatedHeight),
+    );
+    return _WizardComponentMarkerGeometry._(
+      draftKey: candidate.draftKey,
+      centre: centre,
+      minorDimension: minorDimension,
+      markerSize: markerSize,
+      effectiveRotation: effectiveRotation,
+      localPath: localPath,
+      rotatedBounds: rotatedBounds,
+      hitBounds: hitBounds,
+    );
+  }
+
+  final int draftKey;
+  final Offset centre;
+  final double minorDimension;
+  final Size markerSize;
+  final double effectiveRotation;
+  final Path localPath;
+  final Rect rotatedBounds;
+  final Rect hitBounds;
 }
 
 class _WizardPlaceholder extends StatelessWidget {

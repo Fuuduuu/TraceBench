@@ -8,6 +8,7 @@ import '../models/known_facts.dart';
 import '../models/project_manifest.dart';
 import '../models/project_state.dart';
 import '../models/trace_bench_event.dart';
+import '../models/wizard_intake.dart';
 
 class ProjectLoadException implements Exception {
   const ProjectLoadException(this.message);
@@ -26,6 +27,10 @@ class ProjectLoader {
   static const String _knownFactsPath = 'known_facts.json';
   static const String _customerReportPath = 'exports/customer_report.md';
   static const String _schemaVersionsPath = 'metadata/schema_versions.json';
+  static const String _wizardIntakePath = 'notes/wizard_intake.json';
+  static const String _wizardIntakeWarning =
+      'Projekti visuaalset Wizardi alusinfot ei saanud laadida. Projekt ise '
+      'avati ja kinnitatud projektiteave jäi puutumata.';
   static const String _assetManifestPath =
       'assets/samples/pelle_pv20_minimal/manifest.json';
   static const String _assetEventsPath =
@@ -47,6 +52,8 @@ class ProjectLoader {
       knownFactsRaw: knownFactsRaw,
       reportRaw: reportRaw,
       schemaVersionsRaw: null,
+      wizardIntake: null,
+      wizardIntakeWarning: null,
     );
   }
 
@@ -58,6 +65,7 @@ class ProjectLoader {
     final knownFactsFile = _findRequiredFile(archive, _knownFactsPath);
     final customerReportFile = _findRequiredFile(archive, _customerReportPath);
     final schemaVersionsFile = archive.findFile(_schemaVersionsPath);
+    final wizardIntakeResult = _loadWizardIntakeFromArchive(archive);
 
     final manifestRaw = _fileContentAsString(manifestFile);
     final eventsRaw = _fileContentAsString(eventsFile);
@@ -73,6 +81,8 @@ class ProjectLoader {
       knownFactsRaw: knownFactsRaw,
       reportRaw: customerReportRaw,
       schemaVersionsRaw: schemaVersionsRaw,
+      wizardIntake: wizardIntakeResult.intake,
+      wizardIntakeWarning: wizardIntakeResult.warning,
     );
   }
 
@@ -109,6 +119,9 @@ class ProjectLoader {
       trimmedDirectory,
       _schemaVersionsPath,
     );
+    final wizardIntakeResult = await _loadWizardIntakeFromDirectory(
+      trimmedDirectory,
+    );
 
     return _buildProjectState(
       manifestRaw: manifestRaw,
@@ -116,6 +129,8 @@ class ProjectLoader {
       knownFactsRaw: knownFactsRaw,
       reportRaw: customerReportRaw,
       schemaVersionsRaw: schemaVersionsRaw,
+      wizardIntake: wizardIntakeResult.intake,
+      wizardIntakeWarning: wizardIntakeResult.warning,
     ).copyWith(
       projectDirectory: trimmedDirectory,
       isProjectionStale: false,
@@ -131,6 +146,78 @@ class ProjectLoader {
       }
     }
     throw ProjectLoadException('Required file missing in ZIP: $relativePath');
+  }
+
+  static ArchiveFile? _findOptionalFile(
+    Archive archive,
+    String relativePath,
+  ) {
+    final target = relativePath.replaceAll('\\', '/');
+    for (final file in archive.files) {
+      final normalizedName = file.name.replaceAll('\\', '/');
+      if (normalizedName == target || normalizedName.endsWith('/$target')) {
+        return file;
+      }
+    }
+    return null;
+  }
+
+  static _WizardIntakeLoadResult _loadWizardIntakeFromArchive(
+    Archive archive,
+  ) {
+    final file = _findOptionalFile(archive, _wizardIntakePath);
+    if (file == null) {
+      return const _WizardIntakeLoadResult();
+    }
+
+    try {
+      return _parseWizardIntake(_fileContentAsString(file));
+    } on FormatException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    }
+  }
+
+  static Future<_WizardIntakeLoadResult> _loadWizardIntakeFromDirectory(
+    String projectDirectory,
+  ) async {
+    final file = File(_joinPath(projectDirectory, _wizardIntakePath));
+
+    try {
+      if (!await file.exists()) {
+        return const _WizardIntakeLoadResult();
+      }
+      return _parseWizardIntake(await file.readAsString());
+    } on FileSystemException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    } on FormatException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    }
+  }
+
+  static _WizardIntakeLoadResult _parseWizardIntake(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) {
+        throw const WizardIntakeFormatException(r'$', 'must be an object');
+      }
+      return _WizardIntakeLoadResult(
+        intake: WizardIntake.fromJson(decoded),
+      );
+    } on FormatException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    } on WizardIntakeFormatException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    }
   }
 
   static String _fileContentAsString(ArchiveFile file) {
@@ -212,6 +299,8 @@ class ProjectLoader {
     required String knownFactsRaw,
     required String reportRaw,
     required String? schemaVersionsRaw,
+    required WizardIntake? wizardIntake,
+    required String? wizardIntakeWarning,
   }) {
     final manifest = ProjectManifest.fromJson(
       _decodeJsonObject(manifestRaw, _manifestPath),
@@ -220,9 +309,10 @@ class ProjectLoader {
       _decodeJsonObject(knownFactsRaw, _knownFactsPath),
     );
     final events = parseEvents(eventsRaw);
-    final schemaVersions = schemaVersionsRaw == null || schemaVersionsRaw.trim().isEmpty
-        ? null
-        : _decodeJsonObject(schemaVersionsRaw, _schemaVersionsPath);
+    final schemaVersions =
+        schemaVersionsRaw == null || schemaVersionsRaw.trim().isEmpty
+            ? null
+            : _decodeJsonObject(schemaVersionsRaw, _schemaVersionsPath);
 
     return ProjectState(
       manifest: manifest,
@@ -230,6 +320,8 @@ class ProjectLoader {
       events: events,
       customerReport: reportRaw,
       schemaVersions: schemaVersions,
+      wizardIntake: wizardIntake,
+      wizardIntakeWarning: wizardIntakeWarning,
     );
   }
 
@@ -240,4 +332,14 @@ class ProjectLoader {
     }
     throw ProjectLoadException('Invalid JSON object in $sourceName');
   }
+}
+
+class _WizardIntakeLoadResult {
+  const _WizardIntakeLoadResult({
+    this.intake,
+    this.warning,
+  });
+
+  final WizardIntake? intake;
+  final String? warning;
 }

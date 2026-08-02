@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'project_manifest.dart';
 import 'known_facts.dart';
 import 'trace_bench_event.dart';
+import 'wizard_intake.dart';
 
 class ProjectState {
   const ProjectState({
@@ -13,6 +14,8 @@ class ProjectState {
     this.schemaVersions,
     this.projectDirectory,
     this.isProjectionStale = false,
+    this.wizardIntake,
+    this.wizardIntakeWarning,
   });
 
   final ProjectManifest manifest;
@@ -23,6 +26,12 @@ class ProjectState {
   final String? projectDirectory;
   final bool isProjectionStale;
 
+  /// Optional noncanonical presentation input for visual planning.
+  final WizardIntake? wizardIntake;
+
+  /// Optional noncanonical presentation-state warning for intake reads.
+  final String? wizardIntakeWarning;
+
   ProjectState copyWith({
     ProjectManifest? manifest,
     KnownFacts? knownFacts,
@@ -31,6 +40,8 @@ class ProjectState {
     Map<String, dynamic>? schemaVersions,
     String? projectDirectory,
     bool? isProjectionStale,
+    WizardIntake? wizardIntake,
+    String? wizardIntakeWarning,
   }) {
     return ProjectState(
       manifest: manifest ?? this.manifest,
@@ -40,6 +51,8 @@ class ProjectState {
       schemaVersions: schemaVersions ?? this.schemaVersions,
       projectDirectory: projectDirectory ?? this.projectDirectory,
       isProjectionStale: isProjectionStale ?? this.isProjectionStale,
+      wizardIntake: wizardIntake ?? this.wizardIntake,
+      wizardIntakeWarning: wizardIntakeWarning ?? this.wizardIntakeWarning,
     );
   }
 

@@ -13,13 +13,16 @@ import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 ProjectState _buildProjectState(Directory directory) {
-  final manifestRaw =
-      File('${directory.path}/manifest.json').readAsStringSync();
-  final knownFactsRaw =
-      File('${directory.path}/known_facts.json').readAsStringSync();
+  final manifestRaw = File(
+    '${directory.path}/manifest.json',
+  ).readAsStringSync();
+  final knownFactsRaw = File(
+    '${directory.path}/known_facts.json',
+  ).readAsStringSync();
   final eventsRaw = File('${directory.path}/events.jsonl').readAsStringSync();
-  final reportRaw =
-      File('${directory.path}/exports/customer_report.md').readAsStringSync();
+  final reportRaw = File(
+    '${directory.path}/exports/customer_report.md',
+  ).readAsStringSync();
 
   return ProjectState(
     manifest: ProjectManifest.fromJson(jsonDecode(manifestRaw)),
@@ -37,14 +40,18 @@ Directory _createSampleProject(List<Directory> tracked) {
   final exportsDir = Directory('${directory.path}/exports');
   exportsDir.createSync(recursive: true);
 
-  File('assets/samples/pelle_pv20_minimal/manifest.json')
-      .copySync('${directory.path}/manifest.json');
-  File('assets/samples/pelle_pv20_minimal/known_facts.json')
-      .copySync('${directory.path}/known_facts.json');
-  File('assets/samples/pelle_pv20_minimal/events.jsonl')
-      .copySync('${directory.path}/events.jsonl');
-  File('assets/samples/pelle_pv20_minimal/exports/customer_report.md')
-      .copySync('${directory.path}/exports/customer_report.md');
+  File(
+    'assets/samples/pelle_pv20_minimal/manifest.json',
+  ).copySync('${directory.path}/manifest.json');
+  File(
+    'assets/samples/pelle_pv20_minimal/known_facts.json',
+  ).copySync('${directory.path}/known_facts.json');
+  File(
+    'assets/samples/pelle_pv20_minimal/events.jsonl',
+  ).copySync('${directory.path}/events.jsonl');
+  File(
+    'assets/samples/pelle_pv20_minimal/exports/customer_report.md',
+  ).copySync('${directory.path}/exports/customer_report.md');
 
   tracked.add(directory);
   return directory;
@@ -53,7 +60,9 @@ Directory _createSampleProject(List<Directory> tracked) {
 int _measurementRecordedEventCount(Directory directory) {
   final eventsRaw = File('${directory.path}/events.jsonl').readAsStringSync();
   final events = ProjectLoader.parseEvents(eventsRaw);
-  return events.where((event) => event.eventType == 'measurement_recorded').length;
+  return events
+      .where((event) => event.eventType == 'measurement_recorded')
+      .length;
 }
 
 Future<void> _fillValidMeasurementForm(
@@ -80,12 +89,41 @@ Future<void> _fillValidMeasurementForm(
   await tester.pump();
 }
 
+Future<void> _waitForMeasurementTerminalState(WidgetTester tester) async {
+  const maxAttempts = 250;
+  const pollInterval = Duration(milliseconds: 20);
+  final successFinder = find.byKey(
+    const ValueKey('measurement-success-message'),
+  );
+  final errorFinder = find.byKey(const ValueKey('measurement-error-message'));
+  var successCount = 0;
+  var errorCount = 0;
+
+  for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+    await tester.pump();
+    successCount = successFinder.evaluate().length;
+    errorCount = errorFinder.evaluate().length;
+    if (successCount > 0 || errorCount > 0) {
+      return;
+    }
+
+    if (attempt < maxAttempts) {
+      await tester.runAsync(() => Future<void>.delayed(pollInterval));
+    }
+  }
+
+  fail(
+    'Measurement write did not reach a terminal UI state after '
+    '$maxAttempts attempts (${pollInterval.inMilliseconds} ms interval). '
+    'successCount=$successCount, errorCount=$errorCount',
+  );
+}
+
 Future<void> _submitAndWait(WidgetTester tester) async {
   await tester.runAsync(() async {
     await tester.tap(find.byKey(const ValueKey('measurement-submit-button')));
-    await Future.delayed(const Duration(seconds: 1));
   });
-  await tester.pumpAndSettle();
+  await _waitForMeasurementTerminalState(tester);
 }
 
 void main() {
@@ -189,10 +227,12 @@ void main() {
 
       await _submitAndWait(tester);
 
-      final successFinder =
-          find.byKey(const ValueKey('measurement-success-message'));
-      final errorFinder =
-          find.byKey(const ValueKey('measurement-error-message'));
+      final successFinder = find.byKey(
+        const ValueKey('measurement-success-message'),
+      );
+      final errorFinder = find.byKey(
+        const ValueKey('measurement-error-message'),
+      );
       expect(successFinder.evaluate().isNotEmpty, isTrue);
       expect(errorFinder.evaluate().isEmpty, isTrue);
 
@@ -205,8 +245,9 @@ void main() {
     },
   );
 
-  testWidgets('rapid double tap appends only one new measurement event',
-      (tester) async {
+  testWidgets('rapid double tap appends only one new measurement event', (
+    tester,
+  ) async {
     final directory = _createSampleProject(directories);
     final projectState = _buildProjectState(directory);
     final initialMeasurementEvents = _measurementRecordedEventCount(directory);
@@ -224,9 +265,8 @@ void main() {
     await tester.runAsync(() async {
       await tester.tap(find.byKey(const ValueKey('measurement-submit-button')));
       await tester.tap(find.byKey(const ValueKey('measurement-submit-button')));
-      await Future.delayed(const Duration(seconds: 1));
     });
-    await tester.pumpAndSettle();
+    await _waitForMeasurementTerminalState(tester);
 
     expect(
       _measurementRecordedEventCount(directory),
@@ -234,8 +274,9 @@ void main() {
     );
   });
 
-  testWidgets('unchanged form cannot be submitted twice after success',
-      (tester) async {
+  testWidgets('unchanged form cannot be submitted twice after success', (
+    tester,
+  ) async {
     final directory = _createSampleProject(directories);
     final projectState = _buildProjectState(directory);
     final initialMeasurementEvents = _measurementRecordedEventCount(directory);
@@ -274,50 +315,54 @@ void main() {
     );
   });
 
-  testWidgets('editing form after success re-enables submit for one new event',
-      (tester) async {
-    final directory = _createSampleProject(directories);
-    final projectState = _buildProjectState(directory);
-    final initialMeasurementEvents = _measurementRecordedEventCount(directory);
+  testWidgets(
+    'editing form after success re-enables submit for one new event',
+    (tester) async {
+      final directory = _createSampleProject(directories);
+      final projectState = _buildProjectState(directory);
+      final initialMeasurementEvents = _measurementRecordedEventCount(
+        directory,
+      );
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
-        child: const MaterialApp(home: MeasurementRecordScreen()),
-      ),
-    );
-    await tester.pump();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [projectStateProvider.overrideWith((_) => projectState)],
+          child: const MaterialApp(home: MeasurementRecordScreen()),
+        ),
+      );
+      await tester.pump();
 
-    await _fillValidMeasurementForm(tester, value: '9.9');
+      await _fillValidMeasurementForm(tester, value: '9.9');
 
-    await _submitAndWait(tester);
+      await _submitAndWait(tester);
 
-    expect(
-      _measurementRecordedEventCount(directory),
-      initialMeasurementEvents + 1,
-    );
+      expect(
+        _measurementRecordedEventCount(directory),
+        initialMeasurementEvents + 1,
+      );
 
-    final disabledButtonAfterSuccess = tester.widget<ElevatedButton>(
-      find.byKey(const ValueKey('measurement-submit-button')),
-    );
-    expect(disabledButtonAfterSuccess.onPressed, isNull);
+      final disabledButtonAfterSuccess = tester.widget<ElevatedButton>(
+        find.byKey(const ValueKey('measurement-submit-button')),
+      );
+      expect(disabledButtonAfterSuccess.onPressed, isNull);
 
-    await tester.enterText(
-      find.byKey(const ValueKey('measurement-value-field')),
-      '10.1',
-    );
-    await tester.pump();
+      await tester.enterText(
+        find.byKey(const ValueKey('measurement-value-field')),
+        '10.1',
+      );
+      await tester.pump();
 
-    final reenabledButton = tester.widget<ElevatedButton>(
-      find.byKey(const ValueKey('measurement-submit-button')),
-    );
-    expect(reenabledButton.onPressed, isNotNull);
+      final reenabledButton = tester.widget<ElevatedButton>(
+        find.byKey(const ValueKey('measurement-submit-button')),
+      );
+      expect(reenabledButton.onPressed, isNotNull);
 
-    await _submitAndWait(tester);
+      await _submitAndWait(tester);
 
-    expect(
-      _measurementRecordedEventCount(directory),
-      initialMeasurementEvents + 2,
-    );
-  });
+      expect(
+        _measurementRecordedEventCount(directory),
+        initialMeasurementEvents + 2,
+      );
+    },
+  );
 }

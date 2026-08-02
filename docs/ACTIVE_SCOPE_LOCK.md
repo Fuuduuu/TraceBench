@@ -2,10 +2,165 @@
 
 ## Route
 
-Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
-Next: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
+Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
 
-## Current measurement-write test-determinism SCOPE authority
+## Current measurement-write test-determinism LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Verified entry is linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake`, branch
+`qa/measurement-write-determinism`, with
+`HEAD == origin/main ==
+49157f045e1eba93927b2f3911c7cb9452321875`, parent
+`b20b0696074ffc09c09569986fa1e872cb6a99ed`, subject
+`test: make measurement write waits deterministic`, divergence `0 0`, and
+empty entry tracked and staged diffs.
+
+Read-only
+`git diff-tree --no-commit-id --name-status -r
+49157f045e1eba93927b2f3911c7cb9452321875` returns exactly:
+
+```text
+M	test/widget/measurement_write_screen_test.dart
+```
+
+No second committed implementation file exists.
+
+### Exact current LOCK write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS.md`
+
+No sixth current file is authorized. This LOCK must not edit Dart, tests,
+runtime, maps, the code-map index, schemas, tools, assets, packages, generated
+content, `_incoming`, scratch, or Board Canvas. It must not stage, commit,
+push, stash, reset, restore, clean, or delete.
+
+### Accepted committed implementation evidence
+
+The one-file commit replaces both fixed one-second completion waits with
+`_waitForMeasurementTerminalState`. The helper observes the existing
+`measurement-success-message` or `measurement-error-message` keys, performs
+at most 250 observations, uses a 20 ms real-time interval only through
+`tester.runAsync`, pumps before each observation, returns at the first
+terminal state, and fails at the bound with attempt/interval and terminal
+finder counts.
+
+The rapid-double-tap test keeps its two immediate adjacent taps with no pump,
+poll, settle, or delay between them. Polling begins only after both taps, and
+the exact-one-new-`measurement_recorded` assertion remains. The two
+completion-harness `pumpAndSettle` calls were removed. Other unrelated
+`pumpAndSettle` calls, including the preserved `warnIfMissed: false` path,
+remain outside the changed completion zones.
+
+### Recorded implementation validation
+
+The existing Codex implementation report records:
+
+1. `dart format test/widget/measurement_write_screen_test.dart`: `PASS`,
+   exit `0`, one file formatted; the initial sandboxed invocation timed out
+   without output before the successful rerun.
+2. Focused writer/widget/end-to-end measurement targets: `19/19 PASS`.
+3. `flutter test --concurrency=1 --reporter expanded`: `541/541 PASS`.
+4. Five consecutive `flutter test --reporter expanded` runs:
+   - `1/5`: `541/541 PASS`, exit `0`;
+   - `2/5`: `541/541 PASS`, exit `0`;
+   - `3/5`: `541/541 PASS`, exit `0`;
+   - `4/5`: `541/541 PASS`, exit `0`;
+   - `5/5`: `541/541 PASS`, exit `0`.
+5. `py -3 tools\validate_all.py`: `302/302 PASS`.
+6. `git diff --check` and `git diff --cached --check`: `PASS`.
+7. Implementation material set: exactly the one test file.
+8. Implementation staged set: empty.
+
+### Independent implementation audit
+
+```text
+AUDIT_VERDICT: ACCEPT_WITH_NITS
+SAFE_FOR_STAGING: YES
+
+SAFE_STAGING_SET:
+- test/widget/measurement_write_screen_test.dart
+```
+
+Accepted non-blocking findings:
+
+1. On helper failure, `successCount` and `errorCount` are always zero. The
+   attempt count and interval still satisfy the diagnostic contract. No patch
+   is authorized.
+2. `_submitAndWait` retains a conservative vestigial `tester.runAsync`
+   boundary. No patch is authorized.
+
+### Code-map disposition
+
+The committed target remains below qualification under the accepted SCOPE
+assessment. No implementation map exists or is required.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+No map or `docs/code_maps/CODE_MAP_INDEX.md` change is authorized.
+
+### Locked transition and resumed child
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+The Wizard Canvas child is resumed from suspension as the next route, not
+opened for writes by this LOCK. Its inherited activation gates, exact future
+allowlist, read-only presentation contract, wide/compact manual-smoke
+requirement, and later
+`TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS` remain unchanged.
+
+The inherited future Canvas allowlist remains exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+That future allowlist is not current LOCK write authority. The Canvas child
+must still satisfy its accepted parent and activation evidence before
+execution, complete wide and compact manual smoke before its final
+implementation audit, and route through the later read-path LOCK.
+
+### Protected boundaries and Phase 2
+
+The repair and this LOCK change no production behavior, terminal key, UI copy,
+writer, event/fact/envelope/sequence/ID/actor/measurement semantics, schema,
+validator, materializer, projection, known facts, Project ZIP,
+provider/project state, AI/OCR/CV, component/electrical semantics, or Board
+Canvas behavior.
+
+The new LOCK artifact contains one uniquely marked empty designated verdict
+block. Independent audit may fill only that interior and then mechanically
+mirror the returned verdict, safety result, and exact safe staging set into
+the Status cell of the unique matching `docs/AUDIT_INDEX.md` row. Every byte
+outside those two logical coordinates remains frozen during Phase 2.
+
+Current LOCK validation requires `py -3 tools\validate_all.py`,
+`git diff --check`, `git diff --cached --check`, exactly the five authorized
+docs paths, and an empty staged set.
+
+```text
+Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+Next: TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+## Accepted measurement-write test-determinism SCOPE authority (historical)
+
+All current, future, route, and authority wording in this section is retained
+predecessor evidence. It does not override the current LOCK authority above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
@@ -166,11 +321,11 @@ Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
 Next: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
 ```
 
-## Suspended Wizard-intake read-path authority (retained, not abandoned)
+## Resumed Wizard-intake read-path authority (retained parent contract)
 
-All current, future, route, and authority wording below this heading is the
-retained parent record. It does not override the live measurement-test SCOPE
-above while the Canvas child is suspended.
+The Canvas child is resumed as the current LOCK's next route. All embedded
+current, future, route, and authority wording below preserves the accepted
+parent snapshot and does not override the current LOCK write allowlist.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS

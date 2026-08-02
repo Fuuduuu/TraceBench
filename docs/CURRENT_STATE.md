@@ -1,9 +1,88 @@
 # Current State
 
-Current pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
+Current pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
 
-## Live measurement-write test-determinism SCOPE lock
+## Live measurement-write test-determinism LOCK
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Verified entry is linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake` on branch
+`qa/measurement-write-determinism`, with
+`HEAD == origin/main ==
+49157f045e1eba93927b2f3911c7cb9452321875`, parent
+`b20b0696074ffc09c09569986fa1e872cb6a99ed`, subject
+`test: make measurement write waits deterministic`, divergence `0 0`, and
+empty entry tracked and staged diffs. Read-only
+`git diff-tree --no-commit-id --name-status -r
+49157f045e1eba93927b2f3911c7cb9452321875` proves the commit changes exactly:
+
+- `test/widget/measurement_write_screen_test.dart`
+
+The committed repair adds one finite 250-attempt terminal poll with a 20 ms
+real-time interval through `tester.runAsync`, pumps before every success/error
+observation, returns when either existing terminal key appears, and replaces
+both fixed one-second completion waits. The rapid-double-tap test retains its
+two adjacent immediate taps before polling and its exact-one-new-measurement
+assertion. The two completion-harness `pumpAndSettle` calls were removed; no
+production behavior changed.
+
+The existing Codex implementation report records format `PASS`; focused
+measurement targets `19/19 PASS`; the serial full suite `541/541 PASS`; five
+consecutive default-concurrency full suites, each `541/541 PASS` with exit `0`
+for runs `1/5` through `5/5`; `validate_all.py` `302/302 PASS`; diff checks
+`PASS`; exactly the one committed test file; and an empty staged set.
+
+The independent implementation audit returned:
+
+```text
+AUDIT_VERDICT: ACCEPT_WITH_NITS
+SAFE_FOR_STAGING: YES
+SAFE_STAGING_SET:
+- test/widget/measurement_write_screen_test.dart
+```
+
+Its first non-blocking finding records that failure-path `successCount` and
+`errorCount` are always zero, while the attempt count and interval still
+satisfy the diagnostic contract; no patch is authorized. Its second records
+the conservative vestigial `tester.runAsync` boundary retained by
+`_submitAndWait`; no patch is authorized.
+
+This docs-only LOCK changes exactly the four route/ledger owners and
+`docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS.md`. It
+changes no Dart, test, runtime, map, code-map index, schema, tool, asset,
+package, generated, `_incoming`, scratch, or Board Canvas file.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+No map or code-map index change is authorized. The route is:
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+The Wizard Canvas child is resumed from suspension as the next route, not
+executed by this LOCK. Its inherited two-file allowlist, activation gates,
+wide/compact manual-smoke requirement, read-only presentation boundary, and
+later `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS` remain unchanged.
+
+```text
+Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+Next: TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+## Accepted measurement-write test-determinism SCOPE (historical)
+
+All current, next, future, and authority wording in this section is retained
+predecessor evidence. It does not override the live LOCK above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
@@ -84,11 +163,11 @@ Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
 Next: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
 ```
 
-## Suspended Wizard-intake read-path route (retained, not abandoned)
+## Resumed Wizard-intake read-path route (retained parent contract)
 
-All current, next, future, and authority wording below this heading is the
-retained parent record. It does not override the live measurement-test SCOPE
-above while the Canvas child is suspended.
+The Canvas child is resumed as the LOCK's next route. All embedded current,
+next, future, and authority wording below preserves the accepted parent
+snapshot and does not override the live LOCK-to-Canvas transition above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS

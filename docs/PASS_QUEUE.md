@@ -2,10 +2,81 @@
 
 ## Current route
 
-Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
-Next: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
+Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
 
-## Current measurement-write test-determinism SCOPE queue
+## Current measurement-write test-determinism LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Entry is the linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake` on branch
+`qa/measurement-write-determinism` at
+`HEAD == origin/main ==
+49157f045e1eba93927b2f3911c7cb9452321875`, parent
+`b20b0696074ffc09c09569986fa1e872cb6a99ed`, subject
+`test: make measurement write waits deterministic`, divergence `0 0`, with
+empty entry tracked and staged diffs. The commit changes exactly:
+
+- `test/widget/measurement_write_screen_test.dart`
+
+The exact current docs-only material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS.md`
+
+No sixth LOCK file is queued. Runtime, tests, maps, the code-map index,
+schemas, tools, assets, packages, generated content, `_incoming`, scratch, and
+Board Canvas remain unchanged by this LOCK.
+
+The committed test-only repair uses one 250-attempt, 20 ms bounded poll for
+the existing success-or-error terminal keys, pumps before every observation,
+removes both fixed one-second waits and the two completion-zone
+`pumpAndSettle` calls, and preserves both immediate rapid-double taps plus the
+exact-one-new-event assertion.
+
+Recorded implementation validation is format `PASS`; focused targets
+`19/19 PASS`; serial full suite `541/541 PASS`; default-concurrency full-suite
+runs `1/5`, `2/5`, `3/5`, `4/5`, and `5/5` each `541/541 PASS` with exit `0`;
+validator `302/302 PASS`; diff checks `PASS`; exact one-file implementation
+set; and empty staged set.
+
+The independent implementation audit is `ACCEPT_WITH_NITS`,
+`SAFE_FOR_STAGING: YES`, safe exactly for
+`test/widget/measurement_write_screen_test.dart`. Its two non-blocking
+findings are failure-path terminal counts that remain zero despite adequate
+attempt/interval diagnostics, and the conservative vestigial `runAsync`
+boundary in `_submitAndWait`. Neither finding authorizes a patch.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+No map or code-map index change is queued.
+
+The exact queue transition is:
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+The Wizard Canvas child is resumed from suspension as the next pass. It keeps
+its inherited exact two-file allowlist, activation gates, read-only contract,
+wide/compact manual-smoke requirement, and later Wizard-intake read-path LOCK.
+This LOCK neither edits nor executes Board Canvas.
+
+## Accepted measurement-write test-determinism SCOPE queue (historical)
+
+All current, future, transition, and queue wording in this section is retained
+predecessor evidence. It does not override the current LOCK queue above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
@@ -89,11 +160,11 @@ evidence. It returns control to the suspended
 `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`; the Canvas pass is not
 abandoned, changed, or opened by this detour.
 
-## Suspended Wizard-intake read-path queue (retained, not abandoned)
+## Resumed Wizard-intake read-path queue (retained parent contract)
 
-All current, future, transition, and queue wording below this heading is the
-retained parent record. It does not override the current measurement-test
-queue while the Canvas child is suspended.
+The Canvas child is resumed as the current LOCK's next pass. All embedded
+current, future, transition, and queue wording below preserves the accepted
+parent snapshot and does not override that transition.
 
 ### Prior current Wizard-intake read-path SCOPE queue
 

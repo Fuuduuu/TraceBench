@@ -1,9 +1,94 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS`
+Current pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
+Next recommended pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
 
-## Live Wizard-intake read-path SCOPE lock
+## Live measurement-write test-determinism SCOPE lock
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+Lane: B
+Mode: DOCS_SYNC
+```
+
+Verified entry is linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake`, branch
+`qa/measurement-write-determinism`, with
+`HEAD == main == origin/main ==
+8118acef186e28320938d4533ce5b16bd7f577bd`, parent
+`d22765cd299e4243f9898956f0c2920374e342b2`, subject
+`feat: add Wizard intake model loader`, divergence `0 0`, and empty tracked
+and staged diffs. The commit changes exactly the five model-loader child
+paths reserved by the accepted Wizard-intake parent scope.
+
+This docs-only pass changes exactly the four route/ledger owners and
+`docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS.md`.
+It changes no Dart, test, runtime, schema, tool, asset, package, generated,
+`_incoming`, scratch, or Board Canvas file.
+
+The diagnosed detour is limited to the pre-existing
+`test/widget/measurement_write_screen_test.dart`. That file contains two
+fixed one-second completion waits: one in `_submitAndWait` and one after the
+two immediate taps in the rapid-double-tap test. The production screen already
+exposes the terminal UI keys `measurement-success-message` and
+`measurement-error-message` only after the awaited writer path completes or
+throws. The future repair replaces those fixed completion sleeps with one
+finite polling helper for the existing success-or-error terminal condition.
+
+The repair must preserve the rapid-double-tap contract: both taps occur
+immediately, with no completion wait inserted between them, and the test still
+proves exactly one new `measurement_recorded` event. Polling must have a fixed
+maximum attempt count or deadline, yield to the real asynchronous file work,
+pump the widget between observations, return as soon as either existing
+terminal key appears, and fail with useful terminal-state diagnostics when the
+bound expires. A fixed one-second completion oracle and an unbounded
+`pumpAndSettle` are forbidden.
+
+The exact route is:
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+The future implementation write allowlist is exactly:
+
+- `test/widget/measurement_write_screen_test.dart`
+
+No production file is authorized. In particular,
+`lib/features/measurements/screens/measurement_record_screen.dart` and
+`lib/shared/event_write/measurement_event_writer.dart` remain inspect-only;
+event/fact/schema/writer/materializer/projection/Project ZIP and measurement
+semantics remain unchanged.
+
+The existing `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS` is
+**SUSPENDED — NOT ABANDONED**. Its accepted parent contract, exact two-file
+allowlist, manual-smoke gate, and later read-path LOCK remain intact. Neither
+this SCOPE nor either measurement repair pass authorizes Board Canvas work.
+After the measurement LOCK records accepted committed repair evidence, route
+control returns to that suspended Canvas pass subject to all inherited parent
+gates; this SCOPE does not claim those gates are newly satisfied.
+
+Future repair validation requires exact target formatting; the focused
+measurement writer/widget/integration tests; one serial full Flutter suite;
+five consecutive full Flutter suites at default concurrency; the repository
+validator; diff checks; the exact one-file material set; and an empty staged
+set. Every one of the five default-concurrency runs must exit `0`; a failure
+breaks the consecutive series and cannot be relabelled as a pass from an
+isolation rerun.
+
+```text
+Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+Next: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+```
+
+## Suspended Wizard-intake read-path route (retained, not abandoned)
+
+All current, next, future, and authority wording below this heading is the
+retained parent record. It does not override the live measurement-test SCOPE
+above while the Canvas child is suspended.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS

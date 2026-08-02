@@ -2,10 +2,175 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS`
+Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
+Next: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
 
-## Current Wizard-intake read-path SCOPE authority
+## Current measurement-write test-determinism SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+Lane: B
+Mode: DOCS_SYNC
+```
+
+Verified entry is linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake`, branch
+`qa/measurement-write-determinism`, with
+`HEAD == main == origin/main ==
+8118acef186e28320938d4533ce5b16bd7f577bd`, parent
+`d22765cd299e4243f9898956f0c2920374e342b2`, subject
+`feat: add Wizard intake model loader`, divergence `0 0`, and empty tracked
+and staged diffs.
+
+### Exact current write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS.md`
+
+No sixth current file is authorized. This SCOPE must not edit Dart, tests,
+runtime, schemas, tools, maps, the code-map index, assets, packages, generated
+content, `_incoming`, scratch, or Board Canvas. It must not stage, commit,
+push, stash, reset, restore, clean, or delete.
+
+### Locked route
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+The Wizard Canvas child is `SUSPENDED — NOT ABANDONED`. Its accepted parent
+contract, two-file allowlist, activation gates, manual smoke, and later
+read-path LOCK are retained unchanged. Merely naming its resume point creates
+no current or measurement-pass Board Canvas authority.
+
+### Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+Lane: B
+Mode: QA_PASS
+```
+
+Activation is conditional on independent acceptance and human push of this
+exact five-file SCOPE lock. Its exact future write allowlist is:
+
+1. `test/widget/measurement_write_screen_test.dart`
+
+No second implementation file is authorized.
+
+The future pass may change only the test's asynchronous completion harness:
+
+- replace the fixed one-second wait in `_submitAndWait` and the fixed
+  one-second wait after the rapid double tap;
+- use one bounded polling helper over the existing
+  `measurement-success-message` OR `measurement-error-message` terminal UI
+  condition;
+- use a finite attempt count or deadline and a short polling interval;
+- yield to the real asynchronous file operation and pump the widget before
+  each new terminal-state observation;
+- return immediately when either terminal key appears; and
+- fail at the bound with useful success/error finder counts or equivalent
+  terminal-state diagnostics.
+
+The changed zone must not use a fixed one-second sleep as the completion
+oracle, an unbounded `pumpAndSettle`, or a production behavior change to make
+the test pass.
+
+### Double-tap preservation
+
+The `rapid double tap appends only one new measurement event` test must issue
+the same two immediate taps with no completion polling, delay, or settle
+between them. Only after both taps may it enter the bounded terminal wait. It
+must retain the assertion that the temporary project's count increases by
+exactly one. The unchanged-form duplicate guard and edit-after-success
+resubmission semantics remain unchanged.
+
+### Inspect-only production and protected boundaries
+
+Inspect-only:
+
+- `lib/features/measurements/screens/measurement_record_screen.dart`,
+  especially `_saveMeasurement`, `_isSubmitting`, `_lastSuccessfulFormKey`,
+  and the two terminal-message keys;
+- `lib/shared/event_write/measurement_event_writer.dart`, especially
+  `MeasurementEventWriter.writeMeasurement` and `_appendLines`; and
+- the sample-project files read by the widget test.
+
+No production edit is authorized. The repair may not change event/fact,
+sequence, ID, actor, measurement, schema, writer, file-append, materializer,
+projection, known-facts, Project ZIP, provider/project-state, UI copy,
+double-submit, error handling, or canonical semantics. It creates no Board
+Canvas authority.
+
+### Code-map preflight
+
+`test/widget/measurement_write_screen_test.dart` has no registry row in
+`docs/code_maps/CODE_MAP_INDEX.md`. At 323 physical lines it scores below the
+Code Map Standard threshold: `SCORE 5/12` from small size, three compact
+test/harness zones, one protected writer observation boundary, repeated flake
+history, one current whole-file analysis, and a single localized blast path.
+No automatic qualification or human override applies.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+The changed responsibility zone is only `_submitAndWait` plus the inline
+post-double-tap wait, anchored by the two existing terminal keys. The changed
+test orchestration is `ZERO_WRITE`; it continues exercising the unchanged
+`CANONICAL_EVENT` writer only inside a disposable temporary project. Production
+screen/writer zones and all other measurement tests are inspect-only.
+
+### Required implementation validation
+
+Run and record:
+
+1. `dart format test/widget/measurement_write_screen_test.dart`
+2. `flutter test test/unit/measurement_event_writer_test.dart test/widget/measurement_write_screen_test.dart test/integration/measurement_write_end_to_end_test.dart --reporter expanded`
+3. `flutter test --concurrency=1 --reporter expanded`
+4. five consecutive invocations of `flutter test --reporter expanded` with
+   default concurrency, each exiting `0` and recorded `1/5` through `5/5`
+5. `py -3 tools\validate_all.py`
+6. `git diff --check`
+7. `git diff --name-status` proving exactly
+   `test/widget/measurement_write_screen_test.dart`
+8. `git diff --cached --name-status` proving an empty staged set
+
+An isolation pass cannot replace a failed serial or default-concurrency run.
+A failed default-concurrency run breaks the consecutive series; all five must
+be rerun and pass consecutively before acceptance is claimed.
+
+### Later LOCK, release, and stops
+
+`TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS` is reserved as the
+later docs-only evidence and route transition after independently accepted,
+committed repair. This SCOPE grants it no present write authority and does not
+prejudge its evidence. Its locked destination is the suspended
+`TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`, subject to the inherited
+Wizard-intake parent gates.
+
+Stop on a sixth SCOPE file, a second implementation file, any production or
+Board Canvas edit, changed tap ordering, weakened exact-one-event assertion,
+unbounded waiting, fixed-sleep completion logic, code-map qualification
+conflict, validation failure, staged path, baseline drift, protected-surface
+change, or need to alter the existing success/error terminal contract.
+
+```text
+Current: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+Next: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+```
+
+## Suspended Wizard-intake read-path authority (retained, not abandoned)
+
+All current, future, route, and authority wording below this heading is the
+retained parent record. It does not override the live measurement-test SCOPE
+above while the Canvas child is suspended.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS

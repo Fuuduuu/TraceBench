@@ -2,10 +2,100 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS`
+Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS`
+Next: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS`
 
-## Current Wizard-intake read-path SCOPE queue
+## Current measurement-write test-determinism SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+Lane: B
+Mode: DOCS_SYNC
+```
+
+Entry is the linked worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-measurement-flake` on branch
+`qa/measurement-write-determinism` at
+`HEAD == main == origin/main ==
+8118acef186e28320938d4533ce5b16bd7f577bd`, parent
+`d22765cd299e4243f9898956f0c2920374e342b2`, subject
+`feat: add Wizard intake model loader`, divergence `0 0`, with empty tracked
+and staged diffs.
+
+The exact current docs-only material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS.md`
+
+No sixth SCOPE file is queued. Runtime, tests, maps, the code-map index,
+schemas, tools, assets, packages, generated content, `_incoming`, scratch, and
+Board Canvas remain unchanged now.
+
+The queued route is exactly:
+
+```text
+TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_SCOPE_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+-> TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+```
+
+## Reserved one-file determinism repair
+
+```text
+PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_PASS
+Lane: B
+Mode: QA_PASS
+```
+
+Exact implementation allowlist:
+
+- `test/widget/measurement_write_screen_test.dart`
+
+No second implementation file is queued. The repair replaces both fixed
+one-second completion waits with one bounded polling helper that observes the
+existing `measurement-success-message` or `measurement-error-message` key.
+The loop must be finite, yield to the real asynchronous writer/file work,
+pump between observations, stop at the first terminal UI state, and fail with
+diagnostic counts/state when the bound expires. It must not use a fixed
+one-second sleep as the completion condition or introduce an unbounded
+`pumpAndSettle`.
+
+The rapid-double-tap test retains two immediate taps before polling and still
+asserts exactly one newly appended `measurement_recorded` event. Existing
+success/no-error, duplicate-submit, edit-and-resubmit, validation, and
+forbidden-control assertions remain semantically unchanged. No production
+screen, writer, loader, model, provider, event/fact, schema, materializer,
+projection, Project ZIP, or measurement behavior is queued.
+
+Required implementation validation is:
+
+1. `dart format test/widget/measurement_write_screen_test.dart`
+2. `flutter test test/unit/measurement_event_writer_test.dart test/widget/measurement_write_screen_test.dart test/integration/measurement_write_end_to_end_test.dart --reporter expanded`
+3. `flutter test --concurrency=1 --reporter expanded`
+4. `flutter test --reporter expanded`, five consecutive independent runs at
+   default concurrency, each recorded as `1/5` through `5/5` with exit `0`
+5. `py -3 tools\validate_all.py`
+6. `git diff --check`
+7. exact one-file material diff and empty staged set
+
+The named `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS` is a
+later docs-only evidence/route transition. Its material set is not executable
+authority in this SCOPE and must be derived from accepted committed repair
+evidence. It returns control to the suspended
+`TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`; the Canvas pass is not
+abandoned, changed, or opened by this detour.
+
+## Suspended Wizard-intake read-path queue (retained, not abandoned)
+
+All current, future, transition, and queue wording below this heading is the
+retained parent record. It does not override the current measurement-test
+queue while the Canvas child is suspended.
+
+### Prior current Wizard-intake read-path SCOPE queue
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS

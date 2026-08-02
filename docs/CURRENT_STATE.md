@@ -1,9 +1,78 @@
 # Current State
 
-Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live interaction-polish-v1 SCOPE
+## Live interaction-polish-v1 LOCK
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Entry is accepted and pushed implementation commit
+`140e7e9d1b302b6652b88271889c6f321134ea34`, parent
+`409783e9c5d1f15c9d2aa68df5cc3ed798ce9cd2`, subject
+`feat: polish Wizard interactions v1`, with `HEAD == origin/main`, divergence
+`0 0`, empty staged/substantive tracked diffs, and exactly two committed paths:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart` —
+  blob `869eddc364d1bbe9892995dad15dcf6a22864b81`;
+- `test/widget/new_project_wizard_screen_test.dart` —
+  blob `68328a4a52a7f3c5874dc0ed5ea4d25cd242f0b5`.
+
+Human manual smoke is `13/13 PASS`. The supplied final implementation audit
+returned `ACCEPT_WITH_NITS` and safe for the exact two-file set. Accepted
+validation is format `2 files, 0 changed`, targeted analysis `no issues`,
+focused Wizard `62/62`, full Flutter `500/500`, validator `302 tests, OK`, and
+diff checks `PASS`. The accepted evidence-only NIT is the pre-existing
+rotation-control `Semantics` wrapper without a semantic activation action; no
+implementation patch is authorized by this LOCK.
+
+This Phase 1 LOCK changes exactly the four route/ledger owners, the code-map
+index, the two existing Wizard maps, and
+`docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
+— eight paths total. Both maps are refreshed from committed `HEAD` and both
+map headers plus matching index rows are `REVIEW_REQUIRED`. Production remains
+automatic through 5+ independently testable behaviors. The 3,252-line,
+62-test focused suite now qualifies automatically through >3,000 lines and
+three or more test families.
+
+Committed behavior now records reliable repeated exact-one empty-space
+candidate addition, compact Step 4 status/shape/size/rotation/boundary
+presentation, parent-owned independent visited state, gate-safe direct
+navigation, and gate-derived `Praegune samm` / `Valmis` / `Vaadatud` /
+`Järgmine samm` status. Focused tests cover select-versus-add, drag/cancel
+without add, wide/compact control geometry, visited navigation, all Step 1/3/5
+gates, status invalidation/restoration, navigation-only non-dirty behavior,
+retention, placeholders, and `ZERO_WRITE`.
+
+Phase 2 may promote only the two map Status headers and two matching index
+Status cells to `MAINTAINED`, fill the designated LOCK verdict block, and
+mechanically mirror that result into the matching ledger Status cell. Map
+bodies, qualifications, metadata, route prose, ledger Description, source,
+tests, accepted SCOPE artifact, unrelated maps/rows, and every other byte are
+frozen.
+
+The accepted implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`.
+Candidate visual drafts and visited/navigation state create no identity,
+electrical, measurement, diagnosis, canonical, persistent, project-state,
+event/fact/projection/schema/writer/materializer/ZIP, AI/OCR/CV, router, Home,
+Board Canvas, package, asset, tool, `_incoming`, or protected-surface
+authority.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No successor is armed.
+
+## Accepted interaction-polish-v1 SCOPE/EHITUS (historical)
+
+All current, future, and route language below this heading is historical and
+does not override the interaction-polish-v1 LOCK state above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS

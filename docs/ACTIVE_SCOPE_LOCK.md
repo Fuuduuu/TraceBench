@@ -2,10 +2,142 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current interaction-polish-v1 SCOPE authority
+## Current interaction-polish-v1 LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 140e7e9d1b302b6652b88271889c6f321134ea34`,
+parent `409783e9c5d1f15c9d2aa68df5cc3ed798ce9cd2`, subject
+`feat: polish Wizard interactions v1`, divergence `0 0`, and empty staged and
+substantive tracked diffs. The implementation commit changes exactly the
+Wizard screen and its focused test. Known porcelain-only tracked entries are
+content-identical to `HEAD`; known scratch remains outside authority.
+
+Exact committed Git blob identities:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart` —
+  `869eddc364d1bbe9892995dad15dcf6a22864b81`;
+- `test/widget/new_project_wizard_screen_test.dart` —
+  `68328a4a52a7f3c5874dc0ed5ea4d25cd242f0b5`.
+
+### Exact current Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
+
+No ninth file is authorized. The two implementation files, accepted SCOPE
+artifact, other maps and index rows, runtime, packages, assets, schemas,
+tools, `_incoming`, scratch, router, Home, Board Canvas, project state,
+persistence, canonical surfaces, and protected surfaces remain outside
+current write authority.
+
+### Accepted implementation evidence
+
+Human manual smoke is `13/13 PASS`. The supplied final implementation audit is
+`AUDIT_VERDICT: ACCEPT_WITH_NITS`, `SAFE_FOR_STAGING: YES`, and is limited to
+the exact two-file implementation set. Accepted validation is exact formatting
+`2 files, 0 changed`, targeted analysis `no issues`, focused Wizard tests
+`62/62 PASS`, full Flutter tests `500/500 PASS`, validator `302 tests, OK`, and
+both diff checks `PASS`.
+
+The accepted evidence-only NIT is that the rotation controls inherit a
+pre-existing `Semantics` wrapper without a semantic activation action. This
+LOCK authorizes no implementation or test patch for that finding.
+
+### Committed interaction behavior
+
+- Empty-space pointer-down now preserves the current selection and drag state;
+  completed empty-space tap-up adds exactly one newly selected candidate.
+  Repeated empty taps therefore add independent stable-key candidates, while
+  candidate taps only select, candidate drags only move, and pointer
+  cancellation/drag completion add nothing.
+- Step 4 uses one compact keyed status area, an equal-width `2×2` shape grid,
+  the retained `50–250%` size control, curved left/right rotation controls,
+  reset, a signed-degree display, and selected-only destructive delete.
+- Step 4 heading and boundary presentation are compact through layout and
+  typography. The full accepted identity/type/value/designator/package/
+  footprint/pin/contact/board-side/connection/net/measurement/diagnosis and
+  persistent/canonical-fact denials remain visible and unchanged in meaning.
+- `_visitedSteps` is parent-owned independently of `_currentStep`.
+  `_canNavigateToVisitedStep` allows backward visited navigation and allows
+  forward visited navigation only while every crossed required gate is valid.
+- `_requiredStepIsValid` delegates required Steps 1, 3, and 5 to
+  `_canAdvanceFromStepOne`, `_canAdvanceFromContour`, and
+  `_canAdvanceFromProblemDescription`. The active step is `Praegune samm`;
+  any visited valid required step is `Valmis` whether behind or ahead; any
+  visited non-complete step is `Vaadatud`; and only an unvisited step is
+  `Järgmine samm`.
+- Direct navigation changes only current/visited presentation state. The exact
+  seven-step order, Step 1/photo/contour/candidate/problem drafts, Steps 6–7
+  placeholders, dirty and retention rules, geometry, layers, cancellation,
+  and final zero-write behavior remain intact.
+
+### Map refresh and bounded Phase 2 authority
+
+The accepted implementation made the two prior `MAINTAINED` maps
+`UPDATE_REQUIRED`. This LOCK refreshes both from committed `HEAD`:
+
+- production remains `AUTO — 5+ independently testable behaviors`;
+- the 3,252-line, 62-test focused suite now qualifies automatically through
+  `>3,000 lines + 3+ test families`.
+
+Both refreshed map headers and only their matching `CODE_MAP_INDEX.md` Status
+cells are `REVIEW_REQUIRED`. A clean independent Phase 2 map/LOCK audit may
+change only:
+
+1. those two map Status headers from `REVIEW_REQUIRED` to `MAINTAINED`;
+2. those two matching index Status cells from `REVIEW_REQUIRED` to
+   `MAINTAINED`;
+3. the designated verdict-block interior in the matching LOCK artifact; and
+4. the matching `docs/AUDIT_INDEX.md` Status cell as a mechanical mirror.
+
+It may not change a map body, qualification, Source, Type, Audit evidence,
+another index/ledger row or cell, ledger Description, route prose,
+implementation source/test, accepted SCOPE artifact, or any other byte. No
+extra pass is created.
+
+### Boundary, release, and stops
+
+The implementation and LOCK remain `UI_LOCAL` + `ZERO_WRITE`. Candidate keys,
+positions, shape/size/rotation, selection/current style, visited-step state,
+gate-derived status, and direct navigation remain transient Wizard state or
+derived presentation. There is no component identity, type, value,
+designator, package, footprint, pin/contact/pad/polarity/board-side/net/
+connection, measurement, diagnosis, canonical coordinate, provider, project
+state, persistence, filesystem write, event, fact, projection, schema,
+validator, writer, materializer, Project ZIP, AI/OCR/CV, router, Home, Board
+Canvas, package, asset, tool, `_incoming`, or protected-surface authority.
+
+```text
+Current: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No successor or runtime allowlist is
+armed. Stop on a ninth file, a map body not derived from committed `HEAD`, any
+runtime/test/SCOPE-artifact edit, any unrelated map/index-row edit, a Phase 2
+mutation outside the six designated status/verdict coordinates, canonical or
+persistent expansion, validator failure, or any protected-surface change.
+
+## Accepted interaction-polish-v1 SCOPE/EHITUS authority (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the interaction-polish-v1 LOCK authority
+above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS

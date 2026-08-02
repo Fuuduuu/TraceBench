@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
 
 ## File purpose
 
@@ -14,8 +14,9 @@ widget-local draft used by it. Step 1 captures project metadata; optional Step
 generic visual candidates; required Step 5 captures raw human problem
 observations through a controlled child editor; and Steps 6–7 remain honest
 placeholders. The screen owns every authoritative draft, retains values across
-navigation and responsive rebuilds, distinguishes `Valmis` from `Vaadatud`,
-and reaches no project, canonical, event, fact, file-copy, or ZIP write path.
+navigation and responsive rebuilds, tracks visited steps independently,
+derives required-step status from current gates, and reaches no project,
+canonical, event, fact, file-copy, or ZIP write path.
 
 ## Responsibility zones
 
@@ -28,10 +29,10 @@ and reaches no project, canonical, event, fact, file-copy, or ZIP write path.
 | Photo Step 2 integration | `_buildPhotoAlignmentStep`, `_buildPhotoEmptyState`, `NewProjectWizardPhotoEditor` | Renders the optional photo-only editor, platform copy, selected path, recovery controls, and zero-write boundary note. |
 | Contour state and interaction | `_contourPoints`, `_contourClosed`, `_canAdvanceFromContour`, `_handleContourTap`, `_handleContourPointerMove`, `_deleteSelectedContourPoint`, `_resetContour`, `_closeContour` | Owns editor-normalized points, selection/drag state, reopening mutations, and the closed-only Step 3 gate. |
 | Contour editor and photo background | `_buildContourStep`, `_buildContourCanvas`, `wizard-contour-stack`, `wizard-contour-photo-layer`, `_WizardContourPainter` | Paints the photo as an inert bottom layer and editable contour state above it, or operates normally without a photo. |
-| Candidate style, state, and interaction | `_componentCandidates`, `_componentCurrentShape`, `_componentCurrentSizeScale`, `_componentCurrentRotation`, `_WizardComponentShape`, `_WizardComponentCandidate`, `_setComponentShape`, `_setComponentSizeScale`, `_setComponentRotation`, `_componentCandidateKeyAt` | Owns immutable stable-key candidates, current-style inheritance, selected-only style mutation, add/select/geometric-hit/drag/clamp/delete behavior, and dirty-state branches. |
-| Component editor, controls, and layered guides | `_buildComponentPlacementStep`, `_buildComponentCanvas`, `_buildComponentControls`, `wizard-component-stack`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry` | Keeps photo and contour inert below candidates, exposes keyed shape/size/rotation/current-style controls, derives shape-aware geometry and hit bounds, and retains no-photo operation. |
+| Candidate style, state, and interaction | `_componentCandidates`, `_componentCurrentShape`, `_componentCurrentSizeScale`, `_componentCurrentRotation`, `_WizardComponentCandidate`, `_componentCandidateKeyAt`, `_handleComponentTap`, `_handleComponentPointerDown` | Owns immutable stable-key candidates and current-style inheritance; empty pointer-down preserves selection so each completed empty tap adds once, while candidate tap/select/drag/cancel remain distinct. |
+| Component editor, controls, and layered guides | `_buildComponentPlacementStep`, `_buildComponentCanvas`, `_buildComponentControls`, `wizard-component-status`, `wizard-component-shape-grid`, `wizard-component-rotation-value`, `wizard-component-boundary-note`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry` | Keeps photo/contour inert below candidates; compacts status and full boundary meaning; exposes equal-width 2×2 shapes, size, curved rotation/reset/signed-value controls, and unchanged geometry/hit behavior. |
 | Problem draft and Step 5 integration | `_problemDescriptionDraft`, `_canAdvanceFromProblemDescription`, `_handleProblemDescriptionChanged`, `_buildProblemDescriptionStep`, `NewProjectWizardProblemDescription` | Owns the raw five-value observation draft, effective-change dirty handling, required Step 5 dispatch/gate/progress, and the child presentation seam. |
-| Navigation, progress, and actions | `_goNext`, `_goBack`, `_buildProgressTile`, `_buildActionBar`, `_currentStep` | Enforces the Step 1, Step 3, and Step 5 gates, derives bounds from `_wizardSteps.length`, and separates completion from visited optional work. |
+| Navigation, progress, and actions | `_currentStep`, `_visitedSteps`, `_isRequiredStep`, `_requiredStepIsValid`, `_canAdvanceFromStep`, `_goNext`, `_goBack`, `_canNavigateToVisitedStep`, `_navigateToVisitedStep`, `_buildProgressTile`, `_buildActionBar` | Tracks entered steps independently, permits backward and gate-valid forward visited jumps, derives required completion from live Step 1/3/5 gates, and exposes actions only on available non-active tiles. |
 | Responsive shell and cancellation | `build`, `SingleChildScrollView`, `_buildWideProgress`, `_buildCompactProgress`, `_cancelWizard` | Preserves one parent draft through wide/compact rebuilds, coordinates editor gestures with scrolling, and confirms dirty cancellation. |
 
 ## State and data flow
@@ -47,11 +48,11 @@ and reaches no project, canonical, event, fact, file-copy, or ZIP write path.
 9. `[D]` All three editors read the parent transform independently; photo changes never rewrite contour/candidate geometry.
 10. `[D]` Contour add/move/delete/reset/close changes only editor-normalized local state; closure plus three points is the sole Step 3 gate.
 11. `[D]` Each candidate keeps a local key, editor-normalized center, one of four shapes, size `0.50..2.50`, and rotation `[-π, π)`.
-12. `[D]` No-selection controls update current style only; selection loads style; effective selected edits replace one candidate; add inherits, delete retains, and drag moves only.
+12. `[D]` Empty pointer-down returns without clearing selection or arming drag, so tap-up adds one candidate; candidate pointer-down selects/arms drag, candidate tap adds nothing, drag moves only, and pointer end/cancel adds nothing.
 13. `[D]` `_WizardComponentMarkerGeometry` derives the 8-pixel floor, `3.5%` relative scale, shape ratios, rotation, complete bounds, and at-least-56×56 hit target; closest center/insertion order resolves overlaps.
 14. `[D]` `_handleProblemDescriptionChanged` ignores equal drafts; effective updates replace the raw five-value parent draft and dirty it; validity alone uses `description.trim().isNotEmpty`.
-15. `[D]` Navigation mutates only `_currentStep`; photo/contour/candidate state and all problem values survive forward/back, earlier-step mutation, and responsive rebuilds.
-16. `[D]` Progress derives its count from `_wizardSteps`; Step 1, closed Step 3, and valid passed Step 5 can be `Valmis`; optional work/placeholders are `Vaadatud`.
+15. `[D]` Navigation mutates only `_currentStep` and `_visitedSteps`; backward visited jumps always work, while forward visited jumps revalidate every crossed Step 1/3/5 gate without dirtying or mutating drafts.
+16. `[D]` Progress derives its count from `_wizardSteps`; active is `Praegune samm`, every visited valid required step is `Valmis` regardless of ordering, every visited non-complete step is `Vaadatud`, and only unvisited is `Järgmine samm`.
 17. `[D]` `_buildActionBar` derives the final boundary, gates Step 5 without rewriting raw text, and exposes no create action.
 
 ## Direct dependencies
@@ -72,7 +73,7 @@ writer, materializer, projection, or project-model dependency.
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Step 1 values, current step, dirty/picker flags | `UI_LOCAL` | Mutate transient widget state only. |
+| Step 1 values, current/visited steps, dirty/picker flags | `UI_LOCAL` | Mutate transient widget state only; navigation alone never dirties a draft. |
 | Photo path and `NewProjectWizardPhotoTransform` | `UI_LOCAL` | Remain parent-owned presentation draft values and produce no canonical alignment output. |
 | Contour points and interaction state | `UI_LOCAL` | Remain editor-local and never become `board_normalized`. |
 | Candidate keys, positions, visual style, selection, and current style | `UI_LOCAL` | Remain private generic visual proposals; effective selected/add/move/delete mutations touch only the Wizard draft. |
@@ -97,6 +98,8 @@ ZIP call path.
 - `[D]` Problem text is displayed and gated only; it is not diagnosed,
   inferred, normalized, persisted, or converted into a canonical fact.
 - `[D]` Steps 6–7 and the final action area execute no workflow.
+- `[D]` Progress status, availability, and direct navigation derive from
+  transient visitation plus existing gates and create no project state.
 - `[D]` Picker errors, progress, semantics, safety copy, and cancellation
   persist nothing.
 
@@ -109,12 +112,12 @@ ZIP call path.
 | Photo transform | `[D]` Parent clamps/normalizes values and owns dirty state. | child callbacks, all photo layers | `UI_LOCAL` | bounds; reset/replace/remove; retention |
 | Step 2 photo editor | `[D]` Child receives no future guide state. | child editor map and tests | `UI_LOCAL` | optional/Vaadatud; no-guide editor tests |
 | Step 3 layering | `[D]` inert photo precedes editable contour painter. | contour gate and gestures | `UI_LOCAL` | layer order; contour invariance; no-photo operation |
-| Step 4 candidate style | `[D]` parent current style and immutable candidates own shape, scale, and rotation. | selection, dirty state, controls, navigation | `UI_LOCAL` | four choices; inheritance; selected-only edits; drag/delete retention |
+| Step 4 candidate interaction/style | `[D]` empty pointer-down preserves selection; tap-up adds once; parent style and immutable candidates retain shape, scale, rotation, and keys. | selection, drag/cancel, dirty state, controls, navigation | `UI_LOCAL` | repeated exact-one add; select-versus-add; drag/cancel non-add; inheritance; selected-only edits |
 | Step 4 geometry/hit testing | `[D]` painter derives shape path, responsive pixels, rotation, selected outline, and rotated/minimum target. | candidate selection/drag and contour guide | `ZERO_WRITE` | size floor/ratios; rotated ends/corners; closest-center overlaps |
 | Step 4 layering | `[D]` inert photo precedes contour/candidate painter. | candidate style/geometry and guide snapshot | `UI_LOCAL` | layer order; fixed geometry/style; no-photo operation |
 | Step 5 observation draft | `[D]` parent equality, raw storage, child seam, and trimmed-only validity are distinct. | navigation, progress, cancellation, child editor | `UI_LOCAL` | empty/whitespace gate; five-value retention; effective/no-op dirty behavior |
 | Navigation/retention | `[D]` one parent state survives step and size changes. | progress, responsive shell | `UI_LOCAL` | Step 2–5 round trips and resize |
-| Progress/gating | `[D]` indexes 0, 2, and 4 gate and can complete. | catalogue and action bar | `ZERO_WRITE` | Step 2/4 Vaadatud; Step 3/5 Valmis |
+| Progress/gating | `[D]` `_visitedSteps` is ordering-independent; indexes 0, 2, and 4 use their live gates for status and forward-jump availability. | catalogue, action bar, responsive progress | `UI_LOCAL` | current/visited/unvisited; all three gates; invalidation/restoration; navigation non-dirty |
 | Dirty cancellation | `[D]` each effective mutation assigns `_draftTouched`. | Step 1/contour/candidate mutations | `UI_LOCAL` | cancellation regressions plus source inspection |
 | Responsive gestures | `[D]` compact/wide branches reuse normalized parent state. | child pan gesture, candidate scroll physics | `UI_LOCAL` | 1440×900; 390×760; drag-versus-scroll |
 | Protected boundary | `[D]` no creator, project route, canonical, or persistent dependency exists. | router harness and final placeholder | `ZERO_WRITE` | zero-write traversal |
@@ -122,14 +125,14 @@ ZIP call path.
 ## Relevant tests and helpers
 
 Primary integration suite:
-`test/widget/new_project_wizard_screen_test.dart`, 55 widget tests. It covers
+`test/widget/new_project_wizard_screen_test.dart`, 62 widget tests. It covers
 Step 1, exact seven-step shell, optional photo Step 2, filtered picker,
 transform/opacity bounds, layered Step 3/4 reuse, invariant contour/candidate
 geometry, four marker shapes, current-style inheritance, selected-only
-mutation, canvas-relative size, normalized rotation, shape-aware painter/hit
-geometry, overlap resolution, Step 5 gating/progress/raw-value retention and
-dirty precision, responsive interaction, accessibility, and zero-write
-traversal.
+mutation, repeated exact-one add and cancel separation, compact status/2×2
+shape/rotation controls, canvas-relative geometry, direct visited navigation,
+all three gate/status invalidation-restoration paths, responsive interaction,
+accessibility, and zero-write traversal.
 
 Focused child suite:
 `test/widget/new_project_wizard_photo_editor_test.dart`, 7 widget tests. It
@@ -153,6 +156,8 @@ responsive layouts, and the local-only boundary.
 - `[D]` Changing current-style setters, selection loading, candidate copies,
   and dirty assignments together can mutate the wrong candidate or make
   no-selection styling appear persistent.
+- `[D]` Changing pointer-down selection, tap-up addition, and drag cleanup
+  together can drop an empty tap or create an accidental candidate.
 - `[D]` Changing painter paths, responsive size, rotated bounds, and pointer
   hit testing together can leave visible marker areas unselectable or make
   overlap resolution nondeterministic.
@@ -163,6 +168,8 @@ responsive layouts, and the local-only boundary.
 - `[D]` Changing problem equality, child synchronization, Step 5 gating, and
   dirty/progress paths together can lose raw text, cursor selection, or honest
   completion semantics.
+- `[D]` Changing visitation, gate iteration, tile semantics, and responsive
+  progress together can bypass a required step or misstate availability.
 - `[D]` Adding project state, file copy, canonical coordinates, facts/events,
   or Board Canvas coupling would cross the accepted boundary.
 
@@ -183,8 +190,9 @@ These are descriptive candidates only and authorize no work.
 - Marker geometry only: `_WizardComponentMarkerGeometry`, painter paths,
   selected outline, `_componentCandidateKeyAt`, and focused floor/ratio/edge/
   overlap tests; exclude stored position semantics.
-- Progress only: `_buildProgressTile`, `_goNext`, `_buildActionBar`, and
-  exact seven-step progress tests.
+- Progress only: `_visitedSteps`, `_requiredStepIsValid`,
+  `_canNavigateToVisitedStep`, `_buildProgressTile`, `_goNext`,
+  `_buildActionBar`, and exact gate/status/semantics tests.
 - Step 5 only: `_problemDescriptionDraft`, its effective mutation handler,
   dispatch/gate/progress branches, child seam, and focused/integration tests;
   exclude diagnosis, persistence, and canonical problem data.
@@ -208,7 +216,7 @@ Review for `SYMBOL_DRIFT` when step, photo, contour, candidate, problem-draft,
 child, painter, or action anchors change; `FLOW_DRIFT` when picker, transform,
 inheritance, hit testing, Step 5 validity/equality, navigation, dirty, or
 progress flow changes; `BOUNDARY_DRIFT` when a draft leaves widget state;
-`TEST_DRIFT` when the 55/7/9-test contract changes; and `STRUCTURE_DRIFT` when
+`TEST_DRIFT` when the 62/7/9-test contract changes; and `STRUCTURE_DRIFT` when
 editor ownership moves between files.
 
 ## Known uncertainty
@@ -229,6 +237,9 @@ editor ownership moves between files.
 - `[D]` Circle rotation controls remain enabled, but painting intentionally
   uses zero effective rotation while retaining the stored value for a later
   shape change.
+- `[D]` Rotation controls inherit a pre-existing `Semantics` wrapper without
+  a semantic activation action; the accepted implementation audit records
+  this as an evidence-only NIT.
 - `[D]` Responsive automation covers two fixed sizes, not every device or
   physical pointer.
 - `[D]` Zero-write is established by reachable call paths and test harnesses,

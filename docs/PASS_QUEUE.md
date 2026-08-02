@@ -2,10 +2,81 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS`
-Next: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_IMPL_PASS`
+Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current interaction-polish-v1 SCOPE queue
+## Current interaction-polish-v1 LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC
+```
+
+The accepted and pushed implementation is
+`140e7e9d1b302b6652b88271889c6f321134ea34`, parent
+`409783e9c5d1f15c9d2aa68df5cc3ed798ce9cd2`, and changes exactly:
+
+- `lib/features/project/screens/new_project_wizard_screen.dart`;
+- `test/widget/new_project_wizard_screen_test.dart`.
+
+Human manual smoke is `13/13 PASS`. The supplied final implementation audit
+is `ACCEPT_WITH_NITS` and safe for that exact implementation set. Accepted
+validation is format `2 files, 0 changed`, targeted analysis `no issues`,
+focused Wizard `62/62`, full Flutter `500/500`, validator `302 tests, OK`, and
+diff checks `PASS`.
+
+The accepted NIT remains evidence only: the rotation controls inherit a
+pre-existing `Semantics` wrapper without a semantic activation action. No
+runtime or test patch is queued.
+
+The exact Phase 1 docs/map authority is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
+
+No ninth file is queued. This LOCK refreshes exactly the two Wizard maps from
+committed `HEAD`. Production remains `AUTO — 5+ independently testable
+behaviors`; the 3,252-line, 62-test suite is now
+`AUTO — >3,000 lines + 3+ test families`. Both map headers and only the two
+matching registry Status cells are `REVIEW_REQUIRED`.
+
+The refreshed maps record repeated exact-one empty-space candidate addition;
+select/add and drag/cancel separation; compact combined Step 4 status;
+equal-width `2×2` shapes; curved rotation controls, reset, and signed degrees;
+compact boundary layout with every denial preserved; independently tracked
+visited state; backward and gate-valid forward direct navigation; and status
+derived from visitation plus the current Step 1/3/5 gates rather than current
+step ordering. The 62-test map records wide/compact coverage, all three gate
+protections, required-status invalidation/restoration, non-dirty navigation,
+retention, placeholders, and `ZERO_WRITE`.
+
+One independent Phase 2 audit may change only the two map headers, the two
+matching `CODE_MAP_INDEX.md` Status cells, the designated LOCK verdict-block
+interior, and the matching `AUDIT_INDEX.md` Status cell. It may not change map
+bodies or qualifications, route prose, ledger Description, source/tests, the
+accepted SCOPE artifact, unrelated maps/rows, or any other byte. No extra pass
+is queued.
+
+```text
+TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The queue remains `UI_LOCAL` + `ZERO_WRITE`. `NEEDS_USER_DECISION` is
+non-executable; no implementation successor, canonical/persistent authority,
+or protected-surface work is armed.
+
+## Accepted interaction-polish-v1 SCOPE/EHITUS queue (historical)
+
+All current, future, transition, and queue language below this heading is
+historical and does not override the LOCK queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_SCOPE_PASS

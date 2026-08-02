@@ -3,19 +3,17 @@
 - Source: `test/widget/new_project_wizard_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 11/12 — 55-test multi-family problem/marker/photo/contour/navigation/responsive protected-boundary surface`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PROBLEM_DESCRIPTION_V1_LOCK_PASS.md`
+- Qualification: `AUTO — >3,000 lines + 3+ test families`
+- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
 
 ## File purpose
 
 Exercises the seven-step zero-write New Project Wizard through controlled
-platform, folder-picker, photo-picker, router, viewport, pointer, semantics,
-problem-editor, and private painter/marker-geometry seams. Its 55 widget tests preserve Step
-1, contour, component, cancellation, and final-boundary behavior while proving
-the photo-first Step 2, read-only photo reuse below Steps 3–4, independent
-marker shape/size/rotation, current-style inheritance, geometric hit testing,
-required Step 5 gating/raw-value retention/dirty precision, honest progress,
-and responsive operability.
+platform, picker, router, viewport, pointer, semantics, problem-editor, and
+private painter/geometry seams. Its 62 widget tests preserve Step 1, contour,
+component, cancellation, and the final boundary while proving photo reuse,
+marker visuals, exact-one addition, compact Step 4 controls, direct visited
+navigation, live-gate progress, retention, and responsive operability.
 
 ## Responsibility zones
 
@@ -23,16 +21,16 @@ and responsive operability.
 | --- | --- | --- |
 | Platform and photo-picker seams | `_TestPlatformInfo`, `_MutableTestPlatformInfo`, `_FakePhotoFilePicker`, `_installPhotoPicker` | Supplies deterministic desktop/mobile capability and records the native picker request, outcomes, cancel, and exception. |
 | Isolated route and folder harness | `_buildWizardApp`, `GoRouter`, `directoryPicker`, `/new-project`, `/` | Hosts only transient Home/Wizard destinations and a zero-write parent-folder callback. |
-| Shared field and navigation helpers | `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne`, `_openPhotoAlignmentStep`, `_openContourStep`, `_openComponentPlacementStep`, `_openProblemDescriptionStep`, `_completeProblemDescription` | Drives the photo-first order and each accepted gate through stable keys. |
+| Shared field and navigation helpers | `_pumpFrames`, `_enterText`, `_tapKey`, `_completeStepOne`, `_openPhotoAlignmentStep`, `_openContourStep`, `_openComponentPlacementStep`, `_openProblemDescriptionStep`, `_completeProblemDescription`, `_openReviewStep` | Drives the photo-first order, accepted gates, and retained visited-step state through stable keys. |
 | Contour geometry and painter inspection | `_contourCanvasRect`, `_tapContourAt`, `_dragContourPoint`, `_contourPainter`, `_paintedContourPoints`, `_addTriangle`, `_closeContour` | Converts normalized test input, mutates contour state, and reads immutable private painter snapshots. |
 | Photo editor and transform inspection | `_photoEditor`, `_photoTransform`, photo picker tests | Reads the child editor’s parent-supplied path/transform callbacks and checks filter, bounds, opacity, reset, replace, remove, and retention. |
 | Component style, geometry, and painter inspection | `_componentCanvasRect`, `_tapComponentAt`, `_tapComponentFromCentreOffset`, `_dragComponentFromCentreOffset`, `_componentGeometry`, `_paintedComponentStyles`, `_setComponentSize` | Drives candidate controls and centre/edge pointers, then observes immutable key/position/style snapshots, derived paths/bounds/targets, selection, and the contour guide. |
 | Step 1 and catalogue contract | seven-step label, field, gate, path/copy, retention, multiline tests | Preserves the foundation and checks the seven accepted labels and initial navigation. |
 | Contour contract | Step 3 empty/add/drag/delete/reset/close/reopen tests | Proves editor-normalized mutation and the closed-only Step 3 `Edasi` gate. |
-| Component contract | Step 4 empty/guide/style/inheritance/geometry/hit/add/drag/delete/round-trip tests | Proves optional generic placement, four visual shapes, next-versus-selected style, immutable candidate isolation, responsive size/rotation geometry, deterministic targets, stable keys, clamping, selected-only deletion, and retention. |
+| Component contract | Step 4 status/grid/rotation/boundary, repeated-add, cancellation, geometry/hit, drag/delete/round-trip tests | Proves compact controls, full boundary meaning, exact-one empty taps, select/add and drag/cancel separation, immutable candidate style/key isolation, deterministic targets, deletion, and retention. |
 | Photo-first layering contract | optional/Vaadatud, desktop picker, photo-below-guides, cancel/exception, bounds, reset/replace/remove tests | Proves parent ownership, photo-only Step 2, inert bottom layers in Steps 3–4, and fixed contour/candidate state after photo changes. |
-| Problem draft, retention, progress, placeholders, and dirty contract | Step 5 empty/whitespace/raw tests, all-five-value retention, no-op callback, candidate/contour/problem mutations, Steps 6–7, progress tests | Proves required Step 5 integration, one retained local draft, effective-change dirty behavior, viewed versus complete semantics, and honest later placeholders. |
-| Responsive and protected boundary | compact photo drag, wide/compact contour/component tests, mobile actions, `no creator...` | Exercises 1440×900 and 390×760, gesture-versus-scroll behavior, unsupported platform copy, and zero-write traversal. |
+| Problem draft, retention, progress, placeholders, and dirty contract | Step 5 empty/whitespace/raw tests, all-five-value retention, no-op callback, `_progressStep`, `_expectProgressStatus`, `_progressHasTapAction`, `_progressHasButtonFlag`, Steps 6–7 | Proves live Step 1/3/5 status invalidation/restoration, gate-safe visited jumps, non-dirty navigation, retained drafts, and honest placeholders. |
+| Responsive and protected boundary | compact photo drag, wide/compact contour/component/progress tests, mobile actions, `no creator...` | Exercises 1440×900 and 390×760, pointer/keyboard/semantics availability, gesture-versus-scroll behavior, and zero-write traversal. |
 
 ## State and data flow
 
@@ -44,12 +42,12 @@ and responsive operability.
 6. `[D]` Optional Step 2 advances without photo and becomes `Vaadatud`, never `Valmis`.
 7. `[D]` Layer-order assertions place the same photo/transform below contour/candidate painters and prove geometry survives replacement/removal.
 8. `[D]` Cancel/error preserves the photo draft; separate tests cover bounds, reset, replacement, removal, navigation/resize, and compact drag versus scroll.
-9. `[D]` Marker tests cover keyed shapes, current-style inheritance, selected immutable updates, normalization, responsive geometry, and painter paths.
+9. `[D]` Marker tests cover compact status, equal-width 2×2 keyed shapes, signed curved rotation/reset, full boundary copy, current-style inheritance, immutable updates, responsive geometry, and painter paths.
 10. `[D]` Centre-offset tests cover elongated ends/rotated corners, 56×56 targets, closest-center overlaps, and insertion-order ties.
-11. `[D]` Contour/candidate tests retain normalized geometry, closure, key/order, selection, clamp, add/drag/delete, and mutation behavior.
+11. `[D]` Contour/candidate tests retain normalized geometry, closure, key/order, selection and clamp while proving each user-paced empty tap adds once and candidate select/drag/cancel never adds.
 12. `[D]` Step 5 tests distinguish empty/whitespace validity from preserved raw text, retain all five values through Step 6/earlier mutations/resize, and exercise effective versus identical callbacks.
 13. `[D]` Candidate/current style and problem snapshots survive navigation, earlier steps, resize, and photo changes without cross-mutation.
-14. `[D]` Progress distinguishes Step 1/closed Step 3/valid Step 5 `Valmis` from viewed optional work/placeholders and reaches Step 7 without create.
+14. `[D]` Progress tests distinguish current/visited/unvisited states, navigate backward and gate-valid forward in both layouts, and invalidate/restore Step 1/3/5 status without dirty navigation.
 15. `[D]` The final traversal stays on `/new-project` with no creator, project-state, filesystem, canonical, or project-route action.
 
 ## Direct dependencies
@@ -64,8 +62,8 @@ and responsive operability.
 | `PlatformInfo` | outbound capability seam | Controls folder/photo mobile boundaries. |
 | GoRouter | isolated route harness | Hosts only `/` and `/new-project`. |
 
-The suite creates no creator fake, project model, filesystem fixture, event,
-fact, projection, materializer, Board Canvas, or ZIP helper.
+The suite creates no creator/project/filesystem, event/fact/projection,
+materializer, Board Canvas, or ZIP fixture.
 
 ## Write and protected boundaries
 
@@ -77,17 +75,13 @@ fact, projection, materializer, Board Canvas, or ZIP helper.
 | Route assertions | `ZERO_WRITE` | Observe only the isolated harness URI. |
 
 No test assigns project state, calls `ProjectCreator`, writes a source/project
-file, emits an event/fact, converts canonical coordinates, or creates ZIP
-output.
+file, emits an event/fact, converts canonical coordinates, or creates ZIP output.
 
 ## Zero-write zones
 
-- `[D]` Picker outcomes are synthetic paths; no image bytes or filesystem
-  mutation is used.
-- `[D]` Photo transforms, contour points, candidates, and painter snapshots
-  remain in memory.
-- `[D]` Candidate style snapshots and marker paths, sizes, rotations, rotated
-  bounds, and hit rectangles are inspected as transient derived values only.
+- `[D]` Picker outcomes are synthetic paths; no image bytes or filesystem mutation is used.
+- `[D]` Photo transforms, contour points, candidates, and painter snapshots remain in memory.
+- `[D]` Candidate style, paths, sizes, rotations, bounds, and hit rectangles are inspected as transient derived values only.
 - `[D]` The router has no `/project` destination.
 - `[D]` View size and global picker replacement are restored by teardown.
 - `[D]` Protected-boundary assertions inspect reachable UI, not persistence.
@@ -101,39 +95,36 @@ output.
 | Photo transform | `[D]` Child callbacks expose parent normalization. | child editor focused suite | `UI_LOCAL` | defaults; clamps; reset/replace/remove |
 | Layer order/invariance | `[D]` Stack child indexes and snapshots establish bottom photo layers. | contour/component painters | `ZERO_WRITE` | photo below independent geometry |
 | Contour editor | `[D]` Existing gesture/painter helpers retain Step 3 behavior. | reordered setup and photo layer | `UI_LOCAL` | add/drag/delete/reset/close/reopen |
-| Component current style | `[D]` keyed controls and candidate snapshots distinguish next style from selected mutation. | selection, dirty cancellation, navigation | `UI_LOCAL` | defaults; inheritance; isolation; delete retention |
+| Component controls/style | `[D]` keyed compact status, 2×2 geometry, icon/tooltip/semantics, signed value, and candidate snapshots distinguish presentation from mutation. | selection, dirty cancellation, navigation | `UI_LOCAL` | compact panel; shapes; rotation/reset; inheritance; isolation |
 | Component geometry/hit | `[D]` painter geometry exposes responsive paths, ratios, rotation, bounds, and target rectangles. | raw pointer helpers and candidate ordering | `ZERO_WRITE` | 8px floor; default size; elongated/rotated edges; 56px target; overlaps |
-| Component editor | `[D]` key/position/style helpers retain Step 4 behavior. | reordered setup and both guide layers | `UI_LOCAL` | add/drag/clamp/style preservation/delete/round-trip |
+| Component editor | `[D]` pointer-lifetime helpers and snapshots separate empty add from candidate select/drag/cancel. | both guide layers, key/style retention | `UI_LOCAL` | repeated exact-one add; cancel; drag-without-add; delete/round-trip |
 | Retention/resize | `[D]` Parent draft is compared across three steps and view sizes. | progress and responsive shell | `UI_LOCAL` | photo draft survives navigation/resize |
 | Dirty cancellation | `[D]` Mutations precede dialog checks. | already-dirty shared setup | `UI_LOCAL` | contour/candidate cancellation plus source |
 | Problem description | `[D]` stable child fields and parent gate/progress/equality are exercised together. | child focused suite, navigation, cancellation | `UI_LOCAL` | empty/whitespace/normal gate; all-five retention; effective/no-op update |
-| Progress/placeholders | `[D]` Status copy is read at each visited step. | catalogue and gates | `ZERO_WRITE` | optional Steps 2/4; completed Step 5; placeholders 6–7 |
+| Progress/placeholders | `[D]` Semantics action/flag helpers and status finders observe independent visitation plus live gates. | catalogue, all three gates, action bar | `UI_LOCAL` | inert current/unvisited; backward/forward visited; invalidation/restoration; placeholders |
 | Responsive gestures | `[D]` Fixed sizes and scroll offsets exercise layout branches. | child editor pan and page scroll | `UI_LOCAL` | wide/compact; compact photo/candidate drag |
 | Protected boundary | `[D]` Harness exposes no project route or persistent collaborator. | final action copy | `ZERO_WRITE` | no creator/project-state/project-route |
 
 ## Relevant tests and helpers
 
-The 55-test suite contains:
+The 62-test suite contains:
 
 - 7 Step 1/catalogue/foundation tests;
 - 7 contour-specific interaction and closure tests;
-- 15 component guide/style/geometry/hit/interaction/retention tests;
+- 18 component status/style/geometry/hit/add/select/drag/cancel/retention tests;
 - 10 photo order/picker/layer/transform/retention/platform tests;
 - 10 problem-draft/cancellation/placeholder tests;
-- 5 responsive/progress tests; and
+- 9 responsive/progress/navigation/gate-status tests; and
 - 1 explicit creator/project-state/project-route boundary traversal.
 
-Key helpers are `_buildWizardApp`, `_completeStepOne`, the three step-entry
-helpers, `_FakePhotoFilePicker`, `_installPhotoPicker`, `_photoEditor`,
-`_photoTransform`, both normalized geometry families,
-`_tapComponentFromCentreOffset`, `_dragComponentFromCentreOffset`,
-`_componentGeometry`, `_paintedComponentStyles`, `_setComponentSize`, and the
-dynamic painter-inspection families.
+Key helpers are `_buildWizardApp`, `_completeStepOne`, the step-entry helpers,
+`_FakePhotoFilePicker`, `_installPhotoPicker`, `_photoEditor`, `_photoTransform`,
+both normalized geometry families, `_tapComponentFromCentreOffset`,
+`_dragComponentFromCentreOffset`, `_componentGeometry`,
+`_paintedComponentStyles`, `_setComponentSize`, and the progress/painter helpers.
 
-The linked 9-test child suite is
-`test/widget/new_project_wizard_problem_description_test.dart`; it isolates
-the model, controller synchronization/selection retention, raw/no-op callbacks,
-keys/copy/semantics, occurrence choices, responsive layouts, and boundary.
+The linked 9-test problem-child suite isolates its model, controller selection
+retention, raw/no-op callbacks, keys/copy/semantics, responsive layouts, and boundary.
 
 ## Dangerous combinations
 
@@ -148,6 +139,8 @@ keys/copy/semantics, occurrence choices, responsive layouts, and boundary.
 - `[D]` Changing current-style controls, candidate snapshot helpers, and
   inheritance/isolation assertions together can hide cross-candidate or dirty-
   state regressions.
+- `[D]` Changing pointer-lifetime helpers with production pointer-down/tap-up
+  handling can hide dropped empty taps or accidental drag-completion adds.
 - `[D]` Changing marker geometry fields, centre-offset pointer helpers, and
   edge/overlap expectations together can make an incomplete target appear
   correct.
@@ -156,6 +149,8 @@ keys/copy/semantics, occurrence choices, responsive layouts, and boundary.
 - `[D]` Changing Step 5 helpers, child callback inspection, parent equality,
   gate/progress expectations, and retention fixtures together can hide raw-
   value, cursor, dirty, or completion regressions.
+- `[D]` Changing progress semantics helpers, visited setup, gate mutation, and
+  production tile actions together can hide a bypass or false status.
 - `[D]` Adding creator, filesystem, canonical, or project-state fixtures
   would weaken the explicit boundary.
 
@@ -175,7 +170,8 @@ These are descriptive candidates only and authorize no work.
   invariance assertions, and next-versus-selected summary.
 - One marker-geometry or hit-target rule plus `_componentGeometry`, the
   matching centre-offset pointer helper, and painter/hit assertion.
-- One progress/placeholder expectation plus exact step-entry helpers.
+- One progress/navigation rule plus `_openReviewStep`, the progress semantics
+  helpers, its required gate mutation/restoration, and both layout branches.
 - One Step 5 rule plus `_openProblemDescriptionStep`, child field/callback
   inspection, its parent branch, and the linked focused child test.
 - One responsive size with explicit teardown and scroll-offset evidence.
@@ -197,7 +193,7 @@ Review for `SYMBOL_DRIFT` when helper, key, route, problem callback, candidate,
 geometry, painter, or stack anchors change; `FLOW_DRIFT` when step entry,
 picker, selection, Step 5 gate/equality/retention, dirty, or progress changes;
 `BOUNDARY_DRIFT` when persistent/canonical fixtures enter; `TEST_DRIFT` when
-the 55/9-test families change; and `STRUCTURE_DRIFT` when integration moves.
+the 62/9-test families change; and `STRUCTURE_DRIFT` when integration moves.
 
 ## Known uncertainty
 
@@ -214,6 +210,9 @@ the 55/9-test families change; and `STRUCTURE_DRIFT` when integration moves.
   lower slider range without mutating the stored size scale.
 - `[D]` Circle rotation controls remain enabled and the suite proves retained
   stored rotation rather than a visual rotational difference.
+- `[D]` Rotation controls retain an accepted pre-existing `Semantics` wrapper
+  without a semantic activation action; tests verify labels, tooltips, icons,
+  and the signed value, not that inherited activation action.
 - `[D]` Actual desktop image decoding and deleted-path behavior require
   manual smoke; this suite uses synthetic picker paths and widget structure.
 - `[D]` Zero-write is proved by harness/call-path inspection rather than a

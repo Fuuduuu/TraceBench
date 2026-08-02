@@ -2,10 +2,255 @@
 
 ## Route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS`
 
-## Current interaction-polish-v1 LOCK authority
+## Current Wizard-intake read-path SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC
+```
+
+Verified entry is branch `main`,
+`HEAD == origin/main == 54c6a0c1ab362ca48c8dd99d51df6a6b22459013`,
+subject `docs: lock Wizard interaction polish v1`, divergence `0 0`, empty
+staged and substantive tracked diffs, and current route
+`TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS ->
+NEEDS_USER_DECISION`. Known porcelain-only tracked entries are
+content-identical to `HEAD`; known scratch remains outside authority.
+
+### Exact current Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/PROJECT_ZIP_SPEC.md`
+6. `docs/code_maps/CODE_MAP_INDEX.md`
+7. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+8. `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS.md`
+
+No ninth file is authorized. Dart, tests, Python tools, schemas, assets,
+packages, generated files, `_incoming`, scratch, and every other map/index row
+remain outside current write authority.
+
+### Protected Project ZIP decision
+
+- `notes/wizard_intake.json` is one named optional project entry.
+- It is `NON_CANONICAL`, `HUMAN_PROVIDED`, and `PRESENTATION_INPUT`.
+- Supported Project ZIP export/import round-trips preserve it without
+  interpreting it as canonical truth.
+- Absence is valid and produces no warning.
+- It never changes `events.jsonl`, `known_facts.json`, event semantics,
+  materialization, evidence status, or canonical truth.
+- `.tracebench_local/canvas_preferences.json` remains local-only and excluded
+  from ZIP.
+- `view_state.json` remains forbidden.
+- The named entry does not make arbitrary `notes/` content executable,
+  trusted, evidence-bearing, or canonical.
+
+The current export, validation, import, and extraction path already supports
+that transport. A temporary project proof ran export -> ZIP validation ->
+import -> directory validation with return code `0` at every step. The named
+entry appeared exactly once and had SHA-256
+`0e87578ffdb20f20d31fdc4e0bacf5edb93bc6cc40ccb489138ecc963aba3042`
+before export, inside the ZIP, and after import. The local Canvas-preference
+file and `view_state.json` were absent from the ZIP, and tool output contained
+no Wizard-intake warning. No tool/runtime/test repair is required or allowed.
+
+### Code-map preflight and Phase 1 map state
+
+- `lib/shared/models/project_state.dart` is a small cohesive data holder and
+  is `NOT_APPLICABLE` under the Code Map Standard.
+- `lib/shared/services/project_loader.dart` owns 5+ independently testable
+  asset, ZIP, directory, required/optional read, event-parsing,
+  JSON-boundary, and state-construction behaviors. It qualifies as
+  `AUTO — 5+ independently testable behaviors`.
+- Its deterministic map is created only from committed `HEAD` at
+  `docs/code_maps/lib/shared/services/project_loader.dart.md` with Status
+  `REVIEW_REQUIRED`, and exactly one matching registry row has the same
+  Status.
+- The existing Board Canvas source/test maps and registry rows remain
+  `MAINTAINED` and inspect only during this SCOPE.
+- Maps remain descriptive and non-authorizing.
+
+### Locked route
+
+```text
+TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+-> TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+### Reserved child 1 implementation authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Activation is conditional on independent acceptance and human push of this
+exact eight-file SCOPE lock. Exact child 1 implementation allowlist:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/shared/models/project_state.dart`
+3. `lib/shared/services/project_loader.dart`
+4. `test/unit/wizard_intake_test.dart`
+5. `test/unit/project_loader_zip_test.dart`
+
+No sixth child 1 file is authorized.
+
+Required child 1 contract:
+
+- Add an immutable typed `WizardIntake` model.
+- Accept only `schema_version == "1.0"` and
+  `coordinate_space == "wizard_normalized"`.
+- Parse every known field strictly while tolerating unknown additional fields.
+- Type the problem description, closed contour, optional background photo and
+  transform, and read-only visual candidates.
+- Read optional `notes/wizard_intake.json` from both directory and ZIP inputs.
+- Missing entry returns `wizardIntake == null` with no warning.
+- Malformed known field or unsupported version does not fail project loading;
+  it returns null intake and a visible non-blocking warning state.
+- `ProjectState` gains only clearly noncanonical intake/warning fields.
+- `ProjectState.debugJson` continues excluding intake content.
+
+Child 1 may not edit or add a writer, creator, manifest, Canvas, route,
+provider, ZIP tool, event, known-facts, materializer, schema, package, asset,
+or `_incoming` surface. It may not extract, export, persist, canonicalize, or
+promote Wizard intake. ProjectLoader map disposition is `UPDATE_REQUIRED` for
+material accepted child source change; map maintenance remains a later
+docs-only action.
+
+Required child 1 tests include typed valid parsing; closed-contour and known
+field failures; unknown-field tolerance; unsupported version/coordinate
+space; directory and ZIP present/missing/malformed entry behavior; project
+load success plus visible nonblocking warning on invalid intake; exact null
+and silent behavior when missing; `debugJson` exclusion; and regression proof
+that loader inputs remain zero-write. Run exact formatting, targeted analysis,
+focused model/loader tests, full `flutter test`, Project ZIP unit tests, and
+`tools/validate_all.py` before independent audit.
+
+### Reserved child 2 implementation authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Child 2 activates only after accepted committed child 1 evidence. Exact child
+2 implementation allowlist:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+No third child 2 file is authorized.
+
+Required child 2 contract:
+
+- Consume only `ProjectState.wizardIntake`.
+- Render the closed contour and visual candidates read-only.
+- Candidates are visible by default and labelled
+  `Visuaalsed kandidaadid`.
+- Background photo is hidden by default; the UI-local control copy is
+  `Näita taustafotot` / `Peida taustafoto`.
+- Missing photo uses a neutral unavailable state.
+- Invalid-intake warning remains visible and non-blocking.
+- First render uses Fit to contour.
+- Contour bounds are the min/max point coordinates.
+- Centered proportional fit uses padding equal to 3% of the shorter Canvas
+  side, clamped to 16–28 px.
+- Photo, contour, and candidates use the same render transform.
+- No conversion to `board_normalized` occurs.
+- No candidate editing or `.tracebench_local/canvas_preferences.json`
+  persistence occurs.
+
+Child 2 creates no component identity, placement, type, value, designator,
+package, footprint, contact, pin, pad, board side, connection, net,
+measurement, diagnosis, event, fact, evidence, or canonical projection. It
+calls no writer and changes no Project ZIP/tool/model/provider/router surface.
+Both existing Board Canvas maps remain inspect-only planning input and receive
+`UPDATE_REQUIRED` only after material accepted source/test change.
+
+Focused widget tests must cover present/missing/invalid intake; default
+candidate/photo visibility; exact labels and toggle copy; neutral missing
+photo; contour/candidate/photo transform equality; min/max bounds; 3% padding
+with both clamp endpoints; centered proportional first fit; no
+`board_normalized` conversion; no candidate edit; and canonical/project-state
+zero-write behavior. Manual wide and compact smoke must pass before the final
+child audit. Then run exact formatting, targeted analysis, the full focused
+Board Canvas target, full `flutter test`, and `tools/validate_all.py`.
+
+### Explicitly deferred write-path cycle
+
+The following require a later separately scoped protected write-path cycle and
+are not armed by this route:
+
+- Wizard Step 1 `Täpsemalt`;
+- Step 6 review and `Loo projekt`;
+- Step 7 `Projekt loodud` and `Ava projekt`;
+- ProjectCreator integration;
+- manifest `project_name`, device name/manufacturer/revision fields;
+- photo copy into `photos/`;
+- writing `notes/wizard_intake.json`;
+- assigning created `ProjectState` to the provider;
+- Canvas route transition;
+- `.tracebench_local/canvas_preferences.json` read/write; and
+- persisted zoom, pan, background-photo visibility, and first-fit marker.
+
+### Bounded Phase 2 authority
+
+An independent Phase 2 audit may change only:
+
+1. the Status header in
+   `docs/code_maps/lib/shared/services/project_loader.dart.md` from
+   `REVIEW_REQUIRED` to `MAINTAINED`;
+2. the matching `lib/shared/services/project_loader.dart` registry Status cell
+   in `docs/code_maps/CODE_MAP_INDEX.md` from `REVIEW_REQUIRED` to
+   `MAINTAINED`;
+3. the designated verdict-block interior in
+   `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS.md`; and
+4. the matching `docs/AUDIT_INDEX.md` Status cell as a mechanical verdict
+   mirror.
+
+Phase 2 may not change route prose, Project ZIP spec, map body,
+qualification, Source, Type, Audit evidence, ledger Description, another map
+or index/ledger row, child contract, Dart, tests, tools, schemas, assets,
+packages, `_incoming`, or any other byte.
+
+### Boundary, release, and stops
+
+Wizard intake remains human-provided noncanonical presentation input. The
+read path may decode and render it but cannot create, infer, confirm, or alter
+identity, type, value, designator, package, footprint, contacts, pins, pads,
+board side, connectivity, nets, measurement, diagnosis, evidence status,
+events, facts, canonical coordinates, or canonical truth. Visual and
+electrical graphs remain separate. `events.jsonl` and `known_facts.json`
+semantics remain unchanged.
+
+```text
+Current: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+Next: TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+```
+
+Stop on a ninth Phase 1 file, any runtime/test/tool/schema/asset/package/
+`_incoming` edit, transport-preservation failure, ambiguous protected
+boundary, child need for another file, map derived from anything other than
+committed `HEAD`, Phase 2 mutation outside the four exact coordinates,
+validation failure, staged path, baseline drift, reset/restore/stash/clean/
+delete action, or any creation/write-path activation.
+
+## Accepted interaction-polish-v1 LOCK authority (historical)
+
+All current, future, route, and authority language below this heading is
+historical and does not override the Wizard-intake read-path SCOPE authority
+above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS

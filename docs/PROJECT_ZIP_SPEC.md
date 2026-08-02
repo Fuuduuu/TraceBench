@@ -19,6 +19,7 @@ live merge.
 
 - `photos/`
 - `notes/`
+  - `notes/wizard_intake.json` is the named optional Wizard-intake entry.
 - `exports/`
 
 ### Rules
@@ -28,7 +29,18 @@ live merge.
   secrets, local logs, or temporary/local artifacts.
 - ZIP must exclude local sidecar reference-image paths under
   `.tracebench_local/` (for example `.tracebench_local/reference_images/`
-  and `.tracebench_local/reference_images.json`).
+  and `.tracebench_local/reference_images.json`) and local Canvas preferences
+  at `.tracebench_local/canvas_preferences.json`.
+- `notes/wizard_intake.json` is `NON_CANONICAL`, `HUMAN_PROVIDED`, and
+  `PRESENTATION_INPUT`. Supported Project ZIP export/import round-trips must
+  preserve the optional entry and its file content without interpreting it as
+  canonical truth.
+- Absence of `notes/wizard_intake.json` is valid and produces no warning.
+- `notes/wizard_intake.json` never changes `events.jsonl`,
+  `known_facts.json`, event semantics, materialization, evidence status, or
+  canonical truth.
+- The named Wizard-intake entry does not make arbitrary `notes/` content
+  executable, trusted, or eligible for canonical or evidence-bearing use.
 - `events.jsonl` remains the source event log and canonical raw measurement log.
 - `known_facts.json` is materialized/derived output and may be regenerated.
 - `board_graph.json` and `view_state.json` are forbidden V1 artifacts and must be

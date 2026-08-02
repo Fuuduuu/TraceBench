@@ -2,10 +2,143 @@
 
 ## Current route
 
-Current: `TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS`
 
-## Current interaction-polish-v1 LOCK queue
+## Current Wizard-intake read-path SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC
+```
+
+Entry is branch `main`,
+`HEAD == origin/main == 54c6a0c1ab362ca48c8dd99d51df6a6b22459013`,
+subject `docs: lock Wizard interaction polish v1`, divergence `0 0`, empty
+staged/substantive tracked diffs, and released predecessor route
+`TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS ->
+NEEDS_USER_DECISION`.
+
+The exact docs-only Phase 1 material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/PROJECT_ZIP_SPEC.md`
+6. `docs/code_maps/CODE_MAP_INDEX.md`
+7. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+8. `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS.md`
+
+No ninth file is queued. The Project ZIP tool chain already preserves
+`notes/wizard_intake.json`: a temporary export, ZIP validation, import, and
+directory validation all returned `0`, the entry occurred once and stayed
+byte-identical across the round-trip, and the local preferences and forbidden
+view-state paths were excluded. The spec now names the optional entry as
+`NON_CANONICAL`, `HUMAN_PROVIDED`, and `PRESENTATION_INPUT`; missing is valid
+and silent, and no `notes/` content gains executable, trusted, evidence, or
+canonical status.
+
+`ProjectState` is `NOT_APPLICABLE` for a map as a small cohesive holder.
+ProjectLoader qualifies automatically through 5+ independently testable
+behaviors; its committed-source production map and only its matching index row
+start `REVIEW_REQUIRED`. Both existing Board Canvas maps stay `MAINTAINED` and
+inspect only.
+
+```text
+TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+-> TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+## Reserved child 1 — typed model and loader
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+- `lib/shared/models/wizard_intake.dart`
+- `lib/shared/models/project_state.dart`
+- `lib/shared/services/project_loader.dart`
+- `test/unit/wizard_intake_test.dart`
+- `test/unit/project_loader_zip_test.dart`
+
+Required behavior is one immutable typed noncanonical model for
+`schema_version == "1.0"` and
+`coordinate_space == "wizard_normalized"`. Known fields are strict and
+unknown additions tolerated. Typed content is limited to problem description,
+a closed contour, optional background photo/transform, and read-only visual
+candidates. The loader reads the named optional file from directory and ZIP.
+Missing means null intake and no warning; a malformed known field or
+unsupported version keeps the project load successful, returns null intake,
+and supplies a visible non-blocking warning. `ProjectState` gains only
+noncanonical intake/warning fields and `debugJson` excludes intake content.
+
+Child 1 excludes every writer, creator, manifest, Canvas, route, provider, ZIP
+tool, event, known-facts, materializer, and schema change. It must use the new
+ProjectLoader map only as descriptive planning evidence and give the map
+`UPDATE_REQUIRED` disposition after material accepted source change.
+
+## Reserved child 2 — Canvas read-only presentation
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`
+- `test/widget/board_canvas_screen_test.dart`
+
+Child 2 consumes only `ProjectState.wizardIntake`. Closed contour and visual
+candidates render read-only; candidates are visible by default under
+`Visuaalsed kandidaadid`. The optional background photo is hidden by default,
+uses `Näita taustafotot` / `Peida taustafoto`, and has a neutral unavailable
+state when missing. Invalid-intake warning presentation remains non-blocking.
+
+First render uses Fit to contour. Bounds are the contour point min/max values;
+one centered proportional transform fits them with padding equal to 3% of the
+shorter Canvas side, clamped to 16–28 px. Photo, contour, and candidates share
+the transform. No `board_normalized` conversion, candidate editing, preference
+persistence, or component identity/placement/contact/pin/net/measurement/
+diagnosis/event/fact creation is queued. The two existing `MAINTAINED` Board
+Canvas maps provide inspect-only planning inputs; material child work gives
+them `UPDATE_REQUIRED`. Wide and compact manual smoke is mandatory before the
+final child audit.
+
+## Reserved read-path LOCK
+
+`TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS` is the one later docs/map lock
+after both accepted children. It may be scoped only from accepted committed
+child source and evidence; this SCOPE does not pre-authorize its file set or
+record an audit result.
+
+The separate write-path cycle remains deferred: Step 1 `Täpsemalt`; Step 6
+review and `Loo projekt`; Step 7 `Projekt loodud` and `Ava projekt`;
+ProjectCreator integration; manifest project/device fields; photo copy;
+writing `notes/wizard_intake.json`; provider assignment; Canvas transition;
+local preference read/write; and persisted zoom, pan, photo visibility, and
+first-fit marker.
+
+Phase 2 of this SCOPE may only promote the one new map and matching index row
+to `MAINTAINED`, fill the designated verdict block, and mechanically mirror it
+in the matching audit-ledger Status. Everything else remains frozen. Child 1
+activates only after independent acceptance and human push of this exact
+eight-file lock.
+
+## Accepted interaction-polish-v1 LOCK queue (historical)
+
+All current, future, transition, and queue language below this heading is
+historical and does not override the Wizard-intake read-path queue above.
 
 ```text
 PASS_ID: TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS

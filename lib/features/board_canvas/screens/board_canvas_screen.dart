@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show setEquals;
@@ -17,6 +18,7 @@ import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/trace_bench_event.dart';
+import '../../../shared/models/wizard_intake.dart';
 
 const double _kCompactBoardCanvasAppBarHeight = 36;
 const double _kCompactControlTileHeight = 34;
@@ -1722,6 +1724,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                 );
                 final canvas = _CanvasPanel(
+                  projectId: projectState.manifest.projectId,
+                  projectDirectory: projectState.projectDirectory,
+                  wizardIntake: projectState.wizardIntake,
+                  wizardIntakeWarning: projectState.wizardIntakeWarning,
                   entries: visibleEntries,
                   selectedKey: selectedKey,
                   selectedComponentId: _selectedComponentId,
@@ -2642,10 +2648,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.title, this.subtitle});
+  const _EmptyState({required this.title});
 
   final String title;
-  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -2660,14 +2665,6 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                subtitle!,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
           ],
         ),
       ),
@@ -6440,14 +6437,12 @@ class _PlacementSelector extends StatelessWidget {
     required this.selectedKey,
     required this.selectedLabel,
     required this.onSelected,
-    this.initiallyExpanded = false,
   });
 
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final String? selectedLabel;
   final ValueChanged<String> onSelected;
-  final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -6464,7 +6459,6 @@ class _PlacementSelector extends StatelessWidget {
       ),
       child: ExpansionTile(
         key: const Key('board_canvas_placement_selector_disclosure'),
-        initiallyExpanded: initiallyExpanded,
         maintainState: true,
         dense: true,
         visualDensity: VisualDensity.compact,
@@ -6544,6 +6538,10 @@ class _CanvasStatusPill extends StatelessWidget {
 
 class _CanvasPanel extends StatefulWidget {
   const _CanvasPanel({
+    required this.projectId,
+    required this.projectDirectory,
+    required this.wizardIntake,
+    required this.wizardIntakeWarning,
     required this.entries,
     required this.selectedKey,
     required this.selectedComponentId,
@@ -6570,6 +6568,10 @@ class _CanvasPanel extends StatefulWidget {
     required this.onAddComponentTemplateGhostDraftAnchorChanged,
   });
 
+  final String projectId;
+  final String? projectDirectory;
+  final WizardIntake? wizardIntake;
+  final String? wizardIntakeWarning;
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final String? selectedComponentId;
@@ -6612,6 +6614,26 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   Offset? _addComponentTemplateGhostDragGrabOffset;
   double _addComponentTemplateGhostDragScale = 1.0;
   Size _addComponentTemplateGhostDragCanvasSize = Size.zero;
+  bool _wizardPhotoVisible = false;
+  String? _initiallyFittedWizardProjectId;
+  WizardIntake? _initiallyFittedWizardIntake;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleWizardInitialFit();
+  }
+
+  @override
+  void didUpdateWidget(covariant _CanvasPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final activeWizardChanged = oldWidget.projectId != widget.projectId ||
+        !identical(oldWidget.wizardIntake, widget.wizardIntake);
+    if (activeWizardChanged) {
+      _wizardPhotoVisible = false;
+    }
+    _scheduleWizardInitialFit();
+  }
 
   @override
   void dispose() {
@@ -6622,6 +6644,44 @@ class _CanvasPanelState extends State<_CanvasPanel> {
 
   void _fitCanvasView() {
     _transformationController.value = Matrix4.identity();
+  }
+
+  void _scheduleWizardInitialFit() {
+    final intake = widget.wizardIntake;
+    if (intake == null) {
+      _initiallyFittedWizardProjectId = null;
+      _initiallyFittedWizardIntake = null;
+      return;
+    }
+    if (_initiallyFittedWizardProjectId == widget.projectId &&
+        identical(_initiallyFittedWizardIntake, intake)) {
+      return;
+    }
+    _initiallyFittedWizardProjectId = widget.projectId;
+    _initiallyFittedWizardIntake = intake;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          widget.projectId != _initiallyFittedWizardProjectId ||
+          !identical(widget.wizardIntake, intake)) {
+        return;
+      }
+      _fitCanvasView();
+    });
+  }
+
+  File? _wizardPhotoFile() {
+    final photo = widget.wizardIntake?.backgroundPhoto;
+    final projectDirectory = widget.projectDirectory?.trim();
+    if (photo == null || projectDirectory == null || projectDirectory.isEmpty) {
+      return null;
+    }
+    try {
+      return File.fromUri(
+        Directory(projectDirectory).uri.resolve(photo.relativePath),
+      );
+    } on FormatException {
+      return null;
+    }
   }
 
   void _selectPlacementAt(Offset position, Size size) {
@@ -6657,6 +6717,14 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       math.max(240, size.width),
       math.max(96, size.height),
     );
+    final wizardIntake = widget.wizardIntake;
+    final wizardFitTransform = wizardIntake == null
+        ? null
+        : _WizardIntakeFitTransform.fromContour(
+            points: wizardIntake.contour.points,
+            canvasSize: canvasSize,
+          );
+    final wizardPhotoFile = _wizardPhotoFile();
     return InteractiveViewer(
       key: const Key('board_canvas_interactive_viewer'),
       transformationController: _transformationController,
@@ -6675,6 +6743,30 @@ class _CanvasPanelState extends State<_CanvasPanel> {
           height: canvasSize.height,
           child: Stack(
             children: [
+              if (_wizardPhotoVisible &&
+                  wizardIntake?.backgroundPhoto != null &&
+                  wizardPhotoFile != null &&
+                  wizardFitTransform != null)
+                Positioned.fill(
+                  child: _WizardIntakePhotoLayer(
+                    key: const Key('board_canvas_wizard_photo_layer'),
+                    photoFile: wizardPhotoFile,
+                    photoTransform: wizardIntake!.backgroundPhoto!.transform,
+                    fitTransform: wizardFitTransform,
+                  ),
+                ),
+              if (wizardIntake != null && wizardFitTransform != null)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: CustomPaint(
+                      key: const Key('board_canvas_wizard_intake_painter'),
+                      painter: _WizardIntakePainter(
+                        intake: wizardIntake,
+                        fitTransform: wizardFitTransform,
+                      ),
+                    ),
+                  ),
+                ),
               Positioned.fill(
                 child: CustomPaint(
                   key: const Key('board_canvas_painter'),
@@ -6985,6 +7077,166 @@ class _CanvasPanelState extends State<_CanvasPanel> {
     );
   }
 
+  Widget _buildWizardPresentationControls(BuildContext context) {
+    final intake = widget.wizardIntake!;
+    final photoAvailable =
+        intake.backgroundPhoto != null && _wizardPhotoFile() != null;
+    final theme = Theme.of(context);
+    return Positioned(
+      left: 8,
+      right: 8,
+      bottom: 8,
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 260),
+          child: DecoratedBox(
+            key: const Key('board_canvas_wizard_intake_controls'),
+            decoration: BoxDecoration(
+              color: _kBoardCanvasPaper.withValues(alpha: 0.94),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _kBoardCanvasRuleStrong),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.auto_awesome_outlined,
+                        size: 15,
+                        color: _kBoardCanvasSignal,
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'Visuaalsed kandidaadid',
+                          key: const Key(
+                            'board_canvas_wizard_candidate_label',
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: _kBoardCanvasNavy,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${intake.visualCandidates.length}',
+                        key: const Key(
+                          'board_canvas_wizard_candidate_count',
+                        ),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: _kBoardCanvasMuted,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  if (photoAvailable)
+                    TextButton.icon(
+                      key: const Key('board_canvas_wizard_photo_toggle'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: _kBoardCanvasNavy,
+                        minimumSize: const Size(
+                          0,
+                          _kCompactControlTileHeight,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      icon: Icon(
+                        _wizardPhotoVisible
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: _kCompactControlIconSize,
+                      ),
+                      label: Text(
+                        _wizardPhotoVisible
+                            ? 'Peida taustafoto'
+                            : 'Näita taustafotot',
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _wizardPhotoVisible = !_wizardPhotoVisible;
+                        });
+                      },
+                    )
+                  else
+                    Text(
+                      'Taustafoto pole saadaval',
+                      key: const Key(
+                        'board_canvas_wizard_photo_unavailable',
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: _kBoardCanvasMuted,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWizardWarning(BuildContext context) {
+    final warning = widget.wizardIntakeWarning!;
+    final theme = Theme.of(context);
+    return Positioned(
+      left: 8,
+      right: 8,
+      top: 50,
+      child: IgnorePointer(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: DecoratedBox(
+              key: const Key('board_canvas_wizard_intake_warning'),
+              decoration: BoxDecoration(
+                color: _kBoardCanvasSignalTint.withValues(alpha: 0.96),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kBoardCanvasSignal),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      size: 17,
+                      color: _kBoardCanvasSignal,
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        warning,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: _kBoardCanvasNavy,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildCornerControls(BuildContext context) {
     final hideUnmeasuredToggle = TextButton.icon(
       key: const Key('board_canvas_hide_unmeasured_toggle'),
@@ -7123,12 +7375,319 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   child: _CanvasStatusPill(),
                 ),
                 _buildCornerControls(context),
+                if (widget.wizardIntake != null)
+                  _buildWizardPresentationControls(context),
+                if (widget.wizardIntakeWarning != null)
+                  _buildWizardWarning(context),
               ],
             );
           },
         ),
       ),
     );
+  }
+}
+
+@immutable
+class _WizardIntakeFitTransform {
+  const _WizardIntakeFitTransform._({
+    required this.sourceBounds,
+    required this.canvasSize,
+    required this.padding,
+    required this.scale,
+    required this.offset,
+  });
+
+  factory _WizardIntakeFitTransform.fromContour({
+    required List<WizardPoint> points,
+    required Size canvasSize,
+  }) {
+    var minX = points.first.x;
+    var maxX = points.first.x;
+    var minY = points.first.y;
+    var maxY = points.first.y;
+    for (final point in points.skip(1)) {
+      minX = math.min(minX, point.x);
+      maxX = math.max(maxX, point.x);
+      minY = math.min(minY, point.y);
+      maxY = math.max(maxY, point.y);
+    }
+
+    final bounds = Rect.fromLTRB(minX, minY, maxX, maxY);
+    final padding =
+        (canvasSize.shortestSide * 0.03).clamp(16.0, 28.0).toDouble();
+    final availableWidth = math.max(0.0, canvasSize.width - (2 * padding));
+    final availableHeight = math.max(0.0, canvasSize.height - (2 * padding));
+    final scaleX =
+        bounds.width > 0 ? availableWidth / bounds.width : double.infinity;
+    final scaleY =
+        bounds.height > 0 ? availableHeight / bounds.height : double.infinity;
+    var scale = math.min(scaleX, scaleY);
+    if (!scale.isFinite) {
+      scale = math.min(availableWidth, availableHeight);
+    }
+    if (!scale.isFinite || scale <= 0) {
+      scale = 1.0;
+    }
+    final offset = Offset(
+      (canvasSize.width / 2) - (bounds.center.dx * scale),
+      (canvasSize.height / 2) - (bounds.center.dy * scale),
+    );
+    return _WizardIntakeFitTransform._(
+      sourceBounds: bounds,
+      canvasSize: canvasSize,
+      padding: padding,
+      scale: scale,
+      offset: offset,
+    );
+  }
+
+  final Rect sourceBounds;
+  final Size canvasSize;
+  final double padding;
+  final double scale;
+  final Offset offset;
+
+  Offset mapPoint(WizardPoint point) {
+    return Offset(
+      offset.dx + (point.x * scale),
+      offset.dy + (point.y * scale),
+    );
+  }
+
+  Rect get renderedContourBounds => Rect.fromLTRB(
+        offset.dx + (sourceBounds.left * scale),
+        offset.dy + (sourceBounds.top * scale),
+        offset.dx + (sourceBounds.right * scale),
+        offset.dy + (sourceBounds.bottom * scale),
+      );
+
+  Rect get normalizedCanvasRect => Rect.fromLTWH(
+        offset.dx,
+        offset.dy,
+        scale,
+        scale,
+      );
+}
+
+class _WizardIntakePhotoLayer extends StatelessWidget {
+  const _WizardIntakePhotoLayer({
+    super.key,
+    required this.photoFile,
+    required this.photoTransform,
+    required this.fitTransform,
+  });
+
+  final File photoFile;
+  final WizardPhotoTransform photoTransform;
+  final _WizardIntakeFitTransform fitTransform;
+
+  Offset get photoTranslation => Offset(
+        photoTransform.translation.x,
+        photoTransform.translation.y,
+      );
+  double get photoScale => photoTransform.scale;
+  double get photoRotationRadians => photoTransform.rotationRadians;
+  double get photoOpacity => photoTransform.opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalizedCanvasRect = fitTransform.normalizedCanvasRect;
+    final pixelTranslation = Offset(
+      photoTransform.translation.x * normalizedCanvasRect.width,
+      photoTransform.translation.y * normalizedCanvasRect.height,
+    );
+    return IgnorePointer(
+      child: ClipRect(
+        child: Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            Positioned.fromRect(
+              rect: normalizedCanvasRect,
+              child: ClipRect(
+                child: Transform.translate(
+                  key: const Key(
+                    'board_canvas_wizard_photo_translation_layer',
+                  ),
+                  offset: pixelTranslation,
+                  child: Transform.rotate(
+                    key: const Key(
+                      'board_canvas_wizard_photo_rotation_layer',
+                    ),
+                    angle: photoTransform.rotationRadians,
+                    child: Transform.scale(
+                      key: const Key(
+                        'board_canvas_wizard_photo_scale_layer',
+                      ),
+                      scale: photoTransform.scale,
+                      child: Opacity(
+                        key: const Key(
+                          'board_canvas_wizard_photo_opacity_layer',
+                        ),
+                        opacity: photoTransform.opacity,
+                        child: Image.file(
+                          photoFile,
+                          key: const Key('board_canvas_wizard_photo_image'),
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.medium,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const ColoredBox(
+                              key: Key(
+                                'board_canvas_wizard_photo_render_unavailable',
+                              ),
+                              color: _kBoardCanvasPaper,
+                              child: Center(
+                                child: Text(
+                                  'Taustafotot ei saanud kuvada',
+                                  style: TextStyle(
+                                    color: _kBoardCanvasMuted,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WizardIntakePainter extends CustomPainter {
+  const _WizardIntakePainter({
+    required this.intake,
+    required this.fitTransform,
+  });
+
+  final WizardIntake intake;
+  final _WizardIntakeFitTransform fitTransform;
+
+  String get coordinateSpace => intake.coordinateSpace;
+  bool get contourClosed => intake.contour.closed;
+  int get candidateCount => intake.visualCandidates.length;
+  bool get readOnly => true;
+  _WizardIntakeFitTransform get contourTransform => fitTransform;
+  _WizardIntakeFitTransform get candidateTransform => fitTransform;
+  List<Offset> get candidateCenters => intake.visualCandidates
+      .map((candidate) => fitTransform.mapPoint(candidate.position))
+      .toList(growable: false);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final contourPoints = intake.contour.points;
+    if (intake.contour.closed && contourPoints.length >= 3) {
+      final first = fitTransform.mapPoint(contourPoints.first);
+      final path = Path()..moveTo(first.dx, first.dy);
+      for (final point in contourPoints.skip(1)) {
+        final renderedPoint = fitTransform.mapPoint(point);
+        path.lineTo(renderedPoint.dx, renderedPoint.dy);
+      }
+      path.close();
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = _kBoardCanvasSignal.withValues(alpha: 0.08)
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = _kBoardCanvasSignal.withValues(alpha: 0.84)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeJoin = StrokeJoin.round,
+      );
+    }
+
+    for (final candidate in intake.visualCandidates) {
+      _paintCandidate(canvas, candidate);
+    }
+  }
+
+  void _paintCandidate(
+    Canvas canvas,
+    WizardVisualCandidate candidate,
+  ) {
+    final center = fitTransform.mapPoint(candidate.position);
+    final minorDimension = math.max(
+      8.0,
+      fitTransform.scale * 0.035 * candidate.sizeScale,
+    );
+    final aspectRatio = switch (candidate.shape) {
+      WizardVisualCandidateShape.circle => 1.0,
+      WizardVisualCandidateShape.square => 1.0,
+      WizardVisualCandidateShape.rectangle => 1.8,
+      WizardVisualCandidateShape.roundedRectangle => 2.2,
+    };
+    final markerRect = Rect.fromCenter(
+      center: Offset.zero,
+      width: minorDimension * aspectRatio,
+      height: minorDimension,
+    );
+    final markerPath = switch (candidate.shape) {
+      WizardVisualCandidateShape.circle => Path()..addOval(markerRect),
+      WizardVisualCandidateShape.square ||
+      WizardVisualCandidateShape.rectangle =>
+        Path()..addRect(markerRect),
+      WizardVisualCandidateShape.roundedRectangle => Path()
+        ..addRRect(
+          RRect.fromRectAndRadius(
+            markerRect,
+            Radius.circular(minorDimension * 0.32),
+          ),
+        ),
+    };
+    final rotation = candidate.shape == WizardVisualCandidateShape.circle
+        ? 0.0
+        : candidate.rotationRadians;
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(rotation);
+    canvas.drawPath(
+      markerPath,
+      Paint()
+        ..color = _kBoardCanvasNavy.withValues(alpha: 0.94)
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      markerPath,
+      Paint()
+        ..color = _kBoardCanvasSignal
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6
+        ..strokeJoin = StrokeJoin.round,
+    );
+    final markerArm = math.max(2.0, minorDimension * 0.28);
+    final markerPaint = Paint()
+      ..color = _kBoardCanvasSignalTint
+      ..strokeWidth = math.max(1.2, minorDimension * 0.1)
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(-markerArm, 0),
+      Offset(markerArm, 0),
+      markerPaint,
+    );
+    canvas.drawLine(
+      Offset(0, -markerArm),
+      Offset(0, markerArm),
+      markerPaint,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _WizardIntakePainter oldDelegate) {
+    return !identical(intake, oldDelegate.intake) ||
+        fitTransform.canvasSize != oldDelegate.fitTransform.canvasSize ||
+        fitTransform.sourceBounds != oldDelegate.fitTransform.sourceBounds ||
+        fitTransform.padding != oldDelegate.fitTransform.padding;
   }
 }
 

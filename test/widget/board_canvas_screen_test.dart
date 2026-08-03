@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
@@ -17,6 +18,7 @@ import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
+import 'package:trace_bench_viewer/shared/models/wizard_intake.dart';
 import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
 
 ProjectState _inlineProjectState({
@@ -30,6 +32,8 @@ ProjectState _inlineProjectState({
   List<TraceBenchEvent> events = const [],
   String? projectDirectory,
   bool isProjectionStale = false,
+  WizardIntake? wizardIntake,
+  String? wizardIntakeWarning,
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -59,6 +63,43 @@ ProjectState _inlineProjectState({
     customerReport: '',
     projectDirectory: projectDirectory,
     isProjectionStale: isProjectionStale,
+    wizardIntake: wizardIntake,
+    wizardIntakeWarning: wizardIntakeWarning,
+  );
+}
+
+WizardIntake _wizardIntake({
+  WizardBackgroundPhoto? backgroundPhoto,
+  List<WizardPoint> contourPoints = const <WizardPoint>[
+    WizardPoint(x: 0.2, y: 0.1),
+    WizardPoint(x: 0.8, y: 0.1),
+    WizardPoint(x: 0.8, y: 0.6),
+    WizardPoint(x: 0.2, y: 0.6),
+    WizardPoint(x: 0.2, y: 0.1),
+  ],
+  List<WizardVisualCandidate> visualCandidates = const <WizardVisualCandidate>[
+    WizardVisualCandidate(
+      draftKey: 7,
+      position: WizardPoint(x: 0.4, y: 0.35),
+      shape: WizardVisualCandidateShape.roundedRectangle,
+      sizeScale: 1.5,
+      rotationRadians: -0.5,
+    ),
+  ],
+}) {
+  return WizardIntake(
+    schemaVersion: '1.0',
+    coordinateSpace: 'wizard_normalized',
+    problemDescription: const WizardProblemDescription(
+      description: 'Intermittent startup fault',
+      occurrence: WizardProblemOccurrence.intermittent,
+      whenOccurs: 'Cold start',
+      symptoms: 'No display',
+      attempts: 'Visual inspection',
+    ),
+    contour: WizardContour(closed: true, points: contourPoints),
+    backgroundPhoto: backgroundPhoto,
+    visualCandidates: visualCandidates,
   );
 }
 
@@ -449,6 +490,20 @@ dynamic _boardCanvasPainter(WidgetTester tester) {
       .painter;
 }
 
+dynamic _wizardIntakePainter(WidgetTester tester) {
+  return tester
+      .widget<CustomPaint>(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+      )
+      .painter;
+}
+
+dynamic _wizardPhotoLayer(WidgetTester tester) {
+  return tester.widget(
+    find.byKey(const Key('board_canvas_wizard_photo_layer')),
+  );
+}
+
 Set<String> _painterPreviewKeys(WidgetTester tester) {
   try {
     return Set<String>.from(
@@ -694,12 +749,11 @@ Map<String, dynamic> _measurementRecordedEventJson({
 class _FakeAddComponentWriter implements V2AddComponentWriter {
   _FakeAddComponentWriter({
     this.error,
-    this.status = V2AddComponentWriteStatus.appended,
     this.event,
   });
 
   final Object? error;
-  final V2AddComponentWriteStatus status;
+  final V2AddComponentWriteStatus status = V2AddComponentWriteStatus.appended;
   final Map<String, dynamic>? event;
   final List<V2AddComponentRequest> requests = <V2AddComponentRequest>[];
 
@@ -729,15 +783,8 @@ class _FakeAddComponentWriter implements V2AddComponentWriter {
 }
 
 class _FakeEditComponentWriter implements V2EditComponentWriter {
-  _FakeEditComponentWriter({
-    this.error,
-    this.status = V2EditComponentWriteStatus.appended,
-    this.event,
-  });
+  _FakeEditComponentWriter();
 
-  final Object? error;
-  final V2EditComponentWriteStatus status;
-  final Map<String, dynamic>? event;
   final List<V2EditComponentRequest> requests = <V2EditComponentRequest>[];
 
   @override
@@ -746,22 +793,17 @@ class _FakeEditComponentWriter implements V2EditComponentWriter {
     required V2EditComponentRequest request,
   }) async {
     requests.add(request);
-    final error = this.error;
-    if (error != null) {
-      throw error;
-    }
-    final writtenEvent = event ??
-        _componentUpdatedEventJson(
-          componentId: request.componentId,
-          clientOperationId: request.clientOperationId,
-          changes: request.changes
-              .map((change) => change.toJson())
-              .toList(growable: false),
-        );
+    final writtenEvent = _componentUpdatedEventJson(
+      componentId: request.componentId,
+      clientOperationId: request.clientOperationId,
+      changes: request.changes
+          .map((change) => change.toJson())
+          .toList(growable: false),
+    );
     return V2EditComponentResult(
-      status: status,
+      status: V2EditComponentWriteStatus.appended,
       event: writtenEvent,
-      appended: status == V2EditComponentWriteStatus.appended,
+      appended: true,
     );
   }
 }
@@ -797,15 +839,9 @@ class _FakePlacementWriter implements V2PlacementWriter {
 }
 
 class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
-  _FakeSaveMeasurementWriter({
-    this.error,
-    this.status = V2SaveMeasurementWriteStatus.appended,
-    Map<String, dynamic>? event,
-  }) : event = event ?? _measurementRecordedEventJson();
+  _FakeSaveMeasurementWriter();
 
-  final Object? error;
-  final V2SaveMeasurementWriteStatus status;
-  final Map<String, dynamic> event;
+  final Map<String, dynamic> event = _measurementRecordedEventJson();
   final List<V2SaveMeasurementRequest> requests = <V2SaveMeasurementRequest>[];
 
   @override
@@ -814,12 +850,8 @@ class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
     required V2SaveMeasurementRequest request,
   }) async {
     requests.add(request);
-    final error = this.error;
-    if (error != null) {
-      throw error;
-    }
     return V2SaveMeasurementResult(
-      status: status,
+      status: V2SaveMeasurementWriteStatus.appended,
       event: {
         ...event,
         'client_operation_id': request.clientOperationId,
@@ -841,7 +873,7 @@ class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
           },
         },
       },
-      appended: status == V2SaveMeasurementWriteStatus.appended,
+      appended: true,
     );
   }
 }
@@ -989,6 +1021,379 @@ void main() {
     sourceEventId: 'evt_alignment_002',
     status: 'user_confirmed_alignment',
   );
+
+  group('Wizard intake read-only Canvas overlay', () {
+    const photo = WizardBackgroundPhoto(
+      relativePath: 'photos/board.png',
+      transform: WizardPhotoTransform(
+        translation: WizardPoint(x: -0.25, y: 0.5),
+        scale: 1.25,
+        rotationRadians: 0.75,
+        opacity: 0.65,
+      ),
+    );
+    const component = ComponentFact(componentId: 'cmp_wizard_host');
+
+    testWidgets(
+        'renders closed contour and read-only candidates by default while photo stays hidden',
+        (tester) async {
+      final intake = _wizardIntake(backgroundPhoto: photo);
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [component],
+            placements: const [],
+            projectDirectory: r'C:\project',
+            wizardIntake: intake,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Visuaalsed kandidaadid'), findsOneWidget);
+      expect(find.text('Näita taustafotot'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsNothing,
+      );
+
+      final dynamic painter = _wizardIntakePainter(tester);
+      expect(painter.coordinateSpace, 'wizard_normalized');
+      expect(painter.contourClosed, isTrue);
+      expect(painter.candidateCount, 1);
+      expect(painter.readOnly, isTrue);
+      expect(
+        identical(painter.fitTransform, painter.contourTransform),
+        isTrue,
+      );
+      expect(
+        identical(painter.fitTransform, painter.candidateTransform),
+        isTrue,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_candidate_edit')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'uses exact show-hide copy and one shared transform for photo contour and candidates',
+        (tester) async {
+      final intake = _wizardIntake(backgroundPhoto: photo);
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [component],
+            placements: const [],
+            projectDirectory: r'C:\project',
+            wizardIntake: intake,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Peida taustafoto'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_image')),
+        findsOneWidget,
+      );
+      final dynamic painter = _wizardIntakePainter(tester);
+      final dynamic photoLayer = _wizardPhotoLayer(tester);
+      expect(identical(photoLayer.fitTransform, painter.fitTransform), isTrue);
+      expect(photoLayer.photoTranslation, const Offset(-0.25, 0.5));
+      expect(photoLayer.photoScale, 1.25);
+      expect(photoLayer.photoRotationRadians, 0.75);
+      expect(photoLayer.photoOpacity, 0.65);
+
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pump();
+
+      expect(find.text('Näita taustafotot'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('shows missing-photo neutral state and warning verbatim',
+        (tester) async {
+      final intake = _wizardIntake();
+      const warning =
+          'Projekti visuaalset Wizardi alusinfot ei saanud laadida.';
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [component],
+            placements: const [],
+            wizardIntake: intake,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Taustafoto pole saadaval'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsOneWidget,
+      );
+
+      ProviderScope.containerOf(
+        tester.element(find.byType(BoardCanvasScreen)),
+        listen: false,
+      ).read(projectStateProvider.notifier).state = _inlineProjectState(
+        components: const [component],
+        placements: const [],
+        wizardIntakeWarning: warning,
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_warning')),
+        findsOneWidget,
+      );
+      expect(find.text(warning), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+        findsOneWidget,
+      );
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'fits true contour min-max bounds proportionally and centers with locked padding clamps',
+        (tester) async {
+      final intake = _wizardIntake();
+      final state = _inlineProjectState(
+        components: const [component],
+        placements: const [],
+        wizardIntake: intake,
+      );
+
+      void expectCurrentFit({double? exactPadding}) {
+        final dynamic transform = _wizardIntakePainter(tester).fitTransform;
+        final Rect sourceBounds = transform.sourceBounds as Rect;
+        final Size canvasSize = transform.canvasSize as Size;
+        final double padding = transform.padding as double;
+        final double scale = transform.scale as double;
+        final Rect renderedBounds = transform.renderedContourBounds as Rect;
+
+        expect(sourceBounds.left, closeTo(0.2, 0.000001));
+        expect(sourceBounds.top, closeTo(0.1, 0.000001));
+        expect(sourceBounds.right, closeTo(0.8, 0.000001));
+        expect(sourceBounds.bottom, closeTo(0.6, 0.000001));
+        expect(
+          padding,
+          closeTo(
+            (canvasSize.shortestSide * 0.03).clamp(16.0, 28.0),
+            0.000001,
+          ),
+        );
+        if (exactPadding != null) {
+          expect(padding, exactPadding);
+        }
+        expect(
+          scale,
+          closeTo(
+            math.min(
+              (canvasSize.width - (2 * padding)) / sourceBounds.width,
+              (canvasSize.height - (2 * padding)) / sourceBounds.height,
+            ),
+            0.000001,
+          ),
+        );
+        expect(
+          renderedBounds.center.dx,
+          closeTo(canvasSize.width / 2, 0.000001),
+        );
+        expect(
+          renderedBounds.center.dy,
+          closeTo(canvasSize.height / 2, 0.000001),
+        );
+      }
+
+      await tester.binding.setSurfaceSize(const Size(360, 640));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(_harness(projectState: state));
+      await tester.pump(const Duration(milliseconds: 100));
+      expectCurrentFit(exactPadding: 16);
+
+      await tester.binding.setSurfaceSize(const Size(800, 1000));
+      await tester.pump(const Duration(milliseconds: 100));
+      expectCurrentFit();
+
+      await tester.binding.setSurfaceSize(const Size(1800, 1400));
+      await tester.pump(const Duration(milliseconds: 100));
+      expectCurrentFit(exactPadding: 28);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('initial fit runs once for each active project and intake',
+        (tester) async {
+      final firstIntake = _wizardIntake();
+      final firstState = _inlineProjectState(
+        components: const [component],
+        placements: const [],
+        wizardIntake: firstIntake,
+      );
+      await tester.pumpWidget(_harness(projectState: firstState));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      InteractiveViewer viewer = tester.widget<InteractiveViewer>(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+      );
+      final controller = viewer.transformationController!;
+      expect(controller.value.getTranslation().x, 0);
+      expect(controller.value.getTranslation().y, 0);
+
+      controller.value = Matrix4.translationValues(41.0, 23.0, 0.0);
+      await tester.pump(const Duration(milliseconds: 100));
+      viewer = tester.widget<InteractiveViewer>(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+      );
+      expect(viewer.transformationController!.value.getTranslation().x, 41);
+      expect(viewer.transformationController!.value.getTranslation().y, 23);
+
+      final secondState = _inlineProjectState(
+        components: const [component],
+        placements: const [],
+        wizardIntake: _wizardIntake(
+          contourPoints: const <WizardPoint>[
+            WizardPoint(x: 0.1, y: 0.2),
+            WizardPoint(x: 0.9, y: 0.2),
+            WizardPoint(x: 0.9, y: 0.7),
+            WizardPoint(x: 0.1, y: 0.7),
+            WizardPoint(x: 0.1, y: 0.2),
+          ],
+        ),
+      );
+      ProviderScope.containerOf(
+        tester.element(find.byType(BoardCanvasScreen)),
+        listen: false,
+      ).read(projectStateProvider.notifier).state = secondState;
+      await tester.pump(const Duration(milliseconds: 100));
+
+      viewer = tester.widget<InteractiveViewer>(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+      );
+      expect(viewer.transformationController!.value.getTranslation().x, 0);
+      expect(viewer.transformationController!.value.getTranslation().y, 0);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'candidate interaction stays Wizard-local read-only with no canonical mutation or writer request',
+        (tester) async {
+      final intake = _wizardIntake(backgroundPhoto: photo);
+      final state = _inlineProjectState(
+        components: const [component],
+        placements: const [],
+        projectDirectory: r'C:\project',
+        wizardIntake: intake,
+      );
+      final originalDebugJson = state.debugJson;
+      final addWriter = _FakeAddComponentWriter();
+      final editWriter = _FakeEditComponentWriter();
+      final placementWriter = _FakePlacementWriter();
+      final measurementWriter = _FakeSaveMeasurementWriter();
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          addComponentWriter: addWriter,
+          editComponentWriter: editWriter,
+          placementWriter: placementWriter,
+          measurementWriter: measurementWriter,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final dynamic painter = _wizardIntakePainter(tester);
+      final List<Offset> candidateCenters = List<Offset>.from(
+        painter.candidateCenters as Iterable,
+      );
+      final painterFinder =
+          find.byKey(const Key('board_canvas_wizard_intake_painter'));
+      await tester.tapAt(
+        tester.getTopLeft(painterFinder) + candidateCenters.single,
+      );
+      await tester.pump();
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final currentState = _readProjectState(tester);
+      expect(identical(currentState, state), isTrue);
+      expect(identical(currentState.wizardIntake, intake), isTrue);
+      expect(currentState.wizardIntake!.coordinateSpace, 'wizard_normalized');
+      expect(currentState.debugJson, originalDebugJson);
+      expect(identical(currentState.knownFacts, state.knownFacts), isTrue);
+      expect(identical(currentState.events, state.events), isTrue);
+      expect(addWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(placementWriter.requests, isEmpty);
+      expect(measurementWriter.requests, isEmpty);
+      expect(find.textContaining('Muuda kandidaati'), findsNothing);
+      expect(find.textContaining('Salvesta kandidaat'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('missing intake preserves the existing Canvas unchanged',
+        (tester) async {
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [component],
+            placements: const [],
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byKey(const Key('board_canvas_painter')), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsNothing,
+      );
+      expect(find.text('Visuaalsed kandidaadid'), findsNothing);
+      expect(find.text('Näita taustafotot'), findsNothing);
+      expect(find.text('Taustafoto pole saadaval'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  });
 
   testWidgets('shows no-project state when project is not loaded',
       (tester) async {
@@ -9048,8 +9453,8 @@ void main() {
     final viewer = tester.widget<InteractiveViewer>(
       find.byKey(const Key('board_canvas_interactive_viewer')),
     );
-    viewer.transformationController!.value = Matrix4.identity()
-      ..translate(32.0, 20.0);
+    viewer.transformationController!.value =
+        Matrix4.translationValues(32.0, 20.0, 0.0);
     await tester.pump();
 
     await _tapCanvasAtNormalized(
@@ -10274,7 +10679,30 @@ void main() {
         'Rotation visual support is intentionally deferred to a later explicit rotation scope.',
       ),
     );
-    expect(source, isNot(contains('canvas.rotate(')));
+    final wizardPainterStart = source.indexOf(
+      'class _WizardIntakePainter',
+    );
+    final wizardPainterEnd = source.indexOf(
+      'class _BoardCanvasSafetyEvidenceDisclosure',
+      wizardPainterStart,
+    );
+    expect(wizardPainterStart, greaterThanOrEqualTo(0));
+    expect(wizardPainterEnd, greaterThan(wizardPainterStart));
+    final wizardPainterSource = source.substring(
+      wizardPainterStart,
+      wizardPainterEnd,
+    );
+    expect(wizardPainterSource, contains('candidate.rotationRadians'));
+    expect(wizardPainterSource, contains('canvas.rotate(rotation);'));
+
+    final boardPlacementPainterStart = source.indexOf(
+      'class _BoardPlacementPainter',
+    );
+    expect(boardPlacementPainterStart, greaterThanOrEqualTo(0));
+    final boardPlacementPainterSource = source.substring(
+      boardPlacementPainterStart,
+    );
+    expect(boardPlacementPainterSource, isNot(contains('canvas.rotate(')));
     expect(source, isNot(contains('_paintMeasurementPresenceBadge')));
     expect(
       source,

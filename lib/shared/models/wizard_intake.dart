@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,66 @@ class WizardIntake {
   final WizardContour contour;
   final WizardBackgroundPhoto? backgroundPhoto;
   final List<WizardVisualCandidate> visualCandidates;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'schema_version': schemaVersion,
+        'coordinate_space': coordinateSpace,
+        'problem_description': <String, dynamic>{
+          'description': problemDescription.description,
+          'occurrence': switch (problemDescription.occurrence) {
+            WizardProblemOccurrence.unknown => 'unknown',
+            WizardProblemOccurrence.continuous => 'continuous',
+            WizardProblemOccurrence.intermittent => 'intermittent',
+          },
+          'when_occurs': problemDescription.whenOccurs,
+          'symptoms': problemDescription.symptoms,
+          'attempts': problemDescription.attempts,
+        },
+        'contour': <String, dynamic>{
+          'closed': contour.closed,
+          'points': <Map<String, dynamic>>[
+            for (final point in contour.points)
+              <String, dynamic>{'x': point.x, 'y': point.y},
+          ],
+        },
+        'background_photo': switch (backgroundPhoto) {
+          null => null,
+          final photo => <String, dynamic>{
+              'relative_path': photo.relativePath,
+              'transform': <String, dynamic>{
+                'translation': <String, dynamic>{
+                  'x': photo.transform.translation.x,
+                  'y': photo.transform.translation.y,
+                },
+                'scale': photo.transform.scale,
+                'rotation_radians': photo.transform.rotationRadians,
+                'opacity': photo.transform.opacity,
+              },
+            },
+        },
+        'visual_candidates': <Map<String, dynamic>>[
+          for (final candidate in visualCandidates)
+            <String, dynamic>{
+              'draft_key': candidate.draftKey,
+              'position': <String, dynamic>{
+                'x': candidate.position.x,
+                'y': candidate.position.y,
+              },
+              'shape': switch (candidate.shape) {
+                WizardVisualCandidateShape.circle => 'circle',
+                WizardVisualCandidateShape.square => 'square',
+                WizardVisualCandidateShape.rectangle => 'rectangle',
+                WizardVisualCandidateShape.roundedRectangle =>
+                  'rounded_rectangle',
+              },
+              'size_scale': candidate.sizeScale,
+              'rotation_radians': candidate.rotationRadians,
+            },
+        ],
+      };
+
+  String toJsonString() =>
+      '${const JsonEncoder.withIndent('  ').convert(toJson())}\n';
 }
 
 enum WizardProblemOccurrence {

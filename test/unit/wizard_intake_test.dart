@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -213,6 +214,145 @@ void main() {
       expect(parsed.contour.points.first.x, 0.0);
       expect(parsed.contour.points.last.y, 1.0);
       expect(parsed.visualCandidates.single.position.y, 1.0);
+    });
+  });
+
+  group('WizardIntake deterministic serialization', () {
+    test('emits only known fields in the locked insertion order', () {
+      final json = _validIntakeJson();
+      json['future_top_level'] = true;
+      _object(json, 'problem_description')['future_problem'] = 'ignored';
+      final intake = WizardIntake.fromJson(json);
+
+      final serialized = intake.toJson();
+
+      expect(serialized.keys, <String>[
+        'schema_version',
+        'coordinate_space',
+        'problem_description',
+        'contour',
+        'background_photo',
+        'visual_candidates',
+      ]);
+      expect(
+        (serialized['problem_description']! as Map<String, dynamic>).keys,
+        <String>[
+          'description',
+          'occurrence',
+          'when_occurs',
+          'symptoms',
+          'attempts',
+        ],
+      );
+      expect(
+        (serialized['contour']! as Map<String, dynamic>).keys,
+        <String>['closed', 'points'],
+      );
+      expect(
+        ((serialized['contour']! as Map<String, dynamic>)['points']!
+                as List<dynamic>)
+            .first as Map<String, dynamic>,
+        <String, dynamic>{'x': 0.1, 'y': 0.2},
+      );
+      final photo = serialized['background_photo']! as Map<String, dynamic>;
+      expect(photo.keys, <String>['relative_path', 'transform']);
+      final transform = photo['transform']! as Map<String, dynamic>;
+      expect(transform.keys, <String>[
+        'translation',
+        'scale',
+        'rotation_radians',
+        'opacity',
+      ]);
+      expect(
+        (transform['translation']! as Map<String, dynamic>).keys,
+        <String>['x', 'y'],
+      );
+      final candidate = (serialized['visual_candidates']! as List<dynamic>)
+          .single as Map<String, dynamic>;
+      expect(candidate.keys, <String>[
+        'draft_key',
+        'position',
+        'shape',
+        'size_scale',
+        'rotation_radians',
+      ]);
+      expect(
+        (candidate['position']! as Map<String, dynamic>).keys,
+        <String>['x', 'y'],
+      );
+      expect(serialized.containsKey('future_top_level'), isFalse);
+      expect(
+        (serialized['problem_description']! as Map<String, dynamic>)
+            .containsKey('future_problem'),
+        isFalse,
+      );
+    });
+
+    test('encodes deterministically with two spaces and one final newline', () {
+      final intake = WizardIntake.fromJson(
+        _validIntakeJson(includePhoto: false, includeCandidates: false),
+      );
+
+      final first = intake.toJsonString();
+      final second = intake.toJsonString();
+
+      expect(first, second);
+      expect(first.endsWith('\n'), isTrue);
+      expect(first.endsWith('\n\n'), isFalse);
+      expect(first, contains('\n  "schema_version": "1.0",'));
+      expect(jsonDecode(first), intake.toJson());
+      expect(
+        (jsonDecode(first) as Map<String, dynamic>)['background_photo'],
+        isNull,
+      );
+    });
+
+    test('round-trips every typed known value and enum spelling', () {
+      final json = _validIntakeJson(includeCandidates: false);
+      json['visual_candidates'] = <dynamic>[
+        for (final entry in <(int, String, double, double)>[
+          (4, 'circle', 0.5, -math.pi),
+          (2, 'square', 1.0, -0.25),
+          (9, 'rectangle', 1.75, 0.5),
+          (1, 'rounded_rectangle', 2.5, math.pi),
+        ])
+          <String, dynamic>{
+            'draft_key': entry.$1,
+            'position': <String, dynamic>{
+              'x': entry.$1 / 10,
+              'y': 1 - entry.$1 / 10,
+            },
+            'shape': entry.$2,
+            'size_scale': entry.$3,
+            'rotation_radians': entry.$4,
+          },
+      ];
+      final intake = WizardIntake.fromJson(json);
+
+      final roundTripped = WizardIntake.fromJson(
+        jsonDecode(intake.toJsonString()) as Map<String, dynamic>,
+      );
+
+      expect(roundTripped.toJson(), intake.toJson());
+      expect(
+        roundTripped.visualCandidates.map((candidate) => candidate.draftKey),
+        <int>[4, 2, 9, 1],
+      );
+      expect(
+        roundTripped.visualCandidates.map((candidate) => candidate.shape),
+        <WizardVisualCandidateShape>[
+          WizardVisualCandidateShape.circle,
+          WizardVisualCandidateShape.square,
+          WizardVisualCandidateShape.rectangle,
+          WizardVisualCandidateShape.roundedRectangle,
+        ],
+      );
+      expect(roundTripped.problemDescription.description,
+          'Human-entered main description');
+      expect(roundTripped.contour.points.map((point) => point.x),
+          <double>[0.1, 0.8, 0.8]);
+      expect(roundTripped.backgroundPhoto!.transform.translation.x, -0.25);
+      expect(roundTripped.backgroundPhoto!.transform.rotationRadians, 0.75);
     });
   });
 

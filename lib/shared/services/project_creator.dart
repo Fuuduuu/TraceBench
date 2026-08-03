@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import '../models/known_facts.dart';
 import '../models/project_manifest.dart';
 import '../models/project_state.dart';
+import '../models/wizard_intake.dart';
 import 'project_loader.dart';
 import 'python_runner.dart';
 
@@ -28,15 +28,27 @@ final RegExp _projectIdPattern = RegExp(r'^prj_[a-f0-9]{8}$');
 class ProjectCreationRequest {
   const ProjectCreationRequest({
     required this.destinationParentPath,
+    required this.projectName,
+    required this.deviceName,
+    required this.additionalInfo,
     required this.deviceType,
+    required this.manufacturer,
     required this.model,
-    required this.symptom,
+    required this.revision,
+    required this.wizardIntake,
+    this.sourcePhotoPath,
   });
 
   final String destinationParentPath;
+  final String projectName;
+  final String deviceName;
+  final String additionalInfo;
   final String deviceType;
+  final String manufacturer;
   final String model;
-  final String symptom;
+  final String revision;
+  final WizardIntake wizardIntake;
+  final String? sourcePhotoPath;
 }
 
 sealed class ProjectCreationResult {
@@ -75,6 +87,16 @@ class ProjectCreationMaterializerFailed extends ProjectCreationResult {
   final String rawDetail;
 }
 
+class ProjectCreationPhotoFailed extends ProjectCreationResult {
+  const ProjectCreationPhotoFailed({
+    required this.sanitizedMessage,
+    required this.rawDetail,
+  });
+
+  final String sanitizedMessage;
+  final String rawDetail;
+}
+
 class ProjectCreationFailed extends ProjectCreationResult {
   const ProjectCreationFailed({
     required this.sanitizedMessage,
@@ -93,6 +115,8 @@ class ProjectCreator {
     String? repoRootPath,
     String Function()? projectIdGenerator,
     DateTime Function()? now,
+    Future<ProjectState> Function(String projectDirectory)? projectLoader,
+    Future<void> Function(File source, File destination)? photoCopier,
   })  : _pythonRunner = pythonRunner ??
             PythonRunner(
               processRunner: processRunner,
@@ -100,11 +124,19 @@ class ProjectCreator {
               repoRootPath: repoRootPath,
             ),
         _projectIdGenerator = projectIdGenerator ?? _defaultProjectIdGenerator,
-        _now = now ?? DateTime.now;
+        _now = now ?? DateTime.now,
+        _projectLoader = projectLoader ?? ProjectLoader.loadFromDirectory,
+        _photoCopier = photoCopier ?? _copyPhoto;
 
   final PythonRunner _pythonRunner;
   final String Function() _projectIdGenerator;
   final DateTime Function() _now;
+  final Future<ProjectState> Function(String projectDirectory) _projectLoader;
+  final Future<void> Function(File source, File destination) _photoCopier;
+
+  static Future<void> _copyPhoto(File source, File destination) async {
+    await source.copy(destination.path);
+  }
 
   static String _defaultProjectIdGenerator() {
     final random = Random.secure();
@@ -142,18 +174,28 @@ class ProjectCreator {
       '${parent.path}${Platform.pathSeparator}$projectId',
     );
 
-    if (await projectDirectory.exists()) {
+    final existingType = await FileSystemEntity.type(
+      projectDirectory.path,
+      followLinks: false,
+    );
+    if (existingType != FileSystemEntityType.notFound) {
       return const ProjectCreationCollision();
     }
 
-    var created = false;
+    var ownsGeneratedChild = false;
     try {
+      await projectDirectory.create();
+      ownsGeneratedChild = true;
+
       await _createSkeleton(
         projectDirectory: projectDirectory,
         request: request,
         projectId: projectId,
       );
-      created = true;
+      await _writeWizardIntake(
+        projectDirectory: projectDirectory,
+        request: request,
+      );
 
       final python = await _pythonRunner.discoverPythonCommand();
       if (python == null) {
@@ -180,10 +222,18 @@ class ProjectCreator {
         );
       }
 
-      final projectState = await _loadCreatedProject(projectDirectory.path);
+      final projectState = await _projectLoader(projectDirectory.path);
       return ProjectCreationSuccess(projectState);
+    } on _ProjectCreationPhotoException catch (error) {
+      if (ownsGeneratedChild) {
+        await _cleanup(projectDirectory);
+      }
+      return ProjectCreationPhotoFailed(
+        sanitizedMessage: 'Taustafoto salvestamine ebaõnnestus.',
+        rawDetail: error.rawDetail,
+      );
     } catch (error) {
-      if (created) {
+      if (ownsGeneratedChild) {
         await _cleanup(projectDirectory);
       }
       return ProjectCreationFailed(
@@ -198,7 +248,6 @@ class ProjectCreator {
     required ProjectCreationRequest request,
     required String projectId,
   }) async {
-    await projectDirectory.create(recursive: true);
     await Directory(
       '${projectDirectory.path}${Platform.pathSeparator}exports',
     ).create(recursive: true);
@@ -215,14 +264,19 @@ class ProjectCreator {
       '${projectDirectory.path}${Platform.pathSeparator}device_profiles',
     ).create(recursive: true);
 
-    final manifest = {
-      'project_id': projectId,
-      'schema_version': '1.0',
-      'created_at': _now().toUtc().toIso8601String(),
-      'device_type': _normalizeOr(request.deviceType, 'unknown'),
-      'model': _normalizeOr(request.model, 'unknown'),
-      'symptom': _normalizeOr(request.symptom, 'not_provided'),
-    };
+    final manifest = ProjectManifest(
+      projectId: projectId,
+      schemaVersion: '1.0',
+      createdAt: _now().toUtc().toIso8601String(),
+      projectName: request.projectName,
+      deviceName: request.deviceName,
+      additionalInfo: request.additionalInfo,
+      deviceType: _normalizeOr(request.deviceType, 'unknown'),
+      manufacturer: request.manufacturer,
+      model: _normalizeOr(request.model, 'unknown'),
+      revision: request.revision,
+      symptom: request.wizardIntake.problemDescription.description,
+    ).toJson();
 
     await File(
       '${projectDirectory.path}${Platform.pathSeparator}manifest.json',
@@ -256,36 +310,104 @@ class ProjectCreator {
     );
   }
 
-  Future<ProjectState> _loadCreatedProject(String projectPath) async {
-    final manifestJson = jsonDecode(
-      await File('$projectPath${Platform.pathSeparator}manifest.json')
-          .readAsString(),
-    ) as Map<String, dynamic>;
-    final knownFactsJson = jsonDecode(
-      await File('$projectPath${Platform.pathSeparator}known_facts.json')
-          .readAsString(),
-    ) as Map<String, dynamic>;
-    final schemaVersionsJson = jsonDecode(
-      await File(
-        '$projectPath${Platform.pathSeparator}metadata${Platform.pathSeparator}schema_versions.json',
-      ).readAsString(),
-    ) as Map<String, dynamic>;
-    final eventsRaw =
-        await File('$projectPath${Platform.pathSeparator}events.jsonl')
-            .readAsString();
-    final customerReport = await File(
-      '$projectPath${Platform.pathSeparator}exports${Platform.pathSeparator}customer_report.md',
-    ).readAsString();
-
-    return ProjectState(
-      manifest: ProjectManifest.fromJson(manifestJson),
-      knownFacts: KnownFacts.fromJson(knownFactsJson),
-      events: ProjectLoader.parseEvents(eventsRaw),
-      customerReport: customerReport,
-      schemaVersions: schemaVersionsJson,
-      projectDirectory: projectPath,
-      isProjectionStale: false,
+  Future<void> _writeWizardIntake({
+    required Directory projectDirectory,
+    required ProjectCreationRequest request,
+  }) async {
+    final intake = await _intakeForStorage(
+      projectDirectory: projectDirectory,
+      request: request,
     );
+    final validatedIntake = WizardIntake.fromJson(intake.toJson());
+    await File(
+      '${projectDirectory.path}${Platform.pathSeparator}notes${Platform.pathSeparator}wizard_intake.json',
+    ).writeAsString(
+      validatedIntake.toJsonString(),
+      flush: true,
+    );
+  }
+
+  Future<WizardIntake> _intakeForStorage({
+    required Directory projectDirectory,
+    required ProjectCreationRequest request,
+  }) async {
+    final sourcePath = request.sourcePhotoPath;
+    if (sourcePath == null) {
+      return _copyIntakeWithPhoto(request.wizardIntake, null);
+    }
+
+    try {
+      if (sourcePath.isEmpty) {
+        throw const _ProjectCreationPhotoException(
+          'Selected photo path is empty.',
+        );
+      }
+
+      final extension = _supportedPhotoExtension(sourcePath);
+      if (extension == null) {
+        throw _ProjectCreationPhotoException(
+          'Selected photo has an unsupported extension: $sourcePath',
+        );
+      }
+
+      final source = File(sourcePath);
+      final sourceType = await FileSystemEntity.type(
+        source.path,
+        followLinks: true,
+      );
+      if (sourceType != FileSystemEntityType.file) {
+        throw _ProjectCreationPhotoException(
+          'Selected photo is missing or is not a file: $sourcePath',
+        );
+      }
+
+      if (_pathIsWithinDirectory(source.absolute.path, projectDirectory.path)) {
+        throw _ProjectCreationPhotoException(
+          'Selected photo is inside the generated project: $sourcePath',
+        );
+      }
+      final resolvedSource = await source.resolveSymbolicLinks();
+      final resolvedProject = await projectDirectory.resolveSymbolicLinks();
+      if (_pathIsWithinDirectory(resolvedSource, resolvedProject)) {
+        throw _ProjectCreationPhotoException(
+          'Selected photo resolves inside the generated project: $sourcePath',
+        );
+      }
+
+      final inputPhoto = request.wizardIntake.backgroundPhoto;
+      if (inputPhoto == null) {
+        throw const _ProjectCreationPhotoException(
+          'Selected photo has no typed transform.',
+        );
+      }
+
+      final relativePath = 'photos/wizard_background.$extension';
+      final destination = File(
+        '${projectDirectory.path}${Platform.pathSeparator}photos${Platform.pathSeparator}wizard_background.$extension',
+      );
+      await _photoCopier(source, destination);
+      final destinationType = await FileSystemEntity.type(
+        destination.path,
+        followLinks: true,
+      );
+      if (destinationType != FileSystemEntityType.file) {
+        throw const _ProjectCreationPhotoException(
+          'Selected photo copy did not produce a file.',
+        );
+      }
+
+      return _copyIntakeWithPhoto(
+        request.wizardIntake,
+        WizardBackgroundPhoto(
+          relativePath: relativePath,
+          transform: inputPhoto.transform,
+        ),
+      );
+    } on _ProjectCreationPhotoException {
+      rethrow;
+    } catch (error) {
+      throw _ProjectCreationPhotoException(error.toString());
+    }
   }
 
   Future<void> _cleanup(Directory projectDirectory) async {
@@ -303,6 +425,52 @@ class ProjectCreator {
     final message = combined.isEmpty ? fallback : combined;
     return message.length > 400 ? '${message.substring(0, 400)}...' : message;
   }
+}
+
+String? _supportedPhotoExtension(String path) {
+  final fileName = path.replaceAll('\\', '/').split('/').last;
+  final dotIndex = fileName.lastIndexOf('.');
+  if (dotIndex < 0 || dotIndex == fileName.length - 1) {
+    return null;
+  }
+  final extension = fileName.substring(dotIndex + 1).toLowerCase();
+  return const <String>{'jpg', 'jpeg', 'png', 'webp'}.contains(extension)
+      ? extension
+      : null;
+}
+
+WizardIntake _copyIntakeWithPhoto(
+  WizardIntake source,
+  WizardBackgroundPhoto? backgroundPhoto,
+) {
+  return WizardIntake(
+    schemaVersion: source.schemaVersion,
+    coordinateSpace: source.coordinateSpace,
+    problemDescription: source.problemDescription,
+    contour: source.contour,
+    backgroundPhoto: backgroundPhoto,
+    visualCandidates: source.visualCandidates,
+  );
+}
+
+bool _pathIsWithinDirectory(String candidatePath, String directoryPath) {
+  String normalize(String value) {
+    var normalized = File(value).absolute.path.replaceAll('\\', '/');
+    while (normalized.length > 1 && normalized.endsWith('/')) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    return Platform.isWindows ? normalized.toLowerCase() : normalized;
+  }
+
+  final candidate = normalize(candidatePath);
+  final directory = normalize(directoryPath);
+  return candidate == directory || candidate.startsWith('$directory/');
+}
+
+class _ProjectCreationPhotoException implements Exception {
+  const _ProjectCreationPhotoException(this.rawDetail);
+
+  final String rawDetail;
 }
 
 String _normalizeOr(String value, String fallback) {

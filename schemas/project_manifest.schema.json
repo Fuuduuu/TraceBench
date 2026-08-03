@@ -7,8 +7,13 @@
     "project_id": { "type": "string" },
     "schema_version": { "const": "1.0" },
     "created_at": { "type": "string" },
+    "project_name": { "type": "string" },
+    "device_name": { "type": "string" },
+    "additional_info": { "type": "string" },
     "device_type": { "type": "string", "default": "unknown" },
+    "manufacturer": { "type": "string" },
     "model": { "type": "string", "default": "unknown" },
+    "revision": { "type": "string" },
     "symptom": { "type": "string", "default": "not_provided" }
   },
   "additionalProperties": true

@@ -1,9 +1,104 @@
 # Current State
 
-Current pass: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
+Current pass: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live measurement-write test-determinism LOCK
+## Live Wizard-intake read-path LOCK
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Verified entry is branch `main` at
+`HEAD == origin/main ==
+691fea67c6caa8bc9539f48b8baa0fbc6e94665b`, subject
+`feat: render Wizard intake on Board Canvas`, divergence `0 0`, empty entry
+substantive tracked diff, and empty staged set. Five porcelain-only tracked
+paths are content-identical to their `HEAD` blobs; known untracked scratch
+remains outside authority.
+
+The accepted parent route completed both children:
+
+- Child 1 commit `8118acef186e28320938d4533ce5b16bd7f577bd`,
+  `feat: add Wizard intake model loader`, changes exactly the typed model,
+  `ProjectState`, `ProjectLoader`, and their two unit-test files. Its existing
+  Codex report records format `5 files, 0 changed`, targeted analysis
+  `no issues`, focused `44/44`, parser regression `4/4`, full Flutter
+  `541/541`, Project ZIP `36/36`, validator `302/302`, diff checks `PASS`,
+  exact five-file material set, and empty staged set.
+- Child 2 commit `691fea67c6caa8bc9539f48b8baa0fbc6e94665b`,
+  `feat: render Wizard intake on Board Canvas`, changes exactly the Board
+  Canvas source and focused widget test. Its existing Codex report records
+  format `2 files, 0 changed`, targeted analysis `no issues`, Board Canvas
+  `160/160`, intake/loader regression `44/44`, full Flutter `548/548`, Project
+  ZIP `36/36`, validator `302/302`, diff checks `PASS`, exact two-file material
+  set, and empty staged set.
+
+The human identifies both implementation audits as accepted, records Child 2
+`MANUAL_SMOKE: PASS 8/8` and `HUMAN_ATTESTATION: PASS`, and confirms fixture
+repository mutations `NONE`. The raw external audit payloads are not committed
+repo evidence, so this LOCK records acceptance without inventing more specific
+verdict tokens or findings. No repeated Child 2 audit or smoke run is part of
+this route.
+
+The committed read path is noncanonical and presentation-only. Child 1 loads
+optional `notes/wizard_intake.json` from directory or exact/root-prefixed ZIP,
+treats absence as null and silent, isolates invalid intake to the stable
+nonblocking warning, and excludes intake from `debugJson`. Child 2 consumes
+only the two `ProjectState` presentation fields; shows candidates by default,
+hides the photo by default, shares one true-contour min/max fit with 3% padding
+clamped to 16–28 px across photo/contour/candidates, preserves candidate
+rotation, keeps the overlay non-interactive, shows warning/unavailable states
+non-modally, and performs one UI-local initial fit per active project/intake.
+
+This Phase 1 LOCK changes exactly the three route owners, audit ledger,
+code-map index, the existing ProjectLoader/Board Canvas/Board Canvas test maps,
+and
+`docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md` — nine paths.
+All three maps are refreshed from committed `HEAD`; their bodies and matching
+index rows are `REVIEW_REQUIRED` for one independent Phase 2 map/LOCK audit.
+Qualifications remain:
+
+- ProjectLoader: `AUTO — 5+ independently testable behaviors`
+- Board Canvas production: `AUTO — >5000 lines + 3+ responsibilities`
+- Board Canvas test: `AUTO — >3000 lines + 3+ test families`
+
+`docs/PROJECT_ZIP_SPEC.md` remains byte-identical to `HEAD`. No fourth map,
+runtime/test edit, new Project ZIP rule, or creation/write path is introduced.
+Phase 2 may promote only the three map headers and three matching index Status
+cells, fill the designated verdict block, and mechanically mirror it into the
+matching ledger Status cell; every other byte remains frozen.
+
+The completed parent route is:
+
+```text
+TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+-> TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The Wizard creation/write path remains explicitly deferred: Step 1
+`Täpsemalt`; Step 6 review and `Loo projekt`; Step 7 `Projekt loodud` and
+`Ava projekt`; ProjectCreator/manifest/photo-copy/intake-write/provider/Canvas
+transition; local Canvas preferences; and persisted zoom, pan, photo visibility,
+or initial-fit marker.
+
+```text
+Current: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. No successor implementation or write
+allowlist is armed.
+
+## Accepted measurement-write test-determinism LOCK (historical)
+
+All current, next, route, and authority wording in this section is retained
+predecessor evidence. It does not override the live Wizard-intake LOCK above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS

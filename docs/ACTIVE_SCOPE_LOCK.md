@@ -2,10 +2,181 @@
 
 ## Route
 
-Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
+Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current measurement-write test-determinism LOCK authority
+## Current Wizard-intake read-path LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Verified entry is `C:\Users\Kasutaja\Desktop\TraceBench`, branch `main`, at
+`HEAD == origin/main ==
+691fea67c6caa8bc9539f48b8baa0fbc6e94665b`, subject
+`feat: render Wizard intake on Board Canvas`, divergence `0 0`, empty entry
+substantive tracked diff, and empty staged set. Five known porcelain-only
+tracked paths match their `HEAD` blobs; known untracked scratch remains
+unchanged and outside authority.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+8. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+9. `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md`
+
+No tenth file is authorized. In particular,
+`docs/PROJECT_ZIP_SPEC.md`, all Dart/runtime/tests, every other map/index row,
+tools, schemas, assets, packages, generated content, `_incoming`, and scratch
+are read-only or excluded.
+
+### Accepted committed children
+
+Child 1 is committed as
+`8118acef186e28320938d4533ce5b16bd7f577bd`, subject
+`feat: add Wizard intake model loader`, with exactly:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/shared/models/project_state.dart`
+3. `lib/shared/services/project_loader.dart`
+4. `test/unit/wizard_intake_test.dart`
+5. `test/unit/project_loader_zip_test.dart`
+
+Its attributed validation is format `5 files, 0 changed`; targeted analysis
+`no issues`; focused `44/44`; parser regression `4/4`; full Flutter `541/541`;
+Python Project ZIP `36/36`; validator `302/302`; both diff checks, exact set,
+and staged-set check `PASS`.
+
+Child 2 is committed as
+`691fea67c6caa8bc9539f48b8baa0fbc6e94665b`, subject
+`feat: render Wizard intake on Board Canvas`, with exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+Its attributed validation is format `2 files, 0 changed`; targeted analysis
+`no issues`; Board Canvas `160/160`; intake/loader regression `44/44`; full
+Flutter `548/548`; Python Project ZIP `36/36`; validator `302/302`; both diff
+checks, exact set, and staged-set check `PASS`.
+
+The human identifies both implementation audits as accepted and supplies Child
+2 `MANUAL_SMOKE: PASS 8/8`, `HUMAN_ATTESTATION: PASS`, and no fixture repository
+mutation. Raw external audit tokens/findings are not committed repo evidence,
+so the LOCK records acceptance without fabricating more specific payloads.
+Child implementation and manual smoke are not repeated here.
+
+### Locked committed behavior
+
+- Wizard intake remains `NON_CANONICAL`, `HUMAN_PROVIDED`, and
+  `PRESENTATION_INPUT` under the accepted parent SCOPE.
+- Child 1 provides immutable strict-known/tolerant-unknown v1 models and
+  optional directory/ZIP reads of `notes/wizard_intake.json`; exact and
+  root-prefixed ZIP paths are accepted; absence is null/silent; invalid intake
+  becomes null plus the stable nonblocking warning; required project-input
+  failures retain their prior semantics; `debugJson` excludes intake.
+- Child 2 consumes only `ProjectState.wizardIntake` and
+  `wizardIntakeWarning`; renders background photo, closed contour, and visual
+  candidates read-only; uses true contour min/max bounds and one proportional
+  centered fit with locked 3% padding clamped to 16–28 px; and shares the fit
+  across all Wizard layers.
+- Candidates are visible by default under `Visuaalsed kandidaadid`; photo is
+  hidden by default with `Näita taustafotot` / `Peida taustafoto`; missing and
+  render-failure photo states are neutral; and warning presentation is verbatim
+  and non-modal.
+- `_WizardIntakePainter` is under `IgnorePointer`. Its private candidate
+  rotation path is unrelated to Board placement hit testing, provider
+  mutation, writer requests, or canonical placement geometry.
+- Initial fit is UI-local and runs once per active project/intake. Existing
+  selection, hit testing, writer, routing, placement, measurement, responsive,
+  and canonical behavior remains accepted.
+
+No candidate edit, `wizard_normalized` -> `board_normalized` conversion,
+component identity/type/value/designator/package/footprint/contact/pin/pad/
+board-side/connection/net/measurement/diagnosis/evidence/event/fact creation,
+project write, or persistent state is authorized by this LOCK.
+
+### Code-map lifecycle
+
+Exactly three existing maps are refreshed from committed `HEAD`:
+
+1. `lib/shared/services/project_loader.dart` —
+   `AUTO — 5+ independently testable behaviors`
+2. `lib/features/board_canvas/screens/board_canvas_screen.dart` —
+   `AUTO — >5000 lines + 3+ responsibilities`
+3. `test/widget/board_canvas_screen_test.dart` —
+   `AUTO — >3000 lines + 3+ test families`
+
+The accepted implementations gave all three `UPDATE_REQUIRED` dispositions.
+This Phase 1 refresh sets each map header and matching index Status cell to
+`REVIEW_REQUIRED`. No fourth map is created. Source, tests, canonical owners,
+and this active lock continue to outrank every descriptive map.
+
+### Project ZIP and deferred write boundary
+
+`docs/PROJECT_ZIP_SPEC.md` remains byte-identical to committed `HEAD`. This
+LOCK changes no transport, export/import, validation, event/fact, evidence, or
+canonical semantics.
+
+The separate Wizard creation/write route remains deferred in full:
+
+- Step 1 `Täpsemalt`
+- Step 6 review and `Loo projekt`
+- Step 7 `Projekt loodud` and `Ava projekt`
+- ProjectCreator integration and manifest project/device fields
+- photo copy into `photos/` and writing `notes/wizard_intake.json`
+- provider assignment and Canvas transition
+- `.tracebench_local/canvas_preferences.json` read/write
+- persisted zoom, pan, photo visibility, or initial-fit marker
+
+### Route and Phase 2 boundary
+
+```text
+TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+-> TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+An independent Phase 2 map/LOCK audit may change only:
+
+1. the three map Status headers from `REVIEW_REQUIRED` to `MAINTAINED`;
+2. the three matching `CODE_MAP_INDEX.md` Status cells from
+   `REVIEW_REQUIRED` to `MAINTAINED`;
+3. the designated verdict-block interior in
+   `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md`; and
+4. the matching `docs/AUDIT_INDEX.md` Status cell as a mechanical verdict
+   mirror.
+
+Phase 2 may not change route prose, Project ZIP spec, map body,
+qualification/Source/Type/Audit evidence, ledger Description, another row or
+cell, implementation source/tests, accepted parent artifact, runtime, tools,
+schemas, assets, packages, `_incoming`, scratch, or any other byte.
+
+```text
+Current: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+Next: NEEDS_USER_DECISION
+```
+
+`NEEDS_USER_DECISION` is non-executable. Stop on a tenth Phase 1 file, fourth
+map, runtime/test/Project-ZIP-spec/scratch edit, map derived from anything but
+committed `HEAD`, Phase 2 mutation outside the eight authorized coordinates,
+creation/write-path activation, canonical or electrical expansion, validator
+failure, staged path, baseline drift, or any protected-surface change.
+
+## Accepted measurement-write test-determinism LOCK authority (historical)
+
+All current, future, route, and authority wording in this section is retained
+predecessor evidence. It does not override the current Wizard-intake LOCK
+authority above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS

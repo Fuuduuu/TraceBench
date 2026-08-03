@@ -2,10 +2,93 @@
 
 ## Current route
 
-Current: `TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS`
+Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current measurement-write test-determinism LOCK queue
+## Current Wizard-intake read-path LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Entry is `main` at
+`HEAD == origin/main ==
+691fea67c6caa8bc9539f48b8baa0fbc6e94665b`, subject
+`feat: render Wizard intake on Board Canvas`, divergence `0 0`, with empty
+entry substantive tracked diff and staged set. Known porcelain-only tracked
+entries are content-identical to `HEAD`; known scratch remains unchanged and
+outside the queue.
+
+Committed child evidence is fixed:
+
+1. `8118acef186e28320938d4533ce5b16bd7f577bd` —
+   `feat: add Wizard intake model loader` — exactly five model/loader/test
+   files; reported format `5 files, 0 changed`, analysis `no issues`, focused
+   `44/44`, parser `4/4`, full Flutter `541/541`, Project ZIP `36/36`, validator
+   `302/302`, and diff/state checks `PASS`.
+2. `691fea67c6caa8bc9539f48b8baa0fbc6e94665b` —
+   `feat: render Wizard intake on Board Canvas` — exactly the Board Canvas
+   source/test pair; reported format `2 files, 0 changed`, analysis `no issues`,
+   Board Canvas `160/160`, intake/loader `44/44`, full Flutter `548/548`,
+   Project ZIP `36/36`, validator `302/302`, and diff/state checks `PASS`.
+
+The human records both implementation audits as accepted and Child 2 manual
+smoke as `PASS 8/8` with `HUMAN_ATTESTATION: PASS`. This LOCK does not repeat
+either implementation or manual smoke.
+
+The exact current docs/map material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+8. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+9. `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md`
+
+No tenth path, fourth map, Dart/test edit, Project ZIP spec edit, or scratch
+path is queued.
+
+All three maps are refreshed from committed `HEAD` and their map/index Status
+pairs are `REVIEW_REQUIRED`. ProjectLoader remains
+`AUTO — 5+ independently testable behaviors`; Board Canvas production remains
+`AUTO — >5000 lines + 3+ responsibilities`; its focused test remains
+`AUTO — >3000 lines + 3+ test families`. Maps stay descriptive and
+non-authorizing.
+
+The exact route is complete through this LOCK:
+
+```text
+TRACEBENCH_WIZARD_INTAKE_READ_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_INTAKE_MODEL_LOADER_PASS
+-> TRACEBENCH_WIZARD_INTAKE_CANVAS_READONLY_PASS
+-> TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Phase 2 is bounded to the three map-header Status promotions, three matching
+index Status promotions, the designated verdict-block interior, and the
+matching audit-ledger Status cell. Route prose, map bodies/qualifications,
+ledger Description, Project ZIP spec, committed source/tests, and every other
+byte remain frozen.
+
+The separate Wizard creation/write cycle remains deferred: `Täpsemalt`, review
+and final creation/summary, ProjectCreator, manifest values, photo copy,
+intake write, provider assignment, Canvas transition, local preferences, and
+persisted view state.
+
+`NEEDS_USER_DECISION` is non-executable. No successor implementation is
+queued.
+
+## Accepted measurement-write test-determinism LOCK queue (historical)
+
+All current, next, transition, and queue wording in this section is retained
+predecessor evidence. It does not override the current Wizard-intake LOCK
+queue above.
 
 ```text
 PASS_ID: TRACEBENCH_MEASUREMENT_WRITE_TEST_DETERMINISM_LOCK_PASS

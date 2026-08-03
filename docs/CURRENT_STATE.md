@@ -1,9 +1,119 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
 
-## Live Wizard-intake read-path LOCK
+## Live Wizard creation/write-path SCOPE
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Verified entry is branch `main` at
+`HEAD == origin/main ==
+9cd589e60b842c57f55bf8fbc0849be44f8aa2ee`, subject
+`docs: lock Wizard intake read path`, divergence `0 0`, empty substantive
+tracked diff, and empty staged set. Known porcelain-only tracked paths are
+content-identical to `HEAD`; untracked scratch is unchanged and outside scope.
+The released `NEEDS_USER_DECISION` sentinel supplied the human decision to
+open this protected write-path cycle.
+
+This docs-only SCOPE changes exactly eight files: the three route owners, audit
+ledger, `docs/UI_WORKFLOWS.md`, code-map index, one new committed-source router
+map, and its SCOPE artifact. It changes no runtime, test, schema, existing map,
+Project ZIP spec, tool, asset, package, `.tracebench_local`, `_incoming`, or
+scratch content.
+
+The locked route is:
+
+```text
+TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Child 1 owns storage only across six files: `WizardIntake` deterministic JSON
+serialization, compatible optional manifest display/device fields,
+`ProjectCreator` creation of the complete noncanonical intake, optional
+byte-identical photo copy, empty event log, existing materializer ownership,
+generated-child-only cleanup, and `ProjectLoader.loadFromDirectory` hydration.
+Its exact allowlist is:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/shared/models/project_manifest.dart`
+3. `lib/shared/services/project_creator.dart`
+4. `schemas/project_manifest.schema.json`
+5. `test/unit/wizard_intake_test.dart`
+6. `test/unit/project_creator_test.dart`
+
+Child 2 owns UI activation and state handoff only across five files. It adds
+optional Step 1 `Täpsemalt` fields; makes Step 6 `Kontroll ja kinnitus` with
+summary, edit links, gate revalidation, duplicate protection, sanitized
+failure/retry state, and `Loo projekt`; makes Step 7 `Projekt loodud` with
+project name/ID/location and `Ava projekt`; assigns the successful
+`ProjectState` exactly once without automatic navigation; and opens the
+existing `/project` only from the explicit Step 7 action. Its exact allowlist
+is:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/screens/new_project_wizard_screen.dart`
+4. `test/widget/benchbeep_home_screen_test.dart`
+5. `test/widget/new_project_wizard_screen_test.dart`
+
+Required Steps 1, 3, and 5 must all be currently valid at creation time.
+Failure remains on Step 6 and preserves the full Steps 1–5 draft. The
+technical ID/directory stays random `prj_XXXXXXXX`; `project_name` is the
+separate stable display name. The exact Step 5 description becomes manifest
+`symptom` without inference, while all five problem fields remain in
+`notes/wizard_intake.json`. No-photo serializes `background_photo: null`; a
+supported selected photo is copied unchanged to a lowercase-extension
+`photos/wizard_background.*` path without moving or deleting its source.
+
+The new deterministic router map is qualified by the exact human override:
+
+```text
+HUMAN OVERRIDE — creation handoff crosses router, screen and provider boundaries and requires durable impact analysis.
+```
+
+Its body and matching index row are `REVIEW_REQUIRED` pending independent
+SCOPE/map audit. All five pre-existing implementation-target maps are
+`MAINTAINED` at entry. Accepted child implementation will require
+`UPDATE_REQUIRED` for ProjectCreator, app, router, Wizard screen, Home test,
+and Wizard test; the final LOCK will refresh them only from committed source.
+
+Child 2 manual smoke is a separate eight-item human gate: Step 6 summary/edit
+links; no-photo creation; photo byte copy; intake/manifest values; duplicate
+protection; failure retention on Step 6; Step 7/no auto-redirect; and explicit
+`Ava projekt` to Canvas with the intake visible.
+
+Wizard intake remains noncanonical human-provided presentation input.
+Creation authors no component, placement, measurement, evidence, diagnosis,
+event, or fact. `events.jsonl` starts empty, `known_facts.json` remains
+materializer-owned, Project ZIP transport semantics remain unchanged, and no
+Canvas preference/view state is persisted.
+
+Phase 2 may promote only the router map header and matching map-index Status,
+fill the artifact's designated verdict block, and mechanically mirror the
+result into the matching audit-ledger Status. Every other byte remains frozen.
+
+```text
+Current: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+Next: TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+```
+
+Independent acceptance and human push of this exact lock are activation gates
+for both child reservations.
+
+## Accepted Wizard-intake read-path LOCK (historical)
+
+All current, next, route, and authority wording in this section is retained
+predecessor evidence. It does not override the live creation/write-path SCOPE
+above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS

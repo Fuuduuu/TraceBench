@@ -2,10 +2,292 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
 
-## Current Wizard-intake read-path LOCK authority
+## Current Wizard creation/write-path SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Verified entry is `C:\Users\Kasutaja\Desktop\TraceBench`, branch `main`, at
+`HEAD == origin/main ==
+9cd589e60b842c57f55bf8fbc0849be44f8aa2ee`, subject
+`docs: lock Wizard intake read path`, divergence `0 0`, empty substantive
+tracked diff, and empty staged set. Known porcelain-only tracked paths are
+content-identical to their `HEAD` blobs; known untracked scratch is unchanged
+and outside authority.
+
+The preceding route released to `NEEDS_USER_DECISION`. The human decision now
+opens this protected creation/write-path scope. Independent acceptance and
+human push of this exact lock are activation gates for the future
+implementation authority below.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/code_maps/CODE_MAP_INDEX.md`
+7. `docs/code_maps/lib/app/router.dart.md`
+8. `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS.md`
+
+No ninth SCOPE file is authorized. Runtime, tests, schemas,
+`docs/PROJECT_ZIP_SPEC.md`, every existing code map, tools, assets, packages,
+generated content, `.tracebench_local`, `_incoming`, and scratch remain
+read-only or excluded. No staging, commit, or push is authorized.
+
+### Locked route
+
+```text
+TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The two implementation children execute in order. Each requires the accepted
+and pushed predecessor plus its own entry gate, exact allowlist, code-map
+preflight, TDD evidence, validation, manual-smoke gate when applicable, and
+independent audit. The final LOCK records only accepted committed evidence and
+refreshes affected maps from committed source.
+
+### Product and workflow contract
+
+- Steps 1–5 remain the authoritative retained draft-input steps.
+- Step 1 adds optional `Täpsemalt` fields for device type, manufacturer,
+  model, and revision. Existing project name, device name, parent directory,
+  and additional information remain. Future-AI copy is informational only.
+- Step 6 is `Kontroll ja kinnitus`, shows a complete draft summary, supplies
+  edit links to Steps 1–5, and owns `Loo projekt`.
+- Required Steps 1, 3, and 5 must satisfy their current gates when creation is
+  requested. Visitation or earlier validity cannot bypass a current invalid
+  gate.
+- A creation failure stays on Step 6 and preserves every Step 1–5 draft value.
+  Only sanitized `ProjectCreationResult` messages reach the UI.
+- Duplicate activation cannot start concurrent or repeated creation calls.
+- Step 7 is `Projekt loodud`, showing project name, project ID, and location.
+- Success hands the returned `ProjectState` to the app/provider exactly once
+  but does not navigate automatically.
+- `Ava projekt` assigns/uses the created project state and navigates to the
+  existing `/project` route; provider readiness precedes the route transition.
+- Pre-success cancellation retains the accepted confirmed-discard behavior.
+- The technical project ID and directory remain random `prj_XXXXXXXX`;
+  `project_name` is a separate stable human-facing display name.
+
+### Child 1 — creation storage
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+Lane: B
+Mode: SCHEMA_PASS / FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/shared/models/project_manifest.dart`
+3. `lib/shared/services/project_creator.dart`
+4. `schemas/project_manifest.schema.json`
+5. `test/unit/wizard_intake_test.dart`
+6. `test/unit/project_creator_test.dart`
+
+No seventh Child 1 file is authorized.
+
+Child 1 must:
+
+- add deterministic `WizardIntake` JSON serialization with round-trip tests,
+  preserving exact `schema_version: 1.0`, `coordinate_space:
+  wizard_normalized`, the five raw problem fields, closed normalized contour,
+  optional photo transform, candidate source order, stable draft keys, exact
+  shapes, sizes, and rotations;
+- extend `ProjectManifest` and its schema compatibly with optional
+  `project_name`, `device_name`, `additional_info`, `manufacturer`, and
+  `revision`; old manifests must still parse;
+- keep `project_id` as the technical ID and store the stable display name only
+  as `project_name`;
+- pass the exact human Step 5 `description` to manifest `symptom` without
+  trimming-based replacement, summarization, classification, or inference;
+- always write `notes/wizard_intake.json`; no selected photo serializes
+  `background_photo: null`;
+- for a selected supported `jpg`, `jpeg`, `png`, or `webp` source, copy bytes
+  unchanged to
+  `photos/wizard_background.<lowercase supported extension>`, reference that
+  project-relative path from the intake, and never move, mutate, or delete the
+  source;
+- treat a missing, unreadable, unsupported-extension, or otherwise invalid
+  selected photo as creation failure, then clean only the creator-generated
+  collision-checked child directory;
+- leave `events.jsonl` exactly empty and leave `known_facts.json` generation to
+  the existing materializer;
+- create no event, fact, component, placement, measurement, evidence,
+  diagnosis, or other canonical assertion; and
+- hydrate success through `ProjectLoader.loadFromDirectory`, so the returned
+  `ProjectState` contains `wizardIntake`, a null intake warning for the valid
+  generated file, and the generated `projectDirectory`.
+
+Child 1 tests must cover deterministic serialization/round-trip, old/new
+manifest compatibility, exact raw-field and enum mapping, photo/no-photo
+output, byte-identical copy and lowercase destination extension, source
+preservation, missing/malformed photo cleanup, empty events, materializer
+ownership, generated-child-only cleanup, and loader-based hydrated success.
+
+Child 1 must stop on a seventh file, a need to edit ProjectLoader or Project
+ZIP tooling/spec, any canonical write, any cleanup target not proven to be the
+new generated child, any source-photo mutation, or any failed validation.
+
+### Child 2 — Wizard UI activation and project-state handoff
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/screens/new_project_wizard_screen.dart`
+4. `test/widget/benchbeep_home_screen_test.dart`
+5. `test/widget/new_project_wizard_screen_test.dart`
+
+No sixth Child 2 file is authorized.
+
+Child 2 must:
+
+- add the optional Step 1 `Täpsemalt` device-type, manufacturer, model, and
+  revision drafts without weakening the existing Step 1 gate;
+- keep every future-AI statement informational and non-executable;
+- build the complete Step 6 summary, edit links, current-gate revalidation,
+  `Loo projekt`, in-progress, failure, and retry states;
+- ensure one user creation attempt invokes the injected creator once, disables
+  duplicate activation while pending, and never maps raw failure detail into
+  visible UI;
+- preserve the complete draft and current Step 6 after every failure;
+- on success invoke an injected created-project handoff exactly once and enter
+  Step 7 without automatic navigation;
+- have app/router wiring assign `projectStateProvider` before the created
+  project can open, while keeping `Ava projekt` on existing `/project`;
+- retain current pre-success confirmed-discard cancellation; and
+- preserve every accepted Home, router, Wizard Steps 1–5, Canvas, routing,
+  responsive, and existing-project behavior outside this creation path.
+
+Child 2 must not edit Board Canvas, `ProjectCreator`, models, schema,
+materializer, Project ZIP tools/spec, writer, event, fact, placement,
+measurement, asset, package, `_incoming`, or a sixth file. It must stop if the
+handoff cannot be contained inside the five files, provider assignment could
+occur more than once, Step 7 would auto-redirect, raw failure detail would be
+shown, or any validation/manual-smoke item fails.
+
+### Code-map preflight and lifecycle
+
+At SCOPE entry, these five existing implementation-target maps and matching index rows
+are `MAINTAINED` and resolve against committed `HEAD`:
+
+- `lib/shared/services/project_creator.dart`
+- `lib/app/app.dart`
+- `lib/features/project/screens/new_project_wizard_screen.dart`
+- `test/widget/benchbeep_home_screen_test.dart`
+- `test/widget/new_project_wizard_screen_test.dart`
+
+`lib/app/router.dart` had no map. The human explicitly qualifies it as:
+
+```text
+HUMAN OVERRIDE — creation handoff crosses router, screen and provider boundaries and requires durable impact analysis.
+```
+
+This SCOPE creates only
+`docs/code_maps/lib/app/router.dart.md` from committed `HEAD`. Its map header
+and matching `CODE_MAP_INDEX.md` row are `REVIEW_REQUIRED`; the map remains
+descriptive and cannot authorize Child 2. Only a clean independent SCOPE/map
+audit may promote that pair to `MAINTAINED`.
+
+After accepted material implementation, the required dispositions are
+`UPDATE_REQUIRED` for exactly:
+
+1. `lib/shared/services/project_creator.dart`
+2. `lib/app/app.dart`
+3. `lib/app/router.dart`
+4. `lib/features/project/screens/new_project_wizard_screen.dart`
+5. `test/widget/benchbeep_home_screen_test.dart`
+6. `test/widget/new_project_wizard_screen_test.dart`
+
+Map refresh belongs to the final docs/map LOCK and must use accepted committed
+source, never unfinished child work.
+
+### Child 2 manual-smoke gate
+
+After automated validation and before Child 2 final audit, human smoke must
+record all eight items:
+
+1. review the Step 6 summary and every edit link;
+2. create a project without a photo;
+3. create with a photo and verify the byte-identical project copy;
+4. verify intake JSON and manifest values;
+5. verify duplicate-click protection;
+6. verify failure preserves the complete draft and remains on Step 6;
+7. verify Step 7 content and absence of automatic redirect; and
+8. verify `Ava projekt` opens the created project with Canvas intake visible.
+
+Manual observation may not be fabricated or replaced by automated tests.
+
+### Shared protected boundaries
+
+- Human-provided Wizard intake remains `NON_CANONICAL`, `HUMAN_PROVIDED`, and
+  `PRESENTATION_INPUT`.
+- Visual candidates remain noncanonical proposals and create no component,
+  identity, placement, fact, event, measurement, evidence, or diagnosis.
+- `events.jsonl` remains the only canonical event history and is initialized
+  empty; `known_facts.json` remains materializer-owned derived state.
+- No event envelope, evidence status, writer, validator, materializer,
+  projection, electrical/net, canonical coordinate, AI/OCR/CV, or Project ZIP
+  transport semantic changes.
+- No `.tracebench_local` preference or persisted Canvas view state is written.
+- `docs/PROJECT_ZIP_SPEC.md` remains byte-identical.
+- Maps are descriptive and subordinate to source, tests, canonical owners,
+  `docs/POHIKIRI.md`, and this lock.
+
+### Bounded Phase 2 authority
+
+A clean independent SCOPE/map audit may authorize only:
+
+1. `REVIEW_REQUIRED` -> `MAINTAINED` in the Status header of
+   `docs/code_maps/lib/app/router.dart.md`;
+2. the same promotion in the matching `lib/app/router.dart` row of
+   `docs/code_maps/CODE_MAP_INDEX.md`;
+3. returned verdict text inside the uniquely marked empty block in
+   `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS.md`; and
+4. a mechanical mirror of that verdict in only the matching
+   `docs/AUDIT_INDEX.md` Status cell.
+
+Every route-owner byte, `docs/UI_WORKFLOWS.md`, `docs/PROJECT_ZIP_SPEC.md`, the
+router map body/qualification/Source/Type/Audit evidence, all unrelated index
+rows, the ledger Description and unrelated rows, artifact exterior, runtime,
+tests, schemas, tools, assets, packages, `_incoming`, and scratch remain
+frozen. No extra pass or ninth file is created.
+
+```text
+Current: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+Next: TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+```
+
+Stop on baseline or route drift, a ninth SCOPE file, any runtime/test/schema/
+Project-ZIP-spec/existing-map/scratch mutation, an unresolved code-map conflict,
+canonical or transport expansion, validator failure, a staged path, or any
+Phase 2 mutation outside the four named coordinates.
+
+## Accepted Wizard-intake read-path LOCK authority (historical)
+
+All current, next, route, and authority wording in this section is retained
+predecessor evidence. It does not override the current creation/write-path
+SCOPE authority above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS

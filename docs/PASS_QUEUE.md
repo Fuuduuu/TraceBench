@@ -2,10 +2,177 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
 
-## Current Wizard-intake read-path LOCK queue
+## Current Wizard creation/write-path SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is `main` at
+`HEAD == origin/main ==
+9cd589e60b842c57f55bf8fbc0849be44f8aa2ee`, subject
+`docs: lock Wizard intake read path`, divergence `0 0`, with empty substantive
+tracked diff and staged set. Known porcelain-only tracked paths match `HEAD`;
+known scratch is preserved and outside the queue.
+
+The exact current SCOPE material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/code_maps/CODE_MAP_INDEX.md`
+7. `docs/code_maps/lib/app/router.dart.md`
+8. `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS.md`
+
+No ninth SCOPE path, runtime/test/schema edit, existing-map edit, Project ZIP
+spec edit, or scratch mutation is queued.
+
+The exact sequence is:
+
+```text
+TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Implementation is conditional on independent acceptance and push of this exact
+SCOPE. Children run serially; Child 2 requires accepted and pushed Child 1.
+
+### Queued Child 1 — creation storage
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_STORAGE_PASS
+Lane: B
+Mode: SCHEMA_PASS / FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/shared/models/project_manifest.dart`
+3. `lib/shared/services/project_creator.dart`
+4. `schemas/project_manifest.schema.json`
+5. `test/unit/wizard_intake_test.dart`
+6. `test/unit/project_creator_test.dart`
+
+Child 1 queues deterministic v1 intake serialization and round-trip; optional
+compatible manifest fields `project_name`, `device_name`, `additional_info`,
+`manufacturer`, and `revision`; exact raw Step 5 description as `symptom`;
+complete five-field problem intake; always-written
+`notes/wizard_intake.json`; null no-photo background; byte-identical supported
+photo copy to `photos/wizard_background.<lowercase extension>`; source-photo
+preservation; generated-child-only failure cleanup; empty `events.jsonl`;
+existing materializer ownership; and success hydration through
+`ProjectLoader.loadFromDirectory`.
+
+No ProjectLoader, UI, router, provider, Project ZIP tool/spec, canonical
+writer, event/fact/placement/component/measurement behavior, or seventh file
+is queued.
+
+Required Child 1 verification includes TDD RED; format and targeted analysis
+for the six files; focused Wizard-intake and creator tests; existing manifest,
+loader, and Project ZIP regressions; full `flutter test`; Python Project ZIP
+tests; `validate_all.py`; diff checks; exact six-file set; and empty staging.
+
+### Queued Child 2 — UI activation and handoff
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+Lane: B
+Mode: FLUTTER_PASS
+```
+
+Exact implementation allowlist:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/screens/new_project_wizard_screen.dart`
+4. `test/widget/benchbeep_home_screen_test.dart`
+5. `test/widget/new_project_wizard_screen_test.dart`
+
+Child 2 queues optional Step 1 `Täpsemalt` device metadata, informational
+future-AI copy, complete Step 6 summary/edit/create/in-progress/failure/retry
+states, live Step 1/3/5 revalidation, duplicate-call prevention, sanitized-only
+error copy, complete-draft failure retention, exactly-once created-state
+handoff, Step 7 project details with no automatic redirect, provider
+assignment before opening, explicit `Ava projekt` to existing `/project`, and
+retained pre-success confirmed-discard cancellation.
+
+No Board Canvas, ProjectCreator, model, schema, loader, writer, event, fact,
+materializer, ZIP-tool/spec, asset, package, `_incoming`, or sixth file is
+queued.
+
+Required Child 2 verification includes TDD RED; format and targeted analysis
+for the five files; focused Home and Wizard suites; relevant router/Canvas
+route regressions; full `flutter test`; `validate_all.py`; diff checks; exact
+five-file set; empty staging; and the eight-item human manual-smoke gate before
+independent implementation audit.
+
+### Final queued LOCK
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+The final LOCK may start only after both children are independently accepted,
+committed, and pushed, and after Child 2 manual smoke passes. It records exact
+commit/file/validation/audit/smoke evidence and refreshes affected maps only
+from accepted committed `HEAD`. Its exact docs/map material set must be decided
+from actual committed evidence and is not pre-authorized by this queue.
+
+### Router map and future dispositions
+
+The new committed-source router map uses the exact qualification:
+
+```text
+HUMAN OVERRIDE — creation handoff crosses router, screen and provider boundaries and requires durable impact analysis.
+```
+
+Its header and matching index row are `REVIEW_REQUIRED` until the independent
+SCOPE/map audit. Phase 2 may promote only that pair, fill the designated
+artifact verdict block, and mirror it into the matching ledger Status. No
+route or contract prose may change.
+
+After material child implementation, exact `UPDATE_REQUIRED` dispositions
+apply to ProjectCreator, app, router, Wizard screen, Home test, and Wizard test.
+
+### Manual-smoke gate
+
+Child 2 manual smoke must record:
+
+1. Step 6 summary and edit links;
+2. creation without photo;
+3. creation with byte-identical photo copy;
+4. intake JSON and manifest values;
+5. duplicate-click protection;
+6. failure retention on Step 6;
+7. Step 7 details and no automatic redirect; and
+8. `Ava projekt` opening Canvas with created intake visible.
+
+No automated result substitutes for this human evidence.
+
+Wizard intake remains noncanonical presentation input; no component,
+placement, measurement, evidence, diagnosis, event, or fact is queued.
+`events.jsonl` starts empty, `known_facts.json` remains materializer-owned,
+Project ZIP transport remains unchanged, and no Canvas preference/view state
+is persisted.
+
+## Accepted Wizard-intake read-path LOCK queue (historical)
+
+All current, next, transition, and queue wording in this section is retained
+predecessor evidence. It does not override the current creation/write-path
+SCOPE queue above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS

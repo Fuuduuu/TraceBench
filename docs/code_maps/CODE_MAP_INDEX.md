@@ -9,6 +9,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | Source file | Map file | Type | Status |
 | --- | --- | --- | --- |
 | `lib/app/app.dart` | `docs/code_maps/lib/app/app.dart.md` | production | `MAINTAINED` |
+| `lib/app/router.dart` | `docs/code_maps/lib/app/router.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/screens/board_canvas_screen.dart` | `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/screens/new_project_wizard_screen.dart` | `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md` | production | `MAINTAINED` |

@@ -47,6 +47,36 @@ ProcessResult _failure([String stderr = 'failed']) =>
 
 void main() {
   group('PythonRunner', () {
+    test(
+        'real process preserves Unicode stdout stderr exit code and working directory',
+        () async {
+      final temporaryRoot =
+          await Directory.systemTemp.createTemp('tb-python-runner-');
+      addTearDown(() => temporaryRoot.delete(recursive: true));
+      final workingDirectory = await Directory(
+        '${temporaryRoot.path}${Platform.pathSeparator}UUE PROJEKTI TÖÖKAUST',
+      ).create();
+      final pythonRunner = PythonRunner(repoRootPath: Directory.current.path);
+      final pythonCommand = await pythonRunner.discoverPythonCommand();
+
+      expect(pythonCommand, isNotNull, reason: 'A real Python is required');
+
+      const script = 'import os, sys; '
+          'sys.stdout.write("Õ|UUE PROJEKTI TÖÖKAUST|" + os.getcwd()); '
+          'sys.stderr.write("Õ|UUE PROJEKTI TÖÖKAUST")';
+      final result = await pythonRunner.run(
+        command: <String>[...pythonCommand!, '-c', script],
+        workingDirectory: workingDirectory.path,
+      );
+
+      expect(result.exitCode, 0);
+      expect(
+        result.stdout,
+        'Õ|UUE PROJEKTI TÖÖKAUST|${workingDirectory.path}',
+      );
+      expect(result.stderr, 'Õ|UUE PROJEKTI TÖÖKAUST');
+    });
+
     test('discovery tries py -3 before python3/python', () async {
       final runner = _FakeProcessRunner((command, _, __) {
         if (command.first == 'py' && command.last == '--version') {

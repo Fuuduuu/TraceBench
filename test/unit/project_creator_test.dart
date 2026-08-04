@@ -441,6 +441,62 @@ void main() {
       expect(loadedPaths, <String>[projectPath]);
     });
 
+    test('real materializer creates a project under a Unicode parent path',
+        () async {
+      final temporaryRoot =
+          await Directory.systemTemp.createTemp('tb-creator-unicode-');
+      addTearDown(() => temporaryRoot.delete(recursive: true));
+      final destinationParent = await Directory(
+        '${temporaryRoot.path}${Platform.pathSeparator}UUE PROJEKTI TÖÖKAUST Õ',
+      ).create();
+      const projectId = 'prj_cafebabe';
+      final creator = ProjectCreator(
+        repoRootPath: Directory.current.path,
+        projectIdGenerator: () => projectId,
+      );
+
+      final result = await creator.createProject(
+        _request(destinationParentPath: destinationParent.path),
+      );
+
+      expect(
+        result,
+        isA<ProjectCreationSuccess>(),
+        reason: result is ProjectCreationFailed ? result.rawDetail : '$result',
+      );
+      final state = (result as ProjectCreationSuccess).projectState;
+      final expectedProjectPath =
+          '${destinationParent.path}${Platform.pathSeparator}$projectId';
+      final projectDirectory = Directory(expectedProjectPath);
+      final manifestFile = File(
+        '$expectedProjectPath${Platform.pathSeparator}manifest.json',
+      );
+      final intakeFile = File(
+        '$expectedProjectPath${Platform.pathSeparator}notes${Platform.pathSeparator}wizard_intake.json',
+      );
+      final eventsFile = File(
+        '$expectedProjectPath${Platform.pathSeparator}events.jsonl',
+      );
+      final knownFactsFile = File(
+        '$expectedProjectPath${Platform.pathSeparator}known_facts.json',
+      );
+
+      expect(await projectDirectory.exists(), isTrue);
+      expect(await manifestFile.exists(), isTrue);
+      expect(await intakeFile.exists(), isTrue);
+      expect(await eventsFile.length(), 0);
+      expect(await knownFactsFile.exists(), isTrue);
+      expect(
+        jsonDecode(await knownFactsFile.readAsString()),
+        containsPair('project_id', projectId),
+      );
+      expect(state.projectDirectory, expectedProjectPath);
+      expect(state.wizardIntake, isNotNull);
+      expect(state.wizardIntakeWarning, isNull);
+      expect(state.events, isEmpty);
+      expect(state.isProjectionStale, isFalse);
+    });
+
     test('copies every supported mixed-case photo extension byte-for-byte',
         () async {
       final parentDir = await Directory.systemTemp.createTemp('tb-creator-');

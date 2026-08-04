@@ -54,6 +54,11 @@ class DefaultProcessRunner extends ProcessRunner {
       command.first,
       command.sublist(1),
       workingDirectory: workingDirectory,
+      environment: const <String, String>{
+        'PYTHONUTF8': '1',
+        'PYTHONIOENCODING': 'utf-8',
+      },
+      includeParentEnvironment: true,
       runInShell: false,
       stdoutEncoding: utf8,
       stderrEncoding: utf8,

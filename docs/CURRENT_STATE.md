@@ -1,23 +1,67 @@
 # Current State
 
-Current pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
+Current pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS`
 
-## Live Python-runner Windows Unicode-output detour
+## Live Python-runner Windows Unicode-output LOCK
 
 ```text
-PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
 Lane: B
-Mode: DOCS_SYNC / SCOPE_LOCK
+Mode: REVISED_DOCS_SYNC / LOCK
 ```
 
 Verified entry is the isolated worktree
 `C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
 `fix/python-runner-windows-unicode-output`, at
 `HEAD == origin/main ==
-0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, with empty
-tracked and staged sets. Scratch and untracked content is preserved. The
-original Wizard worktree is read-only for this detour.
+548b85eddabd37bdfd4230b99c552c2c3ee67ca7`, divergence `0 0`, with empty
+entry tracked and staged sets. Commit `548b85e`, parent `12512dd`, subject
+`fix: make PythonRunner output UTF-8 on Windows`, changes exactly:
+
+1. `lib/shared/services/python_runner.dart` (`+5`)
+2. `test/unit/python_runner_test.dart` (`+30`)
+3. `test/unit/project_creator_test.dart` (`+56`)
+
+The accepted implementation audit is `AUDIT_VERDICT: ACCEPT_WITH_NITS` and
+`SAFE_FOR_STAGING: YES`. Exact targeted analysis remains honestly classified
+as `FAIL_BASELINE_UNCHANGED`: the sole diagnostic is the inherited
+`library_private_types_in_public_api` info at
+`lib/shared/services/python_runner.dart:95:21`, with zero warnings, zero
+errors, no changed-hunk overlap, no suppression, and no public-API change.
+The delta-sensitive `--no-fatal-infos` analysis exits `0` without any new
+diagnostic.
+
+This LOCK changes exactly eight documentation/map files. The refreshed
+PythonRunner production map and the new qualified ProjectCreator test map are
+both `REVIEW_REQUIRED` pending independent LOCK audit. The committed
+`python_runner_test.dart` remains `NOT_APPLICABLE` at `SCORE 3/12`. The
+existing ProjectCreator production-map refresh obligation remains
+`UPDATE_REQUIRED` and is carried to
+`TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`; that production map is not
+changed by this detour.
+
+The route is locked as:
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The Wizard UI child remains suspended, not abandoned. This LOCK authorizes no
+Wizard edit. It may resume only after independent acceptance of this LOCK,
+exact human staging, commit and push, and a human-controlled safe
+fast-forward of the original Wizard worktree. The recovery patch is inspected
+only with `Get-FileHash`; its required SHA-256 is
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`.
+Scratch and untracked content remain preserved.
+
+## Accepted Python-runner Windows Unicode-output SCOPE history (non-authorizing)
+
+The historical SCOPE record below is retained for provenance. It does not own
+the current route or expand the live LOCK authority above.
 
 The accepted Wizard creation/write-path SCOPE is committed as
 `4b92f7274d492d5d36af62f2fdbe252b9cec06cb`. Its storage child is committed as

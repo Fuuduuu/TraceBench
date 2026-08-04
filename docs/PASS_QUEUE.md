@@ -2,26 +2,96 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS`
 
-## Current Python-runner Windows Unicode-output detour queue
+## Current Python-runner Windows Unicode-output LOCK queue
 
 ```text
-PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
 Lane: B
-Mode: DOCS_SYNC / SCOPE_LOCK
+Mode: REVISED_DOCS_SYNC / LOCK
 ```
 
 Entry is isolated worktree
 `C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
 `fix/python-runner-windows-unicode-output`, at
 `HEAD == origin/main ==
-0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, empty tracked
-diff, and empty staged set. Scratch stays preserved. The original Wizard
-worktree and its existing five-file UI-activation diff remain read-only.
+548b85eddabd37bdfd4230b99c552c2c3ee67ca7`, divergence `0 0`, with empty
+entry tracked and staged sets. The implementation commit has parent
+`12512ddf08d4d8342e483609aa1f719e5f747781`, subject
+`fix: make PythonRunner output UTF-8 on Windows`, and exact three-file
+material set:
 
-The exact current SCOPE material set is:
+1. `lib/shared/services/python_runner.dart` (`+5`)
+2. `test/unit/python_runner_test.dart` (`+30`)
+3. `test/unit/project_creator_test.dart` (`+56`)
+
+The exact current LOCK material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/shared/services/python_runner.dart.md`
+7. `docs/code_maps/test/unit/project_creator_test.dart.md`
+8. `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS.md`
+
+No ninth file is authorized. Runtime, tests, schemas, tools, the
+ProjectCreator production map, every other map, Wizard/app/router/Canvas
+surfaces, Project ZIP, `_incoming`, and scratch are frozen.
+
+Implementation evidence is accepted as
+`AUDIT_VERDICT: ACCEPT_WITH_NITS` / `SAFE_FOR_STAGING: YES`. Validation
+evidence is format `3 files, 0 changed`; focused suites `23/23`; independent
+real Unicode regressions `1/1` and `1/1`; WizardIntake/ProjectLoader ZIP
+`47/47`; full Flutter `561/561`; Python Project ZIP `36/36`; doctor
+`PASS`; validator `302/302`; diff/material/staged checks `PASS`.
+
+Analyzer evidence is deliberately split:
+
+- exact targeted analyzer:
+  `FAIL_BASELINE_UNCHANGED`, with only inherited info
+  `library_private_types_in_public_api` at
+  `lib/shared/services/python_runner.dart:95:21`, zero warnings/errors;
+- delta-sensitive analyzer with `--no-fatal-infos`: exit `0`, no new
+  diagnostic.
+
+Map queue:
+
+- `lib/shared/services/python_runner.dart`: refreshed from committed repair
+  HEAD, `AUTO — 5+ independently testable behaviors`,
+  `REVIEW_REQUIRED`;
+- `test/unit/python_runner_test.dart`: `SCORE 3/12`,
+  `NOT_APPLICABLE`;
+- `test/unit/project_creator_test.dart`: `SCORE 7/12`, new deterministic
+  test map, `REVIEW_REQUIRED`;
+- `lib/shared/services/project_creator.dart`: existing
+  `UPDATE_REQUIRED` disposition carried unchanged to the final Wizard
+  creation/write-path LOCK.
+
+Locked queue:
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The next Wizard child remains suspended until this LOCK is independently
+accepted, exactly staged, committed and pushed, then the original worktree is
+safely fast-forwarded by the human. No Wizard implementation is armed here.
+The recovery patch remains read-only and must retain SHA-256
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`.
+
+## Accepted Python-runner Windows Unicode-output SCOPE queue (historical)
+
+The historical SCOPE queue below is retained for provenance and does not
+override the current LOCK queue.
+
+The historical SCOPE material set was:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`

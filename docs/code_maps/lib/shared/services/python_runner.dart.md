@@ -4,221 +4,215 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS.md`
 
 ## File purpose
 
-Owns the shared Dart-to-Python process boundary used for Python discovery and
-for executing repository Python tools. It selects candidates in a fixed order,
-applies working-directory and timeout defaults, converts process-layer
-exceptions into one typed discovery exception, and exposes injectable process
-and platform seams. The called command, not this adapter, owns any filesystem,
-projection, canonical-event, or Project ZIP mutation.
+Owns the shared Dart-to-Python process boundary. It discovers Python in a
+fixed order, executes caller-supplied commands without a shell, preserves the
+parent environment while forcing deterministic Python UTF-8 output, applies
+working-directory and timeout defaults, strictly decodes stdout and stderr,
+and converts process-layer exceptions into one typed discovery exception.
+Caller-selected tools retain ownership of every persistent write.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Typed failure contract | `PythonDiscoveryException`, `message`, `toString` | Carries timeout, process-launch, decoding, and other process-layer failures across the shared boundary. |
-| Python candidate model | `_PythonCandidate`, `initialArgs`, `command` | Represents an executable plus fixed leading arguments without shell composition. |
-| Injectable execution seam | `ProcessRunner`, `ProcessRunner.run` | Defines the command, working-directory, and timeout contract used by fakes and the real runner. |
-| Default process execution and strict decoding | `DefaultProcessRunner`, `DefaultProcessRunner.run`, `Process.run`, `stdoutEncoding`, `stderrEncoding`, `utf8` | Starts one non-shell process, inherits the process environment through the current `Process.run` default, and strictly decodes both output streams as UTF-8. |
-| Platform seam | `PlatformInfo`, `DefaultPlatformInfo`, `isMobile` | Exposes Android/iOS detection to callers without coupling their tests to the host platform. |
-| Runner construction and defaults | `PythonRunner`, `_processRunner`, `_platformInfo`, `_repoRootPath`, `_commandTimeout`, `_probeTimeout`, `_repoRoot`, `platformInfo` | Selects real or injected dependencies and resolves repository-root, command-timeout, and probe-timeout defaults. |
-| Candidate order and discovery fallback | `pythonCandidates`, `discoverPythonCommand` | Probes `py -3`, then `python3`, then `python`; returns the first zero-exit candidate and otherwise returns null. |
-| Command dispatch and exception conversion | `PythonRunner.run`, `executionDirectory`, `TimeoutException`, `ProcessException` | Preserves caller command and explicit/default working directory and timeout, then converts timeout, launch, decoding, and other `Exception` failures to `PythonDiscoveryException`. |
+| Defaults and typed failures | `_defaultCommandTimeout`, `_pythonProbeTimeout`, `PythonDiscoveryException`, `message`, `toString` | Defines finite command/probe bounds and the typed process-boundary failure exposed to callers. |
+| Candidate value model | `_PythonCandidate`, `initialArgs`, `command` | Holds one executable plus immutable leading arguments without shell composition. |
+| Injectable process seam | `ProcessRunner`, `ProcessRunner.run` | Defines the command, working-directory, and timeout contract implemented by the real runner and test fakes. |
+| Deterministic default execution | `DefaultProcessRunner`, `DefaultProcessRunner.run`, `Process.run`, `environment`, `includeParentEnvironment`, `runInShell`, `stdoutEncoding`, `stderrEncoding`, `utf8`, `'PYTHONUTF8'`, `'PYTHONIOENCODING'`, `'utf-8'` | Launches one non-shell process, inherits the parent environment, overlays the two Python UTF-8 variables, and strictly decodes both output streams as UTF-8. |
+| Platform seam | `PlatformInfo`, `DefaultPlatformInfo`, `isMobile` | Exposes mobile-platform detection without coupling callers or tests to host globals. |
+| Construction and defaults | `PythonRunner`, `_processRunner`, `_platformInfo`, `_repoRootPath`, `_commandTimeout`, `_probeTimeout`, `_repoRoot`, `platformInfo` | Selects injected or default dependencies and resolves repository-root and timeout defaults. |
+| Candidate order and fallback | `pythonCandidates`, `discoverPythonCommand`, `'py'`, `'-3'`, `'python3'`, `'python'`, `'--version'` | Probes `py -3`, then `python3`, then `python`; returns the first zero-exit command or null. |
+| Dispatch and exception conversion | `PythonRunner.run`, `executionDirectory`, `TimeoutException`, `ProcessException` | Preserves caller command and explicit/default execution parameters, then maps timeout, launch, codec, and other process exceptions to `PythonDiscoveryException`. |
+
+## Deterministic anchor inventory
+
+Selection rule: take every code-formatted entry in the responsibility table's
+Stable symbol anchors column, de-duplicate exact spelling in first-appearance
+order, and classify dotted entries by whether that exact dotted spelling
+appears in source.
+
+Literal source anchors selected by that rule:
+
+- `_defaultCommandTimeout`, `_pythonProbeTimeout`,
+  `PythonDiscoveryException`, `message`, `toString`,
+  `_PythonCandidate`, `initialArgs`, `command`, `ProcessRunner`,
+  `DefaultProcessRunner`, and `Process.run`;
+- `environment`, `includeParentEnvironment`, `runInShell`,
+  `stdoutEncoding`, `stderrEncoding`, `utf8`, `'PYTHONUTF8'`,
+  `'PYTHONIOENCODING'`, and `'utf-8'`;
+- `PlatformInfo`, `DefaultPlatformInfo`, `isMobile`, `PythonRunner`,
+  `_processRunner`, `_platformInfo`, `_repoRootPath`,
+  `_commandTimeout`, `_probeTimeout`, `_repoRoot`, and
+  `platformInfo`;
+- `pythonCandidates`, `discoverPythonCommand`, `'py'`, `'-3'`,
+  `'python3'`, `'python'`, `'--version'`, `executionDirectory`,
+  `TimeoutException`, and `ProcessException`.
+
+Qualified member references, not literal dotted source strings:
+
+- `ProcessRunner.run`: `ProcessRunner` declares a bare `run` member.
+- `DefaultProcessRunner.run`: `DefaultProcessRunner` overrides bare
+  `run`.
+- `PythonRunner.run`: `PythonRunner` declares bare `run`.
 
 ## State and data flow
 
-1. `[D]` A caller constructs `PythonRunner`, optionally injecting
-   `ProcessRunner`, `PlatformInfo`, a repository root, and timeout values.
-2. `[D]` `discoverPythonCommand` iterates the immutable candidate list in the
-   order `py -3`, `python3`, `python` and appends `--version` to each probe.
-3. `[D]` Every probe delegates through `PythonRunner.run` with the probe
-   timeout. A zero exit returns only the executable and initial arguments;
-   nonzero exits continue to the next candidate.
-4. `[D]` `PythonRunner.run` selects the caller-supplied working directory or
-   `_repoRoot`, selects the caller timeout or command default, and forwards the
-   command unchanged to `ProcessRunner.run`.
-5. `[D]` `DefaultProcessRunner.run` invokes `Process.run` with
-   `runInShell: false`, the supplied working directory, strict UTF-8 stdout and
-   stderr decoding, and a finite Future timeout. No explicit environment map is
-   supplied in committed source, so the current `Process.run` inheritance
-   behavior applies.
-6. `[D]` Successful process completion returns the complete `ProcessResult`,
-   including its exit code and decoded streams; nonzero exit codes are not
-   converted and remain caller-owned.
-7. `[D]` Timeout, `ProcessException`, `FormatException` or another
-   `Exception` from process execution/decoding is converted to
-   `PythonDiscoveryException`. Discovery treats that typed exception as a
-   failed candidate; direct callers decide how to sanitize or route it.
-
-The adapter never rewrites the command, arguments, output text, or exit code.
-Its environment, decoding, working-directory, candidate-order, and exception
-decisions affect every production caller that uses the default runner.
+1. `[D]` A caller constructs `PythonRunner`, optionally injecting its
+   process runner, platform seam, repository root, and timeout values.
+2. `[D]` `discoverPythonCommand` walks the immutable candidate order and
+   appends only `--version` to each probe.
+3. `[D]` Each probe delegates through `PythonRunner.run` with the finite
+   probe timeout. A zero exit returns the candidate command; a nonzero exit or
+   typed execution failure advances to the next candidate.
+4. `[D]` `PythonRunner.run` selects the explicit working directory or
+   repository root and the explicit timeout or command default, then forwards
+   the command unchanged to `ProcessRunner.run`.
+5. `[D]` `DefaultProcessRunner.run` calls `Process.run` with
+   `runInShell: false`, the supplied working directory, an environment
+   overlay of `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8`, and
+   `includeParentEnvironment: true`.
+6. `[D]` The same call uses strict `utf8` codecs for stdout and stderr and
+   applies a finite Future timeout. No malformed-byte replacement is enabled.
+7. `[D]` A completed process returns its complete `ProcessResult`;
+   nonzero exit codes and decoded stderr remain caller-owned.
+8. `[D]` Timeout, launch, codec, and other `Exception` failures are
+   converted to `PythonDiscoveryException`. Discovery treats that as a
+   failed candidate; direct callers select their own sanitized result.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `dart:async` | inbound runtime primitive | Supplies `TimeoutException` and Future timeout behavior. |
-| `dart:convert` | inbound codec | Supplies the strict `utf8` decoder passed to `Process.run`. |
-| `dart:io` | inbound platform/process API | Supplies `Process.run`, `ProcessResult`, `ProcessException`, `Directory.current`, and mobile platform flags. |
-| `lib/shared/services/project_creator.dart` | production caller | Discovers Python, materializes `known_facts.json`, and maps process-boundary failure into typed project-creation cleanup/result behavior. |
-| `lib/shared/services/project_exporter.dart` | production caller and re-exporter | Materializes projection state, creates a Project ZIP, and re-exports the process/platform test seams. |
-| `lib/features/components/services/v2_add_component_writer.dart` | protected production caller | Executes the accepted component-event writer/materializer path. |
-| `lib/features/components/services/v2_edit_component_writer.dart` | protected production caller | Executes the accepted component-edit event writer/materializer path. |
-| `lib/features/components/services/v2_placement_writer.dart` | protected production caller | Executes the accepted placement-event writer/materializer path. |
-| `lib/features/measure_sheet/services/v2_save_measurement_writer.dart` | protected production caller | Executes the accepted measurement-event writer/materializer path. |
+| `dart:async` | inbound primitive | Supplies `TimeoutException` and finite Future timeout behavior. |
+| `dart:convert` | inbound codec | Supplies the strict `utf8` codec for both process streams. |
+| `dart:io` | inbound platform/process API | Supplies `Process.run`, results, launch exceptions, current-directory lookup, and mobile flags. |
+| `lib/shared/services/project_creator.dart` | production caller | Discovers Python, invokes the known-facts materializer, hydrates the result, and owns cleanup/safe result mapping. |
+| `lib/shared/services/project_exporter.dart` | production caller/re-exporter | Invokes projection and Project ZIP tools and re-exports process/platform test seams. |
+| V2 component, placement, and measurement writers | protected production callers | Invoke accepted canonical writer and projection commands through this shared execution boundary. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `discoverPythonCommand` candidate probes | `ZERO_WRITE` | Demonstrated commands append only `--version`; no repository path is supplied. |
-| `PythonRunner.run` and `DefaultProcessRunner.run` adapter logic | `ZERO_WRITE` | The adapter selects execution parameters and returns a process result; it performs no direct Dart filesystem write. |
-| ProjectCreator or ProjectExporter materializer command | `PROJECTION_STATE` | The caller supplies `tools/materialize_known_facts.py` and output paths; Python writes the rebuildable projection. |
-| ProjectExporter archive command | `NONCANONICAL_FILE` | The caller supplies `tools/export_project_zip.py` and the ZIP output path. Project ZIP semantics remain owned by their canonical tool/spec. |
-| V2 component, placement, and measurement event-writer commands | `CANONICAL_EVENT` | Protected callers select the accepted event-writer command and project paths; this adapter must not alter their event/fact semantics. |
-| V2 component, placement, and measurement materializer commands | `PROJECTION_STATE` | Protected callers separately select the accepted rebuildable-projection command; this adapter must not alter materializer semantics. |
-| `PythonDiscoveryException` conversion | `ZERO_WRITE` | Converts an execution-layer exception only; caller-specific safe result/UI mapping remains outside this file. |
+| Candidate `--version` probes | `ZERO_WRITE` | Fixed discovery probes inspect interpreter availability only. |
+| Runner parameter selection and exception conversion | `ZERO_WRITE` | Dart adapter logic selects execution inputs and returns or wraps a result; it performs no direct filesystem mutation. |
+| ProjectCreator/ProjectExporter materializer command | `PROJECTION_STATE` | Caller chooses the materializer and projection paths; this adapter must preserve the command unchanged. |
+| ProjectExporter archive command | `NONCANONICAL_FILE` | Caller owns ZIP generation and the Project ZIP contract. |
+| Accepted V2 writer commands | `CANONICAL_EVENT` | Caller owns protected event/fact semantics; the shared environment repair grants no writer authority. |
+| Accepted V2 materializer commands | `PROJECTION_STATE` | Caller owns rebuildable projection behavior and command selection. |
+| `PythonDiscoveryException` mapping | `ZERO_WRITE` | Converts execution detail only; caller-specific cleanup and UI sanitization remain outside this file. |
 
-The shared boundary does not itself authorize a command, event, fact, schema,
-writer, materializer, projection, Project ZIP, cleanup, or UI change. A process
-environment or decoding repair must preserve the exact caller command and the
-write class already established by that caller's verified path.
+The adapter does not authorize any event, fact, schema, writer, materializer,
+projection, Project ZIP, cleanup, UI, or Wizard change. Inheriting the parent
+environment is essential: replacing it could remove PATH, locale, temporary
+directory, or caller-specific variables.
 
 ## Zero-write zones
 
-- `[D]` `PythonDiscoveryException` construction and formatting.
-- `[D]` `_PythonCandidate` representation, command composition, and display.
-- `[D]` constructor dependency selection and timeout/root getters.
-- `[D]` platform capability inspection.
-- `[D]` candidate ordering and result selection.
-- `[D]` timeout/process/codec exception conversion.
+- `[D]` failure construction and formatting;
+- `[D]` candidate representation and ordering;
+- `[D]` constructor dependency selection, root/timeout getters, and platform
+  inspection;
+- `[D]` discovery selection and exception conversion.
 
-Process launch is a boundary action whose persistent effects depend on the
-caller-selected command; it must not be inferred to be zero-write merely from
-this adapter's small size.
+Process launch is a boundary action. Its persistent class is determined by the
+exact caller-selected command, not by this adapter's size.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Default execution environment or stream decoding | `[D]` One `Process.run` call owns both stream codecs and host-process configuration; each caller command retains its verified class | candidate probing; every materializer/writer/export caller; safe caller error mapping | `ZERO_WRITE` | real-process Unicode coverage in `python_runner_test.dart`; real creator regression; existing fake-runner suites |
-| ProcessRunner interface | `[D]` All fakes implement the same three-parameter method; each caller command retains its verified class | every constructor injection and test fake | `ZERO_WRITE` | PythonRunner, creator, exporter, component, placement, and measurement writer suites |
-| Candidate list/order | `[D]` One immutable list drives every discovery call | probe timeout and discovery exception handling | `ZERO_WRITE` | six focused PythonRunner tests |
-| Working-directory selection | `[D]` `executionDirectory` chooses explicit path or repository root; each caller command retains its verified class | relative `tools/*.py` paths in all callers | `ZERO_WRITE` | PythonRunner forwarding test plus caller command tests |
-| Timeout selection | `[D]` probe and normal commands have distinct finite defaults | discovery fallback and direct caller failure routing | `ZERO_WRITE` adapter behavior | focused timeout/error coverage is currently absent |
-| Exception conversion | `[D]` ordered catches distinguish timeout and launch errors before the broad `Exception` wrapper | creator cleanup/results, exporter and writer result mapping | `ZERO_WRITE` | fake failure suites; real decoding regression is currently absent |
-| Platform seam | `[D]` caller reads `platformInfo.isMobile` | creator/exporter/writer mobile gates | `ZERO_WRITE` | caller mobile-gate tests |
-
-The `ZERO_WRITE` entries classify only the Dart adapter decision named in the
-change-zone column. A launched command retains the separate verified class of
-its exact caller-owned path; the adapter classification grants no command or
-write authority.
+| Environment overlay or stream codecs | `[D]` One `Process.run` call owns both | discovery plus every Python tool caller and safe error mapper | `ZERO_WRITE` adapter configuration | real PythonRunner Unicode regression; real ProjectCreator Unicode-path regression; fake-runner suites |
+| `ProcessRunner` interface | `[D]` All fakes implement this seam | every injected caller/test fake | `ZERO_WRITE` | PythonRunner, creator, exporter, and writer suites |
+| Candidate list/order | `[D]` One immutable list drives discovery | probe timeout and fallback handling | `ZERO_WRITE` | focused discovery/fallback tests |
+| Working-directory selection | `[D]` explicit path falls back to repository root | relative `tools/*.py` calls | `ZERO_WRITE` | forwarding test and real Unicode-path creator regression |
+| Timeout selection | `[D]` probe and command defaults are distinct and finite | fallback and caller error routing | `ZERO_WRITE` | no dedicated timeout regression |
+| Exception conversion | `[D]` ordered catches precede broad exception wrapping | creator cleanup and sanitized results | `ZERO_WRITE` | failure suites plus real strict-decode coverage |
 
 ## Relevant tests and helpers
 
-Primary focused suite: `test/unit/python_runner_test.dart`.
+Primary suite: `test/unit/python_runner_test.dart`.
 
-- `_FakeProcessRunner` records command and working directory while supplying
-  deterministic results.
-- Existing tests cover candidate order, both fallbacks, null discovery,
-  command/argument forwarding, and execution through the injected seam.
-- Existing tests do not exercise `DefaultProcessRunner`, real stdout/stderr
-  decoding, explicit process environment, timeouts, or exception conversion.
+- The real-process test
+  `real process preserves Unicode stdout stderr exit code and working directory`
+  covers non-ASCII stdout/stderr, exit code, real discovery, and a Unicode
+  working directory through `DefaultProcessRunner`.
+- Six fake-runner tests cover candidate order, both fallbacks, null discovery,
+  command/argument forwarding, and injected execution.
+- `test/unit/project_creator_test.dart` adds the real materializer regression
+  `real materializer creates a project under a Unicode parent path`.
+- Caller suites for ProjectExporter and accepted component, placement, and
+  measurement writers continue to prove their own command/result contracts.
 
-Direct caller regression suites include:
-
-- `test/unit/project_creator_test.dart` for discovery, materializer success,
-  cleanup, hydration, and sanitized failure results;
-- `test/unit/project_exporter_test.dart` for materializer and ZIP commands;
-- `test/unit/v2_add_component_writer_test.dart`;
-- `test/unit/v2_edit_component_writer_test.dart`;
-- `test/unit/v2_placement_writer_test.dart`; and
-- `test/unit/v2_save_measurement_writer_test.dart`.
-
-Most caller suites inject fake `ProcessRunner` implementations, so they prove
-command/result orchestration but do not prove the host decoding contract.
+The focused suite still has no dedicated timeout regression. Most downstream
+caller tests use fakes, so the two real regressions are the direct host codec
+and Unicode-path evidence.
 
 ## Dangerous combinations
 
-- `[D]` Changing stream decoding together with lossy replacement can hide
-  corrupted paths or tool diagnostics while appearing to make a process pass.
-- `[D]` Replacing rather than inheriting the parent environment can remove
-  PATH, locale, temporary-directory, or caller-specific variables needed by
-  discovery and Python tools.
-- `[D]` Changing the `ProcessRunner.run` signature expands into every fake and
-  caller test and is not required for an internal default-runner environment
-  change.
-- `[D]` Changing candidate order, `runInShell`, or working-directory behavior
-  can select a different interpreter or break relative tool paths.
-- `[D]` Narrowing the broad exception wrapper without preserving codec failures
-  can leak a platform exception through callers that expect
-  `PythonDiscoveryException`.
-- `[D]` Treating a nonzero exit as a discovery exception would change caller
-  ownership of stderr, cleanup, and sanitized result selection.
+- Changing codecs together with malformed-byte replacement can conceal
+  corrupted paths or tool diagnostics.
+- Replacing instead of inheriting the parent environment can break interpreter
+  discovery and relative repository tool execution.
+- Changing the interface while changing the environment expands into every
+  fake and caller without being needed for the internal repair.
+- Changing candidate order, shell mode, arguments, working directory, or
+  timeout can select another interpreter or alter caller semantics.
+- Exposing raw process detail through safe result/UI surfaces can leak local
+  paths even when process execution itself is correct.
+- Treating nonzero exit as an exception changes caller ownership of stderr,
+  cleanup, and sanitized result selection.
 
 ## Safe SNIPER slices
 
 These slices are descriptive and authorize no work.
 
 - Default Python environment only: `DefaultProcessRunner.run` and its single
-  `Process.run` invocation; retain strict UTF-8 codecs, inherited environment,
-  command/arguments, non-shell execution, working directory, timeout, result,
-  and exception behavior; exercise real-process Unicode stdout/stderr plus the
-  ProjectCreator materializer path.
-- Candidate ordering only: `pythonCandidates` and
-  `discoverPythonCommand`; exclude default execution, error conversion, and
-  every caller command; run the focused fallback tests.
-- Working-directory forwarding only: `_repoRoot`, `executionDirectory`, and
-  `PythonRunner.run`; exclude candidate/environment/codec changes and run the
-  forwarding plus caller command tests.
-- Exception-message mapping only: the ordered catches in `PythonRunner.run`;
-  exclude process configuration and caller result copy; add direct timeout,
-  launch, and decode-failure coverage before change.
+  `Process.run`; preserve strict codecs, parent inheritance, command,
+  arguments, shell mode, working directory, timeout, result, and exception
+  behavior; run both real Unicode regressions.
+- Candidate order only: `pythonCandidates` and
+  `discoverPythonCommand`; exclude environment, codecs, and caller commands;
+  run the focused fallback tests.
+- Working-directory forwarding only: `_repoRoot`,
+  `executionDirectory`, and `PythonRunner.run`; exclude candidate and codec
+  changes; run forwarding and caller command tests.
+- Exception mapping only: ordered catches in `PythonRunner.run`; exclude
+  process configuration and caller-facing copy; add direct failure coverage
+  when separately authorized.
 
 ## Future extraction seams
 
-- `[S]` Default process configuration could receive a private immutable
-  environment helper if evidence shows it improves clarity without changing
-  the injectable interface.
-- `[S]` Candidate data could move outside the runner only if discovery remains
-  a single owner with the same order and tests.
-- `[S]` Caller-specific safe result mapping remains outside this file and must
-  not be consolidated here without a separate multi-zone decision.
+- `[S]` The default environment overlay could become a private immutable
+  helper only if a separately scoped change demonstrates a clarity benefit
+  without changing the injectable interface.
+- `[S]` Candidate data could move only if discovery remains a single owner
+  with the same order and coverage.
+- `[S]` Caller-specific safe result mapping remains outside this shared
+  adapter.
 
 ## Freshness and review triggers
 
-Review this map for:
-
-- `SYMBOL_DRIFT` when process, candidate, exception, platform, or runner
-  symbols change;
-- `FLOW_DRIFT` when candidate order, working-directory choice, timeout flow,
-  environment inheritance, stream decoding, or exception routing changes;
-- `BOUNDARY_DRIFT` when a caller command, write class, shell mode, process
-  environment, or raw-output exposure changes;
-- `TEST_DRIFT` when real-process coverage, fake interfaces, caller suites, or
-  protected writer coverage changes; and
-- `STRUCTURE_DRIFT` when process execution or discovery ownership moves.
-
-Formatting, imports, comments, and physical line movement alone do not stale
-stable anchors.
+Review for `SYMBOL_DRIFT` when process, candidate, exception, platform, or
+runner symbols change; `FLOW_DRIFT` when discovery, environment inheritance,
+codec, timeout, working-directory, or exception routing changes;
+`BOUNDARY_DRIFT` when shell mode, caller commands, write classes, or raw
+output exposure changes; `TEST_DRIFT` when real/fake coverage changes; and
+`STRUCTURE_DRIFT` when execution or discovery ownership moves. Formatting,
+imports, comments, and physical line movement alone do not stale these stable
+anchors.
 
 ## Known uncertainty
 
-- `[D]` Committed focused tests do not exercise `DefaultProcessRunner` or real
-  Unicode stdout/stderr.
-- `[D]` Committed `Process.run` supplies no explicit environment map; parent
-  inheritance therefore relies on the Dart API default rather than a
-  repository-owned assertion.
-- `[D]` Strict UTF-8 output decoding is unconditional for every discovered
-  Python command and every repository tool call.
-- `[D]` The broad `on Exception` branch includes codec `FormatException` and
-  wraps it as `PythonDiscoveryException`.
-- `[D]` Nonzero exit codes and decoded stderr remain caller-owned and are not
-  exceptions here.
-- `[P]` Host Python encoding behavior varies with interpreter, environment,
-  and platform; exact recovery requires a real-process regression rather than
-  only fake `ProcessResult` values.
+- `[D]` Timeout handling is not directly regression-tested.
+- `[D]` Strict UTF-8 decoding is unconditional for every discovered Python
+  command and repository tool call.
+- `[D]` Codec `FormatException` is included by the broad exception wrapper
+  and becomes `PythonDiscoveryException`.
+- `[D]` Nonzero exits and decoded stderr remain caller-owned.
+- `[P]` Host Python behavior can still vary by interpreter installation;
+  real-process tests prove the tested host path, not every interpreter build.

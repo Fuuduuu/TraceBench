@@ -2,25 +2,26 @@
 
 ## Route
 
-Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS`
 
-## Current Python-runner Windows Unicode-output SCOPE authority
+## Current Python-runner Windows Unicode-output LOCK authority
 
 ```text
-PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
 Lane: B
-Mode: DOCS_SYNC / SCOPE_LOCK
+Mode: REVISED_DOCS_SYNC / LOCK
 ```
 
 Entry is the isolated worktree
 `C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
 `fix/python-runner-windows-unicode-output`, at
 `HEAD == origin/main ==
-0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, with empty
-tracked and staged sets. Preserve scratch and untracked content. The original
-worktree `C:\Users\Kasutaja\Desktop\TraceBench` and its suspended Wizard diff
-are read-only throughout this detour.
+548b85eddabd37bdfd4230b99c552c2c3ee67ca7`, divergence `0 0`, with empty
+entry tracked and staged sets. Preserve scratch and untracked content. The
+original worktree `C:\Users\Kasutaja\Desktop\TraceBench` and its suspended
+Wizard diff are read-only throughout this detour and may be referenced only by
+hashing the named recovery patch.
 
 ### Exact Phase 1 write allowlist
 
@@ -30,7 +31,97 @@ are read-only throughout this detour.
 4. `docs/AUDIT_INDEX.md`
 5. `docs/code_maps/CODE_MAP_INDEX.md`
 6. `docs/code_maps/lib/shared/services/python_runner.dart.md`
-7. `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS.md`
+7. `docs/code_maps/test/unit/project_creator_test.dart.md`
+8. `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS.md`
+
+No ninth LOCK file is authorized. All runtime, tests, schemas, tools,
+ProjectCreator/ProjectLoader production, Project ZIP, the ProjectCreator
+production map, every other map/index row, Wizard/app/router/Canvas surfaces,
+`_incoming`, assets, and scratch are read-only. Do not stage, commit, push,
+reset, restore, stash, clean, or enter the original Wizard worktree.
+
+### Required evidence record
+
+Commit `548b85eddabd37bdfd4230b99c552c2c3ee67ca7`, parent
+`12512ddf08d4d8342e483609aa1f719e5f747781`, subject
+`fix: make PythonRunner output UTF-8 on Windows`, must remain proven as the
+exact implementation set:
+
+1. `lib/shared/services/python_runner.dart` (`+5`)
+2. `test/unit/python_runner_test.dart` (`+30`)
+3. `test/unit/project_creator_test.dart` (`+56`)
+
+The production delta is limited to an explicit inherited environment with
+`PYTHONUTF8=1`, `PYTHONIOENCODING=utf-8`, and
+`includeParentEnvironment: true`. Strict UTF-8 stdout/stderr codecs,
+non-lossy decoding, command/arguments, working directory,
+`runInShell: false`, finite timeouts, candidate order `py -3`,
+`python3`, `python`, fallback, exception conversion, cleanup, canonical
+semantics, and the UI sanitization boundary remain preserved.
+
+Record the accepted independent implementation result exactly as
+`AUDIT_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_STAGING: YES`. Do not call
+the exact targeted analyzer a pass. Its locked result is
+`EXACT_TARGETED_ANALYZE: FAIL_BASELINE_UNCHANGED`, consisting solely of
+inherited info `library_private_types_in_public_api` at
+`lib/shared/services/python_runner.dart:95:21`, zero warnings, zero errors,
+no changed-hunk overlap, no suppression, and no public-API change. Record the
+`--no-fatal-infos` analyzer separately as exit `0` with no new diagnostic.
+
+### Code-map authority
+
+- Refresh `docs/code_maps/lib/shared/services/python_runner.dart.md` only
+  from committed repair HEAD. Phase 1 map/index status:
+  `REVIEW_REQUIRED`.
+- Create `docs/code_maps/test/unit/project_creator_test.dart.md` only from
+  committed repair HEAD under the accepted `SCORE 7/12` qualification.
+  Phase 1 map/index status: `REVIEW_REQUIRED`.
+- `test/unit/python_runner_test.dart` remains unmapped at
+  `SCORE 3/12`; no automatic trigger applies.
+- Do not edit `docs/code_maps/lib/shared/services/project_creator.dart.md`.
+  Its inherited `UPDATE_REQUIRED` disposition is carried to
+  `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`.
+
+Each changed map is descriptive and non-authorizing. Its stable anchors must
+resolve against committed HEAD, use no line numbers, and distinguish literal
+source strings from qualified member or exact-test references.
+
+### Locked route and suspension
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+This LOCK authorizes no Wizard UI edit. The UI activation child is suspended,
+not abandoned, and may resume only after independent LOCK acceptance, exact
+human staging, commit and push, and a human-controlled safe fast-forward of
+the original worktree. The recovery patch must be inspected with
+`Get-FileHash` only and retain SHA-256
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`.
+
+### Phase 2 authority
+
+Later Phase 2 recording is limited to exactly six logical coordinates:
+
+1. the empty LOCK-artifact verdict-block interior;
+2. the matching `docs/AUDIT_INDEX.md` Status cell;
+3. the PythonRunner map Status field;
+4. the matching PythonRunner `CODE_MAP_INDEX` Status cell;
+5. the ProjectCreator-test map Status field;
+6. the matching ProjectCreator-test `CODE_MAP_INDEX` Status cell.
+
+Independent audit may promote either map only according to its returned map
+verdict. Every map body, qualification, route, analyzer and implementation
+evidence, NIT resolution, runtime/test byte, and unrelated index byte is
+frozen in Phase 2.
+
+## Accepted Python-runner Windows Unicode-output SCOPE authority (historical)
+
+The historical SCOPE authority below is retained for provenance and does not
+expand or override the current LOCK.
 
 No eighth SCOPE file is authorized. Runtime, tests, schemas, existing maps,
 tools, assets, Project ZIP, Wizard/app/router/Canvas surfaces, `_incoming`, and

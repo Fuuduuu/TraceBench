@@ -1,9 +1,89 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
+Current pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
 
-## Live Wizard creation/write-path SCOPE
+## Live Python-runner Windows Unicode-output detour
+
+```text
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Verified entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
+`fix/python-runner-windows-unicode-output`, at
+`HEAD == origin/main ==
+0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, with empty
+tracked and staged sets. Scratch and untracked content is preserved. The
+original Wizard worktree is read-only for this detour.
+
+The accepted Wizard creation/write-path SCOPE is committed as
+`4b92f7274d492d5d36af62f2fdbe252b9cec06cb`. Its storage child is committed as
+the current baseline and changes exactly its locked six-file allowlist. The
+Wizard UI-activation child is suspended, not abandoned: its human-owned
+five-file working diff remains in the original worktree without
+reinterpretation. The local worktree bytes of the authoritative recovery
+snapshot
+`C:\Users\Kasutaja\Desktop\TraceBench-ui-activation-before-python-unicode-detour.patch`
+were measured with
+`Get-FileHash -Algorithm SHA256 -LiteralPath <that exact path>` as
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`;
+the earlier `6F3F` snapshot is superseded.
+
+Human-supplied manual-smoke evidence fixes the detour cause: the materializer
+prints an absolute output path; Windows Python emitted the path containing
+`Õ` using its native console encoding; `DefaultProcessRunner` required strict
+UTF-8 for stdout and stderr; decoding failed with
+`FormatException: Missing extension byte` at offset 83;
+`PythonRunner` wrapped that as `PythonDiscoveryException`; and
+`ProjectCreator` removed the generated child before returning
+`ProjectCreationFailed`.
+
+This SCOPE changes exactly seven documentation/map files. The future repair is
+limited to:
+
+1. `lib/shared/services/python_runner.dart`
+2. `test/unit/python_runner_test.dart`
+3. `test/unit/project_creator_test.dart`
+
+The repair keeps strict UTF-8 decoding and makes Python output deterministically
+UTF-8 through a narrow explicit environment at the shared
+`DefaultProcessRunner` boundary, preserving the parent environment and adding
+the equivalent of `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8`. It preserves
+arguments, working directory, timeout, discovery order (`py -3`, `python3`,
+`python`), timeout conversion, and `ProcessException` conversion. No lossy,
+malformed, native-encoding, materializer, `ProjectCreator` production,
+canonical, cleanup, Project ZIP, UI, router, Canvas, or raw-output change is
+authorized.
+
+The production map
+`docs/code_maps/lib/shared/services/python_runner.dart.md` and its index row are
+`REVIEW_REQUIRED`. They are descriptive and non-authorizing. The implementation
+must prove the actual current Windows decode failure RED, then cover real
+Unicode stdout and stderr and a real Unicode-parent `ProjectCreator` success
+while preserving all fake-runner and fake-creator tests.
+
+The locked route is:
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
+
+## Suspended Wizard creation/write-path parent contract (historical)
+
+The section below retains the accepted parent contract and its original route
+language as historical evidence. It does not override the live Unicode detour
+or authorize edits in the suspended Wizard UI child.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS

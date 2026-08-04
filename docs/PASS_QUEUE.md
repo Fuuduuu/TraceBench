@@ -2,10 +2,109 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
 
-## Current Wizard creation/write-path SCOPE queue
+## Current Python-runner Windows Unicode-output detour queue
+
+```text
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
+`fix/python-runner-windows-unicode-output`, at
+`HEAD == origin/main ==
+0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, empty tracked
+diff, and empty staged set. Scratch stays preserved. The original Wizard
+worktree and its existing five-file UI-activation diff remain read-only.
+
+The exact current SCOPE material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/shared/services/python_runner.dart.md`
+7. `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS.md`
+
+No eighth SCOPE path, runtime/test/schema/existing-map/tool/asset edit, or
+staging, commit, or push is queued.
+
+The accepted parent SCOPE is commit
+`4b92f7274d492d5d36af62f2fdbe252b9cec06cb`; the current baseline is its
+committed six-file storage child. The Wizard UI child is suspended, not
+abandoned, and later resumes with exactly its existing five-file allowlist,
+activation gates, manual-smoke requirement, and final Wizard write-path LOCK.
+The authoritative local recovery patch bytes hash to
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732` by
+`Get-FileHash -Algorithm SHA256 -LiteralPath
+C:\Users\Kasutaja\Desktop\TraceBench-ui-activation-before-python-unicode-detour.patch`;
+the prior `6F3F` snapshot is superseded.
+
+The queued route is:
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+### Queued three-file Python-runner repair
+
+The implementation queue is armed only after independent SCOPE/map acceptance
+and human commit/push of this lock. Its exact allowlist is:
+
+1. `lib/shared/services/python_runner.dart`
+2. `test/unit/python_runner_test.dart`
+3. `test/unit/project_creator_test.dart`
+
+The locked change retains strict UTF-8 stdout/stderr decoding and makes Python
+output deterministic UTF-8 at the shared `DefaultProcessRunner` boundary. Its
+explicit environment must preserve the parent environment while adding the
+equivalent of `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8`. It preserves
+arguments, shell mode, working directory, timeout, `py -3`/`python3`/`python`
+candidate order, discovery/fallback, timeout and `ProcessException`
+conversion, test seams, and all protected materializer/creator/ZIP/canonical
+semantics. Lossy or malformed decoding, native-encoding guessing, output
+drops, materializer edits, `ProjectCreator` production edits, cleanup changes,
+raw-output UI exposure, and a fourth file are not queued.
+
+Required TDD begins with a real pre-repair Windows decode RED, not a synthetic
+exception. It then covers a real discovered Python emitting exact Unicode `Õ`
+and `UUE PROJEKTI TÖÖKAUST` on stdout and stderr, plus a real no-photo
+`ProjectCreator` creation beneath a Unicode temporary parent. The creator
+regression must prove a durable generated child, manifest, intake, zero-byte
+event log, hydrated intake, null warning, and correct directory. All existing
+fake-runner and fake-creator regressions remain required.
+
+The new Python-runner map and its index row are `REVIEW_REQUIRED`. The map is
+descriptive only. Implementation records `UPDATE_REQUIRED`; the detour LOCK
+refreshes it from the committed repair, records independent implementation
+evidence, promotes it only with independent audit support, and resumes the
+suspended UI child without changing UI files.
+
+### SCOPE validation and bounded verdict recording
+
+Required Phase 1 checks are `py -3 tools\doctor.py`,
+`py -3 tools\validate_all.py`, committed-source map-anchor verification,
+working and cached diff checks, exact seven-file material proof, empty staging,
+and self-reference audit. A Phase 2 verdict recording is limited to the empty
+artifact verdict-block interior, this pass's ledger Status cell, the new map's
+Status field, and the matching map-index Status cell. No other queue or route
+byte is authorized.
+
+## Suspended Wizard creation/write-path SCOPE queue (historical)
+
+The retained queue below preserves the accepted Wizard parent contract and its
+original route wording as historical evidence. It does not override the live
+detour or authorize changes to the suspended UI child.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS

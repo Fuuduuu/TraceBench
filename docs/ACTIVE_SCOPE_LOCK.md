@@ -2,10 +2,189 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_CREATION_STORAGE_PASS`
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
 
-## Current Wizard creation/write-path SCOPE authority
+## Current Python-runner Windows Unicode-output SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
+`fix/python-runner-windows-unicode-output`, at
+`HEAD == origin/main ==
+0074edc8ff7de09f28b545659ab7f2f41cef2fa5`, divergence `0 0`, with empty
+tracked and staged sets. Preserve scratch and untracked content. The original
+worktree `C:\Users\Kasutaja\Desktop\TraceBench` and its suspended Wizard diff
+are read-only throughout this detour.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/shared/services/python_runner.dart.md`
+7. `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS.md`
+
+No eighth SCOPE file is authorized. Runtime, tests, schemas, existing maps,
+tools, assets, Project ZIP, Wizard/app/router/Canvas surfaces, `_incoming`, and
+scratch are read-only or excluded. Staging, commit, and push are outside this
+pass.
+
+### Detour evidence and suspended child
+
+The accepted parent SCOPE commit is
+`4b92f7274d492d5d36af62f2fdbe252b9cec06cb`. Baseline commit
+`0074edc8ff7de09f28b545659ab7f2f41cef2fa5` is its committed storage child and
+changes exactly the six files authorized for that child. The subsequent
+`TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS` is suspended, not abandoned.
+Its existing human-owned five-file working diff remains unchanged in the
+original worktree:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/screens/new_project_wizard_screen.dart`
+4. `test/widget/benchbeep_home_screen_test.dart`
+5. `test/widget/new_project_wizard_screen_test.dart`
+
+The local worktree bytes of
+`C:\Users\Kasutaja\Desktop\TraceBench-ui-activation-before-python-unicode-detour.patch`
+were measured with
+`Get-FileHash -Algorithm SHA256 -LiteralPath <that exact path>` as
+`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`.
+That snapshot supersedes the earlier `6F3F` snapshot and is recovery evidence,
+not an implementation input or an additional allowlisted file.
+
+Human-supplied manual-smoke evidence records this exact causal chain:
+
+1. `tools/materialize_known_facts.py` prints the absolute output path.
+2. Windows Python emitted a path containing `Õ` using its native console
+   encoding.
+3. `DefaultProcessRunner` forced strict UTF-8 stdout and stderr decoding.
+4. Decoding raised `FormatException: Missing extension byte` at offset 83.
+5. `PythonRunner` wrapped the exception as `PythonDiscoveryException`.
+6. `ProjectCreator` cleaned up the generated child and returned the generic
+   `ProjectCreationFailed` result.
+
+### Locked route
+
+```text
+TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS
+-> TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+-> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
+-> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The detour implementation and detour LOCK must be independently accepted and
+committed before the suspended UI child resumes. Resumption preserves the
+parent child contract, unchanged five-file allowlist, activation gates,
+manual-smoke requirement, and final Wizard creation/write-path LOCK.
+
+### Future implementation authority
+
+```text
+PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS
+Lane: B
+Mode: QA_PASS / FLUTTER_PASS
+```
+
+The future implementation pass is conditional on independent acceptance and
+human commit/push of this exact SCOPE. Its exact three-file allowlist is:
+
+1. `lib/shared/services/python_runner.dart`
+2. `test/unit/python_runner_test.dart`
+3. `test/unit/project_creator_test.dart`
+
+No fourth implementation file is authorized. The repair must:
+
+- retain strict UTF-8 stdout and stderr decoding; no `allowMalformed`, lossy
+  conversion, native-encoding guess, output drop, or replacement decoding;
+- make Python stdout and stderr deterministic UTF-8 through the narrow shared
+  `DefaultProcessRunner` process boundary using an explicit environment that
+  preserves the parent environment and adds behavior equivalent to
+  `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8`;
+- preserve command arguments, `runInShell: false`, working directory, timeout,
+  candidate order (`py -3`, `python3`, `python`), discovery/fallback behavior,
+  timeout conversion, `ProcessException` conversion, and test seams; and
+- remain confined to the shared Python-runner boundary. It must not change the
+  materializer, `ProjectCreator` production code, Project ZIP, cleanup,
+  canonical/event/fact/schema/materialization semantics, UI error exposure, or
+  raw subprocess output displayed to users.
+
+### Required TDD and regression proof
+
+1. Capture a pre-repair RED that exercises the real current
+   `DefaultProcessRunner` Windows decoding failure. A synthetic thrown
+   exception does not satisfy this gate.
+2. Add a real-process `PythonRunner` regression using an available discovered
+   Python. It must emit Unicode `Õ` and `UUE PROJEKTI TÖÖKAUST`, assert exact
+   stdout and stderr, and exercise deterministic UTF-8 decoding.
+3. Add a real `ProjectCreator` regression using real creator, discovery, and
+   materializer behavior under a Unicode temporary parent with no photo. It
+   must prove success, a durable `prj_` child, manifest and intake files,
+   zero-byte `events.jsonl`, non-null state intake, null warning, and the
+   correct returned directory.
+4. Preserve and run every existing fake-runner and fake-creator regression.
+5. The decoding regression must fail before the repair for the actual decode
+   cause and pass after it; an isolation retry cannot replace this evidence.
+
+### Code-map authority
+
+`lib/shared/services/python_runner.dart` qualifies `AUTO` because this human
+scope identifies at least five distinct behavioral zones. Its deterministic
+map is `docs/code_maps/lib/shared/services/python_runner.dart.md`; both its
+local status field and the matching `CODE_MAP_INDEX` row are
+`REVIEW_REQUIRED`. The map describes default execution/strict decoding,
+environment/working-directory inheritance, candidates, discovery/fallback,
+timeouts, error conversion, seams/callers, and protected materializer
+implications. It is descriptive and cannot widen either allowlist.
+
+The implementation must re-run `CODE_MAP_PREFLIGHT` against its committed
+entry and record `UPDATE_REQUIRED` after changing the mapped process boundary.
+The detour LOCK refreshes the map only from the committed repair and promotes
+map status only after independent audit evidence. No other map or index row is
+authorized.
+
+### Validation and stop conditions
+
+Phase 1 requires `py -3 tools\doctor.py`, `py -3 tools\validate_all.py`, stable
+map-anchor verification against committed `HEAD`, `git diff --check`,
+`git diff --cached --check`, an exact seven-file material set, an empty staged
+set, and self-reference review. Stop on any baseline, route, allowlist, map,
+protected-boundary, validation, or original-worktree mismatch. Do not fix the
+runtime failure before independent acceptance of this SCOPE.
+
+### Bounded Phase 2 recording authority
+
+An independently returned SCOPE/map verdict may authorize a mechanical Phase
+2 recording in exactly four logical coordinates:
+
+1. the empty designated verdict-block interior in this pass's audit artifact;
+2. the Status cell of this pass's unique `AUDIT_INDEX` row;
+3. the `Status` field of the new Python-runner map; and
+4. the Status cell of the matching Python-runner `CODE_MAP_INDEX` row.
+
+No route, scope, allowlist, causal finding, test requirement, map body, or
+other byte may change in that recording step. Map and index statuses must
+match the independent map verdict. A blocked verdict does not arm
+implementation.
+
+Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_PASS`
+
+## Suspended Wizard creation/write-path SCOPE authority (historical)
+
+The retained section below records the accepted Wizard parent contract and its
+original embedded route language. It is historical while the Unicode detour
+is live and grants no authority to alter the suspended child.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_SCOPE_LOCK_PASS

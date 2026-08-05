@@ -4,175 +4,162 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — production file owns 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
 
 ## File purpose
 
-Owns the application-level providers and the BenchBeep launcher-to-workbench
-shell. It loads or opens project data into in-memory projection state, wires
-the Home callbacks, controls the startup intro, constructs the active router,
-and switches the root application between launcher and router modes. Its
-accepted create-project callback is navigation-only and opens the existing
-`/new-project` route without creating or assigning project state.
+Owns application-level providers and the BenchBeep launcher/workbench shell.
+It loads existing projects, constructs and disposes the active router, injects
+project creation into the New Project Wizard, and accepts the successful
+hydrated `ProjectState` into the app-owned provider before the Wizard exposes
+its explicit Board Canvas transition.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Application providers | `projectStateProvider`, `beginnerModeProvider`, `routerProvider` | Owns app-wide in-memory project, beginner-mode, and default-router providers. |
-| Root shell state | `_showLauncher`, `_showStartupIntro`, `_workbenchRouter` | Tracks whether the launcher or workbench is visible and owns the disposable workbench router. |
-| Bundled sample loading | `_loadBundledProject`, `ProjectLoader.loadFromAssets` | Loads bundled project data and assigns the result to `projectStateProvider` after a mounted check. |
-| Existing project acquisition | `_importProjectZip`, `_openProjectDirectory` | Delegates ZIP and directory flows to existing action owners and opens `/project` only through their success callbacks. |
-| Launcher callback wiring | `_buildLauncherHome`, `BenchBeepHomeScreen`, `onCreateProject` | Projects project availability and supplies all accepted Home callbacks, including navigation to `/new-project`. |
-| Startup intro lifecycle | `_completeStartupIntro`, `_buildLauncherShell`, `BenchBeepSplashScreen` | Overlays the startup intro and removes it through guarded local state. |
-| Workbench-router transition | `_openWorkbench`, `buildTraceBenchRouter` | Replaces the prior workbench router, forwards the requested initial location, and leaves launcher mode. |
-| Root rendering and disposal | `build`, `dispose`, `MaterialApp`, `MaterialApp.router` | Selects launcher or router presentation, applies theme/identity, and disposes the owned router. |
+| Application providers | `projectStateProvider`, `beginnerModeProvider`, `routerProvider` | Owns app-wide in-memory project state, beginner mode, and the default router provider. |
+| Root injection contract | `TraceBenchApp`, `createProject` | Exposes an optional project-creation seam while retaining the default creator path in the Wizard. |
+| Existing-project acquisition | `_loadBundledProject`, `_importProjectZip`, `_openProjectDirectory`, `ProjectLoader.loadFromAssets` | Coordinates bundled, ZIP, and directory reads and their projection-state handoffs. |
+| Launcher callback wiring | `_buildLauncherHome`, `BenchBeepHomeScreen`, `onCreateProject`, `onOpenProject` | Projects project availability and supplies launcher transitions without creating project data itself. |
+| Startup intro lifecycle | `_completeStartupIntro`, `_buildLauncherShell`, `BenchBeepSplashScreen` | Owns the guarded startup overlay and its local completion state. |
+| Workbench-router transition | `_openWorkbench`, `_buildWorkbenchRouter`, `buildTraceBenchRouter`, `initialLocation` | Replaces the prior router, selects its initial route, and switches out of launcher mode. |
+| Wizard injection and handoff | `newProjectBuilder`, `NewProjectWizardScreen`, `onProjectCreated`, `projectStateProvider.notifier` | Injects creation and assigns the successful hydrated state through the app-owned provider callback. |
+| Root rendering and disposal | `build`, `dispose`, `_workbenchRouter`, `MaterialApp.router` | Selects launcher or routed workbench presentation and disposes the owned router. |
+
+## Anchor inventory and verification
+
+Selection rule: take every backtick-delimited token in the responsibility
+table's Stable symbol anchors column, split comma-separated tokens, trim, and
+de-duplicate in first-appearance order. The resulting inventory has 28 unique
+anchors.
+
+- Literal source symbols/strings: 25. Each must resolve as an exact substring
+  in the mapped source.
+- Qualified source expressions: 3 —
+  `ProjectLoader.loadFromAssets`, `projectStateProvider.notifier`, and
+  `MaterialApp.router`. Each must resolve as the exact owner/member expression.
+- Exact test-name references: 0.
 
 ## State and data flow
 
-1. `[D]` `TraceBenchApp` starts with launcher and startup-intro state enabled.
-2. `[D]` `build` renders `_buildLauncherShell` until `_showLauncher` becomes
-   false; afterward it renders `MaterialApp.router`.
-3. `[D]` `_buildLauncherHome` watches `projectStateProvider` and converts
-   non-null state to `hasProject` for `BenchBeepHomeScreen`.
-4. `[D]` Bundled loading awaits `ProjectLoader.loadFromAssets` and assigns the
-   returned state to `projectStateProvider`.
-5. `[D]` ZIP and directory entry points delegate to
-   `ProjectZipImportAction` and `ProjectDirectoryOpenAction`; accepted success
-   callbacks invoke `_openWorkbench(initialLocation: '/project')`.
-6. `[D]` `onCreateProject` invokes
-   `_openWorkbench(initialLocation: '/new-project')` and does not mutate
+1. `TraceBenchApp` begins in launcher mode and optionally receives a creation
+   function for dependency-controlled execution.
+2. Bundled, ZIP, and directory paths load a `ProjectState` and assign it to
+   `projectStateProvider` before opening or enabling project presentation.
+3. The launcher create action calls
+   `_openWorkbench(initialLocation: '/new-project')`.
+4. `_buildWorkbenchRouter` passes the optional creation function into
+   `NewProjectWizardScreen` and supplies `onProjectCreated`.
+5. The Wizard's own success latch invokes that callback once; the callback
+   synchronously assigns the returned hydrated state to
    `projectStateProvider`.
-7. `[D]` Existing-project callbacks either open `/project` through
-   `_openWorkbench` or forward the default `_openWorkbench` tear-off.
-8. `[D]` `_openWorkbench` disposes the previous router, creates one with the
-   supplied initial location and Home builder, then changes only shell-local
-   launcher visibility.
-9. `[D]` `_completeStartupIntro` performs mounted and one-shot guards before
-   changing intro visibility.
+6. The Wizard remains on its terminal success step until its explicit
+   navigation action changes the route to `/project`.
+7. Re-entering workbench construction disposes the previously owned router
+   before replacing it.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| Flutter Material | framework and root UI | Supplies application roots, widget lifecycle, layout, and theme integration. |
-| Riverpod | inbound/outbound state | Hosts providers, watches project state, and receives loaded project state. |
-| GoRouter and `buildTraceBenchRouter` | outbound navigation shell | Construct and own the route graph at a selected initial location. |
-| `BenchBeepHomeScreen` | outbound launcher UI | Receives current project availability and all launcher callbacks. |
-| `BenchBeepSplashScreen` | outbound intro UI | Reports startup-intro completion through a local callback. |
-| `ProjectZipImportAction` | outbound acquisition action | Reads/imports selected ZIP data and reports successful in-memory loading. |
-| `ProjectDirectoryOpenAction` | outbound acquisition action | Reads an existing project directory and reports successful in-memory loading. |
-| `ProjectLoader` | outbound reader | Loads the bundled project state. |
-| `ProjectState` | provider value | Represents current in-memory project state. |
-| `windowManager` | outbound application lifecycle | Closes the desktop window from the Home exit callback. |
-| `buildTheme` | outbound presentation | Supplies the accepted root theme. |
+| Flutter Material | framework/root UI | Supplies application roots, widget lifecycle, overlay layout, and theme presentation. |
+| Riverpod | state owner | Hosts the app-owned project and beginner-mode providers. |
+| GoRouter and `buildTraceBenchRouter` | navigation shell | Construct the workbench route graph and selected initial destination. |
+| `BenchBeepHomeScreen` | outbound launcher | Receives current project availability and launcher callbacks. |
+| `NewProjectWizardScreen` | outbound creation UI | Receives creation and successful-state handoff seams. |
+| `ProjectCreator` result/request types | injected contract | Types the optional application-level creation dependency. |
+| `ProjectLoader` and existing acquisition actions | outbound readers | Load bundled, ZIP, or directory-backed project state. |
+| `windowManager` | outbound lifecycle | Closes the desktop application from the launcher callback. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `projectStateProvider` assignment | `PROJECTION_STATE` | Replaces in-memory application state with loader-returned data; this file persists no fact, event, or project file. |
-| `beginnerModeProvider` and shell booleans | `UI_LOCAL` | Hold only transient application/UI mode. |
-| `_loadBundledProject` | `PROJECTION_STATE` | Reads bundled data through `ProjectLoader` and assigns the returned state. |
-| ZIP/directory action delegation | `PROJECTION_STATE` | Inspected action call paths read selected data and assign in-memory state; this file owns no filesystem write. |
-| `onCreateProject` to `_openWorkbench('/new-project')` | `ZERO_WRITE` | Changes only router/shell presentation; it constructs no project request and assigns no project state. |
-| `_completeStartupIntro` | `UI_LOCAL` | Changes only startup overlay visibility. |
-| `_openWorkbench` | `UI_LOCAL` | Replaces transient router/shell state and selects an initial route. |
-| `windowManager.close` callback | `ZERO_WRITE` | Closes the application window without a project, fact, event, schema, or file write in this call path. |
-| `build`, `_buildLauncherHome`, `_buildLauncherShell` | `ZERO_WRITE` | Read state and render/wire callbacks only. |
+| Existing-project provider assignment | `PROJECTION_STATE` | Assigns loader-returned state in memory; this file writes no project file. |
+| Wizard `onProjectCreated` callback | `PROJECTION_STATE` | Assigns only the already-created, hydrated state; persistent writes belong to `ProjectCreator`. |
+| `createProject` injection | `ZERO_WRITE` | Passes a callable to the Wizard; this shell does not invoke it directly. |
+| Launcher and router fields | `UI_LOCAL` | Mutate transient launcher, splash, and router ownership state. |
+| Route transitions | `UI_LOCAL` | Select `/new-project` or `/project` without canonical mutation. |
+| Rendering and disposal | `ZERO_WRITE` | Build widgets and release router resources only. |
 
-The file contains no canonical event append, fact creation, Project ZIP write,
-schema mutation, materializer implementation, project-directory creation, or
-direct call to `ProjectCreator.createProject`.
+The app shell contains no event append, fact creation, materializer,
+Project ZIP writer, canonical component/placement/measurement write, or
+electrical-semantic conversion. The one persistent creation call is owned
+downstream by the Wizard and `ProjectCreator`.
 
 ## Zero-write zones
 
-- `[D]` Provider declarations allocate state containers but perform no project
-  acquisition or persistence.
-- `[D]` Home construction projects `hasProject` and supplies callbacks only.
-- `[D]` The create-project callback selects `/new-project` without assigning
-  `projectStateProvider`.
-- `[D]` Router construction and navigation do not persist project content.
-- `[D]` Splash rendering and completion are local presentation behavior.
-- `[D]` Theme and title selection are presentation-only.
+- Provider declarations allocate in-memory containers.
+- Launcher construction projects `hasProject` and wires callbacks.
+- Router creation, route selection, splash rendering, theme selection, and
+  router disposal do not persist project data.
+- The app callback does not inspect Wizard drafts or creation-result raw
+  diagnostics.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Providers | `[D]` App-wide state is declared and consumed here. | Loader results, downstream project screens | `PROJECTION_STATE`; `UI_LOCAL` | Home sample, folder, ZIP, and continuation tests |
-| Bundled load | `[D]` Loader result is assigned after a mounted check. | `ProjectLoader`, launcher detail state | `PROJECTION_STATE` | Bundled sample handoff |
-| ZIP/directory delegation | `[D]` Existing action owners invoke success callbacks. | Picker/loader actions, `/project` route | `PROJECTION_STATE` | Folder cancel/success/error; ZIP cancel/success |
-| Home wiring | `[D]` Constructor arguments are the complete launcher contract. | `BenchBeepHomeScreen`, launcher rail, exit dialog | `ZERO_WRITE`; existing load callbacks may cross `PROJECTION_STATE` | Launcher identity, create callback, real Home-to-Wizard route, exit |
-| Intro lifecycle | `[D]` Splash completion changes one guarded boolean. | `BenchBeepSplashScreen`, launcher pointer blocking | `UI_LOCAL` | Full app launcher tests |
-| Router transition | `[D]` Initial location and Home builder feed a newly owned router. | Router definitions, `/new-project`, `/project` | `UI_LOCAL` | Home-to-Wizard and project-routing tests |
-| Root rendering | `[D]` Shell state selects `MaterialApp` or `MaterialApp.router`. | Theme, router disposal, window lifecycle | `ZERO_WRITE` | Launcher and canonical Board Canvas assertions |
+| Providers | [D] Declarations and assignments are local. | loader results and provider consumers | `PROJECTION_STATE` | bundled/folder/ZIP handoff tests |
+| Launcher callbacks | [D] Constructor arguments are explicit. | Home action availability and router entry | `ZERO_WRITE` / `UI_LOCAL` | Home action and route tests |
+| Router transition | [D] Router is replaced before launcher state flips. | router factory and disposal | `UI_LOCAL` | launcher-to-Wizard and project routes |
+| Wizard injection | [D] Builder passes both dependencies. | Wizard creation state machine and `ProjectCreator` | `ZERO_WRITE` | injected creation test |
+| Success handoff | [D] Callback assigns provider state. | terminal Wizard step and Board Canvas readers | `PROJECTION_STATE` | provider-before-open test |
+| Existing acquisition | [D] Action owners return loaded state. | Project ZIP/directory loaders | `PROJECTION_STATE` | bundled, folder, and ZIP regressions |
+| Root lifecycle | [D] `build` selects one root mode. | splash, theme, workbench router | `ZERO_WRITE` / `UI_LOCAL` | responsive launcher and exit tests |
 
 ## Relevant tests and helpers
 
 Primary focused evidence is
-`test/widget/benchbeep_home_screen_test.dart`. Its isolated Home harness proves
-the create callback is enabled, unbadged, and invoked exactly once. Its real
-`TraceBenchApp` test taps the Home action, observes
-`NewProjectWizardScreen` at `/new-project`, and proves `projectStateProvider`
-remains null. The same suite preserves bundled sample, directory, ZIP,
-loaded-project, `/project`, responsive-layout, and exit behavior.
-
-Inspect-only call-path owners are `lib/app/router.dart` and
-`lib/features/project/screens/home_screen.dart`.
+`test/widget/benchbeep_home_screen_test.dart`. It covers launcher activation,
+injected creation, provider handoff before explicit Canvas open, inert
+pre-activation behavior, existing-project acquisition, responsive layout, and
+router destinations. `test/widget/new_project_wizard_screen_test.dart` owns
+the complementary exactly-once Wizard latch and terminal-step behavior.
 
 ## Dangerous combinations
 
-- `[D]` Changing provider assignment and success routing together can expose a
-  project destination before project state is available.
-- `[D]` Changing router replacement, disposal, and root rendering together can
-  leak routers or strand launcher state.
-- `[D]` Changing Home constructor callbacks and Home action availability
-  together can silently disconnect or redirect the create action.
-- `[D]` Changing the create callback to assign project state or invoke creator
-  behavior would cross the accepted navigation-only boundary.
-- `[D]` Changing ZIP/directory action ownership together with this coordinator
-  can duplicate state assignment or navigation.
+- Changing `onProjectCreated` assignment and success navigation together can
+  expose `/project` before provider state is ready.
+- Changing router replacement and disposal together can leak or reuse stale
+  router state.
+- Moving creation into the launcher shell would duplicate Wizard ownership and
+  blur persistent-write attribution.
+- Combining existing-project action changes with creation handoff changes can
+  conflate read/import and generated-project flows.
 
 ## Safe SNIPER slices
 
-These are descriptive candidates only and authorize no work.
-
-- Startup intro only: `_completeStartupIntro` and `_buildLauncherShell`; exclude
-  project state and router creation.
-- Bundled sample handoff only: `_loadBundledProject` and its Home callback;
-  exclude ZIP/directory actions.
-- Existing-project router transition only: `_openWorkbench`, disposal, and
-  `/project` focused tests; exclude acquisition behavior.
-- Home create navigation only: `_buildLauncherHome` and the matching Home/test
-  seams; keep `/new-project`, `projectStateProvider == null`, and zero-write
-  assertions coupled.
+- Startup overlay only: `_completeStartupIntro` and
+  `_buildLauncherShell`.
+- Existing-project acquisition only: one action callback plus its focused
+  handoff tests.
+- Wizard dependency injection only: `_buildWorkbenchRouter` and focused
+  injection tests, preserving provider-before-route ordering.
+- Root router lifecycle only: `_openWorkbench`, `dispose`, and route tests.
 
 ## Future extraction seams
 
-Descriptive, non-authorizing candidates:
-
-- `[S]` Project acquisition callbacks may be separable from root shell state.
-- `[S]` Workbench router ownership may be separable if disposal and Home
-  rebuilding remain explicit.
-- `[S]` Startup intro state may be isolated from launcher/workbench selection.
+- [S] Existing-project acquisition callbacks could move behind one coordinator.
+- [S] Router lifecycle could be isolated if launcher rebuilding and disposal
+  remain explicit.
+- [S] The Wizard success callback could become a named method if the handoff
+  contract grows.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when providers, shell fields, callbacks, or router
-anchors change; `FLOW_DRIFT` when project acquisition, provider assignment,
-create-route selection, initial-location forwarding, or root selection changes;
-`BOUNDARY_DRIFT` when project creation or persistent writes enter this file;
-`TEST_DRIFT` when Home handoff or route assertions change; and
-`STRUCTURE_DRIFT` when launcher, router, or acquisition ownership moves.
+Review for `SYMBOL_DRIFT` when provider, router, injection, or handoff anchors
+change; `FLOW_DRIFT` when provider assignment or navigation ordering changes;
+`BOUNDARY_DRIFT` when this file begins persistent creation or canonical
+writes; `TEST_DRIFT` when handoff/route assertions move; and
+`STRUCTURE_DRIFT` when launcher and workbench ownership separate.
 
 ## Known uncertainty
 
-- `[D]` Focused Home tests do not directly exercise startup-intro completion
-  timing or router disposal.
-- `[D]` The default `routerProvider` is declared here but the launcher creates
-  its workbench router directly.
-- `[D]` `beginnerModeProvider` consumers outside this file are not enumerated
-  by the focused Home suite.
-- `[D]` The router definition itself is inspect-only evidence; this map proves
-  the accepted initial-location handoff, not every `/new-project` descendant.
+- [D] The Wizard, not this file, owns the exactly-once latch; this map records
+  the app callback boundary but does not claim independent app-side counting.
+- [D] Startup-intro timing and router disposal have less focused coverage than
+  creation handoff.
+- [P] Consumers of `beginnerModeProvider` outside this file are not enumerated
+  by the creation-focused test suite.

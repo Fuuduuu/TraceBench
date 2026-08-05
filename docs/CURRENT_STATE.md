@@ -1,62 +1,67 @@
 # Current State
 
-Current pass: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS`
+Current pass: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Python-runner Windows Unicode-output LOCK
+## Live Wizard creation/write-path LOCK
 
 ```text
-PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
 Lane: B
-Mode: REVISED_DOCS_SYNC / LOCK
+Mode: DOCS_SYNC / LOCK
 ```
 
-Verified entry is the isolated worktree
-`C:\Users\Kasutaja\Desktop\TraceBench-python-unicode`, branch
-`fix/python-runner-windows-unicode-output`, at
+Verified entry is `main` at
 `HEAD == origin/main ==
-548b85eddabd37bdfd4230b99c552c2c3ee67ca7`, divergence `0 0`, with empty
-entry tracked and staged sets. Commit `548b85e`, parent `12512dd`, subject
-`fix: make PythonRunner output UTF-8 on Windows`, changes exactly:
+618c041c93a29cbbb5b8589535ebf7fbd8d7b320`, subject
+`feat: activate Wizard project creation UI`, parent
+`0bab9cb8cdae8da3011909aa35a2259e50d92be8`, divergence `0 0`, with empty
+substantive and staged sets. Known porcelain-only tracked paths are
+content-identical to `HEAD`; scratch remains preserved.
 
-1. `lib/shared/services/python_runner.dart` (`+5`)
-2. `test/unit/python_runner_test.dart` (`+30`)
-3. `test/unit/project_creator_test.dart` (`+56`)
+The accepted creation/write path is now committed across:
 
-The accepted implementation audit is `AUDIT_VERDICT: ACCEPT_WITH_NITS` and
-`SAFE_FOR_STAGING: YES`. Exact targeted analysis remains honestly classified
-as `FAIL_BASELINE_UNCHANGED`: the sole diagnostic is the inherited
-`library_private_types_in_public_api` info at
-`lib/shared/services/python_runner.dart:95:21`, with zero warnings, zero
-errors, no changed-hunk overlap, no suppression, and no public-API change.
-The delta-sensitive `--no-fatal-infos` analysis exits `0` without any new
-diagnostic.
+- parent SCOPE `4b92f7274d492d5d36af62f2fdbe252b9cec06cb`;
+- storage child `0074edc8ff7de09f28b545659ab7f2f41cef2fa5`;
+- Unicode detour SCOPE `12512ddf08d4d8342e483609aa1f719e5f747781`;
+- Unicode repair `548b85eddabd37bdfd4230b99c552c2c3ee67ca7`;
+- Unicode detour LOCK `0bab9cb8cdae8da3011909aa35a2259e50d92be8`;
+- UI activation child `618c041c93a29cbbb5b8589535ebf7fbd8d7b320`.
 
-This LOCK changes exactly eight documentation/map files. The refreshed
-PythonRunner production map and the new qualified ProjectCreator test map are
-both `REVIEW_REQUIRED` pending independent LOCK audit. The committed
-`python_runner_test.dart` remains `NOT_APPLICABLE` at `SCORE 3/12`. The
-existing ProjectCreator production-map refresh obligation remains
-`UPDATE_REQUIRED` and is carried to
-`TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`; that production map is not
-changed by this detour.
+Storage creates the validated generated child, compatible manifest and
+support files, always-written noncanonical Wizard intake, optional
+byte-identical supported photo copy, exactly empty `events.jsonl`,
+materializer-owned `known_facts.json`, and loader-hydrated `ProjectState`.
+The Wizard now owns complete Step 6 review/edit/create, duplicate suppression,
+exhaustive safe result handling, retained failure drafts, exactly-once
+app-provider handoff, persistent Step 7, and explicit `Ava projekt` navigation
+to `/project`.
 
-The route is locked as:
+Independent Child 2 audit is `AUDIT_VERDICT: ACCEPT_AS_IS` /
+`SAFE_FOR_STAGING: YES`. Human manual smoke is `PASS` with
+`HUMAN_ATTESTATION: PASS` and `8/8` checks. The recovered project evidence
+records `prj_93a52e6c` / `pelle`, zero-byte events, empty canonical known-fact
+arrays, schema `1.0`, `wizard_normalized` intake, a closed four-point contour,
+15 visual candidates, and copied-photo SHA-256
+`99A6E6020D48BE45EAE12B1D442604EEBA86BC128ADD5F356DE8D25EFCE5CA76`.
+Photo identity is human-attested; a durable actual-source hash is unavailable.
+
+This Phase 1 LOCK changes exactly thirteen docs/map files. `UI_WORKFLOWS` now
+describes committed behavior. Exactly six refreshed maps and their matching
+index rows are `REVIEW_REQUIRED` pending independent LOCK/map audit:
+`app.dart`, `router.dart`, the Wizard screen, `ProjectCreator`, the Home widget
+test, and the Wizard widget test. PythonRunner and ProjectCreator-test maps
+remain accepted and unchanged.
+
+The route is:
 
 ```text
-TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS
--> TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS
--> TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
 -> NEEDS_USER_DECISION
 ```
 
-The Wizard UI child remains suspended, not abandoned. This LOCK authorizes no
-Wizard edit. It may resume only after independent acceptance of this LOCK,
-exact human staging, commit and push, and a human-controlled safe
-fast-forward of the original Wizard worktree. The recovery patch is inspected
-only with `Get-FileHash`; its required SHA-256 is
-`7C8129A8D8F664E400DE7DCCFA6E7AC7C1D1374268C003F6E8FF88DBD7ADF732`.
-Scratch and untracked content remain preserved.
+No runtime/test/schema/tool/Project ZIP/design-package change is authorized.
+The Claude Design package and any visual redesign remain deferred.
 
 ## Accepted Python-runner Windows Unicode-output SCOPE history (non-authorizing)
 

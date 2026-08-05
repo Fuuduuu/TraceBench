@@ -3,227 +3,183 @@
 - Source: `lib/shared/services/project_creator.dart`
 - Type: `production`
 - Status: `MAINTAINED`
-- Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `none`
+- Qualification: `AUTO — production file owns 5+ independently testable behaviors`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
 
 ## File purpose
 
-Implements the current local-directory project bootstrap service. It validates
-the creation target, generates a project ID, creates the initial directory and
-files, invokes the Python materializer for the rebuildable projection, and
-returns either a hydrated `ProjectState` or a typed creation result. It owns no
-Wizard V2 UI, router, project-name contract, or Project ZIP archive behavior.
+Creates a new project beneath a validated user-selected parent, writes the
+project skeleton and noncanonical Wizard intake, optionally copies a supported
+background photo, invokes the Python materializer to own the derived
+`known_facts.json` output, hydrates the finished directory through
+`ProjectLoader`, and returns typed success/failure results. Cleanup is limited
+to the generated child; user-owned parents, siblings, and source photos remain
+outside its deletion authority.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Request and result contract | `ProjectCreationRequest`, `ProjectCreationResult`, `ProjectCreationSuccess`, `ProjectCreationFailed` | Defines public input fields and the base, success, and generic-failure outcomes; specialized results are anchored in their owning flows below. |
-| Dependency and test seams | `ProjectCreator`, `_pythonRunner`, `_projectIdGenerator`, `_now` | Constructs or accepts the process, platform, repository-root, ID, and clock dependencies. |
-| Project-ID generation | `_projectIdPattern`, `_defaultProjectIdGenerator`, `generateProjectId` | Produces or normalizes `prj_<8 lowercase hex>` IDs and replaces invalid injected values with a secure-random ID. |
-| Platform, destination, and collision preflight | `createProject`, `ProjectCreationMobilePlaceholder`, `ProjectCreationInvalidDestination`, `ProjectCreationCollision` | Rejects mobile creation, blank or missing parents, and an existing generated child before creator-owned writes. |
-| Creation orchestration | `createProject`, `_createSkeleton`, `_loadCreatedProject`, `_cleanup` | Orders skeleton creation, Python discovery, materialization, hydration, result routing, and covered cleanup. |
-| Skeleton and fixed bootstrap files | `_createSkeleton`, `_schemaVersionsV1`, `_defaultReportTemplate`, `_normalizeOr` | Creates the project tree, manifest, empty event store, schema metadata, neutral report, and generic profile placeholder. |
-| Materializer orchestration | `_pythonRunner.discoverPythonCommand`, `_pythonRunner.run`, `_summarizeFailure` | Discovers Python, invokes `tools/materialize_known_facts.py`, and summarizes a nonzero process result. |
-| Created-state hydration | `_loadCreatedProject`, `ProjectManifest.fromJson`, `KnownFacts.fromJson`, `ProjectLoader.parseEvents` | Reads completed bootstrap files and constructs the returned in-memory project state. |
-| Failure cleanup | `_cleanup`, `ProjectCreationPythonNotFound`, `ProjectCreationMaterializerFailed`, `ProjectCreationFailed` | Best-effort deletes the newly created tree on covered failures and returns typed failure information. |
+| Request and success contract | `ProjectCreationRequest`, `ProjectCreationResult`, `ProjectCreationSuccess` | Carries complete Wizard inputs and returns hydrated project state on success. |
+| Typed failure contract | `ProjectCreationMobilePlaceholder`, `ProjectCreationCollision`, `ProjectCreationInvalidDestination`, `ProjectCreationPythonNotFound`, `ProjectCreationMaterializerFailed`, `ProjectCreationPhotoFailed`, `ProjectCreationFailed` | Distinguishes platform, destination, collision, Python, materializer, photo, and generic failures. |
+| Constructor and test seams | `ProjectCreator`, `PythonRunner`, `projectLoader`, `photoCopier` | Owns default collaborators while permitting deterministic focused tests. |
+| ID, destination, and ownership gate | `generateProjectId`, `_projectIdPattern`, `FileSystemEntity.type`, `ownsGeneratedChild` | Produces/validates technical IDs, rejects invalid/colliding destinations, and records generated-child ownership. |
+| Project skeleton | `_createSkeleton`, `ProjectManifest`, `manifest.json`, `schema_versions.json` | Creates required directories and compatible manifest/support files. |
+| Wizard intake serialization | `_writeWizardIntake`, `_intakeForStorage`, `WizardIntake.fromJson`, `toJsonString` | Rebuilds typed intake for validation and deterministically writes it under `notes`. |
+| Background-photo handling | `_supportedPhotoExtension`, `_pathIsWithinDirectory`, `_photoCopier`, `photos/wizard_background` | Validates source/extension/location and copies to a lowercase-extension project-relative destination. |
+| Empty events and materialization | `events.jsonl`, `tools/materialize_known_facts.py`, `known_facts.json`, `_schemaVersionsV1` | Initializes an exactly empty event log, records schema versions, and delegates derived known-facts creation. |
+| Hydration and success return | `_projectLoader`, `ProjectLoader.loadFromDirectory`, `ProjectCreationSuccess(projectState)` | Loads the completed project and returns only the hydrated state. |
+| Generated-child cleanup | `_cleanup`, `projectDirectory.delete`, `recursive: true`, `Best-effort cleanup only.` | Removes only the child this invocation created after a failure. |
+| Safe and raw failure detail | `sanitizedMessage`, `rawDetail`, `_summarizeFailure`, `_ProjectCreationPhotoException` | Separates fixed/sanitized UI copy from bounded raw diagnostic detail. |
+| Serialization/support helpers | `_copyIntakeWithPhoto`, `_normalizeOr`, `_defaultReportTemplate`, `_copyPhoto` | Preserves intake fields, applies compatible defaults, writes the report template, and performs the default byte copy. |
+
+## Anchor inventory and verification
+
+Selection rule: take every backtick-delimited token in the responsibility
+table's Stable symbol anchors column, split comma-separated tokens, trim, and
+de-duplicate in first-appearance order. The resulting inventory has 49 unique
+anchors.
+
+- Literal source symbols/strings: 45; each must resolve as an exact substring
+  in the mapped source.
+- Qualified member references: 4 —
+  `FileSystemEntity.type`, `WizardIntake.fromJson`,
+  `ProjectLoader.loadFromDirectory`, and `projectDirectory.delete`. Each must
+  resolve as the exact owner/member expression.
+- Exact test-name references: 0.
 
 ## State and data flow
 
-The public surface consists of the `ProjectCreator` constructor,
-`generateProjectId()`, `createProject(...)`, `ProjectCreationRequest`, and the
-sealed result hierarchy.
-
-1. `[D]` `createProject` checks the injected platform first; mobile returns
-   `ProjectCreationMobilePlaceholder`.
-2. `[D]` It trims `destinationParentPath`; blank or nonexistent parent
-   directories return `ProjectCreationInvalidDestination`.
-3. `[D]` `generateProjectId` accepts only `^prj_[a-f0-9]{8}$`. The generated ID
-   is also the child-directory name. An existing child returns
-   `ProjectCreationCollision`; there is no retry or suffixing flow.
-4. `[D]` `_createSkeleton` creates the child tree and writes `manifest.json`,
-   an empty `events.jsonl`, schema-version metadata, a neutral customer report,
-   and the `{}` default profile placeholder.
-5. `[D]` Blank device, model, and symptom inputs become `unknown`, `unknown`,
-   and `not_provided`; other values are trimmed only.
-6. `[D]` After the complete skeleton returns, `created` becomes true and
-   Python discovery begins.
-7. `[D]` The Python materializer receives the event-store input and
-   `known_facts.json` output paths. Missing Python or a nonzero materializer
-   result triggers best-effort cleanup and a typed failure result.
-8. `[D]` On success, `_loadCreatedProject` reads the manifest, projection,
-   schema metadata, event store, and report, then returns a `ProjectState` with
-   `isProjectionStale: false`.
-
-Current invariants are that a generated child found during preflight returns
-`ProjectCreationCollision`, bootstrap authors no event record, Dart does not
-directly write the projection, materializer success precedes hydration, and no
-success result is returned before the required files can be read and decoded.
+1. `createProject` rejects mobile execution, blank/missing parents, and an
+   already-existing generated-child path before claiming ownership.
+2. A technical `prj_XXXXXXXX` ID is generated independently from the
+   human-facing project name.
+3. After creating the child, `_createSkeleton` writes directories, manifest,
+   empty `events.jsonl`, schema metadata, report template, and default device
+   profile.
+4. `_writeWizardIntake` stores every accepted Wizard draft; without a source
+   photo its background field is null.
+5. With a source photo, `_intakeForStorage` validates the supported extension,
+   rejects paths inside the generated child (including resolved links), copies
+   bytes to `photos/wizard_background.<lowercase-extension>`, and stores the
+   copied relative path plus the existing transform.
+6. `PythonRunner` discovers Python and runs the repository materializer over
+   the empty event log to create/update derived `known_facts.json`.
+7. `ProjectLoader.loadFromDirectory` hydrates the completed project; success
+   returns that `ProjectState`.
+8. Any post-creation failure performs best-effort generated-child cleanup and
+   returns a typed result with safe and, where applicable, raw detail kept
+   separate.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `dart:io` | outbound filesystem/process types | Directory checks and creation, file reads/writes, recursive cleanup, path separators, and `ProcessResult`. |
-| `dart:convert` | outbound transformation | Pretty JSON encoding and JSON object decoding. |
-| `dart:math` | outbound generation | Secure-random default project-ID generation. |
-| `PythonRunner` | injected or constructed outbound service | Platform access, Python discovery, and materializer execution. |
-| `ProcessRunner`, `PlatformInfo` | constructor injection seams | Deterministic process and platform behavior in focused tests. |
-| `tools/materialize_known_facts.py` | outbound process call | Reads the event-store input and writes the rebuildable known-facts projection. |
-| `ProjectManifest`, `KnownFacts`, `ProjectState` | outbound model construction | Parses persisted objects and packages returned project state. |
-| `ProjectLoader.parseEvents` | outbound parser call | Parses the created JSONL content without writing it. |
-| `schemas/project_manifest.schema.json` `[P]` | inspect-only coupled contract | Describes the manifest fields and V1 schema version; it is not a direct runtime dependency or import here. |
+| `dart:io` | filesystem/process types | Creates directories/files, inspects paths, copies photos, and represents process results. |
+| `dart:convert` | serialization | Writes indented JSON for manifest and schema metadata. |
+| `dart:math` | ID entropy | Supplies secure random technical IDs. |
+| `ProjectManifest` | outbound metadata model | Produces compatible manifest JSON. |
+| `WizardIntake` models | outbound noncanonical intake | Validate and serialize the complete Wizard draft. |
+| `PythonRunner` | outbound tool adapter | Discovers/runs deterministic UTF-8 Python materialization. |
+| `ProjectLoader` | outbound projection loader | Hydrates the completed project directory. |
+| `tools/materialize_known_facts.py` | outbound derived-data owner | Owns `known_facts.json` materialization from events. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `_createSkeleton` directory creation | `NONCANONICAL_FILE` | Creates only the generated child and fixed bootstrap directories. |
-| `_createSkeleton` → `manifest.json` | `NONCANONICAL_FILE` | Persists project identity, version, timestamp, and normalized request fields. |
-| `_createSkeleton` → `events.jsonl` | `CANONICAL_EVENT` | Initializes the canonical event-store path to exactly empty content; it appends and authors no event. |
-| `_createSkeleton` → schema metadata and report | `NONCANONICAL_FILE` | Fixed paths and version labels couple to the protected self-contained Project ZIP contract, although this service performs no ZIP archive operation. Changes require the exact canonical owner and separately scoped authority. |
-| `_createSkeleton` → `device_profiles/default.json` | `NONCANONICAL_FILE` | Writes the literal `{}` placeholder at the protected generic device-profile fallback boundary. Semantic changes require the exact canonical owner and separately scoped authority. |
-| `createProject` → materializer output | `PROJECTION_STATE` | The Python materializer writes `known_facts.json`; Dart supplies the paths but does not assemble or directly write the projection. |
-| `_cleanup` | `NONCANONICAL_FILE` + `CANONICAL_EVENT` + `PROJECTION_STATE` | Recursive deletion inherits the classes of the newly created tree. The target must remain the collision-checked child path. |
-| `_loadCreatedProject` | `ZERO_WRITE` | Reads completed files and constructs in-memory models only. |
+| `_createSkeleton` | `NONCANONICAL_FILE` | Creates project directories plus manifest/support files and a zero-byte event log; appends no event. |
+| `_writeWizardIntake` | `NONCANONICAL_FILE` | Writes human-authored presentation intake, not a canonical fact store. |
+| `_photoCopier` | `NONCANONICAL_FILE` | Copies selected photo bytes into the generated project without modifying the source. |
+| Materializer invocation | `PROJECTION_STATE` | Delegates derived `known_facts.json` ownership; this file does not synthesize facts/events. |
+| `_projectLoader` | `PROJECTION_STATE` | Reads the completed project into rebuildable in-memory state. |
+| `_cleanup` | `NONCANONICAL_FILE` | Deletes only the generated child owned by this invocation. |
+| Result construction | `ZERO_WRITE` | Classifies outcomes and keeps safe/raw message channels separate. |
 
-This file contains no canonical event append, board-outline write, component
-or placement write, AI/OCR/CV fact creation, Project ZIP archive operation, or
-router/UI mutation.
+The path creates no canonical event, fact, component, placement, measurement,
+evidence, diagnosis, board outline, net, or electrical assertion.
+`events.jsonl` begins exactly empty and `known_facts.json` remains
+materializer-owned.
 
 ## Zero-write zones
 
-- `[D]` Request/result declarations and constructor dependency wiring.
-- `[D]` `_defaultProjectIdGenerator` and `generateProjectId`.
-- `[D]` Mobile, destination, and collision checks before `_createSkeleton`.
-- `[D]` `_loadCreatedProject`, including model parsing and
-  `ProjectLoader.parseEvents`.
-- `[D]` `_summarizeFailure` and `_normalizeOr`.
-- `[D]` Result objects communicate state or failure without persisting data.
-
-No symbol in this file owns `UI_LOCAL` state.
+- Request/result classes, ID validation, extension parsing, path containment,
+  normalization, result classification, and message summarization are
+  computation only.
+- The returned `ProjectState` is loader-produced; creator code does not mutate
+  its canonical collections after hydration.
+- Unicode output behavior is owned by `PythonRunner`; this caller preserves
+  command, arguments, working directory, and raw/safe separation.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Request/result contract | `[D]` Public request and sealed results | Callers that construct requests or exhaustively handle result subclasses | `ZERO_WRITE` | Mobile, collision, success, materializer-failure, and Python-not-found results; invalid-destination and generic-failure gaps remain |
-| Dependency seams | `[D]` Constructor injections drive tests | Python discovery and orchestration | `ZERO_WRITE` | All `ProjectCreator` unit tests |
-| Project-ID generation | `[D]` ID joins directory, manifest, collision, and projection identity | Skeleton and materializer paths | `ZERO_WRITE` | Regex, repeated-generation, and collision tests |
-| Preflight guards | `[D]` Branches precede `_createSkeleton` | ID generation and creation coordinator | `ZERO_WRITE` | Mobile and collision tests; destination gaps remain |
-| Skeleton and fixed files | `[D]` Direct directory and file writes | Materializer ordering, hydration, cleanup, manifest/schema contracts | `CANONICAL_EVENT` + `NONCANONICAL_FILE` | Successful bootstrap/defaults test |
-| Materializer orchestration | `[D]` Exact process call supplies input/output paths | `PythonRunner`, skeleton ordering, hydration, cleanup | `PROJECTION_STATE` | Success, materializer-failure, and Python-not-found tests |
-| Created-state hydration | `[D]` Reads and decodes required project inputs | Manifest/known-facts models and event parser | `ZERO_WRITE` | Successful bootstrap/defaults test |
-| Failure detail and cleanup | `[D]` Covered post-skeleton failures attempt best-effort deletion of the new tree | Collision target and materializer flow | `NONCANONICAL_FILE` + `CANONICAL_EVENT` + `PROJECTION_STATE` | Materializer-failure and Python-not-found tests |
+| Request/results | [D] Types define caller contract. | Wizard exhaustive switch | `ZERO_WRITE` | creator and Wizard result tests |
+| Destination/ID | [D] Parent and child types are checked before create. | platform path rules | `ZERO_WRITE` then `NONCANONICAL_FILE` | invalid/collision/ID tests |
+| Skeleton/manifest | [D] Exact files and values are written. | manifest schema and Project ZIP expectations | `NONCANONICAL_FILE` | compatibility and success tests |
+| Intake/photo | [D] Typed serialization and guarded copy are local. | intake model, loader hydration | `NONCANONICAL_FILE` | no-photo/photo/byte tests |
+| Empty events/materializer | [D] Empty string is written then tool invoked. | materializer and known-facts projection | `NONCANONICAL_FILE` / `PROJECTION_STATE` | zero-event and materializer tests |
+| Loader success | [D] Loader result is returned unchanged. | `ProjectLoader` | `PROJECTION_STATE` | hydrated-state tests |
+| Cleanup | [D] Guarded child path is recursively deleted. | user-owned parent/siblings/source | `NONCANONICAL_FILE` | failure-preservation tests |
+| Failure messages | [D] Safe and raw fields are distinct. | Wizard safe-copy switch | `ZERO_WRITE` | typed failure and sanitization tests |
 
 ## Relevant tests and helpers
 
-Primary focused suite: `test/unit/project_creator_test.dart`.
-
-- `project_id follows wizard regex format`
-- `project_id is unique across repeated generation`
-- `collision returns collision`
-- `mobile returns mobilePlaceholder`
-- `creates manifest defaults, empty events, metadata and placeholder report`
-- `materializer failure is sanitized and cleanup is attempted`
-- `pythonNotFound is returned when discovery fails`
-
-`_TestPlatformInfo` controls the mobile gate. `_FakeProcessRunner` records
-commands and supplies discovery/materializer outcomes.
-`_writeMaterializedKnownFacts` creates the test projection. Injected
-`projectIdGenerator` and `now` make identity and manifest values deterministic,
-and temporary directories isolate filesystem effects.
+Primary evidence is `test/unit/project_creator_test.dart`, whose maintained map
+covers compatible manifests, successful materialization/hydration, optional
+photo byte identity, empty events, typed failures, cleanup, user-owned path
+preservation, and real Unicode parent execution. Supporting suites are
+`test/unit/wizard_intake_test.dart` and
+`test/unit/project_loader_zip_test.dart`. Wizard widget tests verify request
+construction and safe exhaustive handling without reading `rawDetail`.
 
 ## Dangerous combinations
 
-- `[D]` Changing ID syntax, child-path construction, manifest `project_id`, and
-  materializer identity together can split directory, manifest, and projection
-  identity.
-- `[D]` Changing collision checks together with `_cleanup` can turn recursive
-  deletion into a pre-existing-data risk.
-- `[D]` Reordering skeleton writes, materializer invocation, or hydration can
-  run the tool without required inputs or load before the projection exists.
-- `[D]` Adding bootstrap events while changing materializer behavior crosses
-  canonical-event and projection semantics together.
-- `[D]` Changing manifest shape, schema labels, directory layout, report
-  content, or profile semantics together broadens multiple contracts.
-- `[D]` Moving `created = true` or broadening the `try` changes which partial
-  failures trigger destructive cleanup.
+- Changing destination validation and cleanup together can delete user-owned
+  data.
+- Changing intake photo paths and copy ordering together can persist a
+  reference to missing or wrong bytes.
+- Writing events before materialization would cross the zero-event canonical
+  boundary.
+- Showing `rawDetail` in the Wizard would breach the safe UI boundary.
+- Changing Python command/environment assumptions here would duplicate
+  `PythonRunner` ownership and risk Unicode regressions.
+- Changing manifest fields without schema/loader review can break project
+  compatibility.
 
 ## Safe SNIPER slices
 
-These are descriptive candidates only and authorize no work.
-
-- Project-ID generation only: `_projectIdPattern`,
-  `_defaultProjectIdGenerator`, and `generateProjectId`; inspect collision and
-  directory, manifest, and materializer coupling; run the regex, uniqueness,
-  and collision tests. Invalid injected-ID fallback lacks focused coverage.
-- Mobile gate only: the first `createProject` branch and `PlatformInfo`;
-  exclude destination, skeleton, materializer, and cleanup; run the mobile
-  test.
-- Manifest fallback normalization only: `_normalizeOr` and the three request
-  values; inspect `ProjectManifest` and
-  `schemas/project_manifest.schema.json`; exclude edits to identity, schemas,
-  events, and materializer; run the successful-bootstrap test.
-- Created-state loading only: `_loadCreatedProject`; inspect model/parser
-  contracts and exclude every write/process call; run the bootstrap test.
-- Failure-detail formatting only: `_summarizeFailure` and
-  `ProjectCreationMaterializerFailed`; exclude command construction and
-  cleanup. Raw-detail truncation needs focused coverage before change.
-
-The skeleton/materializer/cleanup sequence is not a safe single-zone slice when
-more than one responsibility changes.
+- One typed result only: result class, creator return site, and exhaustive
+  Wizard/test handling.
+- ID generation only: `generateProjectId` and ID tests; exclude filesystem.
+- Photo extension/path validation only: helpers and focused photo failures;
+  exclude cleanup ownership.
+- Safe-message summarization only: `_summarizeFailure` and failure tests;
+  exclude UI rendering.
 
 ## Future extraction seams
 
-Descriptive, non-authorizing seams to evaluate separately:
-
-- `[S]` Request/result declarations may be separable from filesystem
-  orchestration.
-- `[S]` `_createSkeleton` may be a bootstrap-layout seam with byte-sensitive
-  outputs.
-- `[S]` Python discovery and materializer invocation may form a process seam.
-- `[S]` `_loadCreatedProject` overlaps conceptually with directory-loading behavior,
-  but equivalence must be proven before any consolidation.
-- `[S]` The `created` flag and `_cleanup` may form a lifecycle seam that needs
-  explicit partial-creation tests before structural change.
+- [S] Skeleton serialization could move behind a dedicated writer after exact
+  Project ZIP and compatibility ownership is separately scoped.
+- [S] Photo validation/copy could become a cohesive collaborator if
+  generated-child ownership remains explicit.
+- [S] Result types may move to a model file only with coordinated caller/map
+  updates.
 
 ## Freshness and review triggers
 
-Review this map for:
-
-- `SYMBOL_DRIFT` when a named request/result, entry point, or private anchor is
-  renamed, moved, added, or removed.
-- `FLOW_DRIFT` when preflight order, ID flow, skeleton/materializer/load order,
-  result routing, or cleanup timing changes.
-- `BOUNDARY_DRIFT` when output paths, event initialization, manifest/schema/
-  profile/report semantics, materializer arguments, projection ownership, or
-  recursive deletion targets change.
-- `TEST_DRIFT` when focused behavior names, fake-runner behavior, or coverage
-  changes.
-- `STRUCTURE_DRIFT` when responsibility ownership moves into or out of this
-  file.
-
-Formatting, import ordering, comments, and physical line movement alone do not
-stale stable anchors.
+Review for `SYMBOL_DRIFT` when request/result/helper anchors change;
+`FLOW_DRIFT` when creation, materialization, hydration, or cleanup ordering
+changes; `BOUNDARY_DRIFT` for any event/fact/canonical write or wider delete
+authority; `TEST_DRIFT` when creator/loader/Wizard result coverage changes;
+and `STRUCTURE_DRIFT` when storage responsibilities move.
 
 ## Known uncertainty
 
-- `[D]` No focused test covers blank or missing destination paths, invalid
-  injected-ID fallback, `ProjectCreationFailed`, preflight exceptions,
-  raw-detail truncation, cleanup deletion failure, or mid-skeleton failure.
-- `[D]` The main `try` begins after preflight, so exceptions during the parent
-  existence or collision checks are not converted to `ProjectCreationFailed`.
-- `[D]` `created` becomes true only after `_createSkeleton` completes; failure
-  during skeleton creation can leave a partial tree without calling cleanup.
-- `[D]` `_cleanup` suppresses deletion errors, so a failure result does not
-  prove that cleanup succeeded.
-- `[D]` Only `sanitizedMessage` is fixed safe copy.
-  `ProjectCreationMaterializerFailed.rawDetail` may include process output and
-  is capped at 400 characters plus an ellipsis;
-  `ProjectCreationFailed.rawDetail` receives uncapped `error.toString()`.
-- `[P]` Non-empty event-stream behavior is materializer-owned and outside this
-  creator-focused map; the current creator supplies an empty event store.
-- `[D]` No `projectName`, `project_name`, `ProjectDirectoryNamer`, Wizard V2
-  UI/router behavior, canonical event append, board write, or ZIP archive
-  operation exists in the mapped file.
+- [D] Byte identity depends on the injected/default copier completing; no
+  digest is computed by production code.
+- [D] Cleanup is deliberately best effort and suppresses cleanup exceptions.
+- [P] Platform-specific symlink and case behavior beyond covered paths still
+  depends on `dart:io` resolution.
+- [D] Materializer output semantics belong to the Python tool, not this map.

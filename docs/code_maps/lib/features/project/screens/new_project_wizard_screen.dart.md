@@ -3,244 +3,186 @@
 - Source: `lib/features/project/screens/new_project_wizard_screen.dart`
 - Type: `production`
 - Status: `MAINTAINED`
-- Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_INTERACTION_POLISH_V1_LOCK_PASS.md`
+- Qualification: `AUTO — production file owns 5+ independently testable behaviors`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
 
 ## File purpose
 
-Owns the accepted seven-step New Project Wizard and every authoritative
-widget-local draft used by it. Step 1 captures project metadata; optional Step
-2 transforms one local photo; Step 3 edits a contour; optional Step 4 places
-generic visual candidates; required Step 5 captures raw human problem
-observations through a controlled child editor; and Steps 6–7 remain honest
-placeholders. The screen owns every authoritative draft, retains values across
-navigation and responsive rebuilds, tracks visited steps independently,
-derives required-step status from current gates, and reaches no project,
-canonical, event, fact, file-copy, or ZIP write path.
+Owns the seven-step New Project Wizard UI, its complete retained Step 1–5
+draft, required creation gates, progress/edit navigation, noncanonical intake
+request construction, guarded project creation, exhaustive typed-result
+handling, safe failure presentation, exactly-once successful-state handoff,
+terminal Step 7, and the sole explicit transition to canonical `/project`.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Step catalogue and dispatch | `_wizardSteps`, `_WizardStepDefinition`, `_buildEditorCard`, `_buildPlaceholder` | Defines the seven Estonian steps, dispatches Steps 1–5, and keeps Steps 6–7 non-functional. |
-| Step 1 draft and folder picker | `NewProjectWizardScreen`, `directoryPicker`, `platformInfo`, `_projectNameController`, `_selectedParentPath`, `_pickFolder` | Owns injected/default folder selection and transient Step 1 values without creating a project. |
-| Parent photo draft and picker | `_photoPath`, `_photoTransform`, `_isPickingPhoto`, `_photoPickerError`, `_canPickPhoto`, `_pickPhoto` | Owns one native-desktop image path, locked extension filter, cancel/error handling, and default replacement view. |
-| Photo mutation contract | `_setPhotoTranslation`, `_setPhotoScale`, `_normalizedPhotoRotation`, `_setPhotoRotation`, `_setPhotoOpacity`, `_resetPhotoView`, `_removePhoto` | Validates transform inputs, clamps scale/opacity, normalizes rotation, preserves opacity on reset, clears the complete draft on remove, and marks mutations dirty. |
-| Photo Step 2 integration | `_buildPhotoAlignmentStep`, `_buildPhotoEmptyState`, `NewProjectWizardPhotoEditor` | Renders the optional photo-only editor, platform copy, selected path, recovery controls, and zero-write boundary note. |
-| Contour state and interaction | `_contourPoints`, `_contourClosed`, `_canAdvanceFromContour`, `_handleContourTap`, `_handleContourPointerMove`, `_deleteSelectedContourPoint`, `_resetContour`, `_closeContour` | Owns editor-normalized points, selection/drag state, reopening mutations, and the closed-only Step 3 gate. |
-| Contour editor and photo background | `_buildContourStep`, `_buildContourCanvas`, `wizard-contour-stack`, `wizard-contour-photo-layer`, `_WizardContourPainter` | Paints the photo as an inert bottom layer and editable contour state above it, or operates normally without a photo. |
-| Candidate style, state, and interaction | `_componentCandidates`, `_componentCurrentShape`, `_componentCurrentSizeScale`, `_componentCurrentRotation`, `_WizardComponentCandidate`, `_componentCandidateKeyAt`, `_handleComponentTap`, `_handleComponentPointerDown` | Owns immutable stable-key candidates and current-style inheritance; empty pointer-down preserves selection so each completed empty tap adds once, while candidate tap/select/drag/cancel remain distinct. |
-| Component editor, controls, and layered guides | `_buildComponentPlacementStep`, `_buildComponentCanvas`, `_buildComponentControls`, `wizard-component-status`, `wizard-component-shape-grid`, `wizard-component-rotation-value`, `wizard-component-boundary-note`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry` | Keeps photo/contour inert below candidates; compacts status and full boundary meaning; exposes equal-width 2×2 shapes, size, curved rotation/reset/signed-value controls, and unchanged geometry/hit behavior. |
-| Problem draft and Step 5 integration | `_problemDescriptionDraft`, `_canAdvanceFromProblemDescription`, `_handleProblemDescriptionChanged`, `_buildProblemDescriptionStep`, `NewProjectWizardProblemDescription` | Owns the raw five-value observation draft, effective-change dirty handling, required Step 5 dispatch/gate/progress, and the child presentation seam. |
-| Navigation, progress, and actions | `_currentStep`, `_visitedSteps`, `_isRequiredStep`, `_requiredStepIsValid`, `_canAdvanceFromStep`, `_goNext`, `_goBack`, `_canNavigateToVisitedStep`, `_navigateToVisitedStep`, `_buildProgressTile`, `_buildActionBar` | Tracks entered steps independently, permits backward and gate-valid forward visited jumps, derives required completion from live Step 1/3/5 gates, and exposes actions only on available non-active tiles. |
-| Responsive shell and cancellation | `build`, `SingleChildScrollView`, `_buildWideProgress`, `_buildCompactProgress`, `_cancelWizard` | Preserves one parent draft through wide/compact rebuilds, coordinates editor gestures with scrolling, and confirms dirty cancellation. |
+| Widget and dependency contract | `NewProjectWizardScreen`, `directoryPicker`, `platformInfo`, `createProject`, `onProjectCreated` | Accepts optional platform/picker/creator/handoff seams while retaining production defaults. |
+| Retained Step 1–5 draft | `_projectNameController`, `_advancedStepOneExpanded`, `_selectedParentPath`, `_photoPath`, `_contourPoints`, `_componentCandidates`, `_problemDescriptionDraft` | Owns primary/advanced project data, photo, contour, visual candidates, and problem description in UI state. |
+| Required creation gates | `_canAdvanceFromStepOne`, `_canAdvanceFromContour`, `_canAdvanceFromProblemDescription`, `_allCreationGatesAreValid` | Derives current validity for required Steps 1, 3, and 5 and rechecks all gates at creation. |
+| Visited progress and navigation | `_visitedSteps`, `_requiredStepIsValid`, `_canNavigateToVisitedStep`, `_buildProgressTile` | Tracks visits independently, derives Valmis from live gates, and guards backward/forward tile navigation. |
+| Typed request construction | `_buildCreationRequest`, `ProjectCreationRequest`, `WizardIntake`, `sourcePhotoPath` | Converts the complete retained draft into typed noncanonical creation input. |
+| Step 6 review and editing | `_buildReviewStep`, `_buildReviewSection`, `_editReviewStep`, `wizard-review-summary` | Shows the complete draft and five functional Muuda paths before creation. |
+| Creation state machine | `_WizardCreationStatus`, `_createProject`, `_recordCreationFailure` | Owns idle/creating/failed/succeeded transitions, invocation, and retryable failure state. |
+| Exhaustive result switch | `ProjectCreationSuccess`, `ProjectCreationMobilePlaceholder`, `ProjectCreationCollision`, `ProjectCreationInvalidDestination`, `ProjectCreationPythonNotFound`, `ProjectCreationMaterializerFailed`, `ProjectCreationPhotoFailed`, `ProjectCreationFailed` | Handles every sealed creation result subtype without a fallback branch. |
+| Sanitized failure boundary | `sanitizedMessage`, `_creationError`, `_WizardCreationError` | Displays fixed safe copy or typed sanitized messages and retains the Step 6 draft. |
+| Duplicate guard and handoff latch | `_projectHandoffCompleted`, `_creationStatus == _WizardCreationStatus.creating`, `widget.onProjectCreated?.call` | Suppresses pending/succeeded reactivation and invokes successful state handoff once. |
+| Terminal Step 7 | `_buildCreatedStep`, `wizard-created-success`, `_createdProjectState` | Persists success presentation with project name, technical ID, and location. |
+| Explicit project opening | `_openCreatedProject`, `context.go('/project')`, `wizard-open-project-button`, `_buildActionBar` | Makes Ava projekt the only terminal route action and performs no automatic redirect. |
+
+## Anchor inventory and verification
+
+Selection rule: take every backtick-delimited token in the responsibility
+table's Stable symbol anchors column, split comma-separated tokens, trim, and
+de-duplicate in first-appearance order. The inventory has 52 unique anchors.
+
+- Literal source symbols/strings: 50; each resolves as an exact source
+  substring.
+- Qualified source expressions: 2 —
+  `widget.onProjectCreated?.call` and `context.go('/project')`. Each resolves
+  as the exact owner/member invocation.
+- Exact test-name references: 0.
 
 ## State and data flow
 
-1. `[D]` Step 1 controllers/path remain in `_NewProjectWizardScreenState`; folder selection stores only a returned string and marks the draft dirty.
-2. `[D]` `_pickPhoto` is disabled for web/mobile, requests one `jpg/jpeg/png/webp`, reads no bytes, and stores only a nonblank supported path.
-3. `[D]` Picker cancel preserves the complete draft; exception/rejected extension sets visible error without replacing path or transform.
-4. `[D]` Accepted selection/replacement assigns the path plus zero translation, scale 1, rotation 0, and opacity 0.65.
-5. `[D]` Translation keeps finite components; scale clamps to `0.25..8.0`, rotation normalizes to `[-π, π)`, and opacity clamps to `0.0..1.0`.
-6. `[D]` Effective photo mutations dirty the draft; reset preserves path/opacity, while remove clears path, transform, and picker error.
-7. `[D]` Step 2 passes path/transform/callbacks but no contour or candidate state to the child editor.
-8. `[D]` Steps 3–4 wrap the optional photo layer in `IgnorePointer` below their painters.
-9. `[D]` All three editors read the parent transform independently; photo changes never rewrite contour/candidate geometry.
-10. `[D]` Contour add/move/delete/reset/close changes only editor-normalized local state; closure plus three points is the sole Step 3 gate.
-11. `[D]` Each candidate keeps a local key, editor-normalized center, one of four shapes, size `0.50..2.50`, and rotation `[-π, π)`.
-12. `[D]` Empty pointer-down returns without clearing selection or arming drag, so tap-up adds one candidate; candidate pointer-down selects/arms drag, candidate tap adds nothing, drag moves only, and pointer end/cancel adds nothing.
-13. `[D]` `_WizardComponentMarkerGeometry` derives the 8-pixel floor, `3.5%` relative scale, shape ratios, rotation, complete bounds, and at-least-56×56 hit target; closest center/insertion order resolves overlaps.
-14. `[D]` `_handleProblemDescriptionChanged` ignores equal drafts; effective updates replace the raw five-value parent draft and dirty it; validity alone uses `description.trim().isNotEmpty`.
-15. `[D]` Navigation mutates only `_currentStep` and `_visitedSteps`; backward visited jumps always work, while forward visited jumps revalidate every crossed Step 1/3/5 gate without dirtying or mutating drafts.
-16. `[D]` Progress derives its count from `_wizardSteps`; active is `Praegune samm`, every visited valid required step is `Valmis` regardless of ordering, every visited non-complete step is `Vaadatud`, and only unvisited is `Järgmine samm`.
-17. `[D]` `_buildActionBar` derives the final boundary, gates Step 5 without rewriting raw text, and exposes no create action.
+1. The widget begins with Step 1 active, Step 1 marked visited, and every draft
+   field owned locally by controllers or typed UI values.
+2. Step 1 requires a nonblank project name and selected parent; Step 3 requires
+   at least three points and a closed contour; Step 5 requires a nonblank
+   problem description.
+3. Optional Steps 2 and 4 retain photo and visual-candidate presentation input
+   but do not gate forward progress.
+4. Progress status uses active step, independent visited state, and live gate
+   validity; a visited required step can become invalid after editing.
+5. Step 6 renders all Step 1–5 values and routes each Muuda action back to its
+   corresponding draft section.
+6. `_createProject` revalidates all three gates, sets creating state, selects
+   the injected creator or `ProjectCreator().createProject`, and builds one
+   typed request.
+7. Pending or already-succeeded state rejects another activation.
+8. Each failure subtype records only fixed/sanitized visible copy, remains on
+   Step 6, and preserves the complete editable draft for retry.
+9. Success first invokes `onProjectCreated` through a one-shot latch, then
+   records the returned state, moves to Step 7, and stays there.
+10. `Ava projekt` checks succeeded state and explicitly calls
+    `context.go('/project')`; no success branch redirects automatically.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| Flutter Material/Foundation | framework and UI state | Provides widget state, pointer/gesture input, painting, semantics, responsive layout, dialogs, and platform detection. |
-| `FilePicker` | outbound picker service | Selects a parent directory and, on supported native desktop, one filtered image path. |
-| `PlatformInfo` / `DefaultPlatformInfo` | inbound capability service | Supplies the mobile capability boundary. |
-| `NewProjectWizardPhotoEditor` / `NewProjectWizardPhotoLayer` | child presentation dependency | Renders and edits the parent-owned photo draft in Step 2 and reuses it read-only below Steps 3–4. |
-| `NewProjectWizardProblemDescription` | child presentation dependency | Edits the parent-owned five-value Step 5 draft through value/onChanged/compact only. |
-| GoRouter | outbound UI navigation | Routes confirmed or untouched cancellation to `/`. |
-
-There is no Riverpod, `ProjectCreator`, project-state provider, canonical
-writer, materializer, projection, or project-model dependency.
+| Flutter Material/foundation | framework UI | Supplies stateful widgets, responsive rendering, painters, gestures, semantics, and platform flags. |
+| GoRouter | outbound navigation | Performs cancellation/Home and explicit terminal `/project` transitions. |
+| File picker | outbound platform seam | Selects desktop parent directories and optional photos. |
+| `ProjectCreator` request/results | outbound storage contract | Creates the generated project or returns a typed failure. |
+| `WizardIntake` models | outbound noncanonical model | Carry problem, contour, photo transform, and visual candidates. |
+| `ProjectState` | success/handoff value | Supplies terminal display and app-owned projection handoff. |
+| Wizard photo/problem widgets | child editors | Own specialized Step 2 and Step 5 input interaction. |
+| `PlatformInfo` | platform seam | Keeps mobile folder/photo behavior honest and non-invoking. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Step 1 values, current/visited steps, dirty/picker flags | `UI_LOCAL` | Mutate transient widget state only; navigation alone never dirties a draft. |
-| Photo path and `NewProjectWizardPhotoTransform` | `UI_LOCAL` | Remain parent-owned presentation draft values and produce no canonical alignment output. |
-| Contour points and interaction state | `UI_LOCAL` | Remain editor-local and never become `board_normalized`. |
-| Candidate keys, positions, visual style, selection, and current style | `UI_LOCAL` | Remain private generic visual proposals; effective selected/add/move/delete mutations touch only the Wizard draft. |
-| Problem-description draft and effective callback | `UI_LOCAL` | Retains raw human observations in the Wizard parent; equality suppresses identical assignments. |
-| Photo/contour/component painters, marker geometry/hit testing, semantics, and progress derivation | `ZERO_WRITE` | Read immutable snapshots, calculate presentation geometry, and render or describe only. |
-| `FilePicker.platform.pickFiles` result | `UI_LOCAL` | Stores only the returned source path; no copy, move, metadata, or project write follows. |
-| `context.go('/')` | `ZERO_WRITE` | Navigates Home without saving the draft. |
+| Controllers, draft collections, visited/progress, and status | `UI_LOCAL` | Mutate only transient Wizard state. |
+| `_buildCreationRequest` | `ZERO_WRITE` | Constructs typed request/intake values without persistence. |
+| `_createProject` creator invocation | `NONCANONICAL_FILE` | Calls the separately owned generated-project storage path; the Wizard writes no file directly. |
+| `onProjectCreated` callback | `PROJECTION_STATE` | Hands the returned hydrated state to the app; the Wizard owns no provider. |
+| `_openCreatedProject` | `UI_LOCAL` | Changes only the current route after success. |
+| Painters and editor rendering | `ZERO_WRITE` | Render or manipulate noncanonical draft geometry only. |
 
-The file contains no source-file mutation, project photo copy, provider,
-project-state assignment, canonical coordinate conversion, photo/alignment
-fact or event, writer, projection, schema, materializer, AI/OCR/CV, or Project
-ZIP call path.
+The request's contour, photo transform, and visual candidates are human-authored
+noncanonical presentation input. The Wizard does not create canonical events,
+facts, components, placements, measurements, evidence, diagnoses, nets,
+board-side assertions, or electrical semantics. It never reads `rawDetail`,
+process output, exception text, or stack data for visible failure copy.
 
 ## Zero-write zones
 
-- `[D]` `NewProjectWizardPhotoLayer` is display-only in all three steps.
-- `[D]` Opacity 0 hides the image but retains the path and complete transform.
-- `[D]` Contour and candidate painters consume immutable local snapshots;
-  shape paths, rotated bounds, and pointer targets are derived presentation
-  values rather than stored or canonical coordinates.
-- `[D]` Photo mutations never mutate contour points or candidates.
-- `[D]` Problem text is displayed and gated only; it is not diagnosed,
-  inferred, normalized, persisted, or converted into a canonical fact.
-- `[D]` Steps 6–7 and the final action area execute no workflow.
-- `[D]` Progress status, availability, and direct navigation derive from
-  transient visitation plus existing gates and create no project state.
-- `[D]` Picker errors, progress, semantics, safety copy, and cancellation
-  persist nothing.
+- Draft capture, gates, progress status, review summaries, painters, semantics,
+  responsive layout, and result classification do not persist data.
+- `_buildCreationRequest` creates an in-memory value only.
+- Step 7 display and explicit navigation do not create additional project
+  content.
+- Mobile folder/photo actions show honest unavailable copy without invoking
+  their desktop pickers.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Catalogue/order | `[D]` Seven definitions drive dispatch, progress, and final bounds. | progress, action bar, placeholders | `ZERO_WRITE` | exact labels; seven-step progress; placeholders |
-| Photo picker/state | `[D]` One filtered path installs a default parent transform. | platform gate, error UI, dirty cancellation | `UI_LOCAL` | picker filter/cancel/exception; mobile boundary |
-| Photo transform | `[D]` Parent clamps/normalizes values and owns dirty state. | child callbacks, all photo layers | `UI_LOCAL` | bounds; reset/replace/remove; retention |
-| Step 2 photo editor | `[D]` Child receives no future guide state. | child editor map and tests | `UI_LOCAL` | optional/Vaadatud; no-guide editor tests |
-| Step 3 layering | `[D]` inert photo precedes editable contour painter. | contour gate and gestures | `UI_LOCAL` | layer order; contour invariance; no-photo operation |
-| Step 4 candidate interaction/style | `[D]` empty pointer-down preserves selection; tap-up adds once; parent style and immutable candidates retain shape, scale, rotation, and keys. | selection, drag/cancel, dirty state, controls, navigation | `UI_LOCAL` | repeated exact-one add; select-versus-add; drag/cancel non-add; inheritance; selected-only edits |
-| Step 4 geometry/hit testing | `[D]` painter derives shape path, responsive pixels, rotation, selected outline, and rotated/minimum target. | candidate selection/drag and contour guide | `ZERO_WRITE` | size floor/ratios; rotated ends/corners; closest-center overlaps |
-| Step 4 layering | `[D]` inert photo precedes contour/candidate painter. | candidate style/geometry and guide snapshot | `UI_LOCAL` | layer order; fixed geometry/style; no-photo operation |
-| Step 5 observation draft | `[D]` parent equality, raw storage, child seam, and trimmed-only validity are distinct. | navigation, progress, cancellation, child editor | `UI_LOCAL` | empty/whitespace gate; five-value retention; effective/no-op dirty behavior |
-| Navigation/retention | `[D]` one parent state survives step and size changes. | progress, responsive shell | `UI_LOCAL` | Step 2–5 round trips and resize |
-| Progress/gating | `[D]` `_visitedSteps` is ordering-independent; indexes 0, 2, and 4 use their live gates for status and forward-jump availability. | catalogue, action bar, responsive progress | `UI_LOCAL` | current/visited/unvisited; all three gates; invalidation/restoration; navigation non-dirty |
-| Dirty cancellation | `[D]` each effective mutation assigns `_draftTouched`. | Step 1/contour/candidate mutations | `UI_LOCAL` | cancellation regressions plus source inspection |
-| Responsive gestures | `[D]` compact/wide branches reuse normalized parent state. | child pan gesture, candidate scroll physics | `UI_LOCAL` | 1440×900; 390×760; drag-versus-scroll |
-| Protected boundary | `[D]` no creator, project route, canonical, or persistent dependency exists. | router harness and final placeholder | `ZERO_WRITE` | zero-write traversal |
+| Dependency contract | [D] Constructor fields select defaults/injections. | app router builder and test harness | `ZERO_WRITE` | injection and inertness tests |
+| Draft/gates | [D] Controllers and getters own current validity. | progress, review, request | `UI_LOCAL` | advanced, retention, live-gate tests |
+| Progress navigation | [D] visited set and gate checks are separate. | all required/optional steps | `UI_LOCAL` | visited invalidation/status tests |
+| Request construction | [D] every typed field is mapped locally. | WizardIntake and ProjectCreator | `ZERO_WRITE` | no-photo/photo request tests |
+| Step 6 | [D] five sections and edit actions are explicit. | all draft zones | `UI_LOCAL` | complete review/edit test |
+| Creation state | [D] guard, await, and exhaustive switch are local. | ProjectCreator results | `NONCANONICAL_FILE` / `UI_LOCAL` | duplicate/failure tests |
+| Handoff | [D] one-shot boolean guards callback. | app provider assignment | `PROJECTION_STATE` | Wizard success and Home handoff tests |
+| Step 7/navigation | [D] success state and button are distinct. | router `/project` and Canvas provider read | `UI_LOCAL` | wait-then-open and inert-route tests |
+| Editors/painters | [D] geometry stays in draft collections. | photo/problem child widgets | `UI_LOCAL` / `ZERO_WRITE` | contour/candidate/photo families |
 
 ## Relevant tests and helpers
 
-Primary integration suite:
-`test/widget/new_project_wizard_screen_test.dart`, 62 widget tests. It covers
-Step 1, exact seven-step shell, optional photo Step 2, filtered picker,
-transform/opacity bounds, layered Step 3/4 reuse, invariant contour/candidate
-geometry, four marker shapes, current-style inheritance, selected-only
-mutation, repeated exact-one add and cancel separation, compact status/2×2
-shape/rotation controls, canvas-relative geometry, direct visited navigation,
-all three gate/status invalidation-restoration paths, responsive interaction,
-accessibility, and zero-write traversal.
-
-Focused child suite:
-`test/widget/new_project_wizard_photo_editor_test.dart`, 7 widget tests. It
-covers default/hidden/full opacity, photo-only rendering, transform controls,
-normalized drag, reset, render-error recovery, and wide/compact layouts.
-
-Problem child suite:
-`test/widget/new_project_wizard_problem_description_test.dart`, 9 tests. It
-covers the immutable model, keys/copy/semantics, raw callbacks, no-op and
-external synchronization including selection retention, occurrence choices,
-responsive layouts, and the local-only boundary.
+Primary evidence is `test/widget/new_project_wizard_screen_test.dart` with 69
+widget tests. Its maintained families cover exact step labels, advanced Step 1
+fields, all editors and draft retention, live required gates, visited progress,
+complete Step 6 review and five edit paths, exact request mapping, pending
+single-call behavior, every typed result plus thrown exceptions, exactly-once
+handoff, persistent Step 7, and explicit opening. App-level provider ordering
+is covered in `test/widget/benchbeep_home_screen_test.dart`. Storage and
+hydration are covered by creator/intake/loader unit tests.
 
 ## Dangerous combinations
 
-- `[D]` Changing catalogue indexes, gates, progress, and headings together can
-  gate the wrong step or mislabel optional work.
-- `[D]` Changing parent transform normalization and child controls together
-  can bypass finite/clamp/rotation invariants.
-- `[D]` Changing layer order and contour/candidate mutation code together can
-  make a photo change appear to move fixed geometry.
-- `[D]` Changing current-style setters, selection loading, candidate copies,
-  and dirty assignments together can mutate the wrong candidate or make
-  no-selection styling appear persistent.
-- `[D]` Changing pointer-down selection, tap-up addition, and drag cleanup
-  together can drop an empty tap or create an accidental candidate.
-- `[D]` Changing painter paths, responsive size, rotated bounds, and pointer
-  hit testing together can leave visible marker areas unselectable or make
-  overlap resolution nondeterministic.
-- `[D]` Changing photo/candidate gestures and ancestor scrolling together can
-  move the page, the editable layer, or both.
-- `[D]` Changing picker cancel/error paths and replacement state together can
-  destroy a valid draft.
-- `[D]` Changing problem equality, child synchronization, Step 5 gating, and
-  dirty/progress paths together can lose raw text, cursor selection, or honest
-  completion semantics.
-- `[D]` Changing visitation, gate iteration, tile semantics, and responsive
-  progress together can bypass a required step or misstate availability.
-- `[D]` Adding project state, file copy, canonical coordinates, facts/events,
-  or Board Canvas coupling would cross the accepted boundary.
+- Changing `_visitedSteps` and gate logic together can reintroduce
+  index-derived completion or invalid forward navigation.
+- Changing request construction and review display separately can create
+  unseen persisted values.
+- Changing pending guards and the handoff latch together can duplicate
+  filesystem creation or provider assignment.
+- Reading raw failure fields while editing visible errors can expose process
+  or filesystem details.
+- Auto-routing in the success branch would violate persistent Step 7 and
+  provider-before-route ordering.
+- Treating candidates as canonical objects would cross protected identity,
+  placement, and electrical boundaries.
 
 ## Safe SNIPER slices
 
-These are descriptive candidates only and authorize no work.
-
-- Picker-only: `_canPickPhoto`, `_pickPhoto`, error/empty copy, and focused
-  picker tests; exclude file writes and platform expansion.
-- One transform mutation: its parent setter, matching child control, all three
-  photo layers, dirty assignment, and focused bound/retention tests.
-- Step-2 presentation only: `_buildPhotoAlignmentStep` and child editor;
-  exclude contour/candidate state and canonical alignment.
-- One background layer only: the Step 3 or Step 4 `Stack`, its painter
-  invariance, and matching integration assertion.
-- One candidate-style field: its current-style setter, immutable candidate
-  copy, summary/control, drag preservation, and selected-versus-next tests.
-- Marker geometry only: `_WizardComponentMarkerGeometry`, painter paths,
-  selected outline, `_componentCandidateKeyAt`, and focused floor/ratio/edge/
-  overlap tests; exclude stored position semantics.
-- Progress only: `_visitedSteps`, `_requiredStepIsValid`,
-  `_canNavigateToVisitedStep`, `_buildProgressTile`, `_goNext`,
-  `_buildActionBar`, and exact gate/status/semantics tests.
-- Step 5 only: `_problemDescriptionDraft`, its effective mutation handler,
-  dispatch/gate/progress branches, child seam, and focused/integration tests;
-  exclude diagnosis, persistence, and canonical problem data.
-- Contour-only or candidate-only slices must preserve the inert photo layer and
-  the other editor family.
+- One required gate only: getter, progress use, and its edit/revalidation tests.
+- Step 6 presentation only: review builders and complete edit-round-trip test;
+  exclude request mapping.
+- One typed failure only: result case, safe copy, and exhaustive failure test.
+- Terminal presentation only: `_buildCreatedStep` and display assertions;
+  preserve explicit navigation separation.
+- Explicit route action only: `_openCreatedProject`, action button, and
+  wait-then-open tests.
 
 ## Future extraction seams
 
-Descriptive, non-authorizing candidates:
-
-- `[S]` Parent photo mutation policy could become a pure helper if dirty
-  ownership and widget-local state remain explicit.
-- `[S]` Contour and component editors could become child widgets if their
-  local keys, pointer ownership, gates, and zero-write semantics remain clear.
-- `[S]` Progress presentation could be isolated if completion versus viewing
-  remains derived from the same authoritative state.
+- [S] Creation-state/result handling could move into a controller if draft
+  ownership, latch ordering, and mounted checks remain explicit.
+- [S] Review rendering could become a child widget after edit callbacks and
+  exact draft values are retained.
+- [S] Large contour/candidate painter helpers may move without changing
+  noncanonical ownership.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when step, photo, contour, candidate, problem-draft,
-child, painter, or action anchors change; `FLOW_DRIFT` when picker, transform,
-inheritance, hit testing, Step 5 validity/equality, navigation, dirty, or
-progress flow changes; `BOUNDARY_DRIFT` when a draft leaves widget state;
-`TEST_DRIFT` when the 62/7/9-test contract changes; and `STRUCTURE_DRIFT` when
-editor ownership moves between files.
+Review for `SYMBOL_DRIFT` when constructor seams, gates, state-machine/result,
+handoff, or terminal anchors change; `FLOW_DRIFT` when draft/review/create/
+handoff/navigation ordering changes; `BOUNDARY_DRIFT` when raw diagnostics or
+canonical writes enter; `TEST_DRIFT` when focused families change; and
+`STRUCTURE_DRIFT` when editors, review, or creation logic move.
 
 ## Known uncertainty
 
-- `[D]` Visible Step 1–4 headings still contain explicit ordinal text. The
-  catalogue count and navigation bounds are length-derived, but focused
-  regression coverage for every visible ordinal is limited.
-- `[D]` The visible Step 5 ordinal is also explicit while the total remains
-  length-derived.
-- `[D]` Nested field semantics may be verbose in some accessibility readers;
-  focused tests verify labels and nodes, not end-to-end spoken output.
-- `[D]` Dirty-cancellation widget setup may already be dirty from earlier
-  steps; production assignments independently establish photo, contour, and
-  candidate add/move/delete/selected-style dirty mutations and exclude
-  no-selection style changes.
-- `[D]` The 8-pixel visibility floor flattens part of the compact 50%–76%
-  scale range while preserving the stored `0.50..2.50` value.
-- `[D]` Circle rotation controls remain enabled, but painting intentionally
-  uses zero effective rotation while retaining the stored value for a later
-  shape change.
-- `[D]` Rotation controls inherit a pre-existing `Semantics` wrapper without
-  a semantic activation action; the accepted implementation audit records
-  this as an evidence-only NIT.
-- `[D]` Responsive automation covers two fixed sizes, not every device or
-  physical pointer.
-- `[D]` Zero-write is established by reachable call paths and test harnesses,
-  not by a filesystem monitor.
+- [D] Persistent byte correctness belongs to `ProjectCreator` and its tests;
+  this map proves request and caller behavior.
+- [D] Provider assignment belongs to `app.dart`; the Wizard proves callback
+  order and one-shot invocation.
+- [D] Desktop folder/photo picking is supported; mobile actions intentionally
+  report unavailable behavior and do not invoke pickers.
+- [P] Pixel-perfect visual styling is not guaranteed by behavioral widget
+  tests; overflow, interaction, and semantics are covered.

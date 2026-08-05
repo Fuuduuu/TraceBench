@@ -3,205 +3,163 @@
 - Source: `test/widget/benchbeep_home_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 11/12`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_HOME_ACTIVATION_LOCK_PASS.md`
+- Qualification: `SCORE 11/12 — broad launcher, acquisition, routing, projection-handoff, responsive, and protected-boundary regression surface with repeated whole-file analysis`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
 
 ## File purpose
 
-Exercises the accepted BenchBeep Home launcher, its real `TraceBenchApp`
-wiring, the active Home-to-Wizard path, and the existing ZIP/directory/sample
-project acquisition paths across eighteen widget tests. It covers identity,
-action availability, responsive layout, hover styling, load-parent separation,
-project-state handoff, `/new-project`, canonical Board Canvas routing, errors,
-and exit confirmation. It reads sample data but writes no project, event, fact,
-projection, directory, or ZIP file.
+Exercises the BenchBeep launcher and real `TraceBenchApp` shell across new
+project activation, injected creation, provider handoff, explicit Canvas
+opening, bundled/folder/ZIP acquisition, responsive presentation, and exit
+behavior. Its creation regression proves the app state is ready while the
+Wizard remains on Step 7 and before the explicit `/project` transition.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Acquisition seams and fixtures | `_FakeFilePicker`, `_bundledSampleZipBytes`, `Archive`, `ZipEncoder` | Supplies ZIP/directory results, records picker use, and encodes tracked sample files into memory-only ZIP bytes. |
-| Observation and state helpers | `_expectCanonicalBoardCanvas`, `_waitForProjectState`, `_waitForLoadedProject`, `_directoryBackedProjectState`, `_actionBorderColor` | Bounds loading, constructs in-memory state, and observes route, screen, and hover state. |
-| Isolated Home harness | `_homeHarness`, `BenchBeepHomeScreen`, `onCreateProject` | Injects every Home callback and project availability without the full app shell. |
-| Identity and action state | `BenchBeep Home is a black/gold board-selection launcher`, `launcher has no hidden legacy compatibility anchors` | Verifies brand/copy/assets, removed legacy UI, active new-project state, and remaining deferred actions. |
-| Create callback isolation | `new project action is enabled, unbadged, and invokes only its callback` | Proves the card is enabled/unbadged and invokes exactly the create callback. |
-| Real Home-to-Wizard route | `new project action opens the existing Wizard route` | Uses `TraceBenchApp` to prove `/new-project`, `NewProjectWizardScreen`, and null project state. |
-| Responsive and interaction behavior | `wide layout keeps choices left and stacks detail over hero`, `medium layout stacks the hierarchy with all actions reachable`, `launcher action hover uses subtle gold accent` | Verifies geometry, reachability, overflow absence, and hover styling. |
-| Sample and continuation flows | bundled sample, missing-project, loaded-project tests | Covers project-state gating and accepted `/project` routing. |
-| Directory acquisition flows | folder cancel/success/error/injected-load tests | Covers cancel, success, invalid, injected-loader, provider, and navigation branches. |
-| Load-parent and ZIP flows | load-parent separation and ZIP cancel/success tests | Separates parent navigation from child actions and covers ZIP branches. |
-| Exit confirmation | `exit dialog cancels safely and confirms exactly once` | Verifies copy, colors, border, cancellation, and one confirmed callback. |
+| Harness and project fixtures | `_FakeFilePicker`, `_homeHarness`, `_directoryBackedProjectState`, `_createdWizardProjectState` | Supplies picker seams, isolated Home construction, and noncanonical in-memory project states. |
+| Launcher identity and create action | `BenchBeep Home is a black/gold board-selection launcher`, `new project action is enabled, unbadged, and invokes only its callback` | Preserves launcher identity and direct action-callback behavior. |
+| Real Wizard route | `new project action opens the existing Wizard route`, `_expectCanonicalBoardCanvas` | Proves launcher-to-Wizard entry and the canonical Canvas destination helper. |
+| Creation dependency injection | `injected create callback reaches the Wizard route`, `ProjectCreationRequest` | Proves the app passes the supplied creator into the real Wizard without invoking it early. |
+| Provider-before-route handoff | `successful Wizard creation hands app state off before explicit Canvas open`, `_waitForProjectState` | Proves one creation, one provider assignment, persistent Step 7, and explicit later Canvas open. |
+| Inert and continuation behavior | `launcher cannot continue without a loaded project` | Preserves disabled continuation until project state exists. |
+| Bundled and directory acquisition | `launcher preserves bundled sample project handoff`, `launcher open folder success opens canonical board canvas`, `_waitForLoadedProject` | Covers existing-reader handoff and canonical routing. |
+| ZIP acquisition | `launcher import project invokes existing ZIP flow directly`, `launcher ZIP success opens canonical board canvas` | Covers direct ZIP action ownership and successful route transition. |
+| Responsive and exit behavior | `wide layout keeps choices left and stacks detail over hero`, `medium layout stacks the hierarchy with all actions reachable`, `exit dialog cancels safely and confirms exactly once` | Preserves desktop/medium geometry, reachability, and exit confirmation. |
+
+## Anchor inventory and verification
+
+Selection rule: take every backtick-delimited token in the responsibility
+table's Stable symbol anchors column, split comma-separated tokens, trim, and
+de-duplicate in first-appearance order. The inventory has 21 unique anchors.
+
+- Literal helper/type anchors: 8; each resolves as an exact source substring.
+- Qualified member references: 0.
+- Exact test-name references: 13; each resolves as the complete string first
+  argument of one `testWidgets` declaration, including multiline calls.
 
 ## State and data flow
 
-1. `[D]` `_homeHarness` constructs `BenchBeepHomeScreen` with defaults for all
-   seven callback fields, including `onCreateProject`.
-2. `[D]` The primary launcher test pumps `TraceBenchApp`, checks black/gold
-   identity, and proves the new-project action has a non-null tap while the
-   phone action remains disabled.
-3. `[D]` The isolated create test injects counters, taps
-   `benchbeep_home_new_project_deferred`, and proves only the create counter
-   increments exactly once.
-4. `[D]` The real app test taps the same key, waits for router transition,
-   observes `NewProjectWizardScreen` and `/new-project`, and proves
-   `projectStateProvider` is still null.
-5. `[D]` Responsive tests change `tester.view`, inspect widget rectangles, and
-   reset view state in teardown.
-6. `[D]` `_FakeFilePicker` replaces `FilePicker.platform` for ZIP or directory
-   scenarios and records requested options; teardown restores the original when
-   available.
-7. `[D]` Bundled sample loading assigns in-memory state through
-   `TraceBenchApp`; the test then enters `/project`.
-8. `[D]` Directory tests use the fake platform picker, an injected invalid
-   loader, or a deterministic in-memory state loader.
-9. `[D]` ZIP success reads accepted sample bytes, encodes them in memory,
-   injects them through the fake picker, and awaits provider state.
-10. `[D]` `_expectCanonicalBoardCanvas` proves the accepted Board Canvas
-    destination and `/project`.
-11. `[D]` Load-parent interaction changes detail without incrementing ZIP or
-    folder callback counts; child buttons invoke each callback independently.
-12. `[D]` Exit tests prove cancel is zero calls and one confirmation increments
-    exactly once.
+1. Isolated Home tests inject callback counters into `_homeHarness` and verify
+   only the selected action fires.
+2. Real-app tests create a `ProviderContainer` and render `TraceBenchApp`.
+3. The create action opens `/new-project` while project state remains null.
+4. The injection test inspects the mounted `NewProjectWizardScreen` and proves
+   its `createProject` callback is the app-supplied function.
+5. The success test completes the real Wizard draft, returns a fixture
+   `ProjectCreationSuccess`, observes exactly one provider assignment, and
+   remains on the success step at `/new-project`.
+6. Only tapping the terminal open action transitions to canonical `/project`;
+   creation and provider counts remain one.
+7. Existing-project tests route bundled, directory, and ZIP loader results
+   through the same app provider and Canvas destination.
+8. Tear-down restores surface size, file-picker globals, subscriptions,
+   containers, and temporary fixtures.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `dart:async` | test timing | Supplies bounded timeout/error behavior. |
-| `dart:io` | sample input and path construction | Reads accepted sample files/directories and constructs platform paths; no output is written. |
-| `dart:typed_data` | in-memory fixture | Holds encoded sample ZIP bytes. |
-| `dart:ui` | test presentation | Supplies pointer kind, colors, and viewport sizes. |
-| `package:archive/archive.dart` | in-memory encoding | Builds selected ZIP payload bytes without writing a ZIP file. |
-| `package:file_picker/file_picker.dart` | global test seam | Supplies fake ZIP and directory picker results. |
-| Flutter Material and `flutter_test` | widget harness/driver | Pump, tap, hover, inspect geometry, and assert state. |
-| Riverpod | provider harness | Hosts and reads `projectStateProvider`. |
-| GoRouter | route observation | Exposes `/new-project` and `/project`. |
-| `TraceBenchApp` and `projectStateProvider` | mapped integration owner | Supply real launcher wiring and in-memory project state. |
-| `BenchBeepHomeScreen` | mapped subject | Supplies the isolated launcher callback contract and UI. |
-| `NewProjectWizardScreen` | route observable | Confirms the accepted create action reaches the existing Wizard. |
-| `ProjectDirectoryOpenAction` | action subject | Supplies injected valid/invalid directory loading branches. |
-| `ProjectLoader` and project models | reader/fixture contracts | Load accepted sample data and construct in-memory state. |
-| `BoardCanvasScreen` | success observable | Confirms the canonical existing-project destination. |
+| Flutter test/Material | harness | Pumps widgets, controls view size, gestures, and assertions. |
+| Riverpod | state observation | Creates isolated containers and observes `projectStateProvider`. |
+| GoRouter | route observation | Reads mounted route paths and canonical destinations. |
+| `TraceBenchApp` and `BenchBeepHomeScreen` | targets | Exercise the real shell and isolated launcher. |
+| `NewProjectWizardScreen` and `BoardCanvasScreen` | route targets | Identify the new-project and canonical project destinations. |
+| `ProjectCreator` types | fixture contract | Inject typed creation behavior without production filesystem writes. |
+| `ProjectLoader`, archive, and file-picker seams | acquisition fixtures | Exercise existing ZIP/directory/bundled flows. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `_FakeFilePicker` counters and captured arguments | `ZERO_WRITE` | Mutate only in-memory test-double state. |
-| `FilePicker.platform` replacement | `ZERO_WRITE` | Changes process-global test configuration and is teardown-scoped; it writes no selected path. |
-| `_bundledSampleZipBytes` | `ZERO_WRITE` | Reads tracked files and returns encoded bytes in memory; no ZIP file is created. |
-| `_directoryBackedProjectState` | `ZERO_WRITE` | Constructs in-memory models and no persisted facts/events. |
-| `_homeHarness`, view changes, and counters | `ZERO_WRITE` | Mutate only test/widget state and reset through teardown where applicable. |
-| Home-to-Wizard interaction | `ZERO_WRITE` | Drives router/UI state only and asserts project state remains null. |
-| Bundled, ZIP, and directory success interactions | `PROJECTION_STATE` | Drive accepted production branches that assign loader-returned state to Riverpod. |
-| Invalid/cancel flows | `ZERO_WRITE` | Leave project state null and create no destination. |
+| Creation fixture callback | `ZERO_WRITE` | Returns an in-memory `ProjectState` and performs no creator/file operation. |
+| `projectStateProvider` observations | `PROJECTION_STATE` | Verify in-memory assignment and identity only. |
+| Route gestures | `UI_LOCAL` | Change mounted URI/presentation only. |
+| ZIP/directory temporary fixtures | `NONCANONICAL_FILE` | Test-owned disposable input; production read paths remain the subject. |
+| Launcher callback counters | `UI_LOCAL` | Count invocation in test memory. |
 
-No test calls `ProjectCreator.createProject`, constructs a creation request,
-writes a directory/file, appends a canonical event/fact, runs a materializer,
-writes a projection, or creates Project ZIP output. Sample ZIP encoding is
-memory-only.
+The creation tests add no event, fact, component, placement, measurement,
+evidence, diagnosis, or electrical data. They distinguish app projection
+handoff from persistent creation ownership and retain existing Project ZIP
+reader boundaries.
 
 ## Zero-write zones
 
-- `[D]` Finder, geometry, color, copy, and route assertions persist nothing.
-- `[D]` The create callback test uses in-memory counters only.
-- `[D]` The real Home-to-Wizard test proves `projectStateProvider` stays null.
-- `[D]` `_FakeFilePicker` returns configured values without operating a native
-  picker or writing selected data.
-- `[D]` The invalid directory test supplies a loader that throws before any
-  filesystem operation.
-- `[D]` The injected valid directory loader returns an in-memory fixture.
-- `[D]` Real sample directory/ZIP paths are read by accepted loader flows only.
+- Visual/layout, hover, action availability, injected-callback inspection,
+  route observation, disabled continuation, and exit-cancel assertions are
+  test-local.
+- The created Wizard project fixture contains empty canonical arrays and
+  events.
+- The provider-handoff test never invokes production `ProjectCreator`.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Home harness contract | `[D]` Constructor defaults mirror all callback fields. | Home constructor and launcher rail | `ZERO_WRITE` | Most isolated Home tests |
-| Identity/action assertions | `[D]` Keys, labels, badge count, and tap states define launcher truth. | `_LauncherRail`, `_ModeButton` | `ZERO_WRITE` | Black/gold launcher; legacy anchors |
-| Create callback | `[D]` Independent counters prove exactly one callback. | Home constructor, launcher rail | `ZERO_WRITE` | Enabled/callback-isolation test |
-| Real create route | `[D]` Full app transition proves Wizard and null state. | App Home wiring, router, Wizard | `ZERO_WRITE` | Home-to-Wizard route test |
-| Responsive geometry | `[D]` View size drives rectangle relationships. | Home breakpoints and fixed body sizes | `ZERO_WRITE` | Wide and medium layout |
-| Hover styling | `[D]` Mouse movement changes the extracted border color. | `_ActionButtonState` | `UI_LOCAL` | Gold hover accent |
-| Sample continuation | `[D]` Bundled loading changes provider state before `/project`. | App loader, project provider, router | `PROJECTION_STATE` | Bundled sample handoff |
-| Directory and ZIP | `[D]` Fakes/injected seams cover cancel, errors, and success. | Acquisition actions, loader, provider | `ZERO_WRITE`; `PROJECTION_STATE` | Folder and ZIP tests |
-| Load-parent separation | `[D]` Parent changes detail while child counters stay zero. | `_selectLoadDetail`, child buttons | `UI_LOCAL` | Load-parent test |
-| Exit dialog | `[D]` Cancel/confirm counts and styles cover the branch. | `_MenuBar._confirmExit`, parent callback | `UI_LOCAL`; `ZERO_WRITE` | Exit dialog |
+| Harness/fixtures | [D] Shared setup feeds many families. | file picker, provider, router | test-local | all route/acquisition tests |
+| New-project action | [D] Direct callback and real route are separate tests. | Home action model and app shell | `UI_LOCAL` | create action and route tests |
+| Injection | [D] Mounted Wizard callback identity is asserted. | `TraceBenchApp.createProject` | `ZERO_WRITE` | injected callback test |
+| Provider handoff | [D] subscription and identity assertions are explicit. | Wizard success latch and app provider | `PROJECTION_STATE` | successful Wizard creation test |
+| Existing acquisition | [D] reader results enter the provider. | ZIP/directory loaders | `PROJECTION_STATE` | bundled/folder/ZIP tests |
+| Responsive launcher | [D] controlled surface sizes verify layout. | Home breakpoints and action reachability | `ZERO_WRITE` | wide/medium tests |
+| Exit | [D] callback count and dialog behavior are asserted. | window-manager callback | `ZERO_WRITE` | exit test |
 
 ## Relevant tests and helpers
 
-The file contains exactly eighteen `testWidgets` cases across launcher
-identity, create navigation, responsive presentation, action semantics, project
-acquisition/state, existing-project routing, and exit behavior.
+The source itself is the focused suite: 20 `testWidgets` tests across launcher,
+creation, acquisition, routing, layout, hover, legacy-anchor, and exit
+families. `_FakeFilePicker` captures picker requests;
+`_waitForProjectState` and `_waitForLoadedProject` bound asynchronous reads;
+`_createdWizardProjectState` provides the successful noncanonical intake
+fixture; and `_expectCanonicalBoardCanvas` centralizes the `/project`
+assertion.
 
-Key helpers are `_FakeFilePicker`, `_bundledSampleZipBytes`,
-`_expectCanonicalBoardCanvas`, `_waitForProjectState`,
-`_waitForLoadedProject`, `_directoryBackedProjectState`,
-`_actionBorderColor`, and `_homeHarness`.
-
-Primary mapped production subjects are `lib/app/app.dart`,
-`lib/features/home/screens/benchbeep_home_screen.dart`, and the routed Wizard.
-Inspect-only coupled owners include `lib/app/router.dart`,
-`lib/features/project/screens/home_screen.dart`, and `ProjectLoader`.
+Complementary exact creation-state-machine coverage lives in
+`test/widget/new_project_wizard_screen_test.dart`.
 
 ## Dangerous combinations
 
-- `[D]` Changing `_homeHarness`, callback counters, and constructor assertions
-  together can hide a missing or misthreaded create callback.
-- `[D]` Changing action key, badge count, and tap assertions together can erase
-  evidence that the create card is active while the phone card remains deferred.
-- `[D]` Changing real app routing and null-state assertions together can hide a
-  creator or project-state regression.
-- `[D]` Changing picker globals and teardown together can leak fake state.
-- `[D]` Changing wait helpers, provider assignment, and route assertions
-  together can turn bounded state observation into timing-sensitive success.
-- `[D]` Replacing accepted readers/fakes with `ProjectCreator` or write-capable
-  services would cross protected test boundaries.
+- Weakening the creation count while changing provider assertions can hide a
+  duplicate handoff.
+- Auto-opening Canvas in the success test would erase the terminal Step 7
+  contract.
+- Using production `ProjectCreator` in this widget suite would mix storage
+  behavior into app handoff evidence.
+- Failing to restore `FilePicker.platform` or surface size can leak global
+  state into unrelated tests.
+- Combining ZIP fixture changes with new-project behavior can blur read versus
+  create ownership.
 
 ## Safe SNIPER slices
 
-These are descriptive candidates only and authorize no work.
-
-- Create action availability only: launcher identity plus the isolated callback
-  test; exclude router and acquisition flows.
-- Home-to-Wizard route only: real `TraceBenchApp`, the create card, Wizard
-  observable, `/new-project`, and null project state.
-- Load-parent separation only: its named test and ZIP/folder counters; exclude
-  real picker/loader behavior.
-- Exit presentation only: the final test and `_MenuBar._confirmExit`; exclude
-  window-manager integration.
-- One acquisition branch only: its fake/injected seam and focused test; inspect
-  provider/router coupling and exclude creator behavior.
-- One responsive breakpoint only: the named geometry test and root layout
-  branch; exclude action semantics.
+- Isolated launcher action only: `_homeHarness` and one callback test.
+- Creation injection only: real app entry plus mounted callback identity.
+- Provider handoff only: successful Wizard test, retaining one-call and
+  pre-route assertions.
+- One acquisition route only: its picker/fixture and canonical Canvas helper.
+- One responsive breakpoint only: surface setup, layout assertion, teardown.
 
 ## Future extraction seams
 
-Descriptive, non-authorizing candidates:
-
-- `[S]` Picker setup/restoration may be a reusable test helper if global-state
-  isolation remains explicit.
-- `[S]` Route assertions may share a helper if `/new-project` and `/project`
-  state preconditions remain distinct.
-- `[S]` Sample archive construction may be separable from widget interaction
-  if its tracked-input contract remains visible.
+- [S] Acquisition-heavy tests could move to a dedicated app-acquisition suite
+  if shared launcher and provider assertions stay visible.
+- [S] Repeated real-app startup could use a named harness if it retains exact
+  provider-container and global teardown ownership.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when helper, key, callback, test-name, route, or
-screen anchors change; `FLOW_DRIFT` when create routing, picker, loader,
-provider, or navigation ordering changes; `BOUNDARY_DRIFT` when real creation
-or persistent writes enter the suite; `TEST_DRIFT` when covered action states,
-layouts, acquisition branches, or exit assertions change; and
-`STRUCTURE_DRIFT` when harness and integration responsibilities move.
+Review for `SYMBOL_DRIFT` when helpers, callbacks, keys, or target screens
+change; `FLOW_DRIFT` when create/provider/navigation order changes;
+`BOUNDARY_DRIFT` when tests begin invoking persistent creation or weaken
+canonical emptiness; `TEST_DRIFT` when the 20-test family changes; and
+`STRUCTURE_DRIFT` when app/launcher acquisition tests split.
 
 ## Known uncertainty
 
-- `[D]` The suite does not directly test startup-intro completion or router
-  disposal.
-- `[D]` The Home create route is tested at the launcher-to-Wizard boundary;
-  detailed Wizard behavior belongs to its own focused suite.
-- `[D]` Real ZIP/folder success tests depend on accepted sample inputs and
-  loader behavior beyond this mapped file.
-- `[D]` Global picker restoration remains conditional on a captured original
-  platform instance.
+- [D] The app-side exactly-once claim is observed through one provider
+  subscription plus Wizard callback coverage, not production instrumentation.
+- [D] The success fixture proves handoff and navigation, not filesystem
+  creation; storage is owned by unit tests.
+- [P] Window-manager integration itself is represented by an injected
+  callback rather than a real desktop window close.

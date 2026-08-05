@@ -2,10 +2,149 @@
 
 ## Route
 
-Current: `TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_CREATION_UI_ACTIVATION_PASS`
+Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Python-runner Windows Unicode-output LOCK authority
+## Current Wizard creation/write-path LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / LOCK
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main ==
+618c041c93a29cbbb5b8589535ebf7fbd8d7b320`, parent
+`0bab9cb8cdae8da3011909aa35a2259e50d92be8`, subject
+`feat: activate Wizard project creation UI`, divergence `0 0`, with empty
+entry substantive and staged sets. Known porcelain-only tracked paths must
+remain content-identical to `HEAD`. Preserve all scratch and untracked content.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/code_maps/CODE_MAP_INDEX.md`
+7. `docs/code_maps/lib/app/app.dart.md`
+8. `docs/code_maps/lib/app/router.dart.md`
+9. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+10. `docs/code_maps/lib/shared/services/project_creator.dart.md`
+11. `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+13. `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
+
+No fourteenth file is authorized. All runtime, tests, schemas, tools,
+`docs/PROJECT_ZIP_SPEC.md`, `docs/PROTECTED_SURFACES.md`,
+`docs/POHIKIRI.md`, accepted parent/detour artifacts, PythonRunner map,
+ProjectCreator-test map, every unrelated map/index row, assets, packages,
+generated files, Claude Design material, `_incoming`, and scratch are
+read-only. Do not stage, commit, push, reset, restore, stash, clean, or delete.
+
+### Accepted committed chain and behavior
+
+The LOCK records this exact committed sequence:
+
+1. parent creation/write-path SCOPE:
+   `4b92f7274d492d5d36af62f2fdbe252b9cec06cb`;
+2. storage child:
+   `0074edc8ff7de09f28b545659ab7f2f41cef2fa5`;
+3. PythonRunner detour SCOPE:
+   `12512ddf08d4d8342e483609aa1f719e5f747781`;
+4. PythonRunner repair:
+   `548b85eddabd37bdfd4230b99c552c2c3ee67ca7`;
+5. PythonRunner detour LOCK:
+   `0bab9cb8cdae8da3011909aa35a2259e50d92be8`;
+6. UI activation child:
+   `618c041c93a29cbbb5b8589535ebf7fbd8d7b320`.
+
+Storage owns deterministic Wizard intake, compatible manifest values,
+technical-ID/destination validation, optional byte-identical supported photo
+copy, empty event-log initialization, Python materialization, loader
+hydration, typed results, and generated-child-only cleanup. The accepted
+Unicode detour makes Python output deterministic UTF-8 through the shared
+runner while preserving strict decoding, inherited environment, commands,
+arguments, working directory, shell mode, timeouts, candidate order,
+fallback, and exception conversion.
+
+The committed Wizard owns retained Step 1–5 draft state, live required gates,
+complete Step 6 review and five Muuda paths, one pending creation, exhaustive
+typed-result handling, sanitized failures with retained draft, exactly-once
+successful-state handoff, persistent Step 7, and explicit `Ava projekt` to
+`/project`. App provider assignment precedes route availability; router
+ownership remains navigation-only and imports neither Riverpod nor
+`ProjectState`.
+
+Accepted Child 2 evidence is `AUDIT_VERDICT: ACCEPT_AS_IS` /
+`SAFE_FOR_STAGING: YES`, changed widget tests `89/89`, broader focused tests
+including the direct edit-screen router caller `99/99`, `MANUAL_SMOKE: PASS`,
+`HUMAN_ATTESTATION: PASS`, and `MANUAL_SMOKE_CHECKS: 8/8`.
+
+### UI workflow and map authority
+
+`docs/UI_WORKFLOWS.md` may describe committed launcher-to-Wizard, seven-step,
+storage/handoff, desktop/mobile, terminal-success, explicit-route, and
+noncanonical boundaries only. It must not import Claude Design proposals.
+
+Refresh exactly these six maps from committed `HEAD` and set each map header
+plus matching `CODE_MAP_INDEX` Status to `REVIEW_REQUIRED`:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/screens/new_project_wizard_screen.dart`
+4. `lib/shared/services/project_creator.dart`
+5. `test/widget/benchbeep_home_screen_test.dart`
+6. `test/widget/new_project_wizard_screen_test.dart`
+
+Each map is descriptive and non-authorizing, uses no line-number anchors, has
+at most twelve responsibility zones, records a reproducible anchor inventory,
+and carries the matching LOCK artifact as audit evidence. Existing
+PythonRunner and ProjectCreator-test maps remain byte-identical and
+`MAINTAINED`.
+
+### Protected boundaries and route
+
+Wizard contour/photo/candidates/problem values are noncanonical presentation
+input. The accepted path creates no canonical event, fact, component,
+placement, measurement, evidence, diagnosis, board-side, net, or electrical
+assertion. `events.jsonl` starts exactly zero bytes and `known_facts.json`
+remains materializer-owned. Source photos and user-owned parents/siblings are
+preserved. Raw process output, `rawDetail`, exception text, and stack data
+remain outside visible Wizard copy. Project ZIP ownership/specification does
+not change.
+
+```text
+TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+This closes the functional creation/write-path cycle. It arms no implementation
+child, Claude Design integration, visual redesign, compact Wizard component,
+or additional transition-polish pass.
+
+### Phase 2 authority
+
+A later independent LOCK/map audit may authorize mechanical recording in
+exactly fourteen logical coordinates:
+
+1. the empty LOCK-artifact verdict-block interior;
+2. the matching `docs/AUDIT_INDEX.md` Status cell;
+3–8. the six refreshed map Status fields;
+9–14. the six matching `CODE_MAP_INDEX` Status cells.
+
+Independent audit may promote each map only according to its returned map
+verdict. It must not alter either verdict marker, any map body, qualification,
+anchor inventory/count, measured line count, `UI_WORKFLOWS`, route, child or
+analyzer/test/manual-smoke evidence, ledger Description, unrelated byte,
+runtime, or test.
+
+## Accepted Python-runner Windows Unicode-output LOCK authority (historical)
+
+The retained section below is provenance only. Its current-language wording
+does not override the active Wizard LOCK authority or route above.
 
 ```text
 PASS_ID: TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS

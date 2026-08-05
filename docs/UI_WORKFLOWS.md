@@ -31,35 +31,55 @@ Standalone Add/Edit/Measure-style pages may remain until scoped replacements exi
 
 ## New Project Wizard creation workflow
 
-This locked completion workflow is future implementation authority, not a
-claim that current runtime already creates a project. The New Project Wizard
-creation cycle has seven steps. Steps 1–5 own the complete retained draft.
-Required Steps 1, 3, and 5 must all satisfy their current gates when creation
-starts; a prior visit or progress label does not substitute for current
-validity.
+The committed New Project Wizard creation cycle opens from the launcher at
+`/new-project` and has seven steps. Steps 1–5 own the complete retained,
+UI-local draft. Required Steps 1, 3, and 5 must all satisfy their current
+gates when creation starts; a prior visit or progress label does not substitute
+for current validity.
 
 - Step 1 `Projekti andmed` owns project name, device name, parent directory,
   additional information, and the optional `Täpsemalt` values device type,
   manufacturer, model, and revision. Future-AI copy is informational only.
-- Steps 2–5 retain the accepted photo, contour, visual-candidate, and raw
-  five-field human problem drafts.
-- Step 6 is `Kontroll ja kinnitus`. It presents the complete draft summary,
-  provides edit links back to Steps 1–5, and exposes `Loo projekt`.
-- A creation failure remains on Step 6 and preserves the complete draft for
-  correction or retry. Duplicate activation must not start concurrent or
-  repeated creation calls, and only sanitized creation-result messages may be
-  shown.
-- Step 7 is `Projekt loodud`. It shows project name, technical project ID, and
-  location. Creation success assigns the returned project state exactly once
-  but does not navigate automatically.
-- `Ava projekt` is the only Step 7 transition to the existing `/project`
-  route. The provider assignment precedes that transition.
+- Step 2 retains the optional background-photo path and UI-local alignment
+  transform. Desktop supports the committed picker; mobile reports that the
+  action is unavailable and does not invoke the picker.
+- Step 3 retains the closed non-degenerate board-contour draft and owns its
+  live creation gate.
+- Step 4 retains human-created visual candidates and their presentation
+  geometry. They are noncanonical proposals, not component identity,
+  placement, measurement, diagnosis, or electrical facts.
+- Step 5 retains all five raw human problem-description values and owns the
+  nonblank-description creation gate.
+- Step 6 `Kontroll ja kinnitus` presents the complete draft, provides
+  functional `Muuda` actions for Steps 1–5, and exposes `Loo projekt`.
+- One activation invokes creation once. While creation is pending, duplicate
+  activation is blocked. Success is latched; a later activation cannot create
+  or hand off the project again.
+- A creation failure remains on Step 6, preserves the complete editable draft,
+  and shows only fixed safe copy or a result's `sanitizedMessage`. Raw process
+  output, `rawDetail`, exception text, and stack data are not read for visible
+  Wizard copy.
+- `ProjectCreator` owns generated-project storage: technical ID/destination
+  validation, skeleton and compatible manifest, always-written
+  `notes/wizard_intake.json`, optional supported photo copy, zero-byte
+  `events.jsonl` initialization, Python materializer invocation, loader-based
+  hydration, and generated-child-only cleanup.
+- Successful creation hands the hydrated `ProjectState` to the app-owned
+  provider exactly once before terminal navigation becomes available.
+- Step 7 `Projekt loodud` remains visible and shows project name, technical
+  project ID, and location. It does not redirect automatically.
+- `Ava projekt` is the only Step 7 transition and explicitly opens the
+  existing `/project` route.
+
+Desktop supports the committed parent-directory and photo pickers. Mobile
+keeps the seven-step presentation responsive but reports unavailable
+folder/photo creation actions honestly and does not invoke those pickers.
 
 The human-facing `project_name` remains separate from the random technical
-directory/project identifier `prj_XXXXXXXX`. Creation writes the noncanonical
-Wizard presentation draft to `notes/wizard_intake.json`; it does not create a
-component, placement, measurement, event, fact, diagnosis, or other canonical
-assertion. `events.jsonl` starts empty and `known_facts.json` remains
+directory/project identifier `prj_XXXXXXXX`. Wizard intake is noncanonical
+human presentation input. Creation writes no canonical event, fact, component,
+placement, measurement, evidence, diagnosis, board-side, net, or electrical
+assertion. `events.jsonl` starts exactly empty and `known_facts.json` remains
 materializer-owned.
 
 ## Five event meanings

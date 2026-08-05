@@ -2,10 +2,111 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS`
 
-## Current Wizard compact-design V1 parent SCOPE queue
+## Current Board Canvas Wizard-intake gate detour queue
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK / ZERO_RUNTIME_WRITE
+```
+
+Entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` on
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main ==
+91fa53f308e86143a6bfb5204a71c2411f8b22eb`, divergence `0 0`, with empty
+entry tracked and staged sets. Entry `HEAD` is the committed seven-file
+`TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS` child.
+
+The exact current docs-only material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS.md`
+
+No sixth current-pass path is queued. Runtime, tests, maps,
+`docs/code_maps/CODE_MAP_INDEX.md`, `docs/UI_WORKFLOWS.md`, models, services,
+providers, routers, writers, schemas, tools, assets, packages, `_incoming`,
+scratch, and the original worktree are frozen.
+
+The strict route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+`TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS` is suspended,
+not abandoned. Its two-file human-owned diff remains in
+`C:\Users\Kasutaja\Desktop\TraceBench`; the recovery snapshot is
+`C:\Users\Kasutaja\Desktop\TraceBench-child2-before-board-canvas-intake-detour.patch`
+with measured SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+The detour may resume that child only through an accepted committed final
+detour LOCK.
+
+The next implementation pass is reserved for exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+No third implementation file is queued. The repair is one existing-screen
+orchestration gate correction: for zero components, valid Wizard intake or a
+warning must reach the existing `_CanvasPanel` and existing Wizard renderer.
+No project remains unchanged; zero components with neither intake nor warning
+keep the exact existing empty state; the photo remains hidden by default;
+contour and candidates remain read-only; and no renderer duplication,
+candidate interaction, canonical placement, model/service/provider/router/
+writer/schema change, or protected semantic change is queued.
+
+The implementation queue requires focused RED evidence for the current early
+return, then GREEN coverage for contour/candidates, hidden photo,
+warning-only reachability, no-intake parity, and no writer/canonical mutation.
+It then requires focused and full validation plus this human manual smoke:
+
+1. Canvas opens.
+2. Contour is visible.
+3. Candidate markers are visible.
+4. Empty copy does not cover Canvas.
+5. Photo is hidden by default.
+6. Photo toggle shows the correct photo.
+7. Markers remain read-only.
+8. No canonical component or event is created.
+9. Pan, zoom, and fit still work.
+10. A no-intake project keeps the old empty state.
+
+After accepted implementation, only the Board Canvas production and test maps
+are `UPDATE_REQUIRED`; the app, router, creator, loader, Wizard, and Home maps
+are `REVIEWED_NO_CHANGE`. The reserved final detour LOCK set is exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_LOCK_PASS.md`
+
+Only this five-file SCOPE is executable now. The two-file implementation stays
+conditional until independent SCOPE acceptance and exact human staging,
+commit, and push. The final LOCK stays conditional on accepted, manually
+smoked, independently audited, and committed implementation evidence.
+
+## Suspended Wizard compact-design V1 parent queue (retained contract)
+
+The retained queue below preserves the accepted parent contract. Its embedded
+current/next wording is historical, does not override the detour above, and
+must not be used to execute Child 2 while the detour is open.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS

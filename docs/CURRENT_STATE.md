@@ -1,9 +1,91 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS`
 
-## Live Wizard compact-design V1 parent SCOPE
+## Live Board Canvas Wizard-intake empty-components gate detour SCOPE
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK / ZERO_RUNTIME_WRITE
+```
+
+Verified entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` on branch
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main ==
+91fa53f308e86143a6bfb5204a71c2411f8b22eb`, subject
+`feat: add Wizard compact primitives and editors`, divergence `0 0`, empty
+tracked diff, and empty staged set. The accepted compact-design parent SCOPE
+is `7a90cc738c4940b7272487525f41bf8c8ebf410e`; committed Child 1 is the entry
+`HEAD` and changes exactly its reserved seven files.
+
+`TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS` is suspended,
+not abandoned. Its human-owned two-file working diff remains only in
+`C:\Users\Kasutaja\Desktop\TraceBench` and is excluded from this detour. The
+recovery patch
+`C:\Users\Kasutaja\Desktop\TraceBench-child2-before-board-canvas-intake-detour.patch`
+has measured SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+The reproduced classification is
+`F. BOARD_CANVAS_SUPPRESSES_VALID_INTAKE`: the generated project has zero
+canonical components, zero-byte `events.jsonl`, valid `wizard_normalized`
+intake, a closed four-point contour, 13 visual candidates, and an existing
+photo. `ProjectLoader` hydrates the noncanonical intake/warning into
+`ProjectState`, but `BoardCanvasScreen` returns the existing no-components
+empty state before the later `_CanvasPanel` construction forwards
+`wizardIntake` and `wizardIntakeWarning`. The gate predates Child 2; Child 2
+caused this defect: `NO`.
+
+This Phase 1 pass changes exactly the four route/ledger owners plus
+`docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS.md`.
+It changes no runtime, test, map, workflow, schema, tool, asset, package,
+`_incoming`, protected behavior, or original-worktree byte.
+
+The locked route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The detour implementation is conditionally reserved for exactly
+`lib/features/board_canvas/screens/board_canvas_screen.dart` and
+`test/widget/board_canvas_screen_test.dart`. It may only make the existing
+`_CanvasPanel` and existing read-only Wizard renderer reachable when zero
+components coexist with valid intake or a warning. No project and zero
+components without intake/warning retain their existing empty states; the
+photo stays hidden by default; candidates stay noninteractive and
+noncanonical; and no model, service, provider, router, writer, schema,
+canonical placement, event, fact, coordinate, net, or electrical behavior may
+change.
+
+The implementation must start with a focused RED for the suppressing gate,
+then prove contour/candidate rendering, hidden-by-default photo, warning-only
+reachability, unchanged no-intake empty state, and zero writer/canonical
+mutation. It also requires the locked ten-item human manual smoke before
+independent implementation audit. After accepted committed implementation,
+both Board Canvas maps are `UPDATE_REQUIRED`; all app/router/creator/loader/
+Wizard/Home maps are `REVIEWED_NO_CHANGE`. The final detour LOCK has exactly
+the reserved eight docs/map files and is the only route that may resume the
+suspended Child 2.
+
+Only this five-file docs-only SCOPE is current authority. Implementation is
+not authorized before independent SCOPE acceptance and exact human staging,
+commit, and push.
+
+## Suspended Wizard compact-design V1 parent route (retained contract)
+
+The retained section below records the accepted parent SCOPE contract. Its
+embedded current/next language is historical and does not override the live
+detour route above. Child 1 is committed; Child 2 remains suspended exactly as
+described above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS

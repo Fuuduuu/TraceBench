@@ -2,10 +2,206 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS`
 
-## Current Wizard compact-design V1 parent SCOPE authority
+## Current Board Canvas Wizard-intake empty-components gate detour authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK / ZERO_RUNTIME_WRITE
+```
+
+Entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` on branch
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main ==
+91fa53f308e86143a6bfb5204a71c2411f8b22eb`, parent
+`7a90cc738c4940b7272487525f41bf8c8ebf410e`, subject
+`feat: add Wizard compact primitives and editors`, divergence `0 0`, with
+empty entry tracked and staged sets. Preserve all scratch and every unrelated
+worktree.
+
+The original `C:\Users\Kasutaja\Desktop\TraceBench` worktree is inspect-only.
+Its human-owned Child 2 diff is suspended, not abandoned, and must remain
+byte-identical throughout this SCOPE. Its recovery snapshot is
+`C:\Users\Kasutaja\Desktop\TraceBench-child2-before-board-canvas-intake-detour.patch`
+with SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS.md`
+
+No sixth current-pass path is authorized. All Dart, tests, maps,
+`docs/code_maps/CODE_MAP_INDEX.md`, `docs/UI_WORKFLOWS.md`, models, services,
+providers, routers, writers, schemas, tools, assets, packages, generated
+files, `_incoming`, scratch, and the original worktree are read-only. Do not
+stage, commit, push, reset, restore, stash, clean, delete, install, or use an
+external write-capable helper.
+
+### Locked route and activation sequence
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Only this five-file SCOPE is active. The detour implementation requires
+independent acceptance of this exact SCOPE plus exact human staging, commit,
+and push. The final detour LOCK requires accepted implementation audit,
+human-supplied ten-item manual smoke, exact human commit/push, and committed
+repair evidence. Only the accepted committed detour LOCK may resume the
+suspended compact Child 2. The parent compact-design final LOCK remains after
+that child and no additional detour closeout is authorized.
+
+### Reproduced cause and classification
+
+The required classification is locked as:
+
+```text
+F. BOARD_CANVAS_SUPPRESSES_VALID_INTAKE
+Child 2 caused: NO
+Pre-existing defect: YES
+```
+
+The durable generated project `prj_4eac02c8` contains zero canonical
+components, zero-byte `events.jsonl`, valid `wizard_normalized` intake, a
+closed four-point contour, 13 visual candidates, and an existing photo.
+Committed `ProjectLoader` reads the optional intake or warning into
+`ProjectState`; the app/provider handoff supplies that state. In
+`BoardCanvasScreen`, the `knownFacts.components.isEmpty` early return emits
+`No components recorded for this project.` before the later `_CanvasPanel`
+construction can forward `wizardIntake` and `wizardIntakeWarning`. The gate is
+blamed to pre-Child-2 Board Canvas history and already existed when the Wizard
+renderer was added. Existing overlay tests all provide a host component; the
+separate old empty-state test provides neither intake nor warning.
+
+### Reserved detour implementation exact allowlist
+
+`TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS` may later
+write only:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+No third implementation file is authorized. If either target cannot complete
+the repair through the existing screen, `_CanvasPanel`, existing Wizard
+renderer, existing provider/model input, and existing test harness, stop.
+
+### Locked repair behavior
+
+The implementation must preserve these cases exactly:
+
+- no project: keep the current no-project state unchanged;
+- zero components with neither intake nor warning: keep the exact existing
+  no-components empty state and copy unchanged;
+- zero components with valid intake or a warning: compose the existing
+  `_CanvasPanel` and existing Wizard renderer instead of returning the
+  suppressing empty state;
+- valid intake: render the closed contour and visual candidates read-only;
+- photo: remain hidden by default and use the existing toggle/path/transform;
+- warning-only: remain non-modal and reachable through the existing warning
+  presentation;
+- candidates: remain noninteractive, noncanonical presentation input; and
+- existing component, placement, pan/zoom/fit, painter, inspector, navigator,
+  responsive, semantics, and writer behavior: remain unchanged.
+
+The repair must not duplicate a renderer, invent a host component, create a
+canonical placement, promote a candidate, or change any model, service,
+provider, app, router, writer, schema, event, fact, materializer, validator,
+projection, Project ZIP, coordinate, component, measurement, net, electrical,
+identity, AI/OCR/CV, or repair semantic.
+
+### Required TDD and manual smoke
+
+The implementation must begin with a focused RED that supplies zero canonical
+components plus valid intake and proves the current no-components return
+suppresses the existing Wizard layer. GREEN must prove:
+
+1. contour and candidate markers render;
+2. the photo remains hidden by default;
+3. warning-only state is reachable;
+4. zero components with no intake/warning preserve the exact old empty state;
+5. provider state, intake, facts, and events remain unchanged; and
+6. all four existing writer doubles receive no request.
+
+The implementation must preserve the existing Wizard-overlay, no-project,
+no-components, geometry, pan/zoom/fit, painter, and protected-boundary tests,
+then run focused analysis/tests and the full Flutter and repo validation
+required by the executable implementation prompt. Flutter commands must be
+sequential and failures cannot be hidden by retries.
+
+Before implementation audit, a human must attest all ten checks:
+
+1. Canvas opens.
+2. Contour is visible.
+3. Candidate markers are visible.
+4. Empty copy does not cover Canvas.
+5. Photo is hidden by default.
+6. Photo toggle shows the correct photo.
+7. Markers remain read-only.
+8. No canonical component or event is created.
+9. Pan, zoom, and fit still work.
+10. A no-intake project keeps the old empty state.
+
+### Code-map and final LOCK reservation
+
+Both implementation targets have `MAINTAINED` maps at this baseline.
+Production change authority is confined to screen orchestration around
+`_BoardCanvasScreenState.build`, `_buildScaffold`, and `_CanvasPanel`; Wizard
+state/render zones are reuse-only and writer zones are inspect-only. Test
+change authority is confined to the fixture/harness, Wizard overlay, geometry,
+and protected-boundary families needed for the new zero-component variants.
+
+After accepted implementation:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart` map:
+  `UPDATE_REQUIRED`;
+- `test/widget/board_canvas_screen_test.dart` map: `UPDATE_REQUIRED`; and
+- all app/router/creator/loader/Wizard/Home maps: `REVIEWED_NO_CHANGE`.
+
+No map or map-index write is authorized before the final detour LOCK. The
+exact reserved final LOCK set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_LOCK_PASS.md`
+
+No ninth LOCK file is reserved. The LOCK records only accepted committed
+repair, validation, manual-smoke, independent-audit, map-refresh, boundary,
+and route-resumption evidence; it must not edit the suspended Child 2 files.
+
+### Stops
+
+Stop before edits or further route activation if the cause does not reproduce;
+a third implementation file is needed; the existing renderer cannot be
+reused; a model/service/provider/app/router/writer/schema/tool/package/asset/
+Project ZIP or protected semantic change is needed; the original Child 2
+worktree changes; a map conflicts with committed source; the repair expands
+beyond one screen-orchestration gate; human smoke fails; validation fails; or
+the staged set is non-empty.
+
+## Suspended Wizard compact-design V1 parent authority (retained contract)
+
+The retained authority below preserves the accepted parent SCOPE and its
+child allowlists. Its embedded current-language is historical and does not
+override the live detour. Child 1 is committed at the entry `HEAD`; Child 2 is
+suspended and cannot execute until the detour LOCK resumes it.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS

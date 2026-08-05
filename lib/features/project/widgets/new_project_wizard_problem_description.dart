@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'wizard_compact_tokens.dart';
+import 'wizard_compact_widgets.dart';
+
 enum NewProjectWizardProblemOccurrence {
   unknown,
   continuous,
@@ -177,145 +180,55 @@ class _NewProjectWizardProblemDescriptionState
       explicitChildNodes: true,
       label: semanticsLabel,
       textField: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    color: _ProblemEditorPalette.cream,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                required ? '* nõutav' : 'valikuline',
-                style: TextStyle(
-                  color: required
-                      ? _ProblemEditorPalette.gold
-                      : _ProblemEditorPalette.muted,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+      child: WizardCompactFieldSection(
+        label: label,
+        requiredField: required,
+        child: TextField(
+          key: ValueKey<String>(keyName),
+          controller: controller,
+          onChanged: onChanged,
+          keyboardType: TextInputType.multiline,
+          textInputAction: TextInputAction.newline,
+          minLines: required ? 4 : 3,
+          maxLines: required ? 7 : 5,
+          style: WizardCompactTokens.bodyStyle(),
+          decoration: WizardCompactTokens.inputDecoration(
+            hintText: hintText,
           ),
-          const SizedBox(height: 8),
-          TextField(
-            key: ValueKey<String>(keyName),
-            controller: controller,
-            onChanged: onChanged,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-            minLines: required ? 4 : 3,
-            maxLines: required ? 7 : 5,
-            style: const TextStyle(color: _ProblemEditorPalette.cream),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: const TextStyle(color: _ProblemEditorPalette.faint),
-              filled: true,
-              fillColor: _ProblemEditorPalette.inset,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 13,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(11),
-                borderSide: const BorderSide(
-                  color: _ProblemEditorPalette.edge,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(11),
-                borderSide: const BorderSide(
-                  color: _ProblemEditorPalette.gold,
-                  width: 1.4,
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildOccurrence() {
-    const choices = <(
-      NewProjectWizardProblemOccurrence,
-      String,
-      String,
-    )>[
-      (
-        NewProjectWizardProblemOccurrence.continuous,
-        'Pidev',
-        'wizard-problem-occurrence-continuous',
-      ),
-      (
-        NewProjectWizardProblemOccurrence.intermittent,
-        'Vahelduv',
-        'wizard-problem-occurrence-intermittent',
-      ),
-      (
-        NewProjectWizardProblemOccurrence.unknown,
-        'Teadmata',
-        'wizard-problem-occurrence-unknown',
-      ),
-    ];
-    return Semantics(
-      container: true,
-      explicitChildNodes: true,
+    return WizardCompactTileSelector<NewProjectWizardProblemOccurrence>(
+      key: const ValueKey('wizard-problem-occurrence-grid'),
       label: 'Esinemine',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const ExcludeSemantics(
-            child: Text(
-              'Esinemine',
-              style: TextStyle(
-                color: _ProblemEditorPalette.cream,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 9,
-            runSpacing: 9,
-            children: <Widget>[
-              for (final choice in choices)
-                Semantics(
-                  label: 'Esinemine: ${choice.$2}',
-                  button: true,
-                  selected: widget.value.occurrence == choice.$1,
-                  child: ChoiceChip(
-                    key: ValueKey<String>(choice.$3),
-                    label: Text(choice.$2),
-                    selected: widget.value.occurrence == choice.$1,
-                    onSelected: (_) => _changeOccurrence(choice.$1),
-                    selectedColor: _ProblemEditorPalette.activeFill,
-                    backgroundColor: _ProblemEditorPalette.panel2,
-                    side: BorderSide(
-                      color: widget.value.occurrence == choice.$1
-                          ? _ProblemEditorPalette.gold
-                          : _ProblemEditorPalette.edge,
-                    ),
-                    labelStyle: TextStyle(
-                      color: widget.value.occurrence == choice.$1
-                          ? _ProblemEditorPalette.gold
-                          : _ProblemEditorPalette.cream,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
+      value: widget.value.occurrence,
+      onChanged: _changeOccurrence,
+      tiles: const <WizardCompactTile<NewProjectWizardProblemOccurrence>>[
+        WizardCompactTile<NewProjectWizardProblemOccurrence>(
+          value: NewProjectWizardProblemOccurrence.continuous,
+          label: 'Pidev',
+          semanticsLabel: 'Esinemine: Pidev',
+          icon: Icons.all_inclusive,
+          key: ValueKey('wizard-problem-occurrence-continuous'),
+        ),
+        WizardCompactTile<NewProjectWizardProblemOccurrence>(
+          value: NewProjectWizardProblemOccurrence.intermittent,
+          label: 'Vahelduv',
+          semanticsLabel: 'Esinemine: Vahelduv',
+          icon: Icons.swap_horiz,
+          key: ValueKey('wizard-problem-occurrence-intermittent'),
+        ),
+        WizardCompactTile<NewProjectWizardProblemOccurrence>(
+          value: NewProjectWizardProblemOccurrence.unknown,
+          label: 'Teadmata',
+          semanticsLabel: 'Esinemine: Teadmata',
+          icon: Icons.help_outline,
+          key: ValueKey('wizard-problem-occurrence-unknown'),
+        ),
+      ],
     );
   }
 
@@ -324,38 +237,9 @@ class _NewProjectWizardProblemDescriptionState
         'See redaktor ei diagnoosi põhjust ega tuvasta komponente või '
         'elektrilisi seoseid. Andmed jäävad ainult selle Wizardi lokaalsesse '
         'mustandisse.';
-    return Semantics(
-      key: const ValueKey('wizard-problem-boundary-note'),
-      container: true,
-      label: copy,
-      child: Container(
-        decoration: BoxDecoration(
-          color: _ProblemEditorPalette.noteFill,
-          border: Border.all(color: _ProblemEditorPalette.edgeGold),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.all(14),
-        child: const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Icon(
-              Icons.info_outline,
-              color: _ProblemEditorPalette.gold,
-              size: 20,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                copy,
-                style: TextStyle(
-                  color: _ProblemEditorPalette.muted,
-                  height: 1.45,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return const WizardCompactInlineNotice(
+      semanticsKey: ValueKey('wizard-problem-boundary-note'),
+      message: copy,
     );
   }
 
@@ -457,17 +341,4 @@ class _NewProjectWizardProblemDescriptionState
       ),
     );
   }
-}
-
-abstract final class _ProblemEditorPalette {
-  static const Color panel2 = Color(0xFF1B1915);
-  static const Color inset = Color(0xFF0A0A0A);
-  static const Color edge = Color(0xFF332E22);
-  static const Color edgeGold = Color(0xFF6B5A30);
-  static const Color gold = Color(0xFFE7C25A);
-  static const Color cream = Color(0xFFF3ECDC);
-  static const Color muted = Color(0xFFA89F8C);
-  static const Color faint = Color(0xFF766F61);
-  static const Color activeFill = Color(0xFF332A17);
-  static const Color noteFill = Color(0xFF17140E);
 }

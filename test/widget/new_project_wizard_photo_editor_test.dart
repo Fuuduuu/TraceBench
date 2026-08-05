@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/new_project_wizard_photo_editor.dart';
 
 class _PhotoEditorHarness extends StatefulWidget {
@@ -28,6 +30,12 @@ class _PhotoEditorHarnessState extends State<_PhotoEditorHarness> {
   var resetCount = 0;
   var replaceCount = 0;
   var removeCount = 0;
+  var translationCount = 0;
+  var scaleCount = 0;
+  var rotationCount = 0;
+  var opacityCount = 0;
+
+  void rebuild() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +44,13 @@ class _PhotoEditorHarnessState extends State<_PhotoEditorHarness> {
       photoPath: photoPath,
       transform: transform,
       onTranslationChanged: (translation) {
+        translationCount += 1;
         setState(() {
           transform = transform.copyWith(translation: translation);
         });
       },
       onScaleChanged: (scale) {
+        scaleCount += 1;
         setState(() {
           transform = transform.copyWith(
             scale: scale
@@ -53,11 +63,13 @@ class _PhotoEditorHarnessState extends State<_PhotoEditorHarness> {
         });
       },
       onRotationChanged: (rotation) {
+        rotationCount += 1;
         setState(() {
           transform = transform.copyWith(rotation: rotation);
         });
       },
       onOpacityChanged: (opacity) {
+        opacityCount += 1;
         setState(() {
           transform = transform.copyWith(
             opacity: opacity.clamp(0.0, 1.0).toDouble(),
@@ -102,18 +114,22 @@ Widget _buildEditorApp(
       const NewProjectWizardPhotoTransform(),
   bool compact = false,
   bool renderError = false,
+  double textScale = 1,
 }) {
   return MaterialApp(
     theme: ThemeData(useMaterial3: true),
-    home: Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: _PhotoEditorHarness(
-            key: harnessKey,
-            initialTransform: initialTransform,
-            compact: compact,
-            renderError: renderError,
+    home: MediaQuery(
+      data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: _PhotoEditorHarness(
+              key: harnessKey,
+              initialTransform: initialTransform,
+              compact: compact,
+              renderError: renderError,
+            ),
           ),
         ),
       ),
@@ -121,7 +137,62 @@ Widget _buildEditorApp(
   );
 }
 
+bool _focusIsWithin(WidgetTester tester, Finder target) {
+  final targetElement = tester.element(target);
+  final focusContext = FocusManager.instance.primaryFocus?.context;
+  if (focusContext == null) {
+    return false;
+  }
+  if (identical(focusContext, targetElement)) {
+    return true;
+  }
+  var found = false;
+  (focusContext as Element).visitAncestorElements((element) {
+    if (identical(element, targetElement)) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
+}
+
 void main() {
+  testWidgets('the parent Step 2 no-photo state remains honest and optional',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData(useMaterial3: true),
+        home: NewProjectWizardScreen(
+          directoryPicker: () async => 'C:/projects',
+        ),
+      ),
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('wizard-project-name')),
+      'Foto puudub',
+    );
+    final folder = find.byKey(const ValueKey('wizard-pick-folder'));
+    await tester.ensureVisible(folder);
+    await tester.tap(folder);
+    await tester.pump();
+    final next = find.byKey(const ValueKey('wizard-next'));
+    await tester.ensureVisible(next);
+    await tester.tap(next);
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('wizard-photo-empty')), findsOneWidget);
+    expect(find.text('Foto pole valitud'), findsOneWidget);
+    expect(find.byKey(const ValueKey('wizard-photo-editor')), findsNothing);
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const ValueKey('wizard-next')))
+          .onPressed,
+      isNotNull,
+      reason: 'Step 2 remains optional.',
+    );
+  });
+
   testWidgets('default photo opacity is 65% with no future guide overlays',
       (tester) async {
     final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
@@ -235,6 +306,8 @@ void main() {
     );
     await tester.pump();
     expect(harnessKey.currentState!.transform.rotation, closeTo(0.0, 0.000001));
+    expect(harnessKey.currentState!.scaleCount, 2);
+    expect(harnessKey.currentState!.rotationCount, 2);
   });
 
   testWidgets('drag emits editor-normalized translation for the photo only',
@@ -260,6 +333,7 @@ void main() {
       find.byKey(const ValueKey('wizard-photo-guide-painter')),
       findsNothing,
     );
+    expect(harnessKey.currentState!.translationCount, greaterThan(0));
   });
 
   testWidgets('reset preserves path and opacity while restoring the view',
@@ -295,6 +369,134 @@ void main() {
     expect(find.text('28%'), findsWidgets);
   });
 
+  testWidgets('compact toolbar path and actions stay fully accessible',
+      (tester) async {
+    final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildEditorApp(harnessKey, compact: true),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('wizard-photo-toolbar')), findsOneWidget);
+    expect(find.text('board.png'), findsOneWidget);
+    expect(find.byTooltip(_PhotoEditorHarnessState.photoPath), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(
+        'Valitud foto: ${_PhotoEditorHarnessState.photoPath}',
+      ),
+      findsOneWidget,
+    );
+    for (final label in const <String>[
+      'Vähenda fotot',
+      'Suurenda fotot',
+      'Pööra fotot vasakule',
+      'Pööra fotot paremale',
+      'Nulli fotovaade',
+      'Asenda foto',
+    ]) {
+      expect(find.byTooltip(label), findsOneWidget);
+      expect(find.bySemanticsLabel(label), findsOneWidget);
+    }
+    expect(find.byTooltip('Eemalda foto'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Eemalda foto, hävitav toiming'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('compact photo actions support keyboard activation',
+      (tester) async {
+    final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildEditorApp(harnessKey, compact: true),
+    );
+    await tester.pump();
+
+    final zoomIn = find.byKey(const ValueKey('wizard-photo-zoom-in'));
+    for (var index = 0;
+        index < 12 && !_focusIsWithin(tester, zoomIn);
+        index += 1) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+    expect(_focusIsWithin(tester, zoomIn), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+
+    expect(harnessKey.currentState!.transform.scale, 1.25);
+    expect(harnessKey.currentState!.scaleCount, 1);
+  });
+
+  testWidgets('canvas drag stays isolated while an outside drag scrolls page',
+      (tester) async {
+    final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
+    await tester.binding.setSurfaceSize(const Size(390, 420));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildEditorApp(
+        harnessKey,
+        compact: true,
+        textScale: 2,
+      ),
+    );
+    await tester.pump();
+
+    final scrollable = tester.state<ScrollableState>(
+      find.byType(Scrollable).first,
+    );
+    expect(scrollable.position.pixels, 0);
+
+    final canvas = find.byKey(const ValueKey('wizard-photo-canvas'));
+    await tester.drag(canvas, const Offset(0, -120));
+    await tester.pump();
+    expect(scrollable.position.pixels, 0);
+    expect(harnessKey.currentState!.translationCount, greaterThan(0));
+
+    await tester.drag(
+      find.byKey(const ValueKey('wizard-photo-file-chip')),
+      const Offset(0, -220),
+    );
+    await tester.pumpAndSettle();
+    expect(scrollable.position.pixels, greaterThan(0));
+  });
+
+  testWidgets('controlled rebuild emits nothing and each draft action once',
+      (tester) async {
+    final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
+    await tester.binding.setSurfaceSize(const Size(1000, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(_buildEditorApp(harnessKey));
+    await tester.pump();
+
+    harnessKey.currentState!.rebuild();
+    await tester.pump();
+    final before = harnessKey.currentState!;
+    expect(before.translationCount, 0);
+    expect(before.scaleCount, 0);
+    expect(before.rotationCount, 0);
+    expect(before.opacityCount, 0);
+    expect(before.resetCount, 0);
+    expect(before.replaceCount, 0);
+    expect(before.removeCount, 0);
+
+    for (final key in const <String>[
+      'wizard-photo-reset',
+      'wizard-photo-replace',
+      'wizard-photo-remove',
+    ]) {
+      await tester.tap(find.byKey(ValueKey<String>(key)));
+      await tester.pump();
+    }
+    expect(harnessKey.currentState!.resetCount, 1);
+    expect(harnessKey.currentState!.replaceCount, 1);
+    expect(harnessKey.currentState!.removeCount, 1);
+  });
+
   testWidgets('render failure is honest and recovery actions remain usable',
       (tester) async {
     final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
@@ -327,31 +529,40 @@ void main() {
   testWidgets('wide and compact editor layouts remain operable',
       (tester) async {
     final harnessKey = GlobalKey<_PhotoEditorHarnessState>();
-    await tester.binding.setSurfaceSize(const Size(1440, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(_buildEditorApp(harnessKey));
-    await tester.pump();
+    for (final size in const <Size>[
+      Size(390, 760),
+      Size(519, 800),
+      Size(559, 800),
+      Size(599, 800),
+      Size(779, 800),
+      Size(819, 800),
+      Size(1049, 800),
+      Size(1440, 900),
+    ]) {
+      await tester.binding.setSurfaceSize(size);
+      await tester.pumpWidget(
+        _buildEditorApp(
+          harnessKey,
+          compact: size.width < 820,
+          textScale: size.width == 390 ? 2 : 1,
+        ),
+      );
+      await tester.pump();
 
-    expect(
-      find.byKey(const ValueKey('wizard-photo-wide-controls')),
-      findsOneWidget,
-    );
-    expect(tester.takeException(), isNull);
-
-    await tester.binding.setSurfaceSize(const Size(390, 760));
-    await tester.pumpWidget(
-      _buildEditorApp(harnessKey, compact: true),
-    );
-    await tester.pump();
-
-    expect(
-      find.byKey(const ValueKey('wizard-photo-compact-controls')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('wizard-photo-opacity-slider')),
-      findsOneWidget,
-    );
-    expect(tester.takeException(), isNull);
+      expect(
+        find.byKey(
+          ValueKey<String>(
+            size.width < 820
+                ? 'wizard-photo-compact-controls'
+                : 'wizard-photo-wide-controls',
+          ),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Eemalda foto'), findsNothing);
+      expect(find.byTooltip('Eemalda foto'), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'viewport $size');
+    }
   });
 }

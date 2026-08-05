@@ -1,4 +1,7 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:trace_bench_viewer/features/project/widgets/new_project_wizard_problem_description.dart';
@@ -48,18 +51,22 @@ Widget _buildEditorApp(
   NewProjectWizardProblemDescriptionDraft initialValue =
       const NewProjectWizardProblemDescriptionDraft(),
   bool compact = false,
+  double textScale = 1,
 }) {
   return MaterialApp(
     theme: ThemeData(useMaterial3: true),
-    home: Scaffold(
-      backgroundColor: const Color(0xFF080808),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: _ProblemEditorHarness(
-            key: harnessKey,
-            initialValue: initialValue,
-            compact: compact,
+    home: MediaQuery(
+      data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF080808),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: _ProblemEditorHarness(
+              key: harnessKey,
+              initialValue: initialValue,
+              compact: compact,
+            ),
           ),
         ),
       ),
@@ -78,6 +85,26 @@ Future<void> _tapKey(WidgetTester tester, String key) async {
   await tester.ensureVisible(finder);
   await tester.tap(finder);
   await tester.pump();
+}
+
+bool _focusIsWithin(WidgetTester tester, Finder target) {
+  final targetElement = tester.element(target);
+  final focusContext = FocusManager.instance.primaryFocus?.context;
+  if (focusContext == null) {
+    return false;
+  }
+  if (identical(focusContext, targetElement)) {
+    return true;
+  }
+  var found = false;
+  (focusContext as Element).visitAncestorElements((element) {
+    if (identical(element, targetElement)) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
 }
 
 void main() {
@@ -164,6 +191,10 @@ void main() {
       find.bySemanticsLabel('Esinemine'),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('wizard-problem-occurrence-grid')),
+      findsOneWidget,
+    );
     for (final label in const <String>[
       'Esinemine: Pidev',
       'Esinemine: Vahelduv',
@@ -186,6 +217,9 @@ void main() {
       'elektrilisi seoseid. Andmed jäävad ainult selle Wizardi lokaalsesse '
       'mustandisse.',
     );
+    expect(find.text('Diagnoos'), findsNothing);
+    expect(find.text('Salvesta'), findsNothing);
+    expect(find.text('Loo projekt'), findsNothing);
   });
 
   testWidgets('raw multiline and whitespace-only text are preserved',
@@ -378,38 +412,86 @@ void main() {
     expect(harnessKey.currentState!.emissions, hasLength(3));
   });
 
-  testWidgets('wide and compact layouts stay operable without dependencies',
+  testWidgets('keyboard reaches occurrence choices and activates once',
       (tester) async {
     final harnessKey = GlobalKey<_ProblemEditorHarnessState>();
-    await tester.binding.setSurfaceSize(const Size(1100, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(_buildEditorApp(harnessKey));
     await tester.pump();
 
-    expect(
-      find.byKey(const ValueKey('wizard-problem-wide-layout')),
-      findsOneWidget,
+    final continuous = find.byKey(
+      const ValueKey('wizard-problem-occurrence-continuous'),
     );
-    expect(tester.takeException(), isNull);
-
-    await tester.binding.setSurfaceSize(const Size(390, 760));
-    await tester.pumpWidget(
-      _buildEditorApp(harnessKey, compact: true),
-    );
+    for (var index = 0;
+        index < 12 && !_focusIsWithin(tester, continuous);
+        index += 1) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+    expect(_focusIsWithin(tester, continuous), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
     await tester.pump();
 
     expect(
-      find.byKey(const ValueKey('wizard-problem-compact-layout')),
-      findsOneWidget,
+      harnessKey.currentState!.value.occurrence,
+      NewProjectWizardProblemOccurrence.continuous,
     );
+    expect(harnessKey.currentState!.emissions, hasLength(1));
     expect(
-      find.byKey(const ValueKey('wizard-problem-boundary-note')),
-      findsOneWidget,
+      tester
+          .getSemantics(
+            find.bySemanticsLabel('Esinemine: Pidev'),
+          )
+          .getSemanticsData()
+          .flagsCollection
+          .isSelected,
+      Tristate.isTrue,
     );
-    expect(
-      find.textContaining('ainult enda teada olevaid tähelepanekuid'),
-      findsOneWidget,
-    );
-    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('wide and compact layouts stay operable without dependencies',
+      (tester) async {
+    final harnessKey = GlobalKey<_ProblemEditorHarnessState>();
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    for (final size in const <Size>[
+      Size(390, 760),
+      Size(519, 800),
+      Size(559, 800),
+      Size(599, 800),
+      Size(779, 800),
+      Size(819, 800),
+      Size(1049, 800),
+      Size(1440, 900),
+    ]) {
+      await tester.binding.setSurfaceSize(size);
+      await tester.pumpWidget(
+        _buildEditorApp(
+          harnessKey,
+          compact: size.width < 820,
+          textScale: size.width == 390 ? 2 : 1,
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(
+          ValueKey<String>(
+            size.width < 820
+                ? 'wizard-problem-compact-layout'
+                : 'wizard-problem-wide-layout',
+          ),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('wizard-problem-boundary-note')),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('ainult enda teada olevaid tähelepanekuid'),
+        findsOneWidget,
+      );
+      expect(find.text('Mida on juba proovitud?'), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'viewport $size');
+    }
   });
 }

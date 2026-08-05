@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'wizard_compact_tokens.dart';
+import 'wizard_compact_widgets.dart';
 
 typedef WizardPhotoImageBuilder = Widget Function(
   BuildContext context,
@@ -56,8 +60,8 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
         key: const ValueKey('wizard-photo-render-error'),
         constraints: const BoxConstraints(maxWidth: 360),
         decoration: BoxDecoration(
-          color: _PhotoEditorPalette.panel.withValues(alpha: 0.94),
-          border: Border.all(color: _PhotoEditorPalette.warning),
+          color: WizardCompactTokens.panel.withValues(alpha: 0.94),
+          border: Border.all(color: WizardCompactTokens.warning),
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(16),
@@ -66,7 +70,7 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
           children: <Widget>[
             Icon(
               Icons.broken_image_outlined,
-              color: _PhotoEditorPalette.warningBright,
+              color: WizardCompactTokens.warningBright,
               size: 30,
             ),
             SizedBox(height: 9),
@@ -74,7 +78,7 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
               'Foto kuvamine ebaõnnestus.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: _PhotoEditorPalette.cream,
+                color: WizardCompactTokens.cream,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -83,7 +87,7 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
               'Mustand jääb alles. Foto saab asendada või eemaldada.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: _PhotoEditorPalette.muted,
+                color: WizardCompactTokens.muted,
                 height: 1.35,
               ),
             ),
@@ -157,7 +161,7 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
                           Radius.circular(999),
                         ),
                         border: Border.fromBorderSide(
-                          BorderSide(color: _PhotoEditorPalette.edgeGold),
+                          BorderSide(color: WizardCompactTokens.edgeGold),
                         ),
                       ),
                       child: Padding(
@@ -168,7 +172,7 @@ class NewProjectWizardPhotoLayer extends StatelessWidget {
                         child: Text(
                           'Foto peidetud',
                           style: TextStyle(
-                            color: _PhotoEditorPalette.gold,
+                            color: WizardCompactTokens.gold,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -224,18 +228,26 @@ class _NewProjectWizardPhotoEditorState
     extends State<NewProjectWizardPhotoEditor> {
   Offset? _dragOrigin;
   Offset _dragPixels = Offset.zero;
+  int? _dragPointer;
 
-  void _startDrag(DragStartDetails details) {
+  void _startDrag(PointerDownEvent event) {
+    if (_dragPointer != null) {
+      return;
+    }
+    _dragPointer = event.pointer;
     _dragOrigin = widget.transform.translation;
     _dragPixels = Offset.zero;
   }
 
-  void _updateDrag(DragUpdateDetails details, Size editorSize) {
+  void _updateDrag(PointerMoveEvent event, Size editorSize) {
     final origin = _dragOrigin;
-    if (origin == null || editorSize.width <= 0 || editorSize.height <= 0) {
+    if (_dragPointer != event.pointer ||
+        origin == null ||
+        editorSize.width <= 0 ||
+        editorSize.height <= 0) {
       return;
     }
-    _dragPixels += details.delta;
+    _dragPixels += event.delta;
     widget.onTranslationChanged(
       Offset(
         origin.dx + (_dragPixels.dx / editorSize.width),
@@ -244,7 +256,11 @@ class _NewProjectWizardPhotoEditorState
     );
   }
 
-  void _endDrag([DragEndDetails? _]) {
+  void _endDrag(PointerEvent event) {
+    if (_dragPointer != event.pointer) {
+      return;
+    }
+    _dragPointer = null;
     _dragOrigin = null;
     _dragPixels = Offset.zero;
   }
@@ -260,24 +276,34 @@ class _NewProjectWizardPhotoEditorState
         height: height,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: _PhotoEditorPalette.inset,
-          border: Border.all(color: _PhotoEditorPalette.edgeGold),
+          color: WizardCompactTokens.inset,
+          border: Border.all(color: WizardCompactTokens.edgeGold),
           borderRadius: BorderRadius.circular(14),
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final editorSize = constraints.biggest;
-            return GestureDetector(
+            return RawGestureDetector(
               key: const ValueKey('wizard-photo-canvas'),
               behavior: HitTestBehavior.opaque,
-              onPanStart: _startDrag,
-              onPanUpdate: (details) => _updateDrag(details, editorSize),
-              onPanEnd: _endDrag,
-              onPanCancel: _endDrag,
-              child: NewProjectWizardPhotoLayer(
-                photoPath: widget.photoPath,
-                transform: widget.transform,
-                imageBuilder: widget.imageBuilder,
+              gestures: <Type, GestureRecognizerFactory>{
+                EagerGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+                    EagerGestureRecognizer>(
+                  EagerGestureRecognizer.new,
+                  (_) {},
+                ),
+              },
+              child: Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: _startDrag,
+                onPointerMove: (event) => _updateDrag(event, editorSize),
+                onPointerUp: _endDrag,
+                onPointerCancel: _endDrag,
+                child: NewProjectWizardPhotoLayer(
+                  photoPath: widget.photoPath,
+                  transform: widget.transform,
+                  imageBuilder: widget.imageBuilder,
+                ),
               ),
             );
           },
@@ -286,45 +312,64 @@ class _NewProjectWizardPhotoEditorState
     );
   }
 
-  Widget _buildTransformControls() {
+  Widget _buildToolbar() {
     final scale = widget.transform.scale;
     const scaleFactor = 1.25;
     const rotationStep = math.pi / 12;
-    return Wrap(
-      spacing: 9,
-      runSpacing: 9,
+    return WizardCompactToolbar(
+      key: const ValueKey('wizard-photo-toolbar'),
+      label: 'Foto vaate tööriistariba',
       children: <Widget>[
-        OutlinedButton.icon(
+        WizardCompactIconAction(
           key: const ValueKey('wizard-photo-zoom-out'),
+          label: 'Vähenda fotot',
+          icon: Icons.zoom_out,
           onPressed: scale <= NewProjectWizardPhotoEditor.minimumScale
               ? null
               : () => widget.onScaleChanged(scale / scaleFactor),
-          icon: const Icon(Icons.zoom_out),
-          label: const Text('Vähenda'),
         ),
-        OutlinedButton.icon(
+        WizardCompactIconAction(
           key: const ValueKey('wizard-photo-zoom-in'),
+          label: 'Suurenda fotot',
+          icon: Icons.zoom_in,
           onPressed: scale >= NewProjectWizardPhotoEditor.maximumScale
               ? null
               : () => widget.onScaleChanged(scale * scaleFactor),
-          icon: const Icon(Icons.zoom_in),
-          label: const Text('Suurenda'),
         ),
-        OutlinedButton.icon(
+        WizardCompactIconAction(
           key: const ValueKey('wizard-photo-rotate-left'),
+          label: 'Pööra fotot vasakule',
+          icon: Icons.rotate_left,
           onPressed: () => widget.onRotationChanged(
             widget.transform.rotation - rotationStep,
           ),
-          icon: const Icon(Icons.rotate_left),
-          label: const Text('Pööra vasakule'),
         ),
-        OutlinedButton.icon(
+        WizardCompactIconAction(
           key: const ValueKey('wizard-photo-rotate-right'),
+          label: 'Pööra fotot paremale',
+          icon: Icons.rotate_right,
           onPressed: () => widget.onRotationChanged(
             widget.transform.rotation + rotationStep,
           ),
-          icon: const Icon(Icons.rotate_right),
-          label: const Text('Pööra paremale'),
+        ),
+        WizardCompactIconAction(
+          key: const ValueKey('wizard-photo-reset'),
+          label: 'Nulli fotovaade',
+          icon: Icons.restart_alt,
+          onPressed: widget.onReset,
+        ),
+        WizardCompactIconAction(
+          key: const ValueKey('wizard-photo-replace'),
+          label: 'Asenda foto',
+          icon: Icons.find_replace_outlined,
+          onPressed: widget.onReplace,
+        ),
+        WizardCompactIconAction(
+          key: const ValueKey('wizard-photo-remove'),
+          label: 'Eemalda foto',
+          icon: Icons.delete_outline,
+          tone: WizardCompactActionTone.destructive,
+          onPressed: widget.onRemove,
         ),
       ],
     );
@@ -332,86 +377,16 @@ class _NewProjectWizardPhotoEditorState
 
   Widget _buildOpacityControl() {
     final percent = (widget.transform.opacity * 100).round();
-    final slider = Slider(
-      key: const ValueKey('wizard-photo-opacity-slider'),
+    return WizardCompactSlider(
+      key: const ValueKey('wizard-photo-opacity-control'),
+      controlKey: const ValueKey('wizard-photo-opacity-slider'),
+      label: 'Foto läbipaistvus',
+      valueLabel: '$percent%',
       value: widget.transform.opacity,
       min: 0.0,
       max: 1.0,
       divisions: 100,
-      label: '$percent%',
       onChanged: widget.onOpacityChanged,
-    );
-    final value = Text(
-      '$percent%',
-      key: const ValueKey('wizard-photo-opacity-value'),
-      style: const TextStyle(
-        color: _PhotoEditorPalette.gold,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-    if (widget.compact) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const Text(
-            'Foto läbipaistvus',
-            style: TextStyle(
-              color: _PhotoEditorPalette.cream,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          slider,
-          Align(alignment: Alignment.centerRight, child: value),
-        ],
-      );
-    }
-    return Row(
-      children: <Widget>[
-        const SizedBox(
-          width: 138,
-          child: Text(
-            'Foto läbipaistvus',
-            style: TextStyle(
-              color: _PhotoEditorPalette.cream,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        Expanded(child: slider),
-        const SizedBox(width: 10),
-        SizedBox(width: 44, child: value),
-      ],
-    );
-  }
-
-  Widget _buildDraftActions() {
-    return Wrap(
-      spacing: 9,
-      runSpacing: 9,
-      children: <Widget>[
-        OutlinedButton.icon(
-          key: const ValueKey('wizard-photo-reset'),
-          onPressed: widget.onReset,
-          icon: const Icon(Icons.restart_alt),
-          label: const Text('Nulli vaade'),
-        ),
-        OutlinedButton.icon(
-          key: const ValueKey('wizard-photo-replace'),
-          onPressed: widget.onReplace,
-          icon: const Icon(Icons.find_replace_outlined),
-          label: const Text('Asenda foto'),
-        ),
-        OutlinedButton.icon(
-          key: const ValueKey('wizard-photo-remove'),
-          onPressed: widget.onRemove,
-          icon: const Icon(Icons.delete_outline),
-          label: const Text('Eemalda foto'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: _PhotoEditorPalette.warningBright,
-            side: const BorderSide(color: _PhotoEditorPalette.warning),
-          ),
-        ),
-      ],
     );
   }
 
@@ -425,31 +400,30 @@ class _NewProjectWizardPhotoEditorState
       ),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        WizardCompactFileChip(
+          key: const ValueKey('wizard-photo-file-chip'),
+          path: widget.photoPath,
+        ),
+        const SizedBox(height: WizardCompactTokens.space12),
         _buildCanvas(),
-        const SizedBox(height: 16),
+        const SizedBox(height: WizardCompactTokens.space12),
         Container(
-          decoration: BoxDecoration(
-            color: _PhotoEditorPalette.panel,
-            border: Border.all(color: _PhotoEditorPalette.edge),
-            borderRadius: BorderRadius.circular(13),
-          ),
-          padding: EdgeInsets.all(widget.compact ? 12 : 15),
+          decoration: WizardCompactTokens.panelDecoration(),
+          padding: const EdgeInsets.all(WizardCompactTokens.space12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              _buildTransformControls(),
-              const SizedBox(height: 13),
+              _buildToolbar(),
+              const SizedBox(height: WizardCompactTokens.space12),
               _buildOpacityControl(),
-              const SizedBox(height: 13),
-              _buildDraftActions(),
-              const SizedBox(height: 10),
+              const SizedBox(height: WizardCompactTokens.space8),
               Text(
                 'Suum ${widget.transform.scale.toStringAsFixed(2)}× · '
                 'pööre '
                 '${(widget.transform.rotation * 180 / math.pi).round()}°',
-                style: const TextStyle(
-                  color: _PhotoEditorPalette.muted,
-                  fontSize: 12.5,
+                style: WizardCompactTokens.bodyStyle(
+                  color: WizardCompactTokens.muted,
+                  fontSize: 12,
                 ),
               ),
             ],
@@ -458,16 +432,4 @@ class _NewProjectWizardPhotoEditorState
       ],
     );
   }
-}
-
-abstract final class _PhotoEditorPalette {
-  static const Color panel = Color(0xFF141310);
-  static const Color inset = Color(0xFF0A0A0A);
-  static const Color edge = Color(0xFF332E22);
-  static const Color edgeGold = Color(0xFF6B5A30);
-  static const Color gold = Color(0xFFE7C25A);
-  static const Color cream = Color(0xFFF3ECDC);
-  static const Color muted = Color(0xFFA89F8C);
-  static const Color warning = Color(0xFFE08A55);
-  static const Color warningBright = Color(0xFFF0A268);
 }

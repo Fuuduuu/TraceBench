@@ -2,10 +2,70 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
 
-## Current Wizard creation/write-path LOCK queue
+## Current Wizard compact-design V1 parent SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is `main` at
+`HEAD == origin/main ==
+e0925e66ce327637c8e4b2529010792c4fc39ff0`, parent
+`618c041c93a29cbbb5b8589535ebf7fbd8d7b320`, subject
+`docs: lock Wizard creation write path`, divergence `0 0`, with empty
+substantive tracked diff and staged set.
+
+The exact current docs-only material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS.md`
+
+No sixth current-pass path is queued. Runtime, tests, maps,
+`docs/code_maps/CODE_MAP_INDEX.md`, packages, assets, schemas, tools, design
+inputs, `_incoming`, and scratch are frozen.
+
+The reserved route is:
+
+```text
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Child 1 has exactly seven future files: the two new feature-local compact
+presentation files, one new focused test, the Step 2/Step 5 editors, and their
+two focused tests. Child 2 has exactly two future files: the Wizard screen and
+its focused test. The first child requires accepted/pushed parent SCOPE; the
+second requires accepted/pushed Child 1; both require human manual smoke before
+independent implementation audit. One final LOCK follows both accepted pushed
+children, with no routine intermediate LOCK.
+
+The work is presentation-only. All accepted gates, draft ownership, creation,
+safe failure, exactly-once handoff, provider ordering, explicit `/project`
+navigation, lowercase technical identity, noncanonical intake, zero-byte
+initial events, materializer ownership, mobile-unavailable behavior, and
+Project ZIP semantics remain frozen. Custom transition, Copy ID, Open Folder,
+mockup photo, fonts/packages/dependencies, app/router changes, mobile creation,
+and unrelated route NITs are not queued.
+
+Only the parent SCOPE is executable from this route state. Child 1 is a future
+reservation until independent SCOPE acceptance and exact human staging,
+commit, and push.
+
+## Accepted Wizard creation/write-path LOCK queue (historical)
+
+The predecessor queue below is retained as provenance. Its original current
+language does not override the route above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS

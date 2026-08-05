@@ -2,10 +2,139 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
 
-## Current Wizard creation/write-path LOCK authority
+## Current Wizard compact-design V1 parent SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main ==
+e0925e66ce327637c8e4b2529010792c4fc39ff0`, parent
+`618c041c93a29cbbb5b8589535ebf7fbd8d7b320`, subject
+`docs: lock Wizard creation write path`, divergence `0 0`, with empty entry
+substantive tracked diff and staged set. Known porcelain-only tracked paths
+must remain content-identical to `HEAD`; preserve all unrelated scratch and
+untracked content.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS.md`
+
+No sixth current-pass path is authorized. All runtime, tests, maps,
+`docs/code_maps/CODE_MAP_INDEX.md`, packages, assets, schemas, tools,
+generated files, design packages, `_incoming`, and scratch are read-only. Do
+not stage, commit, push, reset, restore, stash, clean, delete, install, or use
+an external write-capable tool.
+
+### Locked route and activation sequence
+
+```text
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+Only this parent SCOPE is active. Child 1 requires independent acceptance of
+the exact five-file SCOPE plus exact human staging, commit, and push. Child 2
+requires human manual smoke, independent acceptance, exact human staging,
+commit, and push of Child 1. Each child requires separate human manual smoke
+before its independent implementation audit. Do not create a routine
+intermediate LOCK; one final LOCK follows both accepted pushed children.
+
+### Reserved Child 1 exact future allowlist
+
+`TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS` may later write
+only:
+
+1. `lib/features/project/widgets/wizard_compact_tokens.dart`
+2. `lib/features/project/widgets/wizard_compact_widgets.dart`
+3. `test/widget/wizard_compact_widgets_test.dart`
+4. `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
+5. `lib/features/project/widgets/new_project_wizard_problem_description.dart`
+6. `test/widget/new_project_wizard_photo_editor_test.dart`
+7. `test/widget/new_project_wizard_problem_description_test.dart`
+
+It owns only feature-local compact tokens/primitives, Step 2 and Step 5 editor
+presentation, and their focused tests. It owns no parent Wizard composition,
+navigation, creation, provider, persistence, model, service, schema, package,
+asset, Project ZIP, canonical, coordinate, component, measurement, net,
+electrical, AI/OCR/CV, or repair behavior.
+
+### Reserved Child 2 exact future allowlist
+
+`TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS` may later
+write only:
+
+1. `lib/features/project/screens/new_project_wizard_screen.dart`
+2. `test/widget/new_project_wizard_screen_test.dart`
+
+It owns only shell/header/progress presentation, Step 1 presentation, Step 2
+parent composition, Step 3/4 workspace/inspector presentation, complete
+non-ellipsized Step 6 review, fluid Step 7 success presentation, current
+responsive integration, accessibility, and focused regression tests. All
+creation, handoff, provider, route, key, callback, enum, gate, model, service,
+schema, package, asset, and persistence behavior is inspect-only.
+
+### Binding behavior and visual boundaries
+
+Preserve seven steps/order; the parent-owned Step 1-5 UI draft; live Steps
+1/3/5 gates; optional Steps 2/4; visited/gate-safe navigation; callbacks,
+keys, enums, and ownership; Step 6-only creation, complete review, and five
+Muuda actions; duplicate guards; exhaustive safe result handling; retained
+failure draft; exactly-once app-owned handoff; persistent Step 7; explicit
+sole `Ava projekt`; `/project`; lowercase `prj_[a-f0-9]{8}` separate from
+`project_name`; zero `.tracebench_local`; zero-byte initial `events.jsonl`;
+materializer-owned `known_facts.json`; noncanonical intake/candidates; mobile
+unavailable behavior; zero canonical/electrical writes; and unchanged Project
+ZIP semantics.
+
+Adapt the design only for feature-local primitives, content-driven headers,
+compact Step 2, Step 3/4 workspaces, complete non-ellipsized Step 6, fluid Step
+7, and accessibility. Preserve breakpoints `1050`, `780`, `820`, `600`,
+`560`, and `520`; `1120` is a wide smoke viewport only. Require keyboard,
+focus, tooltip, semantics, disabled-state, page-scroll, canvas-drag isolation,
+no-overflow, reduced-motion, and 200% text-scale coverage.
+
+Explicitly exclude custom Step 7 transition, `Navigator.pushReplacement`,
+route-level `CustomTransitionPage`, Copy ID, Open Folder, uppercase technical
+ID, mockup-photo production use, fonts/packages/dependencies/`pubspec`,
+`app.dart`, `router.dart`, mobile creation, package-file copying, and
+opportunistic route NIT repairs. `_openCreatedProject` and
+`context.go('/project')` remain unchanged.
+
+### Maps and stops
+
+The six existing implementation-target map/index pairs are `MAINTAINED` and
+will be `UPDATE_REQUIRED` after accepted implementation. The three new paths
+have no entry target/map; the final LOCK must qualify actual accepted
+committed source, likely create maps for the two production files, and
+re-score the new test. App, router, ProjectCreator, and Home-test maps are
+inspect-only `REVIEWED_NO_CHANGE`. No map or index write is authorized before
+the final LOCK.
+
+Stop before edits on any entry mismatch, failed design-package parity,
+out-of-allowlist path, third child, map conflict/staleness, independent-zone
+expansion, overlapping human diff, behavior ambiguity, app/router/service/
+model/schema/package/asset/tool/Project ZIP need, deferred feature need,
+failed validation, or failed human smoke.
+
+## Accepted Wizard creation/write-path LOCK authority (historical)
+
+The predecessor authority below is preserved as historical evidence. Its
+original current-pass language and Phase 1 instructions do not override the
+live parent SCOPE above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS

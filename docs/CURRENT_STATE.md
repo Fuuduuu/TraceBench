@@ -1,9 +1,66 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS`
 
-## Live Wizard creation/write-path LOCK
+## Live Wizard compact-design V1 parent SCOPE
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Verified entry is `main` at
+`HEAD == origin/main ==
+e0925e66ce327637c8e4b2529010792c4fc39ff0`, subject
+`docs: lock Wizard creation write path`, parent
+`618c041c93a29cbbb5b8589535ebf7fbd8d7b320`, divergence `0 0`, with empty
+substantive tracked diff and staged set. Known porcelain-only tracked paths
+are content-identical to `HEAD`; non-overlapping scratch remains preserved.
+
+The human-approved route reserves one docs-only parent SCOPE, two strictly
+sequential bounded Flutter children, and one final docs/map LOCK:
+
+```text
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_PRIMITIVES_AND_EDITORS_V1_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+This pass changes exactly the four route/ledger owners plus
+`docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_SCOPE_LOCK_PASS.md`.
+It does not edit runtime, tests, maps, `CODE_MAP_INDEX`, packages, assets,
+schemas, tools, or design inputs. Both local design directories match their
+ZIPs byte-for-byte (`4/4` and `7/7`) and remain input-only.
+
+Child 1 is reserved for two feature-local compact presentation files, one new
+focused test, Step 2 and Step 5 editor presentation, and their two existing
+focused tests. Child 2 is reserved only for the Wizard screen and its focused
+test: shell/header/progress, Step 1/2 composition, Step 3/4 workspaces,
+complete non-ellipsized Step 6, fluid Step 7, responsive integration, and
+accessibility coverage. Child 2 cannot activate before accepted/pushed Child
+1. Each child requires human manual smoke before independent implementation
+audit; there is no routine intermediate LOCK.
+
+The scope freezes all accepted draft, gate, creation, failure, handoff,
+provider, navigation, identity, storage, canonical, mobile-unavailable, and
+Project ZIP behavior. `_openCreatedProject` and `context.go('/project')`
+remain unchanged. Custom transition, `Navigator.pushReplacement`, Copy ID,
+Open Folder, mockup-photo use, fonts/packages/dependencies, app/router edits,
+mobile creation, and opportunistic route NIT repairs are deferred.
+
+Only this docs-only SCOPE is current authority. Child 1 becomes executable
+only after independent SCOPE acceptance and exact human staging, commit, and
+push.
+
+## Accepted Wizard creation/write-path LOCK (historical, non-authorizing)
+
+The retained section below is the predecessor LOCK snapshot. Its original
+Phase 1 wording and route are provenance only and do not override the live
+SCOPE above.
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS

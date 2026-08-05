@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/models/project_state.dart';
+import '../../../shared/models/wizard_intake.dart';
+import '../../../shared/services/project_creator.dart';
 import '../../../shared/services/python_runner.dart';
 import '../widgets/new_project_wizard_photo_editor.dart';
 import '../widgets/new_project_wizard_problem_description.dart';
@@ -37,25 +40,37 @@ const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   ),
   _WizardStepDefinition(
     label: 'Kontroll ja kinnitus',
-    detail: 'nähtav, funktsioon tulekul',
+    detail: 'kontrolli mustandit ja loo projekt',
     icon: Icons.verified_user_outlined,
   ),
   _WizardStepDefinition(
-    label: 'Kokkuvõte',
-    detail: 'loomine pole selles passis',
+    label: 'Projekt loodud',
+    detail: 'projekt on valmis avamiseks',
     icon: Icons.fact_check_outlined,
   ),
 ];
+
+enum _WizardCreationStatus {
+  idle,
+  creating,
+  failed,
+  succeeded,
+}
 
 class NewProjectWizardScreen extends StatefulWidget {
   const NewProjectWizardScreen({
     super.key,
     this.directoryPicker,
     this.platformInfo,
+    this.createProject,
+    this.onProjectCreated,
   });
 
   final Future<String?> Function()? directoryPicker;
   final PlatformInfo? platformInfo;
+  final Future<ProjectCreationResult> Function(ProjectCreationRequest)?
+      createProject;
+  final ValueChanged<ProjectState>? onProjectCreated;
 
   @override
   State<NewProjectWizardScreen> createState() => _NewProjectWizardScreenState();
@@ -66,8 +81,13 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   final TextEditingController _deviceNameController = TextEditingController();
   final TextEditingController _additionalInfoController =
       TextEditingController();
+  final TextEditingController _deviceTypeController = TextEditingController();
+  final TextEditingController _manufacturerController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _revisionController = TextEditingController();
 
   String? _selectedParentPath;
+  bool _advancedStepOneExpanded = false;
   final List<Offset> _contourPoints = <Offset>[];
   int? _selectedContourPointIndex;
   int? _draggingContourPointIndex;
@@ -93,6 +113,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   final Set<int> _visitedSteps = <int>{0};
   bool _draftTouched = false;
   bool _isPickingFolder = false;
+  _WizardCreationStatus _creationStatus = _WizardCreationStatus.idle;
+  String? _creationError;
+  ProjectState? _createdProjectState;
+  bool _projectHandoffCompleted = false;
 
   bool get _isMobile {
     final info = widget.platformInfo ?? const DefaultPlatformInfo();
@@ -112,6 +136,12 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
 
   bool get _canAdvanceFromProblemDescription {
     return _problemDescriptionDraft.description.trim().isNotEmpty;
+  }
+
+  bool get _allCreationGatesAreValid {
+    return _canAdvanceFromStepOne &&
+        _canAdvanceFromContour &&
+        _canAdvanceFromProblemDescription;
   }
 
   bool _isRequiredStep(int index) => index == 0 || index == 2 || index == 4;
@@ -144,6 +174,167 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     setState(() {
       _problemDescriptionDraft = next;
       _draftTouched = true;
+    });
+  }
+
+  ProjectCreationRequest _buildCreationRequest() {
+    final photoPath = _photoPath;
+    final backgroundPhoto = photoPath == null
+        ? null
+        : WizardBackgroundPhoto(
+            relativePath:
+                'photos/wizard_background.${_photoExtension(photoPath)}',
+            transform: WizardPhotoTransform(
+              translation: WizardPoint(
+                x: _photoTransform.translation.dx,
+                y: _photoTransform.translation.dy,
+              ),
+              scale: _photoTransform.scale,
+              rotationRadians: _photoTransform.rotation,
+              opacity: _photoTransform.opacity,
+            ),
+          );
+    final intake = WizardIntake(
+      schemaVersion: '1.0',
+      coordinateSpace: 'wizard_normalized',
+      problemDescription: WizardProblemDescription(
+        description: _problemDescriptionDraft.description,
+        occurrence: switch (_problemDescriptionDraft.occurrence) {
+          NewProjectWizardProblemOccurrence.unknown =>
+            WizardProblemOccurrence.unknown,
+          NewProjectWizardProblemOccurrence.continuous =>
+            WizardProblemOccurrence.continuous,
+          NewProjectWizardProblemOccurrence.intermittent =>
+            WizardProblemOccurrence.intermittent,
+        },
+        whenOccurs: _problemDescriptionDraft.whenOccurs,
+        symptoms: _problemDescriptionDraft.symptoms,
+        attempts: _problemDescriptionDraft.attempts,
+      ),
+      contour: WizardContour(
+        closed: _contourClosed,
+        points: <WizardPoint>[
+          for (final point in _contourPoints)
+            WizardPoint(x: point.dx, y: point.dy),
+        ],
+      ),
+      backgroundPhoto: backgroundPhoto,
+      visualCandidates: <WizardVisualCandidate>[
+        for (final candidate in _componentCandidates)
+          WizardVisualCandidate(
+            draftKey: candidate.draftKey,
+            position: WizardPoint(
+              x: candidate.position.dx,
+              y: candidate.position.dy,
+            ),
+            shape: switch (candidate.shape) {
+              _WizardComponentShape.circle => WizardVisualCandidateShape.circle,
+              _WizardComponentShape.square => WizardVisualCandidateShape.square,
+              _WizardComponentShape.rectangle =>
+                WizardVisualCandidateShape.rectangle,
+              _WizardComponentShape.roundedRectangle =>
+                WizardVisualCandidateShape.roundedRectangle,
+            },
+            sizeScale: candidate.sizeScale,
+            rotationRadians: candidate.rotation,
+          ),
+      ],
+    );
+
+    return ProjectCreationRequest(
+      destinationParentPath: _selectedParentPath!,
+      projectName: _projectNameController.text,
+      deviceName: _deviceNameController.text,
+      additionalInfo: _additionalInfoController.text,
+      deviceType: _deviceTypeController.text,
+      manufacturer: _manufacturerController.text,
+      model: _modelController.text,
+      revision: _revisionController.text,
+      wizardIntake: intake,
+      sourcePhotoPath: photoPath,
+    );
+  }
+
+  String _photoExtension(String path) {
+    final separator = path.lastIndexOf('.');
+    if (separator < 0 || separator == path.length - 1) {
+      throw StateError('Selected photo is missing a supported extension.');
+    }
+    return path.substring(separator + 1).toLowerCase();
+  }
+
+  Future<void> _createProject() async {
+    if (_currentStep != 5 ||
+        _creationStatus == _WizardCreationStatus.creating ||
+        _creationStatus == _WizardCreationStatus.succeeded ||
+        !_allCreationGatesAreValid) {
+      return;
+    }
+
+    setState(() {
+      _creationStatus = _WizardCreationStatus.creating;
+      _creationError = null;
+    });
+
+    ProjectCreationResult result;
+    try {
+      final createProject =
+          widget.createProject ?? ProjectCreator().createProject;
+      result = await createProject(_buildCreationRequest());
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _recordCreationFailure(
+        'Projekti loomine ebaõnnestus. Proovi uuesti.',
+      );
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+    switch (result) {
+      case ProjectCreationSuccess(:final projectState):
+        if (!_projectHandoffCompleted) {
+          _projectHandoffCompleted = true;
+          widget.onProjectCreated?.call(projectState);
+        }
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _createdProjectState = projectState;
+          _creationStatus = _WizardCreationStatus.succeeded;
+          _creationError = null;
+          _currentStep = 6;
+          _visitedSteps.add(6);
+        });
+      case ProjectCreationMobilePlaceholder():
+        _recordCreationFailure(
+          'Projekti loomine ei ole mobiilseadmes saadaval.',
+        );
+      case ProjectCreationCollision():
+        _recordCreationFailure(
+          'Projekt on juba olemas. Vali uus projekt ja proovi uuesti.',
+        );
+      case ProjectCreationInvalidDestination():
+        _recordCreationFailure('Valitud salvestuskoht ei ole saadaval.');
+      case ProjectCreationPythonNotFound():
+        _recordCreationFailure('Pythonit ei leitud. Projekti ei loodud.');
+      case ProjectCreationMaterializerFailed(:final sanitizedMessage):
+        _recordCreationFailure(sanitizedMessage);
+      case ProjectCreationPhotoFailed(:final sanitizedMessage):
+        _recordCreationFailure(sanitizedMessage);
+      case ProjectCreationFailed(:final sanitizedMessage):
+        _recordCreationFailure(sanitizedMessage);
+    }
+  }
+
+  void _recordCreationFailure(String message) {
+    setState(() {
+      _creationStatus = _WizardCreationStatus.failed;
+      _creationError = message;
     });
   }
 
@@ -372,6 +563,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   bool _canNavigateToVisitedStep(int targetStep) {
+    if (_creationStatus == _WizardCreationStatus.creating ||
+        _creationStatus == _WizardCreationStatus.succeeded) {
+      return false;
+    }
     if (targetStep == _currentStep || !_visitedSteps.contains(targetStep)) {
       return false;
     }
@@ -393,6 +588,27 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     setState(() {
       _currentStep = targetStep;
     });
+  }
+
+  void _editReviewStep(int targetStep) {
+    if (_currentStep != 5 ||
+        targetStep < 0 ||
+        targetStep > 4 ||
+        _creationStatus == _WizardCreationStatus.creating ||
+        _creationStatus == _WizardCreationStatus.succeeded) {
+      return;
+    }
+    setState(() {
+      _currentStep = targetStep;
+    });
+  }
+
+  void _openCreatedProject() {
+    if (_creationStatus != _WizardCreationStatus.succeeded ||
+        _createdProjectState == null) {
+      return;
+    }
+    context.go('/project');
   }
 
   Offset _normalizedContourPoint(Offset localPosition, Size editorSize) {
@@ -773,6 +989,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   Future<void> _cancelWizard() async {
+    if (_creationStatus == _WizardCreationStatus.creating ||
+        _creationStatus == _WizardCreationStatus.succeeded) {
+      return;
+    }
     if (!_draftTouched) {
       context.go('/');
       return;
@@ -836,6 +1056,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     _projectNameController.dispose();
     _deviceNameController.dispose();
     _additionalInfoController.dispose();
+    _deviceTypeController.dispose();
+    _manufacturerController.dispose();
+    _modelController.dispose();
+    _revisionController.dispose();
     super.dispose();
   }
 
@@ -943,20 +1167,27 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         _WizardPill(label: 'Loo projekt nullist'),
       ],
     );
-    final cancel = TextButton.icon(
-      key: const ValueKey('wizard-cancel'),
-      onPressed: _cancelWizard,
-      icon: const Icon(Icons.close),
-      label: const Text('Katkesta'),
-      style: TextButton.styleFrom(
-        foregroundColor: _WizardPalette.warningBright,
-        side: const BorderSide(color: _WizardPalette.warning),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(11),
-        ),
-      ),
-    );
+    final cancel = _creationStatus == _WizardCreationStatus.succeeded
+        ? null
+        : TextButton.icon(
+            key: const ValueKey('wizard-cancel'),
+            onPressed: _creationStatus == _WizardCreationStatus.creating
+                ? null
+                : _cancelWizard,
+            icon: const Icon(Icons.close),
+            label: const Text('Katkesta'),
+            style: TextButton.styleFrom(
+              foregroundColor: _WizardPalette.warningBright,
+              side: const BorderSide(color: _WizardPalette.warning),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11),
+              ),
+            ),
+          );
 
     return Container(
       decoration: BoxDecoration(
@@ -972,8 +1203,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 brand,
-                const SizedBox(height: 12),
-                Align(alignment: Alignment.centerLeft, child: cancel),
+                if (cancel != null) ...[
+                  const SizedBox(height: 12),
+                  Align(alignment: Alignment.centerLeft, child: cancel),
+                ],
               ],
             );
           }
@@ -988,8 +1221,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 12),
-              cancel,
+              if (cancel != null) ...[
+                const SizedBox(width: 12),
+                cancel,
+              ],
             ],
           );
         },
@@ -1235,7 +1470,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               2 => _buildContourStep(compact: compact),
               3 => _buildComponentPlacementStep(compact: compact),
               4 => _buildProblemDescriptionStep(compact: compact),
-              _ => _buildPlaceholder(_currentStep),
+              5 => _buildReviewStep(compact: compact),
+              6 => _buildCreatedStep(compact: compact),
+              _ => const SizedBox.shrink(),
             },
           ),
           _buildActionBar(compact: compact),
@@ -1293,6 +1530,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             hintText: 'Vabatekst — taust, märkused või muu oluline.',
           ),
         ),
+        const SizedBox(height: 18),
+        _buildAdvancedStepOne(),
       ],
     );
     const safety = _WizardSafetyCard();
@@ -1335,6 +1574,105 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAdvancedStepOne() {
+    return Material(
+      color: _WizardPalette.panel2,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: _WizardPalette.edgeGold),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          key: const ValueKey('wizard-step-one-advanced'),
+          initiallyExpanded: _advancedStepOneExpanded,
+          maintainState: true,
+          onExpansionChanged: (expanded) {
+            setState(() {
+              _advancedStepOneExpanded = expanded;
+            });
+          },
+          iconColor: _WizardPalette.gold,
+          collapsedIconColor: _WizardPalette.goldDim,
+          textColor: _WizardPalette.cream,
+          collapsedTextColor: _WizardPalette.cream,
+          title: const Text(
+            'Täpsemalt',
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
+          subtitle: const Text(
+            'Valikulised seadme metaandmed',
+            style: TextStyle(color: _WizardPalette.muted),
+          ),
+          childrenPadding: const EdgeInsets.fromLTRB(14, 2, 14, 16),
+          children: <Widget>[
+            const Text(
+              'Tulevane AI võib aidata välju korrastada, kuid selles vaates '
+              'ei käivitata AI-, OCR- ega CV-töötlust.',
+              style: TextStyle(
+                color: _WizardPalette.faint,
+                fontSize: 12.5,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildAdvancedField(
+              label: 'Seadme tüüp',
+              key: const ValueKey('wizard-device-type'),
+              controller: _deviceTypeController,
+              hintText: 'nt põletikontroller',
+            ),
+            const SizedBox(height: 14),
+            _buildAdvancedField(
+              label: 'Tootja',
+              key: const ValueKey('wizard-manufacturer'),
+              controller: _manufacturerController,
+              hintText: 'nt Pelle',
+            ),
+            const SizedBox(height: 14),
+            _buildAdvancedField(
+              label: 'Mudel',
+              key: const ValueKey('wizard-model'),
+              controller: _modelController,
+              hintText: 'nt PV20',
+            ),
+            const SizedBox(height: 14),
+            _buildAdvancedField(
+              label: 'Revisjon',
+              key: const ValueKey('wizard-revision'),
+              controller: _revisionController,
+              hintText: 'nt REV_0.1',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdvancedField({
+    required String label,
+    required Key key,
+    required TextEditingController controller,
+    required String hintText,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _buildFieldLabel(label),
+        const SizedBox(height: 7),
+        TextField(
+          key: key,
+          controller: controller,
+          onChanged: _handleDraftTextChanged,
+          textInputAction: TextInputAction.next,
+          style: const TextStyle(color: _WizardPalette.cream),
+          decoration: _inputDecoration(hintText: hintText),
+        ),
+      ],
     );
   }
 
@@ -2371,32 +2709,390 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     );
   }
 
-  Widget _buildPlaceholder(int index) {
-    final step = _wizardSteps[index];
-    final isSummary = index == _wizardSteps.length - 1;
-    final description = isSummary
-        ? 'Selles vundamendis puudub projekti loomise toiming. '
-            'Ühtegi kausta, faili ega projekti olekut ei kirjutata.'
-        : 'See samm on shellis nähtav, kuid selle funktsionaalne sisu ei '
-            'kuulu sellesse vundamendipassi.';
+  Widget _buildReviewStep({required bool compact}) {
+    final photoPath = _photoPath;
+    final candidateCount = _componentCandidates.length;
+    final candidateCountLabel = switch (candidateCount) {
+      1 => '1 visuaalne kandidaat',
+      _ => '$candidateCount visuaalset kandidaati',
+    };
+    final contourCount = _contourPoints.length;
+    final contourCountLabel =
+        contourCount == 1 ? '1 punkt' : '$contourCount punkti';
 
-    return Container(
-      key: ValueKey('wizard-placeholder-${index + 1}'),
-      constraints: const BoxConstraints(minHeight: 430),
+    return KeyedSubtree(
+      key: const ValueKey('wizard-review-summary'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildStepHeading(
-            eyebrow: 'Samm ${index + 1} / ${_wizardSteps.length}',
-            title: step.label,
-            description: step.detail,
-            required: index >= _wizardSteps.length - 2,
+            eyebrow: 'Samm 6 / ${_wizardSteps.length}',
+            title: 'Kontroll ja kinnitus',
+            description:
+                'Kontrolli kõiki sisestatud väärtusi. Projekt luuakse alles '
+                'pärast nupu „Loo projekt” vajutamist.',
+            required: true,
           ),
-          const SizedBox(height: 32),
-          _WizardPlaceholder(
-            icon: step.icon,
-            description: description,
-            summary: isSummary,
+          const SizedBox(height: 22),
+          _buildReviewSection(
+            title: 'Projekti andmed',
+            editStep: 1,
+            children: <Widget>[
+              _buildReviewValue('Projekti nimi', _projectNameController.text),
+              _buildReviewValue('Seadme nimetus', _deviceNameController.text),
+              _buildReviewValue('Salvestuskoht', _selectedParentPath ?? ''),
+              _buildReviewValue('Lisainfo', _additionalInfoController.text),
+              _buildReviewValue('Seadme tüüp', _deviceTypeController.text),
+              _buildReviewValue('Tootja', _manufacturerController.text),
+              _buildReviewValue('Mudel', _modelController.text),
+              _buildReviewValue('Revisjon', _revisionController.text),
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                  'Projekt luuakse valitud asukohta eraldi tehnilise '
+                  'prj_XXXXXXXX nimega alamkaustana.',
+                  style: TextStyle(
+                    color: _WizardPalette.faint,
+                    fontSize: 12.5,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _buildReviewSection(
+            title: 'Foto ja joondamine',
+            editStep: 2,
+            children: <Widget>[
+              _buildReviewValue(
+                'Olek',
+                photoPath == null ? 'Foto pole valitud' : 'Foto valitud',
+              ),
+              _buildReviewValue('Lähtefail', photoPath ?? ''),
+              _buildReviewValue(
+                'Nihe',
+                photoPath == null
+                    ? ''
+                    : 'x ${_formatReviewNumber(_photoTransform.translation.dx)}, '
+                        'y ${_formatReviewNumber(_photoTransform.translation.dy)}',
+              ),
+              _buildReviewValue(
+                'Skaala',
+                photoPath == null
+                    ? ''
+                    : '${_formatReviewNumber(_photoTransform.scale)}×',
+              ),
+              _buildReviewValue(
+                'Pööre',
+                photoPath == null
+                    ? ''
+                    : '${_formatReviewNumber(_photoTransform.rotation)} rad',
+              ),
+              _buildReviewValue(
+                'Läbipaistmatus',
+                photoPath == null
+                    ? ''
+                    : '${(_photoTransform.opacity * 100).round()}%',
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _buildReviewSection(
+            title: 'Plaadi kontuur',
+            editStep: 3,
+            children: <Widget>[
+              _buildReviewValue(
+                'Olek',
+                _contourClosed ? 'Kontuur suletud' : 'Kontuur avatud',
+              ),
+              _buildReviewValue('Punktid', contourCountLabel),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _buildReviewSection(
+            title: 'Visuaalsed kandidaadid',
+            editStep: 4,
+            children: <Widget>[
+              _buildReviewValue('Kokku', candidateCountLabel),
+              for (final candidate in _componentCandidates)
+                _buildReviewValue(
+                  'Kandidaat #${candidate.draftKey}',
+                  '${_componentShapeLabel(candidate.shape)} · '
+                      '${(candidate.sizeScale * 100).round()}% · '
+                      '${_formatReviewNumber(candidate.rotation)} rad',
+                ),
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                  'Kandidaadid on inimese loodud visuaalsed ettepanekud. '
+                  'Need ei kinnita komponendi identiteeti, tüüpi, väärtust, '
+                  'tähist, korpust, jalajälge, jalgu, kontakte, plaadipoolt, '
+                  'ühendusi, võrku, mõõtmist ega diagnoosi ning ei loo '
+                  'püsivat ega kanoonilist fakti.',
+                  style: TextStyle(
+                    color: _WizardPalette.faint,
+                    fontSize: 12.5,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _buildReviewSection(
+            title: 'Probleemi kirjeldus',
+            editStep: 5,
+            children: <Widget>[
+              _buildReviewValue(
+                'Kirjeldus',
+                _problemDescriptionDraft.description,
+              ),
+              _buildReviewValue(
+                'Esinemine',
+                _problemOccurrenceLabel(_problemDescriptionDraft.occurrence),
+              ),
+              _buildReviewValue(
+                'Millal esineb',
+                _problemDescriptionDraft.whenOccurs,
+              ),
+              _buildReviewValue(
+                'Sümptomid',
+                _problemDescriptionDraft.symptoms,
+              ),
+              _buildReviewValue(
+                'Proovitud toimingud',
+                _problemDescriptionDraft.attempts,
+              ),
+            ],
+          ),
+          if (_creationStatus == _WizardCreationStatus.creating) ...[
+            const SizedBox(height: 18),
+            const _WizardCreationProgress(),
+          ],
+          if (_creationError != null) ...[
+            const SizedBox(height: 18),
+            _WizardCreationError(message: _creationError!),
+          ],
+          if (compact) const SizedBox(height: 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewSection({
+    required String title,
+    required int editStep,
+    required List<Widget> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _WizardPalette.panel2,
+        border: Border.all(color: _WizardPalette.edgeGold),
+        borderRadius: BorderRadius.circular(13),
+      ),
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: _WizardPalette.gold,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              TextButton.icon(
+                key: ValueKey('wizard-review-edit-step-$editStep'),
+                onPressed: _creationStatus == _WizardCreationStatus.creating
+                    ? null
+                    : () => _editReviewStep(editStep - 1),
+                icon: const Icon(Icons.edit_outlined, size: 17),
+                label: const Text('Muuda'),
+                style: TextButton.styleFrom(
+                  foregroundColor: _WizardPalette.gold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewValue(String label, String value) {
+    final displayValue = value.trim().isEmpty ? '—' : value;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final labelWidget = Text(
+            label,
+            style: const TextStyle(
+              color: _WizardPalette.muted,
+              fontWeight: FontWeight.w600,
+            ),
+          );
+          final valueWidget = Text(
+            displayValue,
+            style: const TextStyle(
+              color: _WizardPalette.cream,
+              fontWeight: FontWeight.w700,
+              height: 1.35,
+            ),
+          );
+          if (constraints.maxWidth < 520) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                labelWidget,
+                const SizedBox(height: 3),
+                valueWidget,
+              ],
+            );
+          }
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 170, child: labelWidget),
+              const SizedBox(width: 12),
+              Expanded(child: valueWidget),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  String _formatReviewNumber(double value) {
+    final fixed = value.toStringAsFixed(3);
+    return fixed.replaceFirst(RegExp(r'\.?0+$'), '');
+  }
+
+  String _problemOccurrenceLabel(
+    NewProjectWizardProblemOccurrence occurrence,
+  ) {
+    return switch (occurrence) {
+      NewProjectWizardProblemOccurrence.unknown => 'Teadmata',
+      NewProjectWizardProblemOccurrence.continuous => 'Pidev',
+      NewProjectWizardProblemOccurrence.intermittent => 'Vahelduv',
+    };
+  }
+
+  Widget _buildCreatedStep({required bool compact}) {
+    final projectState = _createdProjectState;
+    if (projectState == null) {
+      return const SizedBox.shrink();
+    }
+    final projectName = projectState.manifest.projectName ?? '';
+    final projectId = projectState.manifest.projectId;
+    final projectDirectory = projectState.projectDirectory ?? '';
+
+    return KeyedSubtree(
+      key: const ValueKey('wizard-created-success'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildStepHeading(
+            eyebrow: 'Samm 7 / ${_wizardSteps.length}',
+            title: 'Projekt loodud',
+            description:
+                'Projekt on edukalt loodud. Ava see eraldi toiminguga, kui '
+                'oled valmis töölauale minema.',
+            required: true,
+          ),
+          const SizedBox(height: 26),
+          Container(
+            decoration: BoxDecoration(
+              color: _WizardPalette.activeFill,
+              border: Border.all(color: _WizardPalette.ready, width: 1.4),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: EdgeInsets.all(compact ? 18 : 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                const Icon(
+                  Icons.check_circle,
+                  color: _WizardPalette.ready,
+                  size: 48,
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Projekt on valmis',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _WizardPalette.cream,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                _buildCreatedValue(
+                  key: const ValueKey('wizard-created-project-name'),
+                  label: 'Projekti nimi',
+                  value: projectName,
+                ),
+                const SizedBox(height: 10),
+                _buildCreatedValue(
+                  key: const ValueKey('wizard-created-project-id'),
+                  label: 'Tehniline projekti ID',
+                  value: projectId,
+                ),
+                const SizedBox(height: 10),
+                _buildCreatedValue(
+                  key: const ValueKey('wizard-created-project-location'),
+                  label: 'Projekti asukoht',
+                  value: projectDirectory,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCreatedValue({
+    required Key key,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      key: key,
+      decoration: BoxDecoration(
+        color: _WizardPalette.inset,
+        border: Border.all(color: _WizardPalette.edgeGold),
+        borderRadius: BorderRadius.circular(11),
+      ),
+      padding: const EdgeInsets.all(13),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            label,
+            style: const TextStyle(
+              color: _WizardPalette.muted,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value.trim().isEmpty ? '—' : value,
+            style: const TextStyle(
+              color: _WizardPalette.cream,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),
@@ -2616,13 +3312,15 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       0 => _canAdvanceFromStepOne,
       2 => _canAdvanceFromContour,
       4 => _canAdvanceFromProblemDescription,
-      _ => _currentStep < _wizardSteps.length - 1,
+      _ => _currentStep >= 0 && _currentStep < 5,
     };
-    final back = _currentStep == 0
+    final back = _currentStep == 0 || _currentStep == 6
         ? null
         : OutlinedButton.icon(
             key: const ValueKey('wizard-back'),
-            onPressed: _goBack,
+            onPressed: _creationStatus == _WizardCreationStatus.creating
+                ? null
+                : _goBack,
             icon: const Icon(Icons.chevron_left),
             label: const Text('Tagasi'),
             style: OutlinedButton.styleFrom(
@@ -2634,7 +3332,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               ),
             ),
           );
-    final next = _currentStep >= _wizardSteps.length - 1
+    final next = _currentStep >= 5
         ? null
         : FilledButton.icon(
             key: const ValueKey('wizard-next'),
@@ -2654,16 +3352,57 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               textStyle: const TextStyle(fontWeight: FontWeight.w800),
             ),
           );
-    final finalCopy = _currentStep == _wizardSteps.length - 1
-        ? const Text(
-            'Lõplik loomine vajab hilisemat eraldi integratsioonipassi.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: _WizardPalette.faint,
-              fontSize: 12.5,
+    final create = _currentStep == 5
+        ? FilledButton.icon(
+            key: const ValueKey('wizard-create-project-button'),
+            onPressed: _creationStatus == _WizardCreationStatus.creating ||
+                    !_allCreationGatesAreValid
+                ? null
+                : _createProject,
+            icon: _creationStatus == _WizardCreationStatus.creating
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.create_new_folder_outlined),
+            label: Text(
+              _creationStatus == _WizardCreationStatus.creating
+                  ? 'Loon projekti…'
+                  : 'Loo projekt',
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: _WizardPalette.goldBright,
+              foregroundColor: const Color(0xFF241C0A),
+              disabledBackgroundColor: _WizardPalette.edge,
+              disabledForegroundColor: _WizardPalette.faint,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 22,
+                vertical: 15,
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w800),
             ),
           )
         : null;
+    final openProject = _currentStep == 6
+        ? FilledButton.icon(
+            key: const ValueKey('wizard-open-project-button'),
+            onPressed: _openCreatedProject,
+            iconAlignment: IconAlignment.end,
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text('Ava projekt'),
+            style: FilledButton.styleFrom(
+              backgroundColor: _WizardPalette.goldBright,
+              foregroundColor: const Color(0xFF241C0A),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 22,
+                vertical: 15,
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          )
+        : null;
+    final primaryAction = next ?? create ?? openProject;
 
     return Container(
       decoration: const BoxDecoration(
@@ -2678,21 +3417,16 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 if (back != null) back,
-                if (back != null && (next != null || finalCopy != null))
+                if (back != null && primaryAction != null)
                   const SizedBox(height: 10),
-                if (next != null) next,
-                if (finalCopy != null) finalCopy,
+                if (primaryAction != null) primaryAction,
               ],
             )
           : Row(
               children: <Widget>[
                 if (back != null) back,
                 const Spacer(),
-                if (finalCopy != null) ...[
-                  Flexible(child: finalCopy),
-                  const SizedBox(width: 16),
-                ],
-                if (next != null) next,
+                if (primaryAction != null) primaryAction,
               ],
             ),
     );
@@ -3124,81 +3858,84 @@ class _WizardComponentMarkerGeometry {
   final Rect hitBounds;
 }
 
-class _WizardPlaceholder extends StatelessWidget {
-  const _WizardPlaceholder({
-    required this.icon,
-    required this.description,
-    required this.summary,
-  });
-
-  final IconData icon;
-  final String description;
-  final bool summary;
+class _WizardCreationProgress extends StatelessWidget {
+  const _WizardCreationProgress();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: _WizardPalette.inset,
-        border: Border.all(
-          color: _WizardPalette.edgeGold,
-          style: BorderStyle.solid,
+    return Semantics(
+      key: const ValueKey('wizard-creation-progress'),
+      container: true,
+      liveRegion: true,
+      label: 'Projekti loomine on pooleli.',
+      child: Container(
+        decoration: BoxDecoration(
+          color: _WizardPalette.activeFill,
+          border: Border.all(color: _WizardPalette.edgeGold),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 42),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              color: _WizardPalette.activeFill,
-              border: Border.all(color: _WizardPalette.edgeGold),
-              borderRadius: BorderRadius.circular(18),
+        padding: const EdgeInsets.all(14),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            LinearProgressIndicator(
+              color: _WizardPalette.goldBright,
+              backgroundColor: _WizardPalette.edge,
             ),
-            child: Icon(icon, color: _WizardPalette.gold, size: 34),
-          ),
-          const SizedBox(height: 20),
-          const _WizardPill(label: 'Tulekul'),
-          const SizedBox(height: 18),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: _WizardPalette.muted,
-              fontSize: 15,
-              height: 1.55,
-            ),
-          ),
-          if (summary) ...[
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.lock_outline,
-                  color: _WizardPalette.faint,
-                  size: 17,
-                ),
-                SizedBox(width: 7),
-                Flexible(
-                  child: Text(
-                    'ZERO_WRITE · ainult widget-local mustand',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: _WizardPalette.faint,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(height: 10),
+            Text(
+              'Loon projekti…',
+              style: TextStyle(
+                color: _WizardPalette.cream,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WizardCreationError extends StatelessWidget {
+  const _WizardCreationError({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      key: const ValueKey('wizard-creation-error'),
+      container: true,
+      liveRegion: true,
+      label: message,
+      child: Container(
+        decoration: BoxDecoration(
+          color: _WizardPalette.warning.withValues(alpha: 0.12),
+          border: Border.all(color: _WizardPalette.warning),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: _WizardPalette.warningBright,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: _WizardPalette.cream,
+                  fontWeight: FontWeight.w700,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -3229,7 +3966,7 @@ class _WizardSafetyCard extends StatelessWidget {
               SizedBox(width: 9),
               Expanded(
                 child: Text(
-                  'Turvaline mustand',
+                  'Turvaline loomine',
                   style: TextStyle(
                     color: _WizardPalette.gold,
                     fontWeight: FontWeight.w800,
@@ -3240,7 +3977,7 @@ class _WizardSafetyCard extends StatelessWidget {
           ),
           SizedBox(height: 14),
           Text(
-            'Lõplik projekti loomine ei ole selles wizardis veel rakendatud.',
+            'Projekt luuakse alles pärast andmete kontrollimist ja kinnitamist.',
             style: TextStyle(
               color: _WizardPalette.cream,
               fontWeight: FontWeight.w700,

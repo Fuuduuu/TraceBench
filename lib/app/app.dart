@@ -6,7 +6,9 @@ import 'package:window_manager/window_manager.dart';
 import '../features/home/screens/benchbeep_home_screen.dart';
 import '../features/home/screens/benchbeep_splash_screen.dart';
 import '../features/project/screens/home_screen.dart';
+import '../features/project/screens/new_project_wizard_screen.dart';
 import '../shared/models/project_state.dart';
+import '../shared/services/project_creator.dart';
 import '../shared/services/project_loader.dart';
 import '../shared/theme/app_theme.dart';
 import 'router.dart';
@@ -20,7 +22,13 @@ final Provider<GoRouter> routerProvider = Provider<GoRouter>((ref) {
 });
 
 class TraceBenchApp extends ConsumerStatefulWidget {
-  const TraceBenchApp({super.key});
+  const TraceBenchApp({
+    super.key,
+    this.createProject,
+  });
+
+  final Future<ProjectCreationResult> Function(ProjectCreationRequest)?
+      createProject;
 
   @override
   ConsumerState<TraceBenchApp> createState() => _TraceBenchAppState();
@@ -101,13 +109,23 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
 
   void _openWorkbench({String initialLocation = '/project'}) {
     _workbenchRouter?.dispose();
-    _workbenchRouter = buildTraceBenchRouter(
-      initialLocation: initialLocation,
-      homeBuilder: _buildLauncherHome,
-    );
+    _workbenchRouter = _buildWorkbenchRouter(initialLocation);
     setState(() {
       _showLauncher = false;
     });
+  }
+
+  GoRouter _buildWorkbenchRouter(String initialLocation) {
+    return buildTraceBenchRouter(
+      initialLocation: initialLocation,
+      homeBuilder: _buildLauncherHome,
+      newProjectBuilder: (_) => NewProjectWizardScreen(
+        createProject: widget.createProject,
+        onProjectCreated: (projectState) {
+          ref.read(projectStateProvider.notifier).state = projectState;
+        },
+      ),
+    );
   }
 
   @override
@@ -129,8 +147,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
       );
     }
 
-    final router =
-        _workbenchRouter ?? buildTraceBenchRouter(initialLocation: '/project');
+    final router = _workbenchRouter ?? _buildWorkbenchRouter('/project');
 
     return MaterialApp.router(
       key: const ValueKey('benchbeep_workbench_router'),

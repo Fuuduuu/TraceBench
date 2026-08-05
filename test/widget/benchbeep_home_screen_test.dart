@@ -17,6 +17,7 @@ import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_s
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/services/project_creator.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 class _FakeFilePicker extends FilePicker {
@@ -160,6 +161,41 @@ ProjectState _directoryBackedProjectState(String projectDirectory) {
     customerReport: '# Home open report\n',
     projectDirectory: projectDirectory,
     isProjectionStale: false,
+  );
+}
+
+ProjectState _createdWizardProjectState(ProjectCreationRequest request) {
+  return ProjectState(
+    manifest: ProjectManifest(
+      projectId: 'prj_deadbeef',
+      schemaVersion: '1.0',
+      createdAt: '2026-08-04T10:00:00Z',
+      projectName: 'Rakenduse loodud projekt',
+      deviceName: request.deviceName,
+      additionalInfo: request.additionalInfo,
+      deviceType: request.deviceType,
+      manufacturer: request.manufacturer,
+      model: request.model,
+      revision: request.revision,
+      symptom: request.wizardIntake.problemDescription.description,
+    ),
+    knownFacts: const KnownFacts(
+      projectId: 'prj_deadbeef',
+      components: [],
+      pins: [],
+      measurements: [],
+      nets: [],
+      excludedFromFaultCandidates: [],
+      componentPinIndex: {},
+      photos: [],
+      damageRegions: [],
+      suspectRegions: [],
+      visualTraces: [],
+    ),
+    events: const [],
+    customerReport: '# Created project\n',
+    projectDirectory: 'C:/projects/prj_deadbeef',
+    wizardIntake: request.wizardIntake,
   );
 }
 
@@ -474,6 +510,163 @@ void main() {
       '/new-project',
     );
     expect(container.read(projectStateProvider), isNull);
+  });
+
+  testWidgets('injected create callback reaches the Wizard route', (
+    tester,
+  ) async {
+    Future<ProjectCreationResult> createProject(
+      ProjectCreationRequest request,
+    ) async {
+      throw StateError('The callback is inspected, not invoked.');
+    }
+
+    await tester.pumpWidget(
+      ProviderScope(child: TraceBenchApp(createProject: createProject)),
+    );
+
+    final action = find.byKey(
+      const ValueKey('benchbeep_home_new_project_deferred'),
+    );
+    await tester.ensureVisible(action);
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+
+    final wizard = find.byType(NewProjectWizardScreen);
+    expect(wizard, findsOneWidget);
+    expect(
+      tester.widget<NewProjectWizardScreen>(wizard).createProject,
+      same(createProject),
+    );
+  });
+
+  testWidgets(
+      'successful Wizard creation hands app state off before explicit Canvas open',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final fakePicker = _FakeFilePicker(null, directoryPath: 'C:/projects');
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    var providerAssignments = 0;
+    final subscription = container.listen<ProjectState?>(
+      projectStateProvider,
+      (previous, next) {
+        if (!identical(previous, next) && next != null) {
+          providerAssignments += 1;
+        }
+      },
+    );
+    addTearDown(subscription.close);
+    var createCalls = 0;
+    ProjectState? created;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TraceBenchApp(
+          createProject: (request) async {
+            createCalls += 1;
+            created = _createdWizardProjectState(request);
+            return ProjectCreationSuccess(created!);
+          },
+        ),
+      ),
+    );
+
+    final launch = find.byKey(
+      const ValueKey('benchbeep_home_new_project_deferred'),
+    );
+    await tester.ensureVisible(launch);
+    await tester.tap(launch);
+    await tester.pumpAndSettle();
+    expect(find.byType(NewProjectWizardScreen), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('wizard-project-name')),
+      'Rakenduse mustand',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('wizard-device-name')),
+      'Põletikontroller',
+    );
+    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
+    await tester.pump();
+    expect(fakePicker.directoryPickCount, 1);
+
+    Future<void> tapWizardKey(String key) async {
+      final finder = find.byKey(ValueKey<String>(key));
+      await tester.ensureVisible(finder);
+      await tester.tap(finder);
+      await tester.pump();
+    }
+
+    await tapWizardKey('wizard-next');
+    await tapWizardKey('wizard-next');
+    final contour = find.byKey(const ValueKey('wizard-contour-canvas'));
+    await tester.ensureVisible(contour);
+    await tester.pump();
+    final contourRect = tester.getRect(contour);
+    for (final point in const <Offset>[
+      Offset(0.2, 0.25),
+      Offset(0.8, 0.25),
+      Offset(0.5, 0.78),
+    ]) {
+      await tester.tapAt(
+        contourRect.topLeft +
+            Offset(contourRect.width * point.dx, contourRect.height * point.dy),
+      );
+      await tester.pump();
+    }
+    await tapWizardKey('wizard-contour-close');
+    await tapWizardKey('wizard-next');
+    await tapWizardKey('wizard-next');
+    await tester.enterText(
+      find.byKey(const ValueKey('wizard-problem-description')),
+      'Toide katkeb.',
+    );
+    await tester.pump();
+    await tapWizardKey('wizard-next');
+
+    await tapWizardKey('wizard-create-project-button');
+    expect(createCalls, 1);
+    expect(providerAssignments, 1);
+    expect(container.read(projectStateProvider), same(created));
+    expect(
+      find.byKey(const ValueKey('wizard-created-success')),
+      findsOneWidget,
+    );
+    expect(find.byType(BoardCanvasScreen), findsNothing);
+    expect(
+      GoRouter.of(
+        tester.element(
+          find.byKey(const ValueKey('wizard-created-success')),
+        ),
+      ).routeInformationProvider.value.uri.path,
+      '/new-project',
+    );
+
+    await tapWizardKey('wizard-open-project-button');
+    await tester.pump();
+    _expectCanonicalBoardCanvas(tester);
+    expect(container.read(projectStateProvider), same(created));
+    expect(providerAssignments, 1);
+    expect(createCalls, 1);
   });
 
   testWidgets('launcher has no hidden legacy compatibility anchors', (

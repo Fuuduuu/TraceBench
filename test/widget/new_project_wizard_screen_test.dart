@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show SemanticsAction;
 
@@ -9,6 +10,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/new_project_wizard_problem_description.dart';
+import 'package:trace_bench_viewer/shared/models/known_facts.dart';
+import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
+import 'package:trace_bench_viewer/shared/models/project_state.dart';
+import 'package:trace_bench_viewer/shared/models/wizard_intake.dart';
+import 'package:trace_bench_viewer/shared/services/project_creator.dart';
 import 'package:trace_bench_viewer/shared/services/python_runner.dart';
 
 class _TestPlatformInfo extends PlatformInfo {
@@ -95,6 +101,8 @@ void _installPhotoPicker(_FakePhotoFilePicker picker) {
 Widget _buildWizardApp({
   Future<String?> Function()? directoryPicker,
   PlatformInfo platformInfo = const _TestPlatformInfo(false),
+  Future<ProjectCreationResult> Function(ProjectCreationRequest)? createProject,
+  ValueChanged<ProjectState>? onProjectCreated,
 }) {
   final router = GoRouter(
     initialLocation: '/new-project',
@@ -111,6 +119,18 @@ Widget _buildWizardApp({
         builder: (_, __) => NewProjectWizardScreen(
           directoryPicker: directoryPicker,
           platformInfo: platformInfo,
+          createProject: createProject ??
+              (_) async => const ProjectCreationFailed(
+                    sanitizedMessage: 'Test creation failure.',
+                  ),
+          onProjectCreated: onProjectCreated,
+        ),
+      ),
+      GoRoute(
+        path: '/project',
+        builder: (_, __) => const Scaffold(
+          key: ValueKey('test-project'),
+          body: Center(child: Text('Test Project')),
         ),
       ),
     ],
@@ -120,6 +140,46 @@ Widget _buildWizardApp({
   return MaterialApp.router(
     theme: ThemeData(useMaterial3: true),
     routerConfig: router,
+  );
+}
+
+ProjectState _createdProjectState({
+  String projectName = 'Loodud projekt',
+  String projectId = 'prj_a1b2c3d4',
+  String projectDirectory = 'C:/projects/prj_a1b2c3d4',
+  WizardIntake? wizardIntake,
+}) {
+  return ProjectState(
+    manifest: ProjectManifest(
+      projectId: projectId,
+      schemaVersion: '1.0',
+      createdAt: '2026-08-04T10:00:00Z',
+      projectName: projectName,
+      deviceName: 'Põletikontroller',
+      additionalInfo: 'Vahelduv väljalülitumine.',
+      deviceType: 'Põletikontroller',
+      manufacturer: 'Pelle',
+      model: 'PV20',
+      revision: 'REV_0.1',
+      symptom: 'Toide katkeb.',
+    ),
+    knownFacts: KnownFacts(
+      projectId: projectId,
+      components: const [],
+      pins: const [],
+      measurements: const [],
+      nets: const [],
+      excludedFromFaultCandidates: const [],
+      componentPinIndex: const {},
+      photos: const [],
+      damageRegions: const [],
+      suspectRegions: const [],
+      visualTraces: const [],
+    ),
+    events: const [],
+    customerReport: '# Test report\n',
+    projectDirectory: projectDirectory,
+    wizardIntake: wizardIntake,
   );
 }
 
@@ -155,11 +215,23 @@ Future<void> _completeStepOne(
   String projectName = 'Pelle PV20',
   String deviceName = 'Põletikontroller',
   String additionalInfo = 'Vahelduv väljalülitumine.',
+  String? deviceType,
+  String? manufacturer,
+  String? model,
+  String? revision,
 }) async {
   await _enterText(tester, 'wizard-project-name', projectName);
   await _enterText(tester, 'wizard-device-name', deviceName);
   await _enterText(tester, 'wizard-additional-info', additionalInfo);
   await _tapKey(tester, 'wizard-pick-folder');
+  if (<String?>[deviceType, manufacturer, model, revision]
+      .any((value) => value != null)) {
+    await _tapKey(tester, 'wizard-step-one-advanced');
+    await _enterText(tester, 'wizard-device-type', deviceType ?? '');
+    await _enterText(tester, 'wizard-manufacturer', manufacturer ?? '');
+    await _enterText(tester, 'wizard-model', model ?? '');
+    await _enterText(tester, 'wizard-revision', revision ?? '');
+  }
 }
 
 Future<void> _openContourStep(WidgetTester tester) async {
@@ -524,7 +596,7 @@ void main() {
       'Komponentide asetus',
       'Probleemi kirjeldus',
       'Kontroll ja kinnitus',
-      'Kokkuvõte',
+      'Projekt loodud',
     ]) {
       expect(find.text(label), findsWidgets);
     }
@@ -556,6 +628,53 @@ void main() {
     expect(find.text('Seadme nimetus'), findsOneWidget);
     expect(find.text('Salvestuskoht'), findsOneWidget);
     expect(find.text('Lisainfo'), findsOneWidget);
+  });
+
+  testWidgets(
+      'Step 1 advanced drafts retain raw values and never change its gate',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _tapKey(tester, 'wizard-step-one-advanced');
+    expect(find.text('Täpsemalt'), findsOneWidget);
+    expect(find.textContaining('AI'), findsWidgets);
+
+    await _enterText(tester, 'wizard-device-type', '  Kontroller  ');
+    await _enterText(tester, 'wizard-manufacturer', '  Pelle  ');
+    await _enterText(tester, 'wizard-model', '  PV20  ');
+    await _enterText(tester, 'wizard-revision', '  REV_0.1  ');
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    await _completeStepOne(tester);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-next')),
+          )
+          .onPressed,
+      isNotNull,
+    );
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-back');
+
+    String advancedText(String key) => tester
+        .widget<TextField>(find.byKey(ValueKey<String>(key)))
+        .controller!
+        .text;
+    expect(advancedText('wizard-device-type'), '  Kontroller  ');
+    expect(advancedText('wizard-manufacturer'), '  Pelle  ');
+    expect(advancedText('wizard-model'), '  PV20  ');
+    expect(advancedText('wizard-revision'), '  REV_0.1  ');
   });
 
   testWidgets('Edasi is disabled without a nonblank project name',
@@ -2286,7 +2405,7 @@ void main() {
     expect(find.text('C:/projects'), findsOneWidget);
     expect(
       find.text(
-        'Lõplik projekti loomine ei ole selles wizardis veel rakendatud.',
+        'Projekt luuakse alles pärast andmete kontrollimist ja kinnitamist.',
       ),
       findsOneWidget,
     );
@@ -2295,9 +2414,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Projekt luuakse alles wizardi lõpetamisel.'),
-      findsNothing,
-    );
+        find.text('Projekt luuakse alles wizardi lõpetamisel.'), findsNothing);
     expect(find.textContaining('projektikaust'), findsNothing);
     expect(find.textContaining('kirjutatav'), findsNothing);
     expect(find.textContaining('kollisioon'), findsNothing);
@@ -2429,7 +2546,7 @@ void main() {
 
     await _tapKey(tester, 'wizard-next');
     expect(
-      find.byKey(const ValueKey('wizard-placeholder-6')),
+      find.byKey(const ValueKey('wizard-review-summary')),
       findsOneWidget,
     );
     final fifthProgress = find.byKey(
@@ -2556,60 +2673,88 @@ void main() {
     expect(find.text('Sisestatud andmeid ei salvestata.'), findsOneWidget);
   });
 
-  testWidgets('Step 5 is functional while Steps 6 and 7 stay placeholders',
+  testWidgets('Step 6 shows the complete draft and all five edit round-trips',
       (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
     );
     await tester.pump();
 
-    await _openProblemDescriptionStep(tester);
-    expect(
-      find.byKey(const ValueKey('wizard-problem-editor')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const ValueKey('wizard-placeholder-5')),
-      findsNothing,
-    );
-    await _enterText(
+    await _completeStepOne(
       tester,
-      'wizard-problem-description',
-      'Seade ei käivitu.',
+      projectName: '  Pelle projekt  ',
+      deviceName: '  Põletikontroller  ',
+      additionalInfo: '  Säilita täpselt.  ',
+      deviceType: '  Juhtplokk  ',
+      manufacturer: '  Pelle  ',
+      model: '  PV20  ',
+      revision: '  REV_0.1  ',
     );
     await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapComponentAt(tester, const Offset(0.35, 0.65));
+    await _tapKey(tester, 'wizard-next');
+    await _completeProblemDescription(tester);
+    await _tapKey(tester, 'wizard-next');
 
-    const labels = <int, String>{
-      6: 'Kontroll ja kinnitus',
-      7: 'Kokkuvõte',
-    };
-    for (final entry in labels.entries) {
-      final placeholder = find.byKey(
-        ValueKey('wizard-placeholder-${entry.key}'),
-      );
-      expect(placeholder, findsOneWidget);
-      expect(
-        find.descendant(
-          of: placeholder,
-          matching: find.text(entry.value),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: placeholder,
-          matching: find.text('Tulekul'),
-        ),
-        findsOneWidget,
-      );
-      if (entry.key < 7) {
-        await _tapKey(tester, 'wizard-next');
-      }
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
+    for (final value in const <String>[
+      '  Pelle projekt  ',
+      '  Põletikontroller  ',
+      'C:/projects',
+      '  Säilita täpselt.  ',
+      '  Juhtplokk  ',
+      '  Pelle  ',
+      '  PV20  ',
+      '  REV_0.1  ',
+      'Foto pole valitud',
+      'Kontuur suletud',
+      '3 punkti',
+      '1 visuaalne kandidaat',
+      '  Toide katkeb.\nVahel taastub.  ',
+      'Vahelduv',
+      'Pärast soojenemist',
+      'LED vilgub\nja kostab klõps',
+      'Toitekaabel vahetatud',
+    ]) {
+      expect(find.text(value), findsWidgets, reason: value);
     }
+    expect(find.text('—'), findsWidgets);
+    expect(find.text('Tulekul'), findsNothing);
 
-    expect(find.byKey(const ValueKey('wizard-create')), findsNothing);
-    expect(find.text('Loo projekt ja ava töölaud'), findsNothing);
-    expect(find.byKey(const ValueKey('wizard-next')), findsNothing);
+    const editorKeys = <int, String>{
+      1: 'wizard-step-1-editor',
+      2: 'wizard-photo-step',
+      3: 'wizard-contour-editor',
+      4: 'wizard-component-editor',
+      5: 'wizard-problem-step',
+    };
+    for (final entry in editorKeys.entries) {
+      await _tapKey(tester, 'wizard-review-edit-step-${entry.key}');
+      expect(find.byKey(ValueKey(entry.value)), findsOneWidget);
+      await _tapKey(tester, 'wizard-progress-step-6');
+      expect(
+        find.byKey(const ValueKey('wizard-review-summary')),
+        findsOneWidget,
+      );
+      expect(find.text('  Pelle projekt  '), findsWidgets);
+      expect(find.text('  Toide katkeb.\nVahel taastub.  '), findsWidgets);
+    }
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await _pumpFrames(tester);
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
+    expect(find.text('  Juhtplokk  '), findsWidgets);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('multiline Lisainfo accepts Enter without advancing',
@@ -2928,15 +3073,15 @@ void main() {
     await _tapKey(tester, 'wizard-next');
     await _completeProblemDescription(tester);
     await _tapKey(tester, 'wizard-next');
-    await _tapKey(tester, 'wizard-next');
 
     for (final stepNumber in const <int>[1, 3, 5]) {
       _expectProgressStatus(stepNumber, 'Valmis');
     }
-    for (final stepNumber in const <int>[2, 4, 6]) {
+    for (final stepNumber in const <int>[2, 4]) {
       _expectProgressStatus(stepNumber, 'Vaadatud');
     }
-    _expectProgressStatus(7, 'Praegune samm');
+    _expectProgressStatus(6, 'Praegune samm');
+    _expectProgressStatus(7, 'Järgmine samm');
     expect(_progressHasTapAction(tester, 4), isTrue);
     expect(_progressHasButtonFlag(tester, 4), isTrue);
 
@@ -2945,10 +3090,11 @@ void main() {
         find.byKey(const ValueKey('wizard-component-editor')), findsOneWidget);
     expect(_paintedComponentStyles(tester).single, candidateBefore);
 
-    await _tapKey(tester, 'wizard-progress-step-7');
-    expect(find.byKey(const ValueKey('wizard-placeholder-7')), findsOneWidget);
-    expect(_progressHasTapAction(tester, 7), isFalse);
-    expect(_progressHasButtonFlag(tester, 7), isFalse);
+    await _tapKey(tester, 'wizard-progress-step-6');
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
 
     await tester.binding.setSurfaceSize(const Size(390, 760));
     await _pumpFrames(tester);
@@ -2992,7 +3138,10 @@ void main() {
     await _enterText(tester, 'wizard-project-name', 'Pelle PV20');
     expect(_progressHasTapAction(tester, 6), isTrue);
     await _tapKey(tester, 'wizard-progress-step-6');
-    expect(find.byKey(const ValueKey('wizard-placeholder-6')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -3052,7 +3201,10 @@ void main() {
     await _tapKey(tester, 'wizard-progress-step-4');
     _expectProgressStatus(5, 'Valmis');
     await _tapKey(tester, 'wizard-progress-step-6');
-    expect(find.byKey(const ValueKey('wizard-placeholder-6')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('progress distinguishes completion from viewed placeholders',
@@ -3162,7 +3314,6 @@ void main() {
       'Seade ei käivitu.',
     );
     await _tapKey(tester, 'wizard-next');
-    await _tapKey(tester, 'wizard-next');
 
     final fourthProgress = find.byKey(
       const ValueKey('wizard-progress-step-4'),
@@ -3193,12 +3344,11 @@ void main() {
       const ValueKey('wizard-progress-step-6'),
     );
     expect(
-      find.descendant(of: sixthProgress, matching: find.text('Vaadatud')),
+      find.descendant(
+        of: sixthProgress,
+        matching: find.text('Praegune samm'),
+      ),
       findsOneWidget,
-    );
-    expect(
-      find.descendant(of: sixthProgress, matching: find.text('Valmis')),
-      findsNothing,
     );
 
     final seventhProgress = find.byKey(
@@ -3207,7 +3357,7 @@ void main() {
     expect(
       find.descendant(
         of: seventhProgress,
-        matching: find.text('Praegune samm'),
+        matching: find.text('Järgmine samm'),
       ),
       findsOneWidget,
     );
@@ -3220,10 +3370,458 @@ void main() {
     );
   });
 
-  testWidgets('no creator, project-state, or project-route action is reachable',
+  testWidgets('create activation revalidates all three live required gates',
       (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    var createCalls = 0;
     await tester.pumpWidget(
-      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          createCalls += 1;
+          return const ProjectCreationFailed(
+            sanitizedMessage: 'Ei loodud.',
+          );
+        },
+      ),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+
+    VoidCallback currentCreateAction() => tester
+        .widget<FilledButton>(
+          find.byKey(const ValueKey('wizard-create-project-button')),
+        )
+        .onPressed!;
+
+    var staleCreateAction = currentCreateAction();
+    await _tapKey(tester, 'wizard-review-edit-step-1');
+    await _enterText(tester, 'wizard-project-name', '   ');
+    staleCreateAction();
+    await tester.pump();
+    expect(createCalls, 0);
+    await _enterText(tester, 'wizard-project-name', 'Pelle PV20');
+    await _tapKey(tester, 'wizard-progress-step-6');
+
+    staleCreateAction = currentCreateAction();
+    await _tapKey(tester, 'wizard-review-edit-step-3');
+    await _dragContourPoint(
+      tester,
+      from: const Offset(0.2, 0.25),
+      to: const Offset(0.24, 0.31),
+    );
+    staleCreateAction();
+    await tester.pump();
+    expect(createCalls, 0);
+    await _tapKey(tester, 'wizard-contour-close');
+    await _tapKey(tester, 'wizard-progress-step-6');
+
+    staleCreateAction = currentCreateAction();
+    await _tapKey(tester, 'wizard-review-edit-step-5');
+    await _enterText(tester, 'wizard-problem-description', '   ');
+    staleCreateAction();
+    await tester.pump();
+    expect(createCalls, 0);
+    expect(
+      find.byKey(const ValueKey('wizard-problem-step')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('creation request preserves every no-photo draft value exactly',
+      (tester) async {
+    ProjectCreationRequest? captured;
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          captured = request;
+          return const ProjectCreationCollision();
+        },
+      ),
+    );
+    await tester.pump();
+
+    await _completeStepOne(
+      tester,
+      projectName: '  Inimese nimi  ',
+      deviceName: '  Seadme nimi  ',
+      additionalInfo: '  Lisainfo\nreas  ',
+      deviceType: '  Juhtplokk  ',
+      manufacturer: '  Pelle  ',
+      model: '  PV20  ',
+      revision: '  REV_0.1  ',
+    );
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    await _closeContour(tester);
+    final contour = List<Offset>.of(_paintedContourPoints(tester));
+    await _tapKey(tester, 'wizard-next');
+    await _tapComponentAt(tester, const Offset(0.24, 0.38));
+    await _tapComponentAt(tester, const Offset(0.73, 0.62));
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    await _setComponentSize(tester, 1.65);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    final candidates = List<_ComponentStyleSnapshot>.of(
+      _paintedComponentStyles(tester),
+    );
+    await _tapKey(tester, 'wizard-next');
+    await _completeProblemDescription(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-create-project-button');
+
+    final request = captured!;
+    expect(request.destinationParentPath, 'C:/projects');
+    expect(request.projectName, '  Inimese nimi  ');
+    expect(request.deviceName, '  Seadme nimi  ');
+    expect(request.additionalInfo, '  Lisainfo\nreas  ');
+    expect(request.deviceType, '  Juhtplokk  ');
+    expect(request.manufacturer, '  Pelle  ');
+    expect(request.model, '  PV20  ');
+    expect(request.revision, '  REV_0.1  ');
+    expect(request.sourcePhotoPath, isNull);
+
+    final intake = request.wizardIntake;
+    expect(intake.schemaVersion, '1.0');
+    expect(intake.coordinateSpace, 'wizard_normalized');
+    expect(intake.backgroundPhoto, isNull);
+    expect(intake.problemDescription.description,
+        '  Toide katkeb.\nVahel taastub.  ');
+    expect(
+      intake.problemDescription.occurrence,
+      WizardProblemOccurrence.intermittent,
+    );
+    expect(intake.problemDescription.whenOccurs, 'Pärast soojenemist');
+    expect(
+      intake.problemDescription.symptoms,
+      'LED vilgub\nja kostab klõps',
+    );
+    expect(intake.problemDescription.attempts, 'Toitekaabel vahetatud');
+    expect(intake.contour.closed, isTrue);
+    expect(intake.contour.points, hasLength(contour.length));
+    for (var index = 0; index < contour.length; index += 1) {
+      expect(intake.contour.points[index].x, closeTo(contour[index].dx, 1e-9));
+      expect(intake.contour.points[index].y, closeTo(contour[index].dy, 1e-9));
+    }
+    expect(intake.visualCandidates, hasLength(2));
+    for (var index = 0; index < candidates.length; index += 1) {
+      final actual = intake.visualCandidates[index];
+      final expected = candidates[index];
+      expect(actual.draftKey, expected.draftKey);
+      expect(actual.position.x, closeTo(expected.position.dx, 1e-9));
+      expect(actual.position.y, closeTo(expected.position.dy, 1e-9));
+      expect(actual.sizeScale, expected.sizeScale);
+      expect(actual.rotationRadians, expected.rotation);
+    }
+    expect(
+      intake.visualCandidates.map((candidate) => candidate.shape),
+      <WizardVisualCandidateShape>[
+        WizardVisualCandidateShape.circle,
+        WizardVisualCandidateShape.rectangle,
+      ],
+    );
+    expect(
+      intake.visualCandidates.map((candidate) => candidate.draftKey),
+      <int>[1, 2],
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
+    for (final retained in const <String>[
+      '  Inimese nimi  ',
+      '  Seadme nimi  ',
+      '  Lisainfo\nreas  ',
+      '  Juhtplokk  ',
+      '  Pelle  ',
+      '  PV20  ',
+      '  REV_0.1  ',
+      '2 visuaalset kandidaati',
+      '  Toide katkeb.\nVahel taastub.  ',
+    ]) {
+      expect(find.text(retained), findsWidgets, reason: retained);
+    }
+  });
+
+  testWidgets('creation request maps photo path and complete transform',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/Photos/BOARD.JPEG']);
+    _installPhotoPicker(picker);
+    ProjectCreationRequest? captured;
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          captured = request;
+          return const ProjectCreationInvalidDestination();
+        },
+      ),
+    );
+    await tester.pump();
+
+    await _openPhotoAlignmentStep(tester);
+    await _tapKey(tester, 'wizard-photo-pick');
+    final editor = _photoEditor(tester) as dynamic;
+    editor.onTranslationChanged(const Offset(12.5, -7.25));
+    editor.onScaleChanged(1.6);
+    editor.onRotationChanged(math.pi / 4);
+    editor.onOpacityChanged(0.42);
+    await tester.pump();
+    await _tapKey(tester, 'wizard-next');
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-next');
+    await _completeProblemDescription(tester);
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-create-project-button');
+
+    final request = captured!;
+    expect(request.sourcePhotoPath, 'C:/Photos/BOARD.JPEG');
+    final photo = request.wizardIntake.backgroundPhoto!;
+    expect(photo.relativePath, 'photos/wizard_background.jpeg');
+    expect(photo.transform.translation.x, 12.5);
+    expect(photo.transform.translation.y, -7.25);
+    expect(photo.transform.scale, 1.6);
+    expect(photo.transform.rotationRadians, closeTo(math.pi / 4, 1e-9));
+    expect(photo.transform.opacity, 0.42);
+  });
+
+  testWidgets(
+      'pending activation is single-call and explicit retry is one call',
+      (tester) async {
+    final attempts = <Completer<ProjectCreationResult>>[
+      Completer<ProjectCreationResult>(),
+      Completer<ProjectCreationResult>(),
+    ];
+    var calls = 0;
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) {
+          final attempt = attempts[calls];
+          calls += 1;
+          return attempt.future;
+        },
+      ),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+
+    final activation = tester
+        .widget<FilledButton>(
+          find.byKey(const ValueKey('wizard-create-project-button')),
+        )
+        .onPressed!;
+    activation();
+    activation();
+    await tester.pump();
+    expect(calls, 1);
+    expect(
+      find.byKey(const ValueKey('wizard-creation-progress')),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const ValueKey('wizard-create-project-button')),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    attempts.first.complete(
+      const ProjectCreationFailed(sanitizedMessage: 'Proovi uuesti.'),
+    );
+    await _pumpFrames(tester);
+    expect(calls, 1);
+    expect(find.text('Proovi uuesti.'), findsOneWidget);
+    expect(find.text('Pelle PV20'), findsWidgets);
+    expect(find.text('3 punkti'), findsOneWidget);
+    expect(find.text('Pärast soojenemist'), findsOneWidget);
+
+    await _tapKey(tester, 'wizard-create-project-button');
+    expect(calls, 2);
+    expect(
+      find.byKey(const ValueKey('wizard-creation-progress')),
+      findsOneWidget,
+    );
+    attempts[1].complete(const ProjectCreationCollision());
+    await _pumpFrames(tester);
+    expect(calls, 2);
+  });
+
+  testWidgets('every typed failure and thrown exception is safely retryable',
+      (tester) async {
+    final outcomes = <Object>[
+      const ProjectCreationMobilePlaceholder(),
+      const ProjectCreationCollision(),
+      const ProjectCreationInvalidDestination(),
+      const ProjectCreationPythonNotFound(),
+      const ProjectCreationMaterializerFailed(
+        sanitizedMessage: 'Materialiseerimine ei õnnestunud.',
+        rawDetail: 'SECRET MATERIALIZER OUTPUT',
+      ),
+      const ProjectCreationPhotoFailed(
+        sanitizedMessage: 'Foto kopeerimine ei õnnestunud.',
+        rawDetail: 'C:/private/source.png',
+      ),
+      const ProjectCreationFailed(
+        sanitizedMessage: 'Üldine turvaline tõrge.',
+        rawDetail: 'SECRET STACK',
+      ),
+      StateError('SECRET THROWN ERROR'),
+    ];
+    var calls = 0;
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          final outcome = outcomes[calls];
+          calls += 1;
+          if (outcome is ProjectCreationResult) {
+            return outcome;
+          }
+          throw outcome;
+        },
+      ),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+
+    const safeMessages = <String>[
+      'Projekti loomine ei ole mobiilseadmes saadaval.',
+      'Projekt on juba olemas. Vali uus projekt ja proovi uuesti.',
+      'Valitud salvestuskoht ei ole saadaval.',
+      'Pythonit ei leitud. Projekti ei loodud.',
+      'Materialiseerimine ei õnnestunud.',
+      'Foto kopeerimine ei õnnestunud.',
+      'Üldine turvaline tõrge.',
+      'Projekti loomine ebaõnnestus. Proovi uuesti.',
+    ];
+    for (var index = 0; index < outcomes.length; index += 1) {
+      await _tapKey(tester, 'wizard-create-project-button');
+      expect(calls, index + 1);
+      expect(
+        find.byKey(const ValueKey('wizard-review-summary')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('wizard-creation-error')),
+        findsOneWidget,
+      );
+      expect(find.text(safeMessages[index]), findsOneWidget);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('wizard-create-project-button')),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      for (final forbidden in const <String>[
+        'SECRET MATERIALIZER OUTPUT',
+        'C:/private/source.png',
+        'SECRET STACK',
+        'SECRET THROWN ERROR',
+      ]) {
+        expect(
+            find.textContaining(forbidden, skipOffstage: false), findsNothing);
+      }
+    }
+  });
+
+  testWidgets(
+      'success hands off once, shows returned state, waits, then opens project',
+      (tester) async {
+    final created = _createdProjectState(
+      projectName: 'Tagastatud nimi',
+      projectId: 'prj_deadbeef',
+      projectDirectory: 'D:/projektid/prj_deadbeef',
+    );
+    var createCalls = 0;
+    var handoffCalls = 0;
+    ProjectState? handedOff;
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          createCalls += 1;
+          return ProjectCreationSuccess(created);
+        },
+        onProjectCreated: (state) {
+          handoffCalls += 1;
+          handedOff = state;
+        },
+      ),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+    final reviewContext = tester.element(
+      find.byKey(const ValueKey('wizard-review-summary')),
+    );
+    expect(
+      GoRouter.of(reviewContext).routeInformationProvider.value.uri.path,
+      '/new-project',
+    );
+
+    await _tapKey(tester, 'wizard-create-project-button');
+    expect(createCalls, 1);
+    expect(handoffCalls, 1);
+    expect(handedOff, same(created));
+    expect(
+      find.byKey(const ValueKey('wizard-created-success')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-created-project-name')),
+      findsOneWidget,
+    );
+    expect(find.text('Tagastatud nimi'), findsOneWidget);
+    expect(find.text('prj_deadbeef'), findsOneWidget);
+    expect(find.text('D:/projektid/prj_deadbeef'), findsOneWidget);
+    expect(find.byKey(const ValueKey('wizard-cancel')), findsNothing);
+    expect(
+      find.byKey(const ValueKey('wizard-review-edit-step-1')),
+      findsNothing,
+    );
+    final successContext = tester.element(
+      find.byKey(const ValueKey('wizard-created-success')),
+    );
+    expect(
+      GoRouter.of(successContext).routeInformationProvider.value.uri.path,
+      '/new-project',
+    );
+
+    await tester.pump();
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await _pumpFrames(tester);
+    expect(createCalls, 1);
+    expect(handoffCalls, 1);
+    expect(tester.takeException(), isNull);
+
+    await _tapKey(tester, 'wizard-open-project-button');
+    expect(find.byKey(const ValueKey('test-project')), findsOneWidget);
+    expect(createCalls, 1);
+    expect(handoffCalls, 1);
+  });
+
+  testWidgets('creation and project routing stay inert until activation',
+      (tester) async {
+    var createCalls = 0;
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (request) async {
+          createCalls += 1;
+          return ProjectCreationSuccess(
+            _createdProjectState(wizardIntake: request.wizardIntake),
+          );
+        },
+      ),
     );
     await tester.pump();
 
@@ -3236,17 +3834,19 @@ void main() {
       'Seade ei käivitu.',
     );
     await _tapKey(tester, 'wizard-next');
-    await _tapKey(tester, 'wizard-next');
 
     final context = tester.element(
-      find.byKey(const ValueKey('wizard-placeholder-7')),
+      find.byKey(const ValueKey('wizard-review-summary')),
     );
     expect(
       GoRouter.of(context).routeInformationProvider.value.uri.path,
       '/new-project',
     );
-    expect(find.byKey(const ValueKey('wizard-create')), findsNothing);
-    expect(find.text('Loo projekt ja ava töölaud'), findsNothing);
-    expect(find.textContaining('/project'), findsNothing);
+    expect(createCalls, 0);
+    expect(
+      find.byKey(const ValueKey('wizard-create-project-button')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('test-project')), findsNothing);
   });
 }

@@ -2,10 +2,166 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_PASS`
+Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_PASS`
 
-## Current Board Canvas Wizard-intake gate detour queue
+## Current Wizard reference-frame geometry V1 queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / SCOPE_LOCK / ZERO_RUNTIME_WRITE
+```
+
+Entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` on
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main ==
+33e3a522a7f91157ed40c39cc46cd692360bc93b`, divergence `0 0`.
+
+The exact current SCOPE material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS.md`
+
+No sixth SCOPE path is queued. The pre-existing Board Canvas source/test diff
+is excluded from current writes and remains anchored by binary-diff hash
+`131464241a1de9bdcbafcba023f5ba2493ff0f4e`. The original compact Child 2
+two-file diff remains suspended with binary-diff hash
+`a3180b6f93832061ded7497f88de3616c126e2c9`; its recovery patch remains
+byte-identical with SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+The strict route is:
+
+```text
+TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_PASS
+-> TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+### Queued eleven-file reference-frame implementation
+
+The future implementation may write only:
+
+1. `lib/shared/models/wizard_intake.dart`
+2. `lib/features/project/screens/new_project_wizard_screen.dart`
+3. `lib/shared/services/project_creator.dart`
+4. `lib/shared/services/project_loader.dart`
+5. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+6. `test/unit/wizard_intake_test.dart`
+7. `test/widget/new_project_wizard_screen_test.dart`
+8. `test/unit/project_creator_test.dart`
+9. `test/unit/project_loader_zip_test.dart`
+10. `test/widget/board_canvas_screen_test.dart`
+11. `tests/test_project_zip.py`
+
+No twelfth implementation path is queued. No manifest, schema file,
+`ProjectState`, photo-editor, exporter, importer, validator, `ProjectExporter`,
+app, provider, router, package, asset, or `_incoming` edit is required.
+
+The queued model contract is one optional additive top-level
+`reference_frame_aspect_ratio` under existing Wizard-intake schema `1.0` and
+coordinate space `wizard_normalized`. Present values are finite positive JSON
+numbers. New Wizard creation always supplies the exact latched value. Missing
+legacy metadata stays null and is omitted on serialization; unknown-field
+tolerance and every existing known-field validation remain unchanged.
+
+Step 3 establishes the reference plane from its actual inner authoring canvas
+on the first accepted contour interaction. That aspect remains stable across
+navigation, resize, photo changes, reset, and Step 4 edits. Steps 3 and 4
+center-fit one rectangle of the latched aspect; photo, contour, candidates,
+pointer input, drags, and hit tests use its local origin and size. Letterbox
+space is inert. Step 2 retains its current photo-transform ownership and its
+production/test files are read-only.
+
+Canvas converts normalized points to reference units `(x * aspect, y)`, fits
+the converted contour with one uniform scale, and exposes a full reference
+rect of `aspect * scale` by `scale` to the photo. Contour and candidates use
+the same point mapping. The carried gate and z-order remain: background/grid,
+photo, Wizard contour/candidates, canonical placements. Wizard layers stay
+read-only and controls stay above the canvas.
+
+Legacy missing metadata returns intake plus the exact compatibility warning
+and uses an explicit `1.0` fallback. No heuristic inference is queued. Missing
+intake stays warning-free. Old projects carry no exact-alignment claim;
+migration and automated recreation are not queued. A trustworthy migration
+requires its own later scope; recreation through the updated Wizard is the
+only exact path in this cycle.
+
+### Queued TDD and validation
+
+Genuine pre-production RED evidence is required for the current Wizard
+full-canvas mismatch and Canvas square-frame landscape distortion. Focused
+GREEN belongs exactly to:
+
+1. `test/unit/wizard_intake_test.dart` — present/missing/invalid metadata and
+   deterministic JSON;
+2. `test/widget/new_project_wizard_screen_test.dart` — one latched Step 3/4
+   frame, fitted bounds, inert bars, shared photo/geometry input, exact request;
+3. `test/unit/project_creator_test.dart` — no-photo/photo persistence and
+   hydrated directory state;
+4. `test/unit/project_loader_zip_test.dart` — directory/ZIP present metadata,
+   legacy warning, invalid and absent cases;
+5. `test/widget/board_canvas_screen_test.dart` — rectangular transform,
+   landscape composite, photo/candidate alignment, legacy, gate, z-order,
+   canonical placements, pan/zoom/fit, hit testing, and zero writers; and
+6. `tests/test_project_zip.py` — export/validate/import byte preservation of
+   `notes/wizard_intake.json` with the new field.
+
+Then run targeted format/analyze, those focused suites sequentially, full
+Flutter, `py -3 -m unittest tests.test_project_zip`, doctor,
+`py -3 tools\validate_all.py`, both diff checks, exact eleven-file material
+set, and empty staged set. Fresh wide/compact Wizard and Canvas human smoke is
+required before implementation audit; the prior failed smoke is not evidence
+for this pass.
+
+### Code maps and final LOCK
+
+The maintained Wizard screen, ProjectCreator, ProjectLoader, Board Canvas,
+Wizard-test, ProjectCreator-test, and Board-Canvas-test maps are
+`UPDATE_REQUIRED` after accepted implementation. The intake model/test and
+focused loader ZIP test retain accepted non-qualifying dispositions; the
+Python test is outside Dart map bootstrap. The photo-editor map is
+`REVIEWED_NO_CHANGE`.
+
+The exact final LOCK set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/PROJECT_ZIP_SPEC.md`
+7. `docs/code_maps/CODE_MAP_INDEX.md`
+8. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+9. `docs/code_maps/lib/shared/services/project_creator.dart.md`
+10. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+13. `docs/code_maps/test/unit/project_creator_test.dart.md`
+14. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+15. `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+
+No sixteenth LOCK path is queued. The LOCK derives docs/maps only from
+accepted committed implementation, records fresh smoke and independent audit,
+and resumes compact Child 2 without editing its suspended files.
+
+Only this five-file SCOPE is executable now. Implementation and final LOCK
+remain conditional on their stated independent acceptance, human exact
+staging/commit/push, validation, and smoke gates.
+
+## Superseded Board Canvas Wizard-intake gate detour queue (retained contract)
+
+The retained queue below is historical. Its gate and z-order work is carried
+into the new eleven-file implementation; its embedded route/current language
+does not override the live reference-frame queue above.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_EMPTY_COMPONENTS_GATE_SCOPE_LOCK_PASS

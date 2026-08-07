@@ -4,13 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — production file owns 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_WRITE_PATH_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
 
 ## File purpose
 
 Creates a new project beneath a validated user-selected parent, writes the
-project skeleton and noncanonical Wizard intake, optionally copies a supported
-background photo, invokes the Python materializer to own the derived
+project skeleton and noncanonical Wizard intake including optional
+reference-frame metadata, optionally copies a supported background photo,
+invokes the Python materializer to own the derived
 `known_facts.json` output, hydrates the finished directory through
 `ProjectLoader`, and returns typed success/failure results. Cleanup is limited
 to the generated child; user-owned parents, siblings, and source photos remain
@@ -25,7 +26,7 @@ outside its deletion authority.
 | Constructor and test seams | `ProjectCreator`, `PythonRunner`, `projectLoader`, `photoCopier` | Owns default collaborators while permitting deterministic focused tests. |
 | ID, destination, and ownership gate | `generateProjectId`, `_projectIdPattern`, `FileSystemEntity.type`, `ownsGeneratedChild` | Produces/validates technical IDs, rejects invalid/colliding destinations, and records generated-child ownership. |
 | Project skeleton | `_createSkeleton`, `ProjectManifest`, `manifest.json`, `schema_versions.json` | Creates required directories and compatible manifest/support files. |
-| Wizard intake serialization | `_writeWizardIntake`, `_intakeForStorage`, `WizardIntake.fromJson`, `toJsonString` | Rebuilds typed intake for validation and deterministically writes it under `notes`. |
+| Wizard intake serialization | `_writeWizardIntake`, `_intakeForStorage`, `WizardIntake.fromJson`, `toJsonString`, `referenceFrameAspectRatio` | Rebuilds typed intake for validation, preserves optional reference-frame metadata across photo/no-photo branches, and deterministically writes it under `notes`. |
 | Background-photo handling | `_supportedPhotoExtension`, `_pathIsWithinDirectory`, `_photoCopier`, `photos/wizard_background` | Validates source/extension/location and copies to a lowercase-extension project-relative destination. |
 | Empty events and materialization | `events.jsonl`, `tools/materialize_known_facts.py`, `known_facts.json`, `_schemaVersionsV1` | Initializes an exactly empty event log, records schema versions, and delegates derived known-facts creation. |
 | Hydration and success return | `_projectLoader`, `ProjectLoader.loadFromDirectory`, `ProjectCreationSuccess(projectState)` | Loads the completed project and returns only the hydrated state. |
@@ -37,10 +38,10 @@ outside its deletion authority.
 
 Selection rule: take every backtick-delimited token in the responsibility
 table's Stable symbol anchors column, split comma-separated tokens, trim, and
-de-duplicate in first-appearance order. The resulting inventory has 49 unique
+de-duplicate in first-appearance order. The resulting inventory has 50 unique
 anchors.
 
-- Literal source symbols/strings: 45; each must resolve as an exact substring
+- Literal source symbols/strings: 46; each must resolve as an exact substring
   in the mapped source.
 - Qualified member references: 4 —
   `FileSystemEntity.type`, `WizardIntake.fromJson`,
@@ -58,11 +59,13 @@ anchors.
    empty `events.jsonl`, schema metadata, report template, and default device
    profile.
 4. `_writeWizardIntake` stores every accepted Wizard draft; without a source
-   photo its background field is null.
+   photo its background field is null and the optional reference-frame aspect
+   remains unchanged.
 5. With a source photo, `_intakeForStorage` validates the supported extension,
    rejects paths inside the generated child (including resolved links), copies
    bytes to `photos/wizard_background.<lowercase-extension>`, and stores the
-   copied relative path plus the existing transform.
+   copied relative path plus the existing transform and reference-frame
+   aspect.
 6. `PythonRunner` discovers Python and runs the repository materializer over
    the empty event log to create/update derived `known_facts.json`.
 7. `ProjectLoader.loadFromDirectory` hydrates the completed project; success
@@ -79,7 +82,7 @@ anchors.
 | `dart:convert` | serialization | Writes indented JSON for manifest and schema metadata. |
 | `dart:math` | ID entropy | Supplies secure random technical IDs. |
 | `ProjectManifest` | outbound metadata model | Produces compatible manifest JSON. |
-| `WizardIntake` models | outbound noncanonical intake | Validate and serialize the complete Wizard draft. |
+| `WizardIntake` models | outbound noncanonical intake | Validate and serialize the complete Wizard draft, including optional reference-frame metadata. |
 | `PythonRunner` | outbound tool adapter | Discovers/runs deterministic UTF-8 Python materialization. |
 | `ProjectLoader` | outbound projection loader | Hydrates the completed project directory. |
 | `tools/materialize_known_facts.py` | outbound derived-data owner | Owns `known_facts.json` materialization from events. |
@@ -118,7 +121,7 @@ materializer-owned.
 | Request/results | [D] Types define caller contract. | Wizard exhaustive switch | `ZERO_WRITE` | creator and Wizard result tests |
 | Destination/ID | [D] Parent and child types are checked before create. | platform path rules | `ZERO_WRITE` then `NONCANONICAL_FILE` | invalid/collision/ID tests |
 | Skeleton/manifest | [D] Exact files and values are written. | manifest schema and Project ZIP expectations | `NONCANONICAL_FILE` | compatibility and success tests |
-| Intake/photo | [D] Typed serialization and guarded copy are local. | intake model, loader hydration | `NONCANONICAL_FILE` | no-photo/photo/byte tests |
+| Intake/photo | [D] Typed serialization and guarded copy preserve the optional reference-frame aspect. | intake model, loader hydration | `NONCANONICAL_FILE` | no-photo/photo/aspect/byte tests |
 | Empty events/materializer | [D] Empty string is written then tool invoked. | materializer and known-facts projection | `NONCANONICAL_FILE` / `PROJECTION_STATE` | zero-event and materializer tests |
 | Loader success | [D] Loader result is returned unchanged. | `ProjectLoader` | `PROJECTION_STATE` | hydrated-state tests |
 | Cleanup | [D] Guarded child path is recursively deleted. | user-owned parent/siblings/source | `NONCANONICAL_FILE` | failure-preservation tests |
@@ -128,7 +131,8 @@ materializer-owned.
 
 Primary evidence is `test/unit/project_creator_test.dart`, whose maintained map
 covers compatible manifests, successful materialization/hydration, optional
-photo byte identity, empty events, typed failures, cleanup, user-owned path
+photo byte identity, reference-frame aspect preservation in no-photo and
+copied-photo paths, empty events, typed failures, cleanup, user-owned path
 preservation, and real Unicode parent execution. Supporting suites are
 `test/unit/wizard_intake_test.dart` and
 `test/unit/project_loader_zip_test.dart`. Wizard widget tests verify request
@@ -140,6 +144,9 @@ construction and safe exhaustive handling without reading `rawDetail`.
   data.
 - Changing intake photo paths and copy ordering together can persist a
   reference to missing or wrong bytes.
+- Reconstructing intake without carrying `referenceFrameAspectRatio` can
+  silently drop the authoring plane while leaving photo bytes and transforms
+  apparently valid.
 - Writing events before materialization would cross the zero-event canonical
   boundary.
 - Showing `rawDetail` in the Wizard would breach the safe UI boundary.
@@ -183,3 +190,6 @@ and `STRUCTURE_DRIFT` when storage responsibilities move.
 - [P] Platform-specific symlink and case behavior beyond covered paths still
   depends on `dart:io` resolution.
 - [D] Materializer output semantics belong to the Python tool, not this map.
+- [D] Current creator coverage proves non-null aspect preservation in both
+  no-photo and copied-photo paths; it has no photo-copy case whose legacy
+  aspect is null.

@@ -2,10 +2,88 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_PASS`
+Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS`
 
-## Current Wizard reference-frame geometry V1 queue
+## Current Wizard reference-frame geometry V1 final LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+```
+
+Entry is the clean isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` at
+`HEAD == origin/main == 51cb49c775324a5c36249c82b4d7c8a694747ae4`,
+subject `feat: add Wizard reference-frame geometry v1`, parent
+`9e0578e3a69851a89368164ba37e810eac84f6bd`, and divergence `0 0`. The
+committed implementation contains exactly the reserved eleven files and
+`1185` insertions / `183` deletions.
+
+The exact Phase 1 material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/PROJECT_ZIP_SPEC.md`
+7. `docs/code_maps/CODE_MAP_INDEX.md`
+8. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+9. `docs/code_maps/lib/shared/services/project_creator.dart.md`
+10. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+13. `docs/code_maps/test/unit/project_creator_test.dart.md`
+14. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+15. `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+
+No sixteenth path belongs to this LOCK. The seven maps are refreshed only from
+committed `HEAD` and use `REVIEW_REQUIRED` in both map headers and matching
+index rows. The cohesive intake model/test and focused loader ZIP test remain
+non-qualifying; Python Project ZIP tests remain outside the Dart map bootstrap;
+the photo-editor map is `REVIEWED_NO_CHANGE`.
+
+Recorded accepted behavior covers the optional reference-frame field, one
+Step 3-latched shared Step 3/4 fitted plane, inert bars, unchanged Step 2
+preview parity, creator/loader/ZIP preservation, rectangular Canvas mapping,
+the zero-component intake gate, and the z-order background/grid → optional
+photo → Wizard geometry → canonical placements → controls. Legacy missing
+metadata uses explicit `1.0` and the exact warning without inference, rewrite,
+migration, or an exact-alignment claim.
+
+Recorded evidence is focused Dart `304/304`, Project ZIP `37/37`, full Flutter
+`595/595`, validator `303/303`, doctor/analysis/format/diff checks PASS, human
+smoke `22/22`, and human attestation PASS. Fresh project `prj_0a597f7a` records
+aspect `1.911214953271028`, a closed contour, `28` candidates, a photo,
+zero-byte events, and empty canonical fact arrays; legacy comparison is
+`prj_12b1059f`.
+
+The implementation audit result supplied by the human is accepted with no
+blocker. Its four retained NITs concern dynamic typed-field assertion,
+transitive non-null creation proof, explicit JSON null invalidity, and absent
+creator photo-copy coverage for a null legacy aspect. Optional-photo sample
+warnings remain pre-existing and non-blocking.
+
+The strict route is:
+
+```text
+TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The suspended compact Child 2 remains outside this material set and retains
+binary-diff hash `a3180b6f93832061ded7497f88de3616c126e2c9`; its source/test
+worktree-byte SHA-256 values are
+`3E759B8EB5822ADD72205B327BFB0AA15921F67AE3AA8B1B6B2F16592A8FDB4E` and
+`D58E8EE3294BDC38B55E42672CA58E241F06B1B3DA271A52378393536F6BF8C1`;
+the recovery-patch worktree-byte SHA-256 is
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+## Accepted Wizard reference-frame geometry V1 SCOPE queue (historical)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
@@ -153,9 +231,8 @@ No sixteenth LOCK path is queued. The LOCK derives docs/maps only from
 accepted committed implementation, records fresh smoke and independent audit,
 and resumes compact Child 2 without editing its suspended files.
 
-Only this five-file SCOPE is executable now. Implementation and final LOCK
-remain conditional on their stated independent acceptance, human exact
-staging/commit/push, validation, and smoke gates.
+This retained five-file SCOPE queue is historical authority for the committed
+implementation and current final LOCK, not the executable queue head.
 
 ## Superseded Board Canvas Wizard-intake gate detour queue (retained contract)
 

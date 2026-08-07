@@ -2,10 +2,161 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_PASS`
+Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS`
 
-## Current Wizard reference-frame geometry V1 authority
+## Current Wizard reference-frame geometry V1 final LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+```
+
+Entry is the isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` on branch
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main == 51cb49c775324a5c36249c82b4d7c8a694747ae4`,
+subject `feat: add Wizard reference-frame geometry v1`, parent
+`9e0578e3a69851a89368164ba37e810eac84f6bd`, divergence `0 0`, and empty
+entry worktree/staged sets. Preserve every unrelated worktree and scratch
+byte.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/UI_WORKFLOWS.md`
+6. `docs/PROJECT_ZIP_SPEC.md`
+7. `docs/code_maps/CODE_MAP_INDEX.md`
+8. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+9. `docs/code_maps/lib/shared/services/project_creator.dart.md`
+10. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+13. `docs/code_maps/test/unit/project_creator_test.dart.md`
+14. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+15. `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+
+No sixteenth file is authorized. Runtime, tests, schemas, tools, packages,
+assets, `_incoming`, generated projects, the accepted SCOPE artifact, every
+other map/spec/doc, and the original compact Child 2 worktree are read-only.
+Do not edit, format-write, stage, commit, push, reset, restore, stash, clean,
+install, or invoke an external write-capable helper outside this allowlist.
+
+### Committed implementation evidence
+
+Commit `51cb49c775324a5c36249c82b4d7c8a694747ae4` changes exactly the eleven
+paths reserved by the accepted SCOPE, with `1185` insertions and `183`
+deletions. It records:
+
+- optional top-level positive finite `reference_frame_aspect_ratio` after
+  `coordinate_space` under schema `1.0`;
+- first accepted Step 3 contour action latching the authoritative inner-canvas
+  aspect;
+- one centered fitted rectangle shared by Step 3/4 photo, contour,
+  candidates, pointers, dragging, painting, and hit testing;
+- inert letterbox bars and unchanged/out-of-scope Step 2 preview parity;
+- creator preservation plus directory, exact ZIP, and root-prefixed ZIP
+  loading;
+- Canvas mapping through `(x * aspect, y)` with one uniform fit;
+- the carried zero-component intake gate;
+- bottom-to-top background/grid, optional photo, Wizard geometry, canonical
+  placements, and controls;
+- legacy missing aspect as explicit `1.0` plus the exact warning; and
+- no inference, backfill, rewrite, migration, canonical placement mutation,
+  or writer/event/fact/materializer/projection/electrical semantic change.
+
+Accepted implementation validation is focused Dart `304/304`, Project ZIP
+`37/37`, full Flutter `595/595`, `validate_all` `303/303`, doctor PASS,
+analysis clean, format clean, and both diff checks PASS.
+
+Human evidence is `MANUAL_SMOKE_CHECKS: 22/22`, `MANUAL_SMOKE: PASS`, and
+`HUMAN_ATTESTATION: PASS`. Fresh project `prj_0a597f7a` records
+`reference_frame_aspect_ratio = 1.911214953271028`, a closed contour, `28`
+candidates, a photo, zero-byte `events.jsonl`, and empty canonical fact arrays.
+Legacy comparison project is `prj_12b1059f`.
+
+The implementation audit result supplied by the human is accepted with no
+blocker. Retain without patching:
+
+1. dynamic typed-field test assertion;
+2. non-null creation guarantee is transitive;
+3. explicit JSON null is invalid by the locked contract; and
+4. no creator photo-copy test exists for a null legacy aspect.
+
+Pre-existing optional-photo sample-fixture validation warnings are
+non-blocking and receive no repair in this LOCK.
+
+### Code-map disposition
+
+Refresh these exact maps only from committed `HEAD`, then set the Phase 1 map
+header and matching index Status to `REVIEW_REQUIRED`:
+
+1. Wizard screen production map;
+2. ProjectCreator production map;
+3. ProjectLoader production map;
+4. Board Canvas production map;
+5. Wizard screen test map;
+6. ProjectCreator test map; and
+7. Board Canvas test map.
+
+The intake model/test and focused loader ZIP test retain their accepted
+non-qualifying disposition; Python Project ZIP is outside Dart bootstrap. The
+photo-editor map is inspect-only `REVIEWED_NO_CHANGE`. Maps are descriptive,
+non-authorizing, and must not use unfinished or other-worktree bytes.
+
+### Locked route
+
+```text
+TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+This LOCK resumes only the already authorized compact Child 2 route. It does
+not edit or merge that suspended implementation. The original compact Child 2
+remains inspect-only with binary-diff hash
+`a3180b6f93832061ded7497f88de3616c126e2c9`, Wizard source/test worktree-byte
+SHA-256 values
+`3E759B8EB5822ADD72205B327BFB0AA15921F67AE3AA8B1B6B2F16592A8FDB4E` and
+`D58E8EE3294BDC38B55E42672CA58E241F06B1B3DA271A52378393536F6BF8C1`,
+and recovery-patch worktree-byte SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+### Phase 1 and bounded Phase 2
+
+The new LOCK artifact contains one unique BEGIN marker, one unique END marker,
+and an empty interior. The matching `AUDIT_INDEX` Status is neutral. All seven
+map headers and matching index rows use `REVIEW_REQUIRED`.
+
+A clean independent LOCK/map audit may authorize only these sixteen logical
+Phase 2 coordinates:
+
+1. the designated verdict-block interior;
+2. this pass's unique `docs/AUDIT_INDEX.md` Status cell;
+3. seven map-header `REVIEW_REQUIRED` -> `MAINTAINED` values; and
+4. seven matching `docs/code_maps/CODE_MAP_INDEX.md`
+   `REVIEW_REQUIRED` -> `MAINTAINED` cells.
+
+Phase 2 may not alter map bodies, qualifications, Source/Type/Audit evidence,
+route owners, workflow/spec prose, ledger PASS_ID/File/Description, another
+row/cell, implementation, tests, accepted SCOPE history, original Child 2,
+recovery patch, or any other byte. Exact human staging, commit, and push remain
+outside Phase 1 and require the recorded independent result.
+
+### Stops
+
+Stop on baseline, ancestry, subject, branch, divergence, material-set, staged-
+set, map/source, validation, or preservation mismatch; a required sixteenth
+file; a runtime/test edit; an inferred or rewritten legacy aspect; a canonical
+or writer change; a NIT patch; an original Child 2/recovery-patch mutation; or
+any attempt to perform Phase 2, stage, commit, or push in this phase.
+
+## Accepted Wizard reference-frame geometry V1 SCOPE authority (historical)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
@@ -70,12 +221,8 @@ TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
 -> NEEDS_USER_DECISION
 ```
 
-Only this five-file SCOPE is active. The implementation requires independent
-acceptance of this exact SCOPE plus exact human staging, commit, and push. The
-final reference-frame LOCK requires accepted committed implementation,
-independent implementation audit, fresh human manual smoke, full validation,
-and committed-source map refresh. Only that accepted committed LOCK may resume
-the suspended compact Child 2.
+This retained five-file SCOPE is historical authority for the committed
+implementation and current final LOCK; it is not the executable authority.
 
 ### Causal result
 

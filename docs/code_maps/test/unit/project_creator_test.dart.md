@@ -4,28 +4,29 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `SCORE 7/12 — broad ProjectCreator regression surface, protected creation/materialization/cleanup boundary, repeated whole-file analysis, and adjacent creator/loader/materializer inspection tax`
-- Audit evidence: `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
 
 ## File purpose
 
 Exercises ProjectManifest compatibility and the ProjectCreator boundary from
 request construction through project-directory creation, materialization,
 ProjectLoader hydration, returned ProjectState, photo persistence, sanitized
-failures, and generated-child cleanup. It combines deterministic fakes with
-one real Python/materializer regression under a Windows Unicode parent path.
+failures, generated-child cleanup, and Wizard reference-frame preservation. It
+combines deterministic fakes with one real Python/materializer regression
+under a Windows Unicode parent path.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
 | Harness and process seams | `_TestPlatformInfo`, `_CallRecord`, `_FakeProcessRunner`, `_ok`, `_fail`, `_successfulProcessRunner` | Controls platform and process outcomes, records commands, and synthesizes materialized known facts. |
-| Shared intake/request fixtures | `_writeMaterializedKnownFacts`, `_wizardIntake`, `_request` | Builds stable projection, Wizard-intake, metadata, and optional-photo inputs reused across creation tests. |
+| Shared intake/request fixtures | `_writeMaterializedKnownFacts`, `_wizardIntake`, `_request`, `referenceFrameAspectRatio` | Builds stable projection, Wizard-intake, optional reference-frame metadata, and optional-photo inputs reused across creation tests. |
 | Manifest and schema compatibility | `ProjectManifest compatibility`; `old manifests and constructor calls keep working`; `new optional display metadata parses and serializes verbatim`; `schema keeps v1 requirements and allows the five optional strings` | Protects v1 requirements while proving optional display/device metadata compatibility. |
 | Identity, destination, platform, and collision | `project_id follows wizard regex format`; `project_id is unique across repeated generation`; `collision returns collision`; `mobile returns mobilePlaceholder`; `invalid destination stays non-destructive` | Covers generated IDs, duplicate avoidance, existing destinations, mobile gating, and non-destructive invalid paths. |
 | Successful creation and hydration | `creates manifest defaults, empty events, metadata and placeholder report`, `ProjectLoader.loadFromDirectory`, `ProjectCreationSuccess` | Verifies directory structure, manifest values, loader invocation, hydrated state, report/default profile, and successful result ownership. |
 | Materialization and empty canonical log | `tools/materialize_known_facts.py`, `known_facts.json`, `events.jsonl`, `project_id` | Proves materializer invocation and projection hydration while requiring a zero-byte event log with no synthetic creation events. |
-| Wizard intake and no-photo path | `wizard_intake.json`, `background_photo`, `wizardIntakeWarning` | Proves verbatim intake persistence and a valid null-photo path in file and returned state. |
-| Photo copy and byte identity | `copies every supported mixed-case photo extension byte-for-byte`, `photos/wizard_background`, `rotationRadians` | Covers supported mixed-case extensions, normalized destination extension, byte identity, source preservation, and transform retention. |
+| Wizard intake and no-photo path | `wizard_intake.json`, `background_photo`, `wizardIntakeWarning` | Proves verbatim intake and reference-frame persistence plus a valid null-photo path in file and returned state. |
+| Photo copy and byte identity | `copies every supported mixed-case photo extension byte-for-byte`, `photos/wizard_background`, `rotationRadians` | Covers supported mixed-case extensions, normalized destination extension, byte identity, source preservation, transform retention, and non-null reference-frame preservation. |
 | Cleanup and user-owned boundaries | `invalid selected photos fail safely and clean only generated children`; `copy failure is sanitized and preserves source, parent, and sibling`; `directory-loader failure cleans the owned generated child`; `materializer failure is sanitized and cleanup is attempted`; `pythonNotFound is returned when discovery fails` | Requires cleanup of only the generated child while preserving sources, parent directories, and siblings across failure classes. |
 | Real Windows Unicode regression | `real materializer creates a project under a Unicode parent path`, `UUE PROJEKTI TÖÖKAUST Õ` | Runs real discovery and materialization under a non-ASCII Windows path and verifies project files, projection, and hydrated state. |
 
@@ -39,7 +40,8 @@ Literal symbols and group/content strings:
 
 - `_TestPlatformInfo`, `_CallRecord`, `_FakeProcessRunner`, `_ok`,
   `_fail`, `_successfulProcessRunner`,
-  `_writeMaterializedKnownFacts`, `_wizardIntake`, and `_request`;
+  `_writeMaterializedKnownFacts`, `_wizardIntake`, `_request`, and
+  `referenceFrameAspectRatio`;
 - `ProjectManifest compatibility`, `ProjectCreationSuccess`,
   `tools/materialize_known_facts.py`, `known_facts.json`,
   `events.jsonl`, `project_id`, `wizard_intake.json`,
@@ -86,10 +88,12 @@ Exact test-name references:
 3. `[D]` Creator tests select deterministic IDs and platform/process/loader
    behavior, then invoke `createProject`.
 4. `[D]` Success coverage inspects manifest, metadata, report, profile,
-   byte-empty `events.jsonl`, persisted intake, materialized
+   byte-empty `events.jsonl`, persisted intake and reference-frame aspect,
+   materialized
    `known_facts.json`, loader path, and hydrated `ProjectState`.
 5. `[D]` Photo coverage compares source/destination bytes and verifies
-   extension normalization and intake-relative paths.
+   extension normalization, intake-relative paths, transforms, and non-null
+   reference-frame preservation.
 6. `[D]` Failure coverage distinguishes safe result classes from raw detail
    and proves only the generated child is removed.
 7. `[D]` The real regression uses the default PythonRunner and real
@@ -139,7 +143,8 @@ to test-owned temporary roots.
 ## Relevant tests and helpers
 
 The file contains sixteen tests in two groups: three manifest/schema
-compatibility tests and thirteen ProjectCreator tests. Helpers intentionally
+compatibility tests and thirteen ProjectCreator tests. The main success and
+mixed-case photo tests assert non-null reference-frame preservation. Helpers intentionally
 centralize only stable setup; each test retains its own filesystem ownership
 and result assertions. The real Unicode regression requires an installed
 Python and repository materializer. Fake process coverage remains necessary
@@ -154,6 +159,9 @@ for deterministic nonzero, launch-failure, and projection-output paths.
 - Broadening cleanup assertions or teardown roots can erase user-owned
   sources, parents, or siblings.
 - Mixing raw diagnostic assertions into sanitized copy can leak local paths.
+- A photo-copy regression can drop nullable reference-frame metadata while
+  still preserving the photo bytes and transform, so those assertions must
+  remain coupled.
 - Replacing the real Unicode regression with fake `ProcessResult` data loses
   the Windows environment/codec evidence.
 
@@ -200,3 +208,6 @@ is split or merged.
   every possible asynchronous filesystem failure.
 - `[P]` Adjacent creator, loader, model, schema, and materializer changes can
   require whole-file inspection even when only one exact test initially fails.
+- `[D]` This file has no creator photo-copy case with a null legacy
+  `referenceFrameAspectRatio`; the committed non-null branch and production
+  copy call path are covered.

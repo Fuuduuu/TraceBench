@@ -4,23 +4,20 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
 
 ## File purpose
 
-This file is the widget-test owner for the Board Canvas screen. It supplies
-project fixtures, provider and router harnesses, writer doubles, interaction
-helpers, painter inspection, and behavior-family assertions spanning the
-Workbench shell, including the read-only Wizard-intake overlay. It verifies
-production boundaries but does not own production behavior, writer semantics,
-routes, or the production map.
+This Board Canvas widget-test owner supplies fixtures, provider/router
+harnesses, writer doubles, interaction/painter assertions, and read-only Wizard
+overlay coverage. It verifies zero-component intake, composite z-order,
+rectangular/legacy geometry, and boundaries without owning production behavior.
 
 ## Qualification
 
-`[D]` The accepted committed source qualifies automatically because it exceeds
-3,000 physical lines and contains more than three independently testable
-families. Its flat structure has no meaningful `group()` ownership; family
-boundaries below are derived from stable helpers, doubles, and exact test names.
+`[D]` The committed source exceeds 3,000 lines and has more than three test
+families. Its flat structure has no meaningful `group()` ownership; the map
+derives families from stable helpers, doubles, and exact names.
 
 ## Responsibility zones
 
@@ -35,11 +32,11 @@ the source has no `group()` hierarchy that owns these families.
 | 4. Measurement entry and association | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry`; `integrated Measure panel target selection and draft capture stay local` | Covers target selection, drafts, explicit save, Measure Sheet navigation, measurement association, badges, and stale/suspect states. |
 | 5. Component create and edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guarded identity creation, metadata editing, canonical request values, returned-event handling, errors, and idempotency. |
 | 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey` | Exercises template selection, local placement drafts, ghost movement, normalized bounds, explicit save, and writer-result handling. |
-| 7. Canvas interaction, Wizard fit, and geometry | `_tapCanvasAtNormalized`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_painterSelectedComponentId`, `_painterSelectedPlacementKey`; `initial fit runs once for each active project and intake` | Verifies pan/zoom, fit reset, transformed hit selection, true contour min/max fit, 3%-clamped padding, one initial fit, shared Wizard alignment, and measurement-badge anchoring. |
-| 8. Painter, Wizard overlay, footprint, and semantics | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry`; `Wizard intake read-only Canvas overlay`; `renders visual footprint forms for board placements` | Inspects read-only photo/contour/candidate rendering, rotation, overlay copy/states, placement paths, footprint/pin rendering, preview/selection cues, semantics, and fallback visibility. |
+| 7. Canvas interaction, Wizard fit, and geometry | `_tapCanvasAtNormalized`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_painterSelectedComponentId`, `_painterSelectedPlacementKey`; `initial fit runs once for each active project and intake`; `persisted landscape reference frame maps contour and candidates as landscape`; `legacy intake uses the explicit square reference fallback` | Verifies pan/zoom, fit reset, transformed hit selection, aspect-aware contour/candidate mapping, explicit square fallback, 3%-clamped padding, one initial fit, shared Wizard alignment, and measurement-badge anchoring. |
+| 8. Painter, Wizard overlay, footprint, and semantics | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry`; `Wizard intake read-only Canvas overlay`; `Wizard candidate pixel survives board background in the final composite`; `Wizard photo toggle changes final composite pixels with zero components`; `canonical placement selection ring stays above visible Wizard layers`; `renders visual footprint forms for board placements` | Inspects background/photo/Wizard/canonical composite order, hidden/showing photo pixels, read-only geometry, rotation, overlay copy/states, placement paths, footprint/pin rendering, preview/selection cues, semantics, and fallback visibility. |
 | 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`; `readiness panel remains project-level metadata with selection, inspector, measurement, and visual trace state` | Verifies projected inspector content, readiness and safety wording, fallbacks, measurement summaries, and visual-trace metadata. |
 | 10. Rail, project hub, focus, and responsive layout | `_openWideContextMode`, `_tapWidgetByKey`, `_pumpUntilRouterPath`; `Projekt hub actions navigate to exact existing routes without writes` | Covers rail/panel modes, exact zero-write navigation, medium/wide reachability, focus entry, and restoration. |
-| 11. Volatility and protected-boundary guards | `_readProjectState`; `tap-to-select leaves project state canonical data unchanged`; `board canvas source keeps read-only data-path boundaries` | Asserts volatile-only state, absent unintended writer/file effects, projection separation, and selected static source boundaries. |
+| 11. Volatility and protected-boundary guards | `_readProjectState`; `zero components preserve the existing Wizard intake layer without canonical writes`; `tap-to-select leaves project state canonical data unchanged`; `board canvas source keeps read-only data-path boundaries` | Asserts zero-component intake availability, volatile-only state, absent unintended writer/file effects, projection separation, and selected static source boundaries. |
 
 ## State and data flow
 
@@ -47,12 +44,13 @@ the source has no `group()` hierarchy that owns these families.
 - `[D]` `_harness` mounts `BoardCanvasScreen` directly and can replace each of
   the four writer providers; `_routerHarness` exercises `buildTraceBenchRouter`.
 - `[D]` Interaction helpers drive visible controls, canvas coordinates, hover, panel modes, and route transitions; assertions then inspect widgets, painter fields, semantics, fake requests, router paths, or provider state.
-- `[D]` `_wizardIntakePainter` and `_wizardPhotoLayer` dynamically inspect the private shared fit/photo/painter state. Seven overlay tests cover default candidate visibility, hidden-by-default photo, exact toggle copy, neutral states, verbatim non-modal warning, proportional fit/padding, per-intake initial fit, candidate rotation/non-actionability, and absent-intake parity.
+- `[D]` Thirteen `_wizardIntakePainter` / `_wizardPhotoLayer` tests cover the
+  zero-component gate, composite order, landscape/legacy geometry, defaults,
+  toggle/warning states, fit, rotation/non-actionability, and absent parity.
 - `[D]` The four fake writers capture requests in memory and synthesize writer results. They demonstrate the production call boundary, not canonical persistence internals.
 - `[D]` Successful simulated writes are observed through `_readProjectState` as returned-event mirroring plus stale projection state, while the original fixture remains unchanged.
-- `[D]` Project-hub filesystem checks use a synchronous temporary directory,
-  navigate one destination at a time, settle the Navigator, and assert that no
-  project files or events were produced.
+- `[D]` Project-hub checks use a synchronous temporary directory, settle each
+  destination, and assert no project files or events.
 
 ## Direct dependencies
 
@@ -63,7 +61,7 @@ the source has no `group()` hierarchy that owns these families.
 | `buildTraceBenchRouter`, `GoRouter`, `MaterialApp.router` | routed harness | Verifies canonical entry, redirect, Measure Sheet, and project-hub destinations. |
 | Four V2 writer interfaces and providers | outbound test doubles | Capture add, edit, placement, and measurement requests and return controlled results. |
 | BoardFact models and `TraceBenchEvent` data | fixture and assertion input | Builds components, placements, measurements, traces, alignments, and returned events. |
-| `WizardIntake` model family | fixture and assertion input | Builds model-valid noncanonical photo, contour, problem, and visual-candidate presentation input. |
+| `WizardIntake` model family | fixture and assertion input | Builds model-valid optional aspect, photo, contour, problem, and visual-candidate presentation input. |
 | Flutter widget, gesture, semantics, and painter APIs | test driver and observation | Controls viewports, input, rendering frames, semantics, and custom-painter state. |
 | `dart:io` temporary directories and source reads | test-only filesystem fixture / inspection | Supports zero-file assertions and a read-only source-boundary regression. |
 | BenchBeep theme and app/router owners | imported behavior | Supplies theme tokens and route configuration without test ownership. |
@@ -76,7 +74,7 @@ the source has no `group()` hierarchy that owns these families.
 | Returned fake event → `_readProjectState` assertions | `PROJECTION_STATE` observed | `[D]` Tests check mirrored events and `isProjectionStale` separately from the unchanged input fixture. |
 | Selection, hover, filter, draft, ghost, panel, focus, and badge actions | `UI_LOCAL` | `[D]` Tests assert in-memory UI effects with empty writer requests where no explicit save occurs. |
 | Painting, semantics, inspector, readiness, and route navigation | `ZERO_WRITE` | `[D]` These families inspect output or change location without exercising a project writer. |
-| Wizard photo toggle, fit, warning, contour/candidate paint, and candidate taps | `UI_LOCAL` + `ZERO_WRITE` | `[D]` Tests prove the intake object/provider/debug JSON/facts/events remain unchanged and all four fake writer request lists remain empty. |
+| Wizard gate, photo toggle, aspect fit/fallback, composite paint, warning, and candidate taps | `UI_LOCAL` + `ZERO_WRITE` | `[D]` Tests prove the intake object/provider/debug JSON/facts/events remain unchanged and all four fake writer request lists remain empty. |
 | `Directory.systemTemp.createTempSync` and teardown deletion | `NONCANONICAL_FILE` test fixture | `[D]` The synchronous directory lifecycle is harness-only and outside product persistence. |
 | Empty recursive directory assertions after project-hub navigation | absent `NONCANONICAL_FILE` product output | `[D]` Exact-route tests verify navigation creates no project files. |
 | `File(...).readAsStringSync()` in the source-boundary test | `ZERO_WRITE` | `[D]` The guard reads production source text and does not modify it. |
@@ -111,11 +109,11 @@ evidence promotion remain owned by their exact production and semantic owners.
 | Measurement | `[D]` target, fake request, provider assertions | Filter, placement, inspector; production zones 4, 5, 10 | `UI_LOCAL` + exercised `CANONICAL_EVENT` | `integrated Measure panel saves measurement only from explicit Salvesta` | Focused family; full target for shared fake/state changes; broader Flutter for writer/model drift. |
 | Component create/edit | `[D]` two request-capturing fakes | Selection and stale projection; production zone 6 | exercised `CANONICAL_EVENT` | `Add Component right panel creates component identity only from explicit action`; `Board Canvas metadata edit saves selected component update explicitly` | Focused family; full target for fixture/fake changes; broader Flutter for writer/provider drift. |
 | Placement | `[D]` draft coordinates and placement fake | Canvas geometry and painter; production zones 7–9 | `UI_LOCAL` + exercised `CANONICAL_EVENT` | `Add Component Salvesta writes placement only on explicit user action`; `clicking board canvas moves Add Component ghost as local draft only` | Focused family; full target for shared placement helpers; broader Flutter for writer/coordinate drift. |
-| Canvas interaction/Wizard fit | `[D]` coordinate taps, transform control, dynamic Wizard fit inspection | Wizard render order, placement hit geometry, painter, semantics, badges; production zones 8, 9 | `UI_LOCAL` + `ZERO_WRITE` | `fits true contour min-max bounds proportionally and centers with locked padding clamps`; `initial fit runs once for each active project and intake`; existing transform/hit tests | Focused Wizard/geometry family; full target for shared transform helpers; broader Flutter for model/provider drift. |
-| Painter/Wizard/semantics | `[D]` dynamic painter/photo and label inspection plus static private-painter boundary | Hit geometry, filter, inspector, source-boundary guard; production zones 4, 8, 9 | `ZERO_WRITE` | Wizard render/copy/shared-transform/non-actionability tests; candidate rotation source guard; existing footprint/pin tests | Focused family; full target for painter/source helpers; broader Flutter for production painter/model drift. |
+| Canvas interaction/Wizard fit | `[D]` coordinate taps, transform control, aspect-aware fit inspection, and square fallback | Wizard render order, placement hit geometry, painter, semantics, badges; production zones 8, 9 | `UI_LOCAL` + `ZERO_WRITE` | landscape reference frame; legacy fallback; fit/padding; initial fit; existing transform/hit tests | Focused Wizard/geometry family; full target for shared transform helpers; broader Flutter for model/provider drift. |
+| Painter/Wizard/semantics | `[D]` composited pixel reads plus dynamic painter/photo and static private-painter inspection | Hit geometry, filter, inspector, source-boundary guard; production zones 4, 8, 9 | `ZERO_WRITE` | candidate/photo/canonical composite tests; non-actionability; candidate rotation; existing footprint/pin tests | Focused family; full target for painter/source helpers; broader Flutter for production painter/model drift. |
 | Inspector/evidence | `[D]` projected summaries and safety controls | Selection, measurement, painter; production zone 10 | `ZERO_WRITE` | `measurement summary shows safe copy and verbatim value`; `visual trace summary shows safe copy and metadata fields` | Focused family; full target for shared fixtures; broader Flutter for production projection/view drift. |
 | Rail/project/focus | `[D]` panel helpers, router path, viewports | Every reachable panel; production zones 1, 11, 12 | `UI_LOCAL` + `ZERO_WRITE` | `medium Workbench exposes Projekt rail action and exact hub`; `Projekt hub preserves existing panel modes and focus restoration` | Medium/wide/focus families; full target for panel/router helpers; broader Flutter for router/layout-owner drift. |
-| Boundary guards | `[D]` state, fake, filesystem, source assertions | Cross-cutting | observed `PROJECTION_STATE`; absent persistent writes | `Projekt hub actions navigate to exact existing routes without writes`; `board canvas source keeps read-only data-path boundaries` | Full target; broader Flutter whenever the imported production data path changes. |
+| Boundary guards | `[D]` zero-component state, fake, filesystem, and source assertions | Cross-cutting | observed `PROJECTION_STATE`; absent persistent writes | zero-component Wizard gate; Project hub no-write; source boundary | Full target; broader Flutter whenever the imported production data path changes. |
 
 A shared harness, provider override, fake, event builder, or cross-zone helper
 change has whole-file blast radius and requires the full target test file after
@@ -129,7 +127,7 @@ theme contract drift also requires broader `flutter test` validation.
 | State and mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Empty/loaded state, shell, route, provider, and projection assertions. |
 | Interaction and routing | `_selectPlacement`, `_openSafetyEvidence`, `_openWideContextMode`, `_tapCanvasAtNormalized`, `_tapWidgetByKey`, `_pumpUntilRouterPath`, `_hoverWidgetByKey` | Selection, rail/panel/focus, canvas, hover, filter, and exact-route flows. |
 | Rendering | `_boardCanvasPainter`, painter field helpers, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry` | Footprints, pins, preview/dim/selection state, badges, semantics, and hit alignment. |
-| Wizard read-only overlay | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer` | Seven focused tests for presentation defaults, photo/warning states, shared fit, candidate rotation, non-actionability, and missing-intake preservation. |
+| Wizard read-only overlay | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_compositedPixelColor` | Thirteen focused tests for zero-component presentation, aspect/fallback geometry, final composite z-order, photo/warning states, shared fit, candidate rotation, non-actionability, and missing-intake preservation. |
 | Writer boundaries | Four event JSON builders; `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_FakePlacementWriter`, `_FakeSaveMeasurementWriter` | Explicit saves, validation guards, errors, idempotency, returned events, and stale projection. |
 | Boundary regression | Synchronous temp directories; `board canvas source keeps read-only data-path boundaries` | Navigation no-write proof and selected static data-path exclusions. |
 
@@ -148,6 +146,9 @@ theme contract drift also requires broader `flutter test` validation.
 - `[P]` Wizard fixture/fit/photo/painter changes can make photo, contour, and
   candidates disagree while existing Board placements still pass; the shared
   transform identity and true-bounds assertions must move together.
+- `[P]` Finder/key-only assertions cannot prove final visibility when a later
+  opaque painter covers an earlier layer; the composited-pixel tests preserve
+  that distinction.
 - `[P]` Static `canvas.rotate` boundary assertions must distinguish the private
   non-interactive Wizard painter from `_BoardPlacementPainter`; a blanket
   prohibition would reject required candidate rotation.
@@ -164,7 +165,7 @@ theme contract drift also requires broader `flutter test` validation.
 | --- | --- | --- | --- |
 | One navigator/filter assertion | `_selectPlacement`, `_hoverWidgetByKey` | Painter, measurement targets, responsive reachability | Exact navigator/filter family |
 | One painter or hit-alignment assertion | `_boardCanvasPainter`, `_tapCanvasAtNormalized` | Semantics, badges, selection | Exact footprint/geometry family |
-| One Wizard fit/render assertion | `_wizardIntakePainter`, `_wizardPhotoLayer` | `_inlineProjectState`, viewport teardown, existing placement painter/hit path | Exact Wizard overlay test(s) plus full target |
+| One Wizard fit/render assertion | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_compositedPixelColor` | `_inlineProjectState`, viewport/photo teardown, background and placement painters/hit path | Exact aspect/fallback or composite Wizard test(s) plus full target |
 | One measurement guard assertion | `_FakeSaveMeasurementWriter` | Targeting, provider stale state | Exact integrated Measure family |
 | One component writer assertion | `_FakeAddComponentWriter` or `_FakeEditComponentWriter` | Selection and returned-event state | Exact create or edit family |
 | One placement draft/save assertion | `_FakePlacementWriter`, `_tapCanvasAtNormalized` | Bounds, painter, provider state | Exact template/ghost/save family |
@@ -179,7 +180,7 @@ files, scope expansion, refactors, or protected-surface changes.
 | Observed test cohesion seam | Evidence | Authorization |
 | --- | --- | --- |
 | Repeated project fixtures and viewport setup | `[S]` Many families compose the same accepted state and surface sizes. | `NONE` |
-| Wizard-intake overlay fixtures and dynamic inspection | `[S]` Seven tests share one valid intake and private painter/photo observations. | `NONE` |
+| Wizard-intake overlay fixtures and dynamic/composite inspection | `[S]` Thirteen tests share valid intake variants and private painter/photo/pixel observations. | `NONE` |
 | Four writer doubles and event builders | `[S]` Request capture and result synthesis follow parallel test-only shapes. | `NONE` |
 | Router destination and temp-directory setup | `[S]` Exact-route checks share lifecycle and no-write assertions. | `NONE` |
 | Analytical behavior-family organization | `[S]` The flat test body contains recurring families without `group()` ownership. | `NONE` |
@@ -193,9 +194,9 @@ These observations neither recommend nor authorize extraction.
   `TEST_DRIFT`, or family-ownership `STRUCTURE_DRIFT`.
 - Recheck lifecycle claims when temp-directory creation, router settling,
   viewport teardown, provider overrides, or fake-writer result flow changes.
-- Recheck Wizard family claims when intake fixtures, shared-transform identity,
-  photo resolution/error state, candidate rotation, `IgnorePointer`, initial
-  fit, or static source-boundary assertions change.
+- Recheck Wizard claims when gate/aspect/fallback fixtures, shared transform,
+  composite pixels, photo errors, z-order, rotation, `IgnorePointer`, initial
+  fit, or static source-boundary checks change.
 - Recheck production-map coupling when linked Board Canvas zones or imported
   router, writer, model, provider, or theme contracts change materially.
 - Formatting, comments, imports, and physical line movement alone do not

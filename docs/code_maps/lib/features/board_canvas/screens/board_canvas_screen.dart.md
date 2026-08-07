@@ -4,17 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibilities`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_INTAKE_READ_PATH_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
 
 ## File purpose
 
-This file owns the Visual First Board Canvas screen: responsive Workbench shell,
-component navigation and selection, canvas interaction and rendering, contextual
-inspection, UI-local drafts, zero-write navigation to existing project views,
-read-only Wizard-intake photo/contour/candidate presentation, and explicit calls
-into four existing canonical writer services. It reads projected facts and
-noncanonical human-provided presentation input for display; source, tests,
-canonical owners, and active locks outrank this descriptive map.
+This file owns the Visual First Board Canvas screen: responsive Workbench,
+navigation/selection, rendering, inspection, UI-local drafts, zero-write route actions, read-only Wizard intake, and four existing writer calls. It displays
+projected/noncanonical input and keeps valid Wizard intake available with zero
+canonical components; source, tests, canonical owners, and locks outrank it.
 
 ## Responsibility zones
 
@@ -27,8 +24,8 @@ canonical owners, and active locks outrank this descriptive map.
 | 5. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `_appendMeasurementEventAndMarkStale` | Builds technician targets and drafts, invokes explicit measurement save, and mirrors the returned event into stale local projection state. |
 | 6. Component create/edit | `_RightPanelComponentCreationSection`, `_confirmRightPanelComponentCreation`, `_RightPanelMetadataEditSection`, `_confirmRightPanelMetadataEdit` | Validates explicit identity creation and selected-component metadata edits before calling their writers. |
 | 7. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_PlacementSaveTarget`, `_confirmAddComponentTemplatePlacement` | Owns template/ghost/editor drafts, normalized placement guards, and explicit visual-placement save. |
-| 8. Canvas interaction and Wizard presentation state | `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile`, `_renderedPlacementContains`, `_renderedPlacementCenter` | Handles tap selection, ghost dragging, pan/zoom reset, existing coordinate conversion/hit testing, UI-local photo visibility, safe project-relative photo resolution, and one initial fit per active project/intake. |
-| 9. Visual and Wizard rendering | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardPlacementPainter`, `_FootprintPreviewPainter`, `_RectangularPerimeterTemplatePreviewPainter`, `_footprintVisualKind`, `_footprintPinRenderPlan` | Fits true contour bounds, renders optional photo/closed contour/shape-size-rotation candidates read-only, then paints projected footprints, previews, cues, and semantics without writes. |
+| 8. Canvas interaction, gate, and Wizard presentation state | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile`, `_renderedPlacementContains`, `_renderedPlacementCenter` | Keeps valid intake/warning presentation available with zero components; handles tap selection, ghost dragging, pan/zoom reset, existing coordinate conversion/hit testing, UI-local photo visibility, safe project-relative photo resolution, and one initial fit per active project/intake. |
+| 9. Visual and Wizard rendering | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `_FootprintPreviewPainter`, `_RectangularPerimeterTemplatePreviewPainter`, `_footprintVisualKind`, `_footprintPinRenderPlan` | Maps normalized points through the optional rectangular aspect, fits true contour bounds, and paints background/grid → optional photo → Wizard geometry → canonical placements, with controls above the canvas and no writes. |
 | 10. Inspector and evidence | `_InspectorPanel`, `_PhotoAlignmentReadinessPanel`, `_BoardCanvasSafetyEvidenceDisclosure`, `_MeasurementSummaryCard`, `_VisualTraceMetadataCard` | Presents placement, measurement, alignment, safety, and visual-trace context without promoting evidence. |
 | 11. Rail, focus, responsive chrome | `_WorkbenchToolRail`, `_WorkbenchPanelModeButton`, `_CanvasFocusButton`, `_CanvasFocusRestoreBar`, `_BoardCanvasControlBand` | Adapts medium/wide layout, panel topology, rail actions, and canvas-focus chrome. |
 | 12. Project navigation hub | `_WorkbenchContextPanelMode.projectNavigation`, `_ProjectNavigationHub`, `_action` | Exposes seven existing project-view destinations through `context.go`; it owns no route definition or persistence. |
@@ -47,10 +44,13 @@ canonical owners, and active locks outrank this descriptive map.
 - `[D]` `_CanvasPanelState` resolves the optional project-relative photo,
   keeps visibility UI-local and off by default, and schedules exactly one
   identity-based fit reset for each active project/intake pair.
-- `[D]` `_WizardIntakeFitTransform` derives min/max contour bounds, centered
-  proportional scale, and 3%-of-shorter-side padding clamped to 16–28 px. The
-  photo layer and painter receive the same transform; neither feeds existing
-  board placement hit testing or normalized request geometry.
+- `[D]` The gate uses the canonical no-components empty state only when intake
+  and intake warning are both absent; presentation creates no component.
+- `[D]` `_WizardIntakeFitTransform` maps `(x * aspect, y)`, uniformly fits true
+  contour bounds with existing padding, uses legacy `1.0`, and shares one full
+  rectangular photo/contour/candidate frame.
+- `[D]` `_buildCanvas` separates `_BoardBackgroundPainter` from `_BoardPlacementPainter`: background/grid, photo, Wizard, canonical
+  placements, controls. Wizard geometry never enters placement hit/request flow.
 - `[D]` `_WizardIntakePainter` is under `IgnorePointer`; candidate rotation is
   a private paint operation and the warning is verbatim, non-modal display.
 - `[D]` The `Projekt` rail action selects the project-navigation context mode;
@@ -69,7 +69,7 @@ canonical owners, and active locks outrank this descriptive map.
 | --- | --- | --- |
 | `projectStateProvider`, `ProjectState` | input and local projection update | Supplies accepted project state and receives post-write stale-state mirroring. |
 | `ComponentFact`, `ComponentVisualPlacementFact`, `MeasurementFact`, `VisualTraceFact`, `KnownFacts` pin projection | input | Projected facts used for targeting, inspection, badges, and rendering. |
-| `WizardIntake`, `WizardPhotoTransform`, `WizardVisualCandidate` | noncanonical input | Supplies human-provided photo, contour, and candidate presentation values; it proves no identity, placement, connectivity, measurement, or diagnosis. |
+| `WizardIntake`, `WizardPhotoTransform`, `WizardVisualCandidate` | noncanonical input | Supplies optional reference-frame aspect plus human-provided photo, contour, and candidate presentation values; it proves no identity, placement, connectivity, measurement, or diagnosis. |
 | `dart:io` `Directory`, `File` | local read input | Resolves and reads only the model-validated project-relative background-photo path for optional display. |
 | `v2AddComponentWriterProvider` | outbound | Existing `component_created` writer boundary. |
 | `v2EditComponentWriterProvider` | outbound | Existing `component_updated` writer boundary. |
@@ -92,7 +92,7 @@ canonical owners, and active locks outrank this descriptive map.
 | `_appendMeasurementEventAndMarkStale` | `PROJECTION_STATE` | `[D]` Deduplicates the returned event in local provider state and marks projection stale. |
 | Selection, preview, filtering, drafts, ghost drag, focus, rail, badge visibility | `UI_LOCAL` | `[D]` Mutated only through widget state/controllers and callbacks. |
 | `_wizardPhotoVisible`, `_scheduleWizardInitialFit` | `UI_LOCAL` | `[D]` Toggle/reset only transient presentation and the existing `TransformationController`; no provider, file, or writer mutation occurs. |
-| `_wizardPhotoFile`, `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_buildWizardWarning` | `ZERO_WRITE` | `[D]` Resolve/read/display optional presentation input, derive pixels, and paint under `IgnorePointer`; no candidate edit, hit-test, request, event, fact, or canonical-coordinate call path exists. |
+| Gate, `_wizardPhotoFile`, `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_buildWizardWarning` | `ZERO_WRITE` | `[D]` Choose presentation, resolve/read/display optional input, derive rectangular pixels, and paint under `IgnorePointer`; no candidate edit, hit-test, request, event, fact, or canonical-coordinate call path exists. |
 | Project rail mode → `_ProjectNavigationHub` → `context.go` | `UI_LOCAL` + `ZERO_WRITE` | `[D]` Selects a context panel and changes location only; it calls no project writer and creates no project file. |
 | Painters, inspectors, summaries, category/measurement helpers | `ZERO_WRITE` | `[D]` Consume inputs and return widgets, paint output, labels, or derived collections. |
 | Noncanonical project-file output | `NONCANONICAL_FILE` | `[D]` No such write call path exists in this source. |
@@ -108,6 +108,9 @@ pins, pads, measurements, traces, nets, electrical function, and fault truth.
 - `[D]` `_WizardIntakePhotoLayer` and `_WizardIntakePainter` are
   `IgnorePointer` presentation layers. Photo transforms, fitted contour pixels,
   candidate shapes/sizes/rotations, and their label/count remain noncanonical.
+- `[D]` `_BoardBackgroundPainter` owns only opaque board/grid pixels;
+  `_BoardPlacementPainter` owns canonical placement pixels above the Wizard
+  layers. The separation changes no placement model or writer flow.
 - `[D]` The Wizard warning and missing/render-failure photo states are neutral
   display states; the Canvas remains available and no intake repair occurs.
 - `[D]` Navigator drill-down, hover preview, hide-unmeasured filtering,
@@ -132,8 +135,8 @@ pins, pads, measurements, traces, nets, electrical function, and fault truth.
 | Measurement entry | `[D]` target/draft/save flow | `[P]` selected placement and stale-state mirroring | `CANONICAL_EVENT` | Protected writer/measurement semantics; exclude badges | `integrated Measure panel saves measurement only from explicit Salvesta` |
 | Component create/edit | `[D]` guarded writer calls | `[P]` selection and stale projection | `CANONICAL_EVENT` | Protected identity/event semantics; split create from edit | `Add Component right panel creates component identity only from explicit action`; `Board Canvas metadata edit saves selected component update explicitly` |
 | Placement draft/save | `[D]` local draft plus guarded save | `[P]` coordinates, template ID, first placement | `UI_LOCAL` + `CANONICAL_EVENT` | Protected placement geometry/event semantics | `Paiguta canvasele starts only the existing local placement flow`; `Add Component Salvesta writes placement only on explicit user action` |
-| Canvas interaction and Wizard presentation | `[D]` tap/drag/transform/hit path plus UI-local photo toggle and one initial fit | `[P]` painter geometry, selection anchor, active project/intake identity | `UI_LOCAL` + `ZERO_WRITE` | Stop if Wizard layers enter hit testing, canonical coordinates, provider state, persistence, or writers | `initial fit runs once for each active project and intake`; `candidate interaction stays Wizard-local read-only with no canonical mutation or writer request`; existing pan/zoom and tap-selection tests |
-| Visual and Wizard rendering | `[D]` shared contour-fit transform, photo layer, private candidate painter, existing painter inputs | `[P]` render order, photo resolution, hit regions, filters, badges | `ZERO_WRITE` | Stop if renderer writes, candidates become actionable, or presentation becomes evidence/canonical data | Wizard overlay render/copy/shared-transform/geometry tests; `renders visual footprint forms for board placements`; `footprint pin visuals stay faithful to projected pin sources` |
+| Canvas interaction and Wizard presentation | `[D]` zero-component intake gate, tap/drag/transform/hit path, UI-local photo toggle, and one initial fit | `[P]` painter geometry, selection anchor, active project/intake identity | `UI_LOCAL` + `ZERO_WRITE` | Stop if Wizard layers enter hit testing, canonical coordinates, provider state, persistence, or writers | `zero components preserve the existing Wizard intake layer without canonical writes`; `initial fit runs once for each active project and intake`; existing pan/zoom and tap-selection tests |
+| Visual and Wizard rendering | `[D]` aspect-aware shared transform plus split background/photo/Wizard/placement painters | `[P]` render order, photo resolution, hit regions, filters, badges | `ZERO_WRITE` | Stop if renderer writes, candidates become actionable, canonical placements fall below Wizard layers, or presentation becomes evidence/canonical data | candidate/photo composite pixels; landscape/legacy geometry; canonical selection ring; existing footprint/pin tests |
 | Inspector/evidence | `[D]` projected summaries and safety copy | `[P]` selection and evidence-floor wording | `ZERO_WRITE` | Exclude confirmation and electrical proof | `readiness panel remains project-level metadata with selection, inspector, measurement, and visual trace state`; `visual trace summary shows safe copy and metadata fields` |
 | Rail/focus/responsive | `[D]` rail controls and responsive composition | `[P]` panel topology and canvas space | `UI_LOCAL` | Stop on route/topology expansion; exclude writers | `focus canvas hides rail canvas chrome and restores read-only panel`; `wide Workbench rail opens placement and safety/evidence right panel modes` |
 | Project navigation | `[D]` project mode, seven fixed locations, `context.go` | `[P]` router definitions, rail/context-panel reachability, focus restoration | `UI_LOCAL` + `ZERO_WRITE` | Stop on route creation/rename or persistence; exclude writers | `Projekt hub actions navigate to exact existing routes without writes`; `Projekt hub preserves existing panel modes and focus restoration` |
@@ -147,7 +150,7 @@ does not require or authorize a test-file map.
 | --- | --- | --- |
 | State and harness | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness` | Empty/project state, optional intake/warning, responsive shell, direct route compatibility. |
 | Navigation and interaction | `_selectPlacement`, `_openSafetyEvidence`, `_openWideContextMode`, `_tapCanvasAtNormalized`, `_tapWidgetByKey`, `_pumpUntilRouterPath`, `_hoverWidgetByKey` | Drill-down, rail/focus/safety, Project Hub exact-route/no-write behavior, hover, filter, tap and placement selection. |
-| Wizard read-only overlay | `_wizardIntakePainter`, `_wizardPhotoLayer`; `Wizard intake read-only Canvas overlay` | Default candidates/hidden photo, exact toggle copy, shared fit, padding clamps, warning/unavailable states, one initial fit, rotation rendering, non-actionability, and no-intake preservation. |
+| Wizard read-only overlay | `_wizardIntakePainter`, `_wizardPhotoLayer`; `Wizard intake read-only Canvas overlay` | Zero-component gate, hidden/showing photo composite, background/Wizard/canonical z-order, rectangular/legacy geometry, shared fit, padding clamps, warning/unavailable states, one initial fit, rotation, non-actionability, and no-intake preservation. |
 | Painter and semantics | `_boardCanvasPainter`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry` | Footprint rendering, selection/hover distinction, badges, hit alignment, accessibility, and separation from the private Wizard painter. |
 | Writer boundaries | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_FakePlacementWriter`, `_FakeSaveMeasurementWriter` | Explicit writer calls, guard failures, idempotent returned events, stale projection status. |
 | Boundary regression | `board canvas source keeps read-only data-path boundaries` | Source-level guard against direct projection/file writes and forbidden promotion. |
@@ -163,6 +166,9 @@ does not require or authorize a test-file map.
 - `[P]` Wizard fit/photo/painter changes can desynchronize photo, contour, and
   candidate alignment or accidentally overlap existing placement interaction;
   all three Wizard layers must retain one shared transform and `IgnorePointer`.
+- `[P]` Recombining opaque background/grid and canonical placements in one
+  painter can hide either Wizard layers or placements, even when every painter
+  widget still exists.
 - `[P]` Photo-path resolution plus warning/unavailable presentation can drift
   into import, persistence, or blocking failure behavior if combined with
   provider or filesystem mutation.
@@ -190,7 +196,7 @@ does not require or authorize a test-file map.
 | One measurement-target guard | `_saveBlockReason`, `_MeasureTargetRow` | Selection and visible targets | Stop before writer/request changes; exclude badges | `integrated Measure panel target selection and draft capture stay local` |
 | One responsive correction | `_BoardCanvasControlBand`, `_WorkbenchToolRail`, `_CanvasFocusButton` | Panel topology and canvas constraints | Stop on route/action expansion; exclude writers | `medium navigator keeps all levels and filter action reachable` |
 | Painter surface detail | `_footprintVisualKind`, `_BoardPlacementPainter` | Hit geometry and semantics | Stop on semantic promotion; exclude interaction/writers | `renders visual footprint forms for board placements` |
-| One Wizard overlay rendering correction | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter` | `_CanvasPanelState`, existing placement painter/hit path, `ProjectState` model | Stop on interaction, persistence, canonical conversion, candidate editing, or writer calls | exact `Wizard intake read-only Canvas overlay` test(s) plus full Board Canvas target |
+| One Wizard overlay rendering correction | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter` | `_CanvasPanelState`, existing placement painter/hit path, `ProjectState` model | Stop on interaction, persistence, canonical conversion, candidate editing, or writer calls | exact zero-component/composite/landscape/legacy overlay tests plus full Board Canvas target |
 | One Project Hub label or existing destination | `_ProjectNavigationHub`, `_ProjectNavigationHub._action` | Router owner, rail mode, focus restoration | Stop on route creation/rename or persistence; exclude all writers | `Projekt hub actions navigate to exact existing routes without writes` |
 
 Safe slices are decomposition guidance only. They do not authorize work or
@@ -218,9 +224,9 @@ These observations neither recommend nor authorize extraction.
 - Recheck the map when responsibility ownership, writer providers/requests,
   post-write stale handling, selection/filter flow, geometry, or zero-write
   painter behavior changes.
-- Recheck the map when `ProjectState.wizardIntake` flow, photo resolution,
-  initial-fit identity, shared contour transform, overlay render order,
-  candidate rotation, `IgnorePointer`, or warning/unavailable behavior changes.
+- Recheck the map when the zero-component gate, intake/aspect/fallback flow,
+  photo/initial-fit/shared-transform behavior, z-order, candidate rotation,
+  `IgnorePointer`, or warning/unavailable behavior changes.
 - Recheck linked helpers and behavior-family tests when the Board Canvas test
   harness or test titles change materially.
 - Recheck the map when Project Hub destinations, `context.go` behavior, project
@@ -238,5 +244,7 @@ These observations neither recommend nor authorize extraction.
   their exact owners.
 - `[P]` `File` existence is not preflighted before the photo toggle is shown;
   decode/read failure is handled by the image layer's neutral render state.
+- `[D]` Missing aspect metadata is not inferred here; the explicit Canvas
+  fallback is square `1.0`, and exact legacy alignment is not claimed.
 - `[S]` Extraction seams are unmeasured hypotheses and cannot authorize files,
   refactors, scope, protected changes, or mandatory tests.

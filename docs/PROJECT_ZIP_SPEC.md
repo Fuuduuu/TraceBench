@@ -35,6 +35,32 @@ live merge.
   `PRESENTATION_INPUT`. Supported Project ZIP export/import round-trips must
   preserve the optional entry and its file content without interpreting it as
   canonical truth.
+- Under Wizard-intake schema `1.0`, optional top-level
+  `reference_frame_aspect_ratio` records `referenceWidth / referenceHeight`.
+  A present value must be a finite JSON number greater than zero. Typed
+  deterministic serialization places it immediately after `coordinate_space`.
+- New Wizard creation supplies a non-null reference-frame aspect and
+  `ProjectCreator` preserves it in both no-photo and copied-photo intake paths.
+  Directory, exact-path ZIP, and root-prefixed ZIP loading return the same
+  value.
+- Missing `reference_frame_aspect_ratio` is valid legacy input. Typed
+  reserialization omits it, Board Canvas uses the explicit square fallback
+  `1.0`, and the loader returns this exact nonblocking warning:
+
+  ```text
+  Selle projekti Wizardi aluskaadri kuvasuhe puudub. Kasutatakse legacy-ruutkaadrit; foto, kontuuri ja kandidaatide täpset joondust ei saa kinnitada. Täpne joondus nõuab migratsiooni või projekti uuesti loomist.
+  ```
+
+- An explicit JSON `null`, a non-number, a non-finite value, or a value at or
+  below zero is invalid reference-frame metadata and follows the existing
+  invalid-intake warning path.
+- Loaders never infer, backfill, rewrite, or migrate the aspect from photo
+  dimensions, contour/candidate bounds, viewport geometry, manifest data, or
+  archive layout. Old projects carry no exact-alignment claim; exact alignment
+  requires a separately scoped trustworthy migration or recreation through
+  the updated Wizard.
+- Project ZIP export/validation/import preserves the complete optional
+  `notes/wizard_intake.json` bytes, including the aspect field when present.
 - Absence of `notes/wizard_intake.json` is valid and produces no warning.
 - `notes/wizard_intake.json` never changes `events.jsonl`,
   `known_facts.json`, event semantics, materialization, evidence status, or

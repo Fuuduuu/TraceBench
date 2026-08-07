@@ -1,9 +1,76 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_PASS`
+Current pass: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS`
 
-## Live Wizard reference-frame geometry V1 SCOPE
+## Live Wizard reference-frame geometry V1 final LOCK
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+Lane: B
+Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+```
+
+The isolated worktree
+`C:\Users\Kasutaja\Desktop\TraceBench-board-canvas-intake-detour` is on
+`fix/board-canvas-wizard-intake-empty-components-gate` at
+`HEAD == origin/main == 51cb49c775324a5c36249c82b4d7c8a694747ae4`,
+subject `feat: add Wizard reference-frame geometry v1`, parent
+`9e0578e3a69851a89368164ba37e810eac84f6bd`, with divergence `0 0`, an empty
+entry worktree, and an empty staged set. The committed implementation changes
+exactly the reserved eleven paths with `1185` insertions and `183` deletions.
+
+The committed cycle records optional positive finite
+`reference_frame_aspect_ratio`; the first accepted Step 3 contour action
+latches one shared fitted Step 3/4 plane; letterbox bars are inert; Step 2
+preview parity remains out of scope; creator and directory/exact/root-prefixed
+ZIP load preserve the field; and Canvas maps `(x, y)` through
+`(x * aspect, y)` with uniform fit. The carried zero-component intake gate and
+bottom-to-top background/grid, optional photo, Wizard geometry, canonical
+placements, controls order are included. Missing legacy aspect uses explicit
+`1.0` plus the exact compatibility warning without inference, rewrite, or
+migration. Canonical placement, writer, event, fact, materializer, projection,
+measurement, net, and electrical semantics are unchanged.
+
+Accepted implementation evidence is recorded as focused Dart `304/304`,
+Project ZIP `37/37`, full Flutter `595/595`, `validate_all` `303/303`, doctor
+PASS, analysis clean, format clean, and diff checks PASS. Human evidence is
+`MANUAL_SMOKE_CHECKS: 22/22`, `MANUAL_SMOKE: PASS`, and
+`HUMAN_ATTESTATION: PASS`. Fresh project `prj_0a597f7a` has aspect
+`1.911214953271028`, a closed contour, `28` candidates, a photo, zero-byte
+`events.jsonl`, and empty canonical fact arrays. Legacy comparison project is
+`prj_12b1059f`.
+
+The implementation audit result supplied by the human is accepted with no
+blocker. Four non-blocking findings remain evidence only: a dynamic typed-field
+test assertion; a transitive non-null creation guarantee; explicit JSON null
+being invalid by contract; and no creator photo-copy test for a null legacy
+aspect. Existing optional-photo sample validation warnings remain
+pre-existing and non-blocking.
+
+This Phase 1 changes exactly the reserved fifteen docs/map paths. The seven
+refreshed maps and matching index rows are `REVIEW_REQUIRED`; the new LOCK
+artifact's designated verdict interior is empty and the ledger Status is
+neutral. The artifact owns the bounded mechanical promotion coordinates.
+
+The route is:
+
+```text
+TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS
+-> TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS
+-> TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+The original compact Child 2 worktree remains inspect-only with binary-diff
+hash `a3180b6f93832061ded7497f88de3616c126e2c9`, source/test worktree-byte
+SHA-256 values
+`3E759B8EB5822ADD72205B327BFB0AA15921F67AE3AA8B1B6B2F16592A8FDB4E` and
+`D58E8EE3294BDC38B55E42672CA58E241F06B1B3DA271A52378393536F6BF8C1`,
+and recovery-patch worktree-byte SHA-256
+`73FFC9112B1D366BCFF7167AF2852568299A7E1EFB1BCC38C3A2F8159223C221`.
+
+## Accepted Wizard reference-frame geometry V1 SCOPE (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_SCOPE_LOCK_PASS
@@ -111,9 +178,8 @@ cohesive intake model/test and focused loader ZIP test remain non-qualifying;
 Python tests remain outside Dart map bootstrap. Only the accepted committed
 reference-frame LOCK may resume compact Child 2.
 
-Only this five-file docs-only SCOPE is current authority. Implementation is
-conditional on independent SCOPE acceptance and exact human staging, commit,
-and push.
+This retained five-file SCOPE is historical authority for the committed
+implementation and current final LOCK; it is not the executable route owner.
 
 ## Superseded Board Canvas Wizard-intake empty-components gate detour SCOPE (retained contract)
 

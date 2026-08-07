@@ -42,12 +42,18 @@ for current validity.
   manufacturer, model, and revision. Future-AI copy is informational only.
 - Step 2 retains the optional background-photo path and UI-local alignment
   transform. Desktop supports the committed picker; mobile reports that the
-  action is unavailable and does not invoke the picker.
+  action is unavailable and does not invoke the picker. Its preview geometry
+  remains intentionally independent and is not required to match the later
+  Step 3/4 reference plane when their aspect ratios differ.
 - Step 3 retains the closed non-degenerate board-contour draft and owns its
-  live creation gate.
+  live creation gate. The first accepted contour action latches the current
+  inner-canvas width/height aspect as the authoritative authoring plane.
 - Step 4 retains human-created visual candidates and their presentation
-  geometry. They are noncanonical proposals, not component identity,
-  placement, measurement, diagnosis, or electrical facts.
+  geometry. Steps 3 and 4 center-fit the same latched reference rectangle;
+  photo, contour, candidates, pointer input, dragging, painting, and hit
+  testing use that rectangle, and letterbox bars are inert. Step 4 cannot
+  establish a second plane. Candidates are noncanonical proposals, not
+  component identity, placement, measurement, diagnosis, or electrical facts.
 - Step 5 retains all five raw human problem-description values and owns the
   nonblank-description creation gate.
 - Step 6 `Kontroll ja kinnitus` presents the complete draft, provides
@@ -63,7 +69,8 @@ for current validity.
   validation, skeleton and compatible manifest, always-written
   `notes/wizard_intake.json`, optional supported photo copy, zero-byte
   `events.jsonl` initialization, Python materializer invocation, loader-based
-  hydration, and generated-child-only cleanup.
+  hydration, and generated-child-only cleanup. Both no-photo and copied-photo
+  paths preserve the latched reference-frame aspect.
 - Successful creation hands the hydrated `ProjectState` to the app-owned
   provider exactly once before terminal navigation becomes available.
 - Step 7 `Projekt loodud` remains visible and shows project name, technical
@@ -81,6 +88,26 @@ human presentation input. Creation writes no canonical event, fact, component,
 placement, measurement, evidence, diagnosis, board-side, net, or electrical
 assertion. `events.jsonl` starts exactly empty and `known_facts.json` remains
 materializer-owned.
+
+New Wizard projects write the optional top-level
+`reference_frame_aspect_ratio` as `referenceWidth / referenceHeight` under the
+existing Wizard-intake schema `1.0`. Board Canvas maps normalized geometry
+through `(x * aspect, y)` with one uniform fit and gives the photo the complete
+rectangular reference frame. The visible stack order is background/grid,
+optional photo, read-only Wizard contour/candidates, canonical placements,
+then controls. A valid intake or intake warning keeps this presentation
+available when canonical components are empty.
+
+Legacy intake without the aspect remains loadable. Canvas uses the explicit
+square fallback `1.0`, and the loader returns:
+
+```text
+Selle projekti Wizardi aluskaadri kuvasuhe puudub. Kasutatakse legacy-ruutkaadrit; foto, kontuuri ja kandidaatide täpset joondust ei saa kinnitada. Täpne joondus nõuab migratsiooni või projekti uuesti loomist.
+```
+
+The aspect is never inferred or backfilled, and loading does not rewrite or
+migrate the project. Exact legacy alignment requires a separately scoped
+trustworthy migration or project recreation through the updated Wizard.
 
 ## Five event meanings
 

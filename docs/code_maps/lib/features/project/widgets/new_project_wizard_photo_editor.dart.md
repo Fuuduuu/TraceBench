@@ -3,179 +3,145 @@
 - Source: `lib/features/project/widgets/new_project_wizard_photo_editor.dart`
 - Type: `production`
 - Status: `MAINTAINED`
-- Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_NEW_PROJECT_WIZARD_PHOTO_ALIGNMENT_V1_LOCK_PASS.md`
+- Qualification: `AUTO — production file owns 5+ independently testable behaviors`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS.md`
 
 ## File purpose
 
-Provides the photo-only presentation and gesture child used by the New Project
-Wizard. It defines the immutable view-transform value, renders one local image
-with translation/scale/rotation/opacity and honest error/hidden states, and
-exposes visible drag, zoom, rotate, opacity, reset, replace, and remove
-controls. Authoritative path/transform state stays in the parent Wizard; this
-file owns only gesture-lifetime pixels and performs no file or canonical write.
+Provides the controlled, photo-only Step 2 editor. It defines an immutable
+view transform, renders one local image with honest hidden/error states,
+converts canvas drag pixels to normalized translation, and presents compact
+file, toolbar, opacity, and status controls. The parent Wizard owns path,
+transform, picker, clamp/reset policy, and persistence.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Transform value | `NewProjectWizardPhotoTransform`, `copyWith` | Carries only editor-normalized translation, scale, rotation, and opacity with defaults zero/1/0/0.65. |
-| Image and error rendering | `WizardPhotoImageBuilder`, `NewProjectWizardPhotoLayer`, `_buildRenderError`, `_buildPhoto` | Reads one source through `Image.file` or an injected builder and keeps render failure visible and non-destructive. |
-| Photo transform stack | `wizard-photo-stack`, `photo-layer`, `wizard-photo-translation-layer`, `wizard-photo-rotation-layer`, `wizard-photo-scale-layer`, `wizard-photo-opacity-layer` | Converts normalized translation to pixels and applies translation, rotation, scale, and opacity to the image only. |
-| Hidden-photo presentation | `Foto peidetud`, `transform.opacity == 0.0` | Keeps the photo widget/draft present at zero opacity while adding a visible status pill. |
-| Parent callback API | `NewProjectWizardPhotoEditor`, `onTranslationChanged`, `onScaleChanged`, `onRotationChanged`, `onOpacityChanged`, `onReset`, `onReplace`, `onRemove` | Receives authoritative values and emits requested mutations without retaining a second draft. |
-| Gesture-lifetime state | `_NewProjectWizardPhotoEditorState`, `_dragOrigin`, `_dragPixels`, `_startDrag`, `_updateDrag`, `_endDrag` | Converts one active pan from pixels to editor-normalized translation and clears ephemeral state at end/cancel. |
-| Canvas and visible controls | `_buildCanvas`, `_buildTransformControls`, `_buildOpacityControl`, `_buildDraftActions` | Renders wide/compact canvas height, zoom/rotation actions, 0–100% slider, reset, replace, remove, and transform status copy. |
-| Responsive presentation | `build`, `compact`, `wizard-photo-wide-controls`, `wizard-photo-compact-controls`, `_PhotoEditorPalette` | Switches control layout and canvas height without changing the parent-supplied draft. |
+| Transform value | `NewProjectWizardPhotoTransform`, `copyWith` | Carries translation, scale, rotation, and opacity with defaults zero/1/0/0.65. |
+| Image seam and failure | `WizardPhotoImageBuilder`, `NewProjectWizardPhotoLayer`, `_buildRenderError`, `_buildPhoto` | Uses injected widgets or read-only `Image.file` and keeps render failure honest. |
+| Photo transform stack | `wizard-photo-stack`, `photo-layer`, `wizard-photo-translation-layer`, `wizard-photo-rotation-layer`, `wizard-photo-scale-layer`, `wizard-photo-opacity-layer` | Converts normalized translation to pixels and applies transforms to the photo only. |
+| Hidden-photo state | `Foto peidetud`, `transform.opacity == 0.0` | Keeps the path/image subtree mounted while showing an explicit status. |
+| Controlled editor API | `NewProjectWizardPhotoEditor`, `onTranslationChanged`, `onScaleChanged`, `onRotationChanged`, `onOpacityChanged`, `onReset`, `onReplace`, `onRemove`, `compact` | Receives authoritative values and emits requested mutations without a second draft. |
+| Gesture lifetime | `_NewProjectWizardPhotoEditorState`, `_dragOrigin`, `_dragPixels`, `_dragPointer`, `_startDrag`, `_updateDrag`, `_endDrag` | Tracks one pointer and converts its accumulated pixels to editor-normalized translation. |
+| Canvas isolation | `_buildCanvas`, `RawGestureDetector`, `EagerGestureRecognizer`, `wizard-photo-canvas` | Keeps photo dragging inside the canvas while outside drag can scroll the page. |
+| Compact controls | `_buildToolbar`, `_buildOpacityControl`, `WizardCompactToolbar`, `WizardCompactIconAction`, `WizardCompactSlider`, `WizardCompactFileChip` | Presents accessible zoom/rotate/reset/replace/remove actions, opacity, path, and transform status. |
+| Responsive presentation | `build`, `wizard-photo-wide-controls`, `wizard-photo-compact-controls` | Selects 430/300 canvas height and caller-specified branch without changing draft semantics. |
+
+## Anchor inventory and verification
+
+Selection rule: extract every backtick-delimited token from the responsibility
+table's Stable symbol anchors column and de-duplicate in first-appearance
+order. All `43/43` selected anchors resolve as exact substrings in committed
+`HEAD`; zero are missing.
+
+## Qualification evidence
+
+The production file independently owns the immutable transform, photo/error
+layer, hidden state, one-pointer normalized drag, compact toolbar, opacity
+control, and responsive presentation. That exceeds the automatic five-
+behavior threshold without a size score or human override.
 
 ## State and data flow
 
-1. `[D]` `NewProjectWizardPhotoTransform` is immutable and defaults to
-   `Offset.zero`, scale `1.0`, rotation `0.0`, and opacity `0.65`.
-2. `[D]` `NewProjectWizardPhotoLayer` receives a required path and transform;
-   it owns no mutable draft and calls either the injected image builder or
-   `Image.file(File(photoPath), fit: BoxFit.contain)`.
-3. `[D]` Layout size converts normalized translation components into pixel
-   offsets. Rotation, scale, and opacity remain direct render inputs.
-4. `[D]` All four transforms wrap only the image/error subtree. The file has
-   no contour or component input and paints no future guide overlay.
-5. `[D]` At opacity `0.0`, `Opacity` keeps its child mounted and the layer
-   adds `Foto peidetud`; the path and transform are not cleared.
-6. `[D]` Render failure replaces visible image content with honest recovery
-   copy. It does not call a mutation callback or remove the draft.
-7. `[D]` On pan start, the child snapshots the parent translation and zeroes
-   accumulated pixels. Each update divides accumulated delta by current editor
-   width/height and emits a requested normalized translation.
-8. `[D]` The child does not clamp, normalize, or persist the emitted value;
-   the parent owns finite checks and authoritative assignment.
-9. `[D]` Zoom controls request multiplicative `1.25` changes and disable at
-   the visible `0.25`/`8.0` boundaries. Rotation controls request ±π/12.
-10. `[D]` The slider emits `0.0..1.0` in 100 divisions and displays a
-    rounded 0–100 percent value.
-11. `[D]` Reset, replace, and remove are separate parent callbacks; the child
-    does not infer how they mutate path, transform, opacity, or dirty state.
-12. `[D]` Compact mode changes canvas height and opacity-control arrangement
-    only; every authoritative value is re-read from the widget.
+1. The parent supplies path, immutable transform, compact mode, and callbacks.
+2. `NewProjectWizardPhotoLayer` converts normalized translation to current
+   layout pixels, then applies rotation, scale, and opacity only to the image.
+3. An injected image builder avoids filesystem use in tests; production uses
+   `Image.file` read-only with a visible recovery widget.
+4. Opacity zero preserves the transform/path and adds `Foto peidetud`.
+5. One pointer snapshots parent translation, accumulates pixel deltas, divides
+   by current editor width/height, and emits a requested normalized value.
+6. Toolbar actions request ×/÷1.25 scale within visible 0.25/8 boundaries,
+   ±π/12 rotation, or parent-owned reset/replace/remove operations.
+7. The 100-division slider emits 0..1 opacity. Rebuild always rereads parent
+   state and emits nothing by itself.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `dart:io` `File` | read-only display input | Supplies the selected local path to `Image.file`; no write method is called. |
-| `dart:math` | local presentation math | Supplies π for visible rotation steps and degree copy. |
-| Flutter Material | framework and rendering | Provides immutable widgets, gestures, layout, transforms, opacity, image display, semantics, and controls. |
-| Parent Wizard | inbound values / outbound callbacks | Owns path, transform, validation, dirty state, navigation, picker, replacement, and removal semantics. |
-
-There is no picker, provider, router, project model, canonical coordinate,
-writer, event/fact, projection, solver, or ZIP dependency.
+| `dart:io` `File` | read-only input | Supplies the selected path to `Image.file`; no write is called. |
+| `dart:math` | presentation math | Supplies π for rotation actions and degree copy. |
+| Flutter gestures/Material | framework UI | Supplies pointer arbitration, image rendering, transforms, semantics, and layout. |
+| Compact tokens/widgets | inbound presentation | Supply controlled toolbar, slider, file chip, and local styling. |
+| Parent Wizard | inbound state/outbound callbacks | Owns picker, clamp, normalization, reset, draft, and creation request. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `NewProjectWizardPhotoTransform` and `copyWith` | `UI_LOCAL` | Carry transient presentation values only. |
-| `_dragOrigin` and `_dragPixels` | `UI_LOCAL` | Exist only for one active gesture and clear at end/cancel. |
-| Parent mutation callbacks | `UI_LOCAL` | Emit requests; authoritative assignment remains in the parent Wizard. |
-| `Image.file(File(photoPath))` | `ZERO_WRITE` | Reads for display only; no copy, modify, metadata, sidecar, or project path follows. |
-| Transform, opacity, hidden, error, and control rendering | `ZERO_WRITE` | Build visible UI from supplied values without persistence. |
+| `_dragOrigin`, `_dragPixels`, `_dragPointer` | `UI_LOCAL` | Ephemeral gesture state only. |
+| Transform/action callbacks | `UI_LOCAL` | Request parent draft changes; child retains no authoritative copy. |
+| `Image.file` | `ZERO_WRITE` | Reads a display source and invokes no filesystem mutation. |
+| Layer, toolbar, slider, semantics, status | `ZERO_WRITE` | Render caller values only. |
 
-The path is not copied into a project and the transform is not a confirmed
-photo-to-board alignment. No `photo_local`, `board_normalized`, reference
-point, fact/event, file, projection, or project-state output exists.
+This file has no contour/candidate input and performs no event, fact,
+component, placement, measurement, coordinate, diagnosis, net, electrical,
+Project ZIP, creator, loader, provider, or router write.
 
 ## Zero-write zones
 
-- `[D]` The default image path is consumed only by `Image.file`.
-- `[D]` The injected builder is a test/render seam, not storage authority.
-- `[D]` Hidden/error presentation does not mutate the draft.
-- `[D]` Control presses call callbacks only.
-- `[D]` The child receives no contour or candidate data.
-- `[D]` Responsive rebuilds preserve no child-only authoritative controller.
+- Transform stack affects only display pixels.
+- Render failure never removes or mutates the draft.
+- Replace/remove/reset behavior is entirely parent callback policy.
+- Compact presentation does not change callback identity or accepted ranges.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Transform value/defaults | `[D]` Parent and all three Wizard layers share this value. | parent clamp/reset/replacement logic | `UI_LOCAL` | default 65%; parent bounds; retention |
-| Image/error layer | `[D]` Builder or `Image.file` supplies only visible content. | Wizard background reuse and manual smoke | `ZERO_WRITE` | render failure/recovery; layer integration |
-| Transform stack/order | `[D]` translation → rotation → scale → opacity wraps only image. | Step 3/4 layer order | `ZERO_WRITE` | opacity; normalized drag; integration invariance |
-| Hidden state | `[D]` zero opacity mounts image and status pill. | parent remove semantics | `ZERO_WRITE` | 0%; 100%; draft retained |
-| Gesture translation | `[D]` accumulated pixels divide by current canvas size. | ancestor page scrolling and parent finite checks | `UI_LOCAL` | normalized drag; compact scroll integration |
-| Zoom/rotation controls | `[D]` visible controls emit bounded-step requests. | parent clamp/normalization | `UI_LOCAL` | zoom/rotate control test; parent bounds |
-| Opacity control | `[D]` slider emits 101 values across `0.0..1.0`. | hidden state and parent clamp | `UI_LOCAL` | 0/65/100 percent |
-| Draft actions | `[D]` three independent callbacks carry no child mutation policy. | parent reset/replace/remove/dirty logic | `UI_LOCAL` | reset; error recovery; integration remove |
-| Responsive layout | `[D]` compact changes presentation only. | Wizard viewport and scroll behavior | `ZERO_WRITE` | wide/compact editor and integration tests |
+| Transform/layer | `[D]` Layout maps normalized translation and image transforms. | parent clamp and Step 3/4 photo use | `ZERO_WRITE` | default/hidden/100%; photo-only layering |
+| Gesture | `[D]` One pointer and editor dimensions derive emissions. | ancestor page scroll | `UI_LOCAL` | normalized drag; scroll isolation; cancellation integration |
+| Toolbar | `[D]` Controlled icon actions emit exact callbacks. | parent normalization/reset | `UI_LOCAL` | bounds, keyboard, once-only actions |
+| Opacity | `[D]` Controlled slider emits parent callback. | hidden copy and request | `UI_LOCAL` | 0/100%; request mapping |
+| Failure/recovery | `[D]` Error widget keeps actions present. | picker replacement/removal | `ZERO_WRITE` / `UI_LOCAL` | honest failure/recovery test |
+| Responsive | `[D]` `compact` selects keys and canvas height. | Wizard `1050` branch | `ZERO_WRITE` | wide/compact, 200% integration |
 
 ## Relevant tests and helpers
 
-Primary focused suite:
-`test/widget/new_project_wizard_photo_editor_test.dart`, 7 widget tests using
-`_PhotoEditorHarness` and an injected image builder. It covers default
-opacity and photo-only rendering, 0/100-percent opacity, visible zoom/rotation,
-normalized drag, reset preserving opacity, honest render error with recovery
-actions, and both control layouts.
-
-Integration suite:
-`test/widget/new_project_wizard_screen_test.dart` verifies parent filtering,
-clamping, rotation normalization, dirty ownership, replacement/removal,
-navigation/resize retention, compact drag-versus-scroll, and the same read-only
-photo layer below editable Step 3/4 geometry.
+`test/widget/new_project_wizard_photo_editor_test.dart` has 12 widget tests
+for no-photo parent state, defaults, hidden/full opacity, controls, normalized
+drag, reset, compact access, keyboard, scroll isolation, callback ownership,
+error recovery, and wide/compact layouts. The Wizard screen suite owns picker,
+parent clamp/normalization, retention, shared Step 3/4 layering, request, and
+mobile behavior.
 
 ## Dangerous combinations
 
-- `[D]` Changing transform order and parent normalization together can alter
-  visible alignment while tests still observe the same scalar values.
-- `[D]` Changing drag accumulation, canvas size, and responsive layout
-  together can make translation device-size dependent.
-- `[D]` Changing zero-opacity rendering and remove semantics together can
-  conflate hiding with draft deletion.
-- `[D]` Changing error rendering and recovery callbacks together can make a
-  failed image destructive or unrecoverable.
-- `[D]` Adding guide inputs, persistent state, a picker, canonical output, or
-  file-copy behavior would cross this child’s boundary.
+- Changing editor size and drag normalization together can hide coordinate
+  drift.
+- Changing gesture arbitration and ancestor scroll tests together can reenable
+  page motion during canvas drag.
+- Retaining transform state in the child would duplicate parent ownership.
+- Expanding the photo layer to contour/candidates would mix Step 2 with the
+  authoritative Step 3/4 reference plane.
+- Adding file mutation to recovery actions would cross protected boundaries.
 
 ## Safe SNIPER slices
 
-These are descriptive candidates only and authorize no work.
-
-- Transform-value-only: defaults/`copyWith` plus parent default/reset and
-  focused value assertions.
-- Layer-only: `NewProjectWizardPhotoLayer`, injected builder/error state, and
-  opacity/stack tests; exclude picker and parent draft policy.
-- Gesture-only: `_startDrag`/`_updateDrag`/`_endDrag`, normalized drag,
-  and compact integration scroll evidence.
-- One control family only: zoom/rotation, opacity, or draft actions plus parent
-  callback tests.
-- Responsive-only: `compact` branches and both viewport tests; preserve
-  authoritative parent values.
+- Photo layer transform or hidden state plus focused render assertions.
+- One toolbar action plus callback/keyboard assertion.
+- Gesture conversion plus scroll-isolation tests.
+- Render-error copy only while callbacks remain parent-owned.
+- Compact layout only while canvas and callback semantics stay fixed.
 
 ## Future extraction seams
 
-Descriptive, non-authorizing candidates:
-
-- `[S]` Pure transform sanitization remains a parent concern unless a later
-  scope explicitly moves ownership.
-- `[S]` Control groups could become presentational children if callbacks and
-  authoritative state remain explicit.
-- `[S]` The injected image builder could support broader rendering tests
-  without becoming a storage or canonical-photo abstraction.
+- `[S]` Pointer normalization could move to a pure helper if the parent-owned
+  transform and one-pointer lifecycle remain explicit.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when transform, layer, callback, gesture, control,
-or key anchors change; `FLOW_DRIFT` when transform order, drag conversion,
-hidden/error state, or callback flow changes; `BOUNDARY_DRIFT` when the child
-owns a path/transform, writes a file, receives guide state, or emits canonical
-output; `TEST_DRIFT` when the 7-test or integration contract changes; and
-`STRUCTURE_DRIFT` when ownership moves between parent and child.
+Review for `SYMBOL_DRIFT` on transform/layer/callback/toolbar/canvas anchors;
+`FLOW_DRIFT` on image, gesture, or callback ownership; `BOUNDARY_DRIFT` if
+file writes or contour/canonical paths enter; `TEST_DRIFT` when the 12-test
+family moves; and `STRUCTURE_DRIFT` if layer/editor ownership splits.
 
 ## Known uncertainty
 
-- `[D]` Focused render-error coverage uses the injected builder; actual
-  desktop decode/deleted-path behavior is manual-smoke evidence.
-- `[D]` The child defines visible zoom disable thresholds, while the parent
-  remains the authoritative clamp owner.
-- `[D]` Responsive automation covers 1440×900 and 390×760, not all pointer
-  devices or intermediate sizes.
-- `[D]` `Image.file` is verified as a read-only call path; zero-write is not
-  established by a filesystem monitor.
+- `[D]` Production render failure depends on platform image decoding; focused
+  tests inject the failure widget.
+- `[D]` Step 2 preview is intentionally independent of the Step 3/4 latched
+  reference frame.
+- `[P]` Visual styling is behavioral rather than golden-tested.

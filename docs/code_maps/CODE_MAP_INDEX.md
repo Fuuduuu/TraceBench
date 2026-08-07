@@ -15,6 +15,8 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/project/screens/new_project_wizard_screen.dart` | `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/widgets/new_project_wizard_photo_editor.dart` | `docs/code_maps/lib/features/project/widgets/new_project_wizard_photo_editor.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/widgets/new_project_wizard_problem_description.dart` | `docs/code_maps/lib/features/project/widgets/new_project_wizard_problem_description.dart.md` | production | `MAINTAINED` |
+| `lib/features/project/widgets/wizard_compact_tokens.dart` | `docs/code_maps/lib/features/project/widgets/wizard_compact_tokens.dart.md` | production | `MAINTAINED` |
+| `lib/features/project/widgets/wizard_compact_widgets.dart` | `docs/code_maps/lib/features/project/widgets/wizard_compact_widgets.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/project_creator.dart` | `docs/code_maps/lib/shared/services/project_creator.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |

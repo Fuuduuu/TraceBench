@@ -2,10 +2,71 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS`
+Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Wizard reference-frame geometry V1 final LOCK queue
+## Current Wizard compact-design V1 final LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+```
+
+Entry is `main` at
+`HEAD == origin/main == 3d4cac430d4700074a1480a98239a48ea2634443`, subject
+`feat: add Wizard compact shell workspaces and review`, with empty staged and
+unmerged sets. Phase 1 changes only this exact set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS.md`
+7. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+8. `docs/code_maps/lib/features/project/widgets/new_project_wizard_photo_editor.dart.md`
+9. `docs/code_maps/lib/features/project/widgets/new_project_wizard_problem_description.dart.md`
+10. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+11. `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md`
+13. `docs/code_maps/lib/features/project/widgets/wizard_compact_tokens.dart.md`
+14. `docs/code_maps/lib/features/project/widgets/wizard_compact_widgets.dart.md`
+
+The accepted chain is parent SCOPE `7a90cc7`, Child 1 `91fa53f`,
+reference-frame detour LOCK `4b17af0`, and Child 2 `3d4cac4`. Locked behavior
+is the existing seven-step creation flow with Steps 1/3/5 gates, gate-safe
+visited navigation, compact primitives and Step 2/5 editors, compact shell and
+progress, Step 3/4 workspaces preserving the shared fitted reference frame,
+complete non-ellipsized Step 6 with five edit routes, and persistent Step 7
+whose only open action goes to `/project`. `Järgmine samm` remains parent
+copy; no compact-navigation upcoming state is integrated.
+
+Responsive and accessibility behavior includes the `780` workspace threshold,
+wide/compact composition, keyboard/focus/tooltips/semantics, reduced motion,
+scroll/drag isolation, and 200% text-scale reachability. Creation, provider,
+persistence, Project ZIP, canonical facts/events/components/placements,
+measurement, coordinate, net, and electrical behavior remain unchanged.
+
+Human-supplied Child 2 evidence is manual smoke `10/10`, human attestation
+PASS, Wizard `76/76`, focused `369/369`, Project ZIP `37/37`, full Flutter
+`601/601`, validator `303/303`, and clean doctor/analyze/format/diff checks.
+Retained Child 2 NITs concern the deliberate `780–1049` side-by-side
+workspace, `SelectableText` technical ID without Copy ID, and compact progress
+implemented as `SingleChildScrollView` plus `Row`. Retained Child 1 decisions
+concern the removed opacity-value key, unused parent upcoming semantics, and
+popover viewport capture at open; no exact historical smoke count is stated.
+
+The two compact production files qualify for maps. The 467-line focused
+compact widget test does not qualify and remains unmapped. All eight actual
+map headers and matching index rows use the Phase 1 value `REVIEW_REQUIRED`.
+
+```text
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Wizard reference-frame geometry V1 final LOCK queue (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS

@@ -4,187 +4,144 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3,000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS.md`
 
 ## File purpose
 
-Exercises the seven-step New Project Wizard across retained drafts, advanced
-Step 1 fields, required gates, progress navigation, the Step 3-latched shared
-Step 3/4 fitted reference plane, contour/photo/visual-candidate editors,
-complete Step 6 review/edit flow, request construction, duplicate protection,
-exhaustive safe failure handling, exactly-once project handoff, persistent
-Step 7 success, and explicit `/project` navigation.
+Provides 76 widget tests for the complete New Project Wizard. Its in-memory
+router/platform/picker/creator harnesses verify the seven-step draft, compact
+presentation, shared reference geometry, gates/navigation, review/create,
+safe failures, exactly-once handoff, persistent success, and explicit route
+without writing canonical data or a real generated project.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Harness, platform, and success fixtures | `_TestPlatformInfo`, `_FakePhotoFilePicker`, `_buildWizardApp`, `_createdProjectState` | Supplies deterministic platform, picker, router, creation, and hydrated-state seams. |
-| Step 1 advanced draft | `Step 1 advanced drafts retain raw values and never change its gate`, `_completeStepOne` | Preserves primary/advanced raw values and the name-plus-parent gate. |
-| Live gates and visited progress | `Step 1 gate status and forward navigation update after editing`, `Step 3 and Step 5 visited statuses invalidate restore and guard forward navigation`, `create activation revalidates all three live required gates`, `_expectProgressStatus` | Proves gate-derived validity, independent visited state, and creation-time revalidation. |
-| Contour draft and shared reference plane | `explicit closure paints a closed loop and enables Edasi`, `Step 3 latches one fitted reference frame that Step 4 reuses after resize`, `_addTriangle`, `_contourCanvasRect`, `_componentCanvasRect` | Covers non-degenerate closure, first-action aspect latching, shared fitted Step 3/4 geometry, resize stability, inert letterbox bars, and the Step 3 gate. |
-| Visual candidates | `a new marker inherits the complete current style`, `candidate and current style survive navigation resize and photo changes` | Covers candidate style, geometry, persistence, and noncanonical presentation state. |
-| Photo draft | `photo stays below independent contour and candidate geometry`, `_openPhotoAlignmentStep` | Covers photo layering and independent transform ownership. |
-| Retention and Step 6 editing | `back and forward navigation preserve every Step 1 draft value`, `Step 6 shows the complete draft and all five edit round-trips`, `_openReviewStep` | Proves complete retained draft, summary content, and all five Muuda paths. |
-| Request construction | `creation request preserves every no-photo draft value exactly`, `creation request maps photo path and complete transform` | Proves exact no-photo and photo-backed typed request mapping. |
-| Duplicate activation | `pending activation is single-call and explicit retry is one call` | Proves pending suppression and one later retry. |
-| Exhaustive safe failure handling | `every typed failure and thrown exception is safely retryable` | Covers all result subtypes, sanitized UI copy, retry, and draft retention. |
-| Exactly-once handoff and Step 7 | `success hands off once, shows returned state, waits, then opens project` | Proves one callback, returned-state display, persistent terminal step, and explicit open. |
-| Pre-activation and route boundary | `creation and project routing stay inert until activation`, `_tapKey` | Proves no early creator/handoff/navigation and preserves the explicit route action. |
+| Test app and platform seams | `_buildWizardApp`, `_TestPlatformInfo`, `_MutableTestPlatformInfo`, `_FakePhotoFilePicker` | Hosts the Wizard with controlled routing, viewport, platform, picker, creator, and handoff collaborators. |
+| Navigation helpers | `_completeStepOne`, `_openContourStep`, `_openComponentPlacementStep`, `_openProblemDescriptionStep`, `_completeProblemDescription`, `_openReviewStep` | Drive legal step transitions through visible actions. |
+| Geometry helpers | `_contourCanvasRect`, `_componentCanvasRect`, `_tapContourAt`, `_tapComponentAt`, `_dragContourPoint`, `_dragComponentCandidate` | Derive pointer locations from rendered canvases and exercise normalized mapping. |
+| Draft/read helpers | `_progressStep`, `_ComponentStyleSnapshot`, `_paintedComponentStyles`, `_componentPainter` | Read progress, candidate style, and painter state. |
+| Step 1 and gate family | `seven-step shell renders the exact Estonian step labels`, `Step 1 renders all four locked fields`, `valid name and selected path advance to Step 2` | Proves step order, primary/advanced fields, destination/name gates, and retention. |
+| Contour/reference family | `Step 3 starts empty and keeps Edasi disabled`, `explicit closure paints a closed loop and enables Edasi`, `Step 3 latches one fitted reference frame that Step 4 reuses after resize` | Proves contour editing, closure gate, latched aspect, resize stability, and inert bars. |
+| Candidate family | `empty-canvas tap adds and selects one generic candidate`, `marker geometry uses relative size, floor, and shape ratios`, `Step 4 to Step 5 round-trip retains candidate geometry` | Proves noncanonical candidate add/select/style/drag/delete/retention and hit testing. |
+| Photo/problem family | `desktop picker uses the locked filter and default photo view`, `compact photo drag moves the photo without moving page scroll`, `effective Step 5 edit participates in dirty cancellation` | Proves optional photo/editor behavior, layering, compact drag isolation, problem draft, and cancellation. |
+| Compact responsive/accessibility family | `all locked shell breakpoints remain overflow-free`, `compact parent remains readable and reachable at 200% text`, `eligible progress actions support Enter and Space in order` | Proves shell/workspace thresholds, focus/keyboard/semantics, complete copy, and no overflow. |
+| Review/create/result family | `Step 6 shows the complete draft and all five edit round-trips`, `create activation revalidates all three live required gates`, `every typed failure and thrown exception is safely retryable` | Proves complete review, exact requests, duplicate guards, exhaustive failures, and retry retention. |
+| Handoff/success/route family | `creation and project routing stay inert until activation`, `success hands off once, shows returned state, waits, then opens project` | Proves provider callback ordering, persistent Step 7, one action, and explicit `/project`. |
 
 ## Anchor inventory and verification
 
-Selection rule: take every backtick-delimited token in the responsibility
-table's Stable symbol anchors column, split comma-separated tokens, trim, and
-de-duplicate in first-appearance order. The inventory has 29 unique anchors.
-
-- Literal helper/type anchors: 12; each resolves as an exact source substring.
-- Qualified member references: 0.
-- Exact test-name references: 17; each resolves as the complete string first
-  argument of one `testWidgets` declaration, including multiline calls.
+Selection rule: extract every backtick-delimited token from the responsibility
+table's Stable symbol anchors column and de-duplicate in first-appearance
+order. All `40/40` selected helper/type/test-title anchors resolve as exact
+substrings in committed `HEAD`; zero are missing.
 
 ## State and data flow
 
-1. `_buildWizardApp` mounts the real Wizard in a GoRouter-backed harness with
-   optional platform, picker, creator, and handoff seams.
-2. Helpers construct the Step 1, contour, candidate, photo, problem, and review
-   drafts through actual UI gestures.
-3. A geometry test records the first Step 3 editor aspect, resets and rebuilds
-   the contour, resizes the viewport, verifies both Step 3 and Step 4 use the
-   same fitted frame, and proves a letterbox tap creates no candidate.
-4. Gate tests edit previously visited required steps and prove status and
-   forward navigation derive from current Step 1/3/5 validity rather than
-   index ordering.
-5. Review tests inspect all retained values and round-trip each `Muuda` action.
-6. Request tests capture `ProjectCreationRequest` and compare every raw or
-   normalized field, including the latched aspect, nullable photo ownership,
-   and complete transform.
-7. Pending tests hold a creation future open to prove repeated activation
-   remains single-call, then allow one explicit retry.
-8. Failure tests feed every typed result plus a thrown exception; the Wizard
-   remains editable on Step 6 and exposes only fixed/sanitized copy.
-9. Success tests return a hydrated state, prove one handoff, inspect Step 7,
-   wait without redirect, then invoke the only explicit `/project` action.
-10. Tear-down restores surface size and global file-picker state.
+1. Harnesses inject fake platform, picker, creator, and handoff callbacks into
+   one Material/GoRouter app.
+2. Helper functions use visible controls and rendered canvas rectangles rather
+   than calling private production methods.
+3. Geometry tests compute pointer coordinates from current fitted surfaces,
+   then inspect painters, review values, and request snapshots.
+4. Responsive tests set and restore view size/text scale, exercising `1050`,
+   `780`, `820`, `600`, `560`, and `520` behavior families.
+5. Creation callbacks return typed results or throw; assertions inspect safe
+   UI state, invocation counts, handoff count, and router location.
+6. No harness invokes a real creator, filesystem writer, provider container,
+   materializer, exporter, or Project ZIP tool.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| Flutter test/Material | harness | Drives widgets, gestures, view sizes, semantics, and assertions. |
-| GoRouter | routing harness | Observes `/new-project` and explicit `/project` transitions. |
-| File picker | injected/global seam | Supplies folder and photo selection/cancel/error behavior. |
-| `NewProjectWizardScreen` | target | Owns draft, creation, failure, success, and navigation behavior. |
-| Wizard photo/problem widgets | coupled targets | Own specialized Step 2 and Step 5 editor inputs. |
-| `WizardIntake` and `ProjectCreator` types | contract fixtures | Capture requests, including reference-frame metadata, and return all typed outcomes. |
-| `ProjectState` models | success fixture | Supply terminal project name, technical ID, location, and intake. |
+| Flutter/`flutter_test` | test driver | Pumps, focuses, taps, drags, changes view/text scale, reads semantics and painters. |
+| GoRouter | local route harness | Proves cancellation and explicit success navigation. |
+| File picker platform interface | fake collaborator | Supplies deterministic desktop photo paths and cancellation/errors. |
+| Wizard screen/editor/models | mapped subject and values | Supplies all UI, request, result, and success behavior under test. |
+| Compact widget types | presentation inspection | Identifies shell/workspace composites and controlled presentation. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Draft gestures and progress navigation | `UI_LOCAL` | Mutate only mounted widget state. |
-| Captured creation requests | `ZERO_WRITE` | Inspect typed values without invoking production storage. |
-| Fake result callbacks | `ZERO_WRITE` | Return in-memory typed outcomes and count calls. |
-| Handoff callback | `PROJECTION_STATE` | Captures the hydrated state in test memory; no provider/file writer is used. |
-| Explicit GoRouter transition | `UI_LOCAL` | Changes only mounted route state. |
-| Source-boundary checks | `ZERO_WRITE` | Read source text to preserve absence of forbidden UI writer/raw-detail paths. |
+| Pumped Wizard draft, fake callbacks, counters, and router | `UI_LOCAL` | Mutate only in-memory test state. |
+| Fake creator request capture | `ZERO_WRITE` | Records typed input and returns configured value without disk access. |
+| Handoff capture | `PROJECTION_STATE` | Records callback invocation; no real app provider is assigned. |
+| Painter/semantics/review/request inspection | `ZERO_WRITE` | Reads rendered or captured state only. |
 
-No test calls production `ProjectCreator`, appends events/facts, creates
-canonical components/placements/measurements/evidence, or converts visual
-candidates into canonical assertions. Candidate and contour values remain
-noncanonical Wizard intake presentation.
+No test writes events, facts, components, placements, measurements, Project
+ZIP bytes, or generated project directories.
 
 ## Zero-write zones
 
-- Layout, fitted-frame/letterbox geometry, rendering, semantics, progress
-  status, cancellation, request capture, result switching, retry, terminal
-  display, and route observation are test-local.
-- Photo-picker fixtures expose paths/bytes only; this suite performs no
-  generated-project copy.
-- Failure assertions preserve `rawDetail` and exception text outside the
-  visible Wizard UI.
+- Picker, creator, and platform collaborators are fakes.
+- Contour/candidates remain widget-local visual drafts.
+- Router state stays inside the local harness.
+- View/text-scale mutations are restored with teardown.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Harness/helpers | [D] Shared helpers drive most families. | router, picker, platform, result models | test-local | all 70 tests |
-| Step 1/gates | [D] Current edits drive button/status assertions. | progress tile and creation guard | `UI_LOCAL` | advanced and live-gate tests |
-| Contour/reference frame/candidates/photo | [D] Gestures and widget rects inspect latching, fitted bounds, inert bars, and retained geometry. | both editor painters, Step 2 preview, intake request | `UI_LOCAL` | latch/resize/inert-bar plus editor/persistence families |
-| Step 6 review | [D] Every summary and edit link is traversed. | all Step 1–5 drafts | `UI_LOCAL` | complete review test |
-| Request mapping | [D] Captured object and the latched aspect are compared. | WizardIntake models and ProjectCreator contract | `ZERO_WRITE` | two request tests |
-| Pending/failure state | [D] Controlled futures/results expose transitions. | exhaustive result switch | `UI_LOCAL` | duplicate and failure tests |
-| Success/handoff | [D] counts, displayed state, and waiting are asserted. | app provider callback and router | `PROJECTION_STATE` / `UI_LOCAL` | success test |
-| Inert boundary | [D] pre-activation counts/routes and source checks are explicit. | writer and canonical surfaces | `ZERO_WRITE` | inertness test |
+| Step order/draft/gates | `[D]` Visible actions and fields are direct. | progress and cancellation | `UI_LOCAL` | Step 1, required gate, retention families |
+| Reference frame/contour | `[D]` Pointer positions derive from rendered rectangles. | photo and candidate painter | `UI_LOCAL` | latch, resize, inert bars, closure/edit tests |
+| Candidate workspace | `[D]` Style/painter/hit targets are inspected. | Step 3 plane and review | `UI_LOCAL` | add/drag/delete/style/hit/round-trip tests |
+| Compact presentation | `[D]` Keys, sizes, text, focus, and exceptions are read. | editor focused suites | `ZERO_WRITE` / `UI_LOCAL` | breakpoints, 200%, keyboard, drag isolation |
+| Review/request | `[D]` Complete values and captured request are compared. | intake/creator tests | `ZERO_WRITE` | five edits; no-photo/photo request tests |
+| Failure/duplicate | `[D]` Typed callbacks and invocation counts are controlled. | result hierarchy | `UI_LOCAL` | revalidation, pending, all failures |
+| Handoff/route | `[D]` Callback counts and route state are explicit. | app provider ordering | `PROJECTION_STATE` / `UI_LOCAL` | inert, success wait, open tests |
 
 ## Relevant tests and helpers
 
-The source contains 70 `testWidgets` tests across shell/Step 1, contour and
-shared reference-frame geometry,
-candidate, photo, problem, cancellation/responsive, progress, request,
-failure, success, and routing families. `_completeStepOne`,
-`_addTriangle`, `_openPhotoAlignmentStep`, and `_openReviewStep` build
-repeatable UI states. `_createdProjectState` supplies the typed terminal
-fixture. `_pumpFrames` provides bounded frame progress; the creation tests do
-not depend on an unbounded settle loop.
-
-Complementary app/provider ordering is covered in
-`test/widget/benchbeep_home_screen_test.dart`; storage behavior is covered by
-`test/unit/project_creator_test.dart`.
+The 76 tests form step/gate, contour/reference, candidate, photo, problem,
+cancellation, compact responsive/accessibility, review/request, failure,
+handoff, and route families. Direct companion evidence lives in
+`wizard_compact_widgets_test.dart`, both editor suites, creator/intake/loader
+tests, and Project ZIP tests.
 
 ## Dangerous combinations
 
-- Weakening live-gate tests while changing progress navigation can reintroduce
-  index-derived completion.
-- Replacing controlled pending futures with immediate results can hide
-  duplicate activation.
-- Asserting only one failure subtype can leave raw-detail or thrown-exception
-  paths unguarded.
-- Auto-navigating after success would invalidate Step 7 persistence and
-  provider-before-route ordering.
-- Invoking production storage in this suite would mix UI and filesystem
-  ownership.
-- Weakening fitted-frame or inert-bar assertions while changing both editor
-  stacks can hide mixed coordinate spaces or a second Step 4 plane.
-- Failing to restore surface size or `FilePicker.platform` can leak state into
-  unrelated widget suites.
+- Changing geometry helpers and expectations with production mapping can hide
+  a coordinate regression.
+- Changing fake creator behavior with duplicate/failure assertions can make a
+  second invocation invisible.
+- Changing breakpoint sizes and layout expectations together can stop testing
+  the exact threshold edges.
+- Replacing visible-control navigation with private-state manipulation would
+  weaken end-to-end gate proof.
+- Adding a real filesystem creator would cross the suite boundary.
 
 ## Safe SNIPER slices
 
-- Step 1 advanced/gate only: primary helpers and the advanced/live-gate tests.
-- One editor family only: its helpers, persistence tests, and request mapping.
-- Shared Step 3/4 plane only: `_contourCanvasRect`, `_componentCanvasRect`, the
-  exact latch/resize/inert-bar test, and both request tests; preserve Step 2.
-- Step 6 review/edit only: `_openReviewStep` and complete round-trip test.
-- Duplicate/failure state only: controlled creator callbacks and two focused
-  tests.
-- Terminal success only: success fixture, handoff count, wait, and explicit
-  route assertion.
+- One required gate and its progress/navigation test family.
+- Shared Step 3/4 frame helpers plus latch/resize/inert-bar tests.
+- One candidate behavior plus painter/hit-test assertion.
+- One breakpoint/accessibility scenario with explicit teardown.
+- Step 6 display only or one typed result only.
+- Step 7 handoff or explicit route only, preserving separation.
 
 ## Future extraction seams
 
-- [S] Geometry-heavy contour/candidate tests could split after shared gesture
-  helpers become a stable test utility.
-- [S] Creation-result tests could form a dedicated group if complete draft and
-  router harness ownership remain visible.
-- [S] Progress semantics could move to a focused suite after retaining
-  cross-step invalidation coverage.
+- `[S]` Geometry families could move to a focused suite after shared rendered-
+  rectangle helpers become stable.
+- `[S]` Typed result families could split while retaining full-draft and
+  router/handoff visibility.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when fitted-frame helpers, keys, result types, or
-test names change; `FLOW_DRIFT` when reference-plane ownership or draft/gate/
-create/handoff/navigation ordering changes; `BOUNDARY_DRIFT` when production
-storage, raw diagnostics, or canonical writes enter; `TEST_DRIFT` when the
-70-test family changes; and `STRUCTURE_DRIFT` when helper or test families
-split.
+Review for `SYMBOL_DRIFT` when helpers, exact test titles, keys, or production
+anchors change; `FLOW_DRIFT` when draft/gate/reference/create/handoff order
+changes; `BOUNDARY_DRIFT` if real persistence/canonical fixtures enter;
+`TEST_DRIFT` when the 76-test families move; and `STRUCTURE_DRIFT` when
+harnesses or major families split.
 
 ## Known uncertainty
 
-- [D] Provider assignment itself belongs to the app suite; this file proves
-  only the Wizard callback count and ordering.
-- [D] Persistent project bytes belong to ProjectCreator unit tests and manual
-  smoke, not this widget suite.
-- [P] Golden/pixel-perfect rendering is not asserted; layout tests focus on
-  reachability, overflow, and behavioral geometry.
+- `[D]` Persistent project bytes and provider assignment are proved in their
+  owning suites, not here.
+- `[D]` `780–1049` side-by-side workspace and compact horizontal progress are
+  asserted as accepted deliberate presentation.
+- `[P]` Pixel-perfect styling is not golden-tested; behavioral geometry,
+  overflow, semantics, and text completeness are covered.

@@ -2,10 +2,101 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_COMPACT_SHELL_WORKSPACES_AND_REVIEW_V1_PASS`
+Current: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Wizard reference-frame geometry V1 final LOCK authority
+## Current Wizard compact-design V1 final LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 3d4cac430d4700074a1480a98239a48ea2634443`,
+subject `feat: add Wizard compact shell workspaces and review`, with empty
+staged and unmerged sets. Preserve all unrelated porcelain/untracked paths and
+`stash@{0}` exactly; they are outside this pass.
+
+### Exact Phase 1 write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS.md`
+7. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+8. `docs/code_maps/lib/features/project/widgets/new_project_wizard_photo_editor.dart.md`
+9. `docs/code_maps/lib/features/project/widgets/new_project_wizard_problem_description.dart.md`
+10. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+11. `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md`
+12. `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md`
+13. `docs/code_maps/lib/features/project/widgets/wizard_compact_tokens.dart.md`
+14. `docs/code_maps/lib/features/project/widgets/wizard_compact_widgets.dart.md`
+
+No fifteenth path is authorized. Runtime, tests, `docs/UI_WORKFLOWS.md`,
+`docs/PROJECT_ZIP_SPEC.md`, every other doc/map, scratch, `_incoming`,
+metadata, schemas, tools, packages, assets, staging, commit, push, reset,
+restore, stash, clean, and delete remain outside authority.
+
+### Locked committed behavior and evidence
+
+The accepted parent chain is parent SCOPE
+`7a90cc738c4940b7272487525f41bf8c8ebf410e`, compact primitives/editors
+Child 1 `91fa53f308e86143a6bfb5204a71c2411f8b22eb`, reference-frame detour final
+LOCK `4b17af06da81a64235cb4543b5c682481fe5484c`, and compact
+shell/workspaces/review Child 2
+`3d4cac430d4700074a1480a98239a48ea2634443`.
+
+The final contract preserves seven ordered steps; live Steps 1, 3, and 5
+gates; visited/gate-safe navigation; compact feature-local primitives; compact
+Step 2 and Step 5 editors; shell and progress presentation; Step 3/4
+workspace/inspector presentation with the accepted shared reference frame;
+complete non-ellipsized Step 6 with five `Muuda` routes; persistent Step 7
+without automatic redirect; and the sole `Ava projekt` action to `/project`.
+Parent navigation retains `Järgmine samm`; it does not consume
+`WizardCompactNavigation` upcoming-state semantics.
+
+Wide/compact integration keeps the `780` workspace threshold, keyboard,
+focus, tooltips, semantics, reduced motion, page-scroll/canvas-drag isolation,
+and 200% text-scale reachability without overflow. Creation, provider,
+persistence, Project ZIP, canonical facts/events/components/placements,
+measurement, coordinate, net, and electrical behavior remain unchanged.
+
+Human-supplied Child 2 evidence is `MANUAL_SMOKE: PASS 10/10`,
+`HUMAN_ATTESTATION: PASS`, Wizard `76/76`, focused `369/369`, Project ZIP
+`37/37`, full Flutter `601/601`, validator `303/303`, and clean
+doctor/analyze/format/diff checks. Its accepted non-blocking findings are the
+deliberate side-by-side Step 3/4 layout at widths `780–1049`, Step 7 technical
+ID as `SelectableText` without Copy ID capability, and compact progress using
+`SingleChildScrollView` plus `Row` rather than `ListView`.
+
+Carry Child 1's accepted decisions without repair: removal of
+`wizard-photo-opacity-value`; unused parent integration of
+`WizardCompactNavigation` upcoming semantics; and the non-blocking info
+popover viewport snapshot captured at open. No exact historical Child 1 smoke
+count is asserted.
+
+### Code-map and Phase 1 contract
+
+The compact token and compact widget production files qualify; the focused
+compact widget test is `NOT_APPLICABLE` and receives no map or index row. The
+eight listed maps are refreshed or created from committed `HEAD`, and their
+headers plus matching index rows use the Phase 1 value `REVIEW_REQUIRED`.
+The artifact has one empty verdict interior and the ledger row
+uses neutral `REVIEW_REQUIRED` status. Phase 2 may only record the returned
+verdict mechanically and promote exactly those eight map/index Status values.
+
+The strict route is:
+
+```text
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Wizard reference-frame geometry V1 final LOCK authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS

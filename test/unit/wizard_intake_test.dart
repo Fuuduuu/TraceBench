@@ -72,10 +72,12 @@ Matcher _formatErrorAt(String path) {
 void main() {
   group('WizardIntake valid parsing', () {
     test('parses the complete v1 contract into typed values', () {
-      final intake = WizardIntake.fromJson(_validIntakeJson());
+      final json = _validIntakeJson()..['reference_frame_aspect_ratio'] = 1.6;
+      final intake = WizardIntake.fromJson(json);
 
       expect(intake.schemaVersion, '1.0');
       expect(intake.coordinateSpace, 'wizard_normalized');
+      expect(intake.toJson()['reference_frame_aspect_ratio'], 1.6);
       expect(
         intake.problemDescription.occurrence,
         WizardProblemOccurrence.intermittent,
@@ -91,6 +93,13 @@ void main() {
         intake.visualCandidates.single.shape,
         WizardVisualCandidateShape.roundedRectangle,
       );
+    });
+
+    test('keeps missing reference-frame metadata null and omitted', () {
+      final intake = WizardIntake.fromJson(_validIntakeJson());
+
+      expect((intake as dynamic).referenceFrameAspectRatio, isNull);
+      expect(intake.toJson(), isNot(contains('reference_frame_aspect_ratio')));
     });
 
     test('parses minimal valid input with absent or null photo', () {
@@ -219,7 +228,7 @@ void main() {
 
   group('WizardIntake deterministic serialization', () {
     test('emits only known fields in the locked insertion order', () {
-      final json = _validIntakeJson();
+      final json = _validIntakeJson()..['reference_frame_aspect_ratio'] = 1.6;
       json['future_top_level'] = true;
       _object(json, 'problem_description')['future_problem'] = 'ignored';
       final intake = WizardIntake.fromJson(json);
@@ -229,6 +238,7 @@ void main() {
       expect(serialized.keys, <String>[
         'schema_version',
         'coordinate_space',
+        'reference_frame_aspect_ratio',
         'problem_description',
         'contour',
         'background_photo',
@@ -370,6 +380,30 @@ void main() {
         ),
         throwsA(_formatErrorAt(r'$.coordinate_space')),
       );
+    });
+
+    test(
+        'rejects every present non-positive, non-finite, or non-numeric aspect',
+        () {
+      final cases = <Object?>[
+        null,
+        0,
+        -1,
+        '1.6',
+        double.nan,
+        double.infinity,
+        double.negativeInfinity,
+      ];
+
+      for (final value in cases) {
+        final json = _validIntakeJson()
+          ..['reference_frame_aspect_ratio'] = value;
+        expect(
+          () => WizardIntake.fromJson(json),
+          throwsA(_formatErrorAt(r'$.reference_frame_aspect_ratio')),
+          reason: 'value: $value',
+        );
+      }
     });
 
     test('rejects missing and wrong-type top-level known fields', () {

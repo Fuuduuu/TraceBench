@@ -787,7 +787,8 @@ void main() {
     );
   });
 
-  testWidgets('a point can be selected, dragged, and clamped to the editor',
+  testWidgets(
+      'a point can be selected, dragged, and ignores out-of-frame moves',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -810,8 +811,8 @@ void main() {
     final moved = _paintedContourPoints(tester).first;
     expect(moved.dx, inInclusiveRange(0.0, 1.0));
     expect(moved.dy, inInclusiveRange(0.0, 1.0));
-    expect(moved.dx, closeTo(1.0, 0.001));
-    expect(moved.dy, closeTo(1.0, 0.001));
+    expect(moved.dx, closeTo(0.825, 0.001));
+    expect(moved.dy, closeTo(0.8, 0.001));
     expect(find.text('Punkt 1 valitud'), findsOneWidget);
   });
 
@@ -980,6 +981,73 @@ void main() {
     expect(_paintedContourPoints(tester), hasLength(3));
     expect(_paintedContourIsClosed(tester), isTrue);
     expect(find.text('Kontuur suletud'), findsOneWidget);
+  });
+
+  testWidgets(
+      'Step 3 latches one fitted reference frame that Step 4 reuses after resize',
+      (tester) async {
+    final picker = _FakePhotoFilePicker(<Object?>['C:/Photos/BOARD.JPG']);
+    _installPhotoPicker(picker);
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    await _openContourStep(tester);
+    final initialCanvas = _contourCanvasRect(tester);
+    final latchedAspect = initialCanvas.width / initialCanvas.height;
+    await _closeContour(tester);
+
+    await _tapKey(tester, 'wizard-back');
+    await _tapKey(tester, 'wizard-photo-pick');
+    await _tapKey(tester, 'wizard-photo-remove');
+    await _tapKey(tester, 'wizard-next');
+    await _tapKey(tester, 'wizard-contour-reset');
+    expect(_paintedContourPoints(tester), isEmpty);
+    await _closeContour(tester);
+
+    await tester.binding.setSurfaceSize(const Size(720, 1000));
+    await tester.pumpAndSettle();
+    final resizedCanvas = _contourCanvasRect(tester);
+    final resizedContourFrame = tester.getRect(
+      find.byKey(const ValueKey('wizard-contour-painter')),
+    );
+    expect(
+      (resizedCanvas.width / resizedCanvas.height - latchedAspect).abs(),
+      greaterThan(0.1),
+      reason: 'The resized editor must differ enough to exercise letterboxing.',
+    );
+    expect(
+      resizedContourFrame.width / resizedContourFrame.height,
+      closeTo(latchedAspect, 0.001),
+      reason: 'Step 3 must retain the first authoring-plane aspect.',
+    );
+
+    await _tapKey(tester, 'wizard-next');
+    final componentCanvas = _componentCanvasRect(tester);
+    final componentFrame = tester.getRect(
+      find.byKey(const ValueKey('wizard-component-painter')),
+    );
+    expect(
+      componentFrame.width / componentFrame.height,
+      closeTo(latchedAspect, 0.001),
+      reason: 'Step 4 must reuse the Step 3 reference plane.',
+    );
+    expect(componentFrame.size, resizedContourFrame.size);
+
+    final inertBarPoint = componentFrame.left > componentCanvas.left + 1
+        ? Offset(componentCanvas.left + 1, componentCanvas.center.dy)
+        : Offset(componentCanvas.center.dx, componentCanvas.top + 1);
+    expect(componentFrame.contains(inertBarPoint), isFalse);
+    await tester.tapAt(inertBarPoint);
+    await _pumpFrames(tester);
+    expect(
+      _paintedComponentCandidates(tester),
+      isEmpty,
+      reason: 'A letterbox tap must not create a visual candidate.',
+    );
   });
 
   testWidgets(
@@ -1650,7 +1718,7 @@ void main() {
   });
 
   testWidgets(
-      'selection and dragging change only the selected clamped position',
+      'selection and dragging change only the selected in-frame position',
       (tester) async {
     await tester.pumpWidget(
       _buildWizardApp(directoryPicker: () async => 'C:/projects'),
@@ -1670,8 +1738,8 @@ void main() {
     );
 
     var positions = _paintedComponentPositions(tester);
-    expect(positions.first.dx, closeTo(1.0, 0.001));
-    expect(positions.first.dy, closeTo(1.0, 0.001));
+    expect(positions.first.dx, closeTo(0.825, 0.001));
+    expect(positions.first.dy, closeTo(0.825, 0.001));
     expect(positions.last.dx, closeTo(0.75, 0.001));
     expect(positions.last.dy, closeTo(0.35, 0.001));
     expect(_paintedSelectedComponentDraftKey(tester), 1);
@@ -1684,10 +1752,10 @@ void main() {
     );
 
     positions = _paintedComponentPositions(tester);
-    expect(positions.first.dx, closeTo(1.0, 0.001));
-    expect(positions.first.dy, closeTo(1.0, 0.001));
-    expect(positions.last.dx, closeTo(0.0, 0.001));
-    expect(positions.last.dy, closeTo(0.0, 0.001));
+    expect(positions.first.dx, closeTo(0.825, 0.001));
+    expect(positions.first.dy, closeTo(0.825, 0.001));
+    expect(positions.last.dx, closeTo(0.175, 0.001));
+    expect(positions.last.dy, closeTo(0.025, 0.001));
     expect(_paintedSelectedComponentDraftKey(tester), 2);
     expect(find.text('2 komponent-kandidaati'), findsOneWidget);
   });
@@ -1989,9 +2057,18 @@ void main() {
     );
     await _tapKey(tester, 'wizard-next');
 
-    final contourStack = tester.widget<Stack>(
-      find.byKey(const ValueKey('wizard-contour-stack')),
-    );
+    final contourStack = tester
+        .widgetList<Stack>(
+          find.ancestor(
+            of: find.byKey(const ValueKey('wizard-contour-photo-layer')),
+            matching: find.byType(Stack),
+          ),
+        )
+        .firstWhere(
+          (stack) => stack.children.any(
+            (child) => child.key == const ValueKey('wizard-contour-painter'),
+          ),
+        );
     final contourPhotoIndex = contourStack.children.indexWhere(
       (child) => child.key == const ValueKey('wizard-contour-photo-layer'),
     );
@@ -2030,9 +2107,18 @@ void main() {
     final contourBefore = _paintedContourPoints(tester);
     await _tapKey(tester, 'wizard-next');
 
-    final componentStack = tester.widget<Stack>(
-      find.byKey(const ValueKey('wizard-component-stack')),
-    );
+    final componentStack = tester
+        .widgetList<Stack>(
+          find.ancestor(
+            of: find.byKey(const ValueKey('wizard-component-photo-layer')),
+            matching: find.byType(Stack),
+          ),
+        )
+        .firstWhere(
+          (stack) => stack.children.any(
+            (child) => child.key == const ValueKey('wizard-component-painter'),
+          ),
+        );
     final componentPhotoIndex = componentStack.children.indexWhere(
       (child) => child.key == const ValueKey('wizard-component-photo-layer'),
     );
@@ -3457,6 +3543,8 @@ void main() {
     );
     await _tapKey(tester, 'wizard-next');
     await _tapKey(tester, 'wizard-next');
+    final expectedReferenceFrameAspect =
+        _contourCanvasRect(tester).width / _contourCanvasRect(tester).height;
     await _closeContour(tester);
     final contour = List<Offset>.of(_paintedContourPoints(tester));
     await _tapKey(tester, 'wizard-next');
@@ -3487,6 +3575,10 @@ void main() {
     final intake = request.wizardIntake;
     expect(intake.schemaVersion, '1.0');
     expect(intake.coordinateSpace, 'wizard_normalized');
+    expect(
+      intake.toJson()['reference_frame_aspect_ratio'],
+      closeTo(expectedReferenceFrameAspect, 1e-9),
+    );
     expect(intake.backgroundPhoto, isNull);
     expect(intake.problemDescription.description,
         '  Toide katkeb.\nVahel taastub.  ');
@@ -3571,6 +3663,8 @@ void main() {
     editor.onOpacityChanged(0.42);
     await tester.pump();
     await _tapKey(tester, 'wizard-next');
+    final expectedReferenceFrameAspect =
+        _contourCanvasRect(tester).width / _contourCanvasRect(tester).height;
     await _closeContour(tester);
     await _tapKey(tester, 'wizard-next');
     await _tapKey(tester, 'wizard-next');
@@ -3580,6 +3674,10 @@ void main() {
 
     final request = captured!;
     expect(request.sourcePhotoPath, 'C:/Photos/BOARD.JPEG');
+    expect(
+      request.wizardIntake.toJson()['reference_frame_aspect_ratio'],
+      closeTo(expectedReferenceFrameAspect, 1e-9),
+    );
     final photo = request.wizardIntake.backgroundPhoto!;
     expect(photo.relativePath, 'photos/wizard_background.jpeg');
     expect(photo.transform.translation.x, 12.5);

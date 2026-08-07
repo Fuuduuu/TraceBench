@@ -8,6 +8,7 @@ class WizardIntake {
   WizardIntake({
     required this.schemaVersion,
     required this.coordinateSpace,
+    this.referenceFrameAspectRatio,
     required this.problemDescription,
     required this.contour,
     required this.backgroundPhoto,
@@ -22,6 +23,7 @@ class WizardIntake {
 
   final String schemaVersion;
   final String coordinateSpace;
+  final double? referenceFrameAspectRatio;
   final WizardProblemDescription problemDescription;
   final WizardContour contour;
   final WizardBackgroundPhoto? backgroundPhoto;
@@ -30,6 +32,8 @@ class WizardIntake {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schema_version': schemaVersion,
         'coordinate_space': coordinateSpace,
+        if (referenceFrameAspectRatio != null)
+          'reference_frame_aspect_ratio': referenceFrameAspectRatio,
         'problem_description': <String, dynamic>{
           'description': problemDescription.description,
           'occurrence': switch (problemDescription.occurrence) {
@@ -214,6 +218,8 @@ abstract final class _WizardIntakeParser {
       _fail(r'$.coordinate_space', 'unsupported value');
     }
 
+    final referenceFrameAspectRatio = _parseReferenceFrameAspectRatio(json);
+
     final problemDescription = _parseProblemDescription(
       _requiredObject(
         json,
@@ -232,11 +238,31 @@ abstract final class _WizardIntakeParser {
     return WizardIntake(
       schemaVersion: schemaVersion,
       coordinateSpace: coordinateSpace,
+      referenceFrameAspectRatio: referenceFrameAspectRatio,
       problemDescription: problemDescription,
       contour: contour,
       backgroundPhoto: backgroundPhoto,
       visualCandidates: visualCandidates,
     );
+  }
+
+  static double? _parseReferenceFrameAspectRatio(
+    Map<String, dynamic> json,
+  ) {
+    const key = 'reference_frame_aspect_ratio';
+    const path = r'$.reference_frame_aspect_ratio';
+    if (!json.containsKey(key)) {
+      return null;
+    }
+    final raw = json[key];
+    if (raw is! num) {
+      _fail(path, 'must be a finite number greater than zero');
+    }
+    final value = raw.toDouble();
+    if (!value.isFinite || value <= 0) {
+      _fail(path, 'must be a finite number greater than zero');
+    }
+    return value;
   }
 
   static WizardProblemDescription _parseProblemDescription(

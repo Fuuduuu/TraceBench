@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -70,6 +71,7 @@ ProjectState _inlineProjectState({
 
 WizardIntake _wizardIntake({
   WizardBackgroundPhoto? backgroundPhoto,
+  double? referenceFrameAspectRatio,
   List<WizardPoint> contourPoints = const <WizardPoint>[
     WizardPoint(x: 0.2, y: 0.1),
     WizardPoint(x: 0.8, y: 0.1),
@@ -87,7 +89,7 @@ WizardIntake _wizardIntake({
     ),
   ],
 }) {
-  return WizardIntake(
+  final intake = WizardIntake(
     schemaVersion: '1.0',
     coordinateSpace: 'wizard_normalized',
     problemDescription: const WizardProblemDescription(
@@ -100,6 +102,15 @@ WizardIntake _wizardIntake({
     contour: WizardContour(closed: true, points: contourPoints),
     backgroundPhoto: backgroundPhoto,
     visualCandidates: visualCandidates,
+  );
+  if (referenceFrameAspectRatio == null) {
+    return intake;
+  }
+  return WizardIntake.fromJson(
+    <String, dynamic>{
+      ...intake.toJson(),
+      'reference_frame_aspect_ratio': referenceFrameAspectRatio,
+    },
   );
 }
 
@@ -482,6 +493,88 @@ ProjectState _readProjectState(WidgetTester tester) {
     tester.element(find.byType(BoardCanvasScreen)),
     listen: false,
   ).read(projectStateProvider)!;
+}
+
+Future<Color> _compositedPixelColor(
+  WidgetTester tester, {
+  required Finder boundaryFinder,
+  required Offset globalPosition,
+}) async {
+  final boundary = tester.renderObject<RenderRepaintBoundary>(boundaryFinder);
+  final image = await tester.runAsync(
+    () => boundary.toImage(pixelRatio: 1),
+  );
+  if (image == null) {
+    throw StateError('Composite image capture did not complete.');
+  }
+  try {
+    final byteData = await tester.runAsync(
+      () => image.toByteData(format: ImageByteFormat.rawRgba),
+    );
+    if (byteData == null) {
+      throw StateError('Composite image did not expose RGBA pixel data.');
+    }
+    final localPosition = globalPosition - tester.getTopLeft(boundaryFinder);
+    final x = localPosition.dx.round().clamp(0, image.width - 1).toInt();
+    final y = localPosition.dy.round().clamp(0, image.height - 1).toInt();
+    final byteOffset = ((y * image.width) + x) * 4;
+    return Color.fromARGB(
+      byteData.getUint8(byteOffset + 3),
+      byteData.getUint8(byteOffset),
+      byteData.getUint8(byteOffset + 1),
+      byteData.getUint8(byteOffset + 2),
+    );
+  } finally {
+    image.dispose();
+  }
+}
+
+Future<void> _writeSolidColorPng(File file, Color color) async {
+  file.parent.createSync(recursive: true);
+  final recorder = PictureRecorder();
+  final canvas = Canvas(recorder);
+  canvas.drawRect(
+    const Rect.fromLTWH(0, 0, 8, 8),
+    Paint()..color = color,
+  );
+  final image = await recorder.endRecording().toImage(8, 8);
+  try {
+    final byteData = await image.toByteData(format: ImageByteFormat.png);
+    if (byteData == null) {
+      throw StateError('Solid-color photo fixture could not be encoded.');
+    }
+    file.writeAsBytesSync(byteData.buffer.asUint8List());
+  } finally {
+    image.dispose();
+  }
+}
+
+Future<void> _disposeSolidColorPhotoFixture(
+  WidgetTester tester, {
+  required File photoFile,
+  required Directory tempDirectory,
+}) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  await tester.pump();
+  await FileImage(photoFile).evict();
+  PaintingBinding.instance.imageCache
+    ..clear()
+    ..clearLiveImages();
+  await tester.runAsync(() async {
+    for (var attempt = 0; attempt < 20; attempt++) {
+      try {
+        if (tempDirectory.existsSync()) {
+          tempDirectory.deleteSync(recursive: true);
+        }
+        return;
+      } on FileSystemException {
+        if (attempt == 19) {
+          rethrow;
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      }
+    }
+  });
 }
 
 dynamic _boardCanvasPainter(WidgetTester tester) {
@@ -1033,6 +1126,492 @@ void main() {
       ),
     );
     const component = ComponentFact(componentId: 'cmp_wizard_host');
+
+    testWidgets(
+        'zero components preserve the existing Wizard intake layer without canonical writes',
+        (tester) async {
+      final intake = _wizardIntake(backgroundPhoto: photo);
+      final state = _inlineProjectState(
+        components: const [],
+        placements: const [],
+        projectDirectory: r'C:\project',
+        wizardIntake: intake,
+      );
+      final originalDebugJson = state.debugJson;
+      final addWriter = _FakeAddComponentWriter();
+      final editWriter = _FakeEditComponentWriter();
+      final placementWriter = _FakePlacementWriter();
+      final measurementWriter = _FakeSaveMeasurementWriter();
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          addComponentWriter: addWriter,
+          editComponentWriter: editWriter,
+          placementWriter: placementWriter,
+          measurementWriter: measurementWriter,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('No components recorded for this project.'),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_workspace_frame')),
+        findsOneWidget,
+      );
+      expect(find.text('Visuaalsed kandidaadid'), findsOneWidget);
+      expect(find.text('Näita taustafotot'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsNothing,
+      );
+
+      final dynamic painter = _wizardIntakePainter(tester);
+      expect(painter.coordinateSpace, 'wizard_normalized');
+      expect(painter.contourClosed, isTrue);
+      expect(painter.candidateCount, 1);
+      expect(painter.readOnly, isTrue);
+      final List<Offset> candidateCenters = List<Offset>.from(
+        painter.candidateCenters as Iterable,
+      );
+      final painterFinder =
+          find.byKey(const Key('board_canvas_wizard_intake_painter'));
+      await tester.tapAt(
+        tester.getTopLeft(painterFinder) + candidateCenters.single,
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('board_canvas_wizard_candidate_edit')),
+        findsNothing,
+      );
+      expect(find.textContaining('Muuda kandidaati'), findsNothing);
+      expect(find.textContaining('Salvesta kandidaat'), findsNothing);
+
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Peida taustafoto'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pump();
+      expect(find.text('Näita taustafotot'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsNothing,
+      );
+
+      final currentState = _readProjectState(tester);
+      expect(identical(currentState, state), isTrue);
+      expect(identical(currentState.wizardIntake, intake), isTrue);
+      expect(identical(currentState.knownFacts, state.knownFacts), isTrue);
+      expect(identical(currentState.events, state.events), isTrue);
+      expect(currentState.knownFacts.components, isEmpty);
+      expect(currentState.knownFacts.componentVisualPlacements, isEmpty);
+      expect(currentState.events, isEmpty);
+      expect(currentState.debugJson, originalDebugJson);
+      expect(addWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(placementWriter.requests, isEmpty);
+      expect(measurementWriter.requests, isEmpty);
+
+      const warning =
+          'Projekti visuaalset Wizardi alusinfot ei saanud laadida.';
+      ProviderScope.containerOf(
+        tester.element(find.byType(BoardCanvasScreen)),
+        listen: false,
+      ).read(projectStateProvider.notifier).state = _inlineProjectState(
+        components: const [],
+        placements: const [],
+        wizardIntakeWarning: warning,
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_warning')),
+        findsOneWidget,
+      );
+      expect(find.text(warning), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_interactive_viewer')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsNothing,
+      );
+      expect(
+        find.text('No components recorded for this project.'),
+        findsNothing,
+      );
+      expect(find.byType(AlertDialog), findsNothing);
+
+      ProviderScope.containerOf(
+        tester.element(find.byType(BoardCanvasScreen)),
+        listen: false,
+      ).read(projectStateProvider.notifier).state = _inlineProjectState(
+        components: const [],
+        placements: const [],
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text('No components recorded for this project.'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_workspace_frame')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_warning')),
+        findsNothing,
+      );
+      expect(addWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(placementWriter.requests, isEmpty);
+      expect(measurementWriter.requests, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'Wizard candidate pixel survives board background in the final composite',
+        (tester) async {
+      const boundaryKey = Key('board_canvas_wizard_candidate_composite');
+      final intake = _wizardIntake(
+        visualCandidates: const <WizardVisualCandidate>[
+          WizardVisualCandidate(
+            draftKey: 41,
+            position: WizardPoint(x: 0.5, y: 0.35),
+            shape: WizardVisualCandidateShape.circle,
+            sizeScale: 2,
+            rotationRadians: 0,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: boundaryKey,
+          child: _harness(
+            projectState: _inlineProjectState(
+              components: const [],
+              placements: const [],
+              wizardIntake: intake,
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final painterFinder =
+          find.byKey(const Key('board_canvas_wizard_intake_painter'));
+      expect(painterFinder, findsOneWidget);
+      final candidatePixel = await _compositedPixelColor(
+        tester,
+        boundaryFinder: find.byKey(boundaryKey),
+        globalPosition: tester.getCenter(painterFinder),
+      );
+
+      expect(
+        candidatePixel,
+        const Color(0xFF2A2416),
+        reason: 'The opaque center cross of the Wizard candidate must survive '
+            'the final Stack composite.',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'Wizard photo toggle changes final composite pixels with zero components',
+        (tester) async {
+      const boundaryKey = Key('board_canvas_wizard_photo_composite');
+      final tempDirectory =
+          Directory.systemTemp.createTempSync('tracebench_wizard_composite_');
+      final photoFile = File(
+        '${tempDirectory.path}${Platform.pathSeparator}photos'
+        '${Platform.pathSeparator}board.png',
+      );
+      addTearDown(() async {
+        await _disposeSolidColorPhotoFixture(
+          tester,
+          photoFile: photoFile,
+          tempDirectory: tempDirectory,
+        );
+      });
+      await tester.runAsync(
+        () => _writeSolidColorPng(photoFile, const Color(0xFF00FF00)),
+      );
+      const compositePhoto = WizardBackgroundPhoto(
+        relativePath: 'photos/board.png',
+        transform: WizardPhotoTransform(
+          translation: WizardPoint(x: 0, y: 0),
+          scale: 1,
+          rotationRadians: 0,
+          opacity: 1,
+        ),
+      );
+      final intake = _wizardIntake(
+        backgroundPhoto: compositePhoto,
+        referenceFrameAspectRatio: 2,
+        visualCandidates: const [],
+      );
+
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: boundaryKey,
+          child: _harness(
+            projectState: _inlineProjectState(
+              components: const [],
+              placements: const [],
+              projectDirectory: tempDirectory.path,
+              wizardIntake: intake,
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final painterFinder =
+          find.byKey(const Key('board_canvas_wizard_intake_painter'));
+      final imageContext = tester.element(painterFinder);
+      await tester.runAsync(
+        () => precacheImage(FileImage(photoFile), imageContext),
+      );
+      await tester.pump();
+      final hiddenPhotoPixel = await _compositedPixelColor(
+        tester,
+        boundaryFinder: find.byKey(boundaryKey),
+        globalPosition: tester.getCenter(painterFinder),
+      );
+
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_wizard_photo_layer')),
+        findsOneWidget,
+      );
+      final dynamic photoLayer = _wizardPhotoLayer(tester);
+      final Rect photoFrame =
+          photoLayer.fitTransform.normalizedCanvasRect as Rect;
+      expect(photoFrame.width / photoFrame.height, closeTo(2, 1e-9));
+      final visiblePhotoPixel = await _compositedPixelColor(
+        tester,
+        boundaryFinder: find.byKey(boundaryKey),
+        globalPosition: tester.getCenter(painterFinder),
+      );
+
+      expect(visiblePhotoPixel, isNot(hiddenPhotoPixel));
+      expect(
+        (visiblePhotoPixel.toARGB32() >> 8) & 0xFF,
+        greaterThan(((hiddenPhotoPixel.toARGB32() >> 8) & 0xFF) + 80),
+        reason: 'The solid green photo must contribute to the final composite '
+            'after the existing toggle is enabled.',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'canonical placement selection ring stays above visible Wizard layers',
+        (tester) async {
+      const boundaryKey = Key('board_canvas_placement_composite');
+      final tempDirectory = Directory.systemTemp
+          .createTempSync('tracebench_placement_composite_');
+      final photoFile = File(
+        '${tempDirectory.path}${Platform.pathSeparator}photos'
+        '${Platform.pathSeparator}board.png',
+      );
+      addTearDown(() async {
+        await _disposeSolidColorPhotoFixture(
+          tester,
+          photoFile: photoFile,
+          tempDirectory: tempDirectory,
+        );
+      });
+      await tester.runAsync(
+        () => _writeSolidColorPng(photoFile, const Color(0xFF00FF00)),
+      );
+      const compositePhoto = WizardBackgroundPhoto(
+        relativePath: 'photos/board.png',
+        transform: WizardPhotoTransform(
+          translation: WizardPoint(x: 0, y: 0),
+          scale: 1,
+          rotationRadians: 0,
+          opacity: 1,
+        ),
+      );
+      final intake = _wizardIntake(
+        backgroundPhoto: compositePhoto,
+        visualCandidates: const <WizardVisualCandidate>[
+          WizardVisualCandidate(
+            draftKey: 42,
+            position: WizardPoint(x: 0.5, y: 0.35),
+            shape: WizardVisualCandidateShape.circle,
+            sizeScale: 2,
+            rotationRadians: 0,
+          ),
+        ],
+      );
+      const placement = ComponentVisualPlacementFact(
+        componentId: 'cmp_layer_host',
+        coordinateSpace: 'board_normalized',
+        boardSide: 'top',
+        centerX: 0.5,
+        centerY: 0.5,
+        rotationDeg: 0,
+        width: 0.4,
+        height: 0.3,
+        sourceEventId: 'evt_layer_host',
+        status: 'user_confirmed_visual',
+      );
+
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: boundaryKey,
+          child: _harness(
+            projectState: _inlineProjectState(
+              components: const [
+                ComponentFact(componentId: 'cmp_layer_host'),
+              ],
+              placements: const [placement],
+              projectDirectory: tempDirectory.path,
+              wizardIntake: intake,
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      final imageContext = tester.element(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+      );
+      await tester.runAsync(
+        () => precacheImage(FileImage(photoFile), imageContext),
+      );
+      await tester.pump();
+      await tester.tap(
+        find.byKey(const Key('board_canvas_wizard_photo_toggle')),
+      );
+      await tester.pumpAndSettle();
+
+      final painterFinder = find.byKey(const Key('board_canvas_painter'));
+      final placementCenter = tester.getCenter(painterFinder);
+      await tester.tapAt(placementCenter);
+      await tester.pump();
+      expect(_painterSelectedPlacementKey(tester), isNotNull);
+
+      final selectionRingPixel = await _compositedPixelColor(
+        tester,
+        boundaryFinder: find.byKey(boundaryKey),
+        globalPosition: placementCenter + const Offset(0, -19),
+      );
+      expect(
+        selectionRingPixel,
+        const Color(0xFFE7C25A),
+        reason: 'The canonical placement selection ring must remain the '
+            'topmost canvas paint at its known edge pixel.',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'persisted landscape reference frame maps contour and candidates as landscape',
+        (tester) async {
+      final intake = _wizardIntake(
+        referenceFrameAspectRatio: 2,
+        contourPoints: const <WizardPoint>[
+          WizardPoint(x: 0.1, y: 0.2),
+          WizardPoint(x: 0.9, y: 0.2),
+          WizardPoint(x: 0.9, y: 0.8),
+          WizardPoint(x: 0.1, y: 0.8),
+          WizardPoint(x: 0.1, y: 0.2),
+        ],
+        visualCandidates: const <WizardVisualCandidate>[
+          WizardVisualCandidate(
+            draftKey: 51,
+            position: WizardPoint(x: 0.75, y: 0.25),
+            shape: WizardVisualCandidateShape.circle,
+            sizeScale: 1,
+            rotationRadians: 0,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [],
+            placements: const [],
+            wizardIntake: intake,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final dynamic painter = _wizardIntakePainter(tester);
+      final dynamic transform = painter.fitTransform;
+      final Rect sourceBounds = transform.sourceBounds as Rect;
+      final Rect referenceRect = transform.normalizedCanvasRect as Rect;
+      final Rect renderedContourBounds =
+          transform.renderedContourBounds as Rect;
+      final List<Offset> candidateCenters = List<Offset>.from(
+        painter.candidateCenters as Iterable,
+      );
+
+      expect(sourceBounds, const Rect.fromLTRB(0.2, 0.2, 1.8, 0.8));
+      expect(referenceRect.width / referenceRect.height, closeTo(2, 1e-9));
+      expect(
+        renderedContourBounds.width / renderedContourBounds.height,
+        closeTo(8 / 3, 1e-9),
+        reason: 'The persisted 2:1 plane must keep this contour landscape.',
+      );
+      expect(
+        candidateCenters.single,
+        Offset(
+          referenceRect.left + (referenceRect.width * 0.75),
+          referenceRect.top + (referenceRect.height * 0.25),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('legacy intake uses the explicit square reference fallback',
+        (tester) async {
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [],
+            placements: const [],
+            wizardIntake: _wizardIntake(),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final dynamic transform = _wizardIntakePainter(tester).fitTransform;
+      final Rect referenceRect = transform.normalizedCanvasRect as Rect;
+      expect(referenceRect.width / referenceRect.height, closeTo(1, 1e-9));
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets(
         'renders closed contour and read-only candidates by default while photo stays hidden',

@@ -446,6 +446,7 @@ WizardIntake _copyIntakeWithPhoto(
   return WizardIntake(
     schemaVersion: source.schemaVersion,
     coordinateSpace: source.coordinateSpace,
+    referenceFrameAspectRatio: source.referenceFrameAspectRatio,
     problemDescription: source.problemDescription,
     contour: source.contour,
     backgroundPhoto: backgroundPhoto,

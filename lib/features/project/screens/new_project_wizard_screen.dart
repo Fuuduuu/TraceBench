@@ -93,6 +93,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   int? _draggingContourPointIndex;
   int? _draggingContourPointer;
   bool _contourClosed = false;
+  double? _referenceFrameAspectRatio;
   final List<_WizardComponentCandidate> _componentCandidates =
       <_WizardComponentCandidate>[];
   int _nextComponentDraftKey = 1;
@@ -197,6 +198,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     final intake = WizardIntake(
       schemaVersion: '1.0',
       coordinateSpace: 'wizard_normalized',
+      referenceFrameAspectRatio: _referenceFrameAspectRatio,
       problemDescription: WizardProblemDescription(
         description: _problemDescriptionDraft.description,
         occurrence: switch (_problemDescriptionDraft.occurrence) {
@@ -611,24 +613,59 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     context.go('/project');
   }
 
-  Offset _normalizedContourPoint(Offset localPosition, Size editorSize) {
+  Rect _referenceFrameRect(Size editorSize) {
     if (editorSize.width <= 0 || editorSize.height <= 0) {
-      return Offset.zero;
+      return Rect.zero;
+    }
+    final aspect = _referenceFrameAspectRatio;
+    if (aspect == null) {
+      return Offset.zero & editorSize;
+    }
+    final editorAspect = editorSize.width / editorSize.height;
+    if (editorAspect > aspect) {
+      final width = editorSize.height * aspect;
+      return Rect.fromLTWH(
+        (editorSize.width - width) / 2,
+        0,
+        width,
+        editorSize.height,
+      );
+    }
+    final height = editorSize.width / aspect;
+    return Rect.fromLTWH(
+      0,
+      (editorSize.height - height) / 2,
+      editorSize.width,
+      height,
+    );
+  }
+
+  Offset? _normalizedReferenceFramePoint(
+    Offset localPosition,
+    Size editorSize,
+  ) {
+    final frame = _referenceFrameRect(editorSize);
+    if (frame.isEmpty || !frame.contains(localPosition)) {
+      return null;
     }
     return Offset(
-      (localPosition.dx / editorSize.width).clamp(0.0, 1.0).toDouble(),
-      (localPosition.dy / editorSize.height).clamp(0.0, 1.0).toDouble(),
+      (localPosition.dx - frame.left) / frame.width,
+      (localPosition.dy - frame.top) / frame.height,
     );
   }
 
   Offset _contourPointOnCanvas(Offset point, Size editorSize) {
+    final frame = _referenceFrameRect(editorSize);
     return Offset(
-      point.dx * editorSize.width,
-      point.dy * editorSize.height,
+      frame.left + (point.dx * frame.width),
+      frame.top + (point.dy * frame.height),
     );
   }
 
   int? _contourPointAt(Offset localPosition, Size editorSize) {
+    if (!_referenceFrameRect(editorSize).contains(localPosition)) {
+      return null;
+    }
     const hitRadius = 26.0;
     int? closestIndex;
     var closestDistance = double.infinity;
@@ -646,6 +683,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   void _handleContourTap(TapUpDetails details, Size editorSize) {
+    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
+      return;
+    }
     final selectedIndex = _contourPointAt(details.localPosition, editorSize);
     if (selectedIndex != null) {
       setState(() {
@@ -654,10 +694,14 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       return;
     }
 
+    final normalized =
+        _normalizedReferenceFramePoint(details.localPosition, editorSize);
+    if (normalized == null) {
+      return;
+    }
     setState(() {
-      _contourPoints.add(
-        _normalizedContourPoint(details.localPosition, editorSize),
-      );
+      _referenceFrameAspectRatio ??= editorSize.width / editorSize.height;
+      _contourPoints.add(normalized);
       _selectedContourPointIndex = _contourPoints.length - 1;
       _contourClosed = false;
       _draftTouched = true;
@@ -668,6 +712,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     PointerDownEvent details,
     Size editorSize,
   ) {
+    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
+      return;
+    }
     final selectedIndex = _contourPointAt(details.localPosition, editorSize);
     setState(() {
       _selectedContourPointIndex = selectedIndex;
@@ -690,7 +737,10 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       return;
     }
     final nextPoint =
-        _normalizedContourPoint(details.localPosition, editorSize);
+        _normalizedReferenceFramePoint(details.localPosition, editorSize);
+    if (nextPoint == null) {
+      return;
+    }
     if (_contourPoints[selectedIndex] == nextPoint) {
       return;
     }
@@ -750,17 +800,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     });
   }
 
-  Offset _normalizedComponentPosition(
+  Offset? _normalizedComponentPosition(
     Offset localPosition,
     Size editorSize,
   ) {
-    if (editorSize.width <= 0 || editorSize.height <= 0) {
-      return Offset.zero;
-    }
-    return Offset(
-      (localPosition.dx / editorSize.width).clamp(0.0, 1.0).toDouble(),
-      (localPosition.dy / editorSize.height).clamp(0.0, 1.0).toDouble(),
-    );
+    return _normalizedReferenceFramePoint(localPosition, editorSize);
   }
 
   String _componentShapeLabel(_WizardComponentShape shape) {
@@ -852,17 +896,22 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     Offset localPosition,
     Size editorSize,
   ) {
+    final referenceFrame = _referenceFrameRect(editorSize);
+    if (!referenceFrame.contains(localPosition)) {
+      return null;
+    }
+    final framePosition = localPosition - referenceFrame.topLeft;
     int? closestKey;
     var closestDistance = double.infinity;
     for (final candidate in _componentCandidates) {
       final geometry = _WizardComponentMarkerGeometry.fromCandidate(
         candidate,
-        editorSize,
+        referenceFrame.size,
       );
-      if (!geometry.hitBounds.contains(localPosition)) {
+      if (!geometry.hitBounds.contains(framePosition)) {
         continue;
       }
-      final distance = (geometry.centre - localPosition).distance;
+      final distance = (geometry.centre - framePosition).distance;
       if (distance < closestDistance) {
         closestKey = candidate.draftKey;
         closestDistance = distance;
@@ -872,6 +921,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   void _handleComponentTap(TapUpDetails details, Size editorSize) {
+    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
+      return;
+    }
     final selectedKey = _componentCandidateKeyAt(
       details.localPosition,
       editorSize,
@@ -887,13 +939,17 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       return;
     }
 
+    final normalized = _normalizedComponentPosition(
+      details.localPosition,
+      editorSize,
+    );
+    if (normalized == null) {
+      return;
+    }
     setState(() {
       final candidate = _WizardComponentCandidate(
         draftKey: _nextComponentDraftKey,
-        position: _normalizedComponentPosition(
-          details.localPosition,
-          editorSize,
-        ),
+        position: normalized,
         shape: _componentCurrentShape,
         sizeScale: _componentCurrentSizeScale,
         rotation: _componentCurrentRotation,
@@ -909,6 +965,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     PointerDownEvent details,
     Size editorSize,
   ) {
+    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
+      return;
+    }
     final selectedKey = _componentCandidateKeyAt(
       details.localPosition,
       editorSize,
@@ -948,6 +1007,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
       details.localPosition,
       editorSize,
     );
+    if (nextPosition == null) {
+      return;
+    }
     if (_componentCandidates[candidateIndex].position == nextPosition) {
       return;
     }
@@ -1772,6 +1834,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final editorSize = constraints.biggest;
+            final referenceFrame = _referenceFrameRect(editorSize);
             return Listener(
               onPointerDown: (details) =>
                   _handleContourPointerDown(details, editorSize),
@@ -1787,54 +1850,65 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                   key: const ValueKey('wizard-contour-stack'),
                   fit: StackFit.expand,
                   children: <Widget>[
-                    if (_photoPath != null)
-                      Positioned.fill(
-                        key: const ValueKey('wizard-contour-photo-layer'),
-                        child: IgnorePointer(
-                          child: NewProjectWizardPhotoLayer(
-                            key: const ValueKey(
-                              'wizard-contour-photo-view',
-                            ),
-                            photoPath: _photoPath!,
-                            transform: _photoTransform,
-                          ),
-                        ),
-                      ),
-                    CustomPaint(
-                      key: const ValueKey('wizard-contour-painter'),
-                      painter: _WizardContourPainter(
-                        points: List<Offset>.unmodifiable(_contourPoints),
-                        selectedIndex: _selectedContourPointIndex,
-                        closed: _contourClosed,
-                      ),
-                    ),
-                    if (_contourPoints.isEmpty)
-                      const IgnorePointer(
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.touch_app_outlined,
-                                  color: _WizardPalette.goldDim,
-                                  size: 34,
+                    Positioned.fromRect(
+                      rect: referenceFrame,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          if (_photoPath != null)
+                            Positioned.fill(
+                              key: const ValueKey(
+                                'wizard-contour-photo-layer',
+                              ),
+                              child: IgnorePointer(
+                                child: NewProjectWizardPhotoLayer(
+                                  key: const ValueKey(
+                                    'wizard-contour-photo-view',
+                                  ),
+                                  photoPath: _photoPath!,
+                                  transform: _photoTransform,
                                 ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Puuduta tühja ala, et lisada esimene punkt.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: _WizardPalette.muted,
-                                    fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          CustomPaint(
+                            key: const ValueKey('wizard-contour-painter'),
+                            painter: _WizardContourPainter(
+                              points: List<Offset>.unmodifiable(_contourPoints),
+                              selectedIndex: _selectedContourPointIndex,
+                              closed: _contourClosed,
+                            ),
+                          ),
+                          if (_contourPoints.isEmpty)
+                            const IgnorePointer(
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(24),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.touch_app_outlined,
+                                        color: _WizardPalette.goldDim,
+                                        size: 34,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Puuduta tühja ala, et lisada esimene '
+                                        'punkt.',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: _WizardPalette.muted,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                        ],
                       ),
+                    ),
                   ],
                 ),
               ),
@@ -2074,6 +2148,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final editorSize = constraints.biggest;
+            final referenceFrame = _referenceFrameRect(editorSize);
             return Listener(
               onPointerDown: (details) =>
                   _handleComponentPointerDown(details, editorSize),
@@ -2089,60 +2164,69 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                   key: const ValueKey('wizard-component-stack'),
                   fit: StackFit.expand,
                   children: <Widget>[
-                    if (_photoPath != null)
-                      Positioned.fill(
-                        key: const ValueKey('wizard-component-photo-layer'),
-                        child: IgnorePointer(
-                          child: NewProjectWizardPhotoLayer(
-                            key: const ValueKey(
-                              'wizard-component-photo-view',
-                            ),
-                            photoPath: _photoPath!,
-                            transform: _photoTransform,
-                          ),
-                        ),
-                      ),
-                    CustomPaint(
-                      key: const ValueKey('wizard-component-painter'),
-                      painter: _WizardComponentPlacementPainter(
-                        guideContourPoints:
-                            List<Offset>.unmodifiable(_contourPoints),
-                        guideClosed: _contourClosed,
-                        candidates:
-                            List<_WizardComponentCandidate>.unmodifiable(
-                          _componentCandidates,
-                        ),
-                        selectedDraftKey: _selectedComponentDraftKey,
-                      ),
-                    ),
-                    if (_componentCandidates.isEmpty)
-                      const IgnorePointer(
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.add_location_alt_outlined,
-                                  color: _WizardPalette.goldDim,
-                                  size: 34,
+                    Positioned.fromRect(
+                      rect: referenceFrame,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          if (_photoPath != null)
+                            Positioned.fill(
+                              key: const ValueKey(
+                                'wizard-component-photo-layer',
+                              ),
+                              child: IgnorePointer(
+                                child: NewProjectWizardPhotoLayer(
+                                  key: const ValueKey(
+                                    'wizard-component-photo-view',
+                                  ),
+                                  photoPath: _photoPath!,
+                                  transform: _photoTransform,
                                 ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Puuduta tühja ala, et lisada üldine '
-                                  'komponent-kandidaat.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: _WizardPalette.muted,
-                                    fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          CustomPaint(
+                            key: const ValueKey('wizard-component-painter'),
+                            painter: _WizardComponentPlacementPainter(
+                              guideContourPoints:
+                                  List<Offset>.unmodifiable(_contourPoints),
+                              guideClosed: _contourClosed,
+                              candidates:
+                                  List<_WizardComponentCandidate>.unmodifiable(
+                                      _componentCandidates),
+                              selectedDraftKey: _selectedComponentDraftKey,
+                            ),
+                          ),
+                          if (_componentCandidates.isEmpty)
+                            const IgnorePointer(
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(24),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.add_location_alt_outlined,
+                                        color: _WizardPalette.goldDim,
+                                        size: 34,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Puuduta tühja ala, et lisada üldine '
+                                        'komponent-kandidaat.',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: _WizardPalette.muted,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                        ],
                       ),
+                    ),
                   ],
                 ),
               ),

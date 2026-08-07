@@ -1549,7 +1549,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }
 
     final knownFacts = projectState.knownFacts;
-    if (knownFacts.components.isEmpty) {
+    final hasWizardIntakePresentation = projectState.wizardIntake != null ||
+        projectState.wizardIntakeWarning != null;
+    if (knownFacts.components.isEmpty && !hasWizardIntakePresentation) {
       return _buildScaffold(
         context,
         const _EmptyState(
@@ -6723,6 +6725,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         : _WizardIntakeFitTransform.fromContour(
             points: wizardIntake.contour.points,
             canvasSize: canvasSize,
+            referenceFrameAspectRatio:
+                wizardIntake.referenceFrameAspectRatio ?? 1.0,
           );
     final wizardPhotoFile = _wizardPhotoFile();
     return InteractiveViewer(
@@ -6743,6 +6747,12 @@ class _CanvasPanelState extends State<_CanvasPanel> {
           height: canvasSize.height,
           child: Stack(
             children: [
+              const Positioned.fill(
+                child: CustomPaint(
+                  key: Key('board_canvas_background_painter'),
+                  painter: _BoardBackgroundPainter(),
+                ),
+              ),
               if (_wizardPhotoVisible &&
                   wizardIntake?.backgroundPhoto != null &&
                   wizardPhotoFile != null &&
@@ -7396,19 +7406,22 @@ class _WizardIntakeFitTransform {
     required this.padding,
     required this.scale,
     required this.offset,
+    required this.referenceFrameAspectRatio,
   });
 
   factory _WizardIntakeFitTransform.fromContour({
     required List<WizardPoint> points,
     required Size canvasSize,
+    required double referenceFrameAspectRatio,
   }) {
-    var minX = points.first.x;
-    var maxX = points.first.x;
+    var minX = points.first.x * referenceFrameAspectRatio;
+    var maxX = minX;
     var minY = points.first.y;
     var maxY = points.first.y;
     for (final point in points.skip(1)) {
-      minX = math.min(minX, point.x);
-      maxX = math.max(maxX, point.x);
+      final referenceX = point.x * referenceFrameAspectRatio;
+      minX = math.min(minX, referenceX);
+      maxX = math.max(maxX, referenceX);
       minY = math.min(minY, point.y);
       maxY = math.max(maxY, point.y);
     }
@@ -7439,6 +7452,7 @@ class _WizardIntakeFitTransform {
       padding: padding,
       scale: scale,
       offset: offset,
+      referenceFrameAspectRatio: referenceFrameAspectRatio,
     );
   }
 
@@ -7447,10 +7461,11 @@ class _WizardIntakeFitTransform {
   final double padding;
   final double scale;
   final Offset offset;
+  final double referenceFrameAspectRatio;
 
   Offset mapPoint(WizardPoint point) {
     return Offset(
-      offset.dx + (point.x * scale),
+      offset.dx + (point.x * referenceFrameAspectRatio * scale),
       offset.dy + (point.y * scale),
     );
   }
@@ -7465,7 +7480,7 @@ class _WizardIntakeFitTransform {
   Rect get normalizedCanvasRect => Rect.fromLTWH(
         offset.dx,
         offset.dy,
-        scale,
+        referenceFrameAspectRatio * scale,
         scale,
       );
 }
@@ -7687,7 +7702,9 @@ class _WizardIntakePainter extends CustomPainter {
     return !identical(intake, oldDelegate.intake) ||
         fitTransform.canvasSize != oldDelegate.fitTransform.canvasSize ||
         fitTransform.sourceBounds != oldDelegate.fitTransform.sourceBounds ||
-        fitTransform.padding != oldDelegate.fitTransform.padding;
+        fitTransform.padding != oldDelegate.fitTransform.padding ||
+        fitTransform.referenceFrameAspectRatio !=
+            oldDelegate.fitTransform.referenceFrameAspectRatio;
   }
 }
 
@@ -11516,6 +11533,51 @@ String _footprintSemanticsLabel(_PlacementEntry entry) {
       '${pinRenderPlan.semanticsSuffix}';
 }
 
+class _BoardBackgroundPainter extends CustomPainter {
+  const _BoardBackgroundPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
+
+    const boardBase = Color(0xFF060A08);
+    const boardInset = Color(0xFF0A1712);
+    const boardBorder = Color(0xFF243D35);
+    const gridColor = Color(0x224D7A65);
+
+    final boardPaint = Paint()
+      ..color = boardBase
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(boardRect, boardPaint);
+
+    final innerBoardPaint = Paint()
+      ..color = boardInset
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(boardRect.deflate(6), innerBoardPaint);
+
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    const gridStep = 26.0;
+    for (double x = 6; x < size.width - 6; x += gridStep) {
+      canvas.drawLine(Offset(x, 6), Offset(x, size.height - 6), gridPaint);
+    }
+    for (double y = 6; y < size.height - 6; y += gridStep) {
+      canvas.drawLine(Offset(6, y), Offset(size.width - 6, y), gridPaint);
+    }
+
+    final borderPaint = Paint()
+      ..color = boardBorder
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawRect(boardRect.deflate(0.5), borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BoardBackgroundPainter oldDelegate) => false;
+}
+
 class _BoardPlacementPainter extends CustomPainter {
   _BoardPlacementPainter({
     required this.entries,
@@ -11557,41 +11619,6 @@ class _BoardPlacementPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final boardRect = Rect.fromLTWH(0, 0, size.width, size.height);
-
-    const boardBase = Color(0xFF060A08);
-    const boardInset = Color(0xFF0A1712);
-    const boardBorder = Color(0xFF243D35);
-    const gridColor = Color(0x224D7A65);
-
-    final boardPaint = Paint()
-      ..color = boardBase
-      ..style = PaintingStyle.fill;
-    canvas.drawRect(boardRect, boardPaint);
-
-    final innerBoardPaint = Paint()
-      ..color = boardInset
-      ..style = PaintingStyle.fill;
-    canvas.drawRect(boardRect.deflate(6), innerBoardPaint);
-
-    final gridPaint = Paint()
-      ..color = gridColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    const gridStep = 26.0;
-    for (double x = 6; x < size.width - 6; x += gridStep) {
-      canvas.drawLine(Offset(x, 6), Offset(x, size.height - 6), gridPaint);
-    }
-    for (double y = 6; y < size.height - 6; y += gridStep) {
-      canvas.drawLine(Offset(6, y), Offset(size.width - 6, y), gridPaint);
-    }
-
-    final borderPaint = Paint()
-      ..color = boardBorder
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    canvas.drawRect(boardRect.deflate(0.5), borderPaint);
-
     for (final entry in entries) {
       final center = _renderedPlacementCenter(entry, size);
       final bodySize = _renderedFootprintVisualSize(entry);

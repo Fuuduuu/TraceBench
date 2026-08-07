@@ -70,8 +70,9 @@ void _writeMaterializedKnownFacts(String path, String projectId) {
 WizardIntake _wizardIntake({
   String description = '  Human problem\nkept verbatim  ',
   bool includePhoto = false,
+  double? referenceFrameAspectRatio = 1.6,
 }) {
-  return WizardIntake(
+  final intake = WizardIntake(
     schemaVersion: '1.0',
     coordinateSpace: 'wizard_normalized',
     problemDescription: WizardProblemDescription(
@@ -117,6 +118,13 @@ WizardIntake _wizardIntake({
       ),
     ],
   );
+  if (referenceFrameAspectRatio == null) {
+    return intake;
+  }
+  return WizardIntake.fromJson(<String, dynamic>{
+    ...intake.toJson(),
+    'reference_frame_aspect_ratio': referenceFrameAspectRatio,
+  });
 }
 
 ProjectCreationRequest _request({
@@ -341,7 +349,10 @@ void main() {
       final result = await creator.createProject(
         _request(
           destinationParentPath: parentDir.path,
-          wizardIntake: _wizardIntake(description: rawSymptom),
+          wizardIntake: _wizardIntake(
+            description: rawSymptom,
+            referenceFrameAspectRatio: 1.75,
+          ),
         ),
       );
 
@@ -381,6 +392,7 @@ void main() {
       final intakeJson =
           jsonDecode(await intakeFile.readAsString()) as Map<String, dynamic>;
       expect(intakeJson['background_photo'], isNull);
+      expect(intakeJson['reference_frame_aspect_ratio'], 1.75);
       expect(
           await intakeFile.readAsString(), state.wizardIntake!.toJsonString());
 
@@ -535,6 +547,10 @@ void main() {
         final result = await creator.createProject(
           _request(
             destinationParentPath: parentDir.path,
+            wizardIntake: _wizardIntake(
+              includePhoto: true,
+              referenceFrameAspectRatio: 1.75,
+            ),
             sourcePhotoPath: source.path,
           ),
         );
@@ -555,6 +571,10 @@ void main() {
         expect(
           state.wizardIntake!.backgroundPhoto!.transform.rotationRadians,
           0.45,
+        );
+        expect(
+          state.wizardIntake!.toJson()['reference_frame_aspect_ratio'],
+          1.75,
         );
       }
     });

@@ -31,6 +31,11 @@ class ProjectLoader {
   static const String _wizardIntakeWarning =
       'Projekti visuaalset Wizardi alusinfot ei saanud laadida. Projekt ise '
       'avati ja kinnitatud projektiteave jäi puutumata.';
+  static const String _legacyWizardIntakeWarning =
+      'Selle projekti Wizardi aluskaadri kuvasuhe puudub. Kasutatakse '
+      'legacy-ruutkaadrit; foto, kontuuri ja kandidaatide täpset joondust ei '
+      'saa kinnitada. Täpne joondus nõuab migratsiooni või projekti uuesti '
+      'loomist.';
   static const String _assetManifestPath =
       'assets/samples/pelle_pv20_minimal/manifest.json';
   static const String _assetEventsPath =
@@ -206,8 +211,12 @@ class ProjectLoader {
       if (decoded is! Map<String, dynamic>) {
         throw const WizardIntakeFormatException(r'$', 'must be an object');
       }
+      final intake = WizardIntake.fromJson(decoded);
       return _WizardIntakeLoadResult(
-        intake: WizardIntake.fromJson(decoded),
+        intake: intake,
+        warning: intake.referenceFrameAspectRatio == null
+            ? _legacyWizardIntakeWarning
+            : null,
       );
     } on FormatException {
       return const _WizardIntakeLoadResult(

@@ -10,6 +10,10 @@ import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 const String _wizardIntakeWarning =
     'Projekti visuaalset Wizardi alusinfot ei saanud laadida. Projekt ise '
     'avati ja kinnitatud projektiteave jäi puutumata.';
+const String _legacyWizardIntakeWarning =
+    'Selle projekti Wizardi aluskaadri kuvasuhe puudub. Kasutatakse '
+    'legacy-ruutkaadrit; foto, kontuuri ja kandidaatide täpset joondust ei saa '
+    'kinnitada. Täpne joondus nõuab migratsiooni või projekti uuesti loomist.';
 const String _debugSentinel = 'WIZARD_INTAKE_PRIVATE_SENTINEL';
 const Object _absentIntake = Object();
 
@@ -17,10 +21,13 @@ Map<String, dynamic> _validWizardIntakeJson({
   String schemaVersion = '1.0',
   String coordinateSpace = 'wizard_normalized',
   String description = 'Power cycles under load',
+  double? referenceFrameAspectRatio = 1.6,
 }) {
   return <String, dynamic>{
     'schema_version': schemaVersion,
     'coordinate_space': coordinateSpace,
+    if (referenceFrameAspectRatio != null)
+      'reference_frame_aspect_ratio': referenceFrameAspectRatio,
     'problem_description': <String, dynamic>{
       'description': description,
       'occurrence': 'intermittent',
@@ -325,7 +332,9 @@ void main() {
     test('loads valid typed intake from the named optional file', () async {
       final directory = await _createLocalProjectDirectoryForLoaderTest();
       addTearDown(() => directory.delete(recursive: true));
-      await _writeWizardIntake(directory, _validWizardIntakeJson());
+      final intake = _validWizardIntakeJson()
+        ..['reference_frame_aspect_ratio'] = 1.75;
+      await _writeWizardIntake(directory, intake);
 
       final loaded = await ProjectLoader.loadFromDirectory(directory.path);
 
@@ -335,7 +344,45 @@ void main() {
         WizardProblemOccurrence.intermittent,
       );
       expect(loaded.wizardIntake!.visualCandidates.single.draftKey, 1);
+      expect(
+        loaded.wizardIntake!.toJson()['reference_frame_aspect_ratio'],
+        1.75,
+      );
       expect(loaded.wizardIntakeWarning, isNull);
+    });
+
+    test('loads legacy intake with the exact square-fallback warning',
+        () async {
+      final directory = await _createLocalProjectDirectoryForLoaderTest();
+      addTearDown(() => directory.delete(recursive: true));
+      await _writeWizardIntake(
+        directory,
+        _validWizardIntakeJson(referenceFrameAspectRatio: null),
+      );
+
+      final loaded = await ProjectLoader.loadFromDirectory(directory.path);
+
+      expect(loaded.wizardIntake, isNotNull);
+      expect(loaded.wizardIntakeWarning, _legacyWizardIntakeWarning);
+      expect(
+        loaded.wizardIntake!.toJson(),
+        isNot(contains('reference_frame_aspect_ratio')),
+      );
+    });
+
+    test('keeps project load successful for invalid reference-frame metadata',
+        () async {
+      final directory = await _createLocalProjectDirectoryForLoaderTest();
+      addTearDown(() => directory.delete(recursive: true));
+      final intake = _validWizardIntakeJson()
+        ..['reference_frame_aspect_ratio'] = 0;
+      await _writeWizardIntake(directory, intake);
+
+      final loaded = await ProjectLoader.loadFromDirectory(directory.path);
+
+      expect(loaded.manifest.projectId, 'inline_project');
+      expect(loaded.wizardIntake, isNull);
+      expect(loaded.wizardIntakeWarning, _wizardIntakeWarning);
     });
 
     test('treats a missing intake file as null and silent', () async {
@@ -420,28 +467,52 @@ void main() {
 
   group('ZIP Wizard intake', () {
     test('loads valid intake at the exact archive path', () async {
+      final intake = _validWizardIntakeJson()
+        ..['reference_frame_aspect_ratio'] = 1.75;
       final loaded = await ProjectLoader.loadFromZipBytes(
-        _createProjectZip(intake: _validWizardIntakeJson()),
+        _createProjectZip(intake: intake),
       );
 
       expect(loaded.wizardIntake, isNotNull);
       expect(loaded.wizardIntake!.problemDescription.description,
           'Power cycles under load');
+      expect(
+        loaded.wizardIntake!.toJson()['reference_frame_aspect_ratio'],
+        1.75,
+      );
       expect(loaded.wizardIntakeWarning, isNull);
     });
 
     test('loads valid intake beneath an archive root prefix', () async {
+      final intake = _validWizardIntakeJson()
+        ..['reference_frame_aspect_ratio'] = 1.75;
       final loaded = await ProjectLoader.loadFromZipBytes(
         _createProjectZip(
           rootPrefix: 'outer/project-root',
-          intake: _validWizardIntakeJson(),
+          intake: intake,
         ),
       );
 
       expect(loaded.manifest.projectId, 'inline_project');
       expect(loaded.wizardIntake, isNotNull);
       expect(loaded.wizardIntake!.contour.points, hasLength(3));
+      expect(
+        loaded.wizardIntake!.toJson()['reference_frame_aspect_ratio'],
+        1.75,
+      );
       expect(loaded.wizardIntakeWarning, isNull);
+    });
+
+    test('loads legacy ZIP intake with the exact square-fallback warning',
+        () async {
+      final loaded = await ProjectLoader.loadFromZipBytes(
+        _createProjectZip(
+          intake: _validWizardIntakeJson(referenceFrameAspectRatio: null),
+        ),
+      );
+
+      expect(loaded.wizardIntake, isNotNull);
+      expect(loaded.wizardIntakeWarning, _legacyWizardIntakeWarning);
     });
 
     test('treats a missing intake entry as null and silent', () async {

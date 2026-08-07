@@ -382,6 +382,59 @@ class ProjectZipTests(unittest.TestCase):
             self.assertTrue((output_dir / "events.jsonl").exists())
             self.assertTrue((output_dir / "known_facts.json").exists())
 
+    def test_wizard_reference_frame_intake_round_trips_byte_identically(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            project_dir = tmpdir / "project"
+            shutil.copytree(SAMPLE_DIR, project_dir)
+            _ensure_project_profiles_dir(project_dir)
+            intake_path = project_dir / "notes" / "wizard_intake.json"
+            intake_path.parent.mkdir(parents=True, exist_ok=True)
+            intake_bytes = (
+                b'{\n'
+                b'  "schema_version": "1.0",\n'
+                b'  "coordinate_space": "wizard_normalized",\n'
+                b'  "reference_frame_aspect_ratio": 1.7777777777777777,\n'
+                b'  "problem_description": {"description": "", "occurrence": '
+                b'"unknown", "when_occurs": "", "symptoms": "", '
+                b'"attempts": ""},\n'
+                b'  "contour": {"closed": true, "points": [{"x": 0.1, '
+                b'"y": 0.2}, {"x": 0.9, "y": 0.2}, {"x": 0.9, '
+                b'"y": 0.8}]},\n'
+                b'  "background_photo": null,\n'
+                b'  "visual_candidates": []\n'
+                b'}\n'
+            )
+            intake_path.write_bytes(intake_bytes)
+            output_zip = tmpdir / "project.zip"
+            output_dir = tmpdir / "imported"
+
+            export_result = _export_project_zip(project_dir, output_zip)
+            self.assertEqual(
+                export_result.returncode,
+                0,
+                export_result.stdout + export_result.stderr,
+            )
+            validate_result = _validate_project_zip(output_zip)
+            self.assertEqual(
+                validate_result.returncode,
+                0,
+                validate_result.stdout + validate_result.stderr,
+            )
+            with ZipFile(output_zip, "r") as zf:
+                self.assertEqual(zf.read("notes/wizard_intake.json"), intake_bytes)
+
+            import_result = _import_project_zip(output_zip, output_dir)
+            self.assertEqual(
+                import_result.returncode,
+                0,
+                import_result.stdout + import_result.stderr,
+            )
+            self.assertEqual(
+                (output_dir / "notes" / "wizard_intake.json").read_bytes(),
+                intake_bytes,
+            )
+
     def test_import_does_not_leave_invalid_output_on_failed_validation(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)

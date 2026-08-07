@@ -5,11 +5,13 @@ import 'dart:ui' show SemanticsAction;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/new_project_wizard_problem_description.dart';
+import 'package:trace_bench_viewer/features/project/widgets/wizard_compact_widgets.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -103,6 +105,7 @@ Widget _buildWizardApp({
   PlatformInfo platformInfo = const _TestPlatformInfo(false),
   Future<ProjectCreationResult> Function(ProjectCreationRequest)? createProject,
   ValueChanged<ProjectState>? onProjectCreated,
+  double textScale = 1,
 }) {
   final router = GoRouter(
     initialLocation: '/new-project',
@@ -140,6 +143,17 @@ Widget _buildWizardApp({
   return MaterialApp.router(
     theme: ThemeData(useMaterial3: true),
     routerConfig: router,
+    builder: textScale == 1
+        ? null
+        : (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            return MediaQuery(
+              data: mediaQuery.copyWith(
+                textScaler: TextScaler.linear(textScale),
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
   );
 }
 
@@ -2635,6 +2649,18 @@ void main() {
       find.byKey(const ValueKey('wizard-review-summary')),
       findsOneWidget,
     );
+    for (var step = 1; step <= 5; step += 1) {
+      expect(
+        find.byKey(ValueKey<String>('wizard-compact-review-section-$step')),
+        findsOneWidget,
+      );
+    }
+    final review = find.byKey(const ValueKey('wizard-review-summary'));
+    for (final text in tester.widgetList<Text>(
+      find.descendant(of: review, matching: find.byType(Text)),
+    )) {
+      expect(text.overflow, isNot(TextOverflow.ellipsis));
+    }
     final fifthProgress = find.byKey(
       const ValueKey('wizard-progress-step-5'),
     );
@@ -3009,6 +3035,292 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'parent uses the accepted compact shell and content-driven step header',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    expect(find.byType(WizardCompactShell), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('wizard-compact-shell-wide')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-compact-step-header')),
+      findsOneWidget,
+    );
+    expect(find.byType(WizardCompactNavigation), findsNothing);
+    _expectProgressStatus(1, 'Praegune samm');
+    _expectProgressStatus(2, 'Järgmine samm');
+
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    await _pumpFrames(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-shell-compact')),
+      findsOneWidget,
+    );
+    for (var step = 1; step <= 7; step += 1) {
+      expect(_progressStep(step), findsOneWidget);
+    }
+    expect(find.byType(WizardCompactNavigation), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('all locked shell breakpoints remain overflow-free',
+      (tester) async {
+    const sizes = <Size>[
+      Size(390, 760),
+      Size(519, 800),
+      Size(520, 800),
+      Size(559, 800),
+      Size(560, 800),
+      Size(599, 800),
+      Size(600, 800),
+      Size(779, 800),
+      Size(780, 800),
+      Size(819, 800),
+      Size(820, 800),
+      Size(1049, 800),
+      Size(1050, 800),
+      Size(1120, 860),
+      Size(1440, 900),
+      Size(1600, 900),
+    ];
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.binding.setSurfaceSize(sizes.first);
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+
+    for (final size in sizes) {
+      await tester.binding.setSurfaceSize(size);
+      await _pumpFrames(tester);
+      final compact = size.width < 1050;
+      expect(
+        find.byKey(
+          ValueKey<String>(
+            compact
+                ? 'wizard-compact-shell-compact'
+                : 'wizard-compact-shell-wide',
+          ),
+        ),
+        findsOneWidget,
+        reason: '$size shell',
+      );
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('wizard-next')),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull, reason: '$size overflow');
+    }
+  });
+
+  testWidgets('compact parent remains readable and reachable at 200% text',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        textScale: 2,
+      ),
+    );
+    await _pumpFrames(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-step-header')),
+      findsOneWidget,
+    );
+    expect(find.text('Projekti andmed'), findsWidgets);
+    expect(
+      find.text(
+        'Projekt luuakse alles pärast andmete kontrollimist ja kinnitamist.',
+      ),
+      findsOneWidget,
+    );
+    await tester.ensureVisible(find.byKey(const ValueKey('wizard-next')));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('wizard-next')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('review and success stay complete at 200% text', (tester) async {
+    final created = _createdProjectState(
+      projectName: 'Pikk tagastatud projekti nimi',
+      projectId: 'prj_cafebabe',
+      projectDirectory:
+          'C:/väga/pikk/projektide/asukoht/mitme/alamkaustaga/prj_cafebabe',
+    );
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(
+        directoryPicker: () async => 'C:/projects',
+        createProject: (_) async => ProjectCreationSuccess(created),
+        textScale: 2,
+      ),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+
+    for (var step = 1; step <= 5; step += 1) {
+      final edit =
+          find.byKey(ValueKey<String>('wizard-review-edit-step-$step'));
+      await tester.ensureVisible(edit);
+      await tester.pump();
+      expect(edit, findsOneWidget);
+    }
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('wizard-create-project-button')),
+    );
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+
+    await _tapKey(tester, 'wizard-create-project-button');
+    expect(find.byType(WizardCompactSuccessCard), findsOneWidget);
+    expect(find.text('prj_cafebabe'), findsOneWidget);
+    expect(
+      find.text(
+        'C:/väga/pikk/projektide/asukoht/mitme/alamkaustaga/prj_cafebabe',
+      ),
+      findsOneWidget,
+    );
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('wizard-open-project-button')),
+    );
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'workspace and inspector stay independent of the overall shell breakpoint',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1049, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await _openContourStep(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-layout')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-compact-workspace-wide')),
+      findsOneWidget,
+    );
+
+    await tester.binding.setSurfaceSize(const Size(779, 800));
+    await _pumpFrames(tester);
+
+    expect(
+      find.byKey(const ValueKey('wizard-compact-workspace-stacked')),
+      findsOneWidget,
+    );
+    await _closeContour(tester);
+    await _tapKey(tester, 'wizard-next');
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget.runtimeType.toString().startsWith(
+              'WizardCompactTileSelector',
+            ),
+      ),
+      findsOneWidget,
+    );
+    final circle = tester.getRect(
+      find.byKey(const ValueKey('wizard-component-shape-circle')),
+    );
+    final square = tester.getRect(
+      find.byKey(const ValueKey('wizard-component-shape-square')),
+    );
+    final rectangle = tester.getRect(
+      find.byKey(const ValueKey('wizard-component-shape-rectangle')),
+    );
+    final roundedRectangle = tester.getRect(
+      find.byKey(
+        const ValueKey('wizard-component-shape-rounded-rectangle'),
+      ),
+    );
+    expect(circle.top, closeTo(square.top, 0.01));
+    expect(rectangle.top, closeTo(roundedRectangle.top, 0.01));
+    expect(circle.left, lessThan(square.left));
+    expect(rectangle.left, lessThan(roundedRectangle.left));
+    expect(circle.top, lessThan(rectangle.top));
+    await _tapKey(tester, 'wizard-component-shape-rectangle');
+    expect(
+      tester
+          .widget<ChoiceChip>(
+            find.byKey(
+              const ValueKey('wizard-component-shape-rectangle'),
+            ),
+          )
+          .selected,
+      isTrue,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('eligible progress actions support Enter and Space in order',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+    await _openReviewStep(tester);
+
+    bool primaryFocusIsInside(Finder owner) {
+      final focusContext = FocusManager.instance.primaryFocus?.context;
+      if (focusContext == null) {
+        return false;
+      }
+      final ownerElement = tester.element(owner);
+      var inside = identical(focusContext, ownerElement);
+      (focusContext as Element).visitAncestorElements((ancestor) {
+        inside = inside || identical(ancestor, ownerElement);
+        return !inside;
+      });
+      return inside;
+    }
+
+    Future<void> tabTo(Finder owner) async {
+      for (var attempt = 0; attempt < 20; attempt += 1) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        if (primaryFocusIsInside(owner)) {
+          return;
+        }
+      }
+      fail('Tab traversal did not reach $owner');
+    }
+
+    await tabTo(_progressStep(1));
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await _pumpFrames(tester);
+    expect(find.byKey(const ValueKey('wizard-step-1-editor')), findsOneWidget);
+
+    await tabTo(_progressStep(6));
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await _pumpFrames(tester);
+    expect(
+      find.byKey(const ValueKey('wizard-review-summary')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('compact layout has no overflow', (tester) async {
@@ -3873,6 +4185,7 @@ void main() {
       find.byKey(const ValueKey('wizard-created-success')),
       findsOneWidget,
     );
+    expect(find.byType(WizardCompactSuccessCard), findsOneWidget);
     expect(
       find.byKey(const ValueKey('wizard-created-project-name')),
       findsOneWidget,
@@ -3880,6 +4193,20 @@ void main() {
     expect(find.text('Tagastatud nimi'), findsOneWidget);
     expect(find.text('prj_deadbeef'), findsOneWidget);
     expect(find.text('D:/projektid/prj_deadbeef'), findsOneWidget);
+    expect(find.text('Copy ID'), findsNothing);
+    expect(find.text('Open Folder'), findsNothing);
+    expect(find.text('Kopeeri ID'), findsNothing);
+    expect(find.text('Kopeeri tunnus'), findsNothing);
+    expect(find.text('Ava kaust'), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byKey(
+          const ValueKey('wizard-created-project-location'),
+        ),
+        matching: find.byType(SelectableText),
+      ),
+      findsOneWidget,
+    );
     expect(find.byKey(const ValueKey('wizard-cancel')), findsNothing);
     expect(
       find.byKey(const ValueKey('wizard-review-edit-step-1')),

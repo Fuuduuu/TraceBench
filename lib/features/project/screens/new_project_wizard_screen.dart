@@ -11,6 +11,8 @@ import '../../../shared/services/project_creator.dart';
 import '../../../shared/services/python_runner.dart';
 import '../widgets/new_project_wizard_photo_editor.dart';
 import '../widgets/new_project_wizard_problem_description.dart';
+import '../widgets/wizard_compact_tokens.dart';
+import '../widgets/wizard_compact_widgets.dart';
 
 const List<_WizardStepDefinition> _wizardSteps = <_WizardStepDefinition>[
   _WizardStepDefinition(
@@ -1135,28 +1137,17 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
           builder: (context, constraints) {
             final compact = constraints.maxWidth < 1050;
             final padding = constraints.maxWidth < 600 ? 12.0 : 20.0;
-            final content = compact
-                ? Column(
-                    key: const ValueKey('wizard-compact-layout'),
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      _buildCompactProgress(),
-                      const SizedBox(height: 14),
-                      _buildEditorCard(compact: true),
-                    ],
-                  )
-                : Row(
-                    key: const ValueKey('wizard-wide-layout'),
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 296,
-                        child: _buildWideProgress(),
-                      ),
-                      const SizedBox(width: 18),
-                      Expanded(child: _buildEditorCard(compact: false)),
-                    ],
-                  );
+            final content = KeyedSubtree(
+              key: ValueKey<String>(
+                compact ? 'wizard-compact-layout' : 'wizard-wide-layout',
+              ),
+              child: WizardCompactShell(
+                compact: compact,
+                navigation:
+                    compact ? _buildCompactProgress() : _buildWideProgress(),
+                child: _buildEditorCard(compact: compact),
+              ),
+            );
 
             return DecoratedBox(
               decoration: const BoxDecoration(
@@ -1296,12 +1287,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
 
   Widget _buildWideProgress() {
     return Container(
-      decoration: BoxDecoration(
-        color: _WizardPalette.panel,
-        border: Border.all(color: _WizardPalette.edgeGold),
-        borderRadius: BorderRadius.circular(16),
+      decoration: WizardCompactTokens.panelDecoration(
+        borderColor: WizardCompactTokens.edgeGold,
+        radius: WizardCompactTokens.radiusWindow,
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(WizardCompactTokens.space12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -1314,16 +1304,16 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               letterSpacing: 1.7,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: WizardCompactTokens.space4),
           Text(
             '${_wizardSteps.length} sammu',
             style: const TextStyle(
               color: _WizardPalette.cream,
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: WizardCompactTokens.space4),
           const Text(
             'Kasuta Edasi ja Tagasi nuppe või vali juba vaadatud samm. '
             'Mustand püsib ainult selles vaates.',
@@ -1332,10 +1322,11 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               height: 1.45,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: WizardCompactTokens.space12),
           for (var index = 0; index < _wizardSteps.length; index += 1) ...[
             _buildProgressTile(index, compact: false),
-            if (index < _wizardSteps.length - 1) const SizedBox(height: 9),
+            if (index < _wizardSteps.length - 1)
+              const SizedBox(height: WizardCompactTokens.space4),
           ],
         ],
       ),
@@ -1344,25 +1335,26 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
 
   Widget _buildCompactProgress() {
     return Container(
-      decoration: BoxDecoration(
-        color: _WizardPalette.panel,
-        border: Border.all(color: _WizardPalette.edgeGold),
-        borderRadius: BorderRadius.circular(15),
+      decoration: WizardCompactTokens.panelDecoration(
+        borderColor: WizardCompactTokens.edgeGold,
+        radius: WizardCompactTokens.radiusPanel,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: SizedBox(
-        height: 91,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          itemCount: _wizardSteps.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 9),
-          itemBuilder: (_, index) {
-            return SizedBox(
-              width: 226,
-              child: _buildProgressTile(index, compact: true),
-            );
-          },
+      padding: const EdgeInsets.all(WizardCompactTokens.space8),
+      child: SingleChildScrollView(
+        key: const ValueKey('wizard-compact-progress-scroll'),
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            for (var index = 0; index < _wizardSteps.length; index += 1) ...[
+              SizedBox(
+                width: 210,
+                child: _buildProgressTile(index, compact: true),
+              ),
+              if (index < _wizardSteps.length - 1)
+                const SizedBox(width: WizardCompactTokens.space8),
+            ],
+          ],
         ),
       ),
     );
@@ -1419,23 +1411,27 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
           ),
         ),
         child: Container(
-          decoration: BoxDecoration(
-            color:
-                isCurrent ? _WizardPalette.activeFill : _WizardPalette.panel2,
-            border: Border.all(
-              color: isCurrent
-                  ? _WizardPalette.frame
-                  : isComplete
-                      ? _WizardPalette.ready
-                      : isViewed
-                          ? _WizardPalette.edgeGold
-                          : _WizardPalette.edge,
-            ),
-            borderRadius: BorderRadius.circular(12),
+          constraints: const BoxConstraints(
+            minHeight: WizardCompactTokens.minimumTapTarget,
+          ),
+          decoration: WizardCompactTokens.panelDecoration(
+            color: isCurrent
+                ? WizardCompactTokens.activeFill
+                : WizardCompactTokens.panelRaised,
+            borderColor: isCurrent
+                ? _WizardPalette.frame
+                : isComplete
+                    ? _WizardPalette.ready
+                    : isViewed
+                        ? _WizardPalette.edgeGold
+                        : _WizardPalette.edge,
+            radius: WizardCompactTokens.radiusControl,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: compact ? 10 : 11,
+            horizontal: WizardCompactTokens.space8,
+            vertical: compact
+                ? WizardCompactTokens.space8
+                : WizardCompactTokens.space4,
           ),
           child: Row(
             children: <Widget>[
@@ -1468,8 +1464,6 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                   children: <Widget>[
                     Text(
                       step.label,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: isCurrent
                             ? _WizardPalette.gold
@@ -1486,7 +1480,6 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                         Expanded(
                           child: Text(
                             status,
-                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: accent,
                               fontSize: 11,
@@ -1752,31 +1745,29 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 'kontuur eraldi toiminguga.',
             required: true,
           ),
-          const SizedBox(height: 22),
+          SizedBox(height: compact ? 16 : 22),
           LayoutBuilder(
             builder: (context, constraints) {
-              final stacked = compact || constraints.maxWidth < 780;
+              final stacked = constraints.maxWidth < 780;
+              final textScale = MediaQuery.textScalerOf(context).scale(1);
+              final stackedCanvasHeight = 300.0 +
+                  (180.0 * (textScale - 1.0).clamp(0.0, 1.0)).toDouble();
               final canvas = _buildContourCanvas(
-                height: stacked ? 300 : 430,
+                height: stacked ? stackedCanvasHeight : 430.0,
               );
               final controls = _buildContourControls();
-              if (stacked) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    canvas,
-                    const SizedBox(height: 16),
-                    controls,
-                  ],
-                );
-              }
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(child: canvas),
-                  const SizedBox(width: 18),
-                  SizedBox(width: 286, child: controls),
-                ],
+              return WizardCompactWorkspace(
+                stacked: stacked,
+                workspace: WizardCompactPanel(
+                  key: const ValueKey('wizard-contour-workspace-panel'),
+                  title: 'Tööala',
+                  child: canvas,
+                ),
+                inspector: WizardCompactPanel(
+                  key: const ValueKey('wizard-contour-inspector-panel'),
+                  title: 'Inspektor',
+                  child: controls,
+                ),
               );
             },
           ),
@@ -1883,25 +1874,27 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                               child: Center(
                                 child: Padding(
                                   padding: EdgeInsets.all(24),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.touch_app_outlined,
-                                        color: _WizardPalette.goldDim,
-                                        size: 34,
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Puuduta tühja ala, et lisada esimene '
-                                        'punkt.',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: _WizardPalette.muted,
-                                          fontWeight: FontWeight.w600,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.touch_app_outlined,
+                                          color: _WizardPalette.goldDim,
+                                          size: 34,
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Puuduta tühja ala, et lisada esimene '
+                                          'punkt.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: _WizardPalette.muted,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -2058,31 +2051,29 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             required: false,
             dense: true,
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: compact ? 10 : 14),
           LayoutBuilder(
             builder: (context, constraints) {
-              final stacked = compact || constraints.maxWidth < 780;
+              final stacked = constraints.maxWidth < 780;
+              final textScale = MediaQuery.textScalerOf(context).scale(1);
+              final stackedCanvasHeight = 300.0 +
+                  (180.0 * (textScale - 1.0).clamp(0.0, 1.0)).toDouble();
               final canvas = _buildComponentCanvas(
-                height: stacked ? 300 : 430,
+                height: stacked ? stackedCanvasHeight : 430.0,
               );
               final controls = _buildComponentControls();
-              if (stacked) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    canvas,
-                    const SizedBox(height: 16),
-                    controls,
-                  ],
-                );
-              }
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(child: canvas),
-                  const SizedBox(width: 18),
-                  SizedBox(width: 286, child: controls),
-                ],
+              return WizardCompactWorkspace(
+                stacked: stacked,
+                workspace: WizardCompactPanel(
+                  key: const ValueKey('wizard-component-workspace-panel'),
+                  title: 'Tööala',
+                  child: canvas,
+                ),
+                inspector: WizardCompactPanel(
+                  key: const ValueKey('wizard-component-inspector-panel'),
+                  title: 'Inspektor',
+                  child: controls,
+                ),
               );
             },
           ),
@@ -2201,25 +2192,27 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                               child: Center(
                                 child: Padding(
                                   padding: EdgeInsets.all(24),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.add_location_alt_outlined,
-                                        color: _WizardPalette.goldDim,
-                                        size: 34,
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Puuduta tühja ala, et lisada üldine '
-                                        'komponent-kandidaat.',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: _WizardPalette.muted,
-                                          fontWeight: FontWeight.w600,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.add_location_alt_outlined,
+                                          color: _WizardPalette.goldDim,
+                                          size: 34,
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Puuduta tühja ala, et lisada üldine '
+                                          'komponent-kandidaat.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: _WizardPalette.muted,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -2326,60 +2319,41 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Kuju',
-            style: TextStyle(
-              color: _WizardPalette.goldDim,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 7),
-          Column(
+          KeyedSubtree(
             key: const ValueKey('wizard-component-shape-grid'),
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _buildComponentShapeChoice(
-                      key: const ValueKey('wizard-component-shape-circle'),
-                      shape: _WizardComponentShape.circle,
-                      label: 'Ümar',
-                    ),
+            child: WizardCompactTileSelector<_WizardComponentShape>(
+              label: 'Kuju',
+              value: _componentCurrentShape,
+              onChanged: _setComponentShape,
+              tiles: const <WizardCompactTile<_WizardComponentShape>>[
+                WizardCompactTile<_WizardComponentShape>(
+                  key: ValueKey('wizard-component-shape-circle'),
+                  value: _WizardComponentShape.circle,
+                  label: 'Ümar',
+                  icon: Icons.circle_outlined,
+                ),
+                WizardCompactTile<_WizardComponentShape>(
+                  key: ValueKey('wizard-component-shape-square'),
+                  value: _WizardComponentShape.square,
+                  label: 'Ruut',
+                  icon: Icons.crop_square,
+                ),
+                WizardCompactTile<_WizardComponentShape>(
+                  key: ValueKey('wizard-component-shape-rectangle'),
+                  value: _WizardComponentShape.rectangle,
+                  label: 'Ristkülik',
+                  icon: Icons.crop_16_9,
+                ),
+                WizardCompactTile<_WizardComponentShape>(
+                  key: ValueKey(
+                    'wizard-component-shape-rounded-rectangle',
                   ),
-                  const SizedBox(width: 7),
-                  Expanded(
-                    child: _buildComponentShapeChoice(
-                      key: const ValueKey('wizard-component-shape-square'),
-                      shape: _WizardComponentShape.square,
-                      label: 'Ruut',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 7),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _buildComponentShapeChoice(
-                      key: const ValueKey('wizard-component-shape-rectangle'),
-                      shape: _WizardComponentShape.rectangle,
-                      label: 'Ristkülik',
-                    ),
-                  ),
-                  const SizedBox(width: 7),
-                  Expanded(
-                    child: _buildComponentShapeChoice(
-                      key: const ValueKey(
-                        'wizard-component-shape-rounded-rectangle',
-                      ),
-                      shape: _WizardComponentShape.roundedRectangle,
-                      label: 'Ümardatud ristkülik',
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  value: _WizardComponentShape.roundedRectangle,
+                  label: 'Ümardatud ristkülik',
+                  icon: Icons.rounded_corner,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 12),
           Text(
@@ -2494,36 +2468,6 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildComponentShapeChoice({
-    required Key key,
-    required _WizardComponentShape shape,
-    required String label,
-  }) {
-    return ChoiceChip(
-      key: key,
-      label: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(label),
-      ),
-      selected: _componentCurrentShape == shape,
-      onSelected: (_) => _setComponentShape(shape),
-      showCheckmark: false,
-      selectedColor: _WizardPalette.activeFill,
-      backgroundColor: _WizardPalette.inset,
-      side: BorderSide(
-        color: _componentCurrentShape == shape
-            ? _WizardPalette.gold
-            : _WizardPalette.edgeGold,
-      ),
-      labelStyle: TextStyle(
-        color: _componentCurrentShape == shape
-            ? _WizardPalette.goldBright
-            : _WizardPalette.cream,
-        fontWeight: FontWeight.w700,
       ),
     );
   }
@@ -2970,12 +2914,12 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     required List<Widget> children,
   }) {
     return Container(
-      decoration: BoxDecoration(
-        color: _WizardPalette.panel2,
-        border: Border.all(color: _WizardPalette.edgeGold),
-        borderRadius: BorderRadius.circular(13),
+      key: ValueKey<String>('wizard-compact-review-section-$editStep'),
+      decoration: WizardCompactTokens.panelDecoration(
+        color: WizardCompactTokens.panelRaised,
+        borderColor: WizardCompactTokens.edgeGold,
       ),
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(WizardCompactTokens.space12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -3093,51 +3037,39 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 'oled valmis töölauale minema.',
             required: true,
           ),
-          const SizedBox(height: 26),
-          Container(
-            decoration: BoxDecoration(
-              color: _WizardPalette.activeFill,
-              border: Border.all(color: _WizardPalette.ready, width: 1.4),
-              borderRadius: BorderRadius.circular(16),
+          const SizedBox(height: WizardCompactTokens.space16),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 0 : WizardCompactTokens.space12,
             ),
-            padding: EdgeInsets.all(compact ? 18 : 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                const Icon(
-                  Icons.check_circle,
-                  color: _WizardPalette.ready,
-                  size: 48,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: WizardCompactSuccessCard(
+                  title: 'Projekt on valmis',
+                  message:
+                      'Projekt on edukalt loodud. Ava see eraldi toiminguga, '
+                      'kui oled valmis töölauale minema.',
+                  details: <Widget>[
+                    _buildCreatedValue(
+                      key: const ValueKey('wizard-created-project-name'),
+                      label: 'Projekti nimi',
+                      value: projectName,
+                    ),
+                    _buildCreatedValue(
+                      key: const ValueKey('wizard-created-project-id'),
+                      label: 'Tehniline projekti ID',
+                      value: projectId,
+                    ),
+                    _buildCreatedValue(
+                      key: const ValueKey('wizard-created-project-location'),
+                      label: 'Projekti asukoht',
+                      value: projectDirectory,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Projekt on valmis',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: _WizardPalette.cream,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 22),
-                _buildCreatedValue(
-                  key: const ValueKey('wizard-created-project-name'),
-                  label: 'Projekti nimi',
-                  value: projectName,
-                ),
-                const SizedBox(height: 10),
-                _buildCreatedValue(
-                  key: const ValueKey('wizard-created-project-id'),
-                  label: 'Tehniline projekti ID',
-                  value: projectId,
-                ),
-                const SizedBox(height: 10),
-                _buildCreatedValue(
-                  key: const ValueKey('wizard-created-project-location'),
-                  label: 'Projekti asukoht',
-                  value: projectDirectory,
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -3170,7 +3102,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
+          SelectableText(
             value.trim().isEmpty ? '—' : value,
             style: const TextStyle(
               color: _WizardPalette.cream,
@@ -3190,64 +3122,63 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     required bool required,
     bool dense = false,
   }) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final copy = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              eyebrow,
-              style: const TextStyle(
-                color: _WizardPalette.gold,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.5,
-              ),
-            ),
-            SizedBox(height: dense ? 5 : 8),
-            Text(
-              title,
-              key: const ValueKey('wizard-step-title'),
-              style: TextStyle(
-                color: _WizardPalette.cream,
-                fontSize: dense ? 25 : 29,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.5,
-              ),
-            ),
-            SizedBox(height: dense ? 5 : 8),
-            Text(
-              description,
-              style: TextStyle(
-                color: _WizardPalette.muted,
-                fontSize: dense ? 13.5 : 14.5,
-                height: dense ? 1.35 : 1.5,
-              ),
-            ),
-          ],
-        );
-        final badge = _WizardPill(
-          label: required ? 'Kohustuslik' : 'Valikuline',
-        );
-        if (constraints.maxWidth < 560) {
-          return Column(
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          eyebrow,
+          style: WizardCompactTokens.labelStyle(
+            color: WizardCompactTokens.goldDim,
+            fontSize: 10.5,
+          ).copyWith(letterSpacing: 1.2),
+        ),
+        const SizedBox(height: WizardCompactTokens.space4),
+        Text(
+          title,
+          key: const ValueKey('wizard-step-title'),
+          style: WizardCompactTokens.bodyStyle(
+            fontSize: dense ? 19 : 20,
+            fontWeight: FontWeight.w800,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: WizardCompactTokens.space4),
+        Text(
+          description,
+          style: WizardCompactTokens.bodyStyle(
+            color: WizardCompactTokens.muted,
+            fontSize: dense ? 12 : 12.5,
+          ),
+        ),
+      ],
+    );
+    final badge = _WizardPill(
+      label: required ? 'Kohustuslik' : 'Valikuline',
+    );
+    return KeyedSubtree(
+      key: const ValueKey('wizard-compact-step-header'),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 560) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                copy,
+                const SizedBox(height: WizardCompactTokens.space8),
+                badge,
+              ],
+            );
+          }
+          return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              copy,
-              SizedBox(height: dense ? 8 : 12),
+              Expanded(child: copy),
+              const SizedBox(width: WizardCompactTokens.space12),
               badge,
             ],
           );
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(child: copy),
-            const SizedBox(width: 16),
-            badge,
-          ],
-        );
-      },
+        },
+      ),
     );
   }
 

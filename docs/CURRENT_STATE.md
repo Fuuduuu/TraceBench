@@ -1,59 +1,39 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS`
+Next recommended pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
 
-## Live Wizard compact-design V1 final LOCK
+## Live Wizard compact-design V1 post-Phase2 state reconciliation
 
 ```text
-PASS_ID: TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
+PASS_ID: TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS
 Lane: A
-Mode: DOCS_SYNC / FINAL_LOCK / PHASE_1 / DOCS_AND_MAPS_ONLY
+Mode: DOCS_SYNC / POST_PHASE2_STATE_RECONCILIATION / PHASE_1
 ```
 
-The `main` worktree is at
-`HEAD == origin/main == 3d4cac430d4700074a1480a98239a48ea2634443`, subject
-`feat: add Wizard compact shell workspaces and review`, with empty staged and
-unmerged sets. This Phase 1 is limited to exactly fourteen route/ledger,
-artifact, map-index, and Wizard map paths. Runtime, tests, workflow/spec docs,
-scratch, unrelated porcelain, and `stash@{0}` remain untouched.
+The main worktree is at
+`HEAD == origin/main == 98bb33673e657bf607a2934abf68ff82c359d5b5`, subject
+`docs: lock Wizard creation compact design v1`, with empty staged and
+unmerged sets. This pass updates only these five files: `docs/ACTIVE_SCOPE_LOCK.md`,
+`docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS.md`.
 
-The accepted chain is compact parent SCOPE `7a90cc7`, primitives/editors Child
-1 `91fa53f`, reference-frame detour LOCK `4b17af0`, and reconciled
-shell/workspaces/review Child 2 `3d4cac4`. The resulting Wizard retains seven
-ordered steps, live Steps 1/3/5 gates, gate-safe visited navigation, compact
-tokens/editors/shell, Step 3/4 workspace inspectors and shared fitted reference
-plane, complete non-ellipsized Step 6 plus five `Muuda` actions, persistent
-Step 7, no automatic redirect, and one `Ava projekt` route action to
-`/project`. Parent copy stays `Järgmine samm` and does not adopt the unused
-compact-navigation upcoming state.
+`TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS` is completed at commit
+`98bb33673e657bf607a2934abf68ff82c359d5b5`; its verdict block is populated,
+the bounded Phase 2 is complete, AUDIT_VERDICT: ACCEPT_WITH_NITS, and
+SAFE_FOR_STAGING: YES. Its committed map/index rows are already MAINTAINED.
 
-Wide/compact layout retains the `780` workspace split and keyboard, focus,
-tooltip, semantics, reduced-motion, page-scroll/canvas-drag isolation, and
-200% text-scale coverage. Creation, provider, persistence, Project ZIP, and
-canonical/electrical semantics are unchanged.
-
-Human-supplied accepted Child 2 evidence records manual smoke `10/10`, human
-attestation PASS, Wizard `76/76`, focused `369/369`, Project ZIP `37/37`, full
-Flutter `601/601`, validator `303/303`, and clean doctor/analyze/format/diff
-checks. Its retained NITs are deliberate side-by-side Step 3/4 at `780–1049`,
-Step 7 `SelectableText` without Copy ID, and horizontal compact progress via
-`SingleChildScrollView` plus `Row`. Child 1's durable retained decisions are
-the accepted removed opacity-value key, unused parent upcoming-state
-semantics, and a non-blocking popover viewport snapshot at open; no historical
-smoke count is invented.
-
-Committed-source qualification yields `QUALIFIES` for
-`wizard_compact_tokens.dart` and `wizard_compact_widgets.dart`, and
-`NOT_APPLICABLE` for `wizard_compact_widgets_test.dart`. Exactly eight maps
-and their index rows are `REVIEW_REQUIRED`; the focused compact-widget test
-has no map. The LOCK artifact verdict interior is empty and its ledger Status
-is the neutral Phase 1 value `REVIEW_REQUIRED`.
+F-13 cause: operational post-Phase2 route/route-owner drift after the final
+LOCK commit; behavior is not re-opened.
 
 ```text
-TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS
--> NEEDS_USER_DECISION
+TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
 ```
+
+TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS remains historical
+evidence and is not rewritten.
+
 
 ## Accepted Wizard reference-frame geometry V1 final LOCK (historical, non-authorizing)
 

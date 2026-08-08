@@ -2,10 +2,73 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS`
-Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
 
-## Current Wizard compact-design V1 post-Phase2 route-reconciliation queue
+## Current validation-root portability SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is `main` at
+`HEAD == origin/main == 5fb92e71ca3822ae31b3b091f3f94e6a38abd284`, subject
+`docs: reconcile compact lock phase2 state`. The current pass writes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS.md`
+
+No sixth SCOPE path is queued. Tests, tools, runtime, maps, specs, schemas,
+samples, assets, packages, `_incoming`, scratch, unrelated porcelain, and all
+stashes remain outside current write authority.
+
+The future implementation queue is exactly:
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS
+Lane: A
+Mode: QA_PASS
+```
+
+Its only writable path is `tests/test_asset_sample_sync.py`. The repair derives
+the repository root from the resolved test-file location and cannot use a
+username/clone literal, `Path.cwd()`, or another process-CWD dependency. It
+preserves the eight existing source/asset pairs, every compared byte, SHA-256
+comparison behavior, and existing failure copy. It does not queue F-10 sample
+deduplication, fixture movement, asset/package/pubspec changes, or Project ZIP
+work.
+
+The RED/GREEN queue requires a same-file behavioral relocation regression,
+not source-text grep; a small pure same-file root helper is allowed. GREEN runs
+the focused test from repository root and again by absolute test path from an
+unrelated temporary CWD, then doctor, full validator, and both diff checks.
+No Flutter manual smoke is queued.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+Python validation tests are outside Dart code-map bootstrap. No map or map
+index work is queued.
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+The implementation activates only after independent acceptance and human push
+of this exact five-file SCOPE. The named LOCK is later docs-only evidence and
+route work derived from accepted committed implementation; this SCOPE does not
+arm its file set. F-03 remains outside this cycle.
+
+## Accepted Wizard compact-design V1 post-Phase2 route reconciliation queue (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS

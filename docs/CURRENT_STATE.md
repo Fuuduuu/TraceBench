@@ -1,9 +1,61 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS`
-Next recommended pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Current pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
 
-## Live Wizard compact-design V1 post-Phase2 state reconciliation
+## Live validation-root portability SCOPE
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+The verified entry is `main` at
+`HEAD == origin/main == 5fb92e71ca3822ae31b3b091f3f94e6a38abd284`, subject
+`docs: reconcile compact lock phase2 state`. This docs-only SCOPE changes
+exactly `docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`,
+`docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS.md`.
+
+F-09 is localized to `tests/test_asset_sample_sync.py`: its eight existing
+source/asset comparison pairs are rooted at the clone-specific literal
+`C:/Users/Kasutaja/Desktop/TraceBench`. `tools/validate_all.py` already derives
+its repository root from its own resolved file location and only discovers the
+test; no validator change is required.
+
+The future `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS` may change only
+`tests/test_asset_sample_sync.py`. It must derive the repository root from the
+test file's resolved location, remain independent of process CWD, preserve all
+eight comparison pairs, sample/asset bytes, SHA-256 comparison semantics, and
+failure wording, and make no F-10 deduplication, fixture movement, asset,
+package, pubspec, or Project ZIP change. A small pure same-file root helper is
+allowed solely to make relocation behavior directly testable.
+
+TDD must first produce a behavioral RED showing that a synthetic relocated
+`tests/test_asset_sample_sync.py` location resolves to that synthetic clone
+root rather than the original absolute clone. GREEN then covers the focused
+test from repository root and the same absolute test file launched from an
+unrelated temporary CWD. No source-text grep is accepted as regression proof.
+No Flutter manual smoke is required.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+Python tests are outside the Dart code-map bootstrap. No map or
+`docs/code_maps/CODE_MAP_INDEX.md` change is part of this cycle.
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+F-03 is not implemented in this cycle.
+
+## Accepted Wizard compact-design V1 post-Phase2 state reconciliation (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS

@@ -2,10 +2,141 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS`
-Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
 
-## Current Wizard compact-design V1 post-Phase2 state reconciliation lock authority
+## Current validation-root portability SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+Lane: A
+Mode: DOCS_SYNC / SCOPE_LOCK
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 5fb92e71ca3822ae31b3b091f3f94e6a38abd284`, subject
+`docs: reconcile compact lock phase2 state`.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS.md`
+
+No sixth SCOPE file is authorized. Runtime, tests, tools, maps,
+`docs/code_maps/CODE_MAP_INDEX.md`, specs, schemas, samples, assets, packages,
+pubspec files, Project ZIP surfaces, `_incoming`, scratch, unrelated porcelain,
+and all stashes are read-only. The completed compact-design final LOCK,
+reconciliation artifact/evidence, prior Wizard LOCKs, and all historical audit
+evidence remain unchanged.
+
+### Causal finding and one-file proof
+
+`tests/test_asset_sample_sync.py` defines exactly eight source/asset comparison
+pairs and currently binds their common root to
+`C:/Users/Kasutaja/Desktop/TraceBench`. A clone at another path therefore
+validates files from the original location or fails there instead of validating
+its own checkout. This makes validation evidence dependent on one user's clone
+location.
+
+`tools/validate_all.py` already uses
+`Path(__file__).resolve().parents[1]` for its own repository root, invokes
+stdlib unittest discovery under that root, and requires no change. The root
+selection, comparison pairs, hashing helper, assertions, and relocation
+regression can coexist inside the existing Python test. The exact future
+implementation allowlist is therefore provably one file.
+
+### Reserved implementation authority
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS
+Lane: A
+Mode: QA_PASS
+```
+
+The future pass may write only:
+
+1. `tests/test_asset_sample_sync.py`
+
+No second implementation path is authorized. Future authority is conditional
+on independent acceptance and human push of this exact five-file SCOPE.
+
+### Locked portability behavior
+
+- Derive the repository root from the test file's own resolved location.
+- Do not retain or introduce a username-specific or clone-specific absolute
+  path.
+- Do not use `Path.cwd()` or another process-CWD-dependent root.
+- Preserve exactly the existing eight source/asset comparison pairs.
+- Preserve every sample and asset byte.
+- Preserve SHA-256 comparison semantics and existing failure messages; root
+  derivation mechanically requires no wording change.
+- A small pure root-resolution helper inside the same test file is allowed
+  only when needed for direct relocation testing.
+- Do not perform F-10 sample deduplication, move fixtures, or alter assets,
+  packages, pubspec files, tools, validators, runtime, or Project ZIP behavior.
+
+The behavior may use `Path(__file__).resolve().parents[1]`, but this SCOPE locks
+the behavior rather than one mandatory spelling.
+
+### Locked TDD and GREEN validation
+
+Before the fix, preserve the old hardcoded result behind a small same-file seam
+if needed and add a behavioral regression that supplies a synthetic relocated
+absolute `.../tests/test_asset_sample_sync.py` location while the process CWD
+is unrelated. The assertion must expect the synthetic clone root and must fail
+because the old behavior returns the original clone. A missing symbol, finder,
+or production-source text grep is not a qualifying RED.
+
+After the narrow root fix, prove GREEN with:
+
+1. `py -3 -m unittest tests.test_asset_sample_sync` from repository root;
+2. the same test file launched by absolute path after changing to an unrelated
+   temporary CWD;
+3. `py -3 tools\doctor.py`;
+4. `py -3 tools\validate_all.py`;
+5. `git diff --check`; and
+6. `git diff --cached --check`.
+
+No Flutter manual smoke is required because this is Python validation
+infrastructure only.
+
+### Code-map disposition
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+The target is a Python test outside Dart bootstrap. Do not create or edit a
+code map or `docs/code_maps/CODE_MAP_INDEX.md`.
+
+### Route and later LOCK
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS
+-> TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+The named final LOCK records accepted committed one-file behavior and route
+evidence without reopening runtime, tools, maps, specs, schemas, samples, or
+assets. Its exact material set is derived only from accepted committed evidence
+and is not current authority. F-03 is not implemented in this cycle.
+
+### Stops
+
+Stop if the implementation needs a second file; exact comparison-pair or
+failure-copy preservation is impossible; root selection needs process CWD;
+sample or asset bytes must move or change; F-10, F-03, Project ZIP, package,
+pubspec, tool, validator, runtime, map, schema, or protected-surface work is
+required; a sixth SCOPE file appears; route owners disagree; validation fails;
+or unrelated porcelain, scratch, `_incoming`, historical evidence, or a stash
+changes.
+
+## Accepted Wizard compact-design V1 post-Phase2 state reconciliation authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WIZARD_COMPACT_LOCK_PHASE2_STATE_RECONCILIATION_PASS

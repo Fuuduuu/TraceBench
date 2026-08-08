@@ -1,9 +1,93 @@
 # Current State
 
-Current pass: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
 
-## Live Windows distribution-model product decision
+## Live projection-freshness provenance decision
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PROTECTED_ARCHITECTURE_DECISION / PHASE_1
+```
+
+The verified entry is `main` at
+`HEAD == origin/main == a4cc69dba554a6bf221f0ea70519941f318594d7`, subject
+`docs: record Windows distribution model decision`. At Phase 1 entry, the
+staged and unmerged sets were empty. This decision changes exactly
+`docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`,
+`docs/AUDIT_INDEX.md`, `docs/PROJECTION_REFRESH_SPEC.md`,
+`docs/FLUTTER_UI_SPEC.md`, and
+`docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS.md`.
+
+Live source confirms that `events.jsonl` is canonical and
+`known_facts.json` is derived, but the loader does not prove that the loaded
+projection corresponds to the loaded event bytes. Directory loading
+explicitly assigns `isProjectionStale: false`; ZIP and asset loading inherit
+the `ProjectState` default `false`. The boolean therefore conflates proven
+freshness with missing proof.
+
+The V1 persisted proof is optional top-level derived metadata in
+`known_facts.json`:
+
+```json
+"projection_provenance": {
+  "projection_contract_version": "1.0",
+  "events_sha256": "<64 lowercase hex characters>"
+}
+```
+
+`events_sha256` is computed over the exact `events.jsonl` input bytes consumed
+by `tools/materialize_known_facts.py`, without normalization, sorting, or
+reserialization. The materializer is the sole producer and must emit the
+envelope for every successful future materialization, including empty event
+input. Flutter only loads, compares, and displays it.
+
+Freshness becomes `FRESH`, `STALE`, or `UNKNOWN`. A supported `1.0` envelope
+with a valid matching hash is `FRESH`; the same valid supported envelope with
+a mismatch is `STALE`; absent, safely uninterpretable, or unsupported-version
+provenance is `UNKNOWN`. `UNKNOWN` never means `FRESH`, and no mtime, size,
+event-count, last-event, sequence, or process-local boolean heuristic may
+promote it. Existing malformed required-file handling remains fail-closed.
+
+Successful local event append changes in-memory freshness to `STALE` without
+rewriting the projection or provenance. Only one successful materialization
+run may create projection data and matching provenance that can later be
+classified `FRESH`. Legacy projects without provenance load as `UNKNOWN`
+without silent migration or canonical rewrite.
+
+Derived content remains visible and navigation remains available. `STALE`
+gets a generic outdated-projection warning; `UNKNOWN` gets a distinct warning
+that freshness cannot be verified; `FRESH` gets no freshness warning. Future
+coverage includes Project Overview, measurements/known facts, graph, photos,
+report, and Board Canvas. No localized copy or refresh/materialize action is
+locked here.
+
+Project ZIP structure remains unchanged. Provenance travels inside required
+`known_facts.json`; no sidecar or new ZIP entry is introduced.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+```
+
+The next SCOPE inspects implementation impact and may decompose producer/schema
+and loader/UI work into bounded children. This decision preauthorizes no exact
+implementation allowlist. F-03 and F-01/F-05/F-16 remain outside this pass.
+Its Phase 1 ledger Status is `REVIEW_REQUIRED` and its Phase 1 verdict interior
+is empty. The Phase 1 form makes no claim that this decision pass is accepted,
+staged, committed, or pushed.
+
+## Accepted Windows distribution-model product decision (historical, non-authorizing)
+
+Commit `a4cc69dba554a6bf221f0ea70519941f318594d7` preserves the completed
+six-file decision with its populated verdict block and recorded ledger
+payload. The Phase 1 wording below is retained as historical evidence and
+supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS

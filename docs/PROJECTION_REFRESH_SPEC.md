@@ -2,116 +2,189 @@
 
 ## Purpose
 
-Define V1 projection freshness behavior after local append-only event writes.
+Define the durable V1 contract that proves whether a loaded
+`known_facts.json` projection corresponds to the exact loaded
+`events.jsonl` bytes, and define the resulting runtime/UI freshness semantics.
 
-## Accepted V1 policy
+## Canonical and derived ownership
 
-POLICY_D: export-time refresh.
+- `events.jsonl` remains the only canonical truth.
+- `known_facts.json` remains derived, regenerable projection output.
+- `tools/materialize_known_facts.py` is the sole producer of projection data
+  and persisted projection provenance.
+- Flutter loads, compares, and displays freshness. It never materializes,
+  invents, patches, or persists projection provenance.
+- No Dart-native materializer and no separate freshness sidecar are introduced.
 
-- Flutter app marks projection stale after local event append.
-- Flutter never mutates `known_facts.json` directly.
-- Python materializer is the only canonical `known_facts` projection owner.
-- Export refreshes `known_facts.json` before packaging ZIP.
-- Re-import of exported ZIP clears stale state.
-- Mobile export remains placeholder in V1.
+## Persisted projection provenance V1
 
-## Projection ownership
+`known_facts.json` may contain this top-level derived metadata envelope:
 
-- `events.jsonl` remains canonical truth.
-- `known_facts.json` is derived projection.
-- `tools/materialize_known_facts.py` owns projection regeneration.
-- Flutter may display stale state but must not invent or patch `known_facts` facts.
-- No Dart-native materializer in V1.
+```json
+"projection_provenance": {
+  "projection_contract_version": "1.0",
+  "events_sha256": "<64 lowercase hex characters>"
+}
+```
 
-## Stale indicator rules
+The envelope is optional when reading legacy projects. Updated materializer
+output must always contain it after a successful materialization, including
+when `events.jsonl` is empty.
 
-- `ProjectState.isProjectionStale = true` after any local event append.
-- Stale banner is global.
-- Show stale banner on derived views:
-  - measurements
-  - graph
-  - report
-  - photos
-  - project overview if feasible in later implementation
-- Banner text:
-  `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
-- Banner is dismissed only after successful export + re-import or full project reload from fresh ZIP.
-- No in-app Refresh button in V1.
-- Stale state does not block navigation or data display.
+The envelope is derived metadata, not canonical truth. It changes no event,
+fact, evidence, writer, validation, materialization, or Project ZIP semantics
+beyond enabling freshness proof.
 
-## Stale projection UI V1 scope
+### Exact-byte hash contract
 
-Component:
-- `ProjectionStaleBanner`
+`events_sha256` is SHA-256 of the exact `events.jsonl` input bytes consumed by
+the materializer run that produced the accompanying projection.
 
-Pattern:
-- one reusable top-of-content banner reused by derived screens
-- first child of each derived screen body, below AppBar/header
-- above filters/cards/empty states
-- scrolls with content
-- not sticky
-- one instance per screen, not repeated
+The hash input permits no:
 
-Goal:
-- Show a consistent stale projection warning after local event writes when `ProjectState.isProjectionStale` is true.
+- JSON normalization;
+- newline normalization;
+- event sorting;
+- semantic reserialization; or
+- replacement with file metadata, counts, IDs, or sequence values.
 
-Future implementation pass:
-- `PROJECTION_STALE_UI_PASS`
+The representation is exactly 64 lowercase hexadecimal characters.
 
-Required behavior:
-- Component contract: display-only, stateless, no callbacks.
-- Primary copy (exact): `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
-- Secondary copy: `Graafik, raport ja kokkuvõtted võivad põhineda vanemal known_facts projektsioonil.`
-- Passive tag: `Vajab eksporti`
-- Visible when `ProjectState.isProjectionStale == true`.
-- Hidden when `ProjectState.isProjectionStale == false`.
-- Appears on:
-  - Project Overview
-  - measurements / known facts view
-  - board graph view
-  - photo evidence view
-  - customer report view
-- Does not block navigation.
-- Does not hide derived data.
-- Does not claim data is refreshed.
-- Does not trigger materializer/materialization/export.
-- Runtime UI only; does not appear in exported PDF/customer report artifacts.
-- Does not mutate `known_facts.json`.
-- Dismisses only when app reloads from fresh ZIP flow that clears stale state.
-- Input props in V1:
-  - `isStale` (`bool`)
-  - `compact` (`bool`, optional)
-  - `showSecondary` (`bool`, optional)
-  - `contextLabel` (`String`, optional, reserved)
-- `isStale == false` renders as zero-height/empty.
+### Projection contract version
 
-Component semantics:
-- No navigation or data-affecting side effects.
-- No callbacks in V1 such as: `onRefresh`, `onExport`, `onMaterialize`, `onDismiss`, `onTap`.
-- No buttons/links for refresh actions in V1.
+`projection_contract_version: "1.0"` identifies the currently recognized
+`known_facts.json` projection semantics.
 
-Accessibility:
-- primary text contrast target >= 7:1
-- secondary text contrast target >= 4.5:1
-- icon is decorative
-- status tag is text only (not button role)
-- no flashing animation
-- supports text scale 200%
-- color is not the sole signal
+The version must be bumped before shipping a materializer change that can
+produce semantically different `known_facts.json` for identical
+`events.jsonl` bytes. Formatting-only projection serialization changes do not
+require a version bump.
 
-Visual intent:
-- info-tier, muted amber/warning style
-- not critical red/error tone.
+### Future schema shape
 
-Out of scope:
-- export implementation
-- materializer invocation
-- mobile export
-- known_facts mutation
-- Dart-native known_facts materializer
-- event-writing changes
-- ZIP contract expansion
-- runtime refresh/elevated action
+Top-level `projection_provenance` remains optional. When present, it is an
+object with:
+
+- required `projection_contract_version`: non-empty string; and
+- required `events_sha256`: string matching `^[0-9a-f]{64}$`.
+
+The envelope remains readable enough for an unsupported contract version to
+be classified `UNKNOWN` rather than falsely `FRESH`. This decision does not
+implement the schema.
+
+## Freshness classification
+
+| State | Exact condition |
+|---|---|
+| `FRESH` | Provenance exists; `projection_contract_version` is supported `1.0`; `events_sha256` is structurally valid; and it equals SHA-256 of the exact currently loaded `events.jsonl` bytes. |
+| `STALE` | Provenance exists; version `1.0` is supported; the hash is structurally valid; and it differs from SHA-256 of the exact currently loaded event bytes. |
+| `UNKNOWN` | Provenance is absent, cannot be interpreted safely, or carries an unsupported projection contract version. |
+
+`UNKNOWN` is never equivalent to `FRESH`. No heuristic may promote it.
+Specifically, none of these proves freshness:
+
+- `isProjectionStale == false` or another process-local-only boolean;
+- file modification time;
+- file size;
+- event count;
+- last event ID;
+- sequence number; or
+- a loader default.
+
+Malformed required `known_facts.json` or `events.jsonl` content continues to
+follow existing load-error behavior. `UNKNOWN` does not conceal or downgrade
+an otherwise invalid required file.
+
+## State transitions
+
+### Successful local canonical append
+
+- In-memory freshness becomes `STALE`.
+- Flutter does not regenerate `known_facts.json`.
+- Flutter does not rewrite persisted provenance.
+- Persisted old provenance therefore remains naturally mismatched on reload.
+
+### Successful materialization
+
+- Projection data and provenance represent the same materialization run.
+- The materializer hashes the exact input bytes used by that run.
+- Only successful materialization may create a new claim that can later be
+  classified `FRESH`.
+- Failure must not publish a new provenance claim detached from projection
+  output.
+
+### Legacy and forward compatibility
+
+- A legacy project without provenance loads as `UNKNOWN`, not false or
+  `FRESH`.
+- There is no silent migration, provenance backfill, or canonical-event
+  rewrite.
+- Unsupported projection contract versions load as `UNKNOWN`, not `STALE` or
+  `FRESH`.
+
+## Runtime model direction
+
+Future `ProjectState` exposes tri-state freshness semantics. The current
+`isProjectionStale` boolean cannot remain the authority because `false` cannot
+distinguish proven `FRESH` from `UNKNOWN`.
+
+A temporary compatibility getter or adapter may exist only if the future
+implementation SCOPE proves it necessary. It must not promote `UNKNOWN` to
+`FRESH`.
+
+## Tri-state projection UI
+
+- `FRESH`: show no freshness warning.
+- `STALE`: show a visible, nonblocking warning that the projection is
+  outdated. Wording is generic and must not assume that only measurements
+  changed.
+- `UNKNOWN`: show a visible, nonblocking, distinct warning that projection
+  freshness cannot be verified. Do not present it as confirmed stale or
+  confirmed fresh.
+
+For both `STALE` and `UNKNOWN`:
+
+- derived data remains visible;
+- navigation remains available;
+- no refresh/materialize mutation action is introduced by this decision; and
+- warning state is conveyed through text/semantics, not color alone.
+
+Future coverage includes every materialized/derived surface that could
+otherwise look authoritative:
+
+- Project Overview;
+- measurements and known-facts views;
+- Board Graph;
+- photo evidence;
+- customer report/report views; and
+- Board Canvas.
+
+The accepted presentation constraints remain in force where the existing
+derived-screen layout supports them:
+
+- one reusable, display-only status presentation per screen;
+- top-of-content placement below the screen header and above derived content;
+- the status scrolls with content and is not sticky;
+- no callbacks, links, or data-affecting side effects;
+- runtime UI only, not exported PDF or customer-report artifact content;
+- primary-text contrast target at least `7:1` and secondary-text contrast
+  target at least `4.5:1`;
+- support for text scale `200%`, no flashing animation, and color is not the
+  sole signal; and
+- muted information/warning intent rather than a critical error treatment.
+
+This decision locks no exact localized copy and does not implement UI.
+
+## Out of scope for this decision
+
+- runtime, model, loader, widget, screen, test, tool, or schema changes;
+- export implementation or materializer invocation from Flutter;
+- mobile export;
+- event-writing changes;
+- Project ZIP path expansion;
+- separate freshness files;
+- background refresh; and
+- F-01/F-05/F-16 board-plane or F-03 distribution implementation.
 
 ## Export sequencing
 
@@ -120,11 +193,13 @@ Desktop/dev V1 export policy:
 1. Collect local unpacked project folder path.
 2. Run `tools/materialize_known_facts.py` against local `events.jsonl`.
 3. If materializer fails, abort export and show error.
-4. If materializer succeeds, overwrite `known_facts.json` in local folder.
+4. If materializer succeeds, write projection data and matching provenance
+   from that same run to `known_facts.json` in the local folder.
 5. Regenerate `customer_report.md` if export tooling supports it.
 6. Package local folder into ZIP using accepted export path.
 7. Offer ZIP to user.
-8. User may re-import exported ZIP to clear stale app state.
+8. A later load classifies freshness from the persisted provenance and exact
+   loaded event bytes; reload itself does not manufacture freshness.
 
 ## Mobile export V1 decision
 
@@ -138,37 +213,33 @@ Desktop/dev V1 export policy:
 ## Project ZIP implications
 
 - Exported ZIP must not contain stale `known_facts.json`.
-- Export must refresh `known_facts.json` before packaging.
+- Export materializes projection data and provenance before packaging.
 - ZIP structure remains unchanged.
-- No new required ZIP paths.
-- Freshness metadata in manifest is deferred to:
-  `PROJECTION_FRESHNESS_METADATA_PASS`
+- No new required or optional ZIP path is introduced.
+- Provenance travels inside required `known_facts.json`.
+- No manifest freshness field and no separate sidecar is introduced.
 
 ## Customer report implications
 
 - `customer_report.md` is not regenerated immediately after event append.
 - `customer_report.md` should be regenerated at export time if tooling supports it.
-- If report regeneration is not yet implemented, export/report UX must show stale-warning behavior.
+- If report regeneration is not yet implemented, report UX must preserve the
+  applicable `STALE` or `UNKNOWN` warning.
 - Customer report must not claim refreshed facts unless refresh actually happened.
 
-## Enabled future passes
+## Enabled future route
 
-Next recommended policy implementation pass:
+The next pass is:
 
-- `PROJECTION_STALE_UI_PASS`
+- `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
 
-Later:
-
-- `FLUTTER_ZIP_EXPORT_PASS`
-- `PROJECT_ZIP_EXPORT_REFRESH_PASS`
-- `FLUTTER_MOBILE_EXPORT_PASS`
-- `PROJECTION_FRESHNESS_METADATA_PASS`
+That SCOPE inspects the complete implementation impact and may decompose the
+producer/schema and loader/UI work into bounded child passes. This decision
+does not preauthorize an exact implementation allowlist.
 
 ## Deferred
 
-- Dart-native materializer subset
 - background refresh
 - mobile export
-- bundled Python
-- freshness metadata
+- F-03 bundled-runtime implementation
 - concurrent edit/conflict handling

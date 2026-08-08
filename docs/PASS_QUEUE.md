@@ -2,10 +2,78 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
 
-## Current Windows distribution-model decision queue
+## Current projection-freshness provenance decision queue
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PROTECTED_ARCHITECTURE_DECISION / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == a4cc69dba554a6bf221f0ea70519941f318594d7`, subject
+`docs: record Windows distribution model decision`. At Phase 1 entry, the
+staged and unmerged sets were empty. The exact docs-only queue is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/PROJECTION_REFRESH_SPEC.md`
+6. `docs/FLUTTER_UI_SPEC.md`
+7. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS.md`
+
+No eighth path is queued. Runtime, tests, tools, schemas, maps, assets,
+samples, Project ZIP implementation/specification, prior artifacts, scratch,
+`_incoming`, unrelated porcelain, and every stash remain read-only.
+
+The decision adds one optional derived `projection_provenance` envelope to
+the future `known_facts.json` contract. It contains recognized projection
+contract version `1.0` and the lowercase SHA-256 of the exact event-log bytes
+consumed by the materializer. The Python materializer is the sole producer;
+Flutter does not invent, patch, persist, or materialize provenance.
+
+Freshness is tri-state. A valid supported matching envelope is `FRESH`; a
+valid supported mismatching envelope is `STALE`; missing, safely
+uninterpretable, or unsupported-version provenance is `UNKNOWN`. `UNKNOWN`
+cannot be promoted through mtimes, sizes, counts, last IDs, sequence numbers,
+or a false process-local boolean. Local append marks in-memory state `STALE`;
+only successful materialization may create a new provable `FRESH` claim.
+
+Future UI keeps derived data visible and navigation enabled. It distinguishes
+generic `STALE` from unverifiable `UNKNOWN`, including on Board Canvas and all
+other materialized/derived surfaces. This decision adds no refresh action and
+locks no exact localized copy.
+
+Project ZIP paths do not change. The envelope travels within required
+`known_facts.json`; there is no freshness sidecar, Flutter-written provenance,
+Dart materializer, or silent legacy migration.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+```
+
+The next SCOPE may decompose producer/schema and loader/UI implementation after
+live impact inspection; this decision queues no exact implementation
+allowlist. F-03 and F-01/F-05/F-16 remain deferred. This decision pass's Phase
+1 ledger Status is `REVIEW_REQUIRED` and its Phase 1 verdict interior is
+empty. The Phase 1 form makes no acceptance, staging, commit, or push claim
+for this decision pass.
+
+## Accepted Windows distribution-model decision queue (historical, non-authorizing)
+
+Commit `a4cc69dba554a6bf221f0ea70519941f318594d7` preserves the completed
+six-file decision with its populated verdict block and recorded ledger
+payload. The Phase 1 queue wording below is historical and supplies no current
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS

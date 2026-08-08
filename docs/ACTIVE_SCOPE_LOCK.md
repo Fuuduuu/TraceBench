@@ -2,10 +2,164 @@
 
 ## Route
 
-Current: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
 
-## Current Windows distribution-model decision authority
+## Current projection-freshness provenance decision authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PROTECTED_ARCHITECTURE_DECISION / PHASE_1
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == a4cc69dba554a6bf221f0ea70519941f318594d7`, subject
+`docs: record Windows distribution model decision`. At Phase 1 entry, the
+staged and unmerged sets were empty. The predecessor decision is committed
+with its verdict block and ledger payload recorded, and its accepted route
+names this decision next.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/PROJECTION_REFRESH_SPEC.md`
+6. `docs/FLUTTER_UI_SPEC.md`
+7. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS.md`
+
+No eighth path is authorized. Runtime, tests, tools, schemas, maps, assets,
+samples, `docs/PROJECT_ZIP_SPEC.md`, Project ZIP implementation, previous
+artifacts/specs, scratch, `_incoming`, unrelated porcelain, and every stash
+are read-only.
+
+### Read-only causal owners
+
+- `lib/shared/services/project_loader.dart`
+- `lib/shared/models/project_state.dart`
+- `lib/shared/models/known_facts.dart`
+- `tools/materialize_known_facts.py`
+- `schemas/known_facts.schema.json`
+- `lib/shared/widgets/projection_stale_banner.dart`
+- materialized/derived consumers, including Board Canvas
+
+They prove that canonical `events.jsonl` and derived `known_facts.json` are
+loaded without a byte-identity relationship; directory loading assigns
+`isProjectionStale: false`; ZIP/assets use the same false default; local
+writers set the process-local boolean true after append; and Board Canvas
+consumes derived data without the existing stale banner.
+
+### Locked persisted provenance contract
+
+Future materializer output contains optional-for-reading top-level derived
+metadata:
+
+```json
+"projection_provenance": {
+  "projection_contract_version": "1.0",
+  "events_sha256": "<64 lowercase hex characters>"
+}
+```
+
+Updated `tools/materialize_known_facts.py` must emit it for every successful
+materialization, including empty `events.jsonl`. `events_sha256` hashes the
+exact event-log input bytes consumed by that run: no JSON/newline
+normalization, sorting, or semantic reserialization. Version `1.0` identifies
+the recognized projection semantics and must change before shipping a
+materializer that can produce semantically different facts for identical
+event bytes; formatting-only output changes do not require a bump.
+
+The materializer is the sole producer. Flutter may load, compare, and display
+provenance but must not invent, patch, or persist it. There is no sidecar and
+no new Project ZIP path. A future schema keeps the top-level envelope
+optional; when present it requires a non-empty version and an
+`events_sha256` matching `^[0-9a-f]{64}$`.
+
+### Locked tri-state semantics
+
+- `FRESH`: present provenance, supported version `1.0`, structurally valid
+  hash, and exact equality with the SHA-256 of currently loaded event bytes.
+- `STALE`: present provenance, supported version `1.0`, structurally valid
+  hash, and mismatch with currently loaded event bytes.
+- `UNKNOWN`: missing legacy provenance, provenance that cannot be interpreted
+  safely, or an unsupported contract version.
+
+`UNKNOWN` is never `FRESH`. Malformed required event/projection content keeps
+its existing load-error path; freshness classification cannot conceal it.
+Mtime, file size, event count, last event ID, sequence, and a false boolean are
+not proof, and no heuristic may promote `UNKNOWN`.
+
+Successful local event append transitions in-memory freshness to `STALE`
+without regenerating `known_facts.json` or rewriting provenance. Only one
+successful materialization run may create projection data and its matching
+provenance. Legacy content is not silently migrated and canonical events are
+never rewritten.
+
+Future `ProjectState` exposes tri-state semantics; the existing boolean cannot
+remain authoritative. A temporary compatibility adapter is allowed only if
+the next SCOPE proves it necessary. Flutter remains a comparator/display
+layer, never a materializer.
+
+### UI, ZIP, and protected boundaries
+
+`FRESH` has no warning. `STALE` has a generic nonblocking outdated-projection
+warning. `UNKNOWN` has a distinct nonblocking warning that freshness cannot be
+verified. Derived data remains visible and navigation remains available in
+both warning states. Future coverage includes Project Overview,
+measurements/known facts, graph, photos, report, and Board Canvas. This pass
+locks no exact localized copy and introduces no refresh/materialize action.
+
+Project ZIP structure remains unchanged; provenance travels inside required
+`known_facts.json`. No new entry, sidecar, Dart materializer, Flutter-written
+provenance, or silent canonical migration is authorized.
+
+Explicitly rejected as freshness authority: loader-forced false,
+process-local-only boolean state, mtime, size, event count/last event ID,
+separate sidecar, Flutter-written provenance, Dart-native materialization, and
+silent migration.
+
+No event, fact, writer, validator, materializer, projection, evidence,
+canonical, Board Canvas, Project ZIP, or other implementation byte changes in
+this decision pass. F-03 and F-01/F-05/F-16 remain outside authority.
+
+### Code-map disposition
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+This docs-only decision changes no Dart responsibility zone. No map or index
+write is authorized.
+
+### Route, audit gate, and stops
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+```
+
+The next SCOPE inspects implementation impact and may decompose producer/schema
+and loader/UI work. No exact implementation allowlist is preauthorized here.
+
+This pass's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its designated
+Phase 1 verdict interior is empty. The Phase 1 form makes no claim that this
+decision pass is accepted, staged, committed, or pushed. Independent audit
+precedes any bounded verdict recording or exact staging.
+
+Stop if an eighth path is required; implementation enters the diff; exact-byte
+hashing, materializer ownership, tri-state or legacy/forward behavior is
+weakened; Project ZIP paths expand; Flutter gains materialization authority;
+an unrelated protected train enters; route owners disagree; validation fails;
+or unrelated material or a stash moves.
+
+## Accepted Windows distribution-model decision authority (historical, non-authorizing)
+
+Commit `a4cc69dba554a6bf221f0ea70519941f318594d7` preserves the completed
+six-file decision with its populated verdict block and recorded ledger
+payload. All current/pass terms in the Phase 1 wording below refer to that
+historical form and supply no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS

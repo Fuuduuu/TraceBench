@@ -126,14 +126,18 @@ Deferred pass:
 - FLUTTER_EVENT_WRITE_SCOPE_LOCK_PASS (completed)
 - FLUTTER_EVENT_WRITE_MEASUREMENT_SCOPE_LOCK_PASS (planned first implementation scope)
 
-## Stale projection banner rules
+## Projection freshness presentation rules
 
-- Stale projection UX is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
-- Global stale banner should appear on derived views when `isProjectionStale` is true.
-- Banner text:
-  `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.`
-- No in-app Refresh button in V1.
-- Stale state does not block navigation.
+- Projection freshness UX is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
+- `FRESH` shows no freshness warning.
+- `STALE` shows a generic nonblocking outdated-projection warning; it must not
+  imply that only measurements changed.
+- `UNKNOWN` shows a distinct nonblocking warning that freshness cannot be
+  verified; it must not be presented as confirmed stale or confirmed fresh.
+- Derived data remains visible and navigation remains available for both
+  warning states.
+- No in-app Refresh/materialize action is introduced by this decision.
+- Exact localized copy remains an implementation-scope decision.
 
 ## 8. Project ZIP integration
 
@@ -357,13 +361,25 @@ Full details live in `docs/FLUTTER_EVENT_WRITE_SPEC.md`.
 
 Other event types remain deferred.
 
-## Stale projection banner rules
+## Tri-state projection freshness UI
 
-- Stale projection UX is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
-- V1 stale UI is display-only and only reflects `ProjectState.isProjectionStale`.
-- It must not trigger refresh, export, or materializer work.
-- It must not mutate `known_facts.json`.
-- Future implementation pass:
-  - `PROJECTION_STALE_UI_PASS`
-- Banner is reusable (`ProjectionStaleBanner`) and rendered top-of-content where required.
-- Banner uses primary copy `Mõõtmised lisatud — ekspordi projekti et uuendada kokkuvõtet.` and passive tag `Vajab eksporti`.
+- Freshness behavior is governed by `docs/PROJECTION_REFRESH_SPEC.md`.
+- Future UI consumes authoritative tri-state `FRESH` / `STALE` / `UNKNOWN`
+  semantics; the boolean-only `ProjectState.isProjectionStale` contract is
+  obsolete and may not remain the freshness authority.
+- `FRESH` renders no warning.
+- `STALE` renders a visible generic outdated-projection warning.
+- `UNKNOWN` renders a visibly distinct warning that freshness cannot be
+  verified, without claiming confirmed staleness or freshness.
+- Both warning states are display-only, nonblocking, keep derived data
+  visible, and keep navigation available.
+- The reusable presentation remains a single top-of-content status where the
+  existing derived-screen layout supports that placement; it scrolls with
+  content and is not sticky.
+- UI must not trigger refresh, export, or materializer work and must not mutate
+  `known_facts.json` or persisted provenance.
+- Required future derived-surface coverage includes Project Overview,
+  measurements/known facts, Board Graph, photos, customer report/report, and
+  Board Canvas.
+- No exact localized copy, callback, button, or refresh/materialize action is
+  locked by this decision.

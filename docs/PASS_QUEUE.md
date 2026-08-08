@@ -2,10 +2,76 @@
 
 ## Current route
 
-Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
-Next: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Current: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
 
-## Current validation-root portability final LOCK queue
+## Current Windows distribution-model decision queue
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PRODUCT_ARCHITECTURE_DECISION / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == 80b2db1c5ca7b72f16981d8f1caeb7707812b28d`, subject
+`docs: lock validation root portability`. At Phase 1 entry, the staged and
+unmerged sets were empty.
+The exact docs-only queue is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md`
+6. `docs/audit/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS.md`
+
+No seventh path is queued. Source, tests, tools, schemas, maps, assets,
+packages, `pubspec.yaml`, Windows runner/installer/build surfaces, prior
+artifacts, scratch, `_incoming`, unrelated porcelain, and all stashes remain
+read-only.
+
+The queue records one product choice: the first supported packaged desktop
+model is a standalone Windows app with an app-owned, version-pinned, offline
+private Python and support-tool/resource bundle. Production uses absolute
+paths from an installed app-owned support root, never process CWD or a
+PATH-selected Python, and never silently falls back to system Python. Normal
+users need no Python setup, source checkout, repository-root launch, or
+runtime download. Explicit test/developer overrides may remain, but do not
+define or weaken the supported production contract.
+
+`SYSTEM_PYTHON_REQUIRED`, `SOURCE_CHECKOUT_REQUIRED`,
+`DOWNLOAD_RUNTIME_ON_FIRST_RUN`, and `PORT_ALL_PYTHON_TO_DART_NOW` are rejected
+as supported models for this remediation. Existing materializer/exporter/
+validator/writer semantics remain closed and unchanged.
+
+The durable product owner is
+`docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md`. Exact bundle, manifest,
+support-root mechanism, installer, integrity/signing, updates, failure UX,
+dependency licensing/notices, and implementation/test allowlists are deferred
+to a later F-03 `SCOPE -> EHITUS -> LOCK`; no F-03 implementation is queued.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+```text
+TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+```
+
+The next pass decides F-02 persisted projection-freshness provenance before
+any F-02 implementation SCOPE and preauthorizes no exact schema field. This
+decision pass's Phase 1 ledger Status is `REVIEW_REQUIRED` and its Phase 1
+verdict interior is empty. The Phase 1 form makes no acceptance, staging,
+commit, or push claim for this decision pass.
+
+## Accepted validation-root portability final LOCK queue (historical, non-authorizing)
+
+Commit `80b2db1c5ca7b72f16981d8f1caeb7707812b28d` preserves this completed
+five-file LOCK with its populated verdict block and recorded ledger payload.
+The Phase 1 queue wording below is historical and supplies no current
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS

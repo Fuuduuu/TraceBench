@@ -1,9 +1,82 @@
 # Current State
 
-Current pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Current pass: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
 
-## Live validation-root portability final LOCK
+## Live Windows distribution-model product decision
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PRODUCT_ARCHITECTURE_DECISION / PHASE_1
+```
+
+The verified entry is `main` at
+`HEAD == origin/main == 80b2db1c5ca7b72f16981d8f1caeb7707812b28d`, subject
+`docs: lock validation root portability`. At Phase 1 entry, the staged and
+unmerged sets were empty.
+This Phase 1 decision changes exactly `docs/ACTIVE_SCOPE_LOCK.md`,
+`docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`,
+`docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md`, and
+`docs/audit/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS.md`.
+
+Live source confirms that `PythonRunner` probes `py -3`, `python3`, and
+`python`, and defaults its execution root to `Directory.current` when no
+explicit `repoRootPath` is supplied. Project creation invokes relative
+`tools/materialize_known_facts.py`; export invokes that materializer and
+relative `tools/export_project_zip.py`; accepted V2 add/edit/placement/
+measurement writers invoke relative `tools/event_writer_service.py`. The
+writer transitively invokes `validate_events_jsonl.py`, which resolves
+`schemas/events.schema.json`. Default product constructors/providers supply no
+production support-root override, and `pubspec.yaml` packages neither Python
+nor `tools/`.
+
+The selected first supported desktop distribution model is a standalone
+Windows application with an application-owned, version-pinned, offline
+support bundle containing the private Python runtime and the Python
+tools/resources required by accepted local product flows. Normal users need
+no Python installation, source checkout, repository-root launch, process-CWD
+assumption, PATH-selected Python, or network access after installation.
+Production resolves absolute tool/resource paths from an installed app-owned
+support root, fails explicitly and safely when the bundle is unavailable or
+invalid, and never silently falls back to arbitrary system Python.
+
+Explicit dependency injection/developer overrides may remain for tests and
+repository development, but they are not the supported user contract and may
+not weaken production determinism. Existing Python tool behavior remains
+canonical; this decision makes no Dart port and no event, schema, canonical
+fact, writer, validator, materializer, projection, Project ZIP, confirmation,
+or evidence semantic change.
+
+The durable owner is
+`docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md`. Exact runtime artifact,
+support manifest, installer, support-root implementation, signing/integrity,
+update, failure UX, and licensing/notices remain deferred to a later F-03
+`SCOPE -> EHITUS -> LOCK`. Windows is first; mobile and macOS/Linux packaging
+are outside this decision.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+```text
+TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+```
+
+The next pass decides the persisted projection-freshness provenance contract
+before an F-02 implementation SCOPE, without preauthorizing an exact schema
+property or provenance-field name. This decision implements neither F-03 nor
+F-02. Its Phase 1 ledger Status is `REVIEW_REQUIRED` and its Phase 1 verdict
+interior is empty. The Phase 1 form makes no claim that this decision pass is
+accepted, staged, committed, or pushed.
+
+## Accepted validation-root portability final LOCK (historical, non-authorizing)
+
+Commit `80b2db1c5ca7b72f16981d8f1caeb7707812b28d` preserves the completed
+five-file LOCK with its populated verdict block and recorded ledger payload.
+The Phase 1 wording below is retained as historical evidence and supplies no
+current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS

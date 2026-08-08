@@ -2,10 +2,139 @@
 
 ## Route
 
-Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
-Next: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Current: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
 
-## Current validation-root portability final LOCK authority
+## Current Windows distribution-model decision authority
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+Lane: B
+Mode: DOCS_ONLY / PRODUCT_ARCHITECTURE_DECISION / PHASE_1
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 80b2db1c5ca7b72f16981d8f1caeb7707812b28d`, subject
+`docs: lock validation root portability`. At Phase 1 entry, the staged and
+unmerged sets were empty.
+The preceding final LOCK is committed with its verdict block and ledger
+payload recorded, and the live route names this decision next.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md`
+6. `docs/audit/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS.md`
+
+No seventh path is authorized. No runtime, test, tool, schema, map, asset,
+package, `pubspec.yaml`, Windows runner, installer/build, or Project ZIP
+implementation byte may change. Prior artifacts, scratch, `_incoming`,
+unrelated porcelain, and every stash are read-only.
+
+### Read-only causal owners
+
+The following are evidence only and carry no write authority:
+
+- `lib/shared/services/python_runner.dart`
+- `lib/shared/services/project_creator.dart`
+- `lib/shared/services/project_exporter.dart`
+- `lib/features/components/services/v2_add_component_writer.dart`
+- `lib/features/components/services/v2_edit_component_writer.dart`
+- `lib/features/components/services/v2_placement_writer.dart`
+- `lib/features/measure_sheet/services/v2_save_measurement_writer.dart`
+- `tools/materialize_known_facts.py`
+- `tools/export_project_zip.py`
+- `tools/event_writer_service.py`
+- `tools/validate_events_jsonl.py`
+- `schemas/events.schema.json`
+- `pubspec.yaml`
+
+They prove system-command Python discovery, `Directory.current` fallback,
+repo-relative materializer/exporter/writer commands, the writer's transitive
+validator/schema dependency, default production construction without an
+installed support-root override, and the absence of packaged Python/tools.
+
+### Locked product decision
+
+BenchBeep's first supported packaged desktop model is a standalone Windows
+application with an application-owned, version-pinned, offline support bundle
+containing the private Python runtime and the Python tools/resources required
+by accepted local product flows.
+
+Normal users do not install/configure Python, keep a source checkout, launch
+from repo root, or depend on process CWD, PATH-selected Python, or a network
+download. Production resolves absolute paths from an installed app-owned
+support root, couples the runtime/tool version to the BenchBeep release, fails
+explicitly and safely for a missing/corrupt/incompatible/incomplete bundle,
+and does not silently fall back to system Python.
+
+Dependency injection and explicit developer overrides may remain for tests and
+repo development. They are not the end-user contract and may not weaken
+production determinism.
+
+The following supported-product models are rejected:
+
+1. `SYSTEM_PYTHON_REQUIRED`
+2. `SOURCE_CHECKOUT_REQUIRED`
+3. `DOWNLOAD_RUNTIME_ON_FIRST_RUN`
+4. `PORT_ALL_PYTHON_TO_DART_NOW`
+
+### Durable owner and deferred implementation
+
+`docs/spec/TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL.md` owns the durable product
+and architecture contract only. It must contain no current baseline, pass,
+route, audit, staging, commit, push, or lifecycle state.
+
+Existing Python materializer, exporter, validator, and writer behavior remains
+canonical. This decision performs no Dart port and authorizes no event,
+schema, fact, writer, validator, materializer, projection, Project ZIP,
+confirmation, evidence, or runtime-tool semantic change.
+
+Exact runtime artifact, tool/resource manifest, support-root implementation,
+installer, signing/integrity, update mechanism, failure UX, licensing/notices,
+and implementation/test/build allowlists remain deferred to a later F-03
+`SCOPE -> EHITUS -> LOCK`. Windows desktop is first; mobile and macOS/Linux
+packaging remain outside this decision.
+
+### Code-map disposition
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+No Dart responsibility zone changes. No map or map-index write is authorized.
+
+### Route, audit gate, and stops
+
+```text
+TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS
+```
+
+The next pass decides the persisted F-02 provenance contract before any F-02
+implementation SCOPE and preauthorizes no exact field/property name. This pass
+implements neither F-03 nor F-02.
+
+This pass's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its designated
+Phase 1 verdict interior is empty. The Phase 1 form makes no claim that this
+decision pass is accepted, staged, committed, or pushed. Independent audit
+precedes any bounded verdict recording or exact staging.
+
+Stop if a seventh path is required; implementation or a protected semantic
+change enters the diff; the dedicated spec contains lifecycle/current-state
+claims; production silently falls back to system Python; an exact F-02 schema
+field is accepted; route owners disagree; validation fails; or unrelated
+material or a stash moves.
+
+## Accepted validation-root portability final LOCK authority (historical, non-authorizing)
+
+Commit `80b2db1c5ca7b72f16981d8f1caeb7707812b28d` preserves this completed
+five-file LOCK with its populated verdict block and recorded ledger payload.
+All current/pass terms in the Phase 1 wording below refer to that historical
+LOCK form and supply no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS

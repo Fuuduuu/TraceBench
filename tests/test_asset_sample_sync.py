@@ -3,13 +3,27 @@ from pathlib import Path
 import unittest
 
 
+def _repo_root_from_test_file(test_file: Path) -> Path:
+    return test_file.resolve().parents[1]
+
+
 class AssetSampleSyncTests(unittest.TestCase):
     def _sha256(self, path: Path) -> str:
         with path.open('rb') as f:
             return hashlib.sha256(f.read()).hexdigest()
 
+    def test_repository_root_follows_relocated_test_file(self):
+        relocated_test_file = Path(
+            r"D:\other_clone\TraceBench\tests\test_asset_sample_sync.py"
+        )
+
+        self.assertEqual(
+            _repo_root_from_test_file(relocated_test_file),
+            Path(r"D:\other_clone\TraceBench"),
+        )
+
     def test_asset_samples_match_source_samples(self):
-        base = Path(r"C:/Users/Kasutaja/Desktop/TraceBench")
+        base = _repo_root_from_test_file(Path(__file__))
         pairs = [
             (
                 base / "samples/pelle_pv20_minimal/manifest.json",

@@ -2,10 +2,108 @@
 
 ## Route
 
-Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
+Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
+Next: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
 
-## Current validation-root portability SCOPE authority
+## Current validation-root portability final LOCK authority
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+Lane: A
+Mode: FINAL_LOCK / PHASE_1 / DOCS_ONLY
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 4914abf9439910eb9cc168a44c340f4fb74990be`, subject
+`test: make asset sample sync root portable`, parent
+`32589dfdeeb18aac796494e00866f5157d16a6bc`.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS.md`
+
+No sixth path is authorized. The accepted SCOPE artifact, implementation test,
+all sibling tests, tools, maps and `docs/code_maps/CODE_MAP_INDEX.md`, specs,
+schemas, samples, assets, runtime, packages, pubspec files, Project ZIP,
+historical evidence, `_incoming`, scratch, unrelated porcelain, and every
+stash are read-only.
+
+### Committed implementation evidence
+
+Commit `4914abf9439910eb9cc168a44c340f4fb74990be` changes exactly
+`tests/test_asset_sample_sync.py` with `15` insertions and `1` deletion. The
+pure `_repo_root_from_test_file` helper derives the root from its resolved
+test-file argument; the production comparison calls it with `Path(__file__)`.
+One behavioral relocation test supplies synthetic
+`D:\other_clone\TraceBench\tests\test_asset_sample_sync.py`. The original
+clone literal is removed, `Path.cwd()` is absent, and all eight comparison
+pairs, SHA-256 semantics, failure messages, and sample/asset bytes are
+preserved.
+
+### Accepted implementation audit and validation
+
+The supplied independent audit for
+`TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS` returned:
+
+```text
+AUDIT_VERDICT: ACCEPT_AS_IS
+SAFE_FOR_STAGING: YES
+MANUAL_SMOKE_RESULT: NOT_APPLICABLE
+FINDINGS: NONE
+```
+
+Accepted evidence is genuine behavioral RED (`2` tests, `1` expected
+assertion failure against the synthetic relocated root), focused GREEN `2/2`,
+unrelated-CWD absolute-path GREEN `2/2`, doctor PASS, validator `304/304`, four
+known optional-photo warnings only, and both Git diff checks PASS.
+
+### Residual boundary
+
+This LOCK proves portability only for `tests/test_asset_sample_sync.py`. It may
+not claim that every Python test is process-CWD portable. These sibling tests
+remain explicitly outside scope:
+
+- `tests/test_pelle_pv20_sample.py`
+- `tests/test_materialize_known_facts.py`
+- `tests/test_schema_samples.py`
+- `tests/test_graph_projection.py`
+
+They continue to rely on `tools/validate_all.py` supplying repository `ROOT`
+as `cwd`. Do not repair or register that residual in this LOCK.
+
+### Code-map disposition
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+The committed target is a Python test outside Dart code-map bootstrap. No map
+or map-index write is authorized.
+
+### Route and stops
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+F-02 projection freshness remains carried after the short F-03
+product/distribution decision. Neither F-03 nor F-02 is implemented here.
+
+Stop if a sixth path is needed; a runtime/test/tool/map/spec/schema/sample or
+asset byte changes; the accepted SCOPE artifact or implementation changes;
+route owners disagree; validation fails; unrelated material or a stash moves;
+or this Phase 1 LOCK would claim its own acceptance, staging, commit, or push.
+
+## Accepted validation-root portability SCOPE authority (historical, non-authorizing)
+
+The scope-time authority below is preserved as historical evidence. Its
+implementation completed at `4914abf9439910eb9cc168a44c340f4fb74990be` and
+it no longer authorizes writes.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS

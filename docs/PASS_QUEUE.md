@@ -2,10 +2,66 @@
 
 ## Current route
 
-Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
+Current: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
+Next: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
 
-## Current validation-root portability SCOPE queue
+## Current validation-root portability final LOCK queue
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+Lane: A
+Mode: FINAL_LOCK / PHASE_1 / DOCS_ONLY
+```
+
+Entry is `main` at
+`HEAD == origin/main == 4914abf9439910eb9cc168a44c340f4fb74990be`, subject
+`test: make asset sample sync root portable`, parent
+`32589dfdeeb18aac796494e00866f5157d16a6bc`. The current docs-only queue is
+exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS.md`
+
+No sixth path is queued. The committed implementation changes only
+`tests/test_asset_sample_sync.py` (`15` insertions, `1` deletion), adding one
+pure resolved-test-file ancestry helper and one behavioral relocation test.
+The hardcoded clone root and process-CWD dependency are absent; all eight
+comparison pairs, SHA-256 behavior, failure copy, and sample/asset bytes are
+preserved.
+
+The supplied implementation audit returned `AUDIT_VERDICT: ACCEPT_AS_IS`,
+`SAFE_FOR_STAGING: YES`, `MANUAL_SMOKE_RESULT: NOT_APPLICABLE`, and
+`FINDINGS: NONE`. Accepted validation is RED `2` tests / `1` expected failure,
+focused GREEN `2/2`, unrelated-CWD absolute-path GREEN `2/2`, doctor PASS,
+validator `304/304` with four known optional-photo warnings, and both diff
+checks PASS.
+
+This LOCK proves portability only for `tests/test_asset_sample_sync.py`. The
+four recorded sibling-test CWD assumptions remain out of scope and functional
+under `tools/validate_all.py` because that runner supplies repository `ROOT`
+as `cwd`. No sibling repair or intake registration is queued.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+F-02 projection freshness remains carried after the short F-03
+product/distribution decision. This Phase 1 LOCK is `REVIEW_REQUIRED`; no
+current acceptance, staging, commit, or push is queued or claimed.
+
+## Accepted validation-root portability SCOPE queue (historical, non-authorizing)
+
+The queue-time wording below is preserved as historical evidence. Its
+implementation completed at `4914abf9439910eb9cc168a44c340f4fb74990be` and
+is no longer current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS

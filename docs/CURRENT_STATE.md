@@ -1,9 +1,70 @@
 # Current State
 
-Current pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS`
+Current pass: `TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS`
 
-## Live validation-root portability SCOPE
+## Live validation-root portability final LOCK
+
+```text
+PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+Lane: A
+Mode: FINAL_LOCK / PHASE_1 / DOCS_ONLY
+```
+
+The verified entry is `main` at
+`HEAD == origin/main == 4914abf9439910eb9cc168a44c340f4fb74990be`, subject
+`test: make asset sample sync root portable`, with parent
+`32589dfdeeb18aac796494e00866f5157d16a6bc`. This docs-only final LOCK changes
+exactly `docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`,
+`docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS.md`.
+
+The committed implementation changes only `tests/test_asset_sample_sync.py`
+with `15` insertions and `1` deletion. It adds the pure
+`_repo_root_from_test_file` helper and one behavioral relocation test, removes
+the original clone-specific absolute path, and derives the repository root
+from resolved `Path(__file__)` ancestry without `Path.cwd()` or another
+process-CWD root dependency. All eight comparison pairs, SHA-256 behavior,
+failure messages, and sample/asset bytes remain unchanged.
+
+The supplied independent audit for
+`TRACEBENCH_VALIDATION_ROOT_PORTABILITY_PASS` returned
+`AUDIT_VERDICT: ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`,
+`MANUAL_SMOKE_RESULT: NOT_APPLICABLE`, and `FINDINGS: NONE`. Accepted evidence
+is behavioral RED `2` tests / `1` expected assertion failure against synthetic
+`D:\other_clone\TraceBench`, focused GREEN `2/2`, unrelated-CWD absolute-path
+GREEN `2/2`, doctor PASS, validator `304/304`, four known optional-photo
+warnings only, and both Git diff checks PASS.
+
+This result is limited to `tests/test_asset_sample_sync.py`. It does not claim
+suite-wide process-CWD portability. `tests/test_pelle_pv20_sample.py`,
+`tests/test_materialize_known_facts.py`, `tests/test_schema_samples.py`, and
+`tests/test_graph_projection.py` remain outside scope and continue to rely on
+`tools/validate_all.py` supplying repository `ROOT` as `cwd`.
+
+```text
+CODE_MAP_DISPOSITION: NOT_APPLICABLE
+```
+
+The implementation is a Python test outside Dart code-map bootstrap. No map
+or `docs/code_maps/CODE_MAP_INDEX.md` change is part of this LOCK.
+
+```text
+TRACEBENCH_VALIDATION_ROOT_PORTABILITY_LOCK_PASS
+-> TRACEBENCH_WINDOWS_DISTRIBUTION_MODEL_DECISION_PASS
+```
+
+The short F-03 product/distribution decision is next. F-02 projection
+freshness remains the following carried runtime-correctness train; neither F-03
+nor F-02 is implemented here. This LOCK's Phase 1 ledger Status is
+`REVIEW_REQUIRED` and its Phase 1 verdict interior is empty; it makes no claim
+that this LOCK is accepted, staged, committed, or pushed.
+
+## Accepted validation-root portability SCOPE and implementation (historical, non-authorizing)
+
+The scope-time wording below is preserved as historical evidence. Its one-file
+implementation completed at `4914abf9439910eb9cc168a44c340f4fb74990be`
+and no longer supplies current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_VALIDATION_ROOT_PORTABILITY_SCOPE_LOCK_PASS

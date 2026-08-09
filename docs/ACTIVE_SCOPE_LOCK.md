@@ -2,10 +2,114 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Current projection-freshness UI-coverage SCOPE-amendment authority
+## Current projection-freshness Code Map preflight authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_PREFLIGHT / PHASE_1
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 97ed1cd1a8cec3758be241cac9dce11642bdc524`,
+subject `docs: amend projection freshness UI coverage scope`, with divergence
+`0 0`. At the Phase 1 prewrite gate, the staged, unmerged, and substantive
+tracked-diff sets were empty.
+
+### Exact current write allowlist — 16
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+7. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+8. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+9. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+10. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+11. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+14. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+15. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+16. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`
+
+No seventeenth path is authorized. No Dart, test, pubspec, package, runtime,
+tool, schema, sample, asset, fixture, spec, `.gitattributes`, Project ZIP,
+writer, materializer, route implementation, or protected-surface byte may
+change.
+
+### Committed-source qualification result
+
+All twenty-seven Child-B Dart targets were requalified from committed `HEAD`
+against the live Standard before map writes. The exact result is:
+
+- inspect-only existing `MAINTAINED` maps: ProjectLoader, Board Canvas, and
+  Board Canvas widget test — exactly three and byte-frozen;
+- new required maps: Project Overview, Board Graph, Customer Report, Measure
+  Sheet, Edit Component, ProjectLoader ZIP test, and the four matching focused
+  widget-test owners — exactly ten;
+- non-qualifying cohesive targets: exactly fourteen;
+- `test/unit/project_loader_zip_test.dart`: `SCORE 7/12` and map required.
+
+Every new map uses stable committed symbols, direct dependencies, state/data
+flow, write classes, protected/zero-write boundaries, tests, impact evidence,
+dangerous combinations, safe SNIPER slices, review triggers, and uncertainty.
+No map contains unfinished Child-B symbols or authorizes implementation.
+
+All ten new map headers and exactly ten new `CODE_MAP_INDEX` rows begin
+`REVIEW_REQUIRED`. Existing map rows and bodies remain unchanged.
+
+### Route and activation gate
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B remains blocked until an independent source-to-map audit returns a
+`MAP_VERDICT` and `SAFE_FOR_SNIPER_USE` for every new map, explicitly
+authorized bounded Phase 2 promotes only the ten new headers and ten matching
+index statuses to `MAINTAINED`, and the human commits and pushes the accepted
+map pass. Phase 1 does not perform that promotion.
+
+### Frozen future Child-B contract
+
+The committed amendment's exact Child-B authority remains future-only and
+unchanged: twenty-nine paths total, seventeen production/config plus twelve
+tests, exactly twelve independently navigable derived-data surfaces, one local
+reusable tri-state banner per surface, no duplicate warning, and no thirtieth
+path. Directory, ZIP, and asset loading must hash and UTF-8 parse the same raw
+byte snapshot; asset loading must use `rootBundle.load` and exact `ByteData`
+slicing rather than `loadString`.
+
+`FRESH` stays silent; `STALE` and `UNKNOWN` remain visibly distinct and
+nonblocking. No routing/shell freshness authority, refresh/materialize action,
+Flutter provenance writer, heuristic freshness proof, Project ZIP change,
+canonical mutation, or Measure Sheet/Edit Component writer change is
+authorized here.
+
+### Stops and Phase 1 state
+
+Stop on a changed qualification inventory, a seventeenth path, any committed-
+source/map conflict, a source/test/package/spec/tool/fixture write, existing
+map drift, protected-boundary change, unrelated-material or stash movement,
+validation failure, or any staging, commit, or push by Codex.
+
+This preflight's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its designated
+Phase 1 verdict interior is empty. Its Phase 1 form makes no claim that this
+pass is accepted, staged, committed, or pushed.
+
+## Accepted projection-freshness UI-coverage SCOPE-amendment authority (historical, non-authorizing)
+
+Commit `97ed1cd1a8cec3758be241cac9dce11642bdc524` preserves the completed
+five-file amendment and its populated audit evidence. The retained Phase 1
+authority below is historical and supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS

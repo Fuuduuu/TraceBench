@@ -2,10 +2,72 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Current projection-freshness UI-coverage SCOPE-amendment queue
+## Current projection-freshness Code Map preflight queue
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_PREFLIGHT / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == 97ed1cd1a8cec3758be241cac9dce11642bdc524`,
+subject `docs: amend projection freshness UI coverage scope`, with divergence
+`0 0`. At the Phase 1 prewrite gate, the staged, unmerged, and substantive
+tracked-diff sets were empty.
+
+The exact current queue is sixteen docs/map paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+7. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+8. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+9. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+10. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+11. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+14. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+15. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+16. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`
+
+No seventeenth path is queued. Requalification of all twenty-seven Child-B
+Dart targets yields exactly three existing maintained maps, ten new required
+maps, and fourteen non-qualifying targets. The new map and index Phase 1
+statuses all begin `REVIEW_REQUIRED`; `project_loader_zip_test.dart` scores
+`7/12`. Existing ProjectLoader, Board Canvas, and Board Canvas-test maps remain
+frozen.
+
+The exact queue remains:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B is not executable until independent map audit, per-map
+`MAP_VERDICT`/`SAFE_FOR_SNIPER_USE`, bounded Phase 2 promotion, and human
+commit/push complete. Its twenty-nine-path reservation, twelve-surface local
+warning architecture, raw-byte loader contract, tri-state semantics, no
+thirtieth path, and all writer/protected boundaries remain unchanged.
+
+This preflight queue's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its
+Phase 1 verdict interior is empty. It makes no Phase 1 acceptance, staging,
+commit, or push claim.
+
+## Accepted projection-freshness UI-coverage SCOPE-amendment queue (historical, non-authorizing)
+
+Commit `97ed1cd1a8cec3758be241cac9dce11642bdc524` preserves the completed
+five-file amendment and its recorded audit payload. The retained Phase 1 queue
+below is historical and supplies no current authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS

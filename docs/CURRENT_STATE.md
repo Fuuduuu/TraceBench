@@ -1,9 +1,79 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Live projection-freshness UI-coverage SCOPE amendment
+## Live projection-freshness Code Map preflight
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_PREFLIGHT / PHASE_1
+```
+
+Phase 1 entry is `main` at
+`HEAD == origin/main == 97ed1cd1a8cec3758be241cac9dce11642bdc524`,
+subject `docs: amend projection freshness UI coverage scope`, with divergence
+`0 0`. At the Phase 1 prewrite gate, the staged, unmerged, and substantive
+tracked-diff sets were empty.
+
+This preflight changes exactly the three route owners, `docs/AUDIT_INDEX.md`,
+`docs/code_maps/CODE_MAP_INDEX.md`, ten new deterministic Code Maps, and
+`docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`:
+sixteen paths total. It changes no Dart, test, package, tool, schema, fixture,
+specification, asset, sample, runtime, writer, Project ZIP, or protected-
+surface byte.
+
+Independent requalification of all twenty-seven reserved Child-B Dart targets
+against the committed source and live Code Map Standard reproduces the locked
+inventory exactly:
+
+- three existing `MAINTAINED` maps remain inspect-only and byte-frozen:
+  ProjectLoader, Board Canvas, and the Board Canvas widget test;
+- ten newly required maps are created with Phase 1 Status
+  `REVIEW_REQUIRED`: Project Overview, Board Graph, Customer Report, Measure
+  Sheet, Edit Component, and their qualifying focused tests including
+  `project_loader_zip_test.dart`;
+- `test/unit/project_loader_zip_test.dart` requalifies at `7/12`;
+- the other fourteen Dart targets remain non-qualifying small/cohesive files
+  or test owners and receive no map.
+
+All ten new `CODE_MAP_INDEX` rows also start `REVIEW_REQUIRED`. The maps
+describe accepted committed source only and contain no unfinished Child-B
+symbols. The exact qualification worksheet and ten map dispositions are in
+the current audit artifact.
+
+The live route is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B remains blocked. It may not start until independent review returns a
+per-map `MAP_VERDICT` and `SAFE_FOR_SNIPER_USE`, a separately authorized
+bounded Phase 2 promotes only the ten map headers and ten matching index rows
+to `MAINTAINED`, and the human commits and pushes the accepted map pass.
+
+The committed amendment's exact Child-B reservation remains twenty-nine paths
+(seventeen production/config plus twelve tests), twelve independently
+navigable derived-data surfaces, no thirtieth path, same-snapshot raw-byte
+directory/ZIP/asset loading, and one local tri-state warning per surface.
+`FRESH` stays silent; `STALE` and `UNKNOWN` remain distinct, nonblocking, and
+usable. Measure Sheet/Edit Component writer behavior, routing authority,
+materialization, canonical semantics, and Project ZIP stay frozen.
+
+This map preflight's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its Phase
+1 verdict interior is empty. Its Phase 1 form makes no claim that this pass is
+accepted, staged, committed, or pushed.
+
+## Accepted projection-freshness UI-coverage SCOPE amendment (historical, non-authorizing)
+
+Commit `97ed1cd1a8cec3758be241cac9dce11642bdc524` preserves the completed
+five-file amendment, its populated verdict block, and its recorded ledger
+payload. The retained Phase 1 wording below is historical and supplies no
+current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS

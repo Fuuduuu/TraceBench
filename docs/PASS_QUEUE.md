@@ -2,10 +2,102 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS`
 
-## Current projection-freshness provenance SCOPE queue
+## Current projection-freshness provenance SCOPE-amendment queue
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == be2f0b6b7fc431597e91f4656be756b519c16eac`,
+subject `docs: lock projection freshness provenance scope`. The staged and
+unmerged sets are empty at Phase 1 entry. The current amendment queue is
+exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS.md`
+
+No sixth amendment path is queued. The existing blocked Child-A diff remains
+byte-frozen at its original six paths. The amendment adds only these two
+future derived-fixture paths:
+
+7. `samples/board_canvas_positive_smoke/known_facts.json`
+8. `assets/samples/board_canvas_positive_smoke/known_facts.json`
+
+The resulting Child-A queue is exactly eight paths: the original producer,
+schema, two tests, and mirrored Pelle projections plus the two mirrored
+positive-smoke projections above. The positive-smoke pair must be regenerated
+by the producer, remain byte-identical, and record version `1.0` plus SHA-256
+re-derived from the exact event bytes consumed by that run. No transcribed
+digest is queued as authority.
+
+The two additions are necessary and sufficient because the primary validator
+has exactly two fixture families, ZIP validation rematerializes and compares
+the sample projection, and asset synchronization compares its mirrored asset.
+No metadata, report, manifest, event, validator, tool, schema, ZIP-contract,
+Dart, package, map, or ninth Child-A path is queued.
+
+MEDIUM-1 records that exact-byte provenance makes checkout representation
+semantically relevant, but the repository does not yet determine fixture
+event bytes across Git EOL configurations. Committed derived-fixture
+provenance is therefore not clean-clone reproducible until that EOL policy is
+pinned.
+
+The new bounded queue item is:
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
+Mode: REPO_CONFIGURATION_PASS / TDD_STYLE_BEHAVIORAL_VALIDATION
+```
+
+It may change exactly `.gitattributes` and only to set `text eol=lf` for:
+
+1. `samples/pelle_pv20_minimal/events.jsonl`
+2. `assets/samples/pelle_pv20_minimal/events.jsonl`
+3. `samples/board_canvas_positive_smoke/events.jsonl`
+4. `assets/samples/board_canvas_positive_smoke/events.jsonl`
+
+No broad `*.jsonl` rule, second tracked path, event/known-facts mutation, or
+fixture regeneration is queued. RED/GREEN must prove the missing effective
+attributes and configuration-sensitive precondition, then four exact
+`text`/`eol=lf` results plus byte-identical LF clean-checkout copies and
+matching sample/asset hashes under `core.autocrlf=true` and `false`.
+
+The route is unchanged apart from this amendment being the current gate:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The Code Map bootstrap, Child-B allowlist, final LOCK, and every protected
+boundary retain their accepted definitions. After amendment acceptance and
+human commit/push, the EOL pass runs first. After that pass is accepted,
+committed, and pushed, the human may re-checkout only the four otherwise-
+unmodified event fixtures; Child A then resumes rather than restarts and
+derives both fixture-family digests from the exact LF bytes it consumes.
+
+This amendment queue's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its
+Phase 1 verdict interior is empty. Its Phase 1 form makes no acceptance,
+staging, commit, or push claim for this amendment.
+
+## Accepted projection-freshness provenance SCOPE queue (historical, non-authorizing)
+
+Commit `be2f0b6b7fc431597e91f4656be756b519c16eac` preserves the accepted
+original SCOPE and its recorded audit payload. The retained Phase 1 queue
+below is historical and supplies no current authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS

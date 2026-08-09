@@ -2,10 +2,149 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS`
 
-## Current projection-freshness provenance SCOPE authority
+## Current projection-freshness provenance SCOPE-amendment authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == be2f0b6b7fc431597e91f4656be756b519c16eac`,
+subject `docs: lock projection freshness provenance scope`, with empty staged
+and unmerged sets. The accepted original SCOPE is committed with populated
+artifact and ledger evidence. An intentional blocked Child-A implementation
+diff exists at exactly its original six paths and is inspect-only and
+byte-frozen during this amendment.
+
+### Exact current amendment write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS.md`
+
+No sixth amendment path is authorized. The frozen Child-A implementation,
+all other runtime/tests/tools/schemas/specs/maps/packages/samples/assets,
+Project ZIP owners, historical artifacts, scratch, `_incoming`, unrelated
+porcelain, and every stash are read-only.
+
+### Blocker and exact amended Child-A authority
+
+The authoritative entry blocker is
+`SCOPE_INCOMPLETE / DERIVED_FIXTURE_NOT_REGENERATED`.
+The primary validator covers only `pelle_pv20_minimal` and
+`board_canvas_positive_smoke`; ZIP validation regenerates and canonically
+compares each sample projection; and asset synchronization requires the
+positive-smoke mirror. The original six-file reservation therefore omitted
+two materializer-owned derived files of the same class as the Pelle pair.
+
+After independent acceptance and human commit/push of this amendment,
+`TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS` may write exactly:
+
+1. `tools/materialize_known_facts.py`
+2. `schemas/known_facts.schema.json`
+3. `tests/test_materialize_known_facts.py`
+4. `tests/test_schema_samples.py`
+5. `samples/pelle_pv20_minimal/known_facts.json`
+6. `assets/samples/pelle_pv20_minimal/known_facts.json`
+7. `samples/board_canvas_positive_smoke/known_facts.json`
+8. `assets/samples/board_canvas_positive_smoke/known_facts.json`
+
+No ninth Child-A path is authorized. Paths 7–8 must be regenerated
+mechanically from their unchanged `events.jsonl`, remain byte-identical, and
+contain version `1.0` with SHA-256 mechanically re-derived from the exact event
+bytes consumed by that run. No transcribed digest is authoritative. Hand
+editing is forbidden.
+
+Both fixture families' metadata, reports, manifests, and event inputs remain
+frozen. No validator exemption, Project ZIP path/contract, additional schema,
+tool, test, Dart, package, map, or canonical/event/fact/evidence semantic
+change is authorized. The same-snapshot parse/hash and all other accepted
+Child-A contracts remain unchanged.
+
+### Required fixture EOL pass
+
+MEDIUM-1 establishes that exact-byte provenance makes the checkout byte
+representation semantically relevant for committed derived fixtures. The
+repository currently has no effective EOL attribute for the four fixture
+event logs, so checkout bytes depend on Git EOL configuration. Committed
+`known_facts.json` provenance is not clean-clone reproducible until those
+fixture checkout bytes are pinned.
+
+Before Child A resumes:
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
+Mode: REPO_CONFIGURATION_PASS / TDD_STYLE_BEHAVIORAL_VALIDATION
+```
+
+Exact future write allowlist:
+
+1. `.gitattributes`
+
+No second tracked path is authorized. The file may add only:
+
+```gitattributes
+samples/pelle_pv20_minimal/events.jsonl text eol=lf
+assets/samples/pelle_pv20_minimal/events.jsonl text eol=lf
+samples/board_canvas_positive_smoke/events.jsonl text eol=lf
+assets/samples/board_canvas_positive_smoke/events.jsonl text eol=lf
+```
+
+A broad `*.jsonl` rule is forbidden. The pass changes no fixture input or
+output, user-project semantics, materializer, schema, test, tool, map, or ZIP
+owner. RED must prove that the four effective attributes are absent and that
+the same stored event content can yield different checkout-byte SHA-256 values
+under different Git EOL configurations. GREEN must prove `text`/`eol=lf` for
+each exact path, byte-identical LF files from independent temporary clean
+checkouts under `core.autocrlf=true` and `false`, identical SHA-256 within each
+sample/asset pair, and unchanged event JSON semantics.
+
+No `known_facts.json` regeneration occurs in the EOL pass. After its accepted
+commit/push, the human may restore or re-checkout only the four otherwise-
+unmodified worktree fixture event files so the checkout adopts the committed
+LF policy before Child A resumes.
+
+### Route and retained future gates
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The amendment does not restart Child A. Once this amendment and then the EOL
+pass are independently accepted, committed, and pushed, and the human has
+adopted the four-file LF checkout policy, the frozen six-file diff may resume
+by mechanically regenerating the two added fixtures and completing validation
+under the exact eight-file authority. The eleven-file Code Map bootstrap, its
+complete qualification inventory, the twenty-file Child-B allowlist,
+final-LOCK reservation, and all later activation gates remain unchanged.
+
+Stop on any amendment sixth path, Child-A ninth path, mutation of the frozen
+six files during this docs pass, hand-edited fixture, validator suppression,
+metadata/input/report/manifest/ZIP-contract change, map or Child-B widening,
+unrelated-material change, broad EOL rule, `.gitattributes` write during this
+docs patch, or any staging, commit, or push by Codex.
+
+This amendment's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its
+designated Phase 1 verdict interior is empty. Its Phase 1 form makes no claim
+that this amendment is accepted, staged, committed, or pushed.
+
+## Accepted projection-freshness provenance SCOPE authority (historical, non-authorizing)
+
+Commit `be2f0b6b7fc431597e91f4656be756b519c16eac` preserves the accepted
+original SCOPE and populated audit evidence. The retained Phase 1 authority
+below is historical and supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS

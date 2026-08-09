@@ -1,9 +1,111 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS`
 
-## Live projection-freshness provenance SCOPE
+## Live projection-freshness provenance SCOPE amendment
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == be2f0b6b7fc431597e91f4656be756b519c16eac`,
+subject `docs: lock projection freshness provenance scope`, with empty staged
+and unmerged sets. At Phase 1 entry, the intentional blocked Child-A diff is
+exactly the original six producer/schema/test/Pelle-fixture paths and is
+byte-frozen throughout this amendment.
+
+The authoritative blocker is
+`SCOPE_INCOMPLETE / DERIVED_FIXTURE_NOT_REGENERATED`.
+`tools/validate_all.py` validates exactly the Pelle and
+`board_canvas_positive_smoke` fixture families; `validate_project_zip.py`
+rematerializes each fixture and compares canonical `known_facts.json`; and
+asset/sample synchronization requires each mirrored pair to remain
+byte-identical. Mandatory provenance therefore makes the two old positive-
+smoke projections stale by construction.
+
+This amendment changes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS.md`
+
+It expands only the reserved Child-A allowlist from six to exactly eight:
+
+1. `tools/materialize_known_facts.py`
+2. `schemas/known_facts.schema.json`
+3. `tests/test_materialize_known_facts.py`
+4. `tests/test_schema_samples.py`
+5. `samples/pelle_pv20_minimal/known_facts.json`
+6. `assets/samples/pelle_pv20_minimal/known_facts.json`
+7. `samples/board_canvas_positive_smoke/known_facts.json`
+8. `assets/samples/board_canvas_positive_smoke/known_facts.json`
+
+The two added projections must later be regenerated mechanically from their
+unchanged `events.jsonl` input, remain byte-identical, and record contract
+version `1.0` plus the SHA-256 mechanically re-derived from the exact event
+bytes consumed by that materialization run. No transcribed digest is
+authoritative. No hand edit, metadata update, report/manifest/event change,
+validator suppression, or Project ZIP contract change is authorized.
+
+Independent audit MEDIUM-1 found that exact-byte provenance makes checkout
+byte representation semantically relevant for committed derived fixtures,
+while the repository currently leaves these fixture event logs dependent on
+Git EOL configuration. A committed `known_facts.json` provenance digest is
+therefore not clean-clone reproducible until fixture checkout EOL is pinned.
+
+The amendment inserts
+`TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS` before Child A. That pass
+may change only `.gitattributes` and may set only these four exact rules:
+
+```gitattributes
+samples/pelle_pv20_minimal/events.jsonl text eol=lf
+assets/samples/pelle_pv20_minimal/events.jsonl text eol=lf
+samples/board_canvas_positive_smoke/events.jsonl text eol=lf
+assets/samples/board_canvas_positive_smoke/events.jsonl text eol=lf
+```
+
+No broad `*.jsonl` rule or fixture regeneration belongs to the EOL pass.
+Behavioral RED/GREEN must prove the missing attributes, configuration-sensitive
+precondition, exact four-path `text`/`eol=lf` result, and byte-identical clean
+checkouts under `core.autocrlf=true` and `false` without changing event JSON
+semantics.
+
+The route remains:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The accepted map-bootstrap inventory, exact Child-B allowlist, final-LOCK
+reservation, provenance semantics, and protected boundaries remain unchanged.
+After independent acceptance and human commit/push of this amendment, the EOL
+pass runs first. After its accepted commit/push, the human may re-checkout only
+the four otherwise-unmodified fixture event logs so this checkout adopts LF;
+the frozen six-file Child-A diff then resumes under the exact eight-file
+authority and re-derives fixture digests from those exact bytes. Child A is not
+restarted from scratch.
+
+This amendment's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its Phase 1
+verdict interior is empty. Its Phase 1 form makes no claim that this amendment
+is accepted, staged, committed, or pushed.
+
+## Accepted projection-freshness provenance SCOPE (historical, non-authorizing)
+
+Commit `be2f0b6b7fc431597e91f4656be756b519c16eac` preserves the accepted
+original SCOPE, its populated verdict block, and its recorded ledger payload.
+The retained Phase 1 wording below is historical and supplies no current write
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS

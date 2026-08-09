@@ -2,10 +2,66 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
 
-## Current projection-freshness provenance decision queue
+## Current projection-freshness provenance SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == 868ccf6d7b9e9769e49baaec30ac5803e96c8d46`,
+subject `docs: record projection freshness provenance decision`. The exact
+current docs-only queue is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS.md`
+
+No sixth current path is queued. The corrected future sequence is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The first child queues exactly six Python/schema/fixture paths for one captured
+event-byte snapshot, matching parsing/hash input, version `1.0` provenance,
+legacy-compatible schema validation, and only the two mirrored Pelle fixture
+refreshes. No Dart map applies to Child A.
+
+Before Child B, the exact eleven-file docs/maps bootstrap queues the four
+route/ledger owners, `docs/code_maps/CODE_MAP_INDEX.md`, five required new
+maps, and its audit artifact. The new maps cover Project Overview, Board Graph,
+Customer Report, and the Project Overview plus Customer Report widget tests.
+The three existing maintained ProjectLoader/Board Canvas/Board Canvas-test maps
+remain byte-frozen and are reviewed as current.
+
+Only an accepted, promoted, committed map bootstrap may release the exact
+twenty-file Child B implementation. The tri-state contract, exact-byte truth
+table, true-only compatibility adapter, all six derived surfaces, seven-item
+manual smoke, and protected boundaries remain as accepted by the predecessor
+decision. The parent final LOCK requalifies every changed Dart target from
+committed Child-B source.
+
+This SCOPE queue's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its Phase 1
+verdict interior is empty. The Phase 1 form makes no acceptance, staging,
+commit, or push claim for this SCOPE.
+
+## Accepted projection-freshness provenance decision queue (historical, non-authorizing)
+
+Commit `868ccf6d7b9e9769e49baaec30ac5803e96c8d46` preserves the completed
+seven-file decision and its recorded audit payload. The retained Phase 1 queue
+below is historical and supplies no current authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS

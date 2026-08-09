@@ -1,9 +1,78 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
 
-## Live projection-freshness provenance decision
+## Live projection-freshness provenance SCOPE
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == 868ccf6d7b9e9769e49baaec30ac5803e96c8d46`,
+subject `docs: record projection freshness provenance decision`, with empty
+staged and unmerged sets. The current SCOPE changes only
+`docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`,
+`docs/PASS_QUEUE.md`, `docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS.md`.
+
+The prior prewrite result `BLOCKED_CODE_MAP_REQUIRED` is resolved by inserting
+a committed-source map bootstrap before Dart implementation:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child A remains an exact six-file Python/schema/fixture pass. It captures
+`events.jsonl` bytes once, derives both parsing and lowercase SHA-256 from that
+same snapshot, emits version `1.0` provenance on every successful projection,
+and regenerates only the two byte-identical Pelle known-facts fixtures.
+
+The map bootstrap requalifies all 18 Child-B Dart targets from accepted
+committed Child-A `HEAD`. Current committed source requires five new maps:
+
+- `lib/features/project/screens/project_overview_screen.dart`;
+- `lib/features/board_graph/screens/board_graph_screen.dart`;
+- `lib/features/report/screens/customer_report_screen.dart`;
+- `test/widget/project_overview_screen_test.dart`; and
+- `test/widget/customer_report_screen_test.dart`.
+
+It changes exactly the four route/ledger owners, `CODE_MAP_INDEX`, those five
+maps, and its audit artifact. Existing maintained ProjectLoader, Board Canvas,
+and Board Canvas test maps are reviewed without modification. Child B cannot
+start until the five new map headers/index rows are independently accepted,
+promoted to `MAINTAINED`, committed, and pushed.
+
+Child B retains the exact twenty-file package/model/loader/banner/six-screen
+and test allowlist. Freshness authority is `FRESH` / `STALE` / `UNKNOWN`, with
+default `UNKNOWN`. A bounded compatibility adapter translates only true to
+`STALE`; false never creates or implies `FRESH`. Directory, ZIP, and bundled
+asset loading compare exact event bytes through direct `package:crypto`.
+Warnings remain nonblocking, data remains visible, and no refresh action or
+Flutter provenance write is introduced.
+
+The parent final LOCK follows accepted committed children and fresh seven-item
+human smoke. It requalifies all 18 changed Dart targets from committed Child-B
+`HEAD`, refreshes the eight known qualifying maps, and creates another map only
+if committed-source scoring then requires it.
+
+This SCOPE's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its Phase 1 verdict
+interior is empty. Its Phase 1 form makes no claim that this SCOPE is accepted,
+staged, committed, or pushed.
+
+## Accepted projection-freshness provenance decision (historical, non-authorizing)
+
+Commit `868ccf6d7b9e9769e49baaec30ac5803e96c8d46` preserves the completed
+seven-file decision with its populated verdict block and recorded ledger
+payload. The Phase 1 wording below is historical and supplies no current write
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS

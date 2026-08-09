@@ -2,10 +2,160 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS`
 
-## Current projection-freshness provenance decision authority
+## Current projection-freshness provenance SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+```
+
+Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 868ccf6d7b9e9769e49baaec30ac5803e96c8d46`,
+subject `docs: record projection freshness provenance decision`. The staged
+and unmerged sets were empty. The accepted predecessor decision is committed
+with populated artifact/ledger evidence and names this SCOPE next.
+
+### Exact current-pass write allowlist
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS.md`
+
+No sixth current path is authorized. No runtime, test, tool, schema, spec,
+map, map index, package, sample, asset, Project ZIP, historical artifact,
+scratch, `_incoming`, unrelated porcelain, or stash byte may change.
+
+### Corrected route and activation gates
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+No future reservation is current authority. Child A requires accepted,
+committed, and pushed SCOPE evidence. The map bootstrap requires accepted,
+committed Child A. Child B requires the accepted, promoted, committed, and
+pushed map bootstrap. The final LOCK requires both accepted committed children
+and fresh human smoke for Child B.
+
+### Reserved Child A
+
+`TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS` may write only:
+
+1. `tools/materialize_known_facts.py`
+2. `schemas/known_facts.schema.json`
+3. `tests/test_materialize_known_facts.py`
+4. `tests/test_schema_samples.py`
+5. `samples/pelle_pv20_minimal/known_facts.json`
+6. `assets/samples/pelle_pv20_minimal/known_facts.json`
+
+It reads event bytes once, derives parsing and lowercase SHA-256 from the same
+snapshot, emits version `1.0` provenance for every successful projection
+including zero-byte events, and refreshes only the two mirrored derived
+fixtures. No seventh path, user-project migration, event-semantic change, ZIP
+path, Dart file, or map is authorized.
+
+### Required Code Map bootstrap
+
+Committed-source qualification of all 18 Child-B Dart targets requires five
+new maps:
+
+1. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+2. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+3. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+4. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+5. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+
+The exact `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS` write
+allowlist is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+7. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+8. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+9. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+10. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+11. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`
+
+No twelfth map-pass path is authorized. The existing ProjectLoader, Board
+Canvas, and Board Canvas test maps stay `MAINTAINED` and byte-frozen. All other
+Child-B targets are currently non-qualifying or covered by the
+cohesive-data-holder exclusion.
+
+New map/index Status is `REVIEW_REQUIRED` in map-pass Phase 1. Only independent
+map acceptance and bounded Phase 2 may promote the five exact header/index
+pairs to `MAINTAINED`. No Dart implementation begins before the promoted map
+pass is committed and pushed.
+
+### Reserved Child B
+
+`TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS` may write only:
+
+1. `pubspec.yaml`
+2. `pubspec.lock`
+3. `lib/shared/models/project_state.dart`
+4. `lib/shared/services/project_loader.dart`
+5. `lib/shared/widgets/projection_stale_banner.dart`
+6. `lib/features/project/screens/project_overview_screen.dart`
+7. `lib/features/known_facts/screens/measurement_list_screen.dart`
+8. `lib/features/board_graph/screens/board_graph_screen.dart`
+9. `lib/features/photos/screens/photo_list_screen.dart`
+10. `lib/features/report/screens/customer_report_screen.dart`
+11. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+12. `test/unit/project_loader_zip_test.dart`
+13. `test/widget/projection_stale_banner_widget_test.dart`
+14. `test/widget/project_overview_screen_test.dart`
+15. `test/widget/measurement_list_screen_test.dart`
+16. `test/widget/board_graph_screen_test.dart`
+17. `test/widget/photo_list_screen_test.dart`
+18. `test/widget/customer_report_screen_test.dart`
+19. `test/widget/board_canvas_screen_test.dart`
+20. `test/integration/projection_stale_banner_end_to_end_test.dart`
+
+No twenty-first Child-B path is authorized.
+
+Authoritative state is `FRESH` / `STALE` / `UNKNOWN`, default `UNKNOWN`.
+Compatibility may map only `isProjectionStale: true` to `STALE`; false is a
+no-op/`UNKNOWN` and never `FRESH`. Exact directory/ZIP/asset bytes use direct
+`package:crypto`. Derived data stays visible; warnings are nonblocking; there
+is no UI refresh action, provenance write, materialization, heuristic, silent
+migration, or protected semantic change.
+
+### Final LOCK and stops
+
+The parent LOCK requalifies all 18 changed Dart targets from accepted committed
+Child-B source, refreshes the eight maps known to qualify at bootstrap, and
+creates any additional map only when the committed-source score requires it.
+Map content never comes from an uncommitted implementation diff.
+
+Stop on an extra current SCOPE path; an extra child path; missing or stale map;
+map/source conflict; false/`UNKNOWN` promotion to `FRESH`; second-read hashing;
+heuristic freshness; new ZIP path; user-project migration; canonical/event/
+writer/evidence/board-plane/F-03 change; unrelated-material change; or any
+stage, commit, or push by Codex.
+
+This SCOPE's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its designated
+Phase 1 verdict interior is empty. Its Phase 1 form makes no claim that this
+SCOPE is accepted, staged, committed, or pushed.
+
+## Accepted projection-freshness provenance decision authority (historical, non-authorizing)
+
+Commit `868ccf6d7b9e9769e49baaec30ac5803e96c8d46` preserves the completed
+seven-file decision and populated audit evidence. The retained Phase 1
+authority below is historical and supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_DECISION_PASS

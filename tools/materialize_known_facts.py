@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -84,9 +85,9 @@ def _is_stale_at_sequence(
     return event_sequence >= end_sequence
 
 
-def _load_events(events_path: Path) -> list[dict]:
+def _load_events(event_bytes: bytes) -> list[dict]:
     events: list[dict] = []
-    for line in events_path.read_text(encoding="utf-8").splitlines():
+    for line in event_bytes.decode("utf-8").splitlines():
         if not line.strip():
             continue
         events.append(json.loads(line))
@@ -337,13 +338,19 @@ def main() -> int:
         print(f"[ERROR] missing events file: {events_path}")
         return 2
 
-    raw_events = _load_events(events_path)
+    event_bytes = events_path.read_bytes()
+    raw_events = _load_events(event_bytes)
+    projection_provenance = {
+        "projection_contract_version": "1.0",
+        "events_sha256": hashlib.sha256(event_bytes).hexdigest(),
+    }
     manifest_project_id = _manifest_project_id(events_path)
     project_id = manifest_project_id
 
     if not raw_events:
         known = {
             "project_id": project_id,
+            "projection_provenance": projection_provenance,
             "components": [],
             "pins": [],
             "measurements": [],
@@ -857,6 +864,7 @@ def main() -> int:
 
     known = {
         "project_id": project_id,
+        "projection_provenance": projection_provenance,
         "components": components,
         "pins": pins,
         "measurements": measurements,

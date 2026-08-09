@@ -1,5 +1,9 @@
 {
   "project_id": "prj_board_canvas_smoke_001",
+  "projection_provenance": {
+    "projection_contract_version": "1.0",
+    "events_sha256": "63434a81555f01b5430d6ec41bb85209e28a91987cf1a74fbd465ff68ed5dabd"
+  },
   "components": [
     {
       "component_id": "SMP001",

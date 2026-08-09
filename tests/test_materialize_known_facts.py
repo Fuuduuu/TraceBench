@@ -1,3 +1,4 @@
+import hashlib
 import json
 import re
 import subprocess
@@ -5,6 +6,13 @@ import sys
 import tempfile
 from pathlib import Path
 import unittest
+from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tools import materialize_known_facts
 
 
 def run_materialize(src="samples/pelle_pv20_minimal/events.jsonl"):
@@ -18,6 +26,13 @@ def run_materialize(src="samples/pelle_pv20_minimal/events.jsonl"):
         if result.returncode != 0:
             raise RuntimeError(result.stdout + result.stderr)
         return json.loads(out.read_text(encoding="utf-8"))
+
+
+def run_materialize_bytes(event_bytes):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        events_path = Path(tmpdir) / "events.jsonl"
+        events_path.write_bytes(event_bytes)
+        return run_materialize(events_path)
 
 
 def run_materialize_events(events):
@@ -163,6 +178,146 @@ def make_v2_event(
         "payload": payload,
         **relations,
     }
+
+
+class ProjectionProvenanceTests(unittest.TestCase):
+    def test_committed_fixture_provenance_matches_exact_event_bytes(self):
+        for fixture_name in ("pelle_pv20_minimal", "board_canvas_positive_smoke"):
+            with self.subTest(fixture=fixture_name):
+                sample_dir = ROOT / "samples" / fixture_name
+                asset_dir = ROOT / "assets" / "samples" / fixture_name
+                sample_event_bytes = (sample_dir / "events.jsonl").read_bytes()
+                asset_event_bytes = (asset_dir / "events.jsonl").read_bytes()
+                sample_known_facts_bytes = (sample_dir / "known_facts.json").read_bytes()
+                asset_known_facts_bytes = (asset_dir / "known_facts.json").read_bytes()
+
+                self.assertEqual(asset_event_bytes, sample_event_bytes)
+                self.assertEqual(asset_known_facts_bytes, sample_known_facts_bytes)
+
+                known_facts = json.loads(sample_known_facts_bytes)
+                self.assertEqual(
+                    known_facts.get("projection_provenance"),
+                    {
+                        "projection_contract_version": "1.0",
+                        "events_sha256": hashlib.sha256(sample_event_bytes).hexdigest(),
+                    },
+                )
+
+    def test_non_empty_events_emit_exact_byte_sha256_and_version(self):
+        event_bytes = (
+            json.dumps(
+                make_event(
+                    "evt_hash_001",
+                    1,
+                    "component_created",
+                    {"component_id": "Q_HASH"},
+                ),
+                separators=(",", ":"),
+            )
+            + "\n"
+        ).encode("utf-8")
+
+        data = run_materialize_bytes(event_bytes)
+
+        self.assertEqual(
+            data["projection_provenance"],
+            {
+                "projection_contract_version": "1.0",
+                "events_sha256": hashlib.sha256(event_bytes).hexdigest(),
+            },
+        )
+
+    def test_projection_hash_changes_when_only_newline_bytes_change(self):
+        event_json = json.dumps(
+            make_event(
+                "evt_newline_001",
+                1,
+                "component_created",
+                {"component_id": "Q_NEWLINE"},
+            ),
+            separators=(",", ":"),
+        )
+        lf_bytes = (event_json + "\n").encode("utf-8")
+        crlf_bytes = (event_json + "\r\n").encode("utf-8")
+
+        lf_data = run_materialize_bytes(lf_bytes)
+        crlf_data = run_materialize_bytes(crlf_bytes)
+
+        lf_provenance = lf_data.pop("projection_provenance")
+        crlf_provenance = crlf_data.pop("projection_provenance")
+        self.assertEqual(lf_data, crlf_data)
+        self.assertEqual(lf_provenance["events_sha256"], hashlib.sha256(lf_bytes).hexdigest())
+        self.assertEqual(crlf_provenance["events_sha256"], hashlib.sha256(crlf_bytes).hexdigest())
+        self.assertNotEqual(lf_provenance["events_sha256"], crlf_provenance["events_sha256"])
+
+    def test_zero_byte_events_emit_empty_sha256(self):
+        data = run_materialize_bytes(b"")
+
+        self.assertEqual(
+            data["projection_provenance"],
+            {
+                "projection_contract_version": "1.0",
+                "events_sha256": "e3b0c44298fc1c149afbf4c8996fb924"
+                "27ae41e4649b934ca495991b7852b855",
+            },
+        )
+
+    def test_parser_and_hash_use_one_captured_event_byte_snapshot(self):
+        captured_bytes = (
+            json.dumps(
+                make_event(
+                    "evt_captured_001",
+                    1,
+                    "component_created",
+                    {"component_id": "Q_CAPTURED"},
+                )
+            )
+            + "\n"
+        ).encode("utf-8")
+        different_disk_bytes = (
+            json.dumps(
+                make_event(
+                    "evt_disk_001",
+                    1,
+                    "component_created",
+                    {"component_id": "Q_DISK"},
+                )
+            )
+            + "\n"
+        ).encode("utf-8")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            events_path = Path(tmpdir) / "events.jsonl"
+            output_path = Path(tmpdir) / "known_facts.json"
+            events_path.write_bytes(different_disk_bytes)
+            original_read_bytes = Path.read_bytes
+            event_read_count = 0
+
+            def read_bytes_once(path):
+                nonlocal event_read_count
+                if path == events_path:
+                    event_read_count += 1
+                    if event_read_count > 1:
+                        raise AssertionError("events.jsonl bytes were read more than once")
+                    return captured_bytes
+                return original_read_bytes(path)
+
+            with mock.patch.object(Path, "read_bytes", autospec=True, side_effect=read_bytes_once):
+                with mock.patch.object(
+                    sys,
+                    "argv",
+                    ["materialize_known_facts.py", str(events_path), str(output_path)],
+                ):
+                    result = materialize_known_facts.main()
+
+            data = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(result, 0)
+            self.assertEqual(event_read_count, 1)
+            self.assertEqual(data["components"][0]["component_id"], "Q_CAPTURED")
+            self.assertEqual(
+                data["projection_provenance"]["events_sha256"],
+                hashlib.sha256(captured_bytes).hexdigest(),
+            )
 
 
 def make_v2_measurement_payload(

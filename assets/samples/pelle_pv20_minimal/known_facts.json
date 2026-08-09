@@ -1,5 +1,9 @@
 {
   "project_id": "prj_pelle_pv20_001",
+  "projection_provenance": {
+    "projection_contract_version": "1.0",
+    "events_sha256": "93cb8c60fcecb15bc47271c478ac7fba522ac0a196bf78505b2178a3ba506ff3"
+  },
   "components": [
     {
       "component_id": "Q2",

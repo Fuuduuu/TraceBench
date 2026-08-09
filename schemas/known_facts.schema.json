@@ -5,6 +5,19 @@
   "required": ["project_id", "components", "pins", "measurements", "nets", "excluded_from_fault_candidates"],
   "properties": {
     "project_id": { "type": "string" },
+    "projection_provenance": {
+      "type": "object",
+      "required": ["projection_contract_version", "events_sha256"],
+      "properties": {
+        "projection_contract_version": { "type": "string", "minLength": 1 },
+        "events_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
     "components": { "type": "array" },
     "pins": {
       "type": "array",

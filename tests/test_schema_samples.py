@@ -15,6 +15,105 @@ def _run_sample_validator(path: Path) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _validate_json_schema_subset(value, schema, path="$"):
+    errors = []
+    schema_type = schema.get("type")
+
+    if schema_type == "object":
+        if not isinstance(value, dict):
+            return [f"{path}: expected object, got {type(value).__name__}"]
+        for key in schema.get("required", []):
+            if key not in value:
+                errors.append(f"{path}.{key}: missing required property")
+        for key, child_schema in schema.get("properties", {}).items():
+            if key in value:
+                errors.extend(_validate_json_schema_subset(value[key], child_schema, f"{path}.{key}"))
+    elif schema_type == "array":
+        if not isinstance(value, list):
+            return [f"{path}: expected array, got {type(value).__name__}"]
+    elif schema_type == "string":
+        if not isinstance(value, str):
+            return [f"{path}: expected string, got {type(value).__name__}"]
+        min_length = schema.get("minLength")
+        if isinstance(min_length, int) and len(value) < min_length:
+            errors.append(f"{path}: expected minLength {min_length}, got {len(value)}")
+        max_length = schema.get("maxLength")
+        if isinstance(max_length, int) and len(value) > max_length:
+            errors.append(f"{path}: expected maxLength {max_length}, got {len(value)}")
+        pattern = schema.get("pattern")
+        if isinstance(pattern, str) and re.search(pattern, value) is None:
+            errors.append(f"{path}: value {value!r} does not match pattern {pattern!r}")
+
+    if "const" in schema and value != schema["const"]:
+        errors.append(f"{path}: expected const {schema['const']!r}, got {value!r}")
+    return errors
+
+
+def _minimal_known_facts(projection_provenance=None):
+    known_facts = {
+        "project_id": "prj_schema_test",
+        "components": [],
+        "pins": [],
+        "measurements": [],
+        "nets": [],
+        "excluded_from_fault_candidates": [],
+    }
+    if projection_provenance is not None:
+        known_facts["projection_provenance"] = projection_provenance
+    return known_facts
+
+
+def _known_facts_schema_errors(known_facts):
+    schema = json.loads(Path("schemas/known_facts.schema.json").read_text(encoding="utf-8"))
+    return _validate_json_schema_subset(known_facts, schema)
+
+
+class ProjectionProvenanceSchemaTests(unittest.TestCase):
+    def test_legacy_known_facts_without_provenance_remain_valid(self):
+        self.assertEqual(_known_facts_schema_errors(_minimal_known_facts()), [])
+
+    def test_valid_and_future_version_envelopes_are_representable(self):
+        for version in ("1.0", "2.0-future"):
+            with self.subTest(version=version):
+                known_facts = _minimal_known_facts(
+                    {
+                        "projection_contract_version": version,
+                        "events_sha256": "a" * 64,
+                    }
+                )
+                self.assertEqual(_known_facts_schema_errors(known_facts), [])
+
+    def test_projection_provenance_requires_both_members(self):
+        invalid_envelopes = (
+            {"events_sha256": "a" * 64},
+            {"projection_contract_version": "1.0"},
+        )
+        for envelope in invalid_envelopes:
+            with self.subTest(envelope=envelope):
+                self.assertTrue(_known_facts_schema_errors(_minimal_known_facts(envelope)))
+
+    def test_projection_contract_version_must_be_non_empty(self):
+        known_facts = _minimal_known_facts(
+            {
+                "projection_contract_version": "",
+                "events_sha256": "a" * 64,
+            }
+        )
+        self.assertTrue(_known_facts_schema_errors(known_facts))
+
+    def test_projection_provenance_rejects_malformed_hashes(self):
+        invalid_hashes = ("A" * 64, "a" * 63, "a" * 65, "g" * 64, "a" * 64 + "\n")
+        for events_sha256 in invalid_hashes:
+            with self.subTest(events_sha256=events_sha256):
+                known_facts = _minimal_known_facts(
+                    {
+                        "projection_contract_version": "1.0",
+                        "events_sha256": events_sha256,
+                    }
+                )
+                self.assertTrue(_known_facts_schema_errors(known_facts))
+
+
 class SchemaSamplesTests(unittest.TestCase):
     def test_schema_samples_validate_with_validator(self):
         sample_dir = Path("schemas/samples")

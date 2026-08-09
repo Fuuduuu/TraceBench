@@ -2,92 +2,147 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
 
-## Current projection-freshness provenance SCOPE-amendment queue
+## Current projection-freshness UI-coverage SCOPE-amendment queue
 
 ```text
-PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS
 Lane: B
 Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
 ```
 
-Entry is `main` at
-`HEAD == origin/main == be2f0b6b7fc431597e91f4656be756b519c16eac`,
-subject `docs: lock projection freshness provenance scope`. The staged and
-unmerged sets are empty at Phase 1 entry. The current amendment queue is
-exactly:
+Phase 1 entry is `main` at
+`HEAD == origin/main == 49d5a37d136af7f62fcf259b12d0594eb04ca05f`,
+subject `feat: add projection freshness provenance`, with divergence `0 0`
+and empty staged, unmerged, and substantive tracked-diff sets. The exact
+current amendment queue is:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
 3. `docs/PASS_QUEUE.md`
 4. `docs/AUDIT_INDEX.md`
-5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS.md`
 
-No sixth amendment path is queued. The existing blocked Child-A diff remains
-byte-frozen at its original six paths. The amendment adds only these two
-future derived-fixture paths:
+No sixth current path is queued. The fixture EOL gate completed at
+`b05a96594ccb779a84888c1bfa055147a227da78`, and Child A completed at
+`49d5a37d136af7f62fcf259b12d0594eb04ca05f`. Child A's human-supplied
+independent result is `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, with
+`validate_all` `314/314`. Exact-byte fixture provenance and LF determinism are
+closed; neither predecessor is reopened.
 
-7. `samples/board_canvas_positive_smoke/known_facts.json`
-8. `assets/samples/board_canvas_positive_smoke/known_facts.json`
-
-The resulting Child-A queue is exactly eight paths: the original producer,
-schema, two tests, and mirrored Pelle projections plus the two mirrored
-positive-smoke projections above. The positive-smoke pair must be regenerated
-by the producer, remain byte-identical, and record version `1.0` plus SHA-256
-re-derived from the exact event bytes consumed by that run. No transcribed
-digest is queued as authority.
-
-The two additions are necessary and sufficient because the primary validator
-has exactly two fixture families, ZIP validation rematerializes and compares
-the sample projection, and asset synchronization compares its mirrored asset.
-No metadata, report, manifest, event, validator, tool, schema, ZIP-contract,
-Dart, package, map, or ninth Child-A path is queued.
-
-MEDIUM-1 records that exact-byte provenance makes checkout representation
-semantically relevant, but the repository does not yet determine fixture
-event bytes across Git EOL configurations. Committed derived-fixture
-provenance is therefore not clean-clone reproducible until that EOL policy is
-pinned.
-
-The new bounded queue item is:
+The corrected queue is:
 
 ```text
-PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
-Mode: REPO_CONFIGURATION_PASS / TDD_STYLE_BEHAVIORAL_VALIDATION
-```
-
-It may change exactly `.gitattributes` and only to set `text eol=lf` for:
-
-1. `samples/pelle_pv20_minimal/events.jsonl`
-2. `assets/samples/pelle_pv20_minimal/events.jsonl`
-3. `samples/board_canvas_positive_smoke/events.jsonl`
-4. `assets/samples/board_canvas_positive_smoke/events.jsonl`
-
-No broad `*.jsonl` rule, second tracked path, event/known-facts mutation, or
-fixture regeneration is queued. RED/GREEN must prove the missing effective
-attributes and configuration-sensitive precondition, then four exact
-`text`/`eol=lf` results plus byte-identical LF clean-checkout copies and
-matching sample/asset hashes under `core.autocrlf=true` and `false`.
-
-The route is unchanged apart from this amendment being the current gate:
-
-```text
-TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
--> TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
--> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
 ```
 
-The Code Map bootstrap, Child-B allowlist, final LOCK, and every protected
-boundary retain their accepted definitions. After amendment acceptance and
-human commit/push, the EOL pass runs first. After that pass is accepted,
-committed, and pushed, the human may re-checkout only the four otherwise-
-unmodified event fixtures; Child A then resumes rather than restarts and
-derives both fixture-family digests from the exact LF bytes it consumes.
+The UI contract queues one reusable tri-state `ProjectionStaleBanner` exactly
+once locally on each of twelve independently navigable derived-data surfaces:
+Project Overview, Measurement List, Board Graph, Photo List, Customer Report,
+Board Canvas, Measure Sheet, Edit Component, Component List, Pin List, Known
+Facts Viewer, and Not Populated. `FRESH` is silent, `STALE` is visibly outdated,
+and `UNKNOWN` distinctly cannot be verified. Warning states are nonblocking,
+no routing/shell authority or refresh/materialize action is queued, Project
+Overview's duplicate tag is folded away, and Measure Sheet/Edit Component
+writers remain frozen.
+
+Add Component, Measurement Record, Events Viewer, Reference Images, and
+Home/Wizard remain excluded as non-derived surfaces.
+
+### Reserved Child B — exactly 29 paths
+
+`TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS` queues mode
+`FLUTTER_PASS / TDD_IMPLEMENTATION` and exactly seventeen production/config
+paths:
+
+1. `pubspec.yaml`
+2. `pubspec.lock`
+3. `lib/shared/models/project_state.dart`
+4. `lib/shared/services/project_loader.dart`
+5. `lib/shared/widgets/projection_stale_banner.dart`
+6. `lib/features/project/screens/project_overview_screen.dart`
+7. `lib/features/known_facts/screens/measurement_list_screen.dart`
+8. `lib/features/board_graph/screens/board_graph_screen.dart`
+9. `lib/features/photos/screens/photo_list_screen.dart`
+10. `lib/features/report/screens/customer_report_screen.dart`
+11. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+12. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+13. `lib/features/components/screens/edit_component_screen.dart`
+14. `lib/features/known_facts/screens/component_list_screen.dart`
+15. `lib/features/known_facts/screens/pin_list_screen.dart`
+16. `lib/features/known_facts/screens/known_facts_viewer_screen.dart`
+17. `lib/features/known_facts/screens/not_populated_screen.dart`
+
+and exactly twelve test paths:
+
+18. `test/unit/project_loader_zip_test.dart`
+19. `test/widget/projection_stale_banner_widget_test.dart`
+20. `test/widget/project_overview_screen_test.dart`
+21. `test/widget/measurement_list_screen_test.dart`
+22. `test/widget/board_graph_screen_test.dart`
+23. `test/widget/photo_list_screen_test.dart`
+24. `test/widget/customer_report_screen_test.dart`
+25. `test/widget/board_canvas_screen_test.dart`
+26. `test/widget/measure_sheet_screen_test.dart`
+27. `test/widget/edit_component_screen_test.dart`
+28. `test/widget/not_populated_screen_test.dart`
+29. `test/integration/projection_stale_banner_end_to_end_test.dart`
+
+No thirtieth path is queued. Component List, Pin List, and Known Facts Viewer
+may use the existing shared integration test; three additional focused tests
+would require a later proven prewrite need and explicit scope decision.
+
+Directory, ZIP, and asset loading each queue one exact event-byte snapshot for
+both hashing and UTF-8 parsing. Assets must use `rootBundle.load` / `ByteData`
+with `offsetInBytes + lengthInBytes`, not `loadString`. The existing tri-state
+truth table, default `UNKNOWN`, true-only stale adapter, direct
+`package:crypto`, and no Flutter provenance/materialization/heuristic contracts
+remain unchanged.
+
+### Next Code Map preflight — exactly 16 paths
+
+Committed-source requalification retains three existing `MAINTAINED` maps as
+inspect-only:
+
+1. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+2. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+3. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+
+The next pass creates exactly ten required maps and updates only the exact
+sixteen-path map/docs set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+7. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+8. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+9. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+10. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+11. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+14. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+15. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+16. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`
+
+No seventeenth map-pass path is queued. The corrected
+`project_loader_zip_test.dart` result is map required at `7/12`. All ten new
+map headers/index rows begin `REVIEW_REQUIRED`; independent `MAP_VERDICT` and
+`SAFE_FOR_SNIPER_USE` plus bounded Phase 2 are required before exact promotion
+to `MAINTAINED`. Child B stays blocked until the accepted map pass is committed
+and pushed.
+
+All maps/index, pubspec/runtime/tests, tools/schemas/samples/assets, specs,
+Project ZIP paths and contract, routing implementation, canonical and protected
+semantics, unrelated material, and stashes stay outside this amendment queue.
 
 This amendment queue's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its
 Phase 1 verdict interior is empty. Its Phase 1 form makes no acceptance,

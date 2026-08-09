@@ -2,24 +2,30 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
 
-## Current projection-freshness provenance SCOPE-amendment authority
+## Current projection-freshness UI-coverage SCOPE-amendment authority
 
 ```text
-PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS
 Lane: B
 Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
 ```
 
-Entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
-`HEAD == origin/main == be2f0b6b7fc431597e91f4656be756b519c16eac`,
-subject `docs: lock projection freshness provenance scope`, with empty staged
-and unmerged sets. The accepted original SCOPE is committed with populated
-artifact and ledger evidence. An intentional blocked Child-A implementation
-diff exists at exactly its original six paths and is inspect-only and
-byte-frozen during this amendment.
+Phase 1 entry is `C:\Users\Kasutaja\Desktop\TraceBench` on `main` at
+`HEAD == origin/main == 49d5a37d136af7f62fcf259b12d0594eb04ca05f`,
+subject `feat: add projection freshness provenance`, with divergence `0 0`
+and empty staged, unmerged, and substantive tracked-diff sets.
+
+The route owners had not advanced after two completed predecessors. Fixture
+EOL policy is committed as `b05a96594ccb779a84888c1bfa055147a227da78`,
+subject `chore: pin fixture event log eol`. Child A is committed as
+`49d5a37d136af7f62fcf259b12d0594eb04ca05f`, subject
+`feat: add projection freshness provenance`; its human-supplied independent
+result is `ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, with `validate_all`
+`314/314`. Exact-byte fixture provenance and LF determinism are closed. This
+amendment does not reopen either completed predecessor.
 
 ### Exact current amendment write allowlist
 
@@ -27,114 +33,210 @@ byte-frozen during this amendment.
 2. `docs/CURRENT_STATE.md`
 3. `docs/PASS_QUEUE.md`
 4. `docs/AUDIT_INDEX.md`
-5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS.md`
+5. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS.md`
 
-No sixth amendment path is authorized. The frozen Child-A implementation,
-all other runtime/tests/tools/schemas/specs/maps/packages/samples/assets,
-Project ZIP owners, historical artifacts, scratch, `_incoming`, unrelated
-porcelain, and every stash are read-only.
+No sixth current path is authorized. All pubspec/runtime/test/tool/schema/
+sample/asset/spec/map/map-index bytes, Project ZIP owners, historical audit
+artifacts, scratch, `_incoming`, unrelated porcelain, and stashes are
+read-only during this amendment.
 
-### Blocker and exact amended Child-A authority
-
-The authoritative entry blocker is
-`SCOPE_INCOMPLETE / DERIVED_FIXTURE_NOT_REGENERATED`.
-The primary validator covers only `pelle_pv20_minimal` and
-`board_canvas_positive_smoke`; ZIP validation regenerates and canonically
-compares each sample projection; and asset synchronization requires the
-positive-smoke mirror. The original six-file reservation therefore omitted
-two materializer-owned derived files of the same class as the Pelle pair.
-
-After independent acceptance and human commit/push of this amendment,
-`TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS` may write exactly:
-
-1. `tools/materialize_known_facts.py`
-2. `schemas/known_facts.schema.json`
-3. `tests/test_materialize_known_facts.py`
-4. `tests/test_schema_samples.py`
-5. `samples/pelle_pv20_minimal/known_facts.json`
-6. `assets/samples/pelle_pv20_minimal/known_facts.json`
-7. `samples/board_canvas_positive_smoke/known_facts.json`
-8. `assets/samples/board_canvas_positive_smoke/known_facts.json`
-
-No ninth Child-A path is authorized. Paths 7–8 must be regenerated
-mechanically from their unchanged `events.jsonl`, remain byte-identical, and
-contain version `1.0` with SHA-256 mechanically re-derived from the exact event
-bytes consumed by that run. No transcribed digest is authoritative. Hand
-editing is forbidden.
-
-Both fixture families' metadata, reports, manifests, and event inputs remain
-frozen. No validator exemption, Project ZIP path/contract, additional schema,
-tool, test, Dart, package, map, or canonical/event/fact/evidence semantic
-change is authorized. The same-snapshot parse/hash and all other accepted
-Child-A contracts remain unchanged.
-
-### Required fixture EOL pass
-
-MEDIUM-1 establishes that exact-byte provenance makes the checkout byte
-representation semantically relevant for committed derived fixtures. The
-repository currently has no effective EOL attribute for the four fixture
-event logs, so checkout bytes depend on Git EOL configuration. Committed
-`known_facts.json` provenance is not clean-clone reproducible until those
-fixture checkout bytes are pinned.
-
-Before Child A resumes:
+### Corrected route and activation gates
 
 ```text
-PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
-Mode: REPO_CONFIGURATION_PASS / TDD_STYLE_BEHAVIORAL_VALIDATION
-```
-
-Exact future write allowlist:
-
-1. `.gitattributes`
-
-No second tracked path is authorized. The file may add only:
-
-```gitattributes
-samples/pelle_pv20_minimal/events.jsonl text eol=lf
-assets/samples/pelle_pv20_minimal/events.jsonl text eol=lf
-samples/board_canvas_positive_smoke/events.jsonl text eol=lf
-assets/samples/board_canvas_positive_smoke/events.jsonl text eol=lf
-```
-
-A broad `*.jsonl` rule is forbidden. The pass changes no fixture input or
-output, user-project semantics, materializer, schema, test, tool, map, or ZIP
-owner. RED must prove that the four effective attributes are absent and that
-the same stored event content can yield different checkout-byte SHA-256 values
-under different Git EOL configurations. GREEN must prove `text`/`eol=lf` for
-each exact path, byte-identical LF files from independent temporary clean
-checkouts under `core.autocrlf=true` and `false`, identical SHA-256 within each
-sample/asset pair, and unchanged event JSON semantics.
-
-No `known_facts.json` regeneration occurs in the EOL pass. After its accepted
-commit/push, the human may restore or re-checkout only the four otherwise-
-unmodified worktree fixture event files so the checkout adopts the committed
-LF policy before Child A resumes.
-
-### Route and retained future gates
-
-```text
-TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_SCOPE_AMENDMENT_PASS
--> TRACEBENCH_PROJECTION_FRESHNESS_FIXTURE_EOL_PASS
--> TRACEBENCH_PROJECTION_FRESHNESS_PRODUCER_SCHEMA_PASS
+TRACEBENCH_PROJECTION_FRESHNESS_UI_COVERAGE_SCOPE_AMENDMENT_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
 -> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
 ```
 
-The amendment does not restart Child A. Once this amendment and then the EOL
-pass are independently accepted, committed, and pushed, and the human has
-adopted the four-file LF checkout policy, the frozen six-file diff may resume
-by mechanically regenerating the two added fixtures and completing validation
-under the exact eight-file authority. The eleven-file Code Map bootstrap, its
-complete qualification inventory, the twenty-file Child-B allowlist,
-final-LOCK reservation, and all later activation gates remain unchanged.
+No future reservation is current write authority. The Code Map preflight
+requires independent acceptance, bounded promotion of exactly ten new map
+headers and index rows, commit, and push. Child B remains blocked until those
+gates close. The final LOCK requires accepted committed Child B plus fresh
+manual smoke and committed-source map requalification.
 
-Stop on any amendment sixth path, Child-A ninth path, mutation of the frozen
-six files during this docs pass, hand-edited fixture, validator suppression,
-metadata/input/report/manifest/ZIP-contract change, map or Child-B widening,
-unrelated-material change, broad EOL rule, `.gitattributes` write during this
-docs patch, or any staging, commit, or push by Codex.
+### Locked UI coverage contract
+
+One reusable `ProjectionStaleBanner` owns tri-state warning copy and semantics.
+Each independently navigable derived-data surface inserts it locally exactly
+once; routing and shared shells do not become freshness authority.
+
+- `FRESH`: no banner.
+- `STALE`: visible generic outdated-projection warning.
+- `UNKNOWN`: distinct visible warning that freshness cannot be verified.
+- Both warnings are nonblocking, and content/navigation remain usable.
+- No refresh or materialize action is introduced.
+- Project Overview's duplicate `PROJECTION STALE` tag is removed or folded
+  into the reusable banner.
+- Measure Sheet and Edit Component canonical writer behavior stays frozen.
+
+Exactly twelve derived-data surfaces require local coverage:
+
+1. Project Overview
+2. Measurement List
+3. Board Graph
+4. Photo List
+5. Customer Report
+6. Board Canvas
+7. Measure Sheet
+8. Edit Component
+9. Component List
+10. Pin List
+11. Known Facts Viewer
+12. Not Populated
+
+Add Component, Measurement Record, Events Viewer, Reference Images, and
+Home/Wizard remain explicit non-derived exclusions.
+
+### Reserved Child B — exactly 29 paths
+
+After the Code Map gate closes,
+`TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS` may use mode
+`FLUTTER_PASS / TDD_IMPLEMENTATION` and write exactly:
+
+1. `pubspec.yaml`
+2. `pubspec.lock`
+3. `lib/shared/models/project_state.dart`
+4. `lib/shared/services/project_loader.dart`
+5. `lib/shared/widgets/projection_stale_banner.dart`
+6. `lib/features/project/screens/project_overview_screen.dart`
+7. `lib/features/known_facts/screens/measurement_list_screen.dart`
+8. `lib/features/board_graph/screens/board_graph_screen.dart`
+9. `lib/features/photos/screens/photo_list_screen.dart`
+10. `lib/features/report/screens/customer_report_screen.dart`
+11. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+12. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+13. `lib/features/components/screens/edit_component_screen.dart`
+14. `lib/features/known_facts/screens/component_list_screen.dart`
+15. `lib/features/known_facts/screens/pin_list_screen.dart`
+16. `lib/features/known_facts/screens/known_facts_viewer_screen.dart`
+17. `lib/features/known_facts/screens/not_populated_screen.dart`
+18. `test/unit/project_loader_zip_test.dart`
+19. `test/widget/projection_stale_banner_widget_test.dart`
+20. `test/widget/project_overview_screen_test.dart`
+21. `test/widget/measurement_list_screen_test.dart`
+22. `test/widget/board_graph_screen_test.dart`
+23. `test/widget/photo_list_screen_test.dart`
+24. `test/widget/customer_report_screen_test.dart`
+25. `test/widget/board_canvas_screen_test.dart`
+26. `test/widget/measure_sheet_screen_test.dart`
+27. `test/widget/edit_component_screen_test.dart`
+28. `test/widget/not_populated_screen_test.dart`
+29. `test/integration/projection_stale_banner_end_to_end_test.dart`
+
+No thirtieth Child-B path is authorized. Component List, Pin List, and Known
+Facts Viewer may be covered through the existing integration owner. Three new
+focused tests are not reserved unless a later implementation prewrite proves
+them mandatory and the human makes a new exact scope decision.
+
+### Preserved Child-B freshness and loader contracts
+
+`ProjectState` remains authoritative for `FRESH` / `STALE` / `UNKNOWN`, with
+default `UNKNOWN`. Compatibility maps only true to `STALE`; false is a no-op
+and never `FRESH`. No boolean freshness authority, home-grown SHA-256,
+Flutter provenance write, Flutter materialization, or freshness heuristic is
+authorized. Direct `package:crypto` remains required.
+
+Exact-byte loading is locked:
+
+- directory: one `readAsBytes` snapshot of `events.jsonl`, used by both hash
+  and UTF-8 parse;
+- ZIP: exact archive-entry bytes, used by both hash and parse;
+- assets: `rootBundle.load` / `ByteData`, never `loadString`, sliced with
+  `offsetInBytes + lengthInBytes`, with hash and parse using that same slice.
+
+Supported `1.0` plus valid equal hash is `FRESH`; supported `1.0` plus valid
+unequal hash is `STALE`; absent, malformed, or unsupported provenance is
+`UNKNOWN`; malformed required project content remains a load error.
+
+### Complete Code Map qualification inventory
+
+`pubspec.yaml` and `pubspec.lock` are outside Dart bootstrap. Requalification
+of the twenty-seven Dart targets from committed Child-A `HEAD` retains exactly
+three existing `MAINTAINED` maps as inspect-only:
+
+1. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+2. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+3. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+
+Exactly ten new maps are required:
+
+1. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+2. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+3. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+4. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+5. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+6. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+7. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+8. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+9. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+10. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+
+The former borderline `test/unit/project_loader_zip_test.dart` disposition is
+corrected to map required with live score `7/12`. The other fourteen Dart
+targets remain non-qualifying under the live Standard:
+
+- cohesive data holder: `lib/shared/models/project_state.dart`;
+- small cohesive production surfaces:
+  `lib/shared/widgets/projection_stale_banner.dart`,
+  `lib/features/known_facts/screens/measurement_list_screen.dart`,
+  `lib/features/photos/screens/photo_list_screen.dart`,
+  `lib/features/known_facts/screens/component_list_screen.dart`,
+  `lib/features/known_facts/screens/pin_list_screen.dart`,
+  `lib/features/known_facts/screens/known_facts_viewer_screen.dart`, and
+  `lib/features/known_facts/screens/not_populated_screen.dart`;
+- below-threshold cohesive tests:
+  `test/widget/projection_stale_banner_widget_test.dart`,
+  `test/widget/measurement_list_screen_test.dart`,
+  `test/widget/board_graph_screen_test.dart`,
+  `test/widget/photo_list_screen_test.dart`,
+  `test/widget/not_populated_screen_test.dart`, and
+  `test/integration/projection_stale_banner_end_to_end_test.dart`.
+
+All fourteen remain inside the exact Child-B implementation/test obligation.
+
+### Exact future Code Map preflight allowlist — 16
+
+`TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS` may use mode
+`DOCS_AND_MAPS_ONLY / CODE_MAP_PREFLIGHT / PHASE_1` and write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+7. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+8. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+9. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+10. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+11. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+14. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+15. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+16. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS.md`
+
+No seventeenth map-pass path is authorized. All ten new map headers and
+matching `CODE_MAP_INDEX` rows begin as `REVIEW_REQUIRED`. Independent review
+must return `MAP_VERDICT` and `SAFE_FOR_SNIPER_USE`. Only explicitly authorized
+bounded Phase 2 may promote those exact ten headers and ten matching Status
+cells to `MAINTAINED`; map bodies and the remainder of the index stay frozen.
+
+### Protected boundaries and stops
+
+Freeze `.gitattributes`, committed Child A, `tools/**`, `schemas/**`,
+`samples/**`, `assets/**`, all event/writer/materializer semantics, Project ZIP
+paths/contract, routing implementation, canonical fact/evidence/network/
+coordinate semantics, F-03 implementation, board-plane F-01/F-05/F-16, every
+map/index during this amendment, current pubspec/runtime/tests, historical
+audit evidence, scratch, `_incoming`, unrelated material, and all stashes.
+
+No refresh button, writer, route/shell redesign, Project ZIP change, or
+materialization migration is authorized. Stop on a sixth current path, a
+thirtieth Child-B path, a seventeenth map-pass path, any current map/runtime/
+test mutation, a protected-boundary change, route mismatch, unrelated-material
+change, or any staging, commit, or push by Codex.
 
 This amendment's Phase 1 ledger Status is `REVIEW_REQUIRED`, and its
 designated Phase 1 verdict interior is empty. Its Phase 1 form makes no claim

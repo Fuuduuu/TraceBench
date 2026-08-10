@@ -2,10 +2,63 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
 Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Current projection-freshness Code Map preflight queue
+## Current Code Map inventory reconciliation queue
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_RECONCILIATION / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == e4a496eb3da3f438236a9adea6b809d9ca2753f7`,
+subject `docs: bootstrap projection freshness code maps`, with divergence
+`0 0` and empty staged, unmerged, and tracked-diff sets.
+
+The exact current queue is seven docs/map paths:
+
+1. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+2. `docs/code_maps/CODE_MAP_INDEX.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/CURRENT_STATE.md`
+5. `docs/PASS_QUEUE.md`
+6. `docs/AUDIT_INDEX.md`
+7. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS.md`
+
+No eighth path is queued. The preflight intended and audited sixteen paths,
+but the committed delivery contains fifteen: nine new maps are present and the
+Edit Component widget-test map is absent. The missing target still qualifies
+at `SCORE 7/12`; its reconstructed map and existing index row are queued at
+`REVIEW_REQUIRED` for fresh source-to-map review.
+
+The exact queue is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B is not executable until the reconstructed map alone receives fresh
+`MAP_VERDICT` and `SAFE_FOR_SNIPER_USE`, bounded Phase 2 records the result and
+any explicitly required map/index status promotion, and the human commits and
+pushes the accepted reconciliation.
+
+The prior preflight artifact, the nine delivered maps, and the three older
+maintained maps stay frozen. The twenty-nine-path / twelve-surface Child-B
+architecture, raw-byte loader contract, tri-state semantics, no-thirtieth-path
+boundary, and writer/protected surfaces remain unchanged. The reconciliation
+ledger Status is `REVIEW_REQUIRED`; its verdict interior is empty.
+
+## Accepted Code Map preflight queue (historical, non-authorizing)
+
+Commit `e4a496eb3da3f438236a9adea6b809d9ca2753f7` preserves fifteen delivered
+preflight paths and its independent audit evidence. The missing-map verdict in
+that older payload is historical only; the retained block below describes the
+pre-commit queue and supplies no current authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS

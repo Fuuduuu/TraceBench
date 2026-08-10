@@ -2,10 +2,99 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
 Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Current projection-freshness Code Map preflight authority
+## Current Code Map inventory reconciliation authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_RECONCILIATION / PHASE_1
+```
+
+Entry is the `C:\dev\TraceBench` worktree, also reached by the documented
+desktop junction, on `main` at
+`HEAD == origin/main == e4a496eb3da3f438236a9adea6b809d9ca2753f7`,
+subject `docs: bootstrap projection freshness code maps`, with divergence
+`0 0`. The prewrite gate found empty staged, unmerged, and tracked-diff sets.
+
+### Exact current write allowlist — 7
+
+1. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+2. `docs/code_maps/CODE_MAP_INDEX.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/CURRENT_STATE.md`
+5. `docs/PASS_QUEUE.md`
+6. `docs/AUDIT_INDEX.md`
+7. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS.md`
+
+No eighth path is authorized. No Dart, test, production-map, previously
+delivered test-map, prior audit artifact, package, tool, schema, fixture,
+asset, sample, specification, runtime, Project ZIP, writer, materializer, or
+protected-surface byte may change.
+
+### Reconciliation fact and bounded repair
+
+The preflight intended and independently audited sixteen paths, but commit
+`e4a496eb3da3f438236a9adea6b809d9ca2753f7` delivered fifteen. Nine new maps
+are present and retain their accepted bodies: the production maps for Project
+Overview, Board Graph, Customer Report, Measure Sheet, and Edit Component; the
+ProjectLoader ZIP test map; and the Project Overview, Customer Report, and
+Measure Sheet widget-test maps.
+
+The omitted tenth path is
+`docs/code_maps/test/widget/edit_component_screen_test.dart.md`. Its committed
+source requalifies at `SCORE 7/12`; this pass reconstructs the map from that
+source with header Status `REVIEW_REQUIRED` and corrects only its existing
+index row from `MAINTAINED` to `REVIEW_REQUIRED`.
+
+The prior preflight artifact, all nine delivered maps, and the three older
+maintained maps for ProjectLoader, Board Canvas, and the Board Canvas widget
+test are byte-frozen.
+
+### Route and activation gate
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B remains blocked until a fresh independent source-to-map audit returns
+`MAP_VERDICT` and `SAFE_FOR_SNIPER_USE` for only the reconstructed map, an
+explicit bounded Phase 2 records the result and promotes that map/header index
+pair only if the auditor says the same recording requires it, and the human
+commits and pushes the accepted reconciliation. Phase 1 performs no promotion.
+
+### Frozen future Child-B contract
+
+The future Child-B architecture remains exactly twenty-nine paths: seventeen
+production/config paths plus twelve tests, across exactly twelve independently
+navigable derived-data surfaces, with one local reusable tri-state banner per
+surface and no thirtieth path. Directory, ZIP, and asset loading retain the
+same-snapshot raw-byte contract. `FRESH` stays silent; `STALE` and `UNKNOWN`
+remain distinct and nonblocking.
+
+No routing/shell freshness authority, refresh/materialize action, Flutter
+provenance writer, heuristic freshness proof, Project ZIP change, canonical
+mutation, or Measure Sheet/Edit Component writer change is authorized here.
+
+### Stops and Phase 1 state
+
+Stop on an eighth path, source/map conflict, source/test/runtime or frozen-map
+drift, protected-boundary change, unrelated-material movement, validation
+failure, or staging, commit, or push by Codex. The reconciliation ledger Status
+is `REVIEW_REQUIRED`; its designated verdict interior remains empty.
+
+## Accepted Code Map preflight authority (historical, non-authorizing)
+
+Commit `e4a496eb3da3f438236a9adea6b809d9ca2753f7` preserves the fifteen delivered
+preflight paths and the independent audit payload. Later Git evidence shows
+that its intended sixteen-path set omitted the Edit Component widget-test map;
+the prior per-map verdict for that absent path is historical only. The retained
+block below describes pre-commit intent, not current authority or the current
+activation gate.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS

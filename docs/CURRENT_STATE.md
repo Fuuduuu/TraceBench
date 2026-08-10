@@ -1,9 +1,69 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
 Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
 
-## Live projection-freshness Code Map preflight
+## Live Code Map inventory reconciliation
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_RECONCILIATION / PHASE_1
+```
+
+Phase 1 entry is `main` at
+`HEAD == origin/main == e4a496eb3da3f438236a9adea6b809d9ca2753f7`,
+subject `docs: bootstrap projection freshness code maps`, with divergence
+`0 0` and empty staged, unmerged, and tracked-diff sets.
+
+Later Git evidence resolves an inventory contradiction in the committed map
+preflight: the intended and audited material set was sixteen paths, while the
+commit contains fifteen. The nine delivered new maps are present and retain
+their accepted bodies; the missing tenth map is
+`docs/code_maps/test/widget/edit_component_screen_test.dart.md`.
+
+The committed 464-line source still qualifies at `SCORE 7/12`. The missing
+map is reconstructed from current committed source only with Status
+`REVIEW_REQUIRED`, stable symbols, and all ten exact widget-test names. Its
+existing index row alone changes from `MAINTAINED` to `REVIEW_REQUIRED`.
+
+This reconciliation changes exactly seven paths: the reconstructed map, its
+single index-row status, the three route owners, the audit ledger, and one new
+reconciliation artifact. The prior preflight artifact, all nine delivered maps,
+and the three older maintained maps for ProjectLoader, Board Canvas, and the
+Board Canvas widget test remain byte-frozen. All Dart, tests, production maps,
+packages, tools, schemas, fixtures, assets, samples, specs, runtime, Project
+ZIP, writers, materializers, and protected semantics remain unchanged.
+
+The live route is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Child B remains blocked until a fresh audit returns `MAP_VERDICT` and
+`SAFE_FOR_SNIPER_USE` for only the reconstructed map, bounded Phase 2 records
+the independent result and performs any explicitly required status promotion,
+and the human commits and pushes the accepted reconciliation.
+
+The exact future Child-B architecture remains twenty-nine paths, comprising
+seventeen production/config paths and twelve tests, across exactly twelve
+derived-data surfaces. Same-snapshot raw-byte loading, one local tri-state
+warning per surface, no thirtieth path, and all writer/protected boundaries are
+unchanged.
+
+The reconciliation ledger Status is `REVIEW_REQUIRED`; the designated Phase 1
+verdict interior is empty.
+
+## Accepted Code Map preflight (historical, non-authorizing)
+
+Commit `e4a496eb3da3f438236a9adea6b809d9ca2753f7` contains fifteen of the
+preflight's intended sixteen paths. Its prior artifact and accepted ledger
+payload remain historical evidence. The per-map verdict for the absent Edit
+Component widget-test map is historical only; the retained block below records
+pre-commit intent and supplies no current route or gate.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_PREFLIGHT_PASS

@@ -2,10 +2,91 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Current: `TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`
 
-## Current Code Map inventory reconciliation queue
+## Current analyzer-configuration recovery SCOPE-amendment queue
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Entry is `main` at
+`HEAD == origin/main == cd673bf42ea0267a47ae5c4e9acb4aa262a98630`,
+subject `docs: reconcile projection freshness code map inventory`, with
+divergence `0 0` and empty staged, unmerged, and tracked-diff sets. That commit
+is the accepted reconciliation predecessor and remains frozen.
+
+The exact current docs-only queue is five paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS.md`
+
+No sixth path is queued. Current `analysis_options.yaml` points to absent
+`package:flutter_lints/flutter_lints.yaml`; resolved `flutter_lints 4.0.0`
+contains `lib/flutter.yaml` but not `lib/flutter_lints.yaml`. The isolated-clone
+diagnostic produced four findings before correction, including
+`include_file_not_found`, and nine after the one-line correction: the same
+three pre-existing findings plus six newly exposed lints, zero analyzer errors,
+and no include error. The disposition is
+`CONFIG_REPAIR_PLUS_SEPARATE_LINT_DEBT_REQUIRED`.
+
+The next queued implementation is exactly
+`TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`, Lane A, `REPO_CONFIG_PASS`, with one
+future path: `analysis_options.yaml`. It may replace only
+`include: package:flutter_lints/flutter_lints.yaml` with
+`include: package:flutter_lints/flutter.yaml`; it may not add a second path,
+suppress lints, or weaken the intended ruleset. Its acceptance interpretation
+requires the include error to disappear, no new analyzer `ERROR`, the
+established debt class unless source changed, and passing doctor,
+`validate_all`, `flutter test`, and diff check. A nonzero analyzer exit caused
+solely by the separated debt is not a config-repair failure or a clean-analyzer
+claim.
+
+Once that child is accepted, committed, and pushed, the next docs-only queue is
+`TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS`. It must freshly reproduce the
+corrected result, requalify all affected Dart/test owners, inspect any
+maintained maps, determine stable-symbol repair zones, and reserve the smallest
+exact behavior-preserving implementation set. The current seven candidate
+files remain diagnostic evidence only, not queued writes.
+
+The exact queue is:
+
+```text
+TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+-> [lint-debt implementation/acceptance as separately scoped]
+-> [Windows runner recovery remains a separate prerequisite before Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The absent committed Windows runner receives no invented implementation
+allowlist here. Child B remains the unchanged twenty-nine-path reservation:
+seventeen production/config paths, twelve tests, twelve derived surfaces,
+tri-state freshness, exact same-snapshot bytes, direct `package:crypto`, no
+thirtieth path, no routing/shell freshness authority, no Flutter provenance or
+materialization write, and frozen writers/protected semantics.
+
+All analyzer config, package, Dart/test, map/index, reconciliation-artifact,
+tool/schema/fixture/asset/sample, Project ZIP, Windows, and unrelated bytes are
+outside this queue. F-01, F-03, F-04, F-05, F-06, F-08, F-12, F-15, and Child
+B itself remain separate. Code Map preflight and manual smoke are
+`NOT_APPLICABLE` for this docs-only queue.
+
+## Accepted Code Map inventory reconciliation queue (historical, non-authorizing)
+
+Commit `cd673bf42ea0267a47ae5c4e9acb4aa262a98630`, subject
+`docs: reconcile projection freshness code map inventory`, preserves the
+accepted reconciliation, maintained reconstructed map, and populated audit
+evidence. The retained Phase 1 queue below is historical and supplies no
+current sequencing or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS

@@ -2,10 +2,138 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Current: `TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS`
+Next: `TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`
 
-## Current Code Map inventory reconciliation authority
+## Current analyzer-configuration recovery SCOPE-amendment authority
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Entry is the `C:\dev\TraceBench` worktree, also reached by the documented
+desktop junction, on `main` at
+`HEAD == origin/main == cd673bf42ea0267a47ae5c4e9acb4aa262a98630`,
+subject `docs: reconcile projection freshness code map inventory`, with
+divergence `0 0` and empty staged, unmerged, and tracked-diff sets. That commit
+is the accepted committed reconciliation predecessor. Its artifact, map, and
+index bytes are frozen.
+
+### Exact current write allowlist — 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS.md`
+
+No sixth path is authorized. This Phase 1 may only record the analyzer recovery
+scope, route, neutral ledger row, and empty-verdict audit artifact.
+
+### Reproduced defect and disposition
+
+The current `analysis_options.yaml` include is
+`package:flutter_lints/flutter_lints.yaml`. Resolved `flutter_lints 4.0.0` has
+no `lib/flutter_lints.yaml` and does have `lib/flutter.yaml`; the correct
+include is `package:flutter_lints/flutter.yaml`.
+
+The isolated-clone before-state was `flutter analyze` exit `1`, four findings
+total, including `include_file_not_found` and three other pre-existing
+findings. With only the include corrected, the include error disappeared;
+analysis remained exit `1` with nine findings total: the same three
+pre-existing findings plus six newly exposed `flutter_lints` findings and zero
+analyzer errors. The locked disposition is
+`CONFIG_REPAIR_PLUS_SEPARATE_LINT_DEBT_REQUIRED`.
+
+### Exact future configuration child
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS
+Lane: A
+Mode: REPO_CONFIG_PASS
+FUTURE WRITE ONLY: analysis_options.yaml
+```
+
+That child may replace exactly
+`include: package:flutter_lints/flutter_lints.yaml` with
+`include: package:flutter_lints/flutter.yaml`. It has no second path and may
+not suppress any lint or weaken the intended `flutter_lints` ruleset.
+
+The one-file repair succeeds when `include_file_not_found` is gone; the
+corrected analyzer result matches the independently established debt class
+unless committed source changed; no new analyzer `ERROR` appears; and doctor,
+`validate_all`, `flutter test`, and `git diff --check` pass. A nonzero analyzer
+exit caused solely by the separated lint debt is expected evidence and must not
+be represented as a clean analyzer gate.
+
+### Separate lint-debt scope
+
+No lint-source fix is authorized by this amendment or the one-file config
+child. After that child is accepted, committed, and pushed,
+`TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS` must independently reproduce the
+corrected analyzer output from committed config, requalify every affected Dart
+or test file against the live Code Map Standard, inspect maintained maps where
+present, identify exact stable-symbol repair zones, and define the smallest
+behavior-preserving implementation allowlist.
+
+The current diagnostic candidate files are evidence only:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart`
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+3. `lib/features/measurements/screens/measurement_record_screen.dart`
+4. `lib/features/report/screens/customer_report_screen.dart`
+5. `lib/shared/services/python_runner.dart`
+6. `test/widget/measure_sheet_screen_test.dart`
+7. `test/widget/reference_images_screen_test.dart`
+
+They confer no current or future write authority until that dedicated scope
+requalifies and reserves them.
+
+### Route and unchanged Child-B gate
+
+```text
+TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+-> [lint-debt implementation/acceptance as separately scoped]
+-> [Windows runner recovery remains a separate prerequisite before Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The committed tree has no Windows runner. A dedicated later scope is required
+before Child-B human manual smoke; this amendment does not invent its exact
+implementation allowlist.
+
+`TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS` remains future-only and
+unchanged: exactly twenty-nine paths, seventeen production/config plus twelve
+tests, exactly twelve derived surfaces, `FRESH` / `STALE` / `UNKNOWN`, exact
+same-snapshot bytes, direct `package:crypto`, no thirtieth path, no routing or
+shell freshness authority, no Flutter materialization/provenance write, and
+frozen writers and protected semantics.
+
+### Frozen boundaries and stops
+
+`analysis_options.yaml`, `pubspec.yaml`, `pubspec.lock`, every Dart/test file,
+every Code Map and `CODE_MAP_INDEX`, the reconciliation artifact and all prior
+artifacts, schemas, tools, fixtures, assets, samples, Project ZIP owners,
+Windows platform state, ignored material, and unrelated bytes are frozen.
+F-01, F-03, F-04, F-05, F-06, F-08, F-12, F-15, and Child B itself remain
+separate. Code Map preflight and manual smoke are `NOT_APPLICABLE`.
+
+Stop on a sixth changed path, route-owner disagreement, dependency-fact
+conflict, analyzer/config/source/map/platform mutation, protected-boundary
+change, validation failure, or any staging, commit, or push by Codex.
+
+## Accepted Code Map inventory reconciliation authority (historical, non-authorizing)
+
+Commit `cd673bf42ea0267a47ae5c4e9acb4aa262a98630`, subject
+`docs: reconcile projection freshness code map inventory`, preserves the
+accepted reconciliation, its populated verdict evidence, and the maintained
+reconstructed map/index state. The retained Phase 1 block below is historical
+and supplies no current route, activation gate, or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS

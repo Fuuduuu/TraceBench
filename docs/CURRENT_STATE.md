@@ -1,9 +1,96 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Current pass: `TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS`
+Next recommended pass: `TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`
 
-## Live Code Map inventory reconciliation
+## Live analyzer-configuration recovery SCOPE amendment
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+Lane: B
+Mode: SCOPE_AMENDMENT / DOCS_ONLY / PHASE_1
+```
+
+Phase 1 entry is `main` at
+`HEAD == origin/main == cd673bf42ea0267a47ae5c4e9acb4aa262a98630`,
+subject `docs: reconcile projection freshness code map inventory`, with
+divergence `0 0` and empty staged, unmerged, and tracked-diff sets. That commit
+is the accepted committed reconciliation predecessor. Its artifact and all
+Code Maps remain frozen.
+
+The reproduced analyzer defect is configuration-only:
+
+- `analysis_options.yaml` currently includes the absent
+  `package:flutter_lints/flutter_lints.yaml`;
+- resolved `flutter_lints 4.0.0` has no `lib/flutter_lints.yaml` and does have
+  `lib/flutter.yaml`;
+- the correct include is `package:flutter_lints/flutter.yaml`.
+
+In the isolated-clone diagnostic, the current include produced exit `1` and
+four findings: `include_file_not_found` plus three pre-existing findings. With
+only the include corrected, `include_file_not_found` disappeared, analysis
+still exited `1`, and the result was nine findings: the same three pre-existing
+findings plus six newly exposed `flutter_lints` findings, with zero analyzer
+errors. The disposition is
+`CONFIG_REPAIR_PLUS_SEPARATE_LINT_DEBT_REQUIRED`.
+
+The exact next implementation child is
+`TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`, Lane A, mode `REPO_CONFIG_PASS`.
+Its only future write is `analysis_options.yaml`, replacing exactly
+`include: package:flutter_lints/flutter_lints.yaml` with
+`include: package:flutter_lints/flutter.yaml`. No second path, suppression, or
+ruleset weakening is authorized. Success means the include error is gone, the
+corrected result matches the established debt class unless committed source
+has changed, no new analyzer `ERROR` appears, and doctor, `validate_all`,
+`flutter test`, and `git diff --check` pass. A nonzero analyze result caused
+solely by the separated lint debt is expected evidence, not a clean-analyzer
+claim.
+
+Lint-source repair is not authorized here or in the config child. After the
+config repair is accepted, committed, and pushed,
+`TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS` must independently reproduce the
+corrected output, requalify every affected Dart/test file against the live Code
+Map Standard, inspect maintained maps where present, identify stable-symbol
+repair zones, and reserve the smallest exact behavior-preserving
+implementation allowlist. The seven files named by the diagnostic are evidence
+only and confer no write authority.
+
+The projection-freshness Child-B reservation remains unchanged at twenty-nine
+paths: seventeen production/config paths plus twelve tests, across twelve
+derived-data surfaces, with `FRESH` / `STALE` / `UNKNOWN`, exact same-snapshot
+bytes, direct `package:crypto`, no thirtieth path, no routing/shell freshness
+authority, no Flutter materialization or provenance write, and frozen writers
+and protected semantics. The committed tree has no Windows runner; a dedicated
+later scope remains required before the Child-B human manual smoke, but no
+Windows implementation allowlist is invented here.
+
+The live route is:
+
+```text
+TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS
+-> TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+-> [lint-debt implementation/acceptance as separately scoped]
+-> [Windows runner recovery remains a separate prerequisite before Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+This Phase 1 changes exactly the three route owners, `docs/AUDIT_INDEX.md`,
+and its new audit artifact. `analysis_options.yaml`, packages, every Dart/test
+file, maps/index, the reconciliation artifact, tools, schemas, fixtures,
+assets, samples, Project ZIP owners, Windows state, and unrelated material stay
+frozen. F-01, F-03, F-04, F-05, F-06, F-08, F-12, F-15, and Child B itself are
+not folded into analyzer recovery. Code Map preflight and manual smoke are
+`NOT_APPLICABLE` for this docs-only amendment.
+
+## Accepted Code Map inventory reconciliation (historical, non-authorizing)
+
+Commit `cd673bf42ea0267a47ae5c4e9acb4aa262a98630`, subject
+`docs: reconcile projection freshness code map inventory`, preserves the
+accepted seven-file reconciliation, its populated verdict evidence, and the
+reconstructed maintained map. The retained Phase 1 wording below is historical
+and supplies no current route, gate, or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_CODE_MAP_INVENTORY_RECONCILIATION_PASS

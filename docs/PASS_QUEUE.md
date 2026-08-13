@@ -2,10 +2,122 @@
 
 ## Current route
 
-Current: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
-Next: `TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS`
+Current: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
 
-## Current Measurement Record Code Map queue
+## Current Windows smoke-runner recovery scope queue
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / WINDOWS_SMOKE_RUNNER_RECOVERY / PHASE_1
+```
+
+The verified baseline is clean committed
+`HEAD == origin/main == b4cab18f4bc40f8be009ccb302de3dedd1173886`,
+subject `chore: repair low-risk analyzer lint debt`, divergence `0 0`. Commit
+`871ba07` completed the Measurement Record map and `b4cab18` completed the
+exact five-file lint child in Git. The prior operational tuple did not advance
+through those commits. No separate low-risk-child artifact or ledger row is
+invented.
+
+The exact current Phase 1 queue is five docs paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS.md`
+
+No sixth path is queued. This Phase 1 records the corrected route, one neutral
+ledger row, one audit artifact with an empty designated verdict block, and an
+exact future reservation. It creates no Windows runner.
+
+Windows recovery previously existed only as a manual-smoke prerequisite
+placeholder. Exhaustive Git-history inspection found no committed
+`windows/**` tree, so the queued implementation is a pinned reconstruction/
+bootstrap from the installed Flutter template, not a historical restore.
+
+## Next reserved Windows smoke-runner child
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+Lane: A
+Mode: FLUTTER_PASS / WINDOWS_RUNNER_RECOVERY / SMOKE_ONLY
+```
+
+Its exact future write set is eighteen paths:
+
+1. `windows/.gitignore`
+2. `windows/CMakeLists.txt`
+3. `windows/flutter/CMakeLists.txt`
+4. `windows/flutter/generated_plugin_registrant.cc`
+5. `windows/flutter/generated_plugin_registrant.h`
+6. `windows/flutter/generated_plugins.cmake`
+7. `windows/runner/CMakeLists.txt`
+8. `windows/runner/Runner.rc`
+9. `windows/runner/flutter_window.cpp`
+10. `windows/runner/flutter_window.h`
+11. `windows/runner/main.cpp`
+12. `windows/runner/resource.h`
+13. `windows/runner/resources/app_icon.ico`
+14. `windows/runner/runner.exe.manifest`
+15. `windows/runner/utils.cpp`
+16. `windows/runner/utils.h`
+17. `windows/runner/win32_window.cpp`
+18. `windows/runner/win32_window.h`
+
+No nineteenth path is queued. Generation must use Flutter `3.44.9`, framework
+revision `6b182d2c7585eba26d4edce0f97630effd256c33`, Dart `3.12.2`,
+project name `trace_bench_viewer`, organization `com.example`, and the
+installed `windows.tmpl`, in a disposable directory outside every TraceBench
+worktree. Only these eighteen results may be copied. `com.example` and the
+default template icon are explicitly smoke-only, non-release identity and
+infrastructure.
+
+The child excludes `.metadata`, `.idea/**`, `*.iml`, `test/widget_test.dart`,
+`pubspec.yaml`, `pubspec.lock`, all Dart/tests/docs/maps, tools, schemas,
+assets, samples, Python/runtime/support-bundle content, packaging, installer,
+signing, update, integrity, license/notice, release identity, and every F-03
+surface. It may not alter Python discovery/runtime semantics.
+
+Activation requires independent acceptance of this exact scope, bounded
+verdict/ledger recording, and human exact commit/push. Implementation occurs
+in a clean sibling worktree and generates in external disposable material.
+After copying, `flutter pub get --offline` must leave both package files
+byte-identical, and the complete validation contract in the active lock must
+pass.
+
+The protected primary Child-B diff remains the exact ordered twenty-nine-path
+set recorded in the matching artifact, with aggregate numstat of 980 additions
+/ 219 deletions, staged/untracked/unmerged counts of `0/0/0`, manifest count
+29, and worktree-byte manifest SHA-256
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+It is automated implementation evidence only and is neither accepted nor
+canonical. Scope and implementation paths have zero overlap with that set.
+
+The exact queue is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [committed/completed at b4cab18]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS [29-path primary diff; automated implementation only, protected pending evidence]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+-> [Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Manual smoke is `NOT_APPLICABLE` to this docs-only queue. It occurs only after
+the accepted eighteen-file runner is integrated beneath the protected Child-B
+diff.
+
+## Accepted Measurement Record Code Map queue (historical, non-authorizing)
+
+Commit `871ba07` preserves the completed Measurement Record map pass, and
+`b4cab18` preserves the later low-risk lint child. The retained queue below is
+historical and supplies no current sequencing or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS

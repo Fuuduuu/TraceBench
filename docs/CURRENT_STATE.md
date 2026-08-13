@@ -1,9 +1,88 @@
 # Current State
 
-Current pass: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
-Next recommended pass: `TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS`
+Current pass: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
 
-## Live Measurement Record Code Map Phase 1
+## Live Windows smoke-runner recovery scope Phase 1
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / WINDOWS_SMOKE_RUNNER_RECOVERY / PHASE_1
+```
+
+The verified committed baseline is `main` at
+`HEAD == origin/main == b4cab18f4bc40f8be009ccb302de3dedd1173886`,
+subject `chore: repair low-risk analyzer lint debt`, divergence `0 0`. Commit
+`871ba07` added the Measurement Record map, and `b4cab18` completed the exact
+five-file low-risk lint child in Git. No separate repository-native audit
+artifact or ledger row exists for that child, so this scope records only its
+verifiable committed file/subject evidence and makes no fabricated independent
+acceptance claim.
+
+The former operational headers stopped at the Measurement Record map and lint
+child. This authorized Lane B scope reconciles that route lag. In the protected
+primary worktree, the twenty-nine-path Child-B automated implementation exists
+only as working-tree evidence: the exact ordered twenty-nine-path set recorded
+in the matching artifact, aggregate numstat of 980 additions / 219 deletions,
+staged/untracked/unmerged counts of `0/0/0`, manifest count 29, and worktree-byte
+manifest SHA-256
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+Those bytes are not accepted, committed, pushed, or canonical repository truth.
+
+The current docs-only Phase 1 changes exactly the three route owners,
+`docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS.md`.
+It records that Windows recovery previously had only a prerequisite placeholder
+and no implementation authority, and that exhaustive Git-history inspection
+found no committed `windows/**` tree. The future implementation is therefore a
+pinned Flutter runner reconstruction/bootstrap, not restoration from repository
+history.
+
+The reserved child is:
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+Lane: A
+Mode: FLUTTER_PASS / WINDOWS_RUNNER_RECOVERY / SMOKE_ONLY
+```
+
+It is limited to eighteen explicitly named Windows host files generated from
+Flutter `3.44.9`, framework revision
+`6b182d2c7585eba26d4edce0f97630effd256c33`, Dart `3.12.2`, project name
+`trace_bench_viewer`, organization `com.example`, and the installed
+`windows.tmpl`. `com.example` and the default template icon are non-release
+smoke identity/infrastructure only. The complete path-by-path reservation and
+activation gates live in `docs/ACTIVE_SCOPE_LOCK.md` and the matching artifact.
+
+This scope opens no F-03, production distribution, private Python runtime,
+support bundle, installer, signing, updater, runtime-integrity, license/notice,
+release-identity, or Python discovery/runtime-semantic work. It generates no
+Windows file. Child-B source/tests/packages and all canonical/protected
+semantics remain frozen.
+
+The live route is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [committed/completed at b4cab18]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS [29-path primary diff; automated implementation only, protected pending evidence]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+-> [Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The Windows child activates only after independent acceptance, bounded verdict
+recording, and human exact commit/push of this five-file scope. Human manual
+smoke is `NOT_APPLICABLE` to this docs-only Phase 1.
+
+## Accepted Measurement Record Code Map Phase 1 (historical, non-authorizing)
+
+Commit `871ba07` preserves the completed Measurement Record map pass, and
+`b4cab18` preserves the later low-risk lint child. The retained Phase 1 wording
+below is historical and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS

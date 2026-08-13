@@ -2,10 +2,222 @@
 
 ## Route
 
-Current: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
-Next: `TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS`
+Current: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
 
-## Current Measurement Record Code Map Phase 1 authority
+## Current Windows smoke-runner recovery scope Phase 1 authority
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / WINDOWS_SMOKE_RUNNER_RECOVERY / PHASE_1
+```
+
+The verified committed base is
+`HEAD == origin/main == b4cab18f4bc40f8be009ccb302de3dedd1173886`,
+subject `chore: repair low-risk analyzer lint debt`, divergence `0 0`.
+Authoring occurs only in the clean sibling worktree
+`C:\dev\TraceBench_windows_smoke_scope` on dedicated branch
+`tracebench/windows-smoke-runner-scope`. The primary
+`C:\dev\TraceBench` worktree is read-only protected evidence.
+
+Commit `871ba07` completed the Measurement Record map pass, and `b4cab18`
+completed the exact five-file lint child in Git. The old operational tuple did
+not advance through those commits. This scope is the explicit Lane B authority
+to reconcile that route lag; it creates no missing predecessor audit record.
+
+### Exact current Phase 1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. These five docs may record only the smoke-runner
+scope, route, neutral ledger row, audit evidence, future exact allowlist,
+isolation protocol, validation contract, and empty designated verdict block.
+No platform implementation is current write authority.
+
+### Gate finding and recovery source
+
+The prior route supplied only a Windows-runner prerequisite placeholder. It
+named neither a recovery PASS_ID nor an exact implementation allowlist.
+Exhaustive searches across committed history, refs, reflogs, named objects, and
+unreachable trees found no prior committed `windows/**` tree or `.metadata`.
+The future child is therefore a pinned Flutter reconstruction/bootstrap, not
+restoration from accepted Git history.
+
+### Exact reserved Windows smoke-runner child -- 18
+
+```text
+PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+Lane: A
+Mode: FLUTTER_PASS / WINDOWS_RUNNER_RECOVERY / SMOKE_ONLY
+```
+
+After this exact scope is independently accepted, mechanically recorded,
+human-staged, committed, and pushed, that child may write only:
+
+1. `windows/.gitignore`
+2. `windows/CMakeLists.txt`
+3. `windows/flutter/CMakeLists.txt`
+4. `windows/flutter/generated_plugin_registrant.cc`
+5. `windows/flutter/generated_plugin_registrant.h`
+6. `windows/flutter/generated_plugins.cmake`
+7. `windows/runner/CMakeLists.txt`
+8. `windows/runner/Runner.rc`
+9. `windows/runner/flutter_window.cpp`
+10. `windows/runner/flutter_window.h`
+11. `windows/runner/main.cpp`
+12. `windows/runner/resource.h`
+13. `windows/runner/resources/app_icon.ico`
+14. `windows/runner/runner.exe.manifest`
+15. `windows/runner/utils.cpp`
+16. `windows/runner/utils.h`
+17. `windows/runner/win32_window.cpp`
+18. `windows/runner/win32_window.h`
+
+No nineteenth path is authorized. The `windows/` scratch rule in `AGENTS.md`
+is overridden only for this exact eighteen-path future set after activation;
+it grants no directory-wide staging or implementation authority.
+
+### Pinned template provenance and smoke identity
+
+The future implementation must use exactly:
+
+- Flutter `3.44.9`;
+- framework revision `6b182d2c7585eba26d4edce0f97630effd256c33`;
+- Dart `3.12.2`;
+- template root
+  `C:\dev\flutter\packages\flutter_tools\templates\app\windows.tmpl`;
+- project name `trace_bench_viewer`;
+- organization `com.example`; and
+- the default Flutter template icon.
+
+`com.example` is non-release smoke identity only. It makes no BenchBeep
+company, legal, bundle, installer, or package-identity decision. The default
+icon is smoke infrastructure only and is not BenchBeep release branding.
+Any SDK/revision/template/provenance mismatch stops for a new human decision.
+
+Flutter generation must occur in a disposable directory outside every
+TraceBench repository worktree. Never run `flutter create` in
+`C:\dev\TraceBench`, this scope worktree, or the later implementation
+worktree. The external tree is source material only. The implementation may
+copy exactly the eighteen authorized files and must reject every additional
+path.
+
+### Explicitly unauthorized surfaces
+
+The future child cannot write or authorize:
+
+- `.metadata`, `.idea/**`, any `*.iml`, or `test/widget_test.dart`;
+- `pubspec.yaml`, `pubspec.lock`, any Dart/test, docs, Code Map, or map-index
+  file;
+- `tools/**`, `schemas/**`, `assets/**`, `samples/**`, or other platform roots;
+- Python/runtime/support-bundle files or Python discovery/runtime semantics;
+- F-03, production distribution, standalone/offline packaging, installer,
+  signing, updater, integrity, licensing/notices, or release identity; or
+- canonical event/fact/evidence, writer, materializer, projection, Project ZIP,
+  conflict, electrical, or other protected semantics.
+
+The future child must not copy every output of `flutter create`. After the
+eighteen files are copied, it runs `flutter pub get --offline` and compares
+pre/post SHA-256 or Git object identity for `pubspec.yaml` and `pubspec.lock`.
+Either package file changing is a stop. Generated registrants must reflect the
+protected scope-authorized pending Child-B graph, including the direct `crypto`
+promotion, without altering package resolution.
+
+### Primary Child-B preservation and integration
+
+The dirty primary contains the exact ordered twenty-nine-path Child-B set
+recorded in the matching artifact, aggregate numstat of 980 additions / 219
+deletions, staged/untracked/unmerged counts of `0/0/0`, manifest count 29, and
+worktree-byte manifest SHA-256
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+It is protected automated-implementation evidence only, not accepted or
+canonical repository truth. The five current scope paths and eighteen future
+Windows paths each have zero intersection with that twenty-nine-path set.
+
+Scope authoring, audit recording, human commit/push, Windows implementation,
+Windows audit/commit/push, and final primary integration must each reproduce
+exactly these seven deterministic values: (1) the exact ordered changed-path
+list equals the protected twenty-nine-path set; (2) aggregate numstat is 980
+additions / 219 deletions; (3) staged is 0; (4) untracked is 0; (5) unmerged
+is 0; (6) worktree-byte manifest count is 29; and (7) worktree-byte manifest
+SHA-256 is
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+No stash, reset, restore, clean, rebase, checkout, or merge is authorized in
+the dirty primary during authoring.
+
+Only after `origin/main` contains the accepted scope and accepted runner may a
+human in the primary:
+
+1. run `git fetch origin`;
+2. prove `origin/main` is a strict descendant of `b4cab18`;
+3. prove the incoming range touches only these five docs and eighteen Windows
+   paths;
+4. prove zero incoming intersection with the protected twenty-nine paths; and
+5. run `git merge --ff-only origin/main`.
+
+Stop if fast-forward cannot be proven, Git reports overwrite risk, the incoming
+range contains another path, intersection is nonzero, or any of those seven
+deterministic preservation values changes unexpectedly. The fallback leaves
+the primary untouched and prepares smoke in a disposable worktree with a
+byte-identical copy of the twenty-nine paths atop accepted Windows HEAD.
+
+### Future implementation validation
+
+The future child requires a clean isolated baseline at the accepted scope
+commit, the exact pinned Flutter provenance, external disposable generation,
+exactly eighteen copied files, and:
+
+```text
+flutter pub get --offline
+flutter doctor -v
+flutter analyze --no-pub
+flutter test
+py -3 tools\doctor.py
+py -3 tools\validate_all.py
+flutter build windows --debug --no-pub
+git diff --check
+git diff --cached --check
+```
+
+Windows and Visual Studio sections of doctor must be green. Package files must
+remain byte-identical. The implementation diff must contain exactly the
+eighteen files and an empty staged set, with no `.metadata`, root/package,
+Dart/test, Python, distribution, or F-03 change. The expected analyzer residue
+is the current three deferred infos and zero warnings/errors unless accepted
+source changes.
+
+### Route and activation
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [committed/completed at b4cab18]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS [29-path primary diff; automated implementation only, protected pending evidence]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+-> [Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The implementation reservation remains conditional on independent scope
+acceptance, bounded Phase 2 recording, and human exact commit/push. Manual
+smoke is `NOT_APPLICABLE` to this docs-only Phase 1.
+
+Stop this scope on a sixth changed path, route-owner disagreement, missing or
+extra future path, provenance conflict, package/source/map/platform mutation,
+F-03 leakage, primary-attestation drift, protected-boundary change, validation
+failure, or Codex staging, commit, push, or primary mutation.
+
+## Accepted Measurement Record Code Map Phase 1 authority (historical, non-authorizing)
+
+Commit `871ba07` preserves the completed Measurement Record map pass, and
+`b4cab18` preserves the later low-risk lint child. The retained authority below
+is historical and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS

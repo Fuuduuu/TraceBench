@@ -2,10 +2,118 @@
 
 ## Route
 
-Current: `TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS`
-Next: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
+Current: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
+Next: `TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS`
 
-## Current analyzer lint-debt SCOPE authority
+## Current Measurement Record Code Map Phase 1 authority
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_BOOTSTRAP / PHASE_1
+```
+
+Entry is the authoritative `C:\dev\TraceBench` worktree on clean `main` at
+`HEAD == origin/main == f435d9fd9d74aed341d39f2c5149f015a34cbf40`,
+subject `docs: scope analyzer lint debt`, divergence `0 0`, with empty
+tracked, staged, untracked, and unmerged sets.
+
+### Exact current Phase 1 write allowlist -- 7
+
+1. `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`
+2. `docs/code_maps/CODE_MAP_INDEX.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/CURRENT_STATE.md`
+5. `docs/PASS_QUEUE.md`
+6. `docs/AUDIT_INDEX.md`
+7. `docs/audit/TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS.md`
+
+No eighth path is authorized. This pass describes accepted committed source,
+creates exactly one production map and one matching index row at
+`REVIEW_REQUIRED`, advances the operational route, and creates one neutral
+audit artifact/ledger row with one empty designated verdict block. It changes
+no Dart, test, runtime, configuration, package, tool, schema, fixture, asset,
+sample, Project ZIP, platform, writer, event, projection, protected-semantic,
+prior-artifact, existing-map, or existing-index-row byte.
+
+### Qualification and lifecycle gate
+
+`lib/features/measurements/screens/measurement_record_screen.dart` reproduces
+the Code Map Standard's automatic qualification because canonical writer paths
+and UI-local responsibilities coexist. The direct call path is
+`_saveMeasurement` -> `MeasurementEventWriter.writeMeasurement`; the imported
+writer validates and appends `events.jsonl`, returns a stale updated
+`ProjectState`, and the screen assigns that result to `projectStateProvider`.
+Controllers, selection, parsing, gating, and feedback remain UI-local or
+zero-write. The live application router redirects `measurements/new` to
+`/project/measure-sheet`; direct widget tests still instantiate this legacy
+screen and exercise the writer boundary.
+
+The new map and matching index row remain `REVIEW_REQUIRED` throughout Phase
+1. The low-risk child remains blocked until all of the following are true:
+
+1. the map is independently reproduced against committed source, tests, and
+   canonical owners;
+2. `SAFE_FOR_SNIPER_USE: YES` is returned;
+3. any explicitly authorized map/index promotion and bounded verdict/ledger
+   recording are completed without changing the map body or route prose; and
+4. this exact seven-file map pass is human-staged, committed, and pushed.
+
+### Exact reserved low-risk lint child -- 5
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+Lane: A
+Mode: DART_LINT_REPAIR / BEHAVIOR_PRESERVING
+```
+
+Its exact future write set remains:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart`
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+3. `lib/features/measurements/screens/measurement_record_screen.dart`
+4. `lib/features/report/screens/customer_report_screen.dart`
+5. `test/widget/measure_sheet_screen_test.dart`
+
+No sixth implementation path is reserved. It may repair only the previously
+recorded six low-risk findings. It cannot change behavior, copy, route,
+writer, event, projection, package, map, platform, or protected semantics.
+The prior NIT-1 remains future-child evidence only: removing Customer Report's
+unreachable fallback preserves the six current sealed `ExportResult` variants
+but changes a future-new-variant failure mode to compile-time exhaustiveness.
+That evidence is not patched in this map pass.
+
+### Preserved route and architecture
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> [separate Windows runner recovery before Child-B human manual smoke]
+-> [Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Strategy D remains unchanged: exactly six low-risk findings precede Child B;
+the PythonRunner and Reference Images findings remain deferred until after
+F-02; full lint-debt completion is not a Child-B prerequisite. Windows
+recovery remains a separate prerequisite before Child-B human manual smoke,
+not part of this map pass or lint child. The complete twenty-nine-path,
+twelve-surface Child-B reservation and its freshness, exact-byte,
+`package:crypto`, no-thirtieth-path, routing, materializer/provenance, writer,
+and protected boundaries remain unchanged in the retained authority below.
+
+No future reservation is current source authority. Stop on an eighth changed
+path, source/map conflict, missing anchor, existing-map/index-row change,
+protected-boundary expansion, validation failure, or any Codex staging,
+commit, or push. Manual smoke is `NOT_APPLICABLE`.
+
+## Accepted analyzer lint-debt SCOPE authority (historical, non-authorizing)
+
+Commit `f435d9fd9d74aed341d39f2c5149f015a34cbf40`, subject
+`docs: scope analyzer lint debt`, preserves the accepted scope and its recorded
+independent verdict. The retained Phase 1 wording below is historical and
+supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS

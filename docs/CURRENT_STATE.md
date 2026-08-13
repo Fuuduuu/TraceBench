@@ -1,9 +1,92 @@
 # Current State
 
-Current pass: `TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS`
-Next recommended pass: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
+Current pass: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
+Next recommended pass: `TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS`
 
-## Live analyzer lint-debt SCOPE
+## Live Measurement Record Code Map Phase 1
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_BOOTSTRAP / PHASE_1
+```
+
+Entry is clean `main` at
+`HEAD == origin/main == f435d9fd9d74aed341d39f2c5149f015a34cbf40`,
+subject `docs: scope analyzer lint debt`, divergence `0 0`, with empty tracked,
+staged, untracked, and unmerged sets. This Phase 1 changes exactly one new
+Measurement Record production map, one new `CODE_MAP_INDEX` row, the three
+route owners, `AUDIT_INDEX`, and one new audit artifact: seven paths total.
+
+The 252-line accepted committed source qualifies automatically because
+canonical writer paths and UI-local responsibilities coexist. Its
+`_saveMeasurement` path assembles a `MeasurementWriteRequest`, calls
+`MeasurementEventWriter.writeMeasurement`, and assigns the returned stale
+`ProjectState` to `projectStateProvider`; the writer owns validation,
+`events.jsonl` append, and event-envelope semantics. Controllers, unit/value
+normalization, duplicate gating, progress, and feedback remain UI-local or
+zero-write. The current app router redirects the legacy `measurements/new`
+path to Measure Sheet, while the direct widget suite still constructs and
+exercises this screen.
+
+The deterministic new map is
+`docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`.
+It and its single new index row are `REVIEW_REQUIRED` in Phase 1. No existing
+map or index row changes. The registry target after this pass is twenty-nine
+rows and twenty-nine map files with no orphan or unindexed map.
+
+The next reserved child remains exactly:
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+Lane: A
+Mode: DART_LINT_REPAIR / BEHAVIOR_PRESERVING
+```
+
+Its five future paths remain:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart`
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+3. `lib/features/measurements/screens/measurement_record_screen.dart`
+4. `lib/features/report/screens/customer_report_screen.dart`
+5. `test/widget/measure_sheet_screen_test.dart`
+
+The child cannot begin until independent map audit returns
+`SAFE_FOR_SNIPER_USE: YES`, any explicitly authorized bounded status promotion
+and verdict/ledger mirror are recorded, and the exact seven-file map pass is
+human-staged, committed, and pushed. No source authority is open now.
+
+Strategy D is unchanged: only six low-risk findings precede Child B;
+PythonRunner and Reference Images findings remain post-F-02; full lint-debt
+completion is not a Child-B prerequisite. The prior NIT-1 remains future child
+evidence only: removing Customer Report's unreachable switch fallback is
+behavior-preserving for the six current sealed variants but changes how a
+future variant fails.
+
+The live route is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> [separate Windows runner recovery before Child-B human manual smoke]
+-> [Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Windows recovery and the complete twenty-nine-path, twelve-surface Child-B
+architecture remain unchanged. All Dart/test/runtime/config/package/tool/
+schema/fixture/asset/sample/Project ZIP/platform/writer/event/projection and
+protected-semantic bytes remain frozen. This Phase 1 makes no independent
+audit, acceptance, staging, commit, or push claim; its one designated verdict
+block stays empty.
+
+## Accepted analyzer lint-debt SCOPE (historical, non-authorizing)
+
+Commit `f435d9fd9d74aed341d39f2c5149f015a34cbf40`, subject
+`docs: scope analyzer lint debt`, preserves the accepted scope and its recorded
+independent verdict. The retained Phase 1 wording below is historical and
+supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS

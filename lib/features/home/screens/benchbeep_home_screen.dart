@@ -269,7 +269,7 @@ class _MenuBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final brand = const _CompactBrand();
+          const brand = _CompactBrand();
           final actions = Wrap(
             spacing: 8,
             runSpacing: 8,

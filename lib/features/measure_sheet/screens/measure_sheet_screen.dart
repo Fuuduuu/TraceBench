@@ -764,7 +764,7 @@ class _MeasureSheetPanel extends StatelessWidget {
             ] else
               DropdownButtonFormField<String>(
                 key: const ValueKey('measure-sheet-target-dropdown'),
-                value: selectedTargetKey,
+                initialValue: selectedTargetKey,
                 decoration: const InputDecoration(labelText: 'Koht'),
                 isExpanded: true,
                 hint: const Text('Vali mõõtmise koht'),

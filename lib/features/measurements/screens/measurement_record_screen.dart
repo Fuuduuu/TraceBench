@@ -195,7 +195,7 @@ class _MeasurementRecordScreenState
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
             key: const ValueKey('measurement-unit-dropdown'),
-            value: _selectedUnit,
+            initialValue: _selectedUnit,
             decoration: const InputDecoration(labelText: 'Ühik'),
             items: _unitOptions
                 .map((unit) => DropdownMenuItem(

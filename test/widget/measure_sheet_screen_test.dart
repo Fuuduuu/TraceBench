@@ -876,7 +876,7 @@ testWidgets('rapid double tap does not duplicate writer calls',
     expect(source, isNot(contains('likely fault')));
     expect(source, isNot(contains('probable')));
     expect(source, isNot(contains('diagnosis')));
-    expect(source, isNot(contains('\"sequence\"')));
+    expect(source, isNot(contains('"sequence"')));
     expect(source, isNot(contains('event-writing')));
     expect(source, isNot(contains('persistence')));
   });

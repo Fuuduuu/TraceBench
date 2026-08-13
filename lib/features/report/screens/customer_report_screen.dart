@@ -124,7 +124,6 @@ String _messageForExportResult(ExportResult result) {
       'Pythonit ei leitud. Desktop/dev eksport vajab Python toolingut.',
     ExportMaterializerFailed(:final sanitizedMessage) => sanitizedMessage,
     ExportExportFailed(:final sanitizedMessage) => sanitizedMessage,
-    _ => 'Eksport ebaõnnestus.',
   };
 }
 

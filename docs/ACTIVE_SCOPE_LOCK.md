@@ -2,10 +2,179 @@
 
 ## Route
 
-Current: `TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`
+Current: `TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS`
+Next: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
 
-## Current analyzer-configuration recovery SCOPE-amendment authority
+## Current analyzer lint-debt SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+```
+
+Entry is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main == 7864cde839b151e370918b7f0d850cd86cb75742`,
+subject `chore: repair analyzer config include`, divergence `0 0`, with empty
+tracked, staged, untracked, and unmerged sets. The preceding config-repair
+commit changes only `analysis_options.yaml`, removes `include_file_not_found`,
+and is recorded here with human-supplied independent audit evidence
+`AUDIT_VERDICT: ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`. Before this scope,
+there was no dedicated config-repair artifact, ledger row, commit trailer, or
+Git note; no repository-native evidence is fabricated and no verdict-copy row
+is created.
+
+### Exact current Phase 1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS.md`
+
+No sixth path is authorized. This docs-only Phase 1 may record the route,
+scope, neutral ledger row, and exactly one empty designated verdict block. It
+may not edit analyzer configuration, Dart/tests, maps/index, packages,
+platform files, runtime, tools, schemas, fixtures, assets, samples, Project ZIP
+owners, writers, events, materializers, protected semantics, prior artifacts,
+or unrelated/ignored material.
+
+### Reproduced analyzer state and Strategy D
+
+`flutter analyze --no-pub` on committed HEAD exits `1` with exactly nine
+findings: one warning, eight infos, zero errors, and no
+`include_file_not_found`. The approved pre-Child-B subset is exactly six
+behavior-preserving findings in five future source/test paths:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart` --
+   `prefer_const_declarations`;
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart` --
+   `deprecated_member_use`;
+3. `lib/features/measurements/screens/measurement_record_screen.dart` --
+   `deprecated_member_use`;
+4. `lib/features/report/screens/customer_report_screen.dart` --
+   `unreachable_switch_case`; and
+5. `test/widget/measure_sheet_screen_test.dart` --
+   `unnecessary_string_escapes` twice.
+
+The explicit human Strategy D decision authorizes this one multi-zone scope
+combination and satisfies the `DECOMPOSE_REQUIRED` exception. It grants no
+current source authority. The PythonRunner `library_private_types_in_public_api`
+finding and both Reference Images `overridden_fields` findings are deferred
+until after F-02 and do not gate Child B.
+
+Full lint-debt implementation is not a Child-B prerequisite. Only the six-
+finding subset above precedes Child B, clearing all analyzer findings from the
+three overlapping paths:
+
+1. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+2. `lib/features/report/screens/customer_report_screen.dart`
+3. `test/widget/measure_sheet_screen_test.dart`
+
+Lint and Child-B edits occupy distinct maintained-map zones and must remain
+separate passes. In the Measure Sheet test, removing redundant escaping must
+leave the effective Dart string exactly `'"sequence"'`; weakening, removing,
+inverting, or semantically changing that prohibition is outside authority.
+
+### Code Map gate
+
+Read-only requalification against accepted committed source produces:
+
+- `benchbeep_home_screen.dart`: maintained map, `REVIEWED_NO_CHANGE`;
+- `measure_sheet_screen.dart`: maintained map, `REVIEWED_NO_CHANGE`;
+- `measurement_record_screen.dart`: `AUTO` qualification because canonical
+  writer and UI-local responsibilities coexist; no map/index row;
+  `BLOCKED_CODE_MAP_REQUIRED` before implementation;
+- `customer_report_screen.dart`: maintained map, `REVIEWED_NO_CHANGE`;
+- `python_runner.dart`: maintained map, deferred and `REVIEWED_NO_CHANGE` for
+  this scope;
+- `measure_sheet_screen_test.dart`: maintained map, `REVIEWED_NO_CHANGE`; and
+- `reference_images_screen_test.dart`: `SCORE 10/12`, no map/index row, and
+  `BLOCKED_CODE_MAP_REQUIRED` before any later post-F-02 repair. Its deferred
+  map is not part of the immediate pre-Child-B prerequisite.
+
+### Exact future Measurement Record Code Map prerequisite -- 7
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_BOOTSTRAP / PHASE_1
+```
+
+That pass may later write only:
+
+1. `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`
+2. `docs/code_maps/CODE_MAP_INDEX.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/CURRENT_STATE.md`
+5. `docs/PASS_QUEUE.md`
+6. `docs/AUDIT_INDEX.md`
+7. `docs/audit/TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS.md`
+
+No eighth path is authorized. It creates only the Measurement Record map from
+accepted committed pre-edit source and exactly one matching index row, both at
+`REVIEW_REQUIRED`; it changes no Dart/test/runtime or existing map/index row.
+Independent map audit, explicitly authorized bounded verdict recording and
+promotion, and human exact staging/commit/push must complete before lint
+implementation.
+
+### Exact future low-risk lint child -- 5
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+Lane: A
+Mode: DART_LINT_REPAIR / BEHAVIOR_PRESERVING
+```
+
+After the completed Measurement Record map gate, that child may later write
+only:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart`
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+3. `lib/features/measurements/screens/measurement_record_screen.dart`
+4. `lib/features/report/screens/customer_report_screen.dart`
+5. `test/widget/measure_sheet_screen_test.dart`
+
+No sixth implementation path is authorized. It may correct only the six named
+findings without behavior, copy, routing, writer, event, projection, package,
+map, platform, or protected-boundary change. If unrelated source is unchanged,
+its expected analyzer result is three deferred infos, zero warnings/errors,
+and a nonzero exit; exit `0` is not required.
+
+### Route, Windows position, and preserved Child B
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> [separate Windows runner recovery before Child-B human manual smoke]
+-> [Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Windows recovery is not part of this scope, the lint child, or Child B. It is
+required before Child-B human manual smoke; Child-B implementation need not
+wait for it unless another live gate independently requires that ordering.
+
+The exact existing Child-B reservation remains frozen at twenty-nine paths,
+seventeen production/config plus twelve tests, across twelve derived surfaces,
+with `FRESH` / `STALE` / `UNKNOWN`, exact same-snapshot bytes, direct
+`package:crypto`, no routing/shell freshness authority, no Flutter
+materializer/provenance writer, no thirtieth path, and frozen canonical and
+protected writer semantics.
+
+No future reservation is current authority. Stop on any sixth Phase 1 path,
+eighth map-pass path, sixth implementation path, analyzer/source/map conflict,
+protected-boundary expansion, changed frozen byte, validation failure, or any
+staging, commit, or push by Codex. Manual smoke is `NOT_APPLICABLE`.
+
+## Accepted analyzer-configuration recovery SCOPE-amendment authority (historical, non-authorizing)
+
+Commits `20ec78dfbc04b4d09291dbe54bb94c80363400f3` and
+`7864cde839b151e370918b7f0d850cd86cb75742` preserve the accepted recovery
+scope and its one-file config child. The retained Phase 1 wording below is
+historical and supplies no current route, activation gate, or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS

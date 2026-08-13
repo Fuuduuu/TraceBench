@@ -2,10 +2,130 @@
 
 ## Current route
 
-Current: `TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_ANALYZER_CONFIG_REPAIR_PASS`
+Current: `TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS`
+Next: `TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS`
 
-## Current analyzer-configuration recovery SCOPE-amendment queue
+## Current analyzer lint-debt SCOPE queue
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+```
+
+Entry is clean `main` at
+`HEAD == origin/main == 7864cde839b151e370918b7f0d850cd86cb75742`,
+subject `chore: repair analyzer config include`, divergence `0 0`. The accepted
+committed predecessor changes only `analysis_options.yaml`, removes
+`include_file_not_found`, and carries human-supplied independent evidence
+`AUDIT_VERDICT: ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`. No dedicated config-
+repair artifact, ledger row, trailer, or note existed before this scope, and no
+verdict-copy record is queued.
+
+The exact current Phase 1 queue is five paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS.md`
+
+No sixth path is queued. `flutter analyze --no-pub` reproduces nine findings:
+one warning, eight infos, zero errors. Strategy D queues only six behavior-
+preserving findings in five paths before Child B and defers PythonRunner's
+private-public-API finding plus both Reference Images overridden fields until
+after F-02. Full lint-debt implementation does not gate Child B.
+
+The low-risk subset clears all findings from the exact Child-B intersection:
+
+1. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+2. `lib/features/report/screens/customer_report_screen.dart`
+3. `test/widget/measure_sheet_screen_test.dart`
+
+Lint and Child-B work remain separate passes and mapped responsibility zones.
+The Measure Sheet test edit must preserve the effective Dart string exactly
+`'"sequence"'` and may not weaken its protected source prohibition.
+
+Read-only requalification preserves five applicable maps as `MAINTAINED` with
+`REVIEWED_NO_CHANGE`. Measurement Record automatically qualifies for a map
+because canonical writer and UI-local responsibilities coexist, but currently
+has no map/index row. Reference Images tests also qualify at `SCORE 10/12`, but
+their finding and map prerequisite remain deferred after F-02.
+
+The exact next map queue is:
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_BOOTSTRAP / PHASE_1
+```
+
+It may later write exactly:
+
+1. `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`
+2. `docs/code_maps/CODE_MAP_INDEX.md`
+3. `docs/ACTIVE_SCOPE_LOCK.md`
+4. `docs/CURRENT_STATE.md`
+5. `docs/PASS_QUEUE.md`
+6. `docs/AUDIT_INDEX.md`
+7. `docs/audit/TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS.md`
+
+No eighth path is queued. Only the required committed-source Measurement
+Record map and one matching index row may be created, initially at
+`REVIEW_REQUIRED`; no source/test/runtime or existing map/index byte may
+change. Independent map audit, authorized bounded verdict recording and
+promotion, and human exact staging/commit/push gate the next child.
+
+The exact later implementation queue is:
+
+```text
+PASS_ID: TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+Lane: A
+Mode: DART_LINT_REPAIR / BEHAVIOR_PRESERVING
+```
+
+Its future write set is exactly:
+
+1. `lib/features/home/screens/benchbeep_home_screen.dart`
+2. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+3. `lib/features/measurements/screens/measurement_record_screen.dart`
+4. `lib/features/report/screens/customer_report_screen.dart`
+5. `test/widget/measure_sheet_screen_test.dart`
+
+No sixth implementation path is queued. Only the six named analyzer findings
+may change. The expected post-child analyzer state is the three deferred infos
+and zero warnings/errors; analyzer exit `0` is not required.
+
+The exact queue is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_SCOPE_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_MEASUREMENT_RECORD_CODE_MAP_PASS
+-> TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+-> [separate Windows runner recovery before Child-B human manual smoke]
+-> [Child-B human manual smoke]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+Windows recovery is not queued inside lint or Child B. It is required before
+Child-B human manual smoke; Child-B implementation need not wait unless another
+live gate requires it. The unchanged Child-B reservation remains twenty-nine
+paths, twelve derived surfaces, tri-state freshness, exact same-snapshot bytes,
+direct `package:crypto`, no thirtieth path, no routing/shell freshness
+authority, no Flutter provenance/materialization write, and frozen writers and
+protected semantics.
+
+All config, Dart/test, map/index, package, Windows, runtime, tool, schema,
+fixture, asset, sample, Project ZIP, prior-artifact, and unrelated/ignored
+bytes are outside this Phase 1 queue. Manual smoke is `NOT_APPLICABLE`.
+
+## Accepted analyzer-configuration recovery SCOPE-amendment queue (historical, non-authorizing)
+
+Commits `20ec78dfbc04b4d09291dbe54bb94c80363400f3` and
+`7864cde839b151e370918b7f0d850cd86cb75742` preserve the accepted recovery
+scope and one-file config repair. The retained queue below is historical and
+supplies no current sequencing or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_ANALYZER_CONFIG_RECOVERY_SCOPE_AMENDMENT_PASS

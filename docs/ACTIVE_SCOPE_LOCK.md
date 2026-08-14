@@ -2,10 +2,79 @@
 
 ## Route
 
-Current: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
 
-## Current Windows smoke-runner recovery scope Phase 1 authority
+## Current Child-B human-smoke authority
+
+The Windows prerequisite is complete at accepted scope commit
+`948e493f82be89b13244f64a0d4d9af8c13e9a8b` and exact implementation commit
+`afda39d338ba65c8e88c6b53f3bf8603efc9a494`. The latter adds exactly the
+eighteen scoped Windows host files. The supplied independent committed
+implementation audit returned `AUDIT_VERDICT: ACCEPT_AS_IS`; that verdict
+belongs only to the implementation commit and does not accept this docs-only
+closeout or Child B.
+
+Operational authority returns to:
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+Gate: HUMAN MANUAL SMOKE PENDING
+```
+
+The current protected Child-B automated implementation is the exact ordered
+twenty-nine-path working diff recorded in the accepted Child-B scope evidence.
+Its preservation identity remains:
+
+1. exact ordered changed-path set: the protected twenty-nine paths;
+2. aggregate numstat: `980` additions / `219` deletions;
+3. staged: `0`;
+4. untracked: `0`;
+5. unmerged: `0`;
+6. worktree-byte manifest count: `29`; and
+7. worktree-byte manifest SHA-256:
+   `b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+
+Patch-ID is not preservation authority. The twenty-nine paths remain frozen
+during this docs closeout; no additional Child-B implementation write is
+authorized. They are automated implementation evidence only and are not
+accepted, staged, committed, pushed, or canonical repository truth.
+
+The mandatory transition gates are:
+
+1. human manual smoke of Child B on the committed Windows runner;
+2. independent Child-B implementation audit after smoke passes;
+3. human exact staging, commit, and push of the accepted Child-B set; and
+4. only then `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`.
+
+Naming the provenance LOCK as Next is sequencing information and grants no
+permission to skip any intermediate gate. The live route is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [complete]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+   [automated implementation exists; resumed at manual-smoke gate]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS [complete]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+   [committed at afda39d; independent audit ACCEPT_AS_IS]
+-> [return to Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The Windows implementation remains smoke-only. No regeneration, machine or
+toolchain change, LF/CRLF normalization, package, Dart/test, map/index, tool,
+schema, asset, runtime, F-03, private-Python, installer, release, canonical,
+or protected-semantic authority is open. The external safety-backup patch is
+not repository content and supplies no canonical evidence or write authority.
+
+## Accepted Windows smoke-runner recovery scope Phase 1 authority (historical, non-authorizing)
+
+Commits `948e493f82be89b13244f64a0d4d9af8c13e9a8b` and
+`afda39d338ba65c8e88c6b53f3bf8603efc9a494` preserve the completed scope and
+implementation. All retained current/future/activation wording below is
+historical and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS

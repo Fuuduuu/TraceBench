@@ -1,9 +1,69 @@
 # Current State
 
-Current pass: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
 
-## Live Windows smoke-runner recovery scope Phase 1
+## Live Child-B resumption at the human-smoke gate
+
+The Windows smoke-runner prerequisite is complete. Accepted scope commit
+`948e493f82be89b13244f64a0d4d9af8c13e9a8b`
+(`docs: scope windows smoke runner recovery`) is the direct parent of committed
+implementation `afda39d338ba65c8e88c6b53f3bf8603efc9a494`
+(`feat(windows): restore smoke runner`). The implementation adds exactly the
+eighteen scoped `windows/**` host files, and the supplied independent committed
+implementation audit returned `AUDIT_VERDICT: ACCEPT_AS_IS`.
+
+The Windows implementation and its evidence closeout do not claim that
+Child B has passed human smoke, been independently implementation-audited,
+staged, committed, or pushed. The protected twenty-nine-path Child-B automated
+implementation remains working-tree evidence with its exact ordered path set,
+aggregate numstat `980` additions / `219` deletions,
+staged/untracked/unmerged counts `0/0/0`, worktree-byte manifest count `29`,
+and worktree-byte manifest SHA-256
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+Patch-ID is not preservation authority.
+
+Operational control has returned to:
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+Current gate: HUMAN MANUAL SMOKE PENDING
+```
+
+The route cannot skip directly to the named next PASS_ID. The mandatory gates
+are, in order:
+
+1. Child-B human manual smoke;
+2. Child-B independent implementation audit;
+3. Child-B human exact staging, commit, and push; and
+4. only then `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`.
+
+The preserved route history is:
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [complete]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+   [automated implementation exists; resumed at manual-smoke gate]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS [complete]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+   [committed at afda39d; independent audit ACCEPT_AS_IS]
+-> [return to Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The Windows runner remains smoke-only. It creates no F-03, private-Python,
+installer, packaging, signing, updater, integrity, licensing, release-identity,
+event/fact/projection, writer, materializer, Project ZIP, or protected-semantic
+authority. Manual smoke remains `PENDING`.
+
+## Accepted Windows smoke-runner recovery scope Phase 1 (historical, non-authorizing)
+
+Commit `948e493f82be89b13244f64a0d4d9af8c13e9a8b` preserves this accepted scope,
+and commit `afda39d338ba65c8e88c6b53f3bf8603efc9a494` preserves its completed
+implementation. All retained current/future/activation wording below is
+historical and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS

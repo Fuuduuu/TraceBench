@@ -2,10 +2,63 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
+Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
 
-## Current Windows smoke-runner recovery scope queue
+## Current Child-B manual-smoke queue
+
+Windows runner recovery is complete at accepted scope commit
+`948e493f82be89b13244f64a0d4d9af8c13e9a8b` followed by exact eighteen-file
+implementation commit `afda39d338ba65c8e88c6b53f3bf8603efc9a494`.
+The supplied independent committed implementation audit returned
+`AUDIT_VERDICT: ACCEPT_AS_IS`. The implementation evidence is recorded without
+transferring that verdict to this docs-only closeout or to Child B.
+
+The current queued gate is:
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+HUMAN MANUAL SMOKE: PENDING
+```
+
+The existing protected Child-B automated implementation remains exactly the
+ordered twenty-nine-path working diff with `980` additions / `219` deletions,
+staged/untracked/unmerged `0/0/0`, worktree-byte manifest count `29`, and
+worktree-byte manifest SHA-256
+`b3846b8e110670ed4a6a812bda4152a4fda939d1bb8b4fd130a17189efb56118`.
+It is not accepted, staged, committed, pushed, or canonical repository truth.
+Patch-ID is not used as preservation authority.
+
+The named Next pass is conditional, not immediately executable. Queue order is
+exactly:
+
+1. run and record Child-B human manual smoke;
+2. obtain an independent Child-B implementation audit;
+3. human-stage, commit, and push only the exact accepted Child-B set; and
+4. then execute `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`.
+
+```text
+TRACEBENCH_ANALYZER_LINT_DEBT_LOW_RISK_REPAIR_PASS [complete]
+-> TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS
+   [automated implementation exists; resumed at manual-smoke gate]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS [complete]
+-> TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_PASS
+   [committed at afda39d; independent audit ACCEPT_AS_IS]
+-> [return to Child-B human manual smoke]
+-> [Child-B independent implementation audit]
+-> [Child-B human exact commit/push]
+-> TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+```
+
+The queue opens no Windows regeneration, package, Dart/test, map/index, tool,
+schema, asset, runtime, F-03, distribution, or protected-semantic write.
+
+## Accepted Windows smoke-runner recovery scope queue (historical, non-authorizing)
+
+Commits `948e493f82be89b13244f64a0d4d9af8c13e9a8b` and
+`afda39d338ba65c8e88c6b53f3bf8603efc9a494` preserve the completed scope and
+implementation. All retained current/next/activation wording below is
+historical and supplies no current queue or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_WINDOWS_SMOKE_RUNNER_RECOVERY_SCOPE_LOCK_PASS

@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `none`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -38,6 +38,9 @@ change only presentation state; it owns no event, fact, graph, or file writer.
 - `[D]` Beginner mode selects `LayerFilter.beginner`; advanced mode builds a
   fixed layer set and conditionally adds visual trace and history layers.
 - `[D]` Focus, trace, and history controls mutate only widget-local state.
+- `[D]` The banner receives `projectState.projectionFreshness` directly:
+  `fresh` renders no warning, while `stale` and `unknown` remain distinct,
+  nonblocking states above the graph content.
 - `[D]` The app-bar mode toggle mutates only `beginnerModeProvider`.
 - `[D]` No projected value is written back to `ProjectState` or disk.
 
@@ -45,13 +48,13 @@ change only presentation state; it owns no event, fact, graph, or file writer.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider` | input | Supplies the current materialized known facts and warning state. |
+| `projectStateProvider` | input | Supplies current materialized known facts and authoritative tri-state freshness. |
 | `beginnerModeProvider` | UI-local read/write | Selects beginner versus advanced presentation. |
 | `BoardGraphProjector` | derived-data transform | Builds and filters/focuses the in-memory graph. |
 | `LayerFilter`, `LayerTag`, `EvidenceLevel`, `IncludeValidity` | filter contract | Express visible graph layers and validity policy. |
 | `GraphLayoutEngine` | derived layout | Computes node positions for the active graph. |
 | `BoardGraphCanvas` | child renderer | Paints the projection supplied by this screen. |
-| `ProjectionStaleBanner` | child presentation | Displays the current projection warning. |
+| `ProjectionStaleBanner` | child presentation | Displays distinct stale/unknown warning copy from `projectionFreshness`; fresh is absent. |
 
 ## Write and protected boundaries
 
@@ -87,12 +90,12 @@ visibility cannot promote or confirm evidence.
 | Advanced filter toggles | `[D]` conditional layer additions | projector semantics and node visibility | `UI_LOCAL` + `PROJECTION_STATE` | advanced and no-write tests |
 | Focus | `[D]` `baseProjection.focus` | dropdown items and layout | `UI_LOCAL` + `PROJECTION_STATE` | focused screen tests; projector unit tests |
 | Layout/canvas | `[D]` engine result feeds canvas | graph model and horizontal viewport | `PROJECTION_STATE` + `ZERO_WRITE` | graph screen and end-to-end graph tests |
-| Warning/role copy | `[D]` banner plus explicit text | shared banner and derived-surface integration | `ZERO_WRITE` | stale screen and integration tests |
+| Warning/role copy | `[D]` direct tri-state banner input plus explicit text | shared banner and derived-surface integration | `ZERO_WRITE` | stale/unknown screen and integration tests |
 
 ## Relevant tests and helpers
 
 - `test/widget/board_graph_screen_test.dart` covers beginner rendering,
-  advanced controls, warning presence, focus affordance, and zero event
+  advanced controls, stale/unknown warning presence, focus affordance, and zero event
   mutation after filter interactions.
 - `test/unit/board_graph_projection_test.dart` covers projector/filter model
   behavior independently of this screen.
@@ -109,6 +112,8 @@ visibility cannot promote or confirm evidence.
   make missing nodes look like source-data loss.
 - `[P]` Mode controls and canvas detail flags can drift, showing advanced data
   while copy still describes beginner mode.
+- `[P]` Reintroducing a boolean banner input would collapse provenance-unknown
+  into fresh-looking UI even though graph actions remain available.
 - `[H]` Any persistence or confirmation action would violate the explicit
   advanced/debug, no-canonical-write role.
 
@@ -116,7 +121,7 @@ visibility cannot promote or confirm evidence.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning presentation change | `ProjectionStaleBanner` call | shared banner and integration route | stale screen test |
+| One warning presentation change | `ProjectionStaleBanner` call and `projectState.projectionFreshness` | shared banner and integration route | stale/unknown screen tests plus routed integration |
 | One layer toggle | `_buildFilter`, matching `FilterChip` | projector and canvas | advanced/no-write tests plus projector tests |
 | One focus behavior | `_focusComponent`, `baseProjection.focus` | dropdown and layout | screen focus coverage plus projector tests |
 | One summary change | `_SummaryChip` call sites | known-facts owner | key-label screen test |
@@ -136,6 +141,8 @@ visibility cannot promote or confirm evidence.
   `TEST_DRIFT`, or responsibility `STRUCTURE_DRIFT`.
 - Recheck protected owners when layer, evidence, validity, or repair-history
   meaning changes.
+- Recheck this map when banner input, tri-state model semantics, or distinct
+  stale/unknown test coverage changes.
 - Formatting and physical line movement alone do not stale this map.
 
 ## Known uncertainty

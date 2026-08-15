@@ -2,10 +2,100 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Child-B human-smoke authority
+## Current F-02 final-LOCK Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+Lane: B
+Mode: DOCS_AND_MAPS_ONLY / FINAL_LOCK / PHASE_1
+Baseline: 96f3a30f1d144ecf0759cfd43bd6299daccc71e3
+```
+
+This pass records the completed committed Child-A/Child-B F-02 milestone,
+human smoke `PASS 7/7`, the exact projection-freshness provenance contract,
+and committed-source Code Map dispositions. It creates no runtime, test,
+package, Windows, Python, schema, asset, sample, writer, materializer,
+board-plane, F-03, or other product authority.
+
+### Exact current write allowlist -- 19
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
+7. `docs/code_maps/lib/shared/services/project_loader.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+9. `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md`
+10. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+11. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+12. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+13. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+14. `docs/code_maps/test/unit/project_loader_zip_test.dart.md`
+15. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+16. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+17. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+18. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+19. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+
+No twentieth path is authorized. The 13 map bodies must be rebuilt from
+committed `96f3a30` source, their headers and matching index rows must remain
+`REVIEW_REQUIRED` throughout Phase 1, and every other map/index row is frozen.
+The artifact must contain one neutral empty verdict block and the ledger must
+contain one neutral `REVIEW_REQUIRED` row. No Phase-1 text may self-accept this
+LOCK or claim it staged, committed, or pushed.
+
+### Contract and evidence boundary
+
+The LOCK may record supplied accepted predecessor results and verified commits:
+fixture EOL `b05a965`, Child A `49d5a37`, low-risk combined milestone
+`b4cab18`, the smoke-only Windows prerequisite chain
+`948e493 -> afda39d -> d281030`, and Child B `96f3a30`. The missing dedicated
+low-risk-child artifact/ledger row must not be fabricated. Windows evidence
+enables smoke only and opens no F-03 or distribution authority.
+
+The F-02 contract is limited to strict producer provenance version `1.0`, a
+lowercase 64-hex SHA-256 over exact event bytes, tri-state loader
+classification, one captured byte snapshot per directory/ZIP/asset load, and
+one local nonblocking banner on each of 12 named derived surfaces. Required
+content errors remain strict. Heuristics, provenance persistence/backfill,
+Flutter materialization, refresh UI, canonical writes, and routing/shared-shell
+warning authority remain excluded.
+
+### Audit and bounded Phase 2
+
+Independent Phase-1 audit must evaluate this LOCK plus all 13 refreshed maps.
+Phase 2 is inactive unless the auditor explicitly authorizes it. Its maximum
+logical coordinates are exactly 28: the one verdict-block interior, the one
+matching ledger Status cell, 13 map-header Status fields, and 13 matching index
+Status cells. Only maps individually accepted as safe for SNIPER use may be
+promoted to `MAINTAINED`. Map bodies, qualification text, route prose, artifact
+exterior, ledger Description, and all non-status index bytes remain frozen.
+
+### Route and stop conditions
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` authorizes no implementation and selects none of
+deferred analyzer debt, F-12 canonical-write prerequisites,
+F-01/F-05/F-16 board-plane ordering, or F-06 measurement-writer debt. F-03
+remains closed. Stop on any path outside the exact 19, any implementation
+change, any map promotion during Phase 1, any second verdict block/ledger row,
+any unexpected baseline or registry drift, or any attempt to absorb deferred
+AGENTS/path/Windows-scratch/command-reference debt.
+
+## Completed Child-B human-smoke authority (historical, non-authorizing)
+
+Commit `96f3a30f1d144ecf0759cfd43bd6299daccc71e3` supersedes the pending and
+working-tree statements retained below. They supply no current route, gate, or
+write authority.
 
 The Windows prerequisite is complete at accepted scope commit
 `948e493f82be89b13244f64a0d4d9af8c13e9a8b` and exact implementation commit

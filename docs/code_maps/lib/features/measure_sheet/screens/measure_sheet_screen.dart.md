@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — canonical writer + read-only UI coexist`
-- Audit evidence: `none`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -30,6 +30,7 @@ infer measurements, or write project files directly.
 | 9. Read-only evidence context | `_ReferenceValuesPanel`, `_HierarchyTile`, `_RecordedReadingDot` | Keeps measured values visually distinct from source, candidate, and note context. |
 | 10. Guided prompts | `_GuidedMeasurementPanel`, `_GuidedPromptTile` | Offers neutral next-check copy without creating conclusions or writes. |
 | 11. Safety and semantics | `_SafetyBanner`, `_FlowField`, `_TechnicalDetailsTile` | States human authority, explicit-save behavior, field semantics, and event type. |
+| 12. Projection freshness presentation | `ProjectionStaleBanner`, `projectState.projectionFreshness` | Inserts the shared tri-state warning once before the responsive Measure Sheet content without disabling technician controls. |
 
 ## State and data flow
 
@@ -41,8 +42,12 @@ infer measurements, or write project files directly.
   `V2SaveMeasurementRequest`, and handles only typed writer results/failures.
 - `[D]` A returned event is appended to a new local event list only when its
   event ID or client operation ID is not already present.
-- `[D]` Provider state is replaced with copied events and
-  `isProjectionStale: true`; known facts are not regenerated.
+- `[D]` Provider state is replaced with copied events and compatibility
+  `isProjectionStale: true`, which promotes authoritative freshness to stale;
+  known facts are not regenerated.
+- `[D]` The body supplies `projectState.projectionFreshness` to one shared
+  banner. Fresh is absent; stale and unknown are distinct/nonblocking. The
+  former save-local `Projection stale until refresh.` sentence is removed.
 - `[D]` Reference and guided panels consume derived selection values and have
   no callback into the writer path.
 
@@ -50,7 +55,8 @@ infer measurements, or write project files directly.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider` | input / projection-state output | Supplies loaded facts/events and receives the mirrored returned event. |
+| `projectStateProvider` | input / projection-state output | Supplies loaded facts/events/tri-state freshness and receives the mirrored returned event. |
+| `ProjectionStaleBanner` | child presentation | Renders authoritative stale/unknown state independently of save-result copy. |
 | `V2SaveMeasurementWriter` provider | canonical boundary | Validates and appends the explicitly confirmed measurement event outside this screen. |
 | `ProjectState`, `TraceBenchEvent` | state/model | Carry the loaded projection and typed returned event. |
 | `KnownFacts`, `ComponentFact`, `MeasurementFact` | read-only input | Supply target inventory and prior-reading context. |
@@ -66,6 +72,7 @@ infer measurements, or write project files directly.
 | `_ReferenceValuesPanel` | `ZERO_WRITE` | `[D]` Labels source/candidate/note rows as context and exposes no callback. |
 | `_GuidedMeasurementPanel` | `ZERO_WRITE` | `[D]` Presents neutral prompts with no writer or promotion action. |
 | Responsive board context | `ZERO_WRITE` | `[D]` Displays selected target only. |
+| `ProjectionStaleBanner` | `ZERO_WRITE` | `[D]` Reads projection metadata and does not gate selection, form, or writer actions. |
 
 Measurement-event semantics, confirmation, sequence allocation, validation,
 locking, append behavior, schema, `events.jsonl`, and materialized
@@ -81,6 +88,8 @@ must not infer a value from a reference or candidate.
   ProjectCreator API is imported.
 - `[D]` Save remains disabled until a human chooses target, enters value, and
   chooses a unit.
+- `[D]` Freshness warning state does not change that save gate or prefill any
+  measurement value.
 
 ## Impact matrix
 
@@ -93,10 +102,13 @@ must not infer a value from a reference or candidate.
 | Failure handling | `[D]` typed failure switch | writer failure kinds | `UI_LOCAL` | validation/append/path/lock tests |
 | Responsive context | `[D]` 760-pixel branch | form reachability and selected label | `ZERO_WRITE` | narrow-layout test |
 | Reference/guided helpers | `[D]` no callbacks and explicit boundary copy | known-facts meaning | `ZERO_WRITE` | hierarchy/helper/forbidden-copy tests |
+| Freshness warning | `[D]` one banner before responsive content | provider tri-state and save-result copy | `ZERO_WRITE` | explicit fresh fixture, unknown usable-controls case, provider stale promotion, routed integration |
 
 ## Relevant tests and helpers
 
-- `test/widget/measure_sheet_screen_test.dart` covers form gating, target
+- `test/widget/measure_sheet_screen_test.dart` covers explicit fresh fixture
+  setup, unknown-warning control availability, provider-backed stale promotion,
+  absence of the removed local stale sentence, form gating, target
   inventory, request fields, explicit save, double-tap/idempotency, returned
   projection state, typed failures, responsive layout, reference hierarchy,
   guided copy, and selected source-boundary guards.
@@ -117,6 +129,8 @@ must not infer a value from a reference or candidate.
   explicit human-measurement boundary.
 - `[P]` Mirroring writer results without stale projection state can make old
   known facts appear current.
+- `[P]` Reintroducing save-local stale copy can duplicate or contradict the
+  provider-backed tri-state banner, especially for provenance `unknown`.
 - `[H]` Direct file or materializer work in this screen would bypass the
   accepted writer boundary.
 
@@ -124,7 +138,7 @@ must not infer a value from a reference or candidate.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning/banner insertion | `build` column before responsive content | writer zones and selected context | warning-state tests plus full focused target |
+| One warning/banner change | `build`, `ProjectionStaleBanner`, `projectState.projectionFreshness` | writer zones, selected context, result copy | fresh/unknown/stale tests plus full focused target |
 | One target option rule | `_buildTargetOptions`, `_selectedTarget` | request metadata | matching target tests |
 | One save-gate rule | `_formKey`, `_canSave` | `_saveMeasurement` and idempotency | disabled/double-tap tests |
 | One failure message | `_messageForFailure` | writer failure enum | exact failure test |
@@ -146,6 +160,8 @@ must not infer a value from a reference or candidate.
   `TEST_DRIFT`, or responsibility `STRUCTURE_DRIFT`.
 - Recheck writer, schema, and protected owners whenever request fields,
   confirmation, idempotency, or returned-event handling changes.
+- Recheck banner ownership when tri-state input, body ordering, or local result
+  copy changes; measurement writer ownership remains unchanged.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

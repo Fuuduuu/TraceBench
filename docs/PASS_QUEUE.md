@@ -2,10 +2,49 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
-Next: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Child-B manual-smoke queue
+## Current F-02 final-LOCK queue
+
+The current queue is one Lane B
+`DOCS_AND_MAPS_ONLY / FINAL_LOCK / PHASE_1` pass at committed Child-B baseline
+`96f3a30f1d144ecf0759cfd43bd6299daccc71e3`. It contains exactly 19 paths:
+three route owners, `docs/AUDIT_INDEX.md`, `docs/code_maps/CODE_MAP_INDEX.md`,
+the new final-LOCK artifact, and the 13 qualifying existing Code Maps named in
+`docs/ACTIVE_SCOPE_LOCK.md`. No implementation, package, Windows, tool, schema,
+asset, sample, or twentieth path is queued.
+
+Phase 1 refreshes each qualifying map body from committed source and leaves all
+13 map headers plus matching index cells at `REVIEW_REQUIRED`. Independent
+audit must evaluate the final LOCK and every refreshed map. If explicitly
+authorized, bounded Phase 2 may fill only the verdict interior and ledger
+Status cell and promote only auditor-accepted map/index status pairs; it may
+not change map bodies, qualifications, route prose, or artifact exterior.
+Human exact staging/commit/push comes only after that recording.
+
+The predecessor evidence is complete: Child A at `49d5a37`, low-risk lint at
+`b4cab18` as combined milestone evidence, smoke-only Windows prerequisite chain
+`948e493 -> afda39d -> d281030`, and Child B at `96f3a30` with independent
+acceptance and human smoke `PASS 7/7`. This LOCK neither fabricates a missing
+low-risk-child artifact nor reopens Windows/F-03.
+
+After the current LOCK finishes its audit/record/commit boundary, the queue is:
+
+```text
+NEEDS_USER_DECISION [non-executable; no write authority]
+```
+
+No committed route currently selects deferred analyzer debt, F-12
+canonical-write prerequisites, F-01/F-05/F-16 board-plane ordering, or F-06
+measurement-writer debt. Deferred AGENTS/path/Windows-scratch and command
+reference debt also remain unarmed.
+
+## Completed Child-B manual-smoke queue (historical, non-authorizing)
+
+Commit `96f3a30f1d144ecf0759cfd43bd6299daccc71e3` supersedes the pending and
+working-tree statements retained below. They supply no current queue, gate, or
+write authority.
 
 Windows runner recovery is complete at accepted scope commit
 `948e493f82be89b13244f64a0d4d9af8c13e9a8b` followed by exact eighteen-file

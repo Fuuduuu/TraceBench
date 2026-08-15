@@ -4,12 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibilities`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
 This file owns the Visual First Board Canvas screen: responsive Workbench,
-navigation/selection, rendering, inspection, UI-local drafts, zero-write route actions, read-only Wizard intake, and four existing writer calls. It displays
+navigation/selection, rendering, inspection, UI-local drafts, zero-write route
+actions, read-only Wizard intake, tri-state freshness presentation, and four
+existing writer calls. It displays
 projected/noncanonical input and keeps valid Wizard intake available with zero
 canonical components; source, tests, canonical owners, and locks outrank it.
 
@@ -29,6 +31,7 @@ canonical components; source, tests, canonical owners, and locks outrank it.
 | 10. Inspector and evidence | `_InspectorPanel`, `_PhotoAlignmentReadinessPanel`, `_BoardCanvasSafetyEvidenceDisclosure`, `_MeasurementSummaryCard`, `_VisualTraceMetadataCard` | Presents placement, measurement, alignment, safety, and visual-trace context without promoting evidence. |
 | 11. Rail, focus, responsive chrome | `_WorkbenchToolRail`, `_WorkbenchPanelModeButton`, `_CanvasFocusButton`, `_CanvasFocusRestoreBar`, `_BoardCanvasControlBand` | Adapts medium/wide layout, panel topology, rail actions, and canvas-focus chrome. |
 | 12. Project navigation hub | `_WorkbenchContextPanelMode.projectNavigation`, `_ProjectNavigationHub`, `_action` | Exposes seven existing project-view destinations through `context.go`; it owns no route definition or persistence. |
+| 13. Projection freshness presentation | `_buildScaffold`, `ProjectionFreshness? projectionFreshness`, `ProjectionStaleBanner` | Receives the authoritative state field from both loaded/empty Canvas branches and inserts one compact, nonblocking banner above the scaffold content. |
 
 ## State and data flow
 
@@ -36,6 +39,10 @@ canonical components; source, tests, canonical owners, and locks outrank it.
   placements, pins, measurements, traces, and alignments are derived into
   `_PlacementEntry` collections and presentation models, while
   `wizardIntake`/`wizardIntakeWarning` flow only to Canvas presentation.
+- `[D]` Both project-backed `_buildScaffold` call sites pass
+  `projectState.projectionFreshness`; `_buildScaffold` renders exactly one
+  compact `ProjectionStaleBanner` before `Expanded(content)`. Unknown and
+  stale warnings do not gate the workspace or either content branch.
 - `[D]` `_BoardCanvasScreenState` owns selection, preview, filtering, panel,
   focus, template, metadata, and badge-visibility state; these feed navigator,
   inspector, `_CanvasPanel`, and painter inputs.
@@ -61,13 +68,15 @@ canonical components; source, tests, canonical owners, and locks outrank it.
   treated as write evidence.
 - `[D]` Successful writer results flow through `_markPlacementProjectionStale`
   or `_appendMeasurementEventAndMarkStale`, which mirror returned events into
-  `projectStateProvider` and set `isProjectionStale`.
+  `projectStateProvider`; compatibility `isProjectionStale: true` copy input
+  promotes the authoritative `projectionFreshness` value to stale.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider`, `ProjectState` | input and local projection update | Supplies accepted project state and receives post-write stale-state mirroring. |
+| `projectStateProvider`, `ProjectState`, `ProjectionFreshness` | input and local projection update | Supplies accepted project state/freshness and receives post-write stale-state mirroring. |
+| `ProjectionStaleBanner` | child presentation | Displays stale or unknown provenance nonblockingly; fresh renders no banner. |
 | `ComponentFact`, `ComponentVisualPlacementFact`, `MeasurementFact`, `VisualTraceFact`, `KnownFacts` pin projection | input | Projected facts used for targeting, inspection, badges, and rendering. |
 | `WizardIntake`, `WizardPhotoTransform`, `WizardVisualCandidate` | noncanonical input | Supplies optional reference-frame aspect plus human-provided photo, contour, and candidate presentation values; it proves no identity, placement, connectivity, measurement, or diagnosis. |
 | `dart:io` `Directory`, `File` | local read input | Resolves and reads only the model-validated project-relative background-photo path for optional display. |
@@ -88,7 +97,7 @@ canonical components; source, tests, canonical owners, and locks outrank it.
 | `_confirmRightPanelMetadataEdit` → `v2EditComponentWriterProvider` | `CANONICAL_EVENT` | `[D]` Selected existing component and non-empty changes guard `editComponent`. |
 | `_confirmAddComponentTemplatePlacement` → `v2PlacementWriterProvider` | `CANONICAL_EVENT` | `[D]` Bounds, target, directory, and explicit save guard `confirmPlacement`. |
 | `_IntegratedMeasurePanelState._saveMeasurement` → `v2SaveMeasurementWriterProvider` | `CANONICAL_EVENT` | `[D]` Explicit `Salvesta` builds a human-entered measurement request. |
-| `_markPlacementProjectionStale` | `PROJECTION_STATE` | `[D]` Mirrors a returned event into local `ProjectState.events` and sets `isProjectionStale`; it does not call a writer. |
+| `_markPlacementProjectionStale` | `PROJECTION_STATE` | `[D]` Mirrors a returned event into local `ProjectState.events` and promotes freshness to stale through compatibility copy semantics; it does not call a writer. |
 | `_appendMeasurementEventAndMarkStale` | `PROJECTION_STATE` | `[D]` Deduplicates the returned event in local provider state and marks projection stale. |
 | Selection, preview, filtering, drafts, ghost drag, focus, rail, badge visibility | `UI_LOCAL` | `[D]` Mutated only through widget state/controllers and callbacks. |
 | `_wizardPhotoVisible`, `_scheduleWizardInitialFit` | `UI_LOCAL` | `[D]` Toggle/reset only transient presentation and the existing `TransformationController`; no provider, file, or writer mutation occurs. |
@@ -140,6 +149,7 @@ pins, pads, measurements, traces, nets, electrical function, and fault truth.
 | Inspector/evidence | `[D]` projected summaries and safety copy | `[P]` selection and evidence-floor wording | `ZERO_WRITE` | Exclude confirmation and electrical proof | `readiness panel remains project-level metadata with selection, inspector, measurement, and visual trace state`; `visual trace summary shows safe copy and metadata fields` |
 | Rail/focus/responsive | `[D]` rail controls and responsive composition | `[P]` panel topology and canvas space | `UI_LOCAL` | Stop on route/topology expansion; exclude writers | `focus canvas hides rail canvas chrome and restores read-only panel`; `wide Workbench rail opens placement and safety/evidence right panel modes` |
 | Project navigation | `[D]` project mode, seven fixed locations, `context.go` | `[P]` router definitions, rail/context-panel reachability, focus restoration | `UI_LOCAL` + `ZERO_WRITE` | Stop on route creation/rename or persistence; exclude writers | `Projekt hub actions navigate to exact existing routes without writes`; `Projekt hub preserves existing panel modes and focus restoration` |
+| Freshness banner | `[D]` both project-backed branches pass one authoritative tri-state value into `_buildScaffold` | `[P]` scaffold ordering, loaded/empty reachability, shared banner | `ZERO_WRITE` | Stop if warning gates Canvas actions, duplicates, or derives from a local boolean | unknown/stale Canvas tests plus routed cross-surface integration |
 
 ## Relevant tests and helpers
 
@@ -149,6 +159,7 @@ does not require or authorize a test-file map.
 | Family | Stable helpers / fixtures | Representative coverage |
 | --- | --- | --- |
 | State and harness | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness` | Empty/project state, optional intake/warning, responsive shell, direct route compatibility. |
+| Freshness presentation | `_inlineProjectState(projectionFreshness:)`; shared banner constants | Explicit fresh fixture default, unknown warning with usable workspace, stale warning, and one-banner behavior across both Canvas content branches. |
 | Navigation and interaction | `_selectPlacement`, `_openSafetyEvidence`, `_openWideContextMode`, `_tapCanvasAtNormalized`, `_tapWidgetByKey`, `_pumpUntilRouterPath`, `_hoverWidgetByKey` | Drill-down, rail/focus/safety, Project Hub exact-route/no-write behavior, hover, filter, tap and placement selection. |
 | Wizard read-only overlay | `_wizardIntakePainter`, `_wizardPhotoLayer`; `Wizard intake read-only Canvas overlay` | Zero-component gate, hidden/showing photo composite, background/Wizard/canonical z-order, rectangular/legacy geometry, shared fit, padding clamps, warning/unavailable states, one initial fit, rotation, non-actionability, and no-intake preservation. |
 | Painter and semantics | `_boardCanvasPainter`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry` | Footprint rendering, selection/hover distinction, badges, hit alignment, accessibility, and separation from the private Wizard painter. |
@@ -183,6 +194,10 @@ does not require or authorize a test-file map.
 - `[P]` Project Hub destination changes plus router-owner drift can make a
   zero-write action point at a missing or newly stateful route while the local
   panel still appears valid.
+- `[P]` Restoring separate banner insertions in loaded and empty branches can
+  duplicate warning ownership; `_buildScaffold` is the single insertion seam.
+- `[P]` Deriving banner state from local writer success or a legacy boolean
+  instead of `projectState.projectionFreshness` can mislabel unknown projects.
 
 ## Safe SNIPER slices
 
@@ -198,6 +213,7 @@ does not require or authorize a test-file map.
 | Painter surface detail | `_footprintVisualKind`, `_BoardPlacementPainter` | Hit geometry and semantics | Stop on semantic promotion; exclude interaction/writers | `renders visual footprint forms for board placements` |
 | One Wizard overlay rendering correction | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter` | `_CanvasPanelState`, existing placement painter/hit path, `ProjectState` model | Stop on interaction, persistence, canonical conversion, candidate editing, or writer calls | exact zero-component/composite/landscape/legacy overlay tests plus full Board Canvas target |
 | One Project Hub label or existing destination | `_ProjectNavigationHub`, `_ProjectNavigationHub._action` | Router owner, rail mode, focus restoration | Stop on route creation/rename or persistence; exclude all writers | `Projekt hub actions navigate to exact existing routes without writes` |
+| One freshness presentation change | `_buildScaffold`, both `projectionFreshness` call sites | Shared banner, provider state, loaded/empty branches | Stop on gating, duplicate ownership, or freshness derivation; exclude writers | unknown/stale Canvas cases plus routed cross-surface integration |
 
 Safe slices are decomposition guidance only. They do not authorize work or
 expand an allowlist. More than one independent changed zone, any writer/event
@@ -231,13 +247,17 @@ These observations neither recommend nor authorize extraction.
   harness or test titles change materially.
 - Recheck the map when Project Hub destinations, `context.go` behavior, project
   rail reachability, or their no-write tests change materially.
+- Recheck freshness claims when either `_buildScaffold` call site, banner
+  ordering/count, `ProjectState` tri-state semantics, or unknown/stale tests
+  change.
 - Formatting, imports, comments, and physical line movement alone do not require
   an update. Accepted committed source remains authoritative.
 
 ## Known uncertainty
 
 - `[P]` Local mirroring of returned events is classified `PROJECTION_STATE`
-  because the source updates rebuildable provider state and marks it stale; the
+  because the source updates rebuildable provider state and promotes
+  authoritative freshness to stale; the
   canonical append remains inside imported writer ownership.
 - `[S]` This map does not assert backend implementation details beyond the
   verified provider/service call boundaries; deeper writer internals require

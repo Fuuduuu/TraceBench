@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — canonical writer + read-only UI coexist`
-- Audit evidence: `none`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -29,6 +29,7 @@ infer identity, or write project files directly.
 | 8. Empty state and navigation | `_EmptyComponentStateCard`, `edit-component-add-component-button` | Explains that only existing components can be edited and navigates to the separate create flow. |
 | 9. Human/safety boundary | `_SafetyCard` | States explicit human action and metadata-only behavior. |
 | 10. Hint boundary | `_HintBoundaryCard` | Keeps template, package, photo, candidate, vector, and AI context non-confirming. |
+| 11. Projection freshness presentation | `ProjectionStaleBanner`, `projectState.projectionFreshness` | Inserts the shared tri-state warning once at the start of the body while leaving edit and empty-state controls available. |
 
 ## State and data flow
 
@@ -42,13 +43,18 @@ infer identity, or write project files directly.
   client operation ID.
 - `[D]` The returned event is added only when event ID or operation ID is not
   already represented, then provider state is copied with stale projection.
+- `[D]` The body reads authoritative `projectState.projectionFreshness` for the
+  shared banner. Fresh is absent; stale and unknown are distinct, nonblocking
+  warnings. The former save-local `Projection stale until refresh.` sentence
+  no longer exists, so warning ownership is not duplicated.
 - `[D]` Empty/safety/hint/technical widgets have no canonical callback.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider` | input / projection-state output | Supplies components/events and receives mirrored returned event state. |
+| `projectStateProvider` | input / projection-state output | Supplies components/events/tri-state freshness and receives mirrored returned event state. |
+| `ProjectionStaleBanner` | child presentation | Renders the authoritative stale/unknown warning independently of save-result copy. |
 | `V2EditComponentWriter` provider | canonical boundary | Validates and appends the confirmed component metadata event outside this screen. |
 | `ComponentFact` | read-only input | Supplies existing ID, designator, and package values. |
 | `TraceBenchEvent` | returned-state model | Types a newly returned writer event for local projection state. |
@@ -64,6 +70,7 @@ infer identity, or write project files directly.
 | Returned event → provider copy | `PROJECTION_STATE` | `[D]` Mirrors one event and marks known-facts projection stale. |
 | Empty-state `context.go` | `ZERO_WRITE` | `[D]` Navigates to an existing flow without invoking its writer. |
 | `_SafetyCard`, `_HintBoundaryCard`, `_TechnicalDetailsTile` | `ZERO_WRITE` | `[D]` Render boundary and technical copy only. |
+| `ProjectionStaleBanner` | `ZERO_WRITE` | `[D]` Reads tri-state projection metadata and neither gates controls nor invokes the writer. |
 
 Component identity creation, pin/net/measurement meaning, writer validation,
 event append/locking/sequence, schema, `events.jsonl`, and projection
@@ -76,6 +83,8 @@ not confirm component identity here.
   only.
 - `[D]` The empty-state Add Component button performs navigation only.
 - `[D]` Hint and safety cards expose no action and explicitly deny inference.
+- `[D]` Freshness warning presentation is display-only and does not change the
+  existing human-confirmation or writer boundary.
 - `[D]` No file, JSON, exporter, materializer, ProjectCreator, AI, or detection
   API is imported.
 
@@ -89,10 +98,13 @@ not confirm component identity here.
 | Returned-event mirror | `[D]` event/operation dedup | provider freshness consumers | `PROJECTION_STATE` | success and existing-result tests |
 | Empty state | `[D]` no-components branch | router and Add Component screen | `ZERO_WRITE` | empty-state/navigation/no-writer tests |
 | Hint/safety copy | `[D]` fixed read-only cards | protected identity/evidence semantics | `ZERO_WRITE` | safety and forbidden-source/copy tests |
+| Freshness warning | `[D]` one shared banner before edit/empty content | provider tri-state, save-result copy | `ZERO_WRITE` | explicit fresh fixture plus unknown/stale widget and routed integration cases |
 
 ## Relevant tests and helpers
 
-- `test/widget/edit_component_screen_test.dart` covers safety copy, empty
+- `test/widget/edit_component_screen_test.dart` covers explicit fresh fixture
+  setup, unknown-warning control availability, provider-backed stale promotion,
+  absence of the removed local stale sentence, safety copy, empty
   state, no-writer navigation, confirmation gating, request/change fields,
   returned projection state, typed failures, idempotency, and selected source
   boundaries.
@@ -113,13 +125,15 @@ not confirm component identity here.
   context without the human-entered boundary.
 - `[P]` Empty-state navigation must not invoke the edit writer or merge Add
   Component ownership into this screen.
+- `[P]` Reintroducing save-local stale copy can duplicate or contradict the
+  provider-backed tri-state banner, especially for provenance `unknown`.
 - `[H]` Direct file/materializer changes would bypass the accepted writer.
 
 ## Safe SNIPER slices
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning/banner insertion | `build` list before edit/empty content | writer, empty route, result copy | warning tests plus full focused target |
+| One warning/banner change | `build`, `ProjectionStaleBanner`, `projectState.projectionFreshness` | writer, empty route, result copy | fresh/unknown/stale tests plus full focused target |
 | One metadata field rule | `_changesFor`, `_addChangeIfDifferent` | writer request schema | valid request plus writer tests |
 | One confirmation gate | `_canEdit`, `_formKey` | `_editComponent` | disabled/confirmed tests |
 | One failure message | `_messageForFailure` | writer failure enum | exact failure test |
@@ -141,6 +155,8 @@ not confirm component identity here.
   `TEST_DRIFT`, or responsibility `STRUCTURE_DRIFT`.
 - Recheck writer/schema/protected owners when editable fields, confirmation,
   operation identity, or returned-event behavior changes.
+- Recheck banner ownership when tri-state input, body ordering, or local result
+  copy changes; the writer path itself remains unchanged.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

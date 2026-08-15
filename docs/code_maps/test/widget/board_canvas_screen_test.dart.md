@@ -4,11 +4,12 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_REFERENCE_FRAME_GEOMETRY_V1_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
-This Board Canvas widget-test owner supplies fixtures, provider/router
+This Board Canvas widget-test owner supplies explicit-fresh tri-state fixtures,
+provider/router
 harnesses, writer doubles, interaction/painter assertions, and read-only Wizard
 overlay coverage. It verifies zero-component intake, composite z-order,
 rectangular/legacy geometry, and boundaries without owning production behavior.
@@ -26,7 +27,7 @@ the source has no `group()` hierarchy that owns these families.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Fixtures and harness lifecycle | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Builds accepted state and Wizard-intake variants, overrides providers, mounts direct or routed screens, and observes post-action provider state. |
+| 1. Fixtures and harness lifecycle | `_inlineProjectState(projectionFreshness:)`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Builds explicit-fresh-by-default state and Wizard variants, overrides providers, mounts direct/routed screens, and observes post-action provider state. |
 | 2. Theme, shell, and route baselines | `_harness`, `_routerHarness`; `buildTheme exposes BenchBeep semantic visual tokens`; `/project is the named canonical board canvas route` | Verifies theme tokens, empty/loaded shell behavior, canonical entry, and legacy redirect compatibility. |
 | 3. Navigator, selection, hover, and filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Exercises typed component/placement selection, category drill-down, hover preview, ordering, counts, and hide-unmeasured eligibility. |
 | 4. Measurement entry and association | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry`; `integrated Measure panel target selection and draft capture stay local` | Covers target selection, drafts, explicit save, Measure Sheet navigation, measurement association, badges, and stale/suspect states. |
@@ -37,10 +38,16 @@ the source has no `group()` hierarchy that owns these families.
 | 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`; `readiness panel remains project-level metadata with selection, inspector, measurement, and visual trace state` | Verifies projected inspector content, readiness and safety wording, fallbacks, measurement summaries, and visual-trace metadata. |
 | 10. Rail, project hub, focus, and responsive layout | `_openWideContextMode`, `_tapWidgetByKey`, `_pumpUntilRouterPath`; `Projekt hub actions navigate to exact existing routes without writes` | Covers rail/panel modes, exact zero-write navigation, medium/wide reachability, focus entry, and restoration. |
 | 11. Volatility and protected-boundary guards | `_readProjectState`; `zero components preserve the existing Wizard intake layer without canonical writes`; `tap-to-select leaves project state canonical data unchanged`; `board canvas source keeps read-only data-path boundaries` | Asserts zero-component intake availability, volatile-only state, absent unintended writer/file effects, projection separation, and selected static source boundaries. |
+| 12. Projection freshness presentation | `unknown freshness warning keeps Board Canvas usable`, `ProjectionStaleBanner.unknownPrimaryText` | Proves unknown provenance is visibly distinct and the workspace remains usable; existing stale/provider tests cover post-write promotion. |
 
 ## State and data flow
 
 - `[D]` `_inlineProjectState`, `_wizardIntake`, and `_componentNavigatorState` build projected `ProjectState` inputs plus noncanonical Wizard presentation values consumed through provider overrides.
+- `[D]` `_inlineProjectState` passes
+  `ProjectionFreshness.fresh` explicitly by default so legacy constructor
+  defaults cannot make unrelated UI tests render an unknown warning.
+- `[D]` The focused unknown case sets `ProjectionFreshness.unknown`, expects
+  the shared primary text once, and also requires the workspace frame.
 - `[D]` `_harness` mounts `BoardCanvasScreen` directly and can replace each of
   the four writer providers; `_routerHarness` exercises `buildTraceBenchRouter`.
 - `[D]` Interaction helpers drive visible controls, canvas coordinates, hover, panel modes, and route transitions; assertions then inspect widgets, painter fields, semantics, fake requests, router paths, or provider state.
@@ -71,7 +78,7 @@ the source has no `group()` hierarchy that owns these families.
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
 | Screen action → four fake-writer request lists | `CANONICAL_EVENT` boundary exercised | `[D]` The fake records that production invoked an existing writer interface; the fake itself does not prove persistence. |
-| Returned fake event → `_readProjectState` assertions | `PROJECTION_STATE` observed | `[D]` Tests check mirrored events and `isProjectionStale` separately from the unchanged input fixture. |
+| Returned fake event → `_readProjectState` assertions | `PROJECTION_STATE` observed | `[D]` Tests check mirrored events and authoritative freshness promotion to stale separately from the unchanged explicit-fresh input fixture. |
 | Selection, hover, filter, draft, ghost, panel, focus, and badge actions | `UI_LOCAL` | `[D]` Tests assert in-memory UI effects with empty writer requests where no explicit save occurs. |
 | Painting, semantics, inspector, readiness, and route navigation | `ZERO_WRITE` | `[D]` These families inspect output or change location without exercising a project writer. |
 | Wizard gate, photo toggle, aspect fit/fallback, composite paint, warning, and candidate taps | `UI_LOCAL` + `ZERO_WRITE` | `[D]` Tests prove the intake object/provider/debug JSON/facts/events remain unchanged and all four fake writer request lists remain empty. |
@@ -125,6 +132,7 @@ theme contract drift also requires broader `flutter test` validation.
 | Family | Stable helpers / fixtures | Representative coverage |
 | --- | --- | --- |
 | State and mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Empty/loaded state, shell, route, provider, and projection assertions. |
+| Freshness warning | `_inlineProjectState(projectionFreshness:)`, shared banner constants | explicit fresh default, unknown warning with usable workspace, and post-writer stale state |
 | Interaction and routing | `_selectPlacement`, `_openSafetyEvidence`, `_openWideContextMode`, `_tapCanvasAtNormalized`, `_tapWidgetByKey`, `_pumpUntilRouterPath`, `_hoverWidgetByKey` | Selection, rail/panel/focus, canvas, hover, filter, and exact-route flows. |
 | Rendering | `_boardCanvasPainter`, painter field helpers, `_canvasSemanticsLabels`, `_expectStableComponentPreviewGeometry` | Footprints, pins, preview/dim/selection state, badges, semantics, and hit alignment. |
 | Wizard read-only overlay | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_compositedPixelColor` | Thirteen focused tests for zero-component presentation, aspect/fallback geometry, final composite z-order, photo/warning states, shared fit, candidate rotation, non-actionability, and missing-intake preservation. |
@@ -139,6 +147,8 @@ theme contract drift also requires broader `flutter test` validation.
   settling, outgoing and incoming `BoardCanvasScreen` instances can coexist.
 - `[P]` Shared fixture, harness, provider, fake, or event-builder changes can
   drift unrelated behavior families and projection expectations together.
+- `[P]` Removing the explicit fresh fixture default would make legacy test
+  setup inherit `unknown` and obscure whether a banner assertion is deliberate.
 - `[P]` Navigator/filter changes couple visible entries, hover, hit eligibility,
   measurement targets, painter cues, semantics, and responsive reachability.
 - `[P]` Painter geometry plus coordinate taps can desynchronize visible forms,
@@ -171,6 +181,7 @@ theme contract drift also requires broader `flutter test` validation.
 | One placement draft/save assertion | `_FakePlacementWriter`, `_tapCanvasAtNormalized` | Bounds, painter, provider state | Exact template/ghost/save family |
 | One rail/panel behavior | `_openWideContextMode`, `_tapWidgetByKey` | Medium/wide and focus restoration | Exact panel plus responsive family |
 | One route lifecycle assertion | `_pumpUntilRouterPath` | Router harness and destination teardown | Canonical route plus project-hub family |
+| One freshness assertion | `_inlineProjectState(projectionFreshness:)`, unknown-warning test | scaffold insertion, provider state, integration route | exact warning case plus full target |
 
 These slices are decomposition guidance only. They do not authorize edits,
 files, scope expansion, refactors, or protected-surface changes.
@@ -199,6 +210,8 @@ These observations neither recommend nor authorize extraction.
   fit, or static source-boundary checks change.
 - Recheck production-map coupling when linked Board Canvas zones or imported
   router, writer, model, provider, or theme contracts change materially.
+- Recheck tri-state fixture defaults and unknown/stale assertions when
+  `ProjectState` compatibility semantics or banner ownership changes.
 - Formatting, comments, imports, and physical line movement alone do not
   require a map update. Accepted committed source remains authoritative.
 

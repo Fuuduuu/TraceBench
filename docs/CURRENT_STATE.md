@@ -1,9 +1,58 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_LOADER_UI_PASS`
-Next recommended pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Child-B resumption at the human-smoke gate
+## Live F-02 Projection Freshness final LOCK Phase 1
+
+Committed repository truth is `main` at
+`96f3a30f1d144ecf0759cfd43bd6299daccc71e3`
+(`feat: add projection freshness loader and UI`), parent
+`d281030b87f219672b7f8a67b1c3924728b3b9ce`. Child B is complete in Git:
+its exact 29-path implementation (`980` additions / `219` deletions) was
+independently accepted with `SAFE_FOR_STAGING: YES`, its submitted human-smoke
+evidence was accepted, and the human smoke result is `PASS` for all 7 checks.
+
+The current Lane B docs/maps-only pass writes exactly the 19 paths enumerated
+in `docs/ACTIVE_SCOPE_LOCK.md`: the three route owners, one neutral ledger row,
+one map index, one new final-LOCK artifact, and 13 refreshed committed-source
+maps. Those 13 maps and their matching index rows remain `REVIEW_REQUIRED`
+during Phase 1. The other 16 maps and their index rows remain unchanged.
+
+This LOCK records the F-02 contract: producer provenance version `1.0` carries
+the lowercase SHA-256 of exact `events.jsonl` bytes; directory, ZIP, and asset
+loaders hash and parse one captured byte snapshot; authoritative
+`ProjectionFreshness` is `fresh`, `stale`, or `unknown`; malformed required
+content stays an error; and exactly 12 derived surfaces display one local,
+reusable, nonblocking tri-state warning while derived content stays usable.
+There is no Flutter provenance write, backfill, heuristic, materialization, or
+refresh action.
+
+F-02 predecessor implementation and smoke work are complete. Durable F-02
+programme closure becomes canonical only after this Phase-1 LOCK is
+independently accepted, its bounded Phase 2 is recorded, and the exact accepted
+19-path set is human-committed and pushed. `NEEDS_USER_DECISION` is deliberately
+non-executable and authorizes no implementation. No single committed authority
+currently chooses among deferred analyzer debt, F-12 canonical-write
+prerequisites, F-01/F-05/F-16 board-plane ordering, or F-06 measurement-writer
+debt. F-03 remains closed and is not reopened merely because a smoke-only Windows host now exists.
+
+The active route is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The stale AGENTS path/Windows-scratch wording and command-reference/doctor
+documentation are deferred post-F-02 governance debt, not authority in this
+LOCK.
+
+## Completed Child-B resumption record (historical, non-authorizing)
+
+Commit `96f3a30f1d144ecf0759cfd43bd6299daccc71e3` supersedes the pending and
+working-tree statements retained below. They remain historical evidence only
+and supply no current route, gate, or write authority.
 
 The Windows smoke-runner prerequisite is complete. Accepted scope commit
 `948e493f82be89b13244f64a0d4d9af8c13e9a8b`

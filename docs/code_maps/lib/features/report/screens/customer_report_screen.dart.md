@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `none`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -21,7 +21,7 @@ semantics.
 | --- | --- | --- |
 | 1. Dependency providers | `projectExporterProvider`, `projectStateLoaderProvider`, `ProjectStateLoader` | Supplies default exporter and directory loader while permitting narrow test injection. |
 | 2. Screen and loaded-state gate | `CustomerReportScreen.build`, `projectStateProvider` | Handles no-project state and resolves injected/default dependencies. |
-| 3. Derived report presentation | `ProjectionStaleBanner`, `Markdown`, `customerReport` | Shows projection warning state and report Markdown without altering content. |
+| 3. Derived report presentation | `ProjectionStaleBanner`, `projectState.projectionFreshness`, `Markdown`, `customerReport` | Shows authoritative tri-state warning state and report Markdown without altering content. |
 | 4. Export initiation | `ElevatedButton`, `exportProjectZip` | Invokes the existing exporter only from explicit user action. |
 | 5. Success and reload flow | `_handleExportResult`, `ExportSuccess`, `projectDirectory`, `loader` | Reloads successful local exports and replaces provider state when reload succeeds. |
 | 6. Export-result copy | `_messageForExportResult` | Maps typed non-success outcomes to localized/sanitized user messages. |
@@ -31,13 +31,15 @@ semantics.
 ## State and data flow
 
 - `[D]` The current `ProjectState` supplies report Markdown, projection-warning
-  input, and optional local directory provenance.
+  input through `projectionFreshness`, and optional local directory provenance.
 - `[D]` Explicit button activation passes that state to `ProjectExporter`.
 - `[D]` Non-success results become messages without invoking the loader.
 - `[D]` `ExportSuccess` with a usable directory calls the injected/default
   `ProjectLoader.loadFromDirectory` path.
 - `[D]` Successful reload replaces `projectStateProvider`; reload failure
   preserves the existing provider state and returns bounded copy.
+- `[D]` Fresh states show no banner; stale and unknown remain distinct. Export
+  and reload controls stay available in every freshness state.
 - `[D]` Report content is never modified to include warning text.
 
 ## Direct dependencies
@@ -47,7 +49,7 @@ semantics.
 | `projectStateProvider` | input / projection-state output | Supplies report state and receives a successfully reloaded state. |
 | `ProjectExporter` and `ExportResult` variants | outbound boundary | Perform and classify Project ZIP export outside this source. |
 | `ProjectLoader.loadFromDirectory` | inbound reload | Reconstructs state after a successful local export. |
-| `ProjectionStaleBanner` | child presentation | Shows the current projection-warning state. |
+| `ProjectionStaleBanner` | child presentation | Shows distinct stale/unknown warning copy from authoritative tri-state state. |
 | `flutter_markdown` `Markdown` | child presentation | Renders the loaded report string. |
 | `ScaffoldMessenger` | feedback | Displays the bounded result message. |
 
@@ -81,7 +83,7 @@ their contracts.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Dependency injection | `[D]` constructor and providers | exporter/loader defaults | boundary only | `test/widget/customer_report_screen_test.dart` |
-| Report/warning presentation | `[D]` banner and Markdown | shared banner and report text | `ZERO_WRITE` | stale/fresh/content-isolation tests |
+| Report/warning presentation | `[D]` direct tri-state banner input and Markdown | shared banner and report text | `ZERO_WRITE` | stale/unknown/fresh and content-isolation tests |
 | Export action | `[D]` explicit button call | `ProjectExporter`, Project ZIP owners | `NONCANONICAL_FILE` boundary invoked | export-button and exporter outcome tests |
 | Success reload | `[D]` `_handleExportResult` | loader and provider state | `PROJECTION_STATE` | success-reload and reload-failure tests |
 | Result copy | `[D]` typed switch | sanitization contract | `ZERO_WRITE` | mobile/materializer/export failure tests |
@@ -89,9 +91,12 @@ their contracts.
 
 ## Relevant tests and helpers
 
-- `test/widget/customer_report_screen_test.dart` covers stale/fresh warning,
-  Markdown isolation, export visibility, mobile placeholder, sanitized
+- `test/widget/customer_report_screen_test.dart` covers explicit fresh fixture,
+  stale/fresh warning, Markdown isolation, export visibility, mobile placeholder, sanitized
   failures, successful reload, failed reload, and provider replacement.
+- Its successful-reload fixture uses
+  `copyWith(projectionFreshness: ProjectionFreshness.fresh)`; legacy
+  `isProjectionStale: false` is intentionally not treated as a freshness reset.
 - `test/unit/project_exporter_test.dart` owns exporter tool/result behavior.
 - `test/integration/projection_stale_banner_end_to_end_test.dart` visits the
   report as one independently navigable derived-data surface.
@@ -106,6 +111,8 @@ their contracts.
   contract change or leak raw details through new copy.
 - `[P]` Coupling warning text to `customerReport` would contaminate exported or
   user-authored report content.
+- `[P]` Using `copyWith(isProjectionStale: false)` as a fresh reload fixture
+  would preserve stale/unknown tri-state state and conceal the real contract.
 - `[H]` Reimplementing exporter/materializer behavior here would cross the
   Project ZIP and projection ownership boundaries.
 
@@ -113,7 +120,7 @@ their contracts.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning presentation change | `ProjectionStaleBanner` call | Markdown content isolation | stale/fresh/content tests |
+| One warning presentation change | `ProjectionStaleBanner` call and `projectState.projectionFreshness` | Markdown content isolation and export availability | stale/unknown/fresh/content tests |
 | One typed result message | `_messageForExportResult` | exporter result variants | matching outcome test |
 | One reload outcome | `_handleExportResult` | loader/provider and success copy | success plus reload-failure tests |
 | One report-layout change | `Markdown`, scroll/expanded structure | export action reachability | report widget tests |
@@ -132,6 +139,8 @@ their contracts.
   `TEST_DRIFT`, or responsibility `STRUCTURE_DRIFT`.
 - Recheck exporter and loader owners whenever typed results, directory
   provenance, or reload behavior changes.
+- Recheck the tri-state fixture and explicit fresh reload assertion whenever
+  `ProjectState.copyWith` compatibility semantics change.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

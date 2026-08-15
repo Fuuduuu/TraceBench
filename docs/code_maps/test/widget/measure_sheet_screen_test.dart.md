@@ -3,12 +3,13 @@
 - Source: `test/widget/measure_sheet_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 10/12 — 27 tests spanning writer, helper, responsive, and protected-boundary families`
-- Audit evidence: `none`
+- Qualification: `SCORE 10/12 — 28 tests spanning freshness, writer, helper, responsive, and protected-boundary families`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
 This widget target verifies the technician-first Measure Sheet across explicit
+fresh/unknown warning state,
 target/value/unit gating, request construction, writer outcomes, returned-event
 projection state, idempotency, read-only reference/guidance copy, responsive
 layout, and selected static boundary exclusions. It substitutes the writer and
@@ -18,7 +19,7 @@ never invokes the real canonical persistence chain.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Project fixture and pin index | `_inlineProjectState`, `_buildComponentPinIndex` | Builds component/pin/measurement variants and local directory provenance. |
+| 1. Project fixture and pin index | `_inlineProjectState(projectionFreshness:)`, `_buildComponentPinIndex` | Builds explicit-fresh-by-default component/pin/measurement variants, an unknown variant, and local directory provenance. |
 | 2. Writer fake | `_FakeSaveMeasurementWriter` | Captures requests, emits controlled typed events/status, or throws one typed failure. |
 | 3. Harness and interaction helpers | `_harness`, `_enterSaveMeasurement`, `_selectMeasurementTarget`, `_tapSaveMeasurement` | Mounts controlled providers and performs repeatable form interactions. |
 | 4. Basic flow and unit UI | rendering/unit/initial-disabled tests | Covers human-first copy, one unit affordance, and default save gate. |
@@ -29,16 +30,21 @@ never invokes the real canonical persistence chain.
 | 9. Read-only evidence/helper boundary | reference-values and guided-helper tests | Keeps reference/candidate/note context subordinate and inference-free. |
 | 10. Responsive/no-project presentation | narrow-layout and no-project tests | Preserves selected context and empty provider behavior. |
 | 11. Static source guard | `measure sheet source keeps V2 writer boundary` | Checks selected forbidden imports/calls/copy remain absent. |
+| 12. Projection freshness warning | `unknown freshness warning keeps measure controls available`, shared banner constants | Proves unknown is visible/nonblocking; valid save proves provider freshness becomes stale and removed local stale copy remains absent. |
 
 ## State and data flow
 
 - `[D]` Typed project fixtures flow through provider overrides into the screen.
+- `[D]` `_inlineProjectState` explicitly supplies
+  `ProjectionFreshness.fresh` by default. The unknown case overrides it and
+  still requires the unit dropdown to remain available.
 - `[D]` Interaction helpers fill target/value/unit and invoke only an enabled
   callback.
 - `[D]` The writer fake records the exact request and returns a typed event
   derived from it, or throws one configured failure.
-- `[D]` Success tests inspect both UI copy and the provider's mirrored event/
-  stale state; existing-result tests seed an event first.
+- `[D]` Success tests inspect UI copy and the provider's mirrored event plus
+  `ProjectionFreshness.stale`; the valid-save case asserts the removed local
+  `Projection stale until refresh.` sentence is absent.
 - `[D]` Read-only helper tests inspect visible hierarchy and forbidden copy,
   without selecting or saving.
 - `[D]` The source guard reads the committed source string only.
@@ -50,6 +56,7 @@ never invokes the real canonical persistence chain.
 | `MeasureSheetScreen` | system under test | Supplies form, writer boundary, helper panels, and responsive layout. |
 | `V2SaveMeasurementWriter` contract | test-double boundary | Captures requests and supplies typed results/failures. |
 | `projectStateProvider` | fixture/observation | Injects projected inputs and exposes returned projection state. |
+| `ProjectionStaleBanner`, `ProjectionFreshness` | presentation/model assertion | Supply distinct unknown copy and authoritative fresh/stale assertions. |
 | known-facts/manifest/event models | fixture | Build typed targets, prior readings, and existing events. |
 | `dart:io File.readAsStringSync` | read-only test inspection | Reads production source for a selected boundary guard. |
 | Flutter widget tester | harness | Drives dropdowns, text, taps, viewports, and assertions. |
@@ -89,10 +96,11 @@ strings supplement but do not replace behavioral evidence.
 | Read-only helpers | `[D]` no save callbacks | protected evidence meaning | `ZERO_WRITE` | reference/guided/forbidden-copy tests |
 | Responsive layout | `[D]` test surface size | selected context/form | `ZERO_WRITE` | narrow-layout test |
 | Static boundary | `[D]` source token assertions | production source/map | `ZERO_WRITE` | source guard |
+| Freshness warning | `[D]` explicit fixture tri-state and shared banner text | production banner insertion, form availability, result copy | `ZERO_WRITE` + observed `PROJECTION_STATE` | unknown-warning and valid-save cases |
 
 ## Relevant tests and helpers
 
-- This file contains 26 widget tests plus one source-boundary unit test.
+- This file contains 27 widget tests plus one source-boundary unit test.
 - `test/unit/v2_save_measurement_writer_test.dart` owns real writer behavior.
 - `test/integration/measurement_write_end_to_end_test.dart` covers the accepted
   end-to-end writer chain.
@@ -111,6 +119,8 @@ strings supplement but do not replace behavioral evidence.
   assertions preserve that distinction.
 - `[P]` Static source checks can become brittle or overbroad and still cannot
   prove runtime absence of every side effect.
+- `[P]` Removing the explicit fresh fixture default or reasserting removed
+  local stale copy would obscure the shared tri-state warning contract.
 - `[H]` Replacing the fake with a real writer would cross test isolation and
   project-file boundaries.
 
@@ -118,7 +128,7 @@ strings supplement but do not replace behavioral evidence.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning assertion | new screen warning state | writer helpers and read-only panels | exact warning tests plus full target |
+| One warning assertion | `_inlineProjectState(projectionFreshness:)`, unknown-warning test | writer helpers, read-only panels, result copy | unknown and valid-save cases plus full target |
 | One target rule | fixture/index and target tests | request metadata | matching target tests |
 | One save outcome | fake plus matching test | dedup/stale provider | exact test and related idempotency test |
 | One helper-copy rule | reference or guided tests | protected wording | matching family |
@@ -140,6 +150,8 @@ strings supplement but do not replace behavioral evidence.
   family `STRUCTURE_DRIFT`.
 - Recheck production map when form gates, target derivation, writer request,
   returned-event handling, helper boundaries, or responsive layout changes.
+- Recheck explicit fresh setup, unknown control availability, provider stale
+  assertion, and removed-copy absence when tri-state semantics change.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

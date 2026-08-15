@@ -4,7 +4,7 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `SCORE 7/12 — report, export, reload, sanitization, and projection-state families`
-- Audit evidence: `none`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -20,22 +20,25 @@ failure without exercising real tools or archive writes.
 | --- | --- | --- |
 | 1. Exporter fake | `_StaticProjectExporter` | Returns one supplied `ExportResult` without filesystem or tool work. |
 | 2. Loader tracker | `_TrackingProjectStateLoader` | Records call count/directory and supplies or throws a controlled reload result. |
-| 3. Project fixture | `_inlineProjectState` | Builds loaded report state with configurable warning and Markdown content. |
+| 3. Project fixture | `_inlineProjectState(projectionFreshness:)` | Builds loaded report state with explicit-fresh tri-state default, configurable stale compatibility input, and Markdown content. |
 | 4. Warning/report family | stale/fresh/banner-content tests | Covers banner visibility, no refresh action, and report-content isolation. |
 | 5. Basic export affordance | `export button renders on customer report screen` | Verifies the explicit export control. |
 | 6. Non-success outcomes | mobile/materializer/export failure tests | Verifies no reload and bounded/sanitized result messages. |
-| 7. Success reload | `desktop export success reloads provider state` | Verifies loader call, provider replacement, fresh warning state, and new report content. |
+| 7. Success reload | `desktop export success reloads provider state` | Verifies loader call, provider replacement through explicit `ProjectionFreshness.fresh`, absent warning, and new report content. |
 | 8. Reload failure | `reload failure after success keeps existing provider state` | Verifies successful-export copy with failed reload and preserved warning/state. |
 
 ## State and data flow
 
-- `[D]` `_inlineProjectState` supplies report Markdown, local directory, and
-  warning state to an overridden `projectStateProvider`.
+- `[D]` `_inlineProjectState` supplies report Markdown, local directory, and an
+  explicit-fresh-by-default tri-state to an overridden `projectStateProvider`.
 - `[D]` The exporter fake returns a typed result; it performs no real export.
 - `[D]` The tracking loader records whether non-success results incorrectly
   attempted reload.
 - `[D]` On controlled success, a replacement state flows through the screen
   into the provider and rendered Markdown.
+- `[D]` The replacement uses
+  `copyWith(projectionFreshness: ProjectionFreshness.fresh)`; the test does not
+  rely on legacy `isProjectionStale: false`, which is intentionally a no-op.
 - `[D]` On controlled reload failure, the original state remains rendered.
 
 ## Direct dependencies
@@ -44,7 +47,7 @@ failure without exercising real tools or archive writes.
 | --- | --- | --- |
 | `CustomerReportScreen` | system under test | Owns report, export, reload, and result-message orchestration. |
 | `ProjectExporter`, `ExportResult` variants | test-double contract | Supply typed outcomes without external side effects. |
-| `ProjectStateLoader` injection | test-double contract | Controls directory reload behavior. |
+| `ProjectStateLoader` injection | test-double contract | Controls directory reload behavior and the exact tri-state returned state. |
 | `projectStateProvider` | fixture/observation | Supplies and observes projected report state. |
 | `ProjectionStaleBanner` | presentation assertion | Supplies warning constants. |
 | `Markdown` | rendered-state observation | Exposes current report data for exact assertions. |
@@ -75,7 +78,7 @@ screen contract over typed results.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | State fixture | `[D]` shared by every test | provider and Markdown | test setup | full target |
-| Warning/report | `[D]` banner constants and Markdown data | shared banner | `ZERO_WRITE` | stale/fresh/content tests |
+| Warning/report | `[D]` tri-state fixture, banner constants, and Markdown data | shared banner | `ZERO_WRITE` | stale/fresh/content tests plus routed unknown coverage |
 | Export affordance | `[D]` button finder | screen action | `ZERO_WRITE` harness | button test |
 | Non-success messages | `[D]` typed fake results | sanitized copy and no reload | `ZERO_WRITE` | mobile/failure tests |
 | Success reload | `[D]` tracker plus replacement state | provider/warning/Markdown | `PROJECTION_STATE` | desktop success test |
@@ -102,6 +105,9 @@ screen contract over typed results.
   visible message.
 - `[P]` Warning text injected into Markdown can pass superficial text finders
   unless `Markdown.data` remains checked directly.
+- `[P]` Resetting only `isProjectionStale: false` in the reload fixture would
+  preserve stale/unknown state and turn a false compatibility assumption into
+  misleading UI evidence.
 
 ## Safe SNIPER slices
 
@@ -110,6 +116,7 @@ screen contract over typed results.
 | One warning state | stale/fresh tests | report content isolation | exact tests |
 | One typed export outcome | matching fake result test | loader call count | exact outcome test |
 | One reload behavior | success or failure test | provider, warning, Markdown | both reload tests when shared flow changes |
+| One fixture freshness rule | `_inlineProjectState(projectionFreshness:)` | shared banner and provider replacement | stale/fresh cases plus success reload |
 | One sanitization assertion | materializer/export failure tests | raw detail and public message | exact failure test |
 
 ## Future extraction seams
@@ -126,6 +133,8 @@ screen contract over typed results.
   `TEST_DRIFT`, or family `STRUCTURE_DRIFT`.
 - Recheck production map when export injection, result variants, reload, or
   warning ownership changes.
+- Recheck the explicit-fresh fixture and reload copy whenever `ProjectState`
+  tri-state compatibility semantics change.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

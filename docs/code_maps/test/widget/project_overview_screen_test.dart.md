@@ -3,8 +3,8 @@
 - Source: `test/widget/project_overview_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 7/12 — 22 tests across shell, layout, route, and zero-write families`
-- Audit evidence: `none`
+- Qualification: `SCORE 7/12 — 23 tests across freshness, shell, layout, route, and zero-write families`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
 
 ## File purpose
 
@@ -18,10 +18,10 @@ events during navigation.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Project fixture | `_inlineProjectState`, `_normalizedPlacementFacts` | Builds projected counters, optional placements, raw-ID variants, and seeded event state. |
+| 1. Project fixture | `_inlineProjectState(projectionFreshness:)`, `_normalizedPlacementFacts` | Builds explicit-fresh-by-default counters, stale/unknown variants, optional placements, raw IDs, and seeded events. |
 | 2. Mounting and router harness | `_pumpProjectOverview`, `buildTraceBenchRouter`, `ProviderContainer` | Supports direct and routed mounts with controlled providers and location. |
 | 3. Route identity | `/project/overview opens the retained named overview route` | Verifies canonical path and named route. |
-| 4. Warning state | `shows stale projection banner when projection is stale` | Verifies the shared warning copy on the overview. |
+| 4. Warning state | `shows stale projection banner when projection is stale`, `shows one distinct unknown freshness warning` | Verifies exactly one shared stale banner, distinct unknown copy, and absence of the removed local `PROJECTION STALE` evidence tag. |
 | 5. Shell and copy | `renders workbench-first shell with dominant primary action`, `uses polished Estonian copy` | Covers dark shell, breadcrumb, action hierarchy, localization, and forbidden legacy copy. |
 | 6. Responsive geometry | `wide layout makes the workbench zone visually dominant`, `wide density layout gives board preview room and compacts rail` | Verifies Workbench/rail ratios and preview height. |
 | 7. Preview and empty state | `renders sparse-placement workbench placeholder state`, `renders read-only board canvas` | Distinguishes placeholder from board-normalized read-only preview. |
@@ -31,8 +31,12 @@ events during navigation.
 
 ## State and data flow
 
-- `[D]` `_inlineProjectState` creates typed projection state and optionally
-  copies in stale state, placements, raw identifiers, or seeded events.
+- `[D]` `_inlineProjectState` creates typed projection state with explicit
+  `ProjectionFreshness.fresh` default and optionally supplies stale/unknown
+  state, placements, raw identifiers, or seeded events.
+- `[D]` The stale case scopes its tag assertion beneath the single banner and
+  proves the literal old `PROJECTION STALE` tag is absent; the unknown case
+  proves distinct unknown text and the same legacy-tag absence.
 - `[D]` `_pumpProjectOverview` seeds providers, mounts either router or direct
   screen, and returns the container for post-action assertions.
 - `[D]` Layout tests alter and restore surface size before measuring keyed
@@ -80,7 +84,7 @@ read-only preview input.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Fixture/harness | `[D]` shared by all tests | providers, router, source map | test setup | full target |
-| Warning | `[D]` shared constants | banner widget and overview tag | `ZERO_WRITE` | stale-warning test |
+| Warning | `[D]` explicit tri-state fixture, banner count/constants, negative legacy-tag assertions | banner widget and overview status strip | `ZERO_WRITE` | stale and unknown warning tests |
 | Shell/copy | `[D]` keys, colors, localized text | production visual tokens | `ZERO_WRITE` | shell/copy/raw-ID tests |
 | Responsive layout | `[D]` measured rectangles | Workbench/rail/preview zones | `ZERO_WRITE` | two wide-layout tests |
 | Preview/placeholder | `[D]` optional placement fixture | known-facts placement model | `ZERO_WRITE` | two preview-state tests |
@@ -90,7 +94,8 @@ read-only preview input.
 
 ## Relevant tests and helpers
 
-- The target contains 22 widget tests spanning four major families.
+- The target contains 23 widget tests spanning freshness plus the retained
+  shell/layout/route/zero-write families.
 - `test/integration/projection_stale_banner_end_to_end_test.dart` provides
   cross-surface warning navigation coverage.
 - `test/widget/measure_sheet_screen_test.dart`,
@@ -109,6 +114,9 @@ read-only preview input.
   destination assertions should stay paired.
 - `[P]` Finder-only preview checks cannot prove geometry; measured zones and
   read-only copy protect different aspects.
+- `[P]` A global tag-text assertion without scoping the shared banner could
+  miss a duplicate local evidence tag; the literal legacy-tag exclusion is a
+  separate required assertion.
 - `[H]` Enabling future controls would require product authority, not merely a
   test expectation update.
 
@@ -116,7 +124,7 @@ read-only preview input.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning assertion | stale-banner test | shared banner and duplicate tag | exact test |
+| One warning assertion | stale/unknown tests and `_inlineProjectState(projectionFreshness:)` | shared banner, count, status strip, duplicate-tag exclusion | both warning tests |
 | One responsive assertion | two wide tests | surface teardown and preview | both layout tests |
 | One preview state | placement fixture and preview tests | known-facts model | placeholder + preview tests |
 | One route action | matching keyed action test | router/destination | exact route plus no-write guard when applicable |
@@ -136,6 +144,8 @@ read-only preview input.
   organization `STRUCTURE_DRIFT`.
 - Recheck the production map when keyed zones, route actions, placement
   preview, warning ownership, or provider use changes.
+- Recheck explicit fresh setup, one-banner count, distinct unknown copy, and
+  the `PROJECTION STALE` exclusion together when warning ownership changes.
 - Formatting and line movement alone do not stale this map.
 
 ## Known uncertainty

@@ -1,9 +1,74 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
 
-## Live F-02 Projection Freshness final LOCK Phase 1
+## Live Board Canvas navigation-contract scope Phase 1
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: c61dfd8a95346940bd68ca3ccfb87c64e1901985
+```
+
+The accepted and committed F-02 final LOCK at `c61dfd8` handed off to
+`NEEDS_USER_DECISION`. The human has now selected one narrow Board Canvas
+navigation-contract scope from that sentinel. This Phase 1 changes exactly the
+three route owners, `docs/AUDIT_INDEX.md`, and one new audit artifact. It
+creates no runtime, test, route, map, package, platform, tool, schema, asset,
+sample, or product behavior.
+
+The reserved child keeps Board Canvas as canonical `/project` landing and
+Project Overview at `/project/overview`. Without changing route ownership, it
+makes the Project hub visible on initial Canvas render at the supported
+`1000x800` and `1400x800` widths, retains the `Projekt` rail control for
+returning to the hub, preserves the seven existing keyed actions, and adds
+exactly five keyed actions: Project Overview, Komponendid, Mõõtmised, Pinnid,
+and Täitamata. The final hub contains exactly 12 keyed actions. Add Component,
+Edit Component, and Measure Sheet remain integrated or destination-specific
+workflows and do not enter this hub.
+
+The future implementation is reserved to exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+It is `UI_LOCAL` plus `ZERO_WRITE`. All four existing Board Canvas writer call
+sites, event/fact/evidence semantics, F-01/F-05/F-16 board-plane behavior,
+paint/hit/geometry behavior, the twelve-surface projection-freshness contract,
+the router, Project Overview, app shell, project guard, responsive minimum-size
+work, Project ZIP, F-03, and all other files remain frozen.
+
+Both reserved-file Code Maps are current and `MAINTAINED`; the child will
+materially change their mapped navigation/test coverage, so both dispositions
+are `UPDATE_REQUIRED` after accepted implementation. The maintained router,
+Project Overview source, and Project Overview test maps are
+`REVIEWED_NO_CHANGE`. Neither this scope nor the implementation child edits a
+Code Map; any refresh occurs later in a separately scoped docs-only map pass
+against accepted committed source.
+
+The active route is:
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS [complete at c61dfd8]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+   [implementation activates only after independent scope acceptance,
+    bounded verdict recording, and human exact commit/push]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+-> [human manual smoke at 1000x800 and 1400x800]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped docs-only Board Canvas Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted F-02 Projection Freshness final LOCK (historical, non-authorizing)
+
+Commit `c61dfd8a95346940bd68ca3ccfb87c64e1901985`, subject
+`docs: lock projection freshness provenance`, preserves the accepted final
+LOCK. All retained current/next/conditional wording in this section is its
+Phase-1 snapshot and supplies no current route or write authority.
 
 Committed repository truth is `main` at
 `96f3a30f1d144ecf0759cfd43bd6299daccc71e3`

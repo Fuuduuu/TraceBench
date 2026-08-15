@@ -2,10 +2,253 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
 
-## Current F-02 final-LOCK Phase-1 authority
+## Current Board Canvas navigation-contract scope Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: c61dfd8a95346940bd68ca3ccfb87c64e1901985
+```
+
+This pass is the human-selected docs-only authority to lock one narrow future
+Board Canvas navigation contract. It changes no product behavior.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. This Phase 1 may update the three top operational
+route owners, add exactly one neutral `REVIEW_REQUIRED` ledger row, and create
+exactly one audit artifact with exactly one empty named verdict block. It may
+not edit Dart, tests, Code Maps, the Code Map index, configuration, packages,
+platform files, tools, schemas, assets, samples, or any other repository byte.
+
+### Exact reserved implementation
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / UI_LOCAL_ZERO_WRITE / NAVIGATION_CONTRACT
+```
+
+Future implementation write allowlist -- exactly 2:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+No third implementation path is reserved. The reservation is inactive until
+this exact scope is independently accepted, its explicitly authorized bounded
+Phase 2 is recorded, and the human stages, commits, and pushes only the exact
+accepted five-file scope set.
+
+### Locked behavior contract
+
+- Board Canvas remains the canonical `/project` landing.
+- Project Overview remains `/project/overview`.
+- The route tree, route names, hierarchy, redirects, and parentage do not
+  change.
+- At `1000x800` and `1400x800`, the Project hub is visible on initial Canvas
+  render without first selecting the `Projekt` panel.
+- The `Projekt` rail control remains available and restores the Project hub
+  after another panel mode.
+- The seven existing keyed hub actions remain present with their existing
+  labels and routes.
+- Exactly five keyed actions are added:
+  Project Overview -> `/project/overview`, Komponendid ->
+  `/project/components`, Mõõtmised -> `/project/measurements`, Pinnid ->
+  `/project/pins`, and Täitamata -> `/project/not-populated`.
+- The final hub contains exactly 12 keyed actions.
+- Add Component, Edit Component, and Measure Sheet do not enter the hub.
+- Canvas -> Overview -> Canvas settles on canonical `/project`; the existing
+  Overview action and compatibility redirect remain unchanged.
+- The shared projection-freshness banner behavior, ownership, copy, and all 12
+  covered surfaces remain unchanged.
+
+The exact final keyed-action inventory is:
+
+| Class | Key | Label | Route |
+|---|---|---|---|
+| existing | `board_canvas_project_home_action` | BenchBeep Home | `/` |
+| existing | `board_canvas_project_photos_action` | Foto tõendid | `/project/photos` |
+| existing | `board_canvas_project_reference_images_action` | Viitepildid | `/project/reference-images` |
+| existing | `board_canvas_project_graph_action` | Advanced graph | `/project/graph` |
+| existing | `board_canvas_project_events_action` | Sündmused | `/project/events` |
+| existing | `board_canvas_project_known_facts_action` | Teadaolevad faktid | `/project/known-facts` |
+| existing | `board_canvas_project_report_action` | Raport | `/project/report` |
+| new | `board_canvas_project_overview_action` | Project Overview | `/project/overview` |
+| new | `board_canvas_project_components_action` | Komponendid | `/project/components` |
+| new | `board_canvas_project_measurements_action` | Mõõtmised | `/project/measurements` |
+| new | `board_canvas_project_pins_action` | Pinnid | `/project/pins` |
+| new | `board_canvas_project_not_populated_action` | Täitamata | `/project/not-populated` |
+
+The table defines the final key/label/route set, not a new route owner.
+Preserve the relative order of the seven existing actions; place the five
+additions within the existing scrollable hub so all 12 remain discoverable and
+overflow-free at both locked widths.
+
+### Protected and frozen boundaries
+
+The future child may change only the default-visible navigation state and hub
+actions/tests required by the contract. The following remain frozen:
+
+- all four existing Board Canvas writer call sites:
+  `_confirmRightPanelComponentCreation`, `_confirmRightPanelMetadataEdit`,
+  `_confirmAddComponentTemplatePlacement`, and
+  `_IntegratedMeasurePanelState._saveMeasurement`;
+- event, fact, evidence, writer, persistence, and canonical semantics;
+- F-01/F-05/F-16 board-plane behavior;
+- painters, hit testing, placement, coordinate conversion, pan/zoom, Wizard
+  rendering, and geometry;
+- `ProjectionStaleBanner`, freshness provider/state flow, banner copy and
+  ownership, and the twelve-surface freshness contract;
+- `lib/app/router.dart`, every route definition/name/redirect, and route
+  parentage;
+- Project Overview source and test;
+- app shell and all project-guard work;
+- `main.dart` and responsive minimum-size/envelope work beyond proving this
+  existing Workbench at `1000x800` and `1400x800`;
+- Project ZIP;
+- packages, tools, schemas, assets, samples, and Windows;
+- F-03; and
+- all other repository files and product behavior.
+
+Stop with `BLOCKED_ALLOWLIST_MISMATCH` if the locked result needs a third
+implementation path. Stop before writing on any route reparenting, writer or
+freshness drift, protected semantic change, geometry/layout-envelope change,
+map-status blocker, or unexpected baseline change. Do not broaden assertions
+or repair adjacent behavior under this pass.
+
+### CODE_MAP_PREFLIGHT and disposition
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`: index and map
+  are `MAINTAINED`; changed zones are 1 (`_BoardCanvasScreenState`,
+  `_WorkbenchContextPanelMode`) and 12 (`_ProjectNavigationHub`, `_action`),
+  expressly combined by this human scope decision. Zone 11 rail/focus chrome
+  is inspect-only coupled; zone 13 freshness plus zones 2-10 are excluded.
+  Direct dependencies are `GoRouter`, transient widget state, and the existing
+  hub/rail composition. Expected blast radius is initial medium/wide panel
+  state and zero-write project navigation `[D]`; write class is `UI_LOCAL` +
+  `ZERO_WRITE`; affected test owner is
+  `test/widget/board_canvas_screen_test.dart`; disposition:
+  `UPDATE_REQUIRED` after accepted implementation.
+- `test/widget/board_canvas_screen_test.dart`: index and map are `MAINTAINED`;
+  changed zone is 10 (rail, project hub, focus, responsive layout), with zones
+  1-2 harness/route lifecycle and zone 11 boundary guards inspect-only
+  coupled. Zone 12 freshness and writer/geometry families are excluded except
+  unchanged regression assertions. Direct dependencies are
+  `BoardCanvasScreen`, the production router harness, provider fixtures, four
+  fake writers, and the temporary-directory no-write fixture. Blast radius is
+  the medium/wide hub, exact-route, focus, and no-write family `[D]`; write
+  class exercised is `UI_LOCAL` + `ZERO_WRITE`; disposition:
+  `UPDATE_REQUIRED` after accepted implementation.
+- `lib/app/router.dart`,
+  `lib/features/project/screens/project_overview_screen.dart`, and
+  `test/widget/project_overview_screen_test.dart`: all three maps and index
+  entries are `MAINTAINED`; changed responsibility zone is `none`. Inspect the
+  canonical `/project` owner, `/project/overview`, the existing
+  `/project/board-canvas` redirect, and the Overview Board Canvas action only.
+  No source/test/map byte changes; write class remains `ZERO_WRITE` /
+  `UI_LOCAL`; disposition: `REVIEWED_NO_CHANGE` for each.
+
+Maps describe committed source only. Neither this scope nor the implementation
+child edits a map or `CODE_MAP_INDEX.md`. The two `UPDATE_REQUIRED` maps route
+to later separately scoped docs-only maintenance after the implementation is
+accepted and committed.
+
+### Future test contract
+
+The exact test file must prove:
+
+1. the hub is visible on default initial render at both `1000x800` and
+   `1400x800`;
+2. exactly 12 unique keyed hub actions exist, the seven existing actions are
+   preserved, and the three excluded workflow actions are absent;
+3. each of the five new keys reaches its exact route;
+4. selecting another existing panel and then `Projekt` restores the hub;
+5. Canvas focus hides the hub/rail and restore returns the same hub state;
+6. Canvas -> Overview -> the existing Overview Board Canvas action settles at
+   canonical `/project` through the unchanged production router;
+7. all four fake writer request lists, provider events/facts, project files,
+   and projection freshness remain unchanged during navigation; and
+8. existing route, board-plane, painter, interaction, writer, and freshness
+   regression behavior remains green.
+
+### Manual smoke before implementation audit
+
+On the supported Windows smoke host, run at `1000x800` and `1400x800` and
+record:
+
+- initial hub visibility without selecting `Projekt`;
+- all five added links and their exact destinations;
+- Canvas -> Overview -> Canvas ending at canonical `/project`;
+- panel switching, `Projekt` return, focus hide, and focus restore;
+- no clipped or overflowing navigation controls; and
+- unchanged fresh/stale/unknown banner behavior and usable Canvas content.
+
+The future implementation audit packet is `USE ONLY AFTER MANUAL SMOKE PASS`.
+
+### Future validation contract
+
+Run and record:
+
+```text
+flutter test test/widget/board_canvas_screen_test.dart
+flutter test test/widget/project_overview_screen_test.dart
+flutter test test/integration/projection_stale_banner_end_to_end_test.dart
+flutter analyze --no-pub
+py -3 tools\doctor.py
+py -3 tools\validate_all.py
+flutter test
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+The implementation content diff must be exactly the two reserved files; the
+staged, untracked, and unmerged sets must be empty. Any nonzero analyzer result
+must be reconciled against the committed baseline and may not be repaired
+outside the two-file allowlist.
+
+### Audit, bounded recording, and route
+
+Phase 1 creates exactly one empty artifact verdict block and one neutral
+ledger row. Independent scope audit must return the canonical verdict, staging
+safety, exact five-file safe set, and explicit Phase-2 authorization. If and
+only if authorized, Phase 2 may change exactly two logical coordinates: the
+existing verdict-block interior and this PASS_ID's existing ledger Status
+cell. Artifact exterior, ledger Description, route prose, and every other byte
+remain frozen.
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS [complete at c61dfd8]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped docs-only Board Canvas Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+No staging, commit, push, implementation, manual smoke, or map maintenance is
+authorized by this Phase-1 write set.
+
+## Accepted F-02 final-LOCK Phase-1 authority (historical, non-authorizing)
+
+Commit `c61dfd8a95346940bd68ca3ccfb87c64e1901985` preserves the accepted final
+LOCK. All retained present-tense authority, route, and conditional language in
+this section is its Phase-1 snapshot and supplies no current route or write
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS

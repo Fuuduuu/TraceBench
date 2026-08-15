@@ -2,10 +2,83 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
 
-## Current F-02 final-LOCK queue
+## Current Board Canvas navigation-contract scope queue
+
+The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+clean committed baseline `c61dfd8a95346940bd68ca3ccfb87c64e1901985`.
+Its exact five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS.md`
+
+No sixth path is queued. Phase 1 records the human-selected route, exact
+future allowlist and boundaries, one neutral `REVIEW_REQUIRED` ledger row, and
+one new artifact with a single empty verdict block. It creates no Canvas,
+test, router, Overview, Code Map, or other implementation diff.
+
+## Next reserved Board Canvas navigation child
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / UI_LOCAL_ZERO_WRITE / NAVIGATION_CONTRACT
+```
+
+The exact implementation allowlist is:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `test/widget/board_canvas_screen_test.dart`
+
+No third implementation path is reserved. The child keeps the existing route
+tree intact, makes the Project hub default-visible at `1000x800` and
+`1400x800`, preserves its seven existing keyed actions, adds exactly five
+keyed list/index destinations, retains the `Projekt` rail return control, and
+proves the canonical Canvas -> Overview -> Canvas round trip. The final hub is
+exactly 12 keyed actions; Add Component, Edit Component, and Measure Sheet are
+excluded.
+
+The implementation queue freezes the four Canvas writer calls, all canonical
+and protected semantics, F-01/F-05/F-16 board-plane behavior, rendering and
+interaction geometry, freshness ownership/copy and its twelve-surface
+contract, router definitions/redirects, Project Overview source/test, app
+shell, project guard, minimum-size/responsive envelope, Project ZIP, F-03,
+packages, tools, schemas, assets, samples, and Windows.
+
+Activation order is exact:
+
+1. independent audit of this five-file scope under `scope-lock-post-audit`;
+2. explicitly authorized bounded Phase 2 in only the artifact verdict
+   interior and matching ledger Status cell;
+3. human exact staging, commit, and push of the accepted five-file scope;
+4. execute the exact two-file child;
+5. human manual smoke at `1000x800` and `1400x800`;
+6. independent implementation audit after smoke passes;
+7. human exact staging, commit, and push of the accepted child; and
+8. separately scope committed-source maintenance of the two maps whose
+   disposition is `UPDATE_REQUIRED`.
+
+```text
+TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS [complete at c61dfd8]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped docs-only Board Canvas Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted F-02 final-LOCK queue (historical, non-authorizing)
+
+Commit `c61dfd8a95346940bd68ca3ccfb87c64e1901985` preserves the accepted final
+LOCK. All retained queue and conditional wording in this section is its
+Phase-1 snapshot and supplies no current queue or write authority.
 
 The current queue is one Lane B
 `DOCS_AND_MAPS_ONLY / FINAL_LOCK / PHASE_1` pass at committed Child-B baseline

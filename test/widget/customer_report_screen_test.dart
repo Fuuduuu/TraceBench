@@ -37,6 +37,7 @@ class _TrackingProjectStateLoader {
 }
 
 ProjectState _inlineProjectState({
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
   bool isProjectionStale = false,
   String customerReport = 'Inline sample report',
 }) {
@@ -76,6 +77,7 @@ ProjectState _inlineProjectState({
     events: const [],
     customerReport: customerReport,
     projectDirectory: 'C:/tmp/inline_project',
+    projectionFreshness: projectionFreshness,
   ).copyWith(isProjectionStale: isProjectionStale);
 }
 
@@ -91,9 +93,9 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleSecondaryText), findsOneWidget);
     expect(find.text('Export ZIP'), findsOneWidget);
     expect(find.text('Refresh'), findsNothing);
     expect(find.text('Värskenda'), findsNothing);
@@ -114,7 +116,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
   });
 
   testWidgets('export button renders on customer report screen',
@@ -126,8 +129,8 @@ void main() {
         overrides: [projectStateProvider.overrideWith((_) => projectState)],
         child: MaterialApp(
           home: CustomerReportScreen(
-            projectExporter:
-                _StaticProjectExporter(const ExportSuccess('C:/tmp/export.zip')),
+            projectExporter: _StaticProjectExporter(
+                const ExportSuccess('C:/tmp/export.zip')),
           ),
         ),
       ),
@@ -203,7 +206,7 @@ void main() {
       findsNothing,
     );
     expect(find.text('Traceback'), findsNothing);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
     expect(loader.callCount, 0);
   });
 
@@ -240,15 +243,14 @@ void main() {
         findsNothing);
     expect(find.text('Traceback'), findsNothing);
     expect(find.text('Export failed'), findsNothing);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
     expect(loader.callCount, 0);
   });
 
-  testWidgets('desktop export success reloads provider state',
-      (tester) async {
+  testWidgets('desktop export success reloads provider state', (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
     final reloadedState = projectState.copyWith(
-      isProjectionStale: false,
+      projectionFreshness: ProjectionFreshness.fresh,
       customerReport: 'Reloaded customer report',
     );
     final loader = _TrackingProjectStateLoader((_) async => reloadedState);
@@ -273,11 +275,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(
-      find.text(
-          'ZIP eksporditud: C:/tmp/inline_export.zip.'),
+      find.text('ZIP eksporditud: C:/tmp/inline_export.zip.'),
       findsOneWidget,
     );
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
     expect(loader.callCount, 1);
     expect(loader.lastDirectory, projectState.projectDirectory);
     final markdown = tester.widget<Markdown>(find.byType(Markdown));
@@ -316,7 +317,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
     expect(loader.callCount, 1);
     expect(loader.lastDirectory, projectState.projectDirectory);
   });

@@ -84,12 +84,11 @@ class ProjectOverviewScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ProjectionStaleBanner(
-                      isStale: projectState.isProjectionStale,
+                      freshness: projectState.projectionFreshness,
                     ),
                     const SizedBox(height: 10),
                     _WorkbenchShellLayout(
                       boardPlacements: boardPlacements,
-                      isProjectionStale: projectState.isProjectionStale,
                       projectState: projectState,
                       workbenchDisplaySubtitle: workbenchDisplaySubtitle,
                     ),
@@ -184,13 +183,11 @@ class _WorkbenchMenuBreadcrumb extends StatelessWidget
 class _WorkbenchShellLayout extends StatelessWidget {
   const _WorkbenchShellLayout({
     required this.boardPlacements,
-    required this.isProjectionStale,
     required this.projectState,
     required this.workbenchDisplaySubtitle,
   });
 
   final List<ComponentVisualPlacementFact> boardPlacements;
-  final bool isProjectionStale;
   final ProjectState projectState;
   final String workbenchDisplaySubtitle;
 
@@ -203,7 +200,6 @@ class _WorkbenchShellLayout extends StatelessWidget {
         final workbenchZone = _WorkbenchZoneCard(
           key: const ValueKey('overview-workbench-zone'),
           boardPlacements: boardPlacements,
-          isProjectionStale: isProjectionStale,
           projectState: projectState,
           workbenchDisplaySubtitle: workbenchDisplaySubtitle,
         );
@@ -244,13 +240,11 @@ class _WorkbenchZoneCard extends StatelessWidget {
   const _WorkbenchZoneCard({
     super.key,
     required this.boardPlacements,
-    required this.isProjectionStale,
     required this.projectState,
     required this.workbenchDisplaySubtitle,
   });
 
   final List<ComponentVisualPlacementFact> boardPlacements;
-  final bool isProjectionStale;
   final ProjectState projectState;
   final String workbenchDisplaySubtitle;
 
@@ -299,11 +293,6 @@ class _WorkbenchZoneCard extends StatelessWidget {
                   label: 'AINULT VAATAMINE',
                   compact: true,
                 ),
-                if (isProjectionStale)
-                  const _EvidenceTag(
-                    label: 'PROJECTION STALE',
-                    compact: true,
-                  ),
               ],
             ),
             const SizedBox(height: 4),

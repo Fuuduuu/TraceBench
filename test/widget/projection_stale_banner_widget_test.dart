@@ -1,16 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 void main() {
-  testWidgets('compact mode hides secondary text but keeps primary and tag',
+  testWidgets('fresh state renders no freshness warning', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ProjectionStaleBanner(
+            freshness: ProjectionFreshness.fresh,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(Card), findsNothing);
+    expect(find.byType(Icon), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
+  });
+
+  testWidgets('stale state renders one generic outdated warning',
       (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: ProjectionStaleBanner(
-            isStale: true,
+            freshness: ProjectionFreshness.stale,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleSecondaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
+  });
+
+  testWidgets('unknown state renders one distinct cannot-verify warning',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ProjectionStaleBanner(
+            freshness: ProjectionFreshness.unknown,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(
+      find.text(ProjectionStaleBanner.unknownSecondaryText),
+      findsOneWidget,
+    );
+    expect(find.text(ProjectionStaleBanner.unknownTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+  });
+
+  testWidgets(
+      'compact mode hides state secondary text but keeps primary and tag',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ProjectionStaleBanner(
+            freshness: ProjectionFreshness.stale,
             compact: true,
           ),
         ),
@@ -18,25 +76,62 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.secondaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleSecondaryText), findsNothing);
   });
 
-  testWidgets('compact mode keeps banner when stale and hides on fresh state',
+  testWidgets('warning text meets contrast targets on light and dark hosts',
       (tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: ProjectionStaleBanner(isStale: false, compact: true),
+    for (final brightness in Brightness.values) {
+      final theme = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: brightness,
         ),
-      ),
-    );
-    await tester.pump();
+      );
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsNothing);
-    expect(find.byType(Icon), findsNothing);
+      for (final freshness in <ProjectionFreshness>[
+        ProjectionFreshness.stale,
+        ProjectionFreshness.unknown,
+      ]) {
+        final primaryText = freshness == ProjectionFreshness.stale
+            ? ProjectionStaleBanner.stalePrimaryText
+            : ProjectionStaleBanner.unknownPrimaryText;
+        final secondaryText = freshness == ProjectionFreshness.stale
+            ? ProjectionStaleBanner.staleSecondaryText
+            : ProjectionStaleBanner.unknownSecondaryText;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: Scaffold(
+              body: ProjectionStaleBanner(freshness: freshness),
+            ),
+          ),
+        );
+
+        final card = tester.widget<Card>(find.byType(Card));
+        final cardColor = card.color!;
+        final primary = tester.widget<Text>(find.text(primaryText));
+        final secondary = tester.widget<Text>(find.text(secondaryText));
+        final icon = tester.widget<Icon>(find.byIcon(Icons.info_outline));
+
+        expect(cardColor.a, 1.0);
+        expect(
+          _contrastRatio(primary.style!.color!, cardColor),
+          greaterThanOrEqualTo(7.0),
+        );
+        expect(
+          _contrastRatio(secondary.style!.color!, cardColor),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          _contrastRatio(icon.color!, cardColor),
+          greaterThanOrEqualTo(4.5),
+        );
+      }
+    }
   });
 
   testWidgets('forbidden action texts are not present on banner',
@@ -45,7 +140,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: ProjectionStaleBanner(
-            isStale: true,
+            freshness: ProjectionFreshness.unknown,
           ),
         ),
       ),
@@ -59,5 +154,17 @@ void main() {
     expect(find.text('Run materializer'), findsNothing);
     expect(find.text('Käivita materializer'), findsNothing);
     expect(find.text('Uuenda nüüd'), findsNothing);
+    expect(find.byType(ButtonStyleButton), findsNothing);
+    expect(find.byType(InkWell), findsNothing);
   });
+}
+
+double _contrastRatio(Color foreground, Color background) {
+  final lighter = foreground.computeLuminance() > background.computeLuminance()
+      ? foreground.computeLuminance()
+      : background.computeLuminance();
+  final darker = foreground.computeLuminance() > background.computeLuminance()
+      ? background.computeLuminance()
+      : foreground.computeLuminance();
+  return (lighter + 0.05) / (darker + 0.05);
 }

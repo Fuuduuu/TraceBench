@@ -6,6 +6,7 @@ import '../../../app/app.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/trace_bench_event.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 import '../services/v2_edit_component_writer.dart';
 
 class EditComponentScreen extends ConsumerStatefulWidget {
@@ -267,6 +268,9 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          ProjectionStaleBanner(
+            freshness: projectState.projectionFreshness,
+          ),
           _SafetyCard(projectState: projectState),
           const SizedBox(height: 16),
           if (components.isEmpty)
@@ -380,12 +384,6 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                       Text(
                         _successMessage!,
                         key: const ValueKey('edit-component-success-message'),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Projection stale until refresh.',
-                        key:
-                            ValueKey('edit-component-stale-projection-message'),
                       ),
                     ],
                     if (_errorMessage != null) ...[

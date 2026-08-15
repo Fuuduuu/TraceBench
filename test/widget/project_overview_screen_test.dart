@@ -13,6 +13,7 @@ import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 ProjectState _inlineProjectState({
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
   bool isProjectionStale = false,
   List<TraceBenchEvent> events = const [],
   List<Map<String, dynamic>> componentVisualPlacements = const [],
@@ -62,6 +63,7 @@ ProjectState _inlineProjectState({
     knownFacts: KnownFacts.fromJson(knownFactsJson),
     events: events,
     customerReport: 'Inline sample report',
+    projectionFreshness: projectionFreshness,
   ).copyWith(isProjectionStale: isProjectionStale);
 }
 
@@ -132,9 +134,34 @@ void main() {
       useRouter: false,
     );
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
+    final banner = find.byType(ProjectionStaleBanner);
+    expect(banner, findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(
+      find.descendant(
+        of: banner,
+        matching: find.text(ProjectionStaleBanner.staleTagText),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text(ProjectionStaleBanner.staleSecondaryText), findsOneWidget);
+    expect(find.text('PROJECTION STALE'), findsNothing);
+  });
+
+  testWidgets('shows one distinct unknown freshness warning', (tester) async {
+    final projectState = _inlineProjectState(
+      projectionFreshness: ProjectionFreshness.unknown,
+    );
+    await _pumpProjectOverview(
+      tester,
+      projectState: projectState,
+      useRouter: false,
+    );
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.unknownTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text('PROJECTION STALE'), findsNothing);
   });
 
   testWidgets('renders workbench-first shell with dominant primary action',

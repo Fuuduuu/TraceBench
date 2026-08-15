@@ -9,7 +9,9 @@ import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
-ProjectState _inlineProjectState() {
+ProjectState _inlineProjectState({
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
+}) {
   return ProjectState(
     manifest: ProjectManifest.fromJson({
       'project_id': 'inline_project',
@@ -45,6 +47,7 @@ ProjectState _inlineProjectState() {
     }),
     events: const [],
     customerReport: 'Inline sample report',
+    projectionFreshness: projectionFreshness,
   );
 }
 
@@ -100,8 +103,23 @@ void main() {
     expect(find.textContaining('Q2'), findsAtLeast(1));
     expect(find.textContaining('components:'), findsOneWidget);
     expect(find.text('Show visual traces'), findsNothing);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
+  });
+
+  testWidgets('unknown freshness warning is distinct and graph stays usable',
+      (tester) async {
+    await _pumpBoardGraph(
+      tester,
+      projectState: _inlineProjectState(
+        projectionFreshness: ProjectionFreshness.unknown,
+      ),
+      isBeginnerMode: true,
+    );
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text('Board graph'), findsOneWidget);
   });
 
   testWidgets('board graph advanced mode exposes history controls',
@@ -124,7 +142,8 @@ void main() {
     expect(find.text('Audit/history'), findsOneWidget);
     expect(find.byType(DropdownButton<String>), findsOneWidget);
     expect(find.text('Advanced mode: true'), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
   });
 
   testWidgets('board graph interactions remain projection-only and no-write',

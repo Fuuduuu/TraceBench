@@ -21,6 +21,7 @@ import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/models/wizard_intake.dart';
 import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 ProjectState _inlineProjectState({
   required List<ComponentFact> components,
@@ -32,6 +33,7 @@ ProjectState _inlineProjectState({
   List<PhotoToBoardAlignmentFact> photoToBoardAlignments = const [],
   List<TraceBenchEvent> events = const [],
   String? projectDirectory,
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
   bool isProjectionStale = false,
   WizardIntake? wizardIntake,
   String? wizardIntakeWarning,
@@ -63,6 +65,7 @@ ProjectState _inlineProjectState({
     events: events,
     customerReport: '',
     projectDirectory: projectDirectory,
+    projectionFreshness: projectionFreshness,
     isProjectionStale: isProjectionStale,
     wizardIntake: wizardIntake,
     wizardIntakeWarning: wizardIntakeWarning,
@@ -1005,6 +1008,23 @@ void _expectStableComponentPreviewGeometry(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets('unknown freshness warning keeps Board Canvas usable',
+      (tester) async {
+    final state = _inlineProjectState(
+      components: _navigatorComponents,
+      placements: _navigatorPlacements,
+      projectionFreshness: ProjectionFreshness.unknown,
+    );
+    await tester.pumpWidget(_harness(projectState: state));
+    await tester.pumpAndSettle();
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(
+      find.byKey(const Key('board_canvas_workspace_frame')),
+      findsOneWidget,
+    );
+  });
+
   test('buildTheme exposes BenchBeep semantic visual tokens', () {
     final theme = buildTheme();
     final tokens = theme.extension<BenchBeepVisualTokens>();

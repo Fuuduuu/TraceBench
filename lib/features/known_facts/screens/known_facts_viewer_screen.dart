@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class KnownFactsViewerScreen extends ConsumerWidget {
   const KnownFactsViewerScreen({super.key});
@@ -19,9 +20,18 @@ class KnownFactsViewerScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Known facts')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Text(
-          const JsonEncoder.withIndent('  ').convert(projectState.knownFacts.toJson()),
-          style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ProjectionStaleBanner(
+              freshness: projectState.projectionFreshness,
+            ),
+            Text(
+              const JsonEncoder.withIndent('  ')
+                  .convert(projectState.knownFacts.toJson()),
+              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+            ),
+          ],
         ),
       ),
     );

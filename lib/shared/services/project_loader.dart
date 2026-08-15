@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 
 import '../models/known_facts.dart';
@@ -44,16 +45,24 @@ class ProjectLoader {
       'assets/samples/pelle_pv20_minimal/known_facts.json';
   static const String _assetReportPath =
       'assets/samples/pelle_pv20_minimal/exports/customer_report.md';
+  static final RegExp _lowercaseSha256 = RegExp(r'^[0-9a-f]{64}$');
 
-  static Future<ProjectState> loadFromAssets() async {
-    final manifestRaw = await rootBundle.loadString(_assetManifestPath);
-    final eventsRaw = await rootBundle.loadString(_assetEventsPath);
-    final knownFactsRaw = await rootBundle.loadString(_assetKnownFactsPath);
-    final reportRaw = await rootBundle.loadString(_assetReportPath);
+  static Future<ProjectState> loadFromAssets({AssetBundle? assetBundle}) async {
+    final bundle = assetBundle ?? rootBundle;
+    final manifestRaw = await bundle.loadString(_assetManifestPath);
+    final eventsData = await bundle.load(_assetEventsPath);
+    final eventsBytes = Uint8List.fromList(
+      eventsData.buffer.asUint8List(
+        eventsData.offsetInBytes,
+        eventsData.lengthInBytes,
+      ),
+    );
+    final knownFactsRaw = await bundle.loadString(_assetKnownFactsPath);
+    final reportRaw = await bundle.loadString(_assetReportPath);
 
     return _buildProjectState(
       manifestRaw: manifestRaw,
-      eventsRaw: eventsRaw,
+      eventsBytes: eventsBytes,
       knownFactsRaw: knownFactsRaw,
       reportRaw: reportRaw,
       schemaVersionsRaw: null,
@@ -62,8 +71,12 @@ class ProjectLoader {
     );
   }
 
-  static Future<ProjectState> loadFromZipBytes(Uint8List zipBytes) async {
-    final archive = ZipDecoder().decodeBytes(zipBytes, verify: true);
+  static Future<ProjectState> loadFromZipBytes(
+    Uint8List zipBytes, {
+    Archive Function(Uint8List zipBytes)? archiveDecoder,
+  }) async {
+    final archive = archiveDecoder?.call(zipBytes) ??
+        ZipDecoder().decodeBytes(zipBytes, verify: true);
 
     final manifestFile = _findRequiredFile(archive, _manifestPath);
     final eventsFile = _findRequiredFile(archive, _eventsPath);
@@ -73,7 +86,7 @@ class ProjectLoader {
     final wizardIntakeResult = _loadWizardIntakeFromArchive(archive);
 
     final manifestRaw = _fileContentAsString(manifestFile);
-    final eventsRaw = _fileContentAsString(eventsFile);
+    final eventsBytes = _fileContentAsBytes(eventsFile);
     final knownFactsRaw = _fileContentAsString(knownFactsFile);
     final customerReportRaw = _fileContentAsString(customerReportFile);
     final schemaVersionsRaw = schemaVersionsFile == null
@@ -82,7 +95,7 @@ class ProjectLoader {
 
     return _buildProjectState(
       manifestRaw: manifestRaw,
-      eventsRaw: eventsRaw,
+      eventsBytes: eventsBytes,
       knownFactsRaw: knownFactsRaw,
       reportRaw: customerReportRaw,
       schemaVersionsRaw: schemaVersionsRaw,
@@ -91,7 +104,10 @@ class ProjectLoader {
     );
   }
 
-  static Future<ProjectState> loadFromDirectory(String projectDirectory) async {
+  static Future<ProjectState> loadFromDirectory(
+    String projectDirectory, {
+    Future<Uint8List> Function(File file)? eventsByteReader,
+  }) async {
     final trimmedDirectory = projectDirectory.trim();
     if (trimmedDirectory.isEmpty) {
       throw const ProjectLoadException('Project directory path is empty');
@@ -108,9 +124,10 @@ class ProjectLoader {
       trimmedDirectory,
       _manifestPath,
     );
-    final eventsRaw = await _readRequiredLocalFile(
+    final eventsBytes = await _readRequiredLocalFileBytes(
       trimmedDirectory,
       _eventsPath,
+      byteReader: eventsByteReader,
     );
     final knownFactsRaw = await _readRequiredLocalFile(
       trimmedDirectory,
@@ -130,16 +147,13 @@ class ProjectLoader {
 
     return _buildProjectState(
       manifestRaw: manifestRaw,
-      eventsRaw: eventsRaw,
+      eventsBytes: eventsBytes,
       knownFactsRaw: knownFactsRaw,
       reportRaw: customerReportRaw,
       schemaVersionsRaw: schemaVersionsRaw,
       wizardIntake: wizardIntakeResult.intake,
       wizardIntakeWarning: wizardIntakeResult.warning,
-    ).copyWith(
-      projectDirectory: trimmedDirectory,
-      isProjectionStale: false,
-    );
+    ).copyWith(projectDirectory: trimmedDirectory);
   }
 
   static ArchiveFile _findRequiredFile(Archive archive, String relativePath) {
@@ -178,6 +192,10 @@ class ProjectLoader {
     try {
       return _parseWizardIntake(_fileContentAsString(file));
     } on FormatException {
+      return const _WizardIntakeLoadResult(
+        warning: _wizardIntakeWarning,
+      );
+    } on ProjectLoadException {
       return const _WizardIntakeLoadResult(
         warning: _wizardIntakeWarning,
       );
@@ -230,11 +248,15 @@ class ProjectLoader {
   }
 
   static String _fileContentAsString(ArchiveFile file) {
+    return utf8.decode(_fileContentAsBytes(file));
+  }
+
+  static Uint8List _fileContentAsBytes(ArchiveFile file) {
     final content = file.content;
     if (content is List<int>) {
-      return utf8.decode(content);
+      return Uint8List.fromList(content);
     }
-    return '';
+    throw ProjectLoadException('Invalid file content in ZIP: ${file.name}');
   }
 
   static Future<String> _readRequiredLocalFile(
@@ -250,6 +272,27 @@ class ProjectLoader {
 
     try {
       return await file.readAsString();
+    } on FileSystemException catch (error) {
+      throw ProjectLoadException(
+        'Failed reading $relativePath: ${error.message}',
+      );
+    }
+  }
+
+  static Future<Uint8List> _readRequiredLocalFileBytes(
+    String projectDirectory,
+    String relativePath, {
+    Future<Uint8List> Function(File file)? byteReader,
+  }) async {
+    final file = File(_joinPath(projectDirectory, relativePath));
+    if (!await file.exists()) {
+      throw ProjectLoadException(
+        'Required file missing in project directory: $relativePath',
+      );
+    }
+
+    try {
+      return await (byteReader?.call(file) ?? file.readAsBytes());
     } on FileSystemException catch (error) {
       throw ProjectLoadException(
         'Failed reading $relativePath: ${error.message}',
@@ -304,7 +347,7 @@ class ProjectLoader {
 
   static ProjectState _buildProjectState({
     required String manifestRaw,
-    required String eventsRaw,
+    required Uint8List eventsBytes,
     required String knownFactsRaw,
     required String reportRaw,
     required String? schemaVersionsRaw,
@@ -314,10 +357,13 @@ class ProjectLoader {
     final manifest = ProjectManifest.fromJson(
       _decodeJsonObject(manifestRaw, _manifestPath),
     );
-    final knownFacts = KnownFacts.fromJson(
-      _decodeJsonObject(knownFactsRaw, _knownFactsPath),
+    final knownFactsJson = _decodeJsonObject(knownFactsRaw, _knownFactsPath);
+    final knownFacts = KnownFacts.fromJson(knownFactsJson);
+    final events = parseEvents(utf8.decode(eventsBytes));
+    final projectionFreshness = _classifyProjectionFreshness(
+      knownFactsJson,
+      eventsBytes,
     );
-    final events = parseEvents(eventsRaw);
     final schemaVersions =
         schemaVersionsRaw == null || schemaVersionsRaw.trim().isEmpty
             ? null
@@ -329,6 +375,7 @@ class ProjectLoader {
       events: events,
       customerReport: reportRaw,
       schemaVersions: schemaVersions,
+      projectionFreshness: projectionFreshness,
       wizardIntake: wizardIntake,
       wizardIntakeWarning: wizardIntakeWarning,
     );
@@ -340,6 +387,29 @@ class ProjectLoader {
       return decoded;
     }
     throw ProjectLoadException('Invalid JSON object in $sourceName');
+  }
+
+  static ProjectionFreshness _classifyProjectionFreshness(
+    Map<String, dynamic> knownFactsJson,
+    Uint8List eventsBytes,
+  ) {
+    final provenance = knownFactsJson['projection_provenance'];
+    if (provenance is! Map<String, dynamic>) {
+      return ProjectionFreshness.unknown;
+    }
+
+    final version = provenance['projection_contract_version'];
+    final expectedDigest = provenance['events_sha256'];
+    if (version != '1.0' ||
+        expectedDigest is! String ||
+        !_lowercaseSha256.hasMatch(expectedDigest)) {
+      return ProjectionFreshness.unknown;
+    }
+
+    final actualDigest = sha256.convert(eventsBytes).toString();
+    return actualDigest == expectedDigest
+        ? ProjectionFreshness.fresh
+        : ProjectionFreshness.stale;
   }
 }
 

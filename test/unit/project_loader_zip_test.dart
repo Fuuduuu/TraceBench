@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/wizard_intake.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
@@ -85,7 +87,8 @@ String _manifestJson() => jsonEncode(<String, dynamic>{
       'symptom': 'not_provided',
     });
 
-String _knownFactsJson() => jsonEncode(<String, dynamic>{
+String _knownFactsJson({Object? projectionProvenance}) =>
+    jsonEncode(<String, dynamic>{
       'project_id': 'inline_project',
       'components': <dynamic>[],
       'pins': <dynamic>[],
@@ -112,6 +115,8 @@ String _knownFactsJson() => jsonEncode(<String, dynamic>{
       'damage_regions': <dynamic>[],
       'suspect_regions': <dynamic>[],
       'visual_traces': <dynamic>[],
+      if (projectionProvenance != null)
+        'projection_provenance': projectionProvenance,
     });
 
 String _schemaVersionsJson() => jsonEncode(<String, dynamic>{
@@ -133,6 +138,8 @@ Uint8List _createProjectZip({
   String rootPrefix = '',
   bool includeManifest = true,
   String? manifestRaw,
+  List<int> eventsBytes = const <int>[],
+  String? knownFactsRaw,
   String? schemaVersionsRaw,
   Object intake = _absentIntake,
 }) {
@@ -148,8 +155,12 @@ Uint8List _createProjectZip({
       manifestRaw ?? _manifestJson(),
     );
   }
-  _addArchiveText(archive, path('events.jsonl'), '');
-  _addArchiveText(archive, path('known_facts.json'), _knownFactsJson());
+  _addArchiveBytes(archive, path('events.jsonl'), eventsBytes);
+  _addArchiveText(
+    archive,
+    path('known_facts.json'),
+    knownFactsRaw ?? _knownFactsJson(),
+  );
   _addArchiveText(
     archive,
     path('exports/customer_report.md'),
@@ -179,7 +190,10 @@ Uint8List _createProjectZip({
   return Uint8List.fromList(encoded);
 }
 
-Future<Directory> _createLocalProjectDirectoryForLoaderTest() async {
+Future<Directory> _createLocalProjectDirectoryForLoaderTest({
+  List<int> eventsBytes = const <int>[],
+  String? knownFactsRaw,
+}) async {
   final directory =
       await Directory.systemTemp.createTemp('tracebench-loader-test-');
 
@@ -196,35 +210,10 @@ Future<Directory> _createLocalProjectDirectoryForLoaderTest() async {
   );
 
   await File('${directory.path}${Platform.pathSeparator}events.jsonl')
-      .writeAsString('');
+      .writeAsBytes(eventsBytes);
 
   await File('${directory.path}${Platform.pathSeparator}known_facts.json')
-      .writeAsString(
-    jsonEncode({
-      'project_id': 'inline_project',
-      'components': <dynamic>[],
-      'pins': <dynamic>[],
-      'measurements': [
-        {
-          'measurement_id': 'M001',
-          'mode': 'continuity',
-          'from': 'Q2.1',
-          'to': 'R17.1',
-          'reading': {'kind': 'numeric', 'value': 1, 'unit': 'ohm'},
-          'power_state': 'off',
-          'origin_event_id': 'evt_000001',
-          'validity_status': 'active',
-        },
-      ],
-      'nets': <dynamic>[],
-      'excluded_from_fault_candidates': <dynamic>[],
-      'component_pin_index': <String, dynamic>{},
-      'photos': <dynamic>[],
-      'damage_regions': <dynamic>[],
-      'suspect_regions': <dynamic>[],
-      'visual_traces': <dynamic>[],
-    }),
-  );
+      .writeAsString(knownFactsRaw ?? _knownFactsJson());
 
   await Directory(
     '${directory.path}${Platform.pathSeparator}metadata',
@@ -250,7 +239,308 @@ Future<Directory> _createLocalProjectDirectoryForLoaderTest() async {
   return directory;
 }
 
+Map<String, dynamic> _projectionProvenanceFor(List<int> eventsBytes) =>
+    <String, dynamic>{
+      'projection_contract_version': '1.0',
+      'events_sha256': sha256.convert(eventsBytes).toString(),
+    };
+
+class _OffsetAssetBundle extends CachingAssetBundle {
+  _OffsetAssetBundle({
+    required this.eventsBytes,
+    required this.knownFactsRaw,
+  });
+
+  final List<int> eventsBytes;
+  final String knownFactsRaw;
+  int eventsLoadCalls = 0;
+  int eventsLoadStringCalls = 0;
+
+  @override
+  Future<ByteData> load(String key) async {
+    if (!key.endsWith('/events.jsonl')) {
+      throw StateError('Unexpected binary asset: $key');
+    }
+    eventsLoadCalls += 1;
+    final wrapped = Uint8List.fromList(<int>[
+      0xFE,
+      0xED,
+      ...eventsBytes,
+      0xBE,
+      0xEF,
+    ]);
+    return ByteData.view(wrapped.buffer, 2, eventsBytes.length);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    if (key.endsWith('/events.jsonl')) {
+      eventsLoadStringCalls += 1;
+      throw StateError('events.jsonl must be loaded as exact bytes');
+    }
+    if (key.endsWith('/manifest.json')) return _manifestJson();
+    if (key.endsWith('/known_facts.json')) return knownFactsRaw;
+    if (key.endsWith('/exports/customer_report.md')) {
+      return '# Inline report\n';
+    }
+    throw StateError('Unexpected text asset: $key');
+  }
+}
+
 void main() {
+  group('ProjectState projection freshness authority', () {
+    test('defaults to unknown and supports every explicit tri-state', () async {
+      final loaded = await ProjectLoader.loadFromZipBytes(_createProjectZip());
+
+      ProjectState state({
+        ProjectionFreshness projectionFreshness = ProjectionFreshness.unknown,
+        bool isProjectionStale = false,
+      }) {
+        return ProjectState(
+          manifest: loaded.manifest,
+          knownFacts: loaded.knownFacts,
+          events: loaded.events,
+          customerReport: loaded.customerReport,
+          projectionFreshness: projectionFreshness,
+          isProjectionStale: isProjectionStale,
+        );
+      }
+
+      expect(state().projectionFreshness, ProjectionFreshness.unknown);
+      expect(
+        state(projectionFreshness: ProjectionFreshness.fresh)
+            .projectionFreshness,
+        ProjectionFreshness.fresh,
+      );
+      expect(
+        state(projectionFreshness: ProjectionFreshness.stale)
+            .projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+      expect(
+        state(projectionFreshness: ProjectionFreshness.unknown)
+            .projectionFreshness,
+        ProjectionFreshness.unknown,
+      );
+    });
+
+    test('legacy constructor boolean is true-only stale compatibility',
+        () async {
+      final loaded = await ProjectLoader.loadFromZipBytes(_createProjectZip());
+
+      ProjectState state({
+        ProjectionFreshness projectionFreshness = ProjectionFreshness.unknown,
+        required bool isProjectionStale,
+      }) {
+        return ProjectState(
+          manifest: loaded.manifest,
+          knownFacts: loaded.knownFacts,
+          events: loaded.events,
+          customerReport: loaded.customerReport,
+          projectionFreshness: projectionFreshness,
+          isProjectionStale: isProjectionStale,
+        );
+      }
+
+      expect(
+        state(isProjectionStale: true).projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+      expect(
+        state(
+          projectionFreshness: ProjectionFreshness.unknown,
+          isProjectionStale: false,
+        ).projectionFreshness,
+        ProjectionFreshness.unknown,
+      );
+      expect(
+        state(
+          projectionFreshness: ProjectionFreshness.stale,
+          isProjectionStale: false,
+        ).projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+      expect(
+        state(
+          projectionFreshness: ProjectionFreshness.fresh,
+          isProjectionStale: true,
+        ).projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+    });
+
+    test('copyWith false preserves freshness and getter derives only stale',
+        () async {
+      final base = await ProjectLoader.loadFromZipBytes(_createProjectZip());
+      final fresh = base.copyWith(
+        projectionFreshness: ProjectionFreshness.fresh,
+      );
+      final stale = fresh.copyWith(isProjectionStale: true);
+      final unknown = stale.copyWith(
+        projectionFreshness: ProjectionFreshness.unknown,
+      );
+
+      expect(fresh.isProjectionStale, isFalse);
+      expect(stale.isProjectionStale, isTrue);
+      expect(unknown.isProjectionStale, isFalse);
+      expect(
+        stale.copyWith(isProjectionStale: false).projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+      expect(
+        unknown.copyWith(isProjectionStale: false).projectionFreshness,
+        ProjectionFreshness.unknown,
+      );
+      expect(
+        fresh.copyWith(isProjectionStale: false).projectionFreshness,
+        ProjectionFreshness.fresh,
+      );
+      expect(
+        stale
+            .copyWith(
+              projectionFreshness: ProjectionFreshness.fresh,
+              isProjectionStale: false,
+            )
+            .projectionFreshness,
+        ProjectionFreshness.fresh,
+      );
+      expect(
+        fresh
+            .copyWith(
+              projectionFreshness: ProjectionFreshness.unknown,
+              isProjectionStale: true,
+            )
+            .projectionFreshness,
+        ProjectionFreshness.stale,
+      );
+    });
+  });
+
+  group('projection provenance exact-byte truth table', () {
+    test('ZIP exact-byte digest distinguishes empty from one newline',
+        () async {
+      final emptyBytes = utf8.encode('');
+      final newlineBytes = utf8.encode('\n');
+      final fresh = await ProjectLoader.loadFromZipBytes(
+        _createProjectZip(
+          eventsBytes: newlineBytes,
+          knownFactsRaw: _knownFactsJson(
+            projectionProvenance: _projectionProvenanceFor(newlineBytes),
+          ),
+        ),
+      );
+      final stale = await ProjectLoader.loadFromZipBytes(
+        _createProjectZip(
+          eventsBytes: newlineBytes,
+          knownFactsRaw: _knownFactsJson(
+            projectionProvenance: _projectionProvenanceFor(emptyBytes),
+          ),
+        ),
+      );
+
+      expect(fresh.events, isEmpty);
+      expect(stale.events, isEmpty);
+      expect(fresh.projectionFreshness, ProjectionFreshness.fresh);
+      expect(stale.projectionFreshness, ProjectionFreshness.stale);
+    });
+
+    test('directory reads once then hashes and parses that captured snapshot',
+        () async {
+      final eventsBytes = utf8.encode('\n');
+      final freshDirectory = await _createLocalProjectDirectoryForLoaderTest(
+        eventsBytes: eventsBytes,
+        knownFactsRaw: _knownFactsJson(
+          projectionProvenance: _projectionProvenanceFor(eventsBytes),
+        ),
+      );
+      addTearDown(() => freshDirectory.delete(recursive: true));
+      var readCount = 0;
+
+      final fresh = await ProjectLoader.loadFromDirectory(
+        freshDirectory.path,
+        eventsByteReader: (file) async {
+          readCount += 1;
+          final capturedBytes = await file.readAsBytes();
+          await file.writeAsString('{not-json\n', flush: true);
+          return capturedBytes;
+        },
+      );
+
+      expect(readCount, 1);
+      expect(fresh.events, isEmpty);
+      expect(fresh.projectionFreshness, ProjectionFreshness.fresh);
+    });
+
+    test('assets load events once as an exact offset ByteData view', () async {
+      final eventsBytes = utf8.encode('\n');
+      final bundle = _OffsetAssetBundle(
+        eventsBytes: eventsBytes,
+        knownFactsRaw: _knownFactsJson(
+          projectionProvenance: _projectionProvenanceFor(eventsBytes),
+        ),
+      );
+
+      final loaded = await ProjectLoader.loadFromAssets(assetBundle: bundle);
+
+      expect(loaded.events, isEmpty);
+      expect(loaded.projectionFreshness, ProjectionFreshness.fresh);
+      expect(bundle.eventsLoadCalls, 1);
+      expect(bundle.eventsLoadStringCalls, 0);
+    });
+
+    test('absent malformed and unsupported provenance stay unknown', () async {
+      final cases = <Object?>[
+        null,
+        'not-an-object',
+        const <String, dynamic>{},
+        const <String, dynamic>{
+          'projection_contract_version': '1.0',
+          'events_sha256':
+              'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        },
+        const <String, dynamic>{
+          'projection_contract_version': '1.0',
+          'events_sha256': 64,
+        },
+        <String, dynamic>{
+          'projection_contract_version': '2.0',
+          'events_sha256': '0' * 64,
+        },
+      ];
+
+      for (final provenance in cases) {
+        final loaded = await ProjectLoader.loadFromZipBytes(
+          _createProjectZip(
+            knownFactsRaw: _knownFactsJson(
+              projectionProvenance: provenance,
+            ),
+          ),
+        );
+        expect(
+          loaded.projectionFreshness,
+          ProjectionFreshness.unknown,
+          reason: '$provenance',
+        );
+      }
+    });
+
+    test('malformed required events and known facts remain load errors',
+        () async {
+      await expectLater(
+        ProjectLoader.loadFromZipBytes(
+          _createProjectZip(eventsBytes: utf8.encode('{not-json\n')),
+        ),
+        throwsA(isA<FormatException>()),
+      );
+      await expectLater(
+        ProjectLoader.loadFromZipBytes(
+          _createProjectZip(knownFactsRaw: '[]'),
+        ),
+        throwsA(isA<ProjectLoadException>()),
+      );
+    });
+  });
+
   test('loadFromZipBytes rejects ZIP missing manifest.json', () async {
     const projectId = 'prj_pelle_pv20_001';
     const eventsJsonl = '''
@@ -296,7 +586,7 @@ void main() {
     );
   });
 
-  test('loadFromDirectory preserves projectDirectory and fresh disk state',
+  test('loadFromDirectory preserves projectDirectory and unknown legacy state',
       () async {
     final directory = await _createLocalProjectDirectoryForLoaderTest();
     addTearDown(() => directory.delete(recursive: true));
@@ -308,6 +598,7 @@ void main() {
     expect(loaded.measurementCount, 1);
     expect(loaded.customerReport, '# Inline report\n');
     expect(loaded.isProjectionStale, isFalse);
+    expect(loaded.projectionFreshness, ProjectionFreshness.unknown);
   });
 
   test('loadFromDirectory does not write known_facts.json or events.jsonl',
@@ -552,6 +843,24 @@ void main() {
     test('keeps project load successful for invalid intake UTF-8', () async {
       final loaded = await ProjectLoader.loadFromZipBytes(
         _createProjectZip(intake: <int>[0xC3, 0x28]),
+      );
+
+      expect(loaded.manifest.projectId, 'inline_project');
+      expect(loaded.wizardIntake, isNull);
+      expect(loaded.wizardIntakeWarning, _wizardIntakeWarning);
+    });
+
+    test('invalid optional archive content degrades to the intake warning',
+        () async {
+      final zipBytes = _createProjectZip();
+      final archive = ZipDecoder().decodeBytes(zipBytes, verify: true)
+        ..addFile(
+          ArchiveFile('notes/wizard_intake.json', 0, Object()),
+        );
+
+      final loaded = await ProjectLoader.loadFromZipBytes(
+        zipBytes,
+        archiveDecoder: (_) => archive,
       );
 
       expect(loaded.manifest.projectId, 'inline_project');

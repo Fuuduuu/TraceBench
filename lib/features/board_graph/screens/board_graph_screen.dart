@@ -62,7 +62,7 @@ class _BoardGraphScreenState extends ConsumerState<BoardGraphScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ProjectionStaleBanner(
-                isStale: projectState.isProjectionStale,
+                freshness: projectState.projectionFreshness,
                 contextLabel: 'Board graph',
               ),
               const Padding(

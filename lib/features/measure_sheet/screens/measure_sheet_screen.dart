@@ -5,6 +5,7 @@ import '../../../app/app.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/trace_bench_event.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 import '../services/v2_save_measurement_writer.dart';
 
 class MeasureSheetScreen extends ConsumerStatefulWidget {
@@ -234,6 +235,9 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  ProjectionStaleBanner(
+                    freshness: projectState.projectionFreshness,
+                  ),
                   _SafetyBanner(selection: selection),
                   const SizedBox(height: 16),
                   if (isNarrow) ...[
@@ -825,11 +829,6 @@ class _MeasureSheetPanel extends StatelessWidget {
               Text(
                 successMessage!,
                 key: const ValueKey('measure-sheet-success-message'),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'Projection stale until refresh.',
-                key: ValueKey('measure-sheet-stale-projection-message'),
               ),
             ],
             if (errorMessage != null) ...[

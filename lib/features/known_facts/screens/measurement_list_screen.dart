@@ -22,7 +22,7 @@ class MeasurementListScreen extends ConsumerWidget {
         itemBuilder: (_, index) {
           if (index == 0) {
             return ProjectionStaleBanner(
-              isStale: projectState.isProjectionStale,
+              freshness: projectState.projectionFreshness,
             );
           }
 

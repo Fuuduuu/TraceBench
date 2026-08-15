@@ -11,9 +11,11 @@ import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 ProjectState _inlineProjectState({
   String? projectDirectory,
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
   List<Map<String, dynamic>>? components,
   List<Map<String, dynamic>>? pins,
   List<Map<String, dynamic>>? measurements,
@@ -62,6 +64,7 @@ ProjectState _inlineProjectState({
     events: const [],
     customerReport: 'Inline sample report',
     projectDirectory: projectDirectory,
+    projectionFreshness: projectionFreshness,
   );
 }
 
@@ -207,6 +210,24 @@ Future<void> _tapSaveMeasurement(
 }
 
 void main() {
+  testWidgets('unknown freshness warning keeps measure controls available',
+      (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        _inlineProjectState(
+          projectionFreshness: ProjectionFreshness.unknown,
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('measure-sheet-unit-dropdown')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('renders technician-first read-only flow labels', (tester) async {
     await tester.pumpWidget(_harness(_inlineProjectState()));
     await tester.pump(const Duration(milliseconds: 16));
@@ -229,12 +250,14 @@ void main() {
     expect(find.text('Tehnilised detailid'), findsOneWidget);
   });
 
-  testWidgets('shows measure-sheet-unit-dropdown as the only unit UI affordance',
+  testWidgets(
+      'shows measure-sheet-unit-dropdown as the only unit UI affordance',
       (tester) async {
     await tester.pumpWidget(_harness(_inlineProjectState()));
     await tester.pump(const Duration(milliseconds: 16));
 
-    final unitDropdown = find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
+    final unitDropdown =
+        find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
     expect(unitDropdown, findsOneWidget);
     expect(find.text('Ühik'), findsOneWidget);
 
@@ -250,7 +273,8 @@ void main() {
 
     await _enterSaveMeasurement(tester, unit: 'Diode');
 
-    final unitDropdown = find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
+    final unitDropdown =
+        find.byKey(const ValueKey('measure-sheet-unit-dropdown'));
     expect(
       find.descendant(
         of: unitDropdown,
@@ -398,8 +422,10 @@ void main() {
         '1.23',
       );
       await tester.pump();
-      await tester.ensureVisible(find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
-      await tester.tap(find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
+      await tester.ensureVisible(
+          find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
+      await tester
+          .tap(find.byKey(const ValueKey('measure-sheet-unit-dropdown')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('V').last);
       await tester.pump();
@@ -434,10 +460,22 @@ void main() {
     },
   );
 
-testWidgets('valid Save Measurement calls writer once and keeps Koht',
+  testWidgets('valid Save Measurement calls writer once and keeps Koht',
       (tester) async {
     final writer = _FakeSaveMeasurementWriter();
-    await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));
+    final container = ProviderContainer(
+      overrides: [
+        projectStateProvider.overrideWith((_) => _inlineProjectState()),
+        v2SaveMeasurementWriterProvider.overrideWithValue(writer),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: MeasureSheetScreen()),
+      ),
+    );
     await tester.pump(const Duration(milliseconds: 16));
 
     await _selectMeasurementTarget(tester, 'Komponent: Q2');
@@ -456,11 +494,15 @@ testWidgets('valid Save Measurement calls writer once and keeps Koht',
     expect(writer.requests.single.componentId, 'Q2');
     expect(writer.requests.single.pinId, isNull);
     expect(find.text('Salvestatud.'), findsOneWidget);
-    expect(find.text('Projection stale until refresh.'), findsOneWidget);
+    expect(
+      container.read(projectStateProvider)?.projectionFreshness,
+      ProjectionFreshness.stale,
+    );
+    expect(find.text('Projection stale until refresh.'), findsNothing);
     expect(find.text('Q2'), findsAtLeastNWidgets(1));
   });
 
-testWidgets('rapid double tap does not duplicate writer calls',
+  testWidgets('rapid double tap does not duplicate writer calls',
       (tester) async {
     final writer = _FakeSaveMeasurementWriter();
     await tester.pumpWidget(_harness(_inlineProjectState(), writer: writer));

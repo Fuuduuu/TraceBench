@@ -48,7 +48,8 @@ class CustomerReportScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ProjectionStaleBanner(
-                      isStale: projectState.isProjectionStale),
+                    freshness: projectState.projectionFreshness,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: Markdown(

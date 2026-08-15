@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class ComponentListScreen extends ConsumerWidget {
   const ComponentListScreen({super.key});
@@ -16,9 +17,15 @@ class ComponentListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Komponentide nimekiri')),
       body: ListView.builder(
-        itemCount: projectState.knownFacts.components.length,
+        itemCount: projectState.knownFacts.components.length + 1,
         itemBuilder: (_, index) {
-          final component = projectState.knownFacts.components[index];
+          if (index == 0) {
+            return ProjectionStaleBanner(
+              freshness: projectState.projectionFreshness,
+            );
+          }
+
+          final component = projectState.knownFacts.components[index - 1];
           return ListTile(
             title: Text(component.componentId),
             subtitle: Text(

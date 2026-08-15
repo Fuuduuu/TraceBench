@@ -19,6 +19,7 @@ import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/trace_bench_event.dart';
 import '../../../shared/models/wizard_intake.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 const double _kCompactBoardCanvasAppBarHeight = 36;
 const double _kCompactControlTileHeight = 34;
@@ -1557,6 +1558,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         const _EmptyState(
           title: 'No components recorded for this project.',
         ),
+        projectionFreshness: projectState.projectionFreshness,
       );
     }
 
@@ -2445,6 +2447,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
           ),
         ),
       ),
+      projectionFreshness: projectState.projectionFreshness,
     );
   }
 
@@ -2506,7 +2509,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return null;
   }
 
-  Widget _buildScaffold(BuildContext context, Widget content) {
+  Widget _buildScaffold(
+    BuildContext context,
+    Widget content, {
+    ProjectionFreshness? projectionFreshness,
+  }) {
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: _kBoardCanvasShell,
@@ -2580,6 +2587,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            if (projectionFreshness != null)
+              ProjectionStaleBanner(
+                freshness: projectionFreshness,
+                compact: true,
+              ),
             Expanded(child: content),
             Container(
               key: const Key('board_canvas_status_bar'),

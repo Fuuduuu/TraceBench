@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
+import '../../../shared/widgets/projection_stale_banner.dart';
 
 class NotPopulatedScreen extends ConsumerWidget {
   const NotPopulatedScreen({super.key});
@@ -18,6 +19,9 @@ class NotPopulatedScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Puudub populeerimine')),
       body: ListView(
         children: [
+          ProjectionStaleBanner(
+            freshness: projectState.projectionFreshness,
+          ),
           for (final item in excluded)
             ListTile(
               leading: const Icon(Icons.block),

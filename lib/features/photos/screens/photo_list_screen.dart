@@ -17,16 +17,17 @@ class PhotoListScreen extends ConsumerWidget {
         body: Center(child: Text('No project loaded')),
       );
     }
+    final freshnessBanner = ProjectionStaleBanner(
+      freshness: projectState.projectionFreshness,
+      contextLabel: 'Photo evidence',
+    );
 
     if (projectState.knownFacts.photos.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text('Foto tõendid')),
         body: Column(
           children: [
-            ProjectionStaleBanner(
-              isStale: projectState.isProjectionStale,
-              contextLabel: 'Photo evidence',
-            ),
+            freshnessBanner,
             const Expanded(child: Center(child: Text('Fotosid ei leitud'))),
           ],
         ),
@@ -41,10 +42,7 @@ class PhotoListScreen extends ConsumerWidget {
         separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (_, index) {
           if (index == 0) {
-            return ProjectionStaleBanner(
-              isStale: projectState.isProjectionStale,
-              contextLabel: 'Photo evidence',
-            );
+            return freshnessBanner;
           }
 
           final photo = projectState.knownFacts.photos[index - 1];

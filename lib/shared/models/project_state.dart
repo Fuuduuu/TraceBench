@@ -5,6 +5,8 @@ import 'known_facts.dart';
 import 'trace_bench_event.dart';
 import 'wizard_intake.dart';
 
+enum ProjectionFreshness { fresh, stale, unknown }
+
 class ProjectState {
   const ProjectState({
     required this.manifest,
@@ -13,10 +15,12 @@ class ProjectState {
     required this.customerReport,
     this.schemaVersions,
     this.projectDirectory,
-    this.isProjectionStale = false,
+    ProjectionFreshness projectionFreshness = ProjectionFreshness.unknown,
+    bool isProjectionStale = false,
     this.wizardIntake,
     this.wizardIntakeWarning,
-  });
+  }) : projectionFreshness =
+            isProjectionStale ? ProjectionFreshness.stale : projectionFreshness;
 
   final ProjectManifest manifest;
   final KnownFacts knownFacts;
@@ -24,7 +28,10 @@ class ProjectState {
   final String customerReport;
   final Map<String, dynamic>? schemaVersions;
   final String? projectDirectory;
-  final bool isProjectionStale;
+  final ProjectionFreshness projectionFreshness;
+
+  bool get isProjectionStale =>
+      projectionFreshness == ProjectionFreshness.stale;
 
   /// Optional noncanonical presentation input for visual planning.
   final WizardIntake? wizardIntake;
@@ -39,6 +46,7 @@ class ProjectState {
     String? customerReport,
     Map<String, dynamic>? schemaVersions,
     String? projectDirectory,
+    ProjectionFreshness? projectionFreshness,
     bool? isProjectionStale,
     WizardIntake? wizardIntake,
     String? wizardIntakeWarning,
@@ -50,7 +58,8 @@ class ProjectState {
       customerReport: customerReport ?? this.customerReport,
       schemaVersions: schemaVersions ?? this.schemaVersions,
       projectDirectory: projectDirectory ?? this.projectDirectory,
-      isProjectionStale: isProjectionStale ?? this.isProjectionStale,
+      projectionFreshness: projectionFreshness ?? this.projectionFreshness,
+      isProjectionStale: isProjectionStale == true,
       wizardIntake: wizardIntake ?? this.wizardIntake,
       wizardIntakeWarning: wizardIntakeWarning ?? this.wizardIntakeWarning,
     );

@@ -12,6 +12,7 @@ import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
+import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 class _FakeEditComponentWriter implements V2EditComponentWriter {
   _FakeEditComponentWriter({
@@ -50,6 +51,7 @@ class _FakeEditComponentWriter implements V2EditComponentWriter {
 ProjectState _inlineProjectState({
   List<TraceBenchEvent> events = const [],
   bool includeComponents = true,
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
 }) {
   return ProjectState(
     manifest: const ProjectManifest(
@@ -80,6 +82,7 @@ ProjectState _inlineProjectState({
     events: events,
     customerReport: 'Inline report',
     projectDirectory: 'C:\\tracebench_fake_project',
+    projectionFreshness: projectionFreshness,
   );
 }
 
@@ -204,6 +207,22 @@ Future<void> _tapEditComponentButton(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('unknown freshness warning keeps edit controls available',
+      (tester) async {
+    await _pumpEditComponentScreen(
+      tester,
+      projectState: _inlineProjectState(
+        projectionFreshness: ProjectionFreshness.unknown,
+      ),
+    );
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('edit-component-select-dropdown')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('renders Edit Component safety copy and starts disabled',
       (tester) async {
     await _pumpEditComponentScreen(tester);
@@ -332,7 +351,11 @@ void main() {
     expect(updatedState?.events.single.eventType, 'component_updated');
     expect(updatedState?.isProjectionStale, isTrue);
     expect(find.text('Muudetud.'), findsOneWidget);
-    expect(find.text('Projection stale until refresh.'), findsOneWidget);
+    expect(
+      container.read(projectStateProvider)?.projectionFreshness,
+      ProjectionFreshness.stale,
+    );
+    expect(find.text('Projection stale until refresh.'), findsNothing);
   });
 
   testWidgets('technical details disclose writer and component_updated type',

@@ -10,7 +10,9 @@ import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 
 ProjectState _inlineProjectState(
-    {bool isProjectionStale = false, bool includeBothValidity = false}) {
+    {ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
+    bool isProjectionStale = false,
+    bool includeBothValidity = false}) {
   final measurements = <Map<String, dynamic>>[
     {
       'measurement_id': 'M001',
@@ -60,6 +62,7 @@ ProjectState _inlineProjectState(
     }),
     events: const [],
     customerReport: 'Inline sample report',
+    projectionFreshness: projectionFreshness,
   ).copyWith(isProjectionStale: isProjectionStale);
 }
 
@@ -79,9 +82,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.secondaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleSecondaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
     expect(find.text('Refresh'), findsNothing);
     expect(find.text('Värskenda'), findsNothing);
     expect(find.text('Export now'), findsNothing);
@@ -89,6 +92,27 @@ void main() {
     expect(find.text('Run materializer'), findsNothing);
     expect(find.text('Käivita materializer'), findsNothing);
     expect(find.text('Uuenda nüüd'), findsNothing);
+  });
+
+  testWidgets('shows distinct unknown freshness warning without blocking list',
+      (tester) async {
+    final projectState = _inlineProjectState(
+      projectionFreshness: ProjectionFreshness.unknown,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => true),
+        ],
+        child: const MaterialApp(home: MeasurementListScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(find.textContaining('M001:'), findsOneWidget);
   });
 
   testWidgets('stale and active human labels are shown', (tester) async {
@@ -112,6 +136,7 @@ void main() {
     expect(find.textContaining('Aegunud pärast remonti'), findsOneWidget);
     expect(find.textContaining('Aktiivne'), findsOneWidget);
     expect(find.textContaining('evt_'), findsNothing);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
   });
 }

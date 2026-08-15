@@ -1,80 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
+import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/board_graph/screens/board_graph_screen.dart';
+import 'package:trace_bench_viewer/features/components/screens/edit_component_screen.dart';
+import 'package:trace_bench_viewer/features/known_facts/screens/component_list_screen.dart';
+import 'package:trace_bench_viewer/features/known_facts/screens/known_facts_viewer_screen.dart';
 import 'package:trace_bench_viewer/features/known_facts/screens/measurement_list_screen.dart';
+import 'package:trace_bench_viewer/features/known_facts/screens/not_populated_screen.dart';
+import 'package:trace_bench_viewer/features/known_facts/screens/pin_list_screen.dart';
+import 'package:trace_bench_viewer/features/measure_sheet/screens/measure_sheet_screen.dart';
 import 'package:trace_bench_viewer/features/photos/screens/photo_list_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/features/report/screens/customer_report_screen.dart';
+import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 
 void main() {
-  testWidgets('stale banner is visible across derived views and navigation',
+  testWidgets('stale banner appears exactly once on all twelve derived views',
       (tester) async {
-    final projectState = (await ProjectLoader.loadFromAssets())
-        .copyWith(isProjectionStale: true);
+    final loaded = await ProjectLoader.loadFromAssets();
+    expect(loaded.projectionFreshness, ProjectionFreshness.fresh);
+    final projectState = loaded.copyWith(isProjectionStale: true);
+    expect(projectState.projectionFreshness, ProjectionFreshness.stale);
+    final router = buildTraceBenchRouter(initialLocation: '/project/overview');
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [projectStateProvider.overrideWith((_) => projectState)],
-        child: MaterialApp.router(
-          routerConfig:
-              buildTraceBenchRouter(initialLocation: '/project/overview'),
-        ),
+        child: MaterialApp.router(routerConfig: router),
       ),
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    addTearDown(router.dispose);
 
-    expect(find.byType(ProjectOverviewScreen), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Kõik komponendid'), findsOneWidget);
+    final cases = <(String, Finder)>[
+      ('/project', find.byType(BoardCanvasScreen)),
+      ('/project/overview', find.byType(ProjectOverviewScreen)),
+      ('/project/components', find.byType(ComponentListScreen)),
+      ('/project/components/edit', find.byType(EditComponentScreen)),
+      ('/project/measurements', find.byType(MeasurementListScreen)),
+      ('/project/measure-sheet', find.byType(MeasureSheetScreen)),
+      ('/project/not-populated', find.byType(NotPopulatedScreen)),
+      ('/project/pins', find.byType(PinListScreen)),
+      ('/project/graph', find.byType(BoardGraphScreen)),
+      ('/project/known-facts', find.byType(KnownFactsViewerScreen)),
+      ('/project/photos', find.byType(PhotoListScreen)),
+      ('/project/report', find.byType(CustomerReportScreen)),
+    ];
 
-    GoRouter.of(tester.element(find.byType(ProjectOverviewScreen))).go(
-      '/project/measurements',
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    for (final (path, screenFinder) in cases) {
+      router.go(path);
+      await tester.pumpAndSettle();
 
-    expect(find.byType(MeasurementListScreen), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Mõõtmised'), findsAtLeast(1));
+      expect(screenFinder, findsOneWidget, reason: path);
+      expect(find.byType(ProjectionStaleBanner), findsOneWidget, reason: path);
+      expect(
+        find.text(ProjectionStaleBanner.stalePrimaryText),
+        findsOneWidget,
+        reason: path,
+      );
+    }
 
-    GoRouter.of(tester.element(find.byType(MeasurementListScreen))).go(
-      '/project/graph',
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-
-    expect(find.byType(BoardGraphScreen), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Board graph'), findsOneWidget);
-
-    GoRouter.of(tester.element(find.byType(BoardGraphScreen)))
-        .go('/project/photos');
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-
-    expect(find.byType(PhotoListScreen), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Foto tõendid'), findsAtLeastNWidgets(1));
-
-    GoRouter.of(tester.element(find.byType(PhotoListScreen)))
-        .go('/project/report');
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-
-    expect(find.byType(CustomerReportScreen), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsAtLeast(1));
-    expect(find.text('Kliendiraport'), findsOneWidget);
     expect(find.text('Export now'), findsNothing);
     expect(find.text('Ekspordi kohe'), findsNothing);
     expect(find.text('Run materializer'), findsNothing);
     expect(find.text('Käivita materializer'), findsNothing);
   });
+
 }

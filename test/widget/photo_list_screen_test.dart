@@ -14,6 +14,7 @@ ProjectState _inlineProjectState({
   required List<Map<String, dynamic>> damageRegions,
   required List<Map<String, dynamic>> suspectRegions,
   required List<Map<String, dynamic>> visualTraces,
+  ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
 }) {
   return ProjectState(
     manifest: ProjectManifest.fromJson({
@@ -38,6 +39,7 @@ ProjectState _inlineProjectState({
     }),
     events: const [],
     customerReport: 'Inline photo report',
+    projectionFreshness: projectionFreshness,
   );
 }
 
@@ -69,8 +71,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text(ProjectionStaleBanner.primaryText), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.passiveTagText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.staleTagText), findsOneWidget);
     expect(find.text('Režiim: macro'), findsOneWidget);
   });
 
@@ -95,8 +97,57 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Fotosid ei leitud'), findsOneWidget);
-    expect(find.text(ProjectionStaleBanner.primaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsNothing);
     expect(find.byType(Card), findsNothing);
+  });
+
+  testWidgets('empty photos show exactly one stale warning', (tester) async {
+    final projectState = _inlineProjectState(
+      photos: const [],
+      damageRegions: const [],
+      suspectRegions: const [],
+      visualTraces: const [],
+      projectionFreshness: ProjectionFreshness.stale,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => true),
+        ],
+        child: const MaterialApp(home: PhotoListScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsOneWidget);
+    expect(find.text('Fotosid ei leitud'), findsOneWidget);
+  });
+
+  testWidgets('unknown photo freshness uses distinct warning', (tester) async {
+    final projectState = _inlineProjectState(
+      photos: const [],
+      damageRegions: const [],
+      suspectRegions: const [],
+      visualTraces: const [],
+      projectionFreshness: ProjectionFreshness.unknown,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectStateProvider.overrideWith((_) => projectState),
+          beginnerModeProvider.overrideWith((_) => true),
+        ],
+        child: const MaterialApp(home: PhotoListScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text(ProjectionStaleBanner.unknownPrimaryText), findsOneWidget);
+    expect(find.text(ProjectionStaleBanner.stalePrimaryText), findsNothing);
   });
 
   testWidgets('beginner mode shows summary and hides raw ids/coordinates', (

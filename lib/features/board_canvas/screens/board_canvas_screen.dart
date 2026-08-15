@@ -659,7 +659,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   final ScrollController _addComponentContextScrollController =
       ScrollController();
   _WorkbenchContextPanelMode _contextPanelMode =
-      _WorkbenchContextPanelMode.hidden;
+      _WorkbenchContextPanelMode.projectNavigation;
 
   @override
   void dispose() {
@@ -2934,6 +2934,41 @@ class _ProjectNavigationHub extends StatelessWidget {
           icon: Icons.home_outlined,
           label: 'BenchBeep Home',
           location: '/',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_overview_action'),
+          icon: Icons.dashboard_outlined,
+          label: 'Project Overview',
+          location: '/project/overview',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_components_action'),
+          icon: Icons.memory_outlined,
+          label: 'Komponendid',
+          location: '/project/components',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_measurements_action'),
+          icon: Icons.straighten_outlined,
+          label: 'Mõõtmised',
+          location: '/project/measurements',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_pins_action'),
+          icon: Icons.push_pin_outlined,
+          label: 'Pinnid',
+          location: '/project/pins',
+        ),
+        const SizedBox(height: 6),
+        _action(
+          key: const Key('board_canvas_project_not_populated_action'),
+          icon: Icons.do_not_disturb_alt_outlined,
+          label: 'Täitamata',
+          location: '/project/not-populated',
         ),
         const SizedBox(height: 6),
         _action(

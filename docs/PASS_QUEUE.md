@@ -2,10 +2,60 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Shared Project Gate scope queue
+## Current Shared Project Gate Code Map maintenance queue
+
+The current queue is one Lane A
+`DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed
+implementation baseline `a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba`.
+Its exact eight-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/router.dart.md`
+7. `docs/code_maps/test/widget/project_gate_test.dart.md`
+8. `docs/audit/TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS.md`
+
+No ninth path is queued. The existing router map is refreshed, the qualifying
+gate test receives its first map, and both map headers plus only their two
+matching index Status cells enter `REVIEW_REQUIRED`. Committed
+`project_gate.dart` remains non-qualifying at `SCORE 5/12`, including an
+explicit negative check of the automatic five-behavior trigger. The Board
+Canvas test map remains unchanged under `REVIEWED_NO_CHANGE`.
+
+The registry result is exactly 30 maps and 30 rows: the two Phase-1 targets are
+`REVIEW_REQUIRED`, the other 28 pairs remain `MAINTAINED`, and there are no
+orphan or unindexed maps. One neutral ledger row and one new artifact with one
+empty verdict block provide the independent-audit handoff. Manual smoke is
+`NOT_APPLICABLE`.
+
+If independently authorized, bounded Phase 2 may touch only the verdict
+interior, matching ledger Status cell, two map Status headers, and two matching
+index Status cells. It may not change either map body, route prose, ledger
+Description, artifact exterior, or any other byte.
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+   [accepted and committed at 2b2db68]
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+   [committed at a8e0fe7]
+-> TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted Shared Project Gate scope queue and committed child (historical, non-authorizing)
+
+Commits `2b2db684ec9205cbdf003938c59f2d0d16ca33a8` and
+`a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba` preserve the completed scope and
+implementation. The queue and activation wording below is retained evidence
+only and does not override the live queue above.
 
 The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 clean committed baseline `8fd9b2ad7d720d4fc10d533f2da00241513e8e38`.

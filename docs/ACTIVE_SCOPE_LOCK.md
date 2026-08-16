@@ -2,10 +2,154 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Shared Project Gate scope Phase-1 authority
+## Current Shared Project Gate Code Map maintenance Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba
+```
+
+This is the exact docs/maps-only authority to close the committed-source Code
+Map obligations after the Shared Project Gate implementation. It authorizes no
+runtime, test, route, product, platform, or protected-semantic change.
+
+### Exact current Phase-1 write allowlist -- 8
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/router.dart.md`
+7. `docs/code_maps/test/widget/project_gate_test.dart.md`
+8. `docs/audit/TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS.md`
+
+No ninth path is authorized. The three route-owner tops may be reconciled to
+this pass, one neutral `REVIEW_REQUIRED` ledger row may be added, the router
+map may be refreshed, one first map may be created for the qualifying gate
+test, exactly their two matching index rows may be set to `REVIEW_REQUIRED`,
+and exactly one audit artifact with one named empty verdict block may be
+created.
+
+### Committed-source mapping authority
+
+The accepted scope is committed at
+`2b2db684ec9205cbdf003938c59f2d0d16ca33a8`. The only implementation mapping
+inputs are these committed `a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba`
+blobs:
+
+| Committed target | Git object id | Reproduction command |
+| --- | --- | --- |
+| `lib/app/router.dart` | `a41bef1a71fc7117102c2c33bd4391f29825a2e3` | `git rev-parse a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba:lib/app/router.dart` |
+| `lib/features/project/widgets/project_gate.dart` | `90069c07d9f1ea3d3a77d19504e288c96ce245f8` | `git rev-parse a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba:lib/features/project/widgets/project_gate.dart` |
+| `test/widget/project_gate_test.dart` | `4678aef65c04783932d7804ec8919464747afa2d` | `git rev-parse a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba:test/widget/project_gate_test.dart` |
+| `test/widget/board_canvas_screen_test.dart` | `4b5c959208f08c476c217bf8961925386fe70b12` | `git rev-parse a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba:test/widget/board_canvas_screen_test.dart` |
+
+No unfinished or speculative source may update a map.
+
+### Exact Code Map disposition
+
+- `lib/app/router.dart` keeps its human-approved qualification and is
+  `UPDATE_REQUIRED`: refresh its existing map for one shared `ProjectGate`
+  around all 15 real project targets, both unchanged aliases, the direct gate
+  dependency, focused gate-test evidence, and unchanged zero-write router
+  ownership.
+- `lib/features/project/widgets/project_gate.dart` is `NOT_APPLICABLE` at
+  `SCORE 5/12`. It has 118 physical lines, three cohesive independent
+  responsibilities, one project-state/open-action boundary, one compact
+  regression family, one recent whole-file analysis, and low adjacent-zone
+  blast ambiguity. Route inventory and cancel/failure/success mechanics are
+  owned by the router and reused `ProjectDirectoryOpenAction`, not by this
+  production file. It therefore owns fewer than five independently testable
+  behaviors and does not meet any automatic qualifier. No map or index row is
+  authorized for it.
+- `test/widget/project_gate_test.dart` is
+  `BLOCKED_CODE_MAP_REQUIRED` at entry and qualifies at `SCORE 7/12`: 418
+  physical lines, four independent families, multiple route/provider/open and
+  zero-writer boundaries, three or more regression families, one recent broad
+  analysis, and adjacent-zone blast ambiguity. Create its deterministic first
+  map at `REVIEW_REQUIRED`.
+- `test/widget/board_canvas_screen_test.dart` is `REVIEWED_NO_CHANGE`: the
+  committed child changes only the two expected loaded-state route fixtures;
+  its maintained map's stable anchors, responsibilities, flows, boundaries,
+  and 168-test family remain accurate. Its map is byte-frozen.
+
+### Registry and lifecycle
+
+Phase 1 must produce exactly 30 actual maps and 30 index rows, zero orphan and
+zero unindexed maps, exactly two `REVIEW_REQUIRED` map headers/index cells,
+and 28 unchanged `MAINTAINED` pairs. The router and new gate-test maps are the
+only Phase-1 review targets. Every Source, Map file, Type, unrelated Status,
+and unrelated map byte remains unchanged. Manual smoke is `NOT_APPLICABLE`.
+
+A clean independent map/pass audit may authorize only six mechanical Phase-2
+coordinates:
+
+1. the designated verdict-block interior;
+2. this PASS_ID's existing `docs/AUDIT_INDEX.md` Status cell;
+3. the router map Status header;
+4. the gate-test map Status header;
+5. the router matching `CODE_MAP_INDEX.md` Status cell; and
+6. the gate-test matching `CODE_MAP_INDEX.md` Status cell.
+
+Phase 2 may not change either map body or qualification, route prose, ledger
+Description, artifact exterior, another index/ledger cell, or any other byte.
+
+### Frozen boundaries and stops
+
+Byte-freeze all Dart/test/runtime source, the Board Canvas test map, every
+unrelated map/index row, `CODE_MAP_STANDARD.md`, all route definitions and
+destination screens, every writer/provider/event/fact/evidence boundary,
+Project ZIP, freshness behavior/copy/ownership, Board Canvas board-plane and
+geometry behavior, packages, Windows, tools, schemas, assets, samples, F-03,
+and every other repository byte.
+
+Stop on baseline or route mismatch, a ninth substantive path,
+`project_gate.dart` qualification, Board Canvas test-map drift, registry other
+than 30/30, unexpected frozen content, validation failure, Phase-2 execution,
+or any attempt to stage, commit, push, stash, reset, or clean.
+
+### Validation contract
+
+Run:
+
+```text
+py -3 tools/doctor.py
+py -3 tools/validate_all.py
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+Also prove the exact eight-path material set, exactly two new files, empty
+cached/unmerged sets, 30/30 registry parity, exactly two Phase-1 review pairs,
+unchanged implementation blobs, empty runtime/test/Windows content diff,
+route-owner agreement, and one empty verdict block.
+
+### Locked route
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+   [accepted and committed at 2b2db68]
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+   [committed at a8e0fe7]
+-> TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted Shared Project Gate scope and committed implementation authority (historical, non-authorizing)
+
+Commit `2b2db684ec9205cbdf003938c59f2d0d16ca33a8` preserves the accepted scope,
+and commit `a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba` preserves its completed
+implementation. All retained current/future/activation wording below is the
+scope-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS

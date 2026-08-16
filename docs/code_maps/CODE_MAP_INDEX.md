@@ -36,4 +36,5 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `test/widget/new_project_wizard_photo_editor_test.dart` | `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/new_project_wizard_problem_description_test.dart` | `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/new_project_wizard_screen_test.dart` | `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/project_gate_test.dart` | `docs/code_maps/test/widget/project_gate_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/project_overview_screen_test.dart` | `docs/code_maps/test/widget/project_overview_screen_test.dart.md` | test | `MAINTAINED` |

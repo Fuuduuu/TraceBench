@@ -1,9 +1,61 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
+Current pass: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Shared Project Gate scope Phase 1
+## Live Shared Project Gate Code Map maintenance Phase 1
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba
+```
+
+The Shared Project Gate scope is committed at `2b2db684ec9205cbdf003938c59f2d0d16ca33a8`,
+and its exact four-path implementation is committed at
+`a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba`, subject
+`feat: add shared project gate`. This docs/maps-only maintenance pass derives
+only from those committed implementation blobs and changes exactly the three
+route owners, the audit ledger, the Code Map index, the existing router map,
+one new qualifying gate-test map, and one new audit artifact.
+
+The refreshed router map records `ProjectGate` wrapping all 15 real project
+targets, the two unchanged redirect aliases, the direct gate dependency, the
+focused `project_gate_test.dart` evidence, and unchanged zero-write router
+ownership. Committed `project_gate.dart` scores `5/12` and owns fewer than
+five independently testable behaviors, so it remains non-qualifying and gets
+no map or index row. Committed `project_gate_test.dart` scores `7/12` and gets
+its first map. The Board Canvas test map is `REVIEWED_NO_CHANGE` because the
+implementation changed only its two loaded-state route fixtures.
+
+The router and new gate-test map headers plus exactly their matching index
+cells are `REVIEW_REQUIRED` in Phase 1. The other 28 map/index pairs remain
+`MAINTAINED`; the registry is 30 maps and 30 rows with no orphan or unindexed
+file. Manual smoke is `NOT_APPLICABLE` because this pass changes descriptive
+documentation only.
+
+The live route is:
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+   [accepted and committed at 2b2db68]
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+   [committed at a8e0fe7]
+-> TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Dart, test, route, destination, writer, provider, Project ZIP, freshness,
+Board Canvas, Windows, package, tool, schema, asset, sample, or product
+behavior changes in this pass.
+
+## Accepted Shared Project Gate scope and committed implementation (historical, non-authorizing)
+
+Commit `2b2db684ec9205cbdf003938c59f2d0d16ca33a8` preserves the accepted scope,
+and commit `a8e0fe7ab2ee07581674fd53ea99cbdd5ba612ba` preserves its completed
+implementation. All retained current/next/activation wording below is the
+scope-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS

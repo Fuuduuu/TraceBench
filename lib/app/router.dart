@@ -15,6 +15,7 @@ import '../features/measure_sheet/screens/measure_sheet_screen.dart';
 import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
+import '../features/project/widgets/project_gate.dart';
 import '../features/photos/screens/photo_list_screen.dart';
 import '../features/reference_images/screens/reference_images_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
@@ -43,32 +44,44 @@ GoRouter buildTraceBenchRouter({
           GoRoute(
             path: 'project',
             name: 'board-canvas',
-            builder: (_, __) => const BoardCanvasScreen(),
+            builder: (_, __) => const ProjectGate(
+              child: BoardCanvasScreen(),
+            ),
             routes: [
               GoRoute(
                 path: 'overview',
                 name: 'project-overview',
-                builder: (_, __) => const ProjectOverviewScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: ProjectOverviewScreen(),
+                ),
               ),
               GoRoute(
                 path: 'components',
                 name: 'component-list',
-                builder: (_, __) => const ComponentListScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: ComponentListScreen(),
+                ),
               ),
               GoRoute(
                 path: 'components/add',
                 name: 'add-component',
-                builder: (_, __) => const AddComponentScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: AddComponentScreen(),
+                ),
               ),
               GoRoute(
                 path: 'components/edit',
                 name: 'edit-component',
-                builder: (_, __) => const EditComponentScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: EditComponentScreen(),
+                ),
               ),
               GoRoute(
                 path: 'measurements',
                 name: 'measurement-list',
-                builder: (_, __) => const MeasurementListScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: MeasurementListScreen(),
+                ),
               ),
               GoRoute(
                 path: 'measurements/new',
@@ -78,27 +91,37 @@ GoRouter buildTraceBenchRouter({
               GoRoute(
                 path: 'measure-sheet',
                 name: 'measure-sheet',
-                builder: (_, __) => const MeasureSheetScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: MeasureSheetScreen(),
+                ),
               ),
               GoRoute(
                 path: 'not-populated',
                 name: 'not-populated',
-                builder: (_, __) => const NotPopulatedScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: NotPopulatedScreen(),
+                ),
               ),
               GoRoute(
                 path: 'pins',
                 name: 'pin-list',
-                builder: (_, __) => const PinListScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: PinListScreen(),
+                ),
               ),
               GoRoute(
                 path: 'events',
                 name: 'events',
-                builder: (_, __) => const EventsViewerScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: EventsViewerScreen(),
+                ),
               ),
               GoRoute(
                 path: 'graph',
                 name: 'board-graph',
-                builder: (_, __) => const BoardGraphScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: BoardGraphScreen(),
+                ),
               ),
               GoRoute(
                 path: 'board-canvas',
@@ -107,22 +130,30 @@ GoRouter buildTraceBenchRouter({
               GoRoute(
                 path: 'known-facts',
                 name: 'known-facts',
-                builder: (_, __) => const KnownFactsViewerScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: KnownFactsViewerScreen(),
+                ),
               ),
               GoRoute(
                 path: 'photos',
                 name: 'photos',
-                builder: (_, __) => const PhotoListScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: PhotoListScreen(),
+                ),
               ),
               GoRoute(
                 path: 'reference-images',
                 name: 'reference-images',
-                builder: (_, __) => const ReferenceImagesScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: ReferenceImagesScreen(),
+                ),
               ),
               GoRoute(
                 path: 'report',
                 name: 'customer-report',
-                builder: (_, __) => const CustomerReportScreen(),
+                builder: (_, __) => const ProjectGate(
+                  child: CustomerReportScreen(),
+                ),
               ),
             ],
           ),

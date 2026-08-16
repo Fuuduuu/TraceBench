@@ -2097,7 +2097,12 @@ void main() {
 
   testWidgets('/project is the named canonical board canvas route',
       (tester) async {
-    await tester.pumpWidget(_routerHarness(projectState: null));
+    await tester.pumpWidget(
+      _routerHarness(
+        projectState:
+            _inlineProjectState(components: const [], placements: const []),
+      ),
+    );
     await tester.pumpAndSettle();
 
     final boardCanvas = find.byType(BoardCanvasScreen);
@@ -2112,7 +2117,8 @@ void main() {
       (tester) async {
     await tester.pumpWidget(
       _routerHarness(
-        projectState: null,
+        projectState:
+            _inlineProjectState(components: const [], placements: const []),
         initialLocation: '/project/board-canvas',
       ),
     );

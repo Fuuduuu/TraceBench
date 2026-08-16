@@ -1,9 +1,75 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
 
-## Live Board Canvas navigation-contract Code Map maintenance Phase 1
+## Live Shared Project Gate scope Phase 1
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 8fd9b2ad7d720d4fc10d533f2da00241513e8e38
+```
+
+The accepted Board Canvas navigation-contract Code Map maintenance is
+committed at `8fd9b2ad7d720d4fc10d533f2da00241513e8e38`. The human selected the
+Shared Project Gate from the resulting `NEEDS_USER_DECISION` sentinel. This
+scope changes exactly the three route owners, the audit ledger, and one new
+audit artifact; it changes no runtime, test, map, index, package, platform,
+tool, schema, asset, sample, or product behavior.
+
+The reserved child introduces one shared `ProjectGate` for exactly the 15 real
+`/project` targets while preserving both redirect aliases and the complete
+route tree. With null `projectStateProvider`, the requested URI remains stable,
+the guarded child does not mount, and the gate shows the exact approved
+recovery copy and actions. `Ava projekt` delegates to the frozen
+`ProjectDirectoryOpenAction.openDirectory(...)` implementation with a
+non-null `onOpened` callback: cancel or failure retains the recovery and URI,
+while success updates project state and reveals the original child without a
+navigation to `/project`. `Tagasi avalehele` uses `context.go('/')`.
+
+The future implementation is reserved to exactly:
+
+1. `lib/features/project/widgets/project_gate.dart`
+2. `lib/app/router.dart`
+3. `test/widget/project_gate_test.dart`
+4. `test/widget/board_canvas_screen_test.dart`
+
+No fifth implementation path is reserved. The new focused test owns recovery,
+route-table, redirect, loader-outcome, URI-stability, child-mount, Home, and
+zero-writer evidence. The Board Canvas test may change only the two route tests
+that currently require a loaded fixture; its direct screen-local no-project
+test remains unchanged. Manual smoke at a supported desktop size is required
+before independent implementation audit.
+
+After accepted implementation, the maintained router map is
+`UPDATE_REQUIRED`; the two new files are requalified from committed source and
+are expected `NOT_QUALIFIED`; the Board Canvas test map is
+`REVIEWED_NO_CHANGE` only if its changes remain the two reserved fixture
+corrections. No map changes are authorized in either this scope or the child.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 8fd9b2a]
+-> TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+   [activates only after independent scope acceptance, bounded verdict
+    recording, and human exact scope commit/push]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source router Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Board Canvas navigation-contract Code Map maintenance (historical, non-authorizing)
+
+Commit `8fd9b2ad7d720d4fc10d533f2da00241513e8e38` preserves the accepted
+maintenance pass. All retained current/next/lifecycle wording below is the
+maintenance-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS

@@ -2,10 +2,223 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
 
-## Current Board Canvas navigation-contract Code Map maintenance Phase-1 authority
+## Current Shared Project Gate scope Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 8fd9b2ad7d720d4fc10d533f2da00241513e8e38
+```
+
+This is the human-selected docs-only authority to lock one Shared Project Gate
+child. It authorizes no implementation or product behavior.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. Phase 1 may reconcile only the three route-owner
+tops, add one neutral `REVIEW_REQUIRED` ledger row, and create one audit
+artifact with exactly one named empty verdict block.
+
+### Exact future implementation reservation -- 4
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / SHARED_PROJECT_GATE / ROUTE_STABLE_RECOVERY
+Write class: UI_LOCAL + PROJECTION_STATE
+```
+
+1. `lib/features/project/widgets/project_gate.dart`
+2. `lib/app/router.dart`
+3. `test/widget/project_gate_test.dart`
+4. `test/widget/board_canvas_screen_test.dart`
+
+No fifth implementation path is reserved. The reservation becomes executable
+only after independent scope acceptance, explicitly authorized bounded verdict
+recording, and human exact staging, commit, and push of the accepted scope.
+
+### Exact gated route inventory
+
+The router must supply the guarded child to one shared `ProjectGate` for
+exactly these 15 real targets:
+
+1. `/project`
+2. `/project/overview`
+3. `/project/components`
+4. `/project/components/add`
+5. `/project/components/edit`
+6. `/project/measurements`
+7. `/project/measure-sheet`
+8. `/project/not-populated`
+9. `/project/pins`
+10. `/project/events`
+11. `/project/graph`
+12. `/project/known-facts`
+13. `/project/photos`
+14. `/project/reference-images`
+15. `/project/report`
+
+Do not gate or alter `/project/measurements/new`, which continues to redirect
+to `/project/measure-sheet`, or `/project/board-canvas`, which continues to
+redirect to canonical `/project`. `/project` remains Board Canvas;
+`/project/overview` remains Project Overview; every route name, path, nesting,
+and redirect remains unchanged. No `ShellRoute`, global `GoRouter` redirect,
+or route reparenting is authorized.
+
+### Shared recovery and loader contract
+
+`lib/features/project/widgets/project_gate.dart` owns a `ConsumerWidget` that
+watches `projectStateProvider` and receives its child from the router. A
+non-null project renders that child unchanged. A null project remains on the
+requested URI, does not mount the child, and renders exactly:
+
+- title: `Projekt pole avatud`;
+- supporting text: `Selle vaate kasutamiseks ava TraceBenchi projekt.`;
+- actions: `Ava projekt` and `Tagasi avalehele`.
+
+`Ava projekt` must delegate to the frozen
+`ProjectDirectoryOpenAction.openDirectory(...)` production implementation.
+The gate supplies a non-null `onOpened` callback so successful opening does not
+use the action's default `/project` navigation. Cancel leaves recovery and URI
+unchanged and does not invoke the loader. Typed or generic failure leaves null
+state, recovery, and URI unchanged while retaining the action's existing error
+presentation. Success updates `projectStateProvider`; the gate rebuild then
+reveals the child at the exact original URI. `Tagasi avalehele` uses
+`context.go('/')`.
+
+Optional gate-local deterministic seams for `directoryPicker` and
+`projectLoader` are permitted only when the focused test requires them.
+Production defaults must still delegate unchanged through
+`ProjectDirectoryOpenAction.openDirectory(...)`. Project-loading ownership may
+not move into `lib/app/router.dart`.
+
+### Exact test contract
+
+The new `test/widget/project_gate_test.dart` must prove:
+
+- exact recovery copy and both actions;
+- stable requested URI and an unmounted child while project state is null;
+- immediate child rendering with an existing project;
+- cancel without loader invocation;
+- typed and generic failure with existing feedback, stable URI, and null state;
+- successful state assignment, exact original URI, and child reveal;
+- Home resolving to `/`;
+- table-driven coverage for all 15 real gated routes;
+- canonicalization of `/project/board-canvas` to `/project`;
+- redirect of `/project/measurements/new` to `/project/measure-sheet`;
+- representative read-only and write-capable gated routes; and
+- zero writer requests during recovery and child reveal.
+
+`test/widget/board_canvas_screen_test.dart` may change only the two route tests
+that currently expect `BoardCanvasScreen` to mount with null project state;
+those fixtures receive loaded project state. Its direct screen-local
+no-project test remains unchanged. The following are inspect-only regression
+owners:
+
+- `test/widget/benchbeep_home_screen_test.dart`;
+- `test/widget/project_overview_screen_test.dart`;
+- `test/widget/edit_component_screen_test.dart`; and
+- `test/integration/projection_stale_banner_end_to_end_test.dart`.
+
+### Code Map lifecycle
+
+No Code Map or `CODE_MAP_INDEX.md` edit is authorized in the scope or child.
+After accepted implementation:
+
+- `docs/code_maps/lib/app/router.dart.md` is `UPDATE_REQUIRED`;
+- new `project_gate.dart` and `project_gate_test.dart` are requalified from
+  accepted committed source and are expected `NOT_QUALIFIED`; and
+- `board_canvas_screen_test.dart.md` is `REVIEWED_NO_CHANGE` only if the child
+  remains the two reserved fixture corrections.
+
+Any router-map maintenance occurs later in a separately scoped docs/maps pass
+against accepted committed source.
+
+### Manual-smoke and implementation validation contract
+
+Before independent implementation audit, smoke at one supported desktop size,
+preferably `1000x800`: null `/project/known-facts` shows exact recovery without
+URI change; cancel retains it; an invalid folder retains URI and existing error
+feedback; a valid project reveals Known Facts without `/project` navigation;
+repeat null-to-success at `/project/components/add` with no writer request
+before explicit submission; Home reaches `/`; and both aliases canonicalize to
+their unchanged targets where gate recovery is visible.
+
+The implementation must run:
+
+```text
+dart format --output=none --set-exit-if-changed lib/app/router.dart lib/features/project/widgets/project_gate.dart test/widget/project_gate_test.dart test/widget/board_canvas_screen_test.dart
+flutter test test/widget/project_gate_test.dart
+flutter test test/widget/board_canvas_screen_test.dart
+flutter test test/widget/benchbeep_home_screen_test.dart
+flutter test test/widget/project_overview_screen_test.dart
+flutter test test/widget/edit_component_screen_test.dart
+flutter test test/integration/projection_stale_banner_end_to_end_test.dart
+flutter analyze --no-pub
+py -3 tools\doctor.py
+py -3 tools\validate_all.py
+flutter test
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+Acceptance requires exactly four substantive paths, staged and unmerged sets
+empty, exactly the two authorized new files untracked, analyzer evidence of
+three infos / zero warnings / zero errors, and no protected, map/index, or
+Windows content diff.
+
+### Frozen boundaries and stops
+
+Byte-freeze `lib/app/app.dart`, the two-shell launcher/workbench architecture,
+`lib/features/project/screens/home_screen.dart`, the implementation and public
+behavior of `ProjectDirectoryOpenAction`, `ProjectLoader`, all Project ZIP
+semantics, all 15 destination screen sources and their screen-local null-state
+defenses, every route path/name/nesting/redirect, all Board Canvas
+writers/geometry/painters/interactions, F-01/F-05/F-16 behavior, all component
+and measurement writers, projection-freshness contract/copy/ownership, Project
+Overview source/test, Project Wizard, responsive envelope, `main.dart`, all
+Code Maps and `CODE_MAP_INDEX.md`, packages, tools, schemas, assets, samples,
+Windows, F-03, and every other nonallowlisted byte.
+
+Stop on baseline or route mismatch, a sixth Phase-1 path, a fifth
+implementation path, any need to edit `home_screen.dart`, `app.dart`, a
+destination screen, writer, `ProjectLoader`, map/index, or any validation or
+frozen-boundary failure.
+
+### Locked route
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 8fd9b2a]
+-> TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+   [activates only after independent scope acceptance, bounded verdict
+    recording, and human exact scope commit/push]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source router Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Board Canvas navigation-contract Code Map maintenance Phase-1 authority (historical, non-authorizing)
+
+Commit `8fd9b2ad7d720d4fc10d533f2da00241513e8e38` preserves the accepted
+maintenance pass. All retained current/next/lifecycle wording below is the
+maintenance-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS

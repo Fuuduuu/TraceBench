@@ -2,10 +2,89 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS`
 
-## Current Board Canvas navigation-contract Code Map maintenance queue
+## Current Shared Project Gate scope queue
+
+The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+clean committed baseline `8fd9b2ad7d720d4fc10d533f2da00241513e8e38`.
+Its exact five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS.md`
+
+No sixth path is queued. Phase 1 records the selected route, the exact future
+allowlist and boundaries, one neutral `REVIEW_REQUIRED` ledger row, and one new
+artifact with one empty verdict block. It creates no implementation, test,
+route, Code Map, index, package, tool, platform, or product diff.
+
+## Next reserved Shared Project Gate child
+
+```text
+PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / SHARED_PROJECT_GATE / ROUTE_STABLE_RECOVERY
+Write class: UI_LOCAL + PROJECTION_STATE
+```
+
+The exact implementation allowlist is:
+
+1. `lib/features/project/widgets/project_gate.dart`
+2. `lib/app/router.dart`
+3. `test/widget/project_gate_test.dart`
+4. `test/widget/board_canvas_screen_test.dart`
+
+No fifth implementation path is reserved. The child wraps exactly the 15 real
+project destinations in a shared gate, keeps both redirect aliases outside the
+gate, preserves route topology, and retains the requested URI through null,
+cancel, failure, and successful project-open recovery. Project opening must
+reuse `ProjectDirectoryOpenAction.openDirectory(...)`; the action, loader,
+destination screens, writers, shell, home screen, responsive envelope,
+freshness contract, and every other frozen owner remain unchanged.
+
+The implementation test queue is one new focused gate owner plus only two
+loaded-state fixture corrections in the Board Canvas test. It must prove exact
+copy/actions, all 15 gated targets, both aliases, no child while null, immediate
+child when loaded, cancel/typed failure/generic failure/success behavior,
+original-URI stability, Home navigation, representative read/write route
+coverage, and zero writer requests. Four existing regression owners are
+inspect-only. Manual smoke is required before independent implementation
+audit.
+
+Activation order is exact:
+
+1. independent audit of this five-file scope;
+2. explicitly authorized bounded Phase 2 in only the artifact verdict
+   interior and matching ledger Status cell;
+3. human exact staging, commit, and push of the accepted five-file scope;
+4. execute the exact four-file child;
+5. human manual smoke at a supported desktop size, preferably `1000x800`;
+6. independent implementation audit after smoke passes;
+7. human exact staging, commit, and push of the accepted child; and
+8. separately scope committed-source router Code Map maintenance, then return
+   to `NEEDS_USER_DECISION`.
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 8fd9b2a]
+-> TRACEBENCH_SHARED_PROJECT_GATE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_PROJECT_GATE_IMPL_PASS
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source router Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Board Canvas navigation-contract Code Map maintenance queue (historical, non-authorizing)
+
+Commit `8fd9b2ad7d720d4fc10d533f2da00241513e8e38` preserves the accepted
+maintenance pass. The queue and lifecycle wording below is retained evidence
+only and does not override the live queue above.
 
 The current queue is one Lane A
 `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at accepted

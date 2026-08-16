@@ -2,10 +2,57 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas navigation-contract scope queue
+## Current Board Canvas navigation-contract Code Map maintenance queue
+
+The current queue is one Lane A
+`DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at accepted
+committed implementation baseline
+`f8336645e8207870edda8b57774f5ce5243fbd24`. Its exact eight-path material
+set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS.md`
+
+No ninth path is queued. The two maps are refreshed only from committed
+source/test and enter Phase 1 at `REVIEW_REQUIRED`; only their two matching
+index cells move to the same status. All other maps and index rows remain
+unchanged. One neutral ledger row and one new artifact with one empty verdict
+block provide the standard independent-audit handoff. Manual smoke is
+`NOT_APPLICABLE`.
+
+The pass records the committed default-visible Project hub, exact ordered
+12-action inventory, five added destinations, preserved seven-action relative
+order, `Projekt`/focus restoration, canonical Canvas-Overview-Canvas round
+trip, 168-test family, and unchanged zero-write/writer/provider/freshness
+boundaries. It does not edit runtime, tests, router, Overview, or any other
+product owner.
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+   [accepted and committed at 7153f3e]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+   [accepted and committed at f833664]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted Board Canvas navigation-contract scope queue (historical, non-authorizing)
+
+Commit `7153f3ea668a1bb8538ada56d490752ff8aa7297` preserves the accepted scope,
+and commit `f8336645e8207870edda8b57774f5ce5243fbd24` preserves its completed
+implementation. The queue and activation wording below is retained evidence
+only and does not override the live queue above.
 
 The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 clean committed baseline `c61dfd8a95346940bd68ca3ccfb87c64e1901985`.

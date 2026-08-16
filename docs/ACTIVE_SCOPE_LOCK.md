@@ -2,10 +2,132 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas navigation-contract scope Phase-1 authority
+## Current Board Canvas navigation-contract Code Map maintenance Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: f8336645e8207870edda8b57774f5ce5243fbd24
+```
+
+This is the exact docs/maps-only authority to refresh the two Board Canvas
+maps from the accepted committed implementation. It authorizes no product,
+runtime, test, route, or protected-semantic change.
+
+### Exact current Phase-1 write allowlist -- 8
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS.md`
+
+No ninth path is authorized. The three route-owner tops may be reconciled to
+this pass, one neutral `REVIEW_REQUIRED` ledger row may be added, only the two
+named map bodies/headers may be refreshed, only their two matching index
+Status cells may move to `REVIEW_REQUIRED`, and exactly one new audit artifact
+with one named empty verdict block may be created.
+
+### Committed-source refresh authority
+
+The only mapping inputs are these committed `f833664` blobs:
+
+- `lib/features/board_canvas/screens/board_canvas_screen.dart` — `blob` Git
+  object `53f27a2ea5ba616d5adc31bd95f3e06ecac04d07`, produced by
+  `git rev-parse f8336645e8207870edda8b57774f5ce5243fbd24:lib/features/board_canvas/screens/board_canvas_screen.dart`;
+- `test/widget/board_canvas_screen_test.dart` — `blob` Git object
+  `089514963707bf527f2d5e3a1bddcc86f50dde68`, produced by
+  `git rev-parse f8336645e8207870edda8b57774f5ce5243fbd24:test/widget/board_canvas_screen_test.dart`.
+
+The accepted implementation changes exactly those two files. The production
+map remains qualified as `AUTO — >5000 lines + 3+ responsibilities`; the test
+map remains qualified as `AUTO — >3000 lines + 3+ test families` and records
+168 committed test declarations. Both prior maps had `UPDATE_REQUIRED`
+dispositions after implementation.
+
+The production refresh must record:
+
+- `_contextPanelMode` defaults to `projectNavigation`;
+- the Project hub is initially visible at `1000x800` and `1400x800`;
+- its exact order is Home, Overview, Components, Measurements, Pins, Not
+  Populated, Photos, Reference Images, Graph, Events, Known Facts, Report;
+- the seven older actions retain their relative order;
+- `Projekt` restores the hub and focus hide/restore preserves its selected
+  state;
+- Canvas -> Overview -> Canvas resolves to canonical `/project`; and
+- navigation is `UI_LOCAL` + `ZERO_WRITE`, leaving all writers, provider
+  state, events, freshness, and project files unchanged.
+
+The test refresh must record the exact committed helpers
+`_projectHubDestinations`, `_projectHubActionKeys`, and
+`_revealProjectHubAction`; default medium/wide hub coverage; the ordered
+12-key inventory; excluded Add Component, Edit Component, and Measure Sheet
+actions; all route checks; `Projekt`/focus restoration; canonical round trip;
+and expanded fake-writer/provider/freshness/file zero-write assertions.
+
+### Lifecycle and bounded Phase 2
+
+Phase 1 sets exactly the two map headers and two matching index Status cells
+to `REVIEW_REQUIRED`. The other 27 map/index pairs remain `MAINTAINED`.
+Manual smoke is `NOT_APPLICABLE`.
+
+A clean independent map/pass audit may authorize only six mechanical Phase-2
+coordinates:
+
+1. the designated verdict-block interior in this pass's artifact;
+2. this PASS_ID's `docs/AUDIT_INDEX.md` Status cell;
+3. the production map Status header;
+4. the test map Status header;
+5. the production matching `CODE_MAP_INDEX.md` Status cell; and
+6. the test matching `CODE_MAP_INDEX.md` Status cell.
+
+Map/index promotion is allowed only for an accepted map verdict. Phase 2 may
+not change a map body, qualification, audit-evidence field, route prose,
+ledger Description, another index/ledger cell, artifact exterior, or any
+other byte. Because both index cells begin and end `MAINTAINED`, an accepted
+two-map promotion would restore `CODE_MAP_INDEX.md` to byte-content parity
+with `HEAD`; the independent audit must distinguish the eight-path Phase-1
+material set from any final net-diff staging set.
+
+### Frozen boundaries and stops
+
+Byte-freeze every Dart/test source, `lib/app/router.dart`, Project Overview,
+all four Board Canvas writer call sites, events/facts/evidence semantics,
+F-01/F-05/F-16 board-plane behavior, painters/hit testing/placement/geometry,
+freshness banner ownership/copy and its twelve-surface contract, app shell,
+project guard, `main.dart`, responsive minimum-size work, Project ZIP,
+packages, Windows, tools, schemas, assets, samples, F-03, all unrelated maps,
+and every other repository path.
+
+Stop on a baseline/route mismatch, ninth substantive path, source/test blob
+drift, stale claim not reconciled from committed truth, registry mismatch,
+unexpected index row change, runtime/test/Windows diff, validation failure,
+or any attempt to perform Phase 2, stage, commit, or push in this phase.
+
+### Locked route
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+   [accepted and committed at 7153f3e]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+   [accepted and committed at f833664]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted Board Canvas navigation-contract scope Phase-1 authority (historical, non-authorizing)
+
+Commit `7153f3ea668a1bb8538ada56d490752ff8aa7297` preserves the accepted scope,
+and commit `f8336645e8207870edda8b57774f5ce5243fbd24` preserves its completed
+implementation. All retained current/future/activation wording below is the
+scope-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS

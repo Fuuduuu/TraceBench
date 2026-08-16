@@ -1,9 +1,64 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Board Canvas navigation-contract scope Phase 1
+## Live Board Canvas navigation-contract Code Map maintenance Phase 1
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: f8336645e8207870edda8b57774f5ce5243fbd24
+```
+
+The accepted Board Canvas navigation implementation is committed at
+`f8336645e8207870edda8b57774f5ce5243fbd24`, subject
+`feat: improve board canvas project navigation`, with direct parent
+`7153f3ea668a1bb8538ada56d490752ff8aa7297`. It changes exactly the Board
+Canvas source and focused widget test. This maintenance pass derives only from
+those committed blobs and changes exactly the three route owners, the audit
+ledger, the Code Map index, the two existing Board Canvas maps, and one new
+audit artifact.
+
+The production map now records default `projectNavigation`, the initially
+visible Project hub at `1000x800` and `1400x800`, the ordered 12-action hub,
+the five added list/index destinations, preserved relative order of the seven
+older actions, `Projekt` and focus restoration, the canonical
+Canvas -> Overview -> Canvas round trip, and unchanged `UI_LOCAL` +
+`ZERO_WRITE` navigation boundaries. The test map now records 168 committed
+tests, `_projectHubDestinations`, `_projectHubActionKeys`,
+`_revealProjectHubAction`, both default-width cases, exact inventory and route
+coverage, excluded workflow actions, restoration behavior, canonical round
+trip, and expanded zero-write assertions.
+
+Both refreshed map headers and only their two matching Code Map index Status
+cells are `REVIEW_REQUIRED` in Phase 1. The other 27 maps and index rows remain
+`MAINTAINED`; the registry remains 29 maps and 29 rows with no orphan or
+unindexed file. Manual smoke is `NOT_APPLICABLE` because this pass changes
+descriptive documentation only and executes no product UI.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS
+   [accepted and committed at 7153f3e]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_IMPL_PASS
+   [accepted and committed at f833664]
+-> TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Dart, test, router, Project Overview, writer, freshness, board-plane,
+geometry, Project ZIP, Windows, package, tool, schema, asset, sample, or F-03
+behavior changes in this pass.
+
+## Accepted Board Canvas navigation-contract scope (historical, non-authorizing)
+
+Commit `7153f3ea668a1bb8538ada56d490752ff8aa7297` preserves the accepted scope,
+and commit `f8336645e8207870edda8b57774f5ce5243fbd24` preserves its completed
+implementation. All retained current/next/activation wording below is the
+scope-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_NAVIGATION_CONTRACT_SCOPE_LOCK_PASS

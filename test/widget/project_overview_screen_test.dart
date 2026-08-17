@@ -79,7 +79,10 @@ Future<ProviderContainer> _pumpProjectOverview(
 
   final Widget app = useRouter
       ? MaterialApp.router(
-          routerConfig: buildTraceBenchRouter(initialLocation: initialLocation),
+          routerConfig: buildTraceBenchRouter(
+            initialLocation: initialLocation,
+            homeBuilder: (_) => const SizedBox.shrink(),
+          ),
         )
       : const MaterialApp(home: ProjectOverviewScreen());
 

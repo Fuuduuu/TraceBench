@@ -160,6 +160,7 @@ Future<ProviderContainer> _pumpEditComponentScreenRouter(
       child: MaterialApp.router(
         routerConfig: buildTraceBenchRouter(
           initialLocation: '/project/components/edit',
+          homeBuilder: (_) => const SizedBox.shrink(),
         ),
       ),
     ),

@@ -5,7 +5,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../features/home/screens/benchbeep_home_screen.dart';
 import '../features/home/screens/benchbeep_splash_screen.dart';
-import '../features/project/screens/home_screen.dart';
+import '../features/project/actions/project_acquisition_actions.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
 import '../shared/models/project_state.dart';
 import '../shared/services/project_creator.dart';
@@ -17,9 +17,6 @@ final StateProvider<ProjectState?> projectStateProvider =
     StateProvider<ProjectState?>((_) => null);
 final StateProvider<bool> beginnerModeProvider =
     StateProvider<bool>((_) => true);
-final Provider<GoRouter> routerProvider = Provider<GoRouter>((ref) {
-  return buildTraceBenchRouter();
-});
 
 class TraceBenchApp extends ConsumerStatefulWidget {
   const TraceBenchApp({

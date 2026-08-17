@@ -12,7 +12,6 @@ import '../features/known_facts/screens/measurement_list_screen.dart';
 import '../features/known_facts/screens/not_populated_screen.dart';
 import '../features/known_facts/screens/pin_list_screen.dart';
 import '../features/measure_sheet/screens/measure_sheet_screen.dart';
-import '../features/project/screens/home_screen.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
 import '../features/project/screens/project_overview_screen.dart';
 import '../features/project/widgets/project_gate.dart';
@@ -22,7 +21,7 @@ import '../features/report/screens/customer_report_screen.dart';
 
 GoRouter buildTraceBenchRouter({
   String initialLocation = '/',
-  WidgetBuilder? homeBuilder,
+  required WidgetBuilder homeBuilder,
   WidgetBuilder? newProjectBuilder,
 }) {
   return GoRouter(
@@ -31,8 +30,7 @@ GoRouter buildTraceBenchRouter({
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) =>
-            homeBuilder?.call(context) ?? const HomeScreen(),
+        builder: (context, state) => homeBuilder(context),
         routes: [
           GoRoute(
             path: 'new-project',

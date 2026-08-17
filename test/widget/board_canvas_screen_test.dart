@@ -365,7 +365,10 @@ Widget _routerHarness({
       projectStateProvider.overrideWith((_) => projectState),
     ],
     child: MaterialApp.router(
-      routerConfig: buildTraceBenchRouter(initialLocation: initialLocation),
+      routerConfig: buildTraceBenchRouter(
+        initialLocation: initialLocation,
+        homeBuilder: (_) => const SizedBox.shrink(),
+      ),
     ),
   );
 }
@@ -8577,7 +8580,9 @@ void main() {
     final placementWriter = _FakePlacementWriter();
     final measurementWriter = _FakeSaveMeasurementWriter();
 
-    final productionRouter = buildTraceBenchRouter();
+    final productionRouter = buildTraceBenchRouter(
+      homeBuilder: (_) => const SizedBox.shrink(),
+    );
     addTearDown(productionRouter.dispose);
     for (final route in const <String, String>{
       'home': '/',
@@ -8691,7 +8696,10 @@ void main() {
     final editWriter = _FakeEditComponentWriter();
     final placementWriter = _FakePlacementWriter();
     final measurementWriter = _FakeSaveMeasurementWriter();
-    final router = buildTraceBenchRouter(initialLocation: '/project');
+    final router = buildTraceBenchRouter(
+      initialLocation: '/project',
+      homeBuilder: (_) => const SizedBox.shrink(),
+    );
     addTearDown(router.dispose);
 
     await tester.pumpWidget(

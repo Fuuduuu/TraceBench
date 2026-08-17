@@ -27,7 +27,10 @@ void main() {
     expect(loaded.projectionFreshness, ProjectionFreshness.fresh);
     final projectState = loaded.copyWith(isProjectionStale: true);
     expect(projectState.projectionFreshness, ProjectionFreshness.stale);
-    final router = buildTraceBenchRouter(initialLocation: '/project/overview');
+    final router = buildTraceBenchRouter(
+      initialLocation: '/project/overview',
+      homeBuilder: (_) => const SizedBox.shrink(),
+    );
 
     await tester.pumpWidget(
       ProviderScope(
@@ -70,5 +73,4 @@ void main() {
     expect(find.text('Run materializer'), findsNothing);
     expect(find.text('Käivita materializer'), findsNothing);
   });
-
 }

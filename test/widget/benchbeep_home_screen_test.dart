@@ -12,7 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/home/screens/benchbeep_home_screen.dart';
-import 'package:trace_bench_viewer/features/project/screens/home_screen.dart';
+import 'package:trace_bench_viewer/features/project/actions/project_acquisition_actions.dart';
 import 'package:trace_bench_viewer/features/project/screens/new_project_wizard_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';

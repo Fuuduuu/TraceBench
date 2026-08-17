@@ -11,6 +11,7 @@ import 'package:trace_bench_viewer/features/components/screens/add_component_scr
 import 'package:trace_bench_viewer/features/components/screens/edit_component_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/features/events/screens/events_viewer_screen.dart';
+import 'package:trace_bench_viewer/features/home/screens/benchbeep_home_screen.dart';
 import 'package:trace_bench_viewer/features/known_facts/screens/component_list_screen.dart';
 import 'package:trace_bench_viewer/features/known_facts/screens/known_facts_viewer_screen.dart';
 import 'package:trace_bench_viewer/features/known_facts/screens/measurement_list_screen.dart';
@@ -18,7 +19,6 @@ import 'package:trace_bench_viewer/features/known_facts/screens/not_populated_sc
 import 'package:trace_bench_viewer/features/known_facts/screens/pin_list_screen.dart';
 import 'package:trace_bench_viewer/features/measure_sheet/screens/measure_sheet_screen.dart';
 import 'package:trace_bench_viewer/features/photos/screens/photo_list_screen.dart';
-import 'package:trace_bench_viewer/features/project/screens/home_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/project_gate.dart';
 import 'package:trace_bench_viewer/features/reference_images/screens/reference_images_screen.dart';
@@ -89,6 +89,19 @@ class _RouterSession {
   final GoRouter router;
 }
 
+Widget _buildCanonicalHome(BuildContext _) {
+  return BenchBeepHomeScreen(
+    hasProject: false,
+    onLoadBundledProject: () async {},
+    onImportProject: (_) async {},
+    onOpenProjectFolder: (_) async {},
+    onCreateProject: () {},
+    onOpenProject: () {},
+    onOpenWorkbench: () {},
+    onExitRequested: () async {},
+  );
+}
+
 Future<_RouterSession> _pumpRouter(
   WidgetTester tester, {
   required String initialLocation,
@@ -108,7 +121,10 @@ Future<_RouterSession> _pumpRouter(
         v2AddComponentWriterProvider.overrideWithValue(addComponentWriter),
     ],
   );
-  final router = buildTraceBenchRouter(initialLocation: initialLocation);
+  final router = buildTraceBenchRouter(
+    initialLocation: initialLocation,
+    homeBuilder: _buildCanonicalHome,
+  );
   addTearDown(() {
     router.dispose();
     container.dispose();
@@ -330,7 +346,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(session.router.routeInformationProvider.value.uri.path, '/');
-    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(find.byType(BenchBeepHomeScreen), findsOneWidget);
+    expect(find.text('TraceBench Viewer'), findsNothing);
+    expect(find.text('Read-only Project ZIP Viewer'), findsNothing);
   });
 
   testWidgets('all 15 real project destinations use the shared gate',

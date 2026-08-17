@@ -1,9 +1,72 @@
 # Current State
 
-Current pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
+Current pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Legacy Viewer removal scope Phase 1
+## Live Legacy Viewer removal committed-source Code Map maintenance
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: f43b2c0c72b29297e20cbe548678ff282a3a5195
+```
+
+Commit `f43b2c0c72b29297e20cbe548678ff282a3a5195`, subject
+`fix: remove legacy viewer fallback`, completes the accepted eleven-path Legacy
+Viewer removal child. The canonical production root is now supplied explicitly
+by `app.dart`; `router.dart` has no `HomeScreen` import or implicit fallback;
+the legacy source is deleted; and ZIP/directory acquisition behavior lives in
+the neutral `project_acquisition_actions.dart` owner with its signatures,
+picker/load/failure/provider/callback/default-route behavior preserved.
+
+This Phase 1 changes exactly the three route owners, the audit ledger, the Code
+Map index, three existing maps, one new qualifying acquisition-owner map, and
+one new artifact: ten paths total. The acquisition owner qualifies
+automatically from more than five independently testable ZIP/directory
+behaviors. Its first map and the refreshed app, router, and ProjectGate-test
+maps begin `REVIEW_REQUIRED`; exactly their four index cells agree.
+
+The app map records removed `routerProvider`, neutral action dependency,
+delegated existing-project handoff, and the required canonical root builder.
+The router map records required `homeBuilder`, no implicit legacy root, exact
+caller closure, and unchanged 15-target gate/two-alias route graph. The gate
+test map records `_buildCanonicalHome`, `BenchBeepHomeScreen`, and absence of
+both legacy Viewer strings. The new action map records picker/cancel,
+byte-first/path-fallback ZIP loading, directory seams, projection-state
+assignment, success callbacks/default navigation, and typed/generic failures.
+
+Committed recheck keeps `benchbeep_home_screen_test.dart`,
+`board_canvas_screen_test.dart`, `edit_component_screen_test.dart`, and
+`project_overview_screen_test.dart` at `REVIEWED_NO_CHANGE`. The import-only
+`project_gate.dart` remains `NOT_APPLICABLE` at `SCORE 5/12`; the 76-line
+freshness integration remains `NOT_APPLICABLE`; and the deleted legacy source
+had no map. Phase 1 therefore targets a 31-map/31-row registry with exactly
+four review pairs, 27 maintained pairs, and zero orphan/unindexed maps.
+
+The live route is:
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+   [accepted and committed at f3a5af9]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+   [accepted and committed at f43b2c0]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Dart, test, route implementation, destination, writer, provider behavior,
+Project ZIP, freshness, shell, Windows, package, tool, schema, asset, sample,
+F-03, or other product byte changes in this docs/maps-only maintenance.
+Manual smoke is `NOT_APPLICABLE`.
+
+## Accepted Legacy Viewer removal scope and committed implementation (historical, non-authorizing)
+
+Commits `f3a5af9c6f752ff54615af061f0ba523c7df29f1` and
+`f43b2c0c72b29297e20cbe548678ff282a3a5195` preserve the accepted scope and
+completed implementation. All retained current/next, Phase-1, activation, and
+future-map wording below is the scope-time snapshot and supplies no current
+route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS

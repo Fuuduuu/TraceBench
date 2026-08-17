@@ -2,10 +2,177 @@
 
 ## Route
 
-Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
+Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Legacy Viewer removal scope Phase-1 authority
+## Current Legacy Viewer removal committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: f43b2c0c72b29297e20cbe548678ff282a3a5195
+```
+
+This is the exact docs/maps-only authority to close the committed-source Code
+Map obligations after removal of the implicit legacy Viewer root. It authorizes
+no Dart, test, runtime, route implementation, product, platform, package, tool,
+schema, asset, sample, Project ZIP, or protected-semantic change.
+
+### Exact current Phase-1 write allowlist -- 10
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/lib/app/router.dart.md`
+8. `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md`
+9. `docs/code_maps/test/widget/project_gate_test.dart.md`
+10. `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS.md`
+
+No eleventh path is authorized. The three route-owner tops may be reconciled,
+one neutral `REVIEW_REQUIRED` ledger row may be added, the existing app,
+router, and ProjectGate-test maps may be refreshed, the qualifying acquisition
+owner may receive its first deterministic map, exactly those four matching
+index rows may be `REVIEW_REQUIRED`, and exactly one audit artifact with one
+named empty verdict block may be created.
+
+### Committed-source mapping authority
+
+The accepted scope is committed at
+`f3a5af9c6f752ff54615af061f0ba523c7df29f1`. The only implementation mapping
+inputs are committed `f43b2c0c72b29297e20cbe548678ff282a3a5195`, subject
+`fix: remove legacy viewer fallback`, and its exact eleven-path diff.
+
+Durable mapped-input identities are the committed `blob` object ids returned
+by the exact command template `git rev-parse f43b2c0c72b29297e20cbe548678ff282a3a5195:<repository-relative-path>`:
+
+| Committed target | Git object id |
+| --- | --- |
+| `lib/app/app.dart` | `70bfd3076e7ac31c5c16742e9ae4c40d06da935c` |
+| `lib/app/router.dart` | `3abdc465da47e01e16d7a3c3831faabfb7773579` |
+| `lib/features/project/actions/project_acquisition_actions.dart` | `1848e42d131a56f09159fbd8abad479f4ca5fabf` |
+| `test/widget/project_gate_test.dart` | `713784cd690e6c92797acdbb3b0775b5eef5d517` |
+
+No unfinished or working-tree runtime/test content may update a map.
+
+### Exact Code Map dispositions
+
+- `lib/app/app.dart` is `UPDATE_REQUIRED`. Refresh its existing map for the
+  removed `routerProvider`, neutral acquisition-owner dependency, delegated
+  ZIP/directory state handoff, required canonical `homeBuilder`, and unchanged
+  launcher/workbench/provider/creation boundaries.
+- `lib/app/router.dart` is `UPDATE_REQUIRED`. Refresh its existing map for the
+  required `homeBuilder`, direct root construction, removed `HomeScreen`
+  import/fallback, exact caller closure, and unchanged route tree, 15 shared
+  gates, two aliases, Wizard fallback, and zero-write ownership.
+- `lib/features/project/actions/project_acquisition_actions.dart` has no entry
+  map. Committed source qualifies automatically because the production owner
+  has more than five independently testable behaviors: ZIP picker/cancel,
+  byte-first load, path fallback, state/callback/default-route handoff, typed
+  and generic ZIP failures, directory picker/cancel, injected/default load,
+  directory handoff, and typed/generic directory failures. Create its first map
+  at `REVIEW_REQUIRED` with qualification
+  `AUTO — production file owns 5+ independently testable behaviors`.
+- `test/widget/project_gate_test.dart` remains qualified at `SCORE 7/12` and is
+  `UPDATE_REQUIRED` for `_buildCanonicalHome`, explicit required-root wiring,
+  `BenchBeepHomeScreen`, and the exact two legacy Viewer absence assertions.
+- `test/widget/benchbeep_home_screen_test.dart` is `REVIEWED_NO_CHANGE`: only
+  the acquisition-owner import moved; its 20-test launcher/acquisition/route
+  responsibilities and mapped boundaries remain accurate.
+- `test/widget/board_canvas_screen_test.dart` is `REVIEWED_NO_CHANGE`: three
+  production-router constructions add inert explicit roots; its 168-test
+  responsibilities, route inventory, writers, freshness, and board behavior
+  remain unchanged.
+- `test/widget/edit_component_screen_test.dart` is `REVIEWED_NO_CHANGE`: its
+  routed harness only adds an inert explicit root; all 11 tests and mapped
+  edit/writer behavior remain unchanged.
+- `test/widget/project_overview_screen_test.dart` is `REVIEWED_NO_CHANGE`: its
+  routed harness only adds an inert explicit root; all 23 tests and mapped
+  Overview/route/zero-write responsibilities remain unchanged.
+- `lib/features/project/widgets/project_gate.dart` remains `NOT_APPLICABLE` at
+  `SCORE 5/12`; the committed change is import-only and the automatic five-
+  behavior trigger remains false.
+- `test/integration/projection_stale_banner_end_to_end_test.dart` remains
+  `NOT_APPLICABLE` at 76 lines and one compact freshness family; its only
+  material adjustment is an inert explicit root builder.
+- Deleted `lib/features/project/screens/home_screen.dart` had no map and has no
+  source to retain or index. No retired or replacement Viewer map is created.
+
+### Registry and lifecycle
+
+Phase 1 must produce exactly 31 actual maps and 31 index rows, zero orphan and
+zero unindexed maps, exactly four `REVIEW_REQUIRED` map headers/index cells,
+and 27 unchanged `MAINTAINED` pairs. Only the app, router, acquisition-owner,
+and ProjectGate-test maps are Phase-1 review targets. Every unrelated map and
+index row is byte-frozen. Manual smoke is `NOT_APPLICABLE`.
+
+A clean independent map/pass audit may authorize at most ten mechanical Phase-
+2 coordinates:
+
+1. the designated verdict-block interior;
+2. this PASS_ID's existing `docs/AUDIT_INDEX.md` Status cell;
+3. four map-header `REVIEW_REQUIRED` -> `MAINTAINED` values; and
+4. four matching `docs/code_maps/CODE_MAP_INDEX.md` Status cells.
+
+Phase 2 may promote only a map independently accepted as safe for SNIPER use.
+It may not change any map body, qualification, Source/Type/Audit-evidence
+field, route prose, ledger Description, artifact exterior, another index or
+ledger cell, or any other byte. The new acquisition map/index row persists, so
+`CODE_MAP_INDEX.md` remains part of the final material set after promotion.
+
+### Frozen boundaries and validation
+
+Byte-freeze all Dart/test/runtime source, `ProjectLoader`, Project ZIP,
+picker/cancel/load/failure/provider/callback/navigation behavior, the complete
+route tree and both aliases, `ProjectGate` recovery, launcher/splash/Wizard,
+Workbench shell/theme/responsive behavior, every destination screen, all
+writers/providers/events/facts/evidence/freshness/board-plane/geometry
+semantics, all unrelated maps/index rows, packages, Windows/EOL residue,
+tools, schemas, assets, samples, F-03, and every other repository byte.
+
+Run:
+
+```text
+py -3 tools/doctor.py
+py -3 tools/validate_all.py
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+Also prove exact ten-path material, exactly two new files, empty staged and
+unmerged sets, 31/31 registry parity, exactly four Phase-1 review pairs,
+unchanged committed source/test blobs, empty runtime/test/Windows content diff,
+route-owner agreement, and one empty verdict block.
+
+Stop on baseline or route mismatch, an eleventh substantive path, a different
+qualification result, registry other than 31/31, stale or conflicting mapped
+claim, unexpected frozen content, validation failure, Phase-2 execution, or
+any attempt to stage, commit, push, stash, reset, restore, clean, or normalize
+Windows residue.
+
+### Locked route
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+   [accepted and committed at f3a5af9]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+   [accepted and committed at f43b2c0]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted Legacy Viewer removal scope and implementation (historical, non-authorizing)
+
+Commits `f3a5af9c6f752ff54615af061f0ba523c7df29f1` and
+`f43b2c0c72b29297e20cbe548678ff282a3a5195` preserve the accepted scope and
+completed implementation. All retained current/future/activation wording below
+is the scope-time snapshot and supplies no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS

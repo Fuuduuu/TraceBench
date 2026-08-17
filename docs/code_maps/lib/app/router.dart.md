@@ -4,25 +4,25 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `HUMAN OVERRIDE — creation handoff crosses router, screen and provider boundaries and requires durable impact analysis.`
-- Audit evidence: `docs/audit/TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Builds the application route graph. It accepts optional root-Home and New
-Project Wizard builders, preserves their default construction, exposes
-`/new-project` and canonical `/project`, nests the established project tools,
-wraps all 15 real project targets in one shared `ProjectGate`, retains two
-compatibility redirects outside that gate, and renders a generic route-error
-surface. It owns widget construction and navigation only: project-state reads,
-project-open execution, provider assignment, and destination behavior remain
-outside.
+Builds the application route graph. It requires every caller to supply the
+canonical root-Home builder, accepts an optional New Project Wizard builder
+with its unchanged default, exposes `/new-project` and canonical `/project`,
+nests the established project tools, wraps all 15 real project targets in one
+shared `ProjectGate`, retains two compatibility redirects outside that gate,
+and renders a generic route-error surface. It owns widget construction and
+navigation only: project-state reads, project-open execution, provider
+assignment, and destination behavior remain outside.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Route factory contract | `buildTraceBenchRouter`, `initialLocation`, `homeBuilder`, `newProjectBuilder` | Exposes initial-route and optional widget-construction seams. |
-| Root Home route | `path: '/'`, `name: 'home'`, `HomeScreen` | Builds the injected Home when supplied or the unchanged default Home. |
+| Route factory contract | `buildTraceBenchRouter`, `initialLocation`, `homeBuilder`, `newProjectBuilder` | Exposes initial-route, required root-Home, and optional Wizard-construction seams. |
+| Root Home route | `path: '/'`, `name: 'home'`, `homeBuilder` | Builds only the caller-supplied canonical root surface. |
 | New Project Wizard route | `path: 'new-project'`, `name: 'new-project'`, `NewProjectWizardScreen` | Builds the injected Wizard when supplied or the unchanged const default Wizard. |
 | Canonical Board Canvas route | `path: 'project'`, `name: 'board-canvas'`, `ProjectGate`, `BoardCanvasScreen` | Makes `/project` the canonical Canvas destination and wraps its child in the shared gate. |
 | Overview and component routes | `project-overview`, `component-list`, `add-component`, `edit-component` | Registers four gated overview/component destinations. |
@@ -39,12 +39,12 @@ exact substring in committed source. The map uses no line-number anchors.
 
 ## State and data flow
 
-1. A caller invokes `buildTraceBenchRouter` with an initial URI and optional
-   Home/Wizard builders.
+1. A caller invokes `buildTraceBenchRouter` with an initial URI, a required
+   Home builder, and an optional Wizard builder.
 2. `GoRouter` consumes the static tree; this factory retains no mutable
    project or provider state.
-3. `/` delegates to `homeBuilder` when supplied, otherwise to
-   `const HomeScreen()`.
+3. `/` always delegates to the explicitly supplied `homeBuilder`; the router
+   has no implicit legacy fallback.
 4. `/new-project` delegates to `newProjectBuilder` when supplied, otherwise
    to `const NewProjectWizardScreen()`.
 5. The injected builder may close over app-owned dependencies, but none enter
@@ -85,14 +85,14 @@ The two aliases are not additional guarded targets.
 | --- | --- | --- |
 | Flutter Material | framework UI | Supplies widget-builder types and the error surface. |
 | GoRouter | routing framework | Owns matching, nesting, redirects, route state, and errors. |
-| `HomeScreen` | default outbound destination | Preserves default root construction. |
+| caller-supplied `homeBuilder` | required inbound construction contract | Makes root-surface ownership explicit and keeps the canonical production launcher in `app.dart`. |
 | `NewProjectWizardScreen` | default outbound destination | Preserves default Wizard construction at `/new-project`. |
 | `ProjectGate` | outbound wrapper dependency | Applies the shared loaded-project gate while retaining each matched URI. |
 | `BoardCanvasScreen` | gated outbound destination | Owns canonical `/project` presentation. |
 | Project tool screens | outbound destinations | Implement behavior behind nested URIs. |
 | `lib/app/app.dart` | inbound caller | Supplies launcher Home and injected Wizard builders. |
-| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves all 15 wrappers, both aliases, URI retention, Home, loader outcomes, and zero-write reveal. |
-| Other widget-test router harnesses | inbound callers | Build real route graphs for Home, Wizard, Canvas, Overview, and edit-screen tests. |
+| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves all 15 wrappers, both aliases, URI retention, canonical BenchBeep Home, loader outcomes, and zero-write reveal. |
+| Other widget/integration router harnesses | inbound callers | Supply explicit test roots while exercising Canvas, Overview, edit-screen, and freshness routes. |
 
 ## Write and protected boundaries
 
@@ -124,7 +124,7 @@ call, canonical coordinate conversion, or electrical-semantic mutation.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Factory parameters | [D] Parameters feed `GoRouter` or builders. | `app.dart` and router harnesses | `ZERO_WRITE` / `UI_LOCAL` | Home injection and route tests |
-| Root Home | [D] Optional builder has unchanged fallback. | launcher callbacks | `ZERO_WRITE` | Home launcher tests |
+| Root Home | [D] Required builder is invoked directly with no fallback. | launcher callbacks and every direct factory caller | `ZERO_WRITE` | canonical Home and caller-closure tests |
 | Wizard route | [D] Optional builder has unchanged default. | app dependency injection and Wizard cancellation/success | `ZERO_WRITE` | Home and Wizard route tests |
 | Canonical Canvas | [D] `/project` owns gated Canvas and children. | `ProjectGate`, provider consumer, deep links | `ZERO_WRITE` | gate, Home, Canvas, and edit-screen tests |
 | Project child tree | [D] All 15 builders explicitly compose `ProjectGate` with one destination. | gate behavior and each destination screen | `ZERO_WRITE` | gate route matrix plus destination suites |
@@ -144,11 +144,16 @@ call, canonical coordinate conversion, or electrical-semantic mutation.
   real graph.
 - `test/widget/project_gate_test.dart` is the focused owner for null/loaded
   gate presentation, project-open outcomes, original-URI retention, all 15
-  real project targets, both aliases, Home, and representative zero-write
-  child reveal.
+  real project targets, both aliases, canonical BenchBeep Home with legacy
+  copy absent, and representative zero-write child reveal.
+- `test/widget/project_overview_screen_test.dart` and
+  `test/integration/projection_stale_banner_end_to_end_test.dart` also supply
+  explicit inert root builders for their production-router harnesses.
 
 ## Dangerous combinations
 
+- Changing required `homeBuilder` and caller closure together can strand `/`
+  or reintroduce an implicit parallel root surface.
 - Changing `newProjectBuilder` fallback and app injection together can remove
   the default Wizard or bypass app-owned handoff.
 - Adding Riverpod or `ProjectState` here would move ownership across the
@@ -163,6 +168,8 @@ call, canonical coordinate conversion, or electrical-semantic mutation.
 
 ## Safe SNIPER slices
 
+- Required root-builder contract only: `homeBuilder`, production app caller,
+  the five direct test caller files, and canonical Home recovery assertion.
 - Optional Wizard-builder seam only: factory parameter, Wizard builder, app
   caller, and focused Home/Wizard route tests.
 - One gated leaf route only: its path/name/builder, the shared route inventory,
@@ -181,7 +188,8 @@ call, canonical coordinate conversion, or electrical-semantic mutation.
 ## Freshness and review triggers
 
 Review for `SYMBOL_DRIFT` when factory parameters, paths, names, `ProjectGate`,
-or screen constructors change; `FLOW_DRIFT` when builder fallback, gate
+or screen constructors change; `FLOW_DRIFT` when required root construction,
+Wizard fallback, gate
 composition, or nesting changes; `BOUNDARY_DRIFT` if state/provider/write
 ownership enters; `TEST_DRIFT` when the gate matrix or other direct callers
 move; and `STRUCTURE_DRIFT` when the route tree or guarded inventory splits.
@@ -193,5 +201,6 @@ move; and `STRUCTURE_DRIFT` when the route tree or guarded inventory splits.
 - [D] The router proves that the shared gate is mounted, while gate tests and
   `ProjectGate` source own recovery/open behavior.
 - [D] No focused route-error assertion is identified.
-- [P] Additional direct callers may exist outside the named mapped widget
-  suites; any route change still requires repository-wide caller search.
+- [D] Current exact-symbol closure finds one production caller in `app.dart`
+  and five direct caller test files; future route-factory changes still require
+  repository-wide caller search.

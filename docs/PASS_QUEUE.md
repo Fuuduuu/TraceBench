@@ -2,10 +2,77 @@
 
 ## Current route
 
-Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
+Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Legacy Viewer removal scope queue
+## Current Legacy Viewer removal Code Map maintenance queue
+
+The current queue is one Lane A
+`DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed
+implementation baseline `f43b2c0c72b29297e20cbe548678ff282a3a5195`.
+Its exact ten-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/lib/app/router.dart.md`
+8. `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md`
+9. `docs/code_maps/test/widget/project_gate_test.dart.md`
+10. `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS.md`
+
+No eleventh path is queued. The app, router, and ProjectGate-test maps are
+refreshed from committed source. The new neutral acquisition owner qualifies
+automatically after explicit review of more than five independently testable
+ZIP/directory behaviors, so it receives its first deterministic map. All four
+map headers and only their matching index Status cells enter
+`REVIEW_REQUIRED`.
+
+Committed-source recheck retains these dispositions:
+
+- BenchBeep Home test map: `REVIEWED_NO_CHANGE` for an import-only move;
+- Board Canvas test map: `REVIEWED_NO_CHANGE` for three inert explicit root
+  builders with its 168-test responsibility set unchanged;
+- Edit Component test map: `REVIEWED_NO_CHANGE` for one inert routed-harness
+  root builder;
+- Project Overview test map: `REVIEWED_NO_CHANGE` for one inert routed-harness
+  root builder;
+- `project_gate.dart`: `NOT_APPLICABLE`, unchanged `SCORE 5/12` after an
+  import-only move;
+- freshness end-to-end test: `NOT_APPLICABLE`, 76 lines and one compact family;
+  and
+- deleted `home_screen.dart`: no source and no map/index row.
+
+The Phase-1 registry target is exactly 31 maps and 31 rows: four review pairs,
+27 maintained pairs, zero orphan, and zero unindexed. The ledger receives one
+neutral `REVIEW_REQUIRED` row and the new artifact contains exactly one empty
+verdict block. Manual smoke is `NOT_APPLICABLE`.
+
+If independently authorized, bounded Phase 2 may touch only the verdict
+interior, matching ledger Status cell, four map Status headers, and four
+matching index Status cells. It may not change any map body, qualification,
+route prose, ledger Description, artifact exterior, or other byte. The new
+acquisition row means `CODE_MAP_INDEX.md` remains in the final material set.
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+   [accepted and committed at f3a5af9]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+   [accepted and committed at f43b2c0]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted Legacy Viewer removal scope queue and committed child (historical, non-authorizing)
+
+Commits `f3a5af9c6f752ff54615af061f0ba523c7df29f1` and
+`f43b2c0c72b29297e20cbe548678ff282a3a5195` preserve the accepted scope and
+completed implementation. The retained queue and activation wording below is
+historical evidence only and does not override the live queue above.
 
 The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 committed baseline `e513ab5d4192883e04e5880e698ef068479b8e05`. Its exact

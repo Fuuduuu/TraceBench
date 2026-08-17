@@ -2,10 +2,359 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
 
-## Current Shared Project Gate Code Map maintenance Phase-1 authority
+## Current Legacy Viewer removal scope Phase-1 authority
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: e513ab5d4192883e04e5880e698ef068479b8e05
+```
+
+This is docs-only authority to lock one future child whose sole product outcome
+is removal of the implicit legacy `TraceBench Viewer` / `HomeScreen` fallback
+while preserving useful project acquisition behavior. It authorizes no Dart,
+test, route, map, package, platform, tool, schema, asset, sample, or product
+change now.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. Phase 1 may reconcile only the three route-owner
+tops, add one neutral `REVIEW_REQUIRED` ledger row, and create one audit
+artifact with exactly one named empty verdict block.
+
+### Exact future implementation reservation -- 11
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / LEGACY_SURFACE_REMOVAL / ACQUISITION_PRESERVATION
+Write class: ZERO_WRITE + UI_LOCAL + PROJECTION_STATE
+```
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/actions/project_acquisition_actions.dart`
+4. `lib/features/project/screens/home_screen.dart`
+5. `lib/features/project/widgets/project_gate.dart`
+6. `test/widget/benchbeep_home_screen_test.dart`
+7. `test/widget/board_canvas_screen_test.dart`
+8. `test/widget/edit_component_screen_test.dart`
+9. `test/widget/project_gate_test.dart`
+10. `test/widget/project_overview_screen_test.dart`
+11. `test/integration/projection_stale_banner_end_to_end_test.dart`
+
+No twelfth path is reserved. The new actions path is the only authorized new
+implementation file; `home_screen.dart` is the only authorized deletion. The
+reservation becomes executable only after independent scope acceptance,
+explicitly authorized bounded verdict recording, and human exact staging,
+commit, and push of the accepted scope.
+
+### Exact caller closure
+
+Repository-wide exact-symbol search established:
+
+- production `buildTraceBenchRouter` callers are the unused `routerProvider`
+  declaration and `_buildWorkbenchRouter` in `lib/app/app.dart`; the former is
+  removed and the latter already supplies `_buildLauncherHome`;
+- direct test callers are exactly
+  `board_canvas_screen_test.dart`, `edit_component_screen_test.dart`,
+  `project_gate_test.dart`, `project_overview_screen_test.dart`, and
+  `projection_stale_banner_end_to_end_test.dart`;
+- `ProjectZipImportAction` is defined in `home_screen.dart` and consumed by
+  `app.dart`; its ZIP behavior is covered through
+  `benchbeep_home_screen_test.dart`;
+- `ProjectDirectoryOpenAction` is defined in `home_screen.dart` and consumed by
+  `app.dart`, `project_gate.dart`, and direct action cases in
+  `benchbeep_home_screen_test.dart`;
+- `HomeScreen` occurs only in its definition, the router fallback, and the
+  ProjectGate Home expectation; and
+- `routerProvider` occurs only in `app.dart`.
+
+`benchbeep_splash_screen_test.dart` reads router source only to exclude a
+`/splash` route. It matches none of the governed symbols, its assertion remains
+true, and it is inspect-only rather than an implementation target.
+
+Any additional direct symbol caller or required test path stops the child with
+`BLOCKED_ALLOWLIST_MISMATCH`.
+
+### Locked implementation behavior
+
+The child must:
+
+1. create `lib/features/project/actions/project_acquisition_actions.dart` and
+   move `ProjectZipImportAction` plus `ProjectDirectoryOpenAction` there while
+   preserving their public signatures and behavior;
+2. repoint `app.dart`, `project_gate.dart`, and the direct acquisition tests to
+   that neutral owner;
+3. remove unused `routerProvider` and no other app-wide provider;
+4. make `homeBuilder` a required `buildTraceBenchRouter` argument and remove
+   the `HomeScreen` import and fallback construction;
+5. make every direct caller supply its root builder explicitly;
+6. preserve `_buildLauncherHome` as the production canonical `/` builder;
+7. change ProjectGate's Home assertion from legacy `HomeScreen` to the
+   explicitly supplied canonical `BenchBeepHomeScreen`; and
+8. delete `home_screen.dart` after exact-symbol search proves no remaining
+   production or test dependency.
+
+The moved action bodies may receive only import/path changes required by the
+relocation. No result type, picker option, error copy, callback default,
+provider assignment, loader call, navigation branch, or exception boundary may
+change.
+
+### Preserved acquisition and route contract
+
+Byte/behavior-freeze:
+
+- `ProjectLoader` and every Project ZIP parsing/validation/archive rule;
+- ZIP picker options, byte-first behavior, path fallback, cancel, typed
+  `ProjectLoadException`, generic failure presentation, provider assignment,
+  and caller-owned `onImported` versus default `/project` navigation;
+- directory picker title/options, cancel, injected/default loader selection,
+  typed and generic failure presentation, provider assignment, and caller-owned
+  `onOpened` versus default `/project` navigation;
+- ProjectGate's non-null `onOpened` suppression of default navigation,
+  original-URI recovery, null/loaded child behavior, exact copy, tokens, and
+  provider seams;
+- bundled sample loading and handoff;
+- New Project Wizard builder/default behavior and creation handoff; and
+- every project route name, path, nesting relationship, destination, and both
+  existing redirects.
+
+The child performs no canonical event/fact/evidence write and changes no
+Project ZIP semantics. Provider replacement remains `PROJECTION_STATE`;
+navigation/root construction remains `UI_LOCAL` plus `ZERO_WRITE`.
+
+### Exact future test contract
+
+- `benchbeep_home_screen_test.dart`: retain all 20 launcher, Wizard, bundled,
+  folder, ZIP, responsive, legacy-absence, and exit tests; change only the
+  acquisition-owner import needed by relocation.
+- `project_gate_test.dart`: preserve its 10 recovery/route/zero-write tests;
+  supply an explicit canonical launcher builder and prove Home renders
+  `BenchBeepHomeScreen` at `/`, never legacy `HomeScreen`.
+- `board_canvas_screen_test.dart`: add the required explicit root builder at
+  exactly its three direct router-construction sites; do not change its 168
+  test declarations, destination inventory, route expectations, writers,
+  freshness, or board behavior.
+- `edit_component_screen_test.dart`: add the required root builder only in its
+  routed harness; preserve all 11 tests and edit/writer behavior.
+- `project_overview_screen_test.dart`: add the required root builder only in
+  its routed harness; preserve all 23 tests and Overview behavior.
+- `projection_stale_banner_end_to_end_test.dart`: add the required root builder
+  only in its router construction; preserve its exact twelve-surface warning
+  loop and forbidden-action assertions.
+
+`benchbeep_splash_screen_test.dart` and
+`new_project_wizard_screen_test.dart` are required inspect-only regression
+targets. No new test file or broad related-test allowance exists.
+
+### Exact Code Map preflight and lifecycle
+
+All existing relevant maps and index cells are `MAINTAINED` at entry.
+
+- `lib/app/app.dart` — existing app map; changed zones `Application providers`,
+  `Existing-project acquisition`, and `Workbench-router transition`; direct
+  dependencies are the router factory and relocated action owner; write class
+  remains `UI_LOCAL + PROJECTION_STATE`; disposition `UPDATE_REQUIRED` for
+  removed `routerProvider` and acquisition-owner drift.
+- `lib/app/router.dart` — existing router map; changed zones `Route factory
+  contract` and `Root Home route`; app plus the five direct caller tests are
+  coupled; write class remains `ZERO_WRITE + UI_LOCAL`; disposition
+  `UPDATE_REQUIRED` for required `homeBuilder` and removal of `HomeScreen`.
+- `lib/features/project/actions/project_acquisition_actions.dart` — absent at
+  the committed baseline, so entry disposition is `NOT_APPLICABLE`; accepted
+  committed source is expected `AUTO — 5+ independently testable behaviors`
+  across ZIP/directory picker, cancel, load, provider, navigation, and failure
+  families and therefore requires its first map afterward.
+- `lib/features/project/screens/home_screen.dart` — no map; disposition
+  `NOT_APPLICABLE` under the same-child deletion exclusion. Its surviving
+  acquisition zones are relocated with frozen behavior to the new qualifying
+  owner; no map is created for a deleted source.
+- `lib/features/project/widgets/project_gate.dart` — no map and remains the
+  accepted `SCORE 5/12`; only its import dependency moves, so disposition
+  `NOT_APPLICABLE`.
+- `test/widget/benchbeep_home_screen_test.dart` — existing maintained map;
+  acquisition-owner import only, with all 20 tests and mapped zones unchanged;
+  disposition `REVIEWED_NO_CHANGE`.
+- `test/widget/project_gate_test.dart` — existing maintained map; changed Home
+  expectation and router-harness dependency; disposition `UPDATE_REQUIRED`.
+- `test/widget/board_canvas_screen_test.dart` — existing maintained map;
+  required root-builder injection only at three routed harness sites;
+  disposition `REVIEWED_NO_CHANGE` if its 168-test responsibilities stay
+  unchanged.
+- `test/widget/edit_component_screen_test.dart` — existing maintained map;
+  required builder injection only in `_pumpEditComponentScreenRouter`;
+  disposition `REVIEWED_NO_CHANGE`.
+- `test/widget/project_overview_screen_test.dart` — existing maintained map;
+  required builder injection only in `_pumpProjectOverview`;
+  disposition `REVIEWED_NO_CHANGE`.
+- `test/integration/projection_stale_banner_end_to_end_test.dart` — no map;
+  `SCORE 3/12` for 74 lines, one compact cross-surface test, one protected
+  read-only freshness boundary, recent repeated analysis, and one harness
+  adjustment; disposition `NOT_APPLICABLE`.
+
+No map or `CODE_MAP_INDEX.md` edit is authorized in this scope or child. After
+accepted implementation is committed, separately scoped committed-source map
+maintenance must refresh the app, router, and ProjectGate test maps and create
+the first map/index row for the qualifying acquisition owner. Every
+`REVIEWED_NO_CHANGE` conclusion must be rechecked against the final committed
+diff.
+
+### Excluded and frozen boundaries
+
+Do not change:
+
+- single-lifetime `MaterialApp.router`, `_showLauncher`, `_showStartupIntro`,
+  splash timing/presentation, `_workbenchRouter` lifecycle, or the two-root
+  architecture beyond removal of unused `routerProvider`;
+- Workbench shell, theme/color tokens, responsive minimum-size behavior,
+  `main.dart`, or window-manager behavior;
+- Project Overview, Add/Edit/Measure workflows, destination screens, or any
+  screen-local null-project defense;
+- `/project/measurements/new`, `/project/board-canvas`, any other route, or
+  capability-tier/Diagnostics/Advanced behavior;
+- any writer, event, fact, evidence, schema, materializer, ProjectCreator,
+  ProjectExporter, sidecar, freshness, F-01/F-03/F-05/F-16, board-plane,
+  geometry, painter, hit-test, or canonical semantic;
+- maps/index, packages, Windows/EOL residue, tools, schemas, assets, samples,
+  generated files, dependencies, and every nonallowlisted byte.
+
+### Future manual smoke contract
+
+After child validation and before independent implementation audit, smoke at a
+supported desktop size, preferably `1000x800`:
+
+1. cold launch shows the unchanged splash followed only by the canonical
+   BenchBeep launcher; no `TraceBench Viewer` or `Read-only Project ZIP Viewer`;
+2. bundled sample and Continue reach canonical `/project`;
+3. ZIP picker cancel changes no state; valid ZIP loads and reaches `/project`;
+   invalid ZIP retains the existing typed/generic feedback behavior;
+4. directory picker cancel changes no state; invalid folder retains existing
+   feedback; valid folder loads and reaches `/project`;
+5. null-state deep link `/project/known-facts` retains ProjectGate recovery and
+   URI, while `Tagasi avalehele` reaches `/` and renders BenchBeep launcher;
+6. valid-folder recovery at `/project/known-facts` reveals that original route
+   without default `/project` navigation; and
+7. New Project Wizard still opens and its explicit success transition remains
+   unchanged.
+
+### Future implementation validation contract
+
+Run fresh:
+
+```text
+dart format --output=none --set-exit-if-changed \
+  lib/app/app.dart \
+  lib/app/router.dart \
+  lib/features/project/actions/project_acquisition_actions.dart \
+  lib/features/project/widgets/project_gate.dart \
+  test/widget/benchbeep_home_screen_test.dart \
+  test/widget/board_canvas_screen_test.dart \
+  test/widget/edit_component_screen_test.dart \
+  test/widget/project_gate_test.dart \
+  test/widget/project_overview_screen_test.dart \
+  test/integration/projection_stale_banner_end_to_end_test.dart
+
+flutter test test/widget/benchbeep_home_screen_test.dart
+flutter test test/widget/project_gate_test.dart
+flutter test test/widget/board_canvas_screen_test.dart
+flutter test test/widget/edit_component_screen_test.dart
+flutter test test/widget/project_overview_screen_test.dart
+flutter test test/integration/projection_stale_banner_end_to_end_test.dart
+flutter test test/widget/benchbeep_splash_screen_test.dart
+flutter test test/widget/new_project_wizard_screen_test.dart
+
+flutter analyze --no-pub
+py -3 tools/doctor.py
+py -3 tools/validate_all.py
+flutter test
+
+rg -n "\\bHomeScreen\\b|TraceBench Viewer|Read-only Project ZIP Viewer" lib
+rg -n "\\brouterProvider\\b" lib test
+rg -n "\\bProjectZipImportAction\\b|\\bProjectDirectoryOpenAction\\b" lib test
+rg -n "\\bbuildTraceBenchRouter\\b" lib test
+
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+The first two `rg` commands must return no matches. The action search must show
+only the new definitions and exact app/gate/direct-test consumers. The router
+search must match only the factory, the remaining explicit app caller, and the
+five direct caller test files. Acceptance requires exactly the eleven-path
+content set, exactly one new file and one deletion, empty staged/unmerged sets,
+no unexpected untracked path, no new analyzer finding beyond the committed
+baseline, and no map/index/Windows content diff.
+
+### Scope activation and audit model
+
+The child activates only after independent audit accepts this exact five-file
+scope, the auditor explicitly authorizes bounded Phase-2 recording, Phase 2
+changes only the designated verdict interior and matching ledger Status cell,
+and the human exactly stages, commits, and pushes the accepted scope.
+
+The product-surface child requires fresh validation, the human smoke above,
+and an independent implementation audit marked `USE ONLY AFTER MANUAL SMOKE
+PASS` before human exact staging, commit, and push.
+
+### Current scope validation and stops
+
+Run:
+
+```text
+py -3 tools/doctor.py
+py -3 tools/validate_all.py
+git diff --check
+git diff --cached --check
+git diff --name-status
+git diff --cached --name-status
+git status --short --branch
+```
+
+Also prove exact five-path Phase-1 material, no sixth path, empty staged and
+unmerged sets, route-owner agreement, one neutral ledger row, one empty verdict
+block, and no source/test/map/index/Windows content diff beyond preserved
+content-identical EOL/stat residue.
+
+Stop on baseline/route drift, a twelfth implementation path, a second product
+outcome, any acquisition/ZIP semantic change, any excluded cleanup, a stale or
+conflicting applicable map, nonallowlisted content, validation failure, Phase-2
+execution, or any attempt to stage, commit, push, stash, reset, clean, or
+normalize Windows residue.
+
+### Locked route
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+   [committed at e513ab5]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source LOCK/map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Shared Project Gate Code Map maintenance authority (historical, non-authorizing)
+
+Commit `e513ab5d4192883e04e5880e698ef068479b8e05` preserves the accepted
+maintenance pass. All retained current/future/map-status/lifecycle wording
+below is the maintenance-time snapshot and supplies no current route or write
+authority.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS

@@ -1,9 +1,72 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
 
-## Live Shared Project Gate Code Map maintenance Phase 1
+## Live Legacy Viewer removal scope Phase 1
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: e513ab5d4192883e04e5880e698ef068479b8e05
+```
+
+Commit `e513ab5d4192883e04e5880e698ef068479b8e05`, subject
+`docs: refresh shared project gate code maps`, preserves the completed Shared
+Project Gate Code Map maintenance and its 30-map/30-row maintained registry.
+The human selected one narrow product-surface scope from the resulting
+`NEEDS_USER_DECISION`: remove the implicit legacy `TraceBench Viewer` /
+`HomeScreen` fallback while preserving useful project acquisition behavior.
+
+This Phase 1 changes exactly the three route owners, the audit ledger, and one
+new audit artifact. It reserves one eleven-path implementation child. That
+child moves `ProjectZipImportAction` and `ProjectDirectoryOpenAction` unchanged
+in behavior to a neutral project acquisition owner, repoints their real
+consumers, removes unused `routerProvider`, makes `homeBuilder` an explicit
+required root contract, deletes `HomeScreen`, and updates only the six direct
+caller/action test owners proved by repository-wide symbol search.
+
+The Project ZIP contract, `ProjectLoader`, picker/cancel/failure behavior,
+provider assignment, caller-owned success navigation, ProjectGate
+original-URI recovery, bundled sample, Wizard, all project routes and both
+compatibility aliases remain unchanged. Single-router conversion, splash,
+Workbench shell/theme work, Overview or workflow consolidation, capability
+tiers, diagnostics, and every writer/event/schema semantic remain excluded.
+
+The app and router maps become `UPDATE_REQUIRED`; the ProjectGate test map
+becomes `UPDATE_REQUIRED` for its canonical launcher expectation. The new
+acquisition owner is expected to qualify automatically from accepted committed
+source and require its first map. The other four maintained caller-test maps
+are `REVIEWED_NO_CHANGE`; `project_gate.dart`, the same-child deletion target,
+and the compact freshness integration remain `NOT_APPLICABLE`. Neither this
+scope nor the child may edit a map or `CODE_MAP_INDEX.md`.
+
+The live route is:
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+   [committed at e513ab5]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+   [activates only after independent scope acceptance, bounded verdict
+    recording, and human exact scope commit/push]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source LOCK/map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+No Dart, test, map, index, package, platform, tool, schema, asset, sample, or
+product behavior changes in this docs-only scope.
+
+## Accepted Shared Project Gate Code Map maintenance (historical, non-authorizing)
+
+Commit `e513ab5d4192883e04e5880e698ef068479b8e05` preserves the accepted
+maintenance pass. All retained current/next, Phase-1, map-status, and lifecycle
+wording below is the maintenance-time snapshot and supplies no current route
+or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS

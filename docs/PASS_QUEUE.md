@@ -2,10 +2,79 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS`
 
-## Current Shared Project Gate Code Map maintenance queue
+## Current Legacy Viewer removal scope queue
+
+The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+committed baseline `e513ab5d4192883e04e5880e698ef068479b8e05`. Its exact
+five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS.md`
+
+No sixth path is queued. Phase 1 records the selected route, exact future
+allowlist, caller closure, Code Map lifecycle, frozen boundaries, validation,
+manual smoke, one neutral `REVIEW_REQUIRED` ledger row, and one new artifact
+with exactly one empty verdict block. It creates no implementation authority
+until the recorded audit, bounded recording, and human commit/push gates pass.
+
+## Next reserved Legacy Viewer removal child
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / LEGACY_SURFACE_REMOVAL / ACQUISITION_PRESERVATION
+Write class: ZERO_WRITE + UI_LOCAL + PROJECTION_STATE
+```
+
+The exact implementation allowlist is:
+
+1. `lib/app/app.dart`
+2. `lib/app/router.dart`
+3. `lib/features/project/actions/project_acquisition_actions.dart`
+4. `lib/features/project/screens/home_screen.dart`
+5. `lib/features/project/widgets/project_gate.dart`
+6. `test/widget/benchbeep_home_screen_test.dart`
+7. `test/widget/board_canvas_screen_test.dart`
+8. `test/widget/edit_component_screen_test.dart`
+9. `test/widget/project_gate_test.dart`
+10. `test/widget/project_overview_screen_test.dart`
+11. `test/integration/projection_stale_banner_end_to_end_test.dart`
+
+No twelfth path is reserved. The child moves the two existing acquisition
+actions without changing their public behavior, requires every direct router
+caller to supply the root builder explicitly, removes the unused router
+provider and implicit legacy root construction, deletes `HomeScreen`, and
+proves that Home recovery resolves to the canonical BenchBeep launcher.
+
+All acquisition outcomes, ProjectGate URI recovery, bundled sample and Wizard
+behavior, route names/paths/nesting/redirects, writers, Project ZIP, freshness,
+shell/splash/theme, Overview, packages, tools, schemas, assets, samples, and
+Windows remain frozen. Manual smoke precedes the independent implementation
+audit. Code Map updates occur only later against accepted committed source.
+
+```text
+TRACEBENCH_SHARED_PROJECT_GATE_CODE_MAP_MAINTENANCE_PASS
+   [committed at e513ab5]
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_SCOPE_LOCK_PASS
+-> TRACEBENCH_LEGACY_VIEWER_REMOVAL_IMPL_PASS
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source LOCK/map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Shared Project Gate Code Map maintenance queue (historical, non-authorizing)
+
+Commit `e513ab5d4192883e04e5880e698ef068479b8e05` preserves the accepted
+maintenance pass. The queue and lifecycle wording below is retained evidence
+only and does not override the live queue above.
 
 The current queue is one Lane A
 `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed

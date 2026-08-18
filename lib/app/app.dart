@@ -32,9 +32,14 @@ class TraceBenchApp extends ConsumerStatefulWidget {
 }
 
 class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
-  bool _showLauncher = true;
-  bool _showStartupIntro = true;
-  GoRouter? _workbenchRouter;
+  final ValueNotifier<bool> _showStartupIntro = ValueNotifier<bool>(true);
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _router = _buildWorkbenchRouter();
+  }
 
   Future<void> _loadBundledProject() async {
     final loaded = await ProjectLoader.loadFromAssets();
@@ -80,42 +85,43 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
   }
 
   void _completeStartupIntro() {
-    if (!_showStartupIntro || !mounted) {
+    if (!_showStartupIntro.value || !mounted) {
       return;
     }
-    setState(() {
-      _showStartupIntro = false;
-    });
+    _showStartupIntro.value = false;
   }
 
   Widget _buildLauncherShell(BuildContext context) {
     final launcher = _buildLauncherHome(context);
-    if (!_showStartupIntro) {
-      return launcher;
-    }
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        launcher,
-        IgnorePointer(
-          child: BenchBeepSplashScreen(onComplete: _completeStartupIntro),
-        ),
-      ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: _showStartupIntro,
+      child: launcher,
+      builder: (context, showStartupIntro, launcher) {
+        if (!showStartupIntro) {
+          return launcher!;
+        }
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            launcher!,
+            IgnorePointer(
+              child: BenchBeepSplashScreen(onComplete: _completeStartupIntro),
+            ),
+          ],
+        );
+      },
     );
   }
 
   void _openWorkbench({String initialLocation = '/project'}) {
-    _workbenchRouter?.dispose();
-    _workbenchRouter = _buildWorkbenchRouter(initialLocation);
-    setState(() {
-      _showLauncher = false;
-    });
+    _showStartupIntro.value = false;
+    _router.go(initialLocation);
   }
 
-  GoRouter _buildWorkbenchRouter(String initialLocation) {
+  GoRouter _buildWorkbenchRouter() {
     return buildTraceBenchRouter(
-      initialLocation: initialLocation,
-      homeBuilder: _buildLauncherHome,
+      initialLocation: '/',
+      homeBuilder: _buildLauncherShell,
       newProjectBuilder: (_) => NewProjectWizardScreen(
         createProject: widget.createProject,
         onProjectCreated: (projectState) {
@@ -127,7 +133,8 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
 
   @override
   void dispose() {
-    _workbenchRouter?.dispose();
+    _router.dispose();
+    _showStartupIntro.dispose();
     super.dispose();
   }
 
@@ -135,22 +142,11 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
   Widget build(BuildContext context) {
     final theme = buildTheme();
 
-    if (_showLauncher) {
-      return MaterialApp(
-        title: 'BenchBeep',
-        theme: theme,
-        debugShowCheckedModeBanner: false,
-        home: _buildLauncherShell(context),
-      );
-    }
-
-    final router = _workbenchRouter ?? _buildWorkbenchRouter('/project');
-
     return MaterialApp.router(
       key: const ValueKey('benchbeep_workbench_router'),
       title: 'BenchBeep',
       theme: theme,
-      routerConfig: router,
+      routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );
   }

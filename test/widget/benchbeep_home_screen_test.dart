@@ -489,6 +489,17 @@ void main() {
       ),
     );
 
+    expect(
+      find.byKey(const ValueKey('benchbeep_workbench_router')),
+      findsOneWidget,
+    );
+    final launcher = find.byKey(const ValueKey('benchbeep_home_launcher'));
+    final startupRouter = GoRouter.of(tester.element(launcher));
+    expect(
+      startupRouter.routeInformationProvider.value.uri.path,
+      '/',
+    );
+
     final action = find.byKey(
       const ValueKey('benchbeep_home_new_project_deferred'),
     );
@@ -503,13 +514,21 @@ void main() {
       findsOneWidget,
     );
     expect(wizard, findsOneWidget);
+    final wizardRouter = GoRouter.of(tester.element(wizard));
+    expect(wizardRouter, same(startupRouter));
     expect(
-      GoRouter.of(
-        tester.element(wizard),
-      ).routeInformationProvider.value.uri.path,
-      '/new-project',
-    );
+        wizardRouter.routeInformationProvider.value.uri.path, '/new-project');
     expect(container.read(projectStateProvider), isNull);
+
+    await tester.tap(find.byKey(const ValueKey('wizard-cancel')));
+    await tester.pumpAndSettle();
+
+    final returnedLauncher =
+        find.byKey(const ValueKey('benchbeep_home_launcher'));
+    expect(returnedLauncher, findsOneWidget);
+    final returnedRouter = GoRouter.of(tester.element(returnedLauncher));
+    expect(returnedRouter, same(startupRouter));
+    expect(returnedRouter.routeInformationProvider.value.uri.path, '/');
   });
 
   testWidgets('injected create callback reaches the Wizard route', (
@@ -589,6 +608,10 @@ void main() {
       ),
     );
 
+    final startupLauncher =
+        find.byKey(const ValueKey('benchbeep_home_launcher'));
+    final startupRouter = GoRouter.of(tester.element(startupLauncher));
+
     final launch = find.byKey(
       const ValueKey('benchbeep_home_new_project_deferred'),
     );
@@ -596,6 +619,12 @@ void main() {
     await tester.tap(launch);
     await tester.pumpAndSettle();
     expect(find.byType(NewProjectWizardScreen), findsOneWidget);
+    expect(
+      GoRouter.of(
+        tester.element(find.byType(NewProjectWizardScreen)),
+      ),
+      same(startupRouter),
+    );
 
     await tester.enterText(
       find.byKey(const ValueKey('wizard-project-name')),
@@ -657,13 +686,21 @@ void main() {
         tester.element(
           find.byKey(const ValueKey('wizard-created-success')),
         ),
-      ).routeInformationProvider.value.uri.path,
+      ),
+      same(startupRouter),
+    );
+    expect(
+      startupRouter.routeInformationProvider.value.uri.path,
       '/new-project',
     );
 
     await tapWizardKey('wizard-open-project-button');
     await tester.pump();
     _expectCanonicalBoardCanvas(tester);
+    expect(
+      GoRouter.of(tester.element(find.byType(BoardCanvasScreen))),
+      same(startupRouter),
+    );
     expect(container.read(projectStateProvider), same(created));
     expect(providerAssignments, 1);
     expect(createCalls, 1);
@@ -927,7 +964,7 @@ void main() {
     );
     expect(
       find.byKey(const ValueKey('benchbeep_workbench_router')),
-      findsNothing,
+      findsOneWidget,
     );
     expect(
       find.text('Valitud kaust ei ole kehtiv TraceBenchi projekt.'),
@@ -1180,14 +1217,21 @@ void main() {
   ) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    container.read(projectStateProvider.notifier).state =
+    final loadedProject =
         _directoryBackedProjectState('C:\\projects\\loaded_home');
+    container.read(projectStateProvider.notifier).state = loadedProject;
+    container.read(beginnerModeProvider.notifier).state = false;
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
         child: const TraceBenchApp(),
       ),
     );
+
+    final startupLauncher =
+        find.byKey(const ValueKey('benchbeep_home_launcher'));
+    final startupRouter = GoRouter.of(tester.element(startupLauncher));
+    expect(startupRouter.routeInformationProvider.value.uri.path, '/');
 
     final boardCanvasButton =
         find.byKey(const ValueKey('benchbeep_home_open_board_canvas_button'));
@@ -1199,6 +1243,43 @@ void main() {
     expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
         findsOneWidget);
     _expectCanonicalBoardCanvas(tester);
+    expect(
+      GoRouter.of(tester.element(find.byType(BoardCanvasScreen))),
+      same(startupRouter),
+    );
+    expect(container.read(projectStateProvider), same(loadedProject));
+    expect(container.read(beginnerModeProvider), isFalse);
+
+    startupRouter.go('/');
+    await tester.pumpAndSettle();
+
+    final returnedLauncher =
+        find.byKey(const ValueKey('benchbeep_home_launcher'));
+    expect(returnedLauncher, findsOneWidget);
+    expect(
+      GoRouter.of(tester.element(returnedLauncher)),
+      same(startupRouter),
+    );
+    expect(container.read(projectStateProvider), same(loadedProject));
+    expect(container.read(beginnerModeProvider), isFalse);
+    final reentryButton =
+        find.byKey(const ValueKey('benchbeep_home_open_board_canvas_button'));
+    final reentryAction = tester.widget<InkWell>(
+      find.descendant(of: reentryButton, matching: find.byType(InkWell)).first,
+    );
+    expect(reentryAction.onTap, isNotNull);
+
+    await tester.ensureVisible(reentryButton);
+    await tester.tap(reentryButton);
+    await tester.pumpAndSettle();
+
+    _expectCanonicalBoardCanvas(tester);
+    expect(
+      GoRouter.of(tester.element(find.byType(BoardCanvasScreen))),
+      same(startupRouter),
+    );
+    expect(container.read(projectStateProvider), same(loadedProject));
+    expect(container.read(beginnerModeProvider), isFalse);
 
     expect(find.textContaining('Command menu'), findsNothing);
     expect(find.textContaining('Ctrl-K'), findsNothing);
@@ -1241,8 +1322,8 @@ void main() {
     expect(fakePicker.requestedAllowMultiple, isFalse);
     expect(
         find.byKey(const ValueKey('benchbeep_home_launcher')), findsOneWidget);
-    expect(
-        find.byKey(const ValueKey('benchbeep_workbench_router')), findsNothing);
+    expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
+        findsOneWidget);
     expect(find.text('Import Project ZIP'), findsNothing);
     expect(find.text('Read-only Project ZIP Viewer'), findsNothing);
     expect(find.text('kaasaskantav projektifail'), findsOneWidget);

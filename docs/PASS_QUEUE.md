@@ -2,10 +2,83 @@
 
 ## Current route
 
-Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
 
-## Current Legacy Viewer removal Code Map maintenance queue
+## Current single-router lifetime scope queue
+
+The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+clean substantive baseline `6a81dbad9f38c3514c1db169db5a359bd0c2fc19`.
+Its exact five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS.md`
+
+No sixth path is queued. The ledger receives one neutral `REVIEW_REQUIRED`
+row and the new artifact contains exactly one empty verdict block. Phase 1
+does not edit Dart, tests, maps, index, packages, platforms, tools, schemas,
+assets, samples, or Windows residue.
+
+## Next reserved single-router lifetime child
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / ROUTER_LIFETIME / UI_LOCAL
+Write class: ZERO_WRITE + UI_LOCAL; tests observe PROJECTION_STATE
+```
+
+The exact implementation allowlist is:
+
+1. `lib/app/app.dart`
+2. `test/widget/benchbeep_home_screen_test.dart`
+3. `test/widget/benchbeep_splash_screen_test.dart`
+
+No fourth path is queued. The child replaces the two-root/rebuilt-router
+lifecycle with one router initialized at `/`, one `MaterialApp.router`,
+`_buildLauncherShell` as canonical Home, `go`-based launcher transitions, and
+one disposal. It does not change the router factory or graph.
+
+Required focused regressions cover stable router identity and source lifecycle,
+`/` <-> `/new-project` <-> `/project`, existing back-stack behavior, loaded
+provider identity through Home and re-entry, Wizard provider-before-route and
+explicit success, ProjectGate Home recovery, all 15 real destinations and two
+aliases, startup timing/overlay/pointer transparency/early-navigation no-
+replay, acquisition flows, responsive launcher, and window close.
+
+The app and Home-test maps become `UPDATE_REQUIRED` after accepted committed
+implementation. The router, Wizard-test, and ProjectGate-test maps are
+`REVIEWED_NO_CHANGE`; the current compact splash suite is `NOT_APPLICABLE`
+and must be requalified from committed source. No map or index work belongs to
+the child. Human manual smoke precedes independent implementation audit.
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 6a81dba]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [activates only after independent scope acceptance, bounded verdict
+    recording, and human exact scope commit/push]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source Code Map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+Stop before the child on any baseline/route mismatch, a fourth required path,
+need to edit `router.dart` or another frozen surface, topology/product drift,
+provider/Wizard semantic drift, excluded cleanup, stale/conflicting map, or
+validation failure.
+
+## Accepted Legacy Viewer removal Code Map maintenance queue (historical, non-authorizing)
+
+Commit `6a81dbad9f38c3514c1db169db5a359bd0c2fc19` preserves the accepted
+maintenance pass. The retained queue, current/next, Phase-1, and promotion
+wording below is historical evidence and does not override the live queue.
 
 The current queue is one Lane A
 `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed

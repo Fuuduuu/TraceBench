@@ -1,9 +1,93 @@
 # Current State
 
-Current pass: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
 
-## Live Legacy Viewer removal committed-source Code Map maintenance
+## Live single-router lifetime scope
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 6a81dbad9f38c3514c1db169db5a359bd0c2fc19
+```
+
+Live verification found branch `main`,
+`HEAD == origin/main == 6a81dbad9f38c3514c1db169db5a359bd0c2fc19`,
+subject `docs: refresh legacy viewer removal code maps`, divergence `0 0`,
+empty staged, unmerged, untracked, and substantive content diffs. The only
+porcelain entries are the known content-identical Windows EOL/stat residue in
+`generated_plugin_registrant.cc`, `generated_plugin_registrant.h`, and
+`generated_plugins.cmake`; they remain untouched.
+
+The accepted Legacy Viewer removal map maintenance released to the
+non-executable `NEEDS_USER_DECISION` sentinel. The human now selects one Lane B
+docs-only scope whose only future outcome is a single lifetime
+`MaterialApp.router` and a single lifetime `GoRouter` in `TraceBenchApp`.
+
+This Phase 1 changes exactly the three route owners, audit ledger, and one new
+artifact. It reserves exactly one child,
+`TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`, with exactly three writable
+paths:
+
+1. `lib/app/app.dart`
+2. `test/widget/benchbeep_home_screen_test.dart`
+3. `test/widget/benchbeep_splash_screen_test.dart`
+
+No fourth path is reserved. The child creates one app router at canonical `/`,
+uses `_buildLauncherShell` as the root builder, renders one
+`MaterialApp.router`, changes `_openWorkbench` to `go` on that router, and
+disposes it once. `router.dart` and its exact graph remain unchanged.
+
+The 3200 ms startup splash remains an `IgnorePointer` launcher overlay. Normal
+completion reveals the already-mounted launcher. Because current pointer
+behavior permits an underlying launcher action during the overlay, early
+workbench entry must latch intro completion so returning to `/` never replays
+the splash. Returning Home otherwise preserves the identical loaded project
+and beginner-mode provider state.
+
+The child must preserve `/new-project`, `/project`, all 15 real project
+destinations, both aliases, names/nesting/back-stack behavior, Wizard cancel
+and explicit success handoff, ProjectGate recovery, sample/ZIP/directory
+acquisition, launcher presentation, window close, providers, writers, events,
+facts, evidence, freshness, and every excluded cleanup or product-IA surface.
+
+Code Map dispositions are `UPDATE_REQUIRED` after accepted implementation for
+the maintained app and Home-test maps; `REVIEWED_NO_CHANGE` for maintained
+router, Wizard-test, and ProjectGate-test maps; and live
+`NOT_APPLICABLE` for the 102-line/four-test splash suite, subject to later
+committed-source requalification. Maps and the index are not writable now or
+in the child.
+
+Focused regression evidence must prove one router identity through startup,
+Wizard, project, Home, and re-entry; one construction/disposal lifecycle;
+provider survival; Wizard ordering; Home recovery; all routes/aliases; splash
+timing/pointer/no-replay behavior; and unchanged acquisition/exit behavior.
+Human smoke is required before independent implementation audit.
+
+The live route is:
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 6a81dba]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [conditional on accepted/pushed scope]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source Code Map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+No Dart, test, map/index, package, platform, tool, schema, asset, sample, or
+product behavior changes in this docs-only scope.
+
+## Accepted Legacy Viewer removal committed-source Code Map maintenance (historical, non-authorizing)
+
+Commit `6a81dbad9f38c3514c1db169db5a359bd0c2fc19` preserves the accepted
+maintenance pass. All retained current/next, Phase-1, map-status, and route
+wording below is historical and supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS

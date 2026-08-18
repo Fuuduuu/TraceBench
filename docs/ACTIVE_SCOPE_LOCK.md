@@ -2,10 +2,180 @@
 
 ## Route
 
-Current: `TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
 
-## Current Legacy Viewer removal committed-source Code Map maintenance authority
+## Current single-router lifetime scope authority
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 6a81dbad9f38c3514c1db169db5a359bd0c2fc19
+```
+
+This docs-only authority locks one future implementation whose sole product and
+architecture outcome is one lifetime `MaterialApp.router` and one lifetime
+`GoRouter` owned by `TraceBenchApp`. It authorizes no Dart, test, route, map,
+package, platform, tool, schema, asset, sample, or product change now.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. The three route-owner tops may be reconciled, one
+neutral `REVIEW_REQUIRED` ledger row may be added, and one new artifact with
+exactly one named empty verdict block may be created.
+
+### Exact future implementation reservation -- 3
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / ROUTER_LIFETIME / UI_LOCAL
+Write class: ZERO_WRITE + UI_LOCAL; tests observe PROJECTION_STATE
+```
+
+1. `lib/app/app.dart`
+2. `test/widget/benchbeep_home_screen_test.dart`
+3. `test/widget/benchbeep_splash_screen_test.dart`
+
+No fourth implementation path is reserved. In particular,
+`lib/app/router.dart`, the Wizard, ProjectGate, launcher and splash sources,
+every destination, every other test, maps, and `CODE_MAP_INDEX.md` are
+inspect-only. The child activates only after independent scope acceptance,
+authorized verdict recording, and human exact staging, commit, and push of
+this five-file scope.
+
+### Locked lifetime and navigation behavior
+
+The child must:
+
+1. create the app-owned router once during `TraceBenchApp` state
+   initialization with initial location `/` and dispose that same instance
+   once from state disposal;
+2. return one `MaterialApp.router` on every build and remove the parallel
+   launcher `MaterialApp` / `_showLauncher` root switch;
+3. supply `_buildLauncherShell` as the existing router's canonical `/`
+   builder, leaving `buildTraceBenchRouter` and the complete route graph
+   unchanged;
+4. make `_openWorkbench` use `GoRouter.go(initialLocation)` on the existing
+   instance, never `push`, replacement-router construction, or interim
+   disposal;
+5. preserve the current 3200 ms splash, stack, visuals, and `IgnorePointer`
+   behavior; normal completion reveals the already-mounted launcher, and a
+   pointer-through launcher transition before completion latches the intro
+   complete so later returns to `/` do not replay it;
+6. preserve `/new-project`, `/project`, all 15 real project destinations,
+   both aliases, nesting, names, errors, Wizard cancellation and explicit
+   success transition, ProjectGate Home recovery, and existing GoRouter
+   back-stack semantics;
+7. retain the identical loaded `ProjectState` and beginner-mode state across
+   `/` <-> workbench navigation, including return to `/` and re-entry; and
+8. leave bundled sample, ZIP, directory, window-close, providers, writers,
+   events, facts, evidence, freshness, and every destination behavior
+   unchanged.
+
+### Focused regression contract
+
+The two writable suites must add or strengthen assertions for one production
+router identity from startup through `/new-project`, `/project`, `/`, and
+re-entry; one construction and one disposal site; `go` rather than `push`;
+provider identity survival; Wizard handoff before explicit navigation;
+canonical Home recovery; splash timing, overlay, pointer transparency, normal
+completion, early transition, and no replay. Existing acquisition, responsive,
+exit, Wizard-success, ProjectGate 15-target/two-alias, and launcher tests may
+not be weakened to make the conversion pass.
+
+### Code Map preflight and lifecycle
+
+The live registry has 31 maps and 31 rows, all `MAINTAINED`.
+
+- `lib/app/app.dart`: maintained automatic map; root-lifecycle and navigation
+  flow change; `UPDATE_REQUIRED` after accepted committed implementation.
+- `test/widget/benchbeep_home_screen_test.dart`: maintained `SCORE 11/12` map;
+  lifetime/provider/return coverage changes; `UPDATE_REQUIRED` after accepted
+  committed implementation.
+- `lib/app/router.dart`: maintained human-override map; source, factory
+  contract, paths, names, nesting, 15 targets, two aliases, and error surface
+  are frozen; `REVIEWED_NO_CHANGE`.
+- `test/widget/new_project_wizard_screen_test.dart`: maintained automatic map;
+  cancellation, exactly-once handoff, persistent Step 7, and explicit
+  `/project` tests are inspect-only; `REVIEWED_NO_CHANGE`.
+- `test/widget/project_gate_test.dart`: maintained `SCORE 7/12` map; canonical
+  Home recovery and complete route matrix are inspect-only;
+  `REVIEWED_NO_CHANGE`.
+- `test/widget/benchbeep_splash_screen_test.dart`: no map; at 102 lines and
+  four compact tests it is below qualification and has no automatic trigger;
+  `NOT_APPLICABLE` from live source, with committed-source requalification
+  required after implementation.
+
+No map or index edit is authorized now or in the child. A later separately
+scoped committed-source maintenance action must refresh qualifying stale maps
+and requalify the splash suite; no second child PASS_ID is reserved here.
+
+### Manual smoke contract
+
+After implementation validation and before independent implementation audit,
+the human must smoke: cold-launch splash identity and 3200 ms completion;
+pointer-through early New Project entry and no splash replay on Home return;
+normal launcher -> Wizard -> cancel -> launcher; Wizard success remaining on
+Step 7 until `Ava projekt`; bundled, directory, and ZIP open/cancel/failure;
+project -> Home -> project with the same loaded project; null-state
+ProjectGate deep-link Home recovery; representative project destinations and
+both aliases; back navigation; responsive launcher; and window-close cancel
+and confirm. The implementation audit packet is `USE ONLY AFTER MANUAL SMOKE
+PASS`.
+
+### Frozen boundaries, validation, and stops
+
+Freeze `projectStateProvider` and `beginnerModeProvider` semantics; all
+acquisition, ProjectGate, Wizard, route, destination, WorkbenchShell,
+Overview, Add/Edit/Measure, capability, diagnostic, error-surface, null-
+defense, product-IA, writer/event/fact/evidence/freshness, Project ZIP,
+package, asset, tool, schema, sample, generated, map/index, and Windows/EOL
+bytes outside the three-path child. Preserve the known three-path Windows
+porcelain residue without normalization.
+
+This Phase 1 must run `py -3 tools/doctor.py`,
+`py -3 tools/validate_all.py`, both requested diff checks, name-status, and
+status. The child must run formatting/analyzer on its exact three paths,
+both writable suites, the focused Wizard success/cancel regressions, the full
+compact ProjectGate suite, repository doctor/validator, and Git diff checks.
+
+Stop on baseline/route mismatch, a fourth child path, need to edit
+`router.dart` or another frozen source/test, route-topology or product change,
+provider/Wizard semantic drift, required excluded cleanup, stale/conflicting
+pre-existing map, validation failure, unexpected frozen content, Phase-2
+execution, or any stage, commit, push, stash, reset, clean, or Windows
+normalization.
+
+### Locked route
+
+```text
+TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 6a81dba]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [activates only after independent scope acceptance, bounded verdict
+    recording, and human exact scope commit/push]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> [separately scoped committed-source Code Map maintenance as required]
+-> NEEDS_USER_DECISION
+```
+
+## Accepted Legacy Viewer removal committed-source Code Map maintenance (historical, non-authorizing)
+
+Commit `6a81dbad9f38c3514c1db169db5a359bd0c2fc19` preserves the accepted
+maintenance pass. All retained current/next, Phase-1, map-status, and
+lifecycle wording below is historical evidence and does not override the live
+scope above.
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS

@@ -30,6 +30,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `test/unit/project_creator_test.dart` | `docs/code_maps/test/unit/project_creator_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_loader_zip_test.dart` | `docs/code_maps/test/unit/project_loader_zip_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/benchbeep_home_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/benchbeep_splash_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_splash_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/board_canvas_screen_test.dart` | `docs/code_maps/test/widget/board_canvas_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/customer_report_screen_test.dart` | `docs/code_maps/test/widget/customer_report_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/edit_component_screen_test.dart` | `docs/code_maps/test/widget/edit_component_screen_test.dart.md` | test | `MAINTAINED` |

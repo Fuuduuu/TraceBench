@@ -2,10 +2,187 @@
 
 ## Route
 
-Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
+Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current single-router lifetime scope authority
+## Current single-router lifetime committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: b5096c2790851bd32e215fd4f7660a71f6b7510e
+```
+
+This is the exact docs/maps-only authority to close the committed-source Code
+Map obligations after the accepted single-router implementation. It
+authorizes no Dart, test, runtime, route implementation, product, platform,
+package, tool, schema, asset, sample, Project ZIP, or protected-semantic
+change.
+
+### Exact current Phase-1 write allowlist -- 9
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+8. `docs/code_maps/test/widget/benchbeep_splash_screen_test.dart.md`
+9. `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS.md`
+
+No tenth path is authorized. The three route-owner tops may be reconciled, one
+neutral `REVIEW_REQUIRED` ledger row may be added, the app and Home-test maps
+may be refreshed, the qualifying splash suite may receive its first map,
+exactly those three matching index rows may be `REVIEW_REQUIRED`, and one new
+audit artifact with one named empty verdict block may be created.
+
+### Committed-source mapping authority
+
+The accepted scope is committed at
+`ab3c6877ad4a4d96754820162124bde1252ef84b`. The only implementation mapping
+inputs are committed `b5096c2790851bd32e215fd4f7660a71f6b7510e`, subject
+`refactor: use single router lifetime`, and its exact three-path diff:
+
+```text
+M    lib/app/app.dart
+M    test/widget/benchbeep_home_screen_test.dart
+M    test/widget/benchbeep_splash_screen_test.dart
+```
+
+Durable mapped-input identities are the committed `blob` object ids returned
+by `git rev-parse b5096c2790851bd32e215fd4f7660a71f6b7510e:<path>`:
+
+| Committed target | Git object id |
+| --- | --- |
+| `lib/app/app.dart` | `fffdd586971c316b7668be0a506b8ce09cf990c0` |
+| `test/widget/benchbeep_home_screen_test.dart` | `859b0fe039cb3db9381d20a2e1ba8a42c91db325` |
+| `test/widget/benchbeep_splash_screen_test.dart` | `2c2ae628a7c5a2fbdb6b4e4a8deed5b08631bd3c` |
+| `lib/app/router.dart` | `3abdc465da47e01e16d7a3c3831faabfb7773579` |
+| `test/widget/new_project_wizard_screen_test.dart` | `6bc24bcdb81bfb7290aee156ca7844c5ab529940` |
+| `test/widget/project_gate_test.dart` | `713784cd690e6c92797acdbb3b0775b5eef5d517` |
+
+No unfinished or working-tree runtime/test content may update a map.
+
+### Exact Code Map dispositions
+
+- `lib/app/app.dart` is `UPDATE_REQUIRED`. Refresh its existing map for one
+  lifetime `_router`, `initState` construction, once-only disposal, one
+  `MaterialApp.router`, canonical `_buildLauncherShell`,
+  `ValueNotifier`/`ValueListenableBuilder` intro state, existing-router `go`,
+  provider lifetime, and unchanged acquisition/Wizard write boundaries.
+- `test/widget/benchbeep_home_screen_test.dart` is `UPDATE_REQUIRED`. Refresh
+  its existing map for one-router identity through New Project/cancel and
+  Wizard success, loaded-project Home round trip, identical
+  `projectStateProvider` survival, `beginnerModeProvider` survival, and
+  provider-before-explicit-`/project` ordering, while preserving all 20 tests'
+  acquisition/responsive/hover/legacy-absence/exit responsibilities.
+- `test/widget/benchbeep_splash_screen_test.dart` has no entry map at baseline.
+  Committed source is 236 lines with four widget tests and two source-guard
+  tests. It qualifies at `SCORE 9/12` and receives its first map at
+  `REVIEW_REQUIRED`.
+- `lib/app/router.dart` is `REVIEWED_NO_CHANGE`: committed blob identity is
+  unchanged; the required Home builder, `/new-project`, `/project`, all 15
+  gated destinations, both aliases, names/nesting, and zero-write route
+  ownership remain accurately mapped.
+- `test/widget/new_project_wizard_screen_test.dart` is
+  `REVIEWED_NO_CHANGE`: its 76-test cancellation, exactly-once handoff,
+  persistent Step 7, explicit `/project`, and zero-write fixture ownership
+  remain accurate.
+- `test/widget/project_gate_test.dart` is `REVIEWED_NO_CHANGE`: its 10-test
+  canonical Home recovery, 15-target inventory, two aliases, original-URI
+  recovery, project-open outcomes, and zero-write evidence remain accurate.
+
+### Splash-test qualification worksheet
+
+- Physical size: 236 lines -> `0`.
+- Independent responsibilities: identity, configured completion, normal app
+  startup, early pointer-through/no replay, app lifecycle source guards, and
+  splash presentation-source guards -> `2`.
+- Canonical/protected boundaries: one protected read-only router-lifecycle and
+  presentation-only source boundary -> `1`.
+- Regression surface: standalone component, app lifecycle/navigation, and
+  architecture/presentation source-guard families -> `2`.
+- Whole-file analysis tax: broad suite analysis occurred in the scope,
+  implementation, and this maintenance pass -> `2`.
+- Blast-radius ambiguity: safe estimation crosses splash, app lifecycle,
+  launcher/Wizard navigation, and router source zones -> `2`.
+- Result: `SCORE 9/12`, with all five non-size dimensions nonzero.
+- Automatic qualification: none required; the scored threshold qualifies.
+- Entry lifecycle result: `BLOCKED_CODE_MAP_REQUIRED`.
+- Phase-1 action: create the deterministic first map and matching index row at
+  `REVIEW_REQUIRED`.
+
+### Map refresh and registry lifecycle
+
+The app map must record the single-router/root/notifier lifecycle and preserve
+its existing provider, acquisition, Wizard, and write-boundary ownership. The
+Home map must record router identity, Home return/re-entry, both provider
+survival claims, and Wizard handoff ordering without weakening its existing
+families. The new splash map must record all six tests, runtime versus textual
+evidence, exact timing/pointer/no-replay behavior, and its read-only source
+boundary without claiming provider-survival ownership.
+
+Phase 1 must produce exactly 32 actual maps and 32 index rows, zero orphan and
+zero unindexed maps, exactly three `REVIEW_REQUIRED` map headers/index cells,
+and 29 unchanged `MAINTAINED` pairs. Only the app, Home-test, and splash-test
+maps are review targets. Manual smoke is `NOT_APPLICABLE`.
+
+A clean independent map/pass audit may authorize at most eight mechanical
+Phase-2 coordinates:
+
+1. the designated verdict-block interior;
+2. this PASS_ID's existing `docs/AUDIT_INDEX.md` Status cell;
+3. the app map-header `REVIEW_REQUIRED` -> `MAINTAINED` value;
+4. the Home-test map-header `REVIEW_REQUIRED` -> `MAINTAINED` value;
+5. the splash-test map-header `REVIEW_REQUIRED` -> `MAINTAINED` value; and
+6-8. the three matching `docs/code_maps/CODE_MAP_INDEX.md` Status cells.
+
+Phase 2 may promote only maps independently accepted as safe for SNIPER use.
+It may not change a map body, qualification, Source/Type/Audit-evidence field,
+route prose, ledger Description, artifact exterior, unrelated index/ledger
+cell, or any other byte. The new splash map/index row persists, so the index
+remains in the final material set after promotion.
+
+### Frozen boundaries, validation, and stops
+
+Byte-freeze all Dart/test/runtime source, the router graph and both aliases,
+Wizard and ProjectGate behavior, providers and acquisition behavior, splash
+and launcher source, every destination, writer/event/fact/evidence/freshness
+and Project ZIP semantic, all unrelated map/index rows, packages, Windows/EOL
+residue, tools, schemas, assets, samples, F-03, and every other repository
+byte.
+
+Run `py -3 tools/doctor.py`, `py -3 tools/validate_all.py`, both requested diff
+checks, registry parity/status checks, name-status, and status. Also prove the
+exact nine-path material set, exactly two new paths, empty staged/unmerged
+sets, committed source/test blob identity, one empty verdict block, route-owner
+agreement, and empty runtime/test/maps-outside-allowlist/Windows content diff.
+
+Stop on baseline or route mismatch, a tenth required path, source/test edit,
+unbounded map drift, qualification conflict, unrelated cleanup, validation
+failure, Phase-2 execution, or any stage, commit, push, stash, reset, clean, or
+Windows normalization.
+
+### Locked route
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [committed at b5096c2]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted single-router lifetime scope and committed implementation (historical, non-authorizing)
+
+Commits `ab3c6877ad4a4d96754820162124bde1252ef84b` and
+`b5096c2790851bd32e215fd4f7660a71f6b7510e` preserve the accepted scope and
+completed implementation. All retained current/next, Phase-1, activation,
+future-map, and route wording below is historical and does not override the
+live authority above.
 
 ```text
 PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS

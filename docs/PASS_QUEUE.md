@@ -2,10 +2,65 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
+Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current single-router lifetime scope queue
+## Current single-router lifetime Code Map maintenance queue
+
+The current queue is one Lane A
+`DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed
+implementation baseline `b5096c2790851bd32e215fd4f7660a71f6b7510e`.
+Its exact nine-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+8. `docs/code_maps/test/widget/benchbeep_splash_screen_test.dart.md`
+9. `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS.md`
+
+No tenth path is queued. The splash-test map and audit artifact are the only
+new paths. App and Home-test maps are refreshed from committed source; the
+236-line/six-test splash suite qualifies at `SCORE 9/12` and receives its first
+map. Exactly those three map headers and matching index cells enter
+`REVIEW_REQUIRED`.
+
+The maintained router, Wizard-test, and ProjectGate-test maps are
+`REVIEWED_NO_CHANGE`: their route graph, 15 real gated targets, two aliases,
+Wizard cancel/success ordering, and canonical Home recovery responsibilities
+remain accurate. No other source, test, or map is re-opened.
+
+The Phase-1 registry target is exactly 32 maps and 32 rows: three review pairs,
+29 maintained pairs, zero orphan maps, and zero unindexed maps. The ledger gets
+one neutral `REVIEW_REQUIRED` row; the new artifact contains exactly one empty
+verdict block. Manual smoke is `NOT_APPLICABLE`.
+
+If independently authorized, bounded Phase 2 may touch only the verdict-block
+interior, this PASS_ID's ledger Status cell, the three map Status headers, and
+the three matching index Status cells: eight logical coordinates maximum. It
+may not change map bodies, qualifications, route prose, the ledger Description,
+artifact exterior, or another byte. The new splash row keeps
+`CODE_MAP_INDEX.md` in the final material set after promotion.
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [committed at b5096c2]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted single-router lifetime scope queue and committed child (historical, non-authorizing)
+
+Commits `ab3c6877ad4a4d96754820162124bde1252ef84b` and
+`b5096c2790851bd32e215fd4f7660a71f6b7510e` preserve the accepted scope and
+completed implementation. The retained queue, current/next, activation,
+future-map, and route wording below is historical evidence only and does not
+override the live queue.
 
 The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 clean substantive baseline `6a81dbad9f38c3514c1db169db5a359bd0c2fc19`.

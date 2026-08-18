@@ -1,9 +1,81 @@
 # Current State
 
-Current pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS`
+Current pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live single-router lifetime scope
+## Live single-router lifetime committed-source Code Map maintenance
+
+```text
+PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: b5096c2790851bd32e215fd4f7660a71f6b7510e
+```
+
+Live verification found branch `main`,
+`HEAD == origin/main == b5096c2790851bd32e215fd4f7660a71f6b7510e`,
+subject `refactor: use single router lifetime`, parent
+`ab3c6877ad4a4d96754820162124bde1252ef84b`, divergence `0 0`, and empty
+staged, unmerged, untracked, and substantive content diffs. The only porcelain
+entries are the known content-identical Windows EOL/stat residue in the three
+generated plugin files; they remain untouched.
+
+The accepted scope is committed at `ab3c6877ad4a4d96754820162124bde1252ef84b`
+and its exact three-path implementation is committed at the live baseline.
+This Phase 1 changes exactly nine documentation/map paths: the three route
+owners, audit ledger, Code Map index, refreshed app and Home-test maps, one
+new qualifying splash-test map, and one new audit artifact. No Dart, test,
+runtime, route implementation, or other product byte changes.
+
+The app map now records one `GoRouter` created in `initState`, one
+`MaterialApp.router`, canonical `_buildLauncherShell` at `/`,
+`ValueNotifier`/`ValueListenableBuilder` startup state, existing-router `go`
+navigation, once-only disposal, provider lifetime, and unchanged acquisition
+and Wizard projection boundaries. The 20-test Home map now records one-router
+identity, Wizard cancel/Home return, provider-before-explicit-route handoff,
+and loaded project plus beginner-mode survival through Home and re-entry while
+retaining acquisition, responsive, hover, legacy-absence, and exit ownership.
+
+Committed `test/widget/benchbeep_splash_screen_test.dart` is now 236 lines
+with four widget tests and two source-guard tests. It qualifies at
+`SCORE 9/12`: physical size `0`, independent responsibilities `2`, one
+protected read-only/router-lifecycle boundary `1`, regression surface `2`,
+whole-file analysis tax `2`, and blast-radius ambiguity `2`. Its first map
+records standalone identity/timing, normal 3200 ms completion, early pointer-
+through navigation, no replay after Home return, one-router source shape and
+disposal, absence of a splash route, and presentation-only exclusions.
+
+The unchanged maintained maps for `lib/app/router.dart`,
+`test/widget/new_project_wizard_screen_test.dart`, and
+`test/widget/project_gate_test.dart` were rechecked against their committed
+blobs and remain `REVIEWED_NO_CHANGE`. Route topology, the 15 gated
+destinations, both aliases, Wizard cancellation/success semantics, and
+ProjectGate canonical Home recovery remain accurately mapped.
+
+Phase 1 therefore produces exactly 32 map files and 32 index rows: the app,
+Home-test, and new splash-test pairs are `REVIEW_REQUIRED`; the other 29 pairs
+remain `MAINTAINED`; and there are zero orphan or unindexed maps. The ledger
+row is neutral `REVIEW_REQUIRED`, the new artifact has one empty designated
+verdict block, and manual smoke is `NOT_APPLICABLE`.
+
+The live route is:
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_IMPL_PASS
+   [committed at b5096c2]
+-> TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+`NEEDS_USER_DECISION` reserves no successor and grants no write authority.
+
+## Accepted single-router lifetime scope and committed implementation (historical, non-authorizing)
+
+Commits `ab3c6877ad4a4d96754820162124bde1252ef84b` and
+`b5096c2790851bd32e215fd4f7660a71f6b7510e` preserve the accepted scope and
+completed implementation. All retained current/next, Phase-1, activation,
+future-map, and route wording below is historical and supplies no current
+write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_SCOPE_LOCK_PASS

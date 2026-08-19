@@ -2,10 +2,179 @@
 
 ## Route
 
-Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
 
-## Current single-router lifetime committed-source Code Map maintenance authority
+## Current SNIPER agent-handoff governance SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 496bae2eb3aed7de8f2b47cc5e4a352cc30707fc
+```
+
+This scope solves only the missing live PASS_ID/write authority identified by
+the independent audit of a pre-existing two-file governance draft. It does not
+edit, accept, or ratify that draft. Exactly one later child is reserved to
+correct the two medium wording findings and persist the bounded reading and
+audit-handoff rules.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. The three route-owner tops may be reconciled, one
+neutral `REVIEW_REQUIRED` ledger row may be added, and one new audit artifact
+with exactly one named empty verdict block may be created.
+
+### Entry baseline and frozen foreign draft
+
+Live entry is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+496bae2eb3aed7de8f2b47cc5e4a352cc30707fc`, parent
+`b5096c2790851bd32e215fd4f7660a71f6b7510e`, subject
+`docs: refresh single router lifetime code maps`, and divergence `0 0`.
+Cached and unmerged sets were empty. The only substantive entry diff was the
+pre-existing foreign draft:
+
+1. `AGENTS.md`
+2. `docs/PROMPTING_PROTOCOL.md`
+
+Those two paths are read-only during this scope. Their entry hashes are SHA-256
+over the exact working-tree file bytes, produced with
+`Get-FileHash -Algorithm SHA256 -LiteralPath <path>`; lengths are the exact
+byte-array lengths returned by
+`[System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath <path>)).Length`:
+
+| Frozen foreign path | Entry SHA-256 | Entry bytes |
+| --- | --- | ---: |
+| `AGENTS.md` | `8263DF1EF48995B83A70319CB1CB4A1CA633A121E3E6E6372252EBDAEB1A0821` | 7638 |
+| `docs/PROMPTING_PROTOCOL.md` | `FA0EA721B0193A20F53365C95A5F0FF6256683935E92AFC8507E1190446E1B03` | 23285 |
+
+Known Windows generated-plugin EOL/stat residue remains content-identical and
+outside authority. The foreign draft hashes and Windows substantive diff must
+match their entry observations after every scope write and validation command.
+
+### Reserved child exact future allowlist -- 2
+
+```text
+PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+Lane: A
+Mode: DOCS_ONLY / AGENT_WORKFLOW
+```
+
+1. `AGENTS.md`
+2. `docs/PROMPTING_PROTOCOL.md`
+
+No third child path is authorized. The child is conditional on independent
+acceptance of this exact five-path scope, authorized bounded verdict recording,
+and exact human staging, commit, and push of only the accepted scope material.
+The frozen draft may be reused only after those gates and then becomes subject
+to the child's exact two-file authority and fresh validation.
+
+### Locked child behavior
+
+`AGENTS.md` must:
+
+- set the repository path to `C:\dev\TraceBench`;
+- retain full reads of the five mandatory owner files;
+- state the bounded-pass reading sequence as mandatory five, then the
+  task-specific map or owner, then exact diff and symbol/responsibility zones;
+- distinguish handoff construction, where Codex uses map-first bounding, from
+  Claude audit execution, where the exact diff is the first primary evidence
+  under `docs/AUDIT_CONTRACT.md`;
+- state that `CLAUDE_SNIPER_PACKET` accompanies the binding
+  `CLAUDE_AUDIT_PACKET` and never replaces, competes with, or becomes a second
+  audit header;
+- define independent audit as independent verification rather than broad
+  rediscovery;
+- permit broad expansion only after an explicit contradiction, failed anchor
+  or closure, evidence/validation conflict, material-set mismatch, or concrete
+  finding requires one named dependency hop; and
+- state that SNIPER discipline cannot widen an active allowlist or outrank
+  `docs/POHIKIRI.md`, `docs/ACTIVE_SCOPE_LOCK.md`, source/tests,
+  `docs/AUDIT_CONTRACT.md`, or
+  `docs/code_maps/CODE_MAP_STANDARD.md`.
+
+`docs/PROMPTING_PROTOCOL.md` must:
+
+- retain `docs/AUDIT_CONTRACT.md` as the sole audit-contract and canonical
+  `CLAUDE_AUDIT_PACKET` owner;
+- define `CLAUDE_SNIPER_PACKET` only as a compact optimization payload that
+  accompanies the required canonical audit packet;
+- define the required `AUDIT_MODE: SNIPER / VERIFY_NOT_REDISCOVER`,
+  `AUTHORITY`, `EXACT_MATERIAL_SET`, `READ`,
+  `DO_NOT_READ_BY_DEFAULT`, `VERIFY_INDEPENDENTLY`,
+  `EXACT_SYMBOL_ZONES`, `DIRECT_COMMANDS`, `EXPAND_ONLY_IF`,
+  `EXPANSION_RULE`, and `RETURN` fields;
+- state construction as map-first responsibility bounding and execution as
+  exact-diff-first primary evidence; and
+- permit one dependency-hop expansion at a time only with a stated reason.
+
+The child must correct the two medium findings in the frozen draft: the
+ambiguous packet relationship and the unconditional map-first rule. The
+independent audit's tool-skill and optional-photo-warning low/NIT observations
+are explicitly outside this child and must not be patched opportunistically.
+
+### Governance ownership and exclusions
+
+`docs/AUDIT_CONTRACT.md` remains byte-frozen and is the sole binding audit
+contract owner. `docs/PROMPTING_PROTOCOL.md` may describe the compact
+non-verdict read envelope but may not create a competing schema, header,
+verdict, gate, or recording sequence. The child creates no new mandatory
+default-read document and adds no extra process ceremony.
+
+`docs/CODEX_TOOLING_POLICY.md`, `docs/MODEL_ROUTING.md`,
+`docs/PASS_LIFECYCLE.md`, `docs/code_maps/CODE_MAP_STANDARD.md`, and
+`docs/POHIKIRI.md` are inspect-only owners. No audit contract, Code Map
+Standard, charter, runtime, test, map, index, product, protected semantic,
+package, asset, schema, tool, generated, Windows, or scratch change is
+authorized.
+
+### Validation, Phase 2, and stops
+
+Manual smoke is `NOT_APPLICABLE`. Phase 1 must run
+`py -3 tools/doctor.py`, `py -3 tools/validate_all.py`, both requested diff
+checks, name-status, and status. It must prove exactly five newly authored
+scope paths in addition to the two unchanged foreign paths, empty cached and
+unmerged sets, identical foreign hashes and byte lengths, unchanged
+runtime/test/map/Windows substantive diff, one neutral ledger row, one empty
+verdict block, and route-owner agreement.
+
+A clean independent scope audit may authorize only two Phase-2 logical
+coordinates:
+
+1. the designated verdict-block interior; and
+2. this PASS_ID's existing `docs/AUDIT_INDEX.md` Status cell.
+
+Phase 2 may not alter the artifact exterior, ledger Description, route prose,
+foreign draft, or any other byte. Stop if either foreign hash or length moves,
+a third child path is required, `docs/AUDIT_CONTRACT.md` or another authority
+must change, the route cannot reconcile, validation fails, the scope material
+set expands, or any stage, commit, push, stash, reset, restore, clean, discard,
+or Windows normalization occurs.
+
+### Locked route
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 496bae2]
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [conditional on accepted/pushed scope]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted single-router lifetime committed-source Code Map maintenance authority (historical, non-authorizing)
+
+Commit `496bae2eb3aed7de8f2b47cc5e4a352cc30707fc` preserves the accepted
+maintenance result. All retained current/next, Phase-1, map-status, and route
+wording below is historical evidence and does not override the live scope.
 
 ```text
 PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS

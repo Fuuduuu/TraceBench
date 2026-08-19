@@ -2,10 +2,87 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
 
-## Current single-router lifetime Code Map maintenance queue
+## Current SNIPER agent-handoff governance scope queue
+
+The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+committed baseline `496bae2eb3aed7de8f2b47cc5e4a352cc30707fc`. Its exact
+five-path authored material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS.md`
+
+No sixth scope path is queued. The ledger receives one neutral
+`REVIEW_REQUIRED` row and the new artifact contains exactly one empty verdict
+block. Manual smoke is `NOT_APPLICABLE`.
+
+The pre-existing `AGENTS.md` and `docs/PROMPTING_PROTOCOL.md` working-tree
+drafts are foreign and byte-frozen during this scope. They are not part of the
+five-path scope material, are not ratified by this lock, and retain their entry
+SHA-256/byte pairs:
+
+- `AGENTS.md`:
+  `8263DF1EF48995B83A70319CB1CB4A1CA633A121E3E6E6372252EBDAEB1A0821` /
+  `7638`;
+- `docs/PROMPTING_PROTOCOL.md`:
+  `FA0EA721B0193A20F53365C95A5F0FF6256683935E92AFC8507E1190446E1B03` /
+  `23285`.
+
+## Next reserved SNIPER agent-handoff governance child
+
+```text
+PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+Lane: A
+Mode: DOCS_ONLY / AGENT_WORKFLOW
+```
+
+The exact child write allowlist is:
+
+1. `AGENTS.md`
+2. `docs/PROMPTING_PROTOCOL.md`
+
+No third child path is queued. The child activates only after independent
+acceptance, bounded verdict recording, and exact human staging, commit, and
+push of the five scope paths.
+
+The child corrects only the two medium wording findings in the foreign draft:
+it makes the sniper envelope accompany rather than replace or compete with
+the canonical audit packet, and separates map-first handoff construction from
+exact-diff-first Claude audit execution. It also preserves the repository path,
+mandatory-five full reads, bounded task-owner/symbol-zone discipline,
+independent verification, explicit one-hop expansion triggers, and canonical
+authority precedence.
+
+`docs/AUDIT_CONTRACT.md` stays the sole audit-contract and canonical packet
+owner. No competing header/schema, another mandatory read document, extra
+ceremony, Audit Contract, Code Map Standard, charter, runtime, test, map/index,
+product, protected semantic, package, asset, schema, tool, generated, Windows,
+or scratch change is queued. The audit's tool-skill and optional-photo-warning
+low/NIT observations remain excluded.
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 496bae2]
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [conditional on accepted/pushed scope]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Stop if a sixth scope path, third child path, foreign-draft byte change,
+Audit Contract or other authority edit, route ambiguity, validation failure,
+or any staging/commit/push/reset/restore/stash/clean/discard action appears.
+
+## Accepted single-router lifetime Code Map maintenance queue (historical, non-authorizing)
+
+Commit `496bae2eb3aed7de8f2b47cc5e4a352cc30707fc` preserves the accepted
+maintenance result. The retained queue, current/next, Phase-1, and promotion
+wording below is historical evidence and does not override the live queue.
 
 The current queue is one Lane A
 `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at committed

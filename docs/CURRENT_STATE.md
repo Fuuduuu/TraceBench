@@ -1,9 +1,86 @@
 # Current State
 
-Current pass: `TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
 
-## Live single-router lifetime committed-source Code Map maintenance
+## Live SNIPER agent-handoff governance scope
+
+```text
+PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 496bae2eb3aed7de8f2b47cc5e4a352cc30707fc
+```
+
+Live verification found `C:\dev\TraceBench` on branch `main` at
+`HEAD == origin/main ==
+496bae2eb3aed7de8f2b47cc5e4a352cc30707fc`, subject
+`docs: refresh single router lifetime code maps`, parent
+`b5096c2790851bd32e215fd4f7660a71f6b7510e`, divergence `0 0`, and empty
+cached and unmerged sets. Known Windows EOL/stat residue has no substantive
+content diff.
+
+The entry substantive diff consists only of a pre-existing unauthorized
+governance draft in `AGENTS.md` and `docs/PROMPTING_PROTOCOL.md`. Those paths
+are foreign, read-only material in this scope. Their exact working-tree byte
+hashes are respectively
+`8263DF1EF48995B83A70319CB1CB4A1CA633A121E3E6E6372252EBDAEB1A0821`
+(7638 bytes) and
+`FA0EA721B0193A20F53365C95A5F0FF6256683935E92AFC8507E1190446E1B03`
+(23285 bytes). This Phase 1 adds exactly five scope-document paths while
+preserving both foreign files byte-for-byte.
+
+The independent draft audit found two medium wording problems: `AGENTS.md`
+could be read as replacing the binding `CLAUDE_AUDIT_PACKET` with the sniper
+envelope, and it made map-first unconditional despite the Audit Contract's
+exact-diff-first audit execution rule. It also found the absent write
+authority. This scope solves only that authority gap; the reserved child
+corrects the two wording findings. The tool-skill and optional-photo-warning
+low/NIT observations remain excluded.
+
+Exactly one later child is reserved:
+
+```text
+PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+Lane: A
+Mode: DOCS_ONLY / AGENT_WORKFLOW
+```
+
+Its exact two-path allowlist is:
+
+1. `AGENTS.md`
+2. `docs/PROMPTING_PROTOCOL.md`
+
+No third path is reserved. The child retains the repository path
+`C:\dev\TraceBench` and mandatory-five full reads; makes bounded construction
+map-first while keeping Claude execution exact-diff-first; makes
+`CLAUDE_SNIPER_PACKET` accompany, never replace or compete with, the canonical
+`CLAUDE_AUDIT_PACKET`; defines independent audit as verification rather than
+rediscovery; and permits only reasoned one-hop expansion after explicit
+contradiction or finding triggers.
+
+`docs/AUDIT_CONTRACT.md` remains the sole audit-contract owner. No competing
+audit schema/header, new mandatory default-read document, added ceremony,
+Audit Contract, Code Map Standard, charter, runtime, test, map, index,
+product, package, asset, schema, tool, Windows, or protected-semantic change is
+authorized. Manual smoke is `NOT_APPLICABLE`.
+
+The live route is:
+
+```text
+TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 496bae2]
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS
+-> TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [conditional on accepted/pushed scope]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted single-router lifetime committed-source Code Map maintenance (historical, non-authorizing)
+
+Commit `496bae2eb3aed7de8f2b47cc5e4a352cc30707fc` preserves the accepted
+maintenance result. The retained current/next, Phase-1, map-status, and route
+wording below is historical evidence and supplies no current write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS

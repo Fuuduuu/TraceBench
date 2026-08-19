@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +23,7 @@ import 'package:trace_bench_viewer/features/measure_sheet/screens/measure_sheet_
 import 'package:trace_bench_viewer/features/photos/screens/photo_list_screen.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/project_gate.dart';
+import 'package:trace_bench_viewer/features/project/widgets/workbench_shell.dart';
 import 'package:trace_bench_viewer/features/reference_images/screens/reference_images_screen.dart';
 import 'package:trace_bench_viewer/features/report/screens/customer_report_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -144,6 +147,32 @@ Future<_RouterSession> _pumpRouter(
   return _RouterSession(container: container, router: router);
 }
 
+Future<void> _pumpUntilRouterPath(
+  WidgetTester tester,
+  GoRouter router,
+  String expectedPath,
+) async {
+  for (var attempt = 0; attempt < 30; attempt += 1) {
+    await tester.pump(const Duration(milliseconds: 16));
+    if (router.routeInformationProvider.value.uri.path == expectedPath) {
+      await tester.pump(const Duration(milliseconds: 300));
+      return;
+    }
+  }
+  expect(router.routeInformationProvider.value.uri.path, expectedPath);
+}
+
+Map<String, List<int>> _snapshotFiles(Directory directory) {
+  final files = directory
+      .listSync(recursive: true, followLinks: false)
+      .whereType<File>()
+      .toList(growable: false)
+    ..sort((left, right) => left.path.compareTo(right.path));
+  return <String, List<int>>{
+    for (final file in files) file.path: file.readAsBytesSync(),
+  };
+}
+
 class _RecordingAddComponentWriter implements V2AddComponentWriter {
   final List<V2AddComponentRequest> requests = <V2AddComponentRequest>[];
 
@@ -181,6 +210,8 @@ void main() {
       );
       expect(find.text('Ava projekt'), findsOneWidget);
       expect(find.text('Tagasi avalehele'), findsOneWidget);
+      expect(find.byType(ProjectGate), findsOneWidget);
+      expect(find.byType(WorkbenchShell), findsNothing);
       expect(find.byType(KnownFactsViewerScreen), findsNothing);
       expect(session.container.read(projectStateProvider), isNull);
 
@@ -215,6 +246,8 @@ void main() {
     );
 
     expect(find.byType(KnownFactsViewerScreen), findsOneWidget);
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsOneWidget);
     expect(find.text('Projekt pole avatud'), findsNothing);
     expect(session.container.read(projectStateProvider), same(loaded));
     expect(
@@ -332,6 +365,8 @@ void main() {
       '/project/known-facts',
     );
     expect(find.text('Projekt pole avatud'), findsNothing);
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsOneWidget);
     expect(find.byType(KnownFactsViewerScreen), findsOneWidget);
   });
 
@@ -351,7 +386,7 @@ void main() {
     expect(find.text('Read-only Project ZIP Viewer'), findsNothing);
   });
 
-  testWidgets('all 15 real project destinations use the shared gate',
+  testWidgets('all 15 real project destinations keep null recovery shell-free',
       (tester) async {
     final session = await _pumpRouter(
       tester,
@@ -369,6 +404,8 @@ void main() {
       );
       expect(find.byType(ProjectGate), findsOneWidget,
           reason: destination.path);
+      expect(find.byType(WorkbenchShell), findsNothing,
+          reason: destination.path);
       expect(
         find.text('Projekt pole avatud'),
         findsOneWidget,
@@ -382,6 +419,89 @@ void main() {
     }
   });
 
+  testWidgets(
+      'all 15 loaded project destinations retain one gate and shell identity',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1500, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final projectDirectory =
+        Directory.systemTemp.createTempSync('project_gate_loaded_routes_');
+    final fixture = File(
+      '${projectDirectory.path}${Platform.pathSeparator}fixture.txt',
+    )..writeAsStringSync('unchanged');
+    addTearDown(() {
+      if (projectDirectory.existsSync()) {
+        projectDirectory.deleteSync(recursive: true);
+      }
+    });
+
+    final loaded = _loadedProject(projectDirectory: projectDirectory.path);
+    final writer = _RecordingAddComponentWriter();
+    final session = await _pumpRouter(
+      tester,
+      initialLocation: _projectDestinations.first.path,
+      projectState: loaded,
+      addComponentWriter: writer,
+    );
+    final shellElement = tester.element(find.byType(WorkbenchShell));
+    final shellState = tester.state(find.byType(WorkbenchShell));
+    final eventsIdentityBefore = loaded.events;
+    final eventValuesBefore =
+        loaded.events.map((event) => event.toJson()).toList(growable: false);
+    final factsIdentityBefore = loaded.knownFacts;
+    final factValuesBefore = loaded.knownFacts.toJson();
+    final filesBefore = _snapshotFiles(projectDirectory);
+    final freshnessBefore = loaded.projectionFreshness;
+
+    expect(_projectDestinations, hasLength(15));
+    for (final destination in _projectDestinations) {
+      session.router.go(destination.path);
+      await _pumpUntilRouterPath(tester, session.router, destination.path);
+
+      expect(
+        session.router.routeInformationProvider.value.uri.path,
+        destination.path,
+        reason: destination.path,
+      );
+      expect(find.byType(ProjectGate), findsOneWidget,
+          reason: destination.path);
+      expect(
+        find.byType(WorkbenchShell, skipOffstage: false),
+        findsOneWidget,
+        reason: destination.path,
+      );
+      expect(find.text('Projekt pole avatud'), findsNothing,
+          reason: destination.path);
+      expect(find.byType(destination.childType), findsOneWidget,
+          reason: destination.path);
+      expect(tester.element(find.byType(WorkbenchShell)), same(shellElement),
+          reason: destination.path);
+      expect(tester.state(find.byType(WorkbenchShell)), same(shellState),
+          reason: destination.path);
+      expect(session.container.read(projectStateProvider), same(loaded),
+          reason: destination.path);
+      expect(loaded.events, same(eventsIdentityBefore),
+          reason: destination.path);
+      expect(
+        loaded.events.map((event) => event.toJson()).toList(growable: false),
+        equals(eventValuesBefore),
+        reason: destination.path,
+      );
+      expect(loaded.knownFacts, same(factsIdentityBefore),
+          reason: destination.path);
+      expect(loaded.knownFacts.toJson(), equals(factValuesBefore),
+          reason: destination.path);
+      expect(loaded.projectionFreshness, freshnessBefore,
+          reason: destination.path);
+      expect(loaded.isProjectionStale, isFalse, reason: destination.path);
+      expect(_snapshotFiles(projectDirectory), equals(filesBefore),
+          reason: destination.path);
+      expect(fixture.readAsStringSync(), 'unchanged', reason: destination.path);
+      expect(writer.requests, isEmpty, reason: destination.path);
+      expect(tester.takeException(), isNull, reason: destination.path);
+    }
+  });
+
   testWidgets('legacy project redirects settle on their frozen destinations',
       (tester) async {
     final session = await _pumpRouter(
@@ -391,6 +511,7 @@ void main() {
 
     expect(session.router.routeInformationProvider.value.uri.path, '/project');
     expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
     expect(find.text('Projekt pole avatud'), findsOneWidget);
 
     session.router.go('/project/measurements/new');
@@ -401,7 +522,46 @@ void main() {
       '/project/measure-sheet',
     );
     expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
     expect(find.text('Projekt pole avatud'), findsOneWidget);
+  });
+
+  testWidgets('project shell preserves nested push and pop behavior',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final loaded = _loadedProject();
+    final session = await _pumpRouter(
+      tester,
+      initialLocation: '/project',
+      projectState: loaded,
+    );
+    final shellElement = tester.element(find.byType(WorkbenchShell));
+    final shellState = tester.state(find.byType(WorkbenchShell));
+
+    session.router.push('/project/overview');
+    await tester.pumpAndSettle();
+
+    expect(session.router.routerDelegate.state.uri.path, '/project/overview');
+    expect(session.router.routeInformationProvider.value.uri.path, '/project');
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsOneWidget);
+    expect(find.byType(ProjectOverviewScreen), findsOneWidget);
+    expect(tester.element(find.byType(WorkbenchShell)), same(shellElement));
+    expect(tester.state(find.byType(WorkbenchShell)), same(shellState));
+    expect(session.container.read(projectStateProvider), same(loaded));
+
+    session.router.pop();
+    await tester.pumpAndSettle();
+
+    expect(session.router.routerDelegate.state.uri.path, '/project');
+    expect(session.router.routeInformationProvider.value.uri.path, '/project');
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsOneWidget);
+    expect(find.byType(BoardCanvasScreen), findsOneWidget);
+    expect(tester.element(find.byType(WorkbenchShell)), same(shellElement));
+    expect(tester.state(find.byType(WorkbenchShell)), same(shellState));
+    expect(session.container.read(projectStateProvider), same(loaded));
   });
 
   testWidgets('write-capable child reveal issues zero component writes',
@@ -430,6 +590,8 @@ void main() {
       '/project/components/add',
     );
     expect(session.container.read(projectStateProvider), same(loaded));
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsOneWidget);
     expect(find.byType(AddComponentScreen), findsOneWidget);
     expect(writer.requests, isEmpty);
   });

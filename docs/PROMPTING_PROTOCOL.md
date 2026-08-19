@@ -37,21 +37,21 @@ changed and the response is handing the real diff plus validation evidence to
 independent Claude audit. Strategy, design briefs, ordinary answers, new-chat
 handoffs, and future-work prompt drafts do not emit one.
 
-`docs/AUDIT_CONTRACT.md` is the sole owner of the packet's exact input/header
-shape and required verdict fields. The surrounding post-change report must also
-include `TOOL_SKILL_CHECK`, `SELF_REFERENCE_AUDIT` for any pass that creates or
-updates an audit artifact, and, when applicable, `CODE_MAP_PREFLIGHT`.
+`docs/AUDIT_CONTRACT.md` remains the sole owner of the canonical
+`CLAUDE_AUDIT_PACKET` header, required audit verdict fields, and audit
+recording sequence. Every Claude audit handoff must also include the compact
+`CLAUDE_SNIPER_PACKET` below. It is only an accompanying read/verification
+optimization payload, not a new authority, gate, competing audit schema/header,
+verdict format, or recording sequence. The surrounding post-change report must
+also include `TOOL_SKILL_CHECK`, `SELF_REFERENCE_AUDIT` for any pass that
+creates or updates an audit artifact, and, when applicable,
+`CODE_MAP_PREFLIGHT`.
 
 For a pass with an audit artifact, the packet must name the designated empty
 verdict block and the exact ledger Status cell that will mechanically mirror
-the returned result. The required sequence is:
-
-```text
-independent audit -> record returned verdict -> exact staging
-```
-
-The bounded recording and freeze-proof requirements are owned by
-`docs/AUDIT_CONTRACT.md`.
+the returned result. Follow the audit recording, bounded recording, and
+freeze-proof sequence owned solely by `docs/AUDIT_CONTRACT.md`; this file does
+not define a second sequence.
 
 For visual or product-surface work, Codex still prepares the packet, but the packet must be marked:
 
@@ -60,6 +60,78 @@ USE ONLY AFTER MANUAL SMOKE PASS
 ```
 
 Claude audit must not be used to approve a known-wrong visual draft.
+
+## `CLAUDE_SNIPER_PACKET`
+
+Use this compact accompanying optimization payload whenever a Claude audit
+handoff is emitted. For an actual changed-file diff, it accompanies the
+canonical `CLAUDE_AUDIT_PACKET` owned by `docs/AUDIT_CONTRACT.md`. It never
+replaces or competes with that packet and never becomes a second canonical
+header, schema, gate, or authority. Handoff construction is
+map/canonical-owner-first bounding of exact responsibility and symbol zones.
+Audit execution is exact-diff-first primary evidence under the Audit Contract.
+
+```text
+CLAUDE_SNIPER_PACKET
+
+AUDIT_MODE:
+SNIPER / VERIFY_NOT_REDISCOVER
+
+AUTHORITY:
+- PASS_ID
+- baseline
+- active authority
+
+EXACT_MATERIAL_SET:
+- exact paths
+
+FROZEN_AREAS: (optional when applicable)
+- exact paths, zones, and behaviors outside the audit material
+
+READ:
+- applicable maps
+- exact changed zones
+- exact artifact/audit coordinates
+
+DO_NOT_READ_BY_DEFAULT:
+- historical CURRENT_STATE/PASS_QUEUE sections
+- unrelated audit history
+- unrelated maps
+- large source/test files outside named zones
+
+VERIFY_INDEPENDENTLY:
+- baseline/state
+- material set
+- exact invariants
+- map claims
+- registry/lifecycle mechanics
+
+EXACT_SYMBOL_ZONES:
+- file -> symbols/responsibility zones
+
+DIRECT_COMMANDS:
+- minimal commands needed to reproduce the claims
+
+EXPAND_ONLY_IF:
+- anchor fails
+- map/source conflict
+- material set mismatch
+- validation conflict
+- concrete potential blocker
+
+EXPANSION_RULE:
+one dependency hop at a time; state why expansion is needed.
+
+RETURN:
+only the audit fields needed by the active pass.
+```
+
+Broad reads are allowed only after a named verification fails or a concrete
+finding requires expansion. The payload creates no new authority, gate,
+competing audit schema/header, or required default-read document. It cannot
+widen an active allowlist or outrank `docs/POHIKIRI.md`,
+`docs/ACTIVE_SCOPE_LOCK.md`, source/tests, `docs/AUDIT_CONTRACT.md`, or the Code
+Map Standard.
 
 ## Two-lane pass policy
 
@@ -548,8 +620,9 @@ Do not duplicate helper/model role ownership blocks in prompts. Reference `docs/
 
 Future audits may use `docs/AUDIT_CONTRACT.md`, `docs/MODEL_ROUTING.md`, and lean prompts instead of repeating full boundary or role lists, as long as repo docs remain canonical and protected-surface boundaries are still enforced.
 
-Use the single lean audit prompt shape in `docs/AUDIT_CONTRACT.md`. This file
-owns only its `Lane: A | B`, `Mode` work-class semantics, and the post-change
-emission trigger; do not copy a second header template here.
+Use the single canonical audit header in `docs/AUDIT_CONTRACT.md`. This file
+owns its `Lane: A | B`, `Mode` work-class semantics, post-change emission
+trigger, and the non-verdict `CLAUDE_SNIPER_PACKET` read envelope. Do not treat
+that envelope as a second audit header.
 
 Use full prompts instead of lean prompts when new protected architecture, canonical event types, validator/materializer/writer/schema/Project ZIP behavior, AI/OCR/CV, Photo Markup, or Repair Map architecture is introduced, or when exact blocker patch instructions are required.

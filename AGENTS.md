@@ -2,7 +2,7 @@
 
 ## Repository identity
 
-- Path: `C:\Users\Kasutaja\Desktop\TraceBench`
+- Path: `C:\dev\TraceBench`
 - Owner: `Fuuduuu/TraceBench`
 - Branch: `main`
 
@@ -21,6 +21,38 @@ Always read exactly these five files by default, in this order:
 5. `docs/ACTIVE_SCOPE_LOCK.md`
 
 All other documentation, memory, semantic, prompt/model, audit, source/design, map, spec, schema, archive, and implementation-owner material is task-specific. Load it only when the active scope or a canonical pointer requires it.
+
+## SNIPER reading and Claude handoff discipline
+
+For every bounded `PASS_ID`:
+
+- Read the five mandatory owner files above fully.
+- Everything else is read narrowly through the exact task-specific canonical
+  owner or applicable maintained map, the exact diff, and the exact
+  symbol/responsibility zones.
+- Handoff construction is map/canonical-owner-first bounding: Codex uses the
+  applicable owner or map to find the exact responsibilities and symbols.
+- Audit execution is exact-diff-first primary evidence: Claude starts with the
+  actual diff under `docs/AUDIT_CONTRACT.md`, then uses owners/maps to verify
+  claims and bound any expansion.
+- Do not whole-file-read large source, test, or docs files just in case.
+- Expand only after a named stale/conflicting map, failed anchor or
+  caller/symbol closure, material-set mismatch, evidence/validation conflict,
+  or concrete finding. Expand one dependency hop at a time and state why.
+- Broad repository or architecture rediscovery is not the default.
+
+Independent Claude audit means independently verify important claims, not
+rediscover the repository. The canonical and binding handoff is the
+`CLAUDE_AUDIT_PACKET` defined by `docs/AUDIT_CONTRACT.md`.
+`CLAUDE_SNIPER_PACKET`, defined in `docs/PROMPTING_PROTOCOL.md`, accompanies
+and optimizes that packet. It never replaces or competes with it and never
+becomes a second canonical header, schema, gate, or authority.
+
+The handoff supplies exact authority, material set, applicable maps/owners,
+changed zones, symbols, direct commands, frozen areas when applicable, and
+expansion triggers. These rules cannot widen an active allowlist or outrank
+`docs/POHIKIRI.md`, `docs/ACTIVE_SCOPE_LOCK.md`, source/tests,
+`docs/AUDIT_CONTRACT.md`, or `docs/code_maps/CODE_MAP_STANDARD.md`.
 
 ## Agent orientation entry points
 

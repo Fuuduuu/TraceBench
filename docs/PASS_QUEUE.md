@@ -2,10 +2,108 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
 
-## Current Shared Workbench Navigation Shell v1 scope queue
+## Current Shared Workbench responsive scope-revision queue
+
+The current queue is one Lane B `SCOPE_REVISION / DOCS_ONLY / PHASE_1` pass at
+committed baseline `862594f3dc72f71783984b935f000fefccec7100`. Its exact
+five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS.md`
+
+No sixth scope path is queued. The ledger receives one neutral
+`REVIEW_REQUIRED` row and the new artifact contains exactly one empty verdict
+block. Manual smoke is `NOT_APPLICABLE` for this docs-only pass.
+
+The exactly eight paths in the existing implementation draft remain
+byte-frozen during this revision. The old implementation pass is not retried.
+This revision withdraws only the unsafe fixed 960-pixel persistent-navigation
+contract and reserves one recovery child using those same eight paths.
+
+## Next reserved responsive-recovery child
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / RESPONSIVE_RECOVERY / UI_LOCAL
+```
+
+The exact future write allowlist is:
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart`
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart`
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is queued. The child activates only after independent
+acceptance, bounded verdict recording, and exact human staging, commit, and
+push of the five revision paths.
+
+The shell-owned safe persistence threshold is exactly `1228` logical pixels:
+Board requires `244 + 36 + 900 = 1180`; Overview requires
+`244 + 24 + 960 = 1228`; the shared maximum is `1228`. Shared navigation is
+compact below that threshold and persistent at/above it. Board's `900` and
+Overview's `960` destination-local breakpoints, their framing, and their
+geometry stay frozen.
+
+Real routed tests cover Board Canvas and Project Overview at `959`, `960`,
+`1227`, `1228`, `1229`, and a comfortably wide desktop size. They prove
+compact/persistent navigation and no rich -> compact -> rich inversion. The
+child also completes loaded-project shell coverage for all 15 real
+destinations while preserving the shell-free null matrix, two redirects,
+nested push/pop, one shell identity, providers, Home/mode survival, exact
+12-entry navigation, and zero-write behavior.
+
+One pathless `ShellRoute`, `ProjectGate` outside `WorkbenchShell`, all route
+paths/names/nesting, Board Canvas primacy, Overview content, destination
+writers/geometry/freshness, Wizard/acquisition, and one router lifetime remain
+unchanged. Double AppBar is recorded only as a later product/manual-smoke
+observation and is not queued for repair.
+
+The six existing relevant map/index pairs stay `MAINTAINED` and frozen in
+this pass and child, with disposition `UPDATE_REQUIRED` after accepted
+committed implementation. The two new shell targets are `NOT_APPLICABLE` at
+the committed baseline and are requalified later from accepted committed
+source. Inspect-only targets remain `REVIEWED_NO_CHANGE` or their accepted
+`NOT_APPLICABLE` state.
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+   [accepted and committed at 862594f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [blocked eight-path draft; superseded; do not retry]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [conditional on accepted and pushed revision]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Stop if a sixth scope path or ninth child path is needed; the threshold cannot
+remain shell-owned; Board/Overview local breakpoints or geometry must change;
+route/gate/provider/Wizard/writer/protected semantics drift; loaded all-15 or
+monotonic routed coverage cannot fit the existing owners; a map conflicts;
+double-AppBar repair enters scope; a frozen draft byte moves; or validation,
+manual-smoke, audit, staging, or route checks fail.
+
+## Accepted Shared Workbench Navigation Shell v1 scope queue (historical, superseded, non-authorizing)
+
+Commit `862594f3dc72f71783984b935f000fefccec7100` preserves the accepted queue
+below. Its fixed 960-pixel cutover and direct child pointer are superseded by
+the responsive revision above; all compatible requirements remain retained.
 
 The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 committed baseline `bcf791f10c52a4ef2f45490f5472e2c22dee328b`. Its exact

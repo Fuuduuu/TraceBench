@@ -1,9 +1,111 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
+Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
 
-## Live Shared Workbench Navigation Shell v1 scope
+## Live Shared Workbench responsive scope revision
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS
+Lane: B
+Mode: SCOPE_REVISION / DOCS_ONLY / PHASE_1
+Baseline: 862594f3dc72f71783984b935f000fefccec7100
+```
+
+Live verification found `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+862594f3dc72f71783984b935f000fefccec7100`, parent
+`bcf791f10c52a4ef2f45490f5472e2c22dee328b`, subject
+`docs: scope shared workbench shell`, and divergence `0 0`. Cached and
+unmerged sets are empty. The known three generated-plugin Windows status
+entries remain content-identical EOL/stat residue.
+
+The existing Shared Workbench Shell implementation draft consists of exactly
+eight Dart/test paths. It is blocked by the old fixed 960-pixel persistent-nav
+contract and remains foreign, read-only material throughout this five-path
+docs revision. The matching artifact records prewrite worktree SHA-256 and
+byte-length observations for all eight and requires post-validation byte
+identity.
+
+Source constants resolve the conflict without destination changes:
+
+- shared persistent navigation width: `244`;
+- Board Canvas horizontal framing: `36`, retained local threshold: `900`,
+  minimum persistent-shell width: `1180`;
+- Project Overview horizontal framing: `24`, retained local threshold: `960`,
+  minimum persistent-shell width: `1228`; and
+- selected shared safe-persistence threshold: exactly `1228` logical pixels.
+
+Shared navigation is compact below `1228` and persistent at/above `1228`.
+Board keeps its `900` local cutover and Overview keeps its `960` local
+cutover; both keep current framing/geometry, and neither receives shell-width
+knowledge. This removes the observed Board `959 rich -> 960 compact -> 1200
+rich` inversion while satisfying Overview's larger retained-width need.
+
+Exactly one recovery child is reserved with the same eight-path allowlist:
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / RESPONSIVE_RECOVERY / UI_LOCAL
+```
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart`
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart`
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is reserved. The child must use real routed Board and Overview
+composition at `959`, `960`, `1227`, `1228`, `1229`, and a comfortably wide
+desktop width to prove compact/persistent shell state plus monotonic
+destination geometry. It must also finish loaded-project shell coverage for
+all 15 real destinations while preserving shell-free null recovery, the two
+aliases, nested push/pop, one shell identity, providers, Home/mode state,
+zero-write navigation, and every retained destination behavior.
+
+One pathless `ShellRoute`, `ProjectGate` outside the shell, all 15 real routes,
+both redirects, the 12-entry navigation model, one router lifetime, Board
+Canvas primacy, and Overview content stay locked. The double AppBar is only a
+later product/manual-smoke observation and is not repaired here.
+
+The six existing relevant maps remain valid `MAINTAINED` descriptions of
+committed source and are frozen. Their future disposition is
+`UPDATE_REQUIRED` after accepted implementation. The two new uncommitted
+targets are `NOT_APPLICABLE` at the committed baseline and are requalified
+later from accepted committed source. Inspect-only owners remain
+`REVIEWED_NO_CHANGE` or their accepted `NOT_APPLICABLE` state.
+
+The live route is:
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+   [accepted and committed at 862594f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [blocked eight-path draft; superseded; do not retry]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [conditional on accepted and pushed revision]
+-> [human manual smoke]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+This Phase 1 changes only the three route owners, the audit ledger, and
+`docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS.md`.
+Manual smoke is `NOT_APPLICABLE` for this docs-only revision.
+
+## Accepted Shared Workbench Navigation Shell v1 scope (historical, superseded, non-authorizing)
+
+Commit `862594f3dc72f71783984b935f000fefccec7100` preserves the accepted scope
+below. The current revision supersedes only its fixed 960-pixel shell cutover
+and direct implementation-child pointer; compatible architecture, behavior,
+test, smoke, map-lifecycle, and frozen-boundary requirements remain retained.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS

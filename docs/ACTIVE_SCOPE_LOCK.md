@@ -2,10 +2,195 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
 
-## Current Shared Workbench Navigation Shell v1 SCOPE authority
+## Current Shared Workbench responsive SCOPE-revision authority
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS
+Lane: B
+Mode: SCOPE_REVISION / DOCS_ONLY / PHASE_1
+Baseline: 862594f3dc72f71783984b935f000fefccec7100
+```
+
+This docs-only revision resolves one accepted-scope conflict in the existing
+eight-path Shared Workbench Shell implementation draft. It does not implement
+or repair the product. The complete derivation, frozen-draft manifest,
+regression contract, exclusions, validation, and empty verdict block are in
+`docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS.md`.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS.md`
+
+No sixth path is authorized. The eight implementation-draft paths, every
+Code Map/index byte, packages, tools, assets, schemas, generated/platform
+files, and Windows substantive content are frozen. The artifact records all
+eight draft paths' prewrite `worktree` SHA-256 values and byte lengths; those
+values are local freeze observations, not durable committed-source anchors.
+
+### Responsive conflict and exact resolution
+
+The accepted fixed rule "persistent project navigation at widths of at least
+960 logical pixels" is withdrawn. Live source arithmetic proves why:
+
+- `WorkbenchShell` persistent navigation consumes exactly `244` horizontal
+  pixels.
+- Board Canvas retains a `900`-pixel destination-local rich-layout threshold
+  behind `20` pixels of outer and `16` pixels of inner horizontal framing, so
+  its minimum persistent-shell width is `244 + 36 + 900 = 1180`.
+- Project Overview retains a `960`-pixel destination-local wide threshold
+  behind `24` pixels of horizontal scroll-view padding, so its minimum
+  persistent-shell width is `244 + 24 + 960 = 1228`.
+- The one shared safe threshold is therefore
+  `max(1180, 1228) = 1228` logical pixels.
+
+Below `1228`, shared project navigation must remain compact. At and above
+`1228`, it must be persistent and scroll-safe. The shell alone owns this
+decision. Board Canvas remains responsible for its unchanged `900` local
+cutover; Overview remains responsible for its unchanged `960` local cutover;
+their framing and geometry remain unchanged and neither destination receives
+shell-width knowledge.
+
+Widening must never produce a rich -> compact -> rich inversion merely when
+the shared navigation changes mode. Under the revised rule, the supplied
+Board observation is monotonic: `959` gives `923` local pixels, `960` gives
+`924`, `1227` gives `1191`, `1228` gives `948` after persistent navigation,
+and `1229` gives `949`; every value is at least `900`. Overview has `935`,
+`936`, `1203`, `960`, and `961` at the same widths, so it remains stacked at
+`959/960`, becomes wide before the shell cutover, and stays wide across the
+cutover.
+
+### Reserved responsive-recovery child -- exact 8
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / RESPONSIVE_RECOVERY / UI_LOCAL
+```
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart`
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart`
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is reserved. The child must continue from the preserved
+eight-path draft and may finish only the accepted Shared Workbench Shell
+outcome plus this responsive recovery. It must not retry the superseded
+`TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS` as a fresh implementation.
+Activation remains conditional on independent acceptance of this revision,
+bounded verdict recording, and exact human staging, commit, and push of the
+five scope paths.
+
+### Recovery regression contract
+
+Real production-router composition must exercise Board Canvas and Project
+Overview at exactly `959`, `960`, `1227`, `1228`, `1229`, and one comfortably
+wide desktop width. At every width, tests must assert the expected shared
+navigation mode and the destination's own keyed layout geometry:
+
+- compact shared navigation below `1228`;
+- persistent shared navigation at and above `1228`;
+- Board Canvas rich layout never regressing at the shell cutover; and
+- Overview's stacked/wide state remaining monotonic, including wide content
+  immediately before, at, and immediately after the shell cutover.
+
+The recovery child must also retain the shell-free null-project matrix and
+finish loaded-project coverage for all 15 real destinations: exact path and
+destination type, exactly one `ProjectGate`, exactly one `WorkbenchShell`, and
+the same shell element/state identity while `go` moves among leaves. Existing
+two-alias, nested push/pop, Home/mode/project identity, provider survival,
+zero-write, destination, writer, geometry, freshness, Wizard, launcher, and
+splash regressions must remain unweakened.
+
+### Preserved architecture and product boundaries
+
+Preserve one pathless `ShellRoute`, `ProjectGate` outside `WorkbenchShell`,
+all 15 real destinations, both redirects, the exact ordered 12-entry project
+navigation model, Home and beginner-mode controls, loaded-project identity,
+zero-write navigation, Board Canvas as canonical `/project`, and all retained
+Overview content. Preserve every route path/name/nesting/redirect, one router
+lifetime, Wizard/acquisition behavior, provider meaning, destination-owned
+writers/business logic, Board `900` and Overview `960` local breakpoints, and
+all destination geometry.
+
+The visible double-AppBar result is a later product/manual-smoke observation
+only. Record it without repairing it, changing destination app bars, or
+expanding this responsive recovery.
+
+### Code Map preflight and lifecycle
+
+The current docs-only revision changes no Dart/test responsibility zone.
+Committed-source maps remain `MAINTAINED` and frozen. For the reserved child:
+
+- router, Overview source/test, Board Canvas source/test, and ProjectGate-test
+  maps have disposition `UPDATE_REQUIRED` after accepted committed
+  implementation;
+- the two new shell source/test targets are `NOT_APPLICABLE` at the committed
+  baseline because no committed target exists and must be requalified only
+  from accepted committed source; and
+- app, Home/splash, Wizard, edit-component, ProjectGate source, freshness
+  integration, and other direct regression owners are
+  `REVIEWED_NO_CHANGE` or `NOT_APPLICABLE` according to their current mapped
+  or accepted unmapped state.
+
+No map or index edit is authorized now or in the recovery child. Later
+committed-source maintenance must use only the Standard-defined dispositions
+above and must not map unfinished working-tree source.
+
+### Route, validation, and stops
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+   [accepted and committed at 862594f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [blocked eight-path draft; superseded; do not retry]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [conditional on accepted and pushed revision]
+-> [human manual smoke, including a recorded double-AppBar observation]
+-> [independent implementation audit]
+-> [human exact implementation staging/commit/push]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Manual smoke for this docs-only revision is `NOT_APPLICABLE`. The recovery
+child's visual audit packet remains `USE ONLY AFTER MANUAL SMOKE PASS`.
+
+Stop if the exact safe threshold cannot remain shell-owned; a destination
+breakpoint, geometry, public route, provider, Wizard, writer, or product
+behavior must change; a ninth child path or sixth scope path is required; any
+frozen draft byte moves in this Phase 1; the complete 15-destination loaded
+shell proof cannot fit the existing test owners; a map conflicts with
+committed source; double-AppBar repair enters scope; or validation, route,
+freeze, boundary, manual-smoke, or audit gates fail.
+
+### Phase-2 recording boundary
+
+After independent `scope-lock-post-audit`, only the named verdict-block
+interior in the new artifact and this PASS_ID's existing ledger Status cell
+may be mechanically updated when the returned audit expressly authorizes it.
+Every other byte remains frozen. Exact staging, commit, and push remain
+human-owned.
+
+## Accepted Shared Workbench Navigation Shell v1 SCOPE authority (historical, superseded, non-authorizing)
+
+Commit `862594f3dc72f71783984b935f000fefccec7100` preserves the accepted
+scope below. Its fixed 960-pixel persistent-navigation rule and direct child
+pointer are superseded by the responsive revision above; all compatible
+route, shell, gate, destination, provider, zero-write, donor/removal, test,
+smoke, and frozen-boundary requirements remain inherited by the recovery
+child.
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS

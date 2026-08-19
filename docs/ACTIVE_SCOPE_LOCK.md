@@ -2,10 +2,213 @@
 
 ## Route
 
-Current: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
 
-## Current SNIPER agent-handoff governance SCOPE authority
+## Current Shared Workbench Navigation Shell v1 SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: bcf791f10c52a4ef2f45490f5472e2c22dee328b
+```
+
+This docs-only Phase 1 locks one reusable shared Workbench navigation shell
+for loaded-project routes. It does not implement the shell. The authoritative
+detail, exact symbol closure, tests, exclusions, validation, and empty verdict
+block are in
+`docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS.md`.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. Runtime, tests, maps, the Code Map index,
+packages, generated files, and Windows substantive content are read-only in
+this phase. The known three-file Windows EOL/stat residue remains preserved.
+
+### Entry baseline and route
+
+Live entry is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+bcf791f10c52a4ef2f45490f5472e2c22dee328b`, subject
+`docs: optimize Claude audit handoff`, parent
+`efcf14ccfaba31eb223ba73ce67df3b748f97ac0`, divergence `0 0`, empty cached
+and unmerged sets, and no substantive content diff.
+
+The accepted SNIPER governance child is complete at that baseline. The
+human-selected route is:
+
+```text
+TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [completed at bcf791f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [conditional on accepted and pushed scope]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No route-header cleanup pass or earlier runtime allowlist is inserted.
+
+### Reserved child exact future allowlist -- 8
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / SHARED_WORKBENCH_SHELL / UI_LOCAL
+```
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart` -- new
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart` -- new
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is authorized. `app.dart`, `project_gate.dart`, Wizard,
+destination owners, direct router consumers, maps/index, docs, packages,
+assets, schemas, tools, generated/platform files, and Windows substantive
+content are inspect-only or frozen.
+
+### Locked architecture and ordering
+
+The child must:
+
+1. Add one reusable `WorkbenchShell` and the sole ordered project-navigation
+   metadata owner in the new shell file.
+2. Add one pathless `ShellRoute` around only the existing `/project` subtree.
+3. Compose `ShellRoute.builder -> ProjectGate -> WorkbenchShell -> matched
+   destination`.
+4. Replace the 15 repeated route-layer `ProjectGate` wrappers with that one
+   gate while preserving all 15 real route paths/names/nesting and both
+   redirects byte-for-behavior.
+5. Keep null recovery shell-free at the original URI and loaded destinations
+   inside exactly one shared shell.
+6. Keep the same shell element/state across project-leaf navigation and prove
+   the nested-navigator push/pop behavior explicitly.
+7. Preserve the one lifetime router, one `MaterialApp.router`, Home/Wizard
+   behavior, provider identity, deep links, aliases, and Home/project state
+   survival.
+
+No `StatefulShellRoute`, `parentNavigatorKey`, parallel router, router
+replacement, new route, public URI/name change, or destination reparenting is
+authorized.
+
+### Locked shared navigation model
+
+The sole ordered top-level project inventory is:
+
+1. `/project`
+2. `/project/overview`
+3. `/project/components`
+4. `/project/measurements`
+5. `/project/pins`
+6. `/project/not-populated`
+7. `/project/photos`
+8. `/project/reference-images`
+9. `/project/graph`
+10. `/project/events`
+11. `/project/known-facts`
+12. `/project/report`
+
+Home is a separate control. Add/Edit select Components and Measure Sheet
+selects Measurements; those workflows remain destination-owned and are not
+top-level navigation entries. Shell and Home destinations use `go`. Wide
+layouts at least 960 logical pixels use a persistent scroll-safe side list;
+compact layouts use the same metadata through one reachable drawer/menu with
+no overflow or simultaneously rendered second navigation model. Active state
+must be visually and semantically distinct.
+
+### Donor and removal boundaries
+
+Project Overview remains a named destination. It donates only its Home/mode
+controls, breadcrumb, duplicated destination navigation, and dark shell color
+vocabulary. The color vocabulary moves atomically rather than being copied.
+Overview retains its null branch, summary, counters, sample identity,
+board-normalized preview/painters, placeholder, freshness banner, destination-
+local responsive content layout, Measure/Add/Edit workflow actions, and inert
+future tools.
+
+Board Canvas remains canonical `/project` and the primary workbench. Remove
+only its competing `projectNavigation` mode, `_ProjectNavigationHub`, project
+rail toggle, and `_WorkbenchToolRail.projectTool`; restore the local context
+panel default to `hidden`. Every other panel/focus behavior, writer, selection,
+geometry, painter, Wizard-intake, evidence, responsive-canvas, and freshness
+responsibility stays unchanged.
+
+### ProjectGate, provider, and zero-write invariants
+
+`project_gate.dart` stays byte-frozen. Null state renders its existing
+recovery UI with no shell/destination and retains the requested URI. Loaded
+state renders exactly one gate, one shell, and one requested destination.
+Home recovery remains `/`. The loaded project object and beginner-mode value
+survive route changes and Home/project round trips.
+
+Shell navigation is `UI_LOCAL`/`ZERO_WRITE`: it may change the URI and toggle
+the existing beginner-mode provider only. It must not call a writer, append an
+event, mutate facts/evidence/freshness, touch project files, materialize,
+persist, load, or change Project ZIP behavior.
+
+### Required regression and smoke gates
+
+Focused implementation tests must prove one shell on representative
+destinations, same shell identity across leaves, exact 12-entry inventory,
+active state including workflow-parent selection, wide/compact behavior,
+Home and provider round trips, beginner-mode survival, shell-free null
+recovery and success reveal, all 15 destinations, both aliases, no duplicate
+shell, nested push/pop back behavior, retained Overview summary/preview/
+freshness/workflows/future tools, retained Board Canvas local panels/focus,
+and zero event/writer/file/freshness mutation. Existing Home, splash, Wizard,
+edit, freshness integration, acquisition, destination, writer, geometry, and
+responsive suites remain unweakened.
+
+The implementation manual smoke must cover: loaded Board Canvas plus shell;
+representative destinations; wide/compact resize; mode toggle plus route;
+Home/project round trip; null deep-link recovery; both aliases; and back
+navigation. It is required before implementation audit. Manual smoke for this
+docs-only scope is `NOT_APPLICABLE`.
+
+### Code Map lifecycle
+
+The router, Overview source/test, Board Canvas source/test, and ProjectGate
+test maps are currently `MAINTAINED` and become `UPDATE_REQUIRED` after the
+scoped implementation. The two new Dart targets are qualified later from
+accepted committed source. App, Home/splash, Wizard, and edit-test maps are
+`REVIEWED_NO_CHANGE`; unmapped `project_gate.dart` remains the accepted
+`NOT_APPLICABLE` inspect-only owner. No map edit occurs in the implementation
+child.
+
+### Stops
+
+Stop if a ninth implementation path is needed; `app.dart`, `project_gate.dart`,
+Wizard, another destination owner, map/doc, package, or platform file must
+change; the pathless shell changes route topology/back behavior; the gate
+cannot remain outside the shell; provider/Wizard/alias/deep-link semantics
+drift; a writer or business rule must move into the shell; excluded visual or
+theme cleanup becomes necessary; a map conflicts; or focused, analyzer,
+repository, full-suite, freeze, manual-smoke, or boundary validation fails.
+
+### Phase-2 recording boundary
+
+After independent `scope-lock-post-audit`, only the named verdict-block
+interior in the artifact and this PASS_ID's existing ledger Status cell may be
+mechanically updated when the returned audit expressly authorizes it. Every
+other byte remains frozen. Human exact staging/commit/push is required before
+the child activates.
+
+## Accepted SNIPER agent-handoff governance scope (historical, non-authorizing)
+
+The retained section below records the earlier accepted scope. Its child is
+completed at `bcf791f10c52a4ef2f45490f5472e2c22dee328b`; none of its allowlist
+or route wording supplies current authority.
 
 ```text
 PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS

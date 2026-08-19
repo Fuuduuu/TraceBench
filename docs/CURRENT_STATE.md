@@ -1,9 +1,116 @@
 # Current State
 
-Current pass: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
 
-## Live SNIPER agent-handoff governance scope
+## Live Shared Workbench Navigation Shell v1 scope
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: bcf791f10c52a4ef2f45490f5472e2c22dee328b
+```
+
+Live verification found `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+bcf791f10c52a4ef2f45490f5472e2c22dee328b`, parent
+`efcf14ccfaba31eb223ba73ce67df3b748f97ac0`, subject
+`docs: optimize Claude audit handoff`, divergence `0 0`, empty cached and
+unmerged sets, and no substantive content diff. The three known Windows
+generated-plugin status entries remain content-identical EOL/stat residue.
+
+The completed SNIPER governance child is the committed predecessor. The human
+selected this scope as the next product route, so the route-owner lag is
+reconciled here without a separate cleanup pass:
+
+```text
+TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [completed at bcf791f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [conditional on accepted and pushed scope]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+This Phase 1 changes only the three route owners, the audit ledger, and
+`docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS.md`. The artifact
+holds the exact empty verdict block and full evidence. Manual smoke for this
+docs-only pass is `NOT_APPLICABLE`.
+
+The current committed product already has one launcher, one lifetime router,
+and one `MaterialApp.router`. It does not yet have one shared project shell:
+the router repeats `ProjectGate` on 15 real destinations; Overview owns private
+Home/mode/breadcrumb/destination chrome; and Board Canvas owns a second
+`_ProjectNavigationHub` plus `Projekt` rail/default mode.
+
+The reserved implementation uses one pathless `ShellRoute` for only the
+existing `/project` subtree, ordered as
+`ProjectGate -> WorkbenchShell -> matched destination`. This is the minimum
+shape that keeps one mounted shell across project-leaf navigation. Null state
+remains shell-free at its exact requested URI. The pathless shell adds no
+public URI/name/redirect, and nested push/pop behavior must be tested because
+it adds a nested navigator.
+
+The exact implementation allowlist is:
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart` — new
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart` — new
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is reserved.
+
+The shared shell owns one 12-entry project-destination list, separate Home and
+beginner-mode controls, breadcrumb/active state, persistent scroll-safe wide
+navigation at 960+ logical pixels, compact reachable navigation below 960,
+and the reusable dark Workbench frame. The 12 top-level paths are `/project`,
+Overview, Components, Measurements, Pins, Not Populated, Photos, Reference
+Images, Graph, Events, Known Facts, and Report. Add/Edit remain component
+workflows and Measure Sheet remains a measurement workflow; they select their
+parent entry and do not become top-level items.
+
+Overview remains a destination. It donates only shell chrome, duplicated
+destination navigation, and the dark color vocabulary. It retains its
+manifest/counter/sample summary, board-normalized read-only preview,
+placeholder, freshness banner, destination-local responsive content,
+Measure/Add/Edit actions, and inert future tools. Board Canvas remains primary
+canonical `/project`; only its competing project-navigation mode/hub/rail is
+removed and its local context default returns to hidden. All other Canvas
+panels, focus, writers, geometry, Wizard intake, evidence, and freshness stay.
+
+All 15 real project destinations, both aliases, deep links, Home and back
+behavior, Wizard cancel/success, route names/nesting, loaded project identity,
+beginner-mode state, one router lifetime, and provider lifetime remain
+unchanged. Shell navigation may change URI and toggle beginner mode only; it
+does not own writers, files, events, facts, evidence, freshness, persistence,
+loaders, Project ZIP, or destination business logic.
+
+The router, Overview source/test, Board Canvas source/test, and ProjectGate
+test maps are currently `MAINTAINED` and are expected to require committed-
+source refresh after implementation. The new shell source/test are qualified
+then. `app.dart`, Home/splash, Wizard, edit-component, `project_gate.dart`,
+freshness integration, destination sources, maps/index, protected semantics,
+and all nonallowlisted content are inspect-only or frozen.
+
+The future automated contract includes focused shell/gate/Overview/Canvas
+suites, inspect-only Home/splash/Wizard/edit/freshness regressions, analyzer,
+doctor, validate-all, full Flutter tests, lifecycle/symbol/freeze checks, and
+live test-count derivation. Its eight-step manual smoke covers loaded Canvas,
+representative navigation, wide/compact resize, mode survival, Home/project
+round trip, null deep-link recovery, both aliases, and back navigation before
+independent implementation audit.
+
+## Completed SNIPER agent-handoff governance scope (historical, non-authorizing)
+
+The retained section below describes the earlier accepted scope. Its child is
+completed at `bcf791f10c52a4ef2f45490f5472e2c22dee328b`; the section supplies no
+current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS

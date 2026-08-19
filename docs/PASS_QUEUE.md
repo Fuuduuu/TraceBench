@@ -2,10 +2,109 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS`
 
-## Current SNIPER agent-handoff governance scope queue
+## Current Shared Workbench Navigation Shell v1 scope queue
+
+The current queue is one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+committed baseline `bcf791f10c52a4ef2f45490f5472e2c22dee328b`. Its exact
+five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS.md`
+
+No sixth scope path is queued. The ledger receives one neutral
+`REVIEW_REQUIRED` row and the artifact contains exactly one empty verdict
+block. Manual smoke is `NOT_APPLICABLE` for this docs-only pass.
+
+## Next reserved Shared Workbench Shell child
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+Lane: B
+Mode: FLUTTER_PASS / SHARED_WORKBENCH_SHELL / UI_LOCAL
+```
+
+The exact future write allowlist is:
+
+1. `lib/app/router.dart`
+2. `lib/features/project/widgets/workbench_shell.dart` — new
+3. `lib/features/project/screens/project_overview_screen.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/widget/workbench_shell_test.dart` — new
+6. `test/widget/project_gate_test.dart`
+7. `test/widget/project_overview_screen_test.dart`
+8. `test/widget/board_canvas_screen_test.dart`
+
+No ninth path is queued. The child activates only after independent
+acceptance, bounded verdict recording, and exact human staging, commit, and
+push of the five scope paths.
+
+The child adds one reusable `WorkbenchShell` and one sole navigation-metadata
+owner, then inserts one pathless `ShellRoute` around only the existing project
+subtree. Required order is
+`ProjectGate -> WorkbenchShell -> matched destination`. All 15 real routes,
+both aliases, route names/nesting, deep links, Home, Wizard, back behavior,
+one router lifetime, and provider lifetime remain unchanged. A focused
+push/pop regression is mandatory because the pathless shell creates a nested
+navigator.
+
+The shell owns separate Home/mode controls, breadcrumb/active state, the exact
+12 top-level project destinations, a persistent scroll-safe 960+ wide list,
+and one compact reachable menu below 960. Components Add/Edit and Measure
+Sheet stay destination-owned workflows and select their parent navigation
+entry. Shell navigation is URI-local/zero-write except the existing
+beginner-mode toggle.
+
+Overview stays as a destination and donates only chrome, duplicated
+destination navigation, and its dark shell vocabulary. Its summary, preview,
+freshness, workflow actions, and inert future tools remain. Board Canvas stays
+canonical `/project` and removes only its competing Project hub/mode/rail,
+restoring the local context-panel default to hidden; every writer, panel,
+focus, geometry, Wizard-intake, evidence, and freshness responsibility stays.
+
+The focused implementation contract covers one shell and identity across
+project leaves, exact metadata/active state, wide/compact layouts, Home and
+mode/project survival, shell-free null recovery and success reveal, all 15
+routes/two aliases/deep links, nested back navigation, retained Overview and
+Canvas responsibilities, and zero canonical mutation. Existing Home, splash,
+Wizard, edit, freshness integration, acquisition, destination, writer,
+geometry, and responsive tests remain unweakened. Fresh analyzer, doctor,
+validate-all, full Flutter tests, exact lifecycle/symbol closure, and the
+eight-step manual smoke are required before implementation audit.
+
+After accepted implementation is committed, the router, Overview source/test,
+Board Canvas source/test, and ProjectGate test maps route to docs-only
+committed-source maintenance; the two new Dart targets are qualified then.
+No map/index edit is queued in the implementation child.
+
+```text
+TRACEBENCH_SNIPER_AGENT_HANDOFF_GOVERNANCE_IMPL_PASS
+   [completed at bcf791f]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_SCOPE_LOCK_PASS
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_IMPL_PASS
+   [conditional on accepted and pushed scope]
+-> committed-source Code Map maintenance [when required]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Stop if a sixth scope path or ninth implementation path is needed; route/gate
+ordering, public topology, providers, Wizard, aliases, deep links, writers, or
+protected semantics drift; `app.dart`, `project_gate.dart`, another
+destination owner, map/doc, package, or platform file must change; excluded
+theme/product cleanup becomes necessary; a maintained map conflicts; or any
+focused, analyzer, repository, full-suite, freeze, manual-smoke, staging, or
+route check fails.
+
+## Completed SNIPER agent-handoff governance scope queue (historical, non-authorizing)
+
+The retained queue below records the earlier accepted scope. Its child is
+completed at `bcf791f10c52a4ef2f45490f5472e2c22dee328b`; none of its allowlist
+or sequencing text is current authority.
 
 The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 committed baseline `496bae2eb3aed7de8f2b47cc5e4a352cc30707fc`. Its exact

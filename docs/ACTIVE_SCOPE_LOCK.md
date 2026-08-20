@@ -2,10 +2,105 @@
 
 ## Route
 
-Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
+Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Workbench Destination Chrome Consolidation v1 scope authority
+## Current Workbench Destination Chrome Batch 1 committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: 684daa8a8412642ce75922af3bf138e36160c274
+```
+
+The accepted Workbench Destination Chrome Batch 1 implementation is committed
+at `684daa8a8412642ce75922af3bf138e36160c274`, parent
+`0c4188ab26e51c6a3ea703f21278ad2d66344104`, subject
+`feat: consolidate read-only workbench destinations`. That commit changes
+exactly the reserved eight Dart/test paths: the Workbench shell owner, six
+read-only destination owners, and the shell suite. Human-supplied predecessor
+evidence records final independent audit `ACCEPT_AS_IS`, staging safety `YES`,
+boundary and protected-surface `PASS`, manual smoke `PASS` including
+stale/unknown freshness rendering, full Flutter `638/638`, ProjectGate
+`12/12`, Python validators `314/314`, and analyzer zero errors/warnings with
+the same three pre-existing infos.
+
+This Phase 1 changes documentation and Code Maps only. It reconciles the
+completed implementation-child route directly into committed-source map
+maintenance and does not arm another destination batch.
+
+### Exact current Phase-1 write allowlist -- 8
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+7. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+8. `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS.md`
+
+No ninth path is authorized. The six committed destination owners were each
+requalified from `684daa8a` at `SCORE 3/12` with vector
+`0/0/1/2/0/0`: under 800 lines, one cohesive renderer responsibility, one
+protected read-only projection/event input, three-plus direct regression
+families, no recurring whole-file tax, and one-symbol blast closure. None
+meets an automatic trigger. They remain `NOT_APPLICABLE`; no destination map
+or registry row is created, so `N = 0` and the material set is exactly eight.
+
+### Locked map result
+
+- The existing `workbench_shell.dart` map is refreshed for
+  `WorkbenchDestinationSurface`, its child/key-only API, existing
+  `WorkbenchShellColors`, local Theme/Material/text/icon/ListTile/ExpansionTile
+  coherence, stable `workbench-destination-surface` key, presentation-only
+  `ZERO_WRITE` boundary, and unchanged shell navigation/chrome ownership.
+- The existing `workbench_shell_test.dart` map is refreshed from nine committed
+  tests, including the seven-case/six-URI Batch-1 matrix, both Events modes,
+  one AppBar/surface, same shell/project/facts/events identity, body signatures,
+  zero writer calls, and unchanged recursive project-path listing.
+- Both changed map headers and their matching Code Map index cells are
+  `REVIEW_REQUIRED` in Phase 1. The other 32 map/index pairs remain
+  `MAINTAINED` and byte-frozen. Registry target is 34 maps, 34 rows, two review
+  pairs, 32 maintained pairs, zero orphan, zero unindexed, and zero mismatch.
+- Router, ProjectGate, Board Canvas, Project Overview, Graph, and all other
+  maintained maps are `REVIEWED_NO_CHANGE`; their files are not material.
+
+### Route, release, and boundaries
+
+```text
+TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS
+   [accepted and committed at 684daa8a]
+-> TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Manual smoke is `NOT_APPLICABLE` for this descriptive docs/maps pass. It
+changes no Dart/test/runtime behavior, route, ProjectGate, provider, writer,
+event/fact/evidence/freshness, Project ZIP, package, asset, schema, tool,
+platform, Windows substantive byte, global theme, or unrelated map/index row.
+The stale-banner palette, empty states, padding, surface extraction, deferred
+destination chrome/actions, writer screens, redirects, magic strings, Board
+Canvas decomposition, Python duplication, and scratch file remain unarmed.
+
+### Bounded Phase-2 recording authority
+
+After a clean independent map/pass audit, at most six logical coordinates may
+change: the one designated verdict-block interior; only this PASS_ID's ledger
+Status cell; the two changed map Status headers; and their two matching Code
+Map index Status cells. A clean map promotion is
+`REVIEW_REQUIRED -> MAINTAINED` only. Every map body/other header field,
+registry row exterior, ledger Description, route byte, artifact exterior, and
+other repository byte remains frozen. Exact human staging, commit, and push
+remain outside Phase 1.
+
+Stop if a ninth path is required; any destination qualification result changes
+the exact `N = 0` set; a committed anchor, map/source/test, route, registry,
+empty-verdict, neutral-ledger, validator, or freeze check fails; an executable
+cleanup enters scope; or any nonallowlisted byte must change.
+
+## Accepted Workbench Destination Chrome Consolidation v1 scope authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS

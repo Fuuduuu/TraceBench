@@ -2,10 +2,49 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
+Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Workbench Destination Chrome Consolidation v1 queue
+## Current Workbench Destination Chrome Batch 1 Code Map maintenance queue
+
+The accepted implementation is committed at
+`684daa8a8412642ce75922af3bf138e36160c274` with exactly the reserved eight
+Dart/test paths. Human-supplied evidence records final audit `ACCEPT_AS_IS`,
+manual smoke `PASS`, boundary/protected surface `PASS`, Flutter `638/638`,
+ProjectGate `12/12`, Python `314/314`, and analyzer zero errors/warnings with
+the same three infos.
+
+Queue one Lane A `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass
+with exact eight-path material set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+7. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+8. `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS.md`
+
+The six destination owners each requalify at `SCORE 3/12`, trigger no
+automatic rule, and remain `NOT_APPLICABLE`; `N = 0`, so no destination map or
+row is queued. Refresh only the existing shell source/test maps and set their
+headers plus matching index cells to `REVIEW_REQUIRED`. Target registry is
+34 maps/34 rows, two review pairs, 32 maintained pairs, and zero orphan,
+unindexed, or status mismatch.
+
+This queue reconciles the completed implementation-child route directly and
+ends at non-executable `NEEDS_USER_DECISION`. It arms no later destination
+batch. Runtime/tests, unrelated maps/index rows, Code Map Standard, routes,
+providers, writers, facts/events/evidence/freshness, Project ZIP, packages,
+assets, schemas, tools, platform/Windows content, and scratch are frozen.
+Manual smoke is `NOT_APPLICABLE`.
+
+A clean audit may later authorize exactly six Phase-2 logical coordinates:
+the verdict interior, this pass's ledger Status, two map Status headers, and
+two matching index Status cells. No staging, commit, or push is queued here.
+
+## Accepted Workbench Destination Chrome Consolidation v1 queue (historical, non-authorizing)
 
 The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
 committed baseline `93e66fbb83876f8d17edfffe25ba0266184360b7`. Its exact

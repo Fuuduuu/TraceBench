@@ -1,10 +1,62 @@
 # Current State
 
-Current pass: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
-Next recommended pass:
-`TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
+Current pass: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Workbench Destination Chrome Consolidation v1 scope
+## Live Workbench Destination Chrome Batch 1 Code Map maintenance
+
+Live verification found `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+684daa8a8412642ce75922af3bf138e36160c274`, parent
+`0c4188ab26e51c6a3ea703f21278ad2d66344104`, subject
+`feat: consolidate read-only workbench destinations`, divergence `0 0`, and
+empty cached/unmerged sets. The only short-status entries were the known three
+generated-plugin Windows EOL/stat paths plus the preserved untracked
+`TraceBench_ALL_CODE.txt`; all have zero authorized substantive involvement.
+
+The committed predecessor changes exactly eight Dart/test paths: the Workbench
+shell, Components, Measurements, Not Populated, Pins, Events, Known Facts, and
+the shell suite. Human-supplied final evidence is independent audit
+`ACCEPT_AS_IS`, staging safety `YES`, boundary/protected surface `PASS`, manual
+smoke `PASS` including stale/unknown freshness, full Flutter `638/638`,
+ProjectGate `12/12`, Python validators `314/314`, and analyzer zero
+errors/warnings with the same three pre-existing infos.
+
+This docs/maps-only Phase 1 refreshes the existing shell source/test maps from
+that committed truth. The source map now owns the presentation-only
+`WorkbenchDestinationSurface`, existing-color local theme boundary, and stable
+surface key without changing its 12-entry navigation, Home/mode/breadcrumb,
+1228 breakpoint, or 244 width. The nine-test map now records seven loaded
+Batch-1 cases across six URIs, both Events modes, one shell AppBar/surface,
+same shell/project/fact/event identity, body signatures, zero writer calls,
+and an unchanged recursive project-path listing while retaining all prior
+route/responsive evidence.
+
+All six small committed destination owners requalify at `SCORE 3/12` with
+vector `0/0/1/2/0/0`; each is one cohesive read-only renderer with one
+protected input, three-plus direct regression families, no analysis tax, no
+blast ambiguity, and no automatic trigger. They remain `NOT_APPLICABLE`, so
+no new destination map or row exists. The exact material set is eight paths,
+and Phase-1 registry state is 34 maps/34 rows with two `REVIEW_REQUIRED` pairs,
+32 `MAINTAINED` pairs, and zero parity/status defect.
+
+The live route is:
+
+```text
+TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS
+   [accepted and committed at 684daa8a]
+-> TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No product successor or later destination batch is armed. Manual smoke is
+`NOT_APPLICABLE` for this descriptive pass. Runtime/tests, unrelated maps,
+Code Map Standard, product behavior, protected semantics, packages/assets/
+schemas/tools/platform content, Windows substantive bytes, and scratch remain
+frozen. A later accepted Phase 2 may change only the empty verdict interior,
+this pass's ledger Status, and the two map/header-index status pairs.
+
+## Accepted Workbench Destination Chrome Consolidation v1 scope (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS

@@ -2,10 +2,205 @@
 
 ## Route
 
-Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
 
-## Current Workbench Destination Chrome Batch 1 committed-source Code Map maintenance authority
+## Current Board Canvas measurement read-model extraction scope authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: f34664dfa7db0b4e66c443878f3bfceed04b06a8
+```
+
+The human route decision replaces the completed predecessor's non-executable
+`NEEDS_USER_DECISION` sentinel with this docs-only scope lock and exactly one
+reserved structural child. The predecessor Code Map maintenance is committed
+at the verified baseline. Its durable ledger row records `ACCEPT_AS_IS`, final
+staging safety `YES`, and the valid seven-path final substantive set after the
+Code Map index status round-trip returned that index to committed parity.
+
+This Phase 1 changes no Dart, test, Code Map, registry, product, writer,
+provider, route, state, widget, renderer, painter, geometry, event, fact,
+projection, package, asset, schema, tool, platform, Windows, or scratch byte.
+It only records the exact boundary and activation gates for the first physical
+Board Canvas decomposition rehearsal.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized. `docs/code_maps/CODE_MAP_INDEX.md`, both Board
+Canvas maps, all Dart/test paths, the known Windows EOL/stat residue, and the
+preserved untracked `TraceBench_ALL_CODE.txt` remain outside this Phase 1.
+
+### Committed candidate closure
+
+The source and test maps are both `MAINTAINED`. Committed source inspection
+resolves one contiguous deterministic measurement read-model band bounded by
+the stable declaration anchors `measurementEndpointMatchesComponent` and
+`_IndexedMeasurement`. The band contains exactly these declarations:
+
+- `measurementEndpointMatchesComponent`
+- `_displayDirectionLabel`
+- `_firstPresentText`
+- `_endpointDisplayParts`
+- `_EndpointDisplayParts`
+- `measurementCountsByComponents`
+- `measurementCountForComponent`
+- `measurementValueBadgesByComponents`
+- `measurementHasScalarValueAndUnit`
+- `measurementValueBadgeText`
+- `measurementValidityNeedsCaution`
+- `_compareIndexedMeasurements`
+- `_IndexedMeasurement`
+
+The band is pure `ZERO_WRITE` transformation logic. It contains no `ref`,
+provider, `BuildContext`, `setState`, asynchronous action, writer invocation,
+filesystem access, or mutable instance state. Existing consumers elsewhere in
+the same Board Canvas library remain inspect-only and continue to resolve the
+same declarations through the same library namespace.
+
+The three state owners remain `_BoardCanvasScreenState`, `_CanvasPanelState`,
+and `_IntegratedMeasurePanelState`. Their existing state-field inventory is
+`37 + 10 + 7 = 54`. The four canonical writer invocations remain component
+create, component edit, placement save, and measurement save. The child delta
+for state ownership, mutable fields, and writer sites is exactly zero; the
+writer-site total stays exactly four.
+
+### Exact reserved implementation
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+```
+
+Exact future implementation write allowlist -- 3:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/logic/measurement_projection.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path is reserved. This child activates only after independent
+acceptance of this scope, explicitly authorized bounded verdict recording,
+and human exact commit/push of the accepted five-path scope set. Any required
+fourth path stops with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+### Temporary part bridge and privacy lock
+
+The child uses one temporary Dart `part` / `part of` bridge so the complete
+anchor-bounded band moves as one behavior-identical cluster while remaining in
+the `board_canvas_screen.dart` library. The bridge is a migration mechanism,
+not a repository convention or final architecture.
+
+- `board_canvas_screen.dart` may add only the one relative `part` directive
+  needed for `../logic/measurement_projection.part.dart`.
+- The new part may contain only its `part of` directive and the exact moved
+  declaration cluster.
+- Private names, public names, signatures, parameters, return values, ordering,
+  and behavior stay unchanged.
+- No helper is duplicated, combined, redesigned, or renamed.
+- The part has no import, export, provider, writer, state, context, async, or
+  filesystem ownership.
+- No other production owner may import or use the part directly.
+- No second part file or general part-file convention is authorized.
+
+The bridge must be reassessed before any state/controller extraction. A later
+dedicated human-routed pass may replace it with a normal feature-internal Dart
+library only after intentionally designing that API. That conversion may not
+be combined with this child.
+
+### Test-first characterization contract
+
+Existing tests remain in `test/widget/board_canvas_screen_test.dart`; no test
+family or helper is relocated. Before moving production declarations, the
+child adds the minimum focused direct characterization and demonstrates it
+against the pre-extraction source behavior. Passing baseline characterization
+is the expected result because this is not a defect repair.
+
+The new direct evidence must cover:
+
+1. deterministic `measurementValueBadgesByComponents` ordering for distinct
+   non-empty IDs and stable original-index fallback for equal or empty IDs;
+2. `measurementHasScalarValueAndUnit` acceptance of finite numeric/nonblank-unit
+   and nonempty-string/nonblank-unit values, plus rejection of blank/missing
+   units, non-finite numbers, and empty strings;
+3. exact current `measurementValueBadgeText` value/unit formatting; and
+4. caution classification for stale, invalid, and suspect validity strings,
+   with the current active/non-caution status remaining non-caution.
+
+All existing endpoint matching, count, association, routed, responsive,
+writer, state, rendering, painter, freshness, and protected-boundary tests stay
+intact. The child does not create a new test file or test architecture.
+
+### Frozen implementation surfaces
+
+The child may not change `_BoardCanvasScreenState`, `_CanvasPanelState`, or
+`_IntegratedMeasurePanelState`; any mutable field; selection, filter,
+panel/focus, 900-pixel responsive cutover, Wizard, inspector, component
+navigator, Add/Edit/Placement draft, geometry, `CustomPainter`, hit-testing,
+semantics, freshness, widget-tree, rendering, route, provider, or projection
+behavior.
+
+The four writer call paths are byte/semantic frozen, including request
+construction, explicit-action guards, in-flight state, result/exception
+handling, returned-event parsing/deduplication/mirroring, and freshness
+promotion. No writer provider invocation may move into the part. The required
+writer-site delta is zero and the before/after total is exactly four.
+
+### Code Map lifecycle
+
+- `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+  is `MAINTAINED` now and has future disposition `UPDATE_REQUIRED` after an
+  accepted committed child because declaration ownership and the direct
+  library dependency change (`STRUCTURE_DRIFT`).
+- `docs/code_maps/test/widget/board_canvas_screen_test.dart.md` is `MAINTAINED`
+  now and has future disposition `UPDATE_REQUIRED` because the locked direct
+  characterization materially expands its mapped measurement evidence and
+  changes its exact declaration count (`TEST_DRIFT`).
+- The new part has no committed source in Phase 1, so no map or registry row is
+  created now. Requalify it only from accepted committed source.
+
+No map or index edit is authorized in either this scope or the implementation
+child. Required maintenance is a separately scoped docs-only pass against the
+accepted committed implementation.
+
+### Validation, route, and release
+
+Scope manual smoke is `NOT_APPLICABLE`. The child validation class is
+`AUTOMATED_ONLY_OK` while every locked boundary holds: no widget, painter,
+state, provider, writer, geometry, or route movement. The child must run the
+exact focused/full Flutter, analyzer, formatter, Python, lifecycle-closure,
+diff, status, and Windows-residue checks recorded in the audit artifact.
+
+```text
+TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+   [completed and committed at f34664d]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+-> [separately scoped committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+For this scope, bounded Phase 2 has exactly two possible logical coordinates:
+the designated verdict-block interior in the new artifact and this PASS_ID's
+existing `docs/AUDIT_INDEX.md` Status cell. It is inactive unless the
+independent audit explicitly authorizes mechanical recording. Artifact
+exterior, ledger Description, route prose, and every other byte remain frozen
+in Phase 2.
+
+Stop before implementation on baseline/route disagreement, stale or
+conflicting map evidence, a noncontiguous band, any signature or privacy
+promotion, any state/provider/writer/callback/geometry/behavior drift, a needed
+fourth path, or validation failure requiring nonallowlisted repair.
+
+## Completed Workbench Destination Chrome Batch 1 committed-source Code Map maintenance authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS

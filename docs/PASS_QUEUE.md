@@ -2,10 +2,94 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
 
-## Current Workbench Destination Chrome Batch 1 Code Map maintenance queue
+## Current Board Canvas measurement read-model extraction queue
+
+The completed Workbench Destination Chrome Batch 1 Code Map maintenance is
+committed at `f34664dfa7db0b4e66c443878f3bfceed04b06a8`. The human route
+decision replaces its non-executable `NEEDS_USER_DECISION` successor with one
+Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass whose exact five-path material
+set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+No sixth Phase-1 path is queued. The scope records one empty designated
+verdict block and one neutral `REVIEW_REQUIRED` ledger row. Manual smoke is
+`NOT_APPLICABLE`. Dart/tests, Code Maps/index, Windows substantive bytes, and
+scratch remain frozen.
+
+After independent scope acceptance, bounded verdict recording, and human exact
+commit/push, queue exactly one child:
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+```
+
+Exact future child write allowlist -- 3:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/logic/measurement_projection.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path is queued. The child moves, without redesign, the one contiguous
+helper cluster bounded by `measurementEndpointMatchesComponent` and
+`_IndexedMeasurement` into a temporary same-library Dart part. It preserves
+all private/public names, signatures, return values, consumers, ordering, and
+behavior; adds no imports/providers/writers/state/context/async/filesystem
+ownership to the part; creates no duplicate helper or second part; and does
+not establish `part` as a general repository convention.
+
+Before moving production declarations, the child adds only the missing direct
+characterization to the existing Board Canvas suite and demonstrates it
+against baseline source behavior. Required cases cover deterministic non-empty
+ID ordering and equal/empty-ID original-index fallback; scalar/unit acceptance
+and rejection including non-finite values; exact badge value/unit formatting;
+and stale/invalid/suspect versus active caution classification. Existing tests
+remain in place and no new test owner is queued.
+
+State ownership, all 54 state fields, every callback signature, widget tree,
+rendering, geometry, painters, responsive 900 cutover, selection/filter/panel/
+focus/Wizard/inspector/navigator behavior, providers, projections, routes, and
+all four canonical writer paths remain frozen. The writer-site delta is zero
+and the total stays exactly four. Any required fourth path or any boundary
+drift stops with the applicable Standard outcome.
+
+The implementation validation class is `AUTOMATED_ONLY_OK`. It requires the
+focused Board Canvas target, both analyzer forms, full Flutter tests, both
+Python validators, exact three-path formatter check, static band/duplicate/
+writer/state closure checks, diff/status checks, and empty Windows substantive
+numstat. No manual visual smoke is queued because no widget, painter, state,
+provider, writer, geometry, or route owner moves.
+
+The maintained Board Canvas source and test maps stay unchanged now. After an
+accepted committed child, queue a separately scoped Code Map maintenance pass:
+the source map is `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`, the test map is
+`UPDATE_REQUIRED` for material direct-coverage `TEST_DRIFT`, and the new part
+is requalified only from committed source. No map/index path is queued in the
+scope or implementation child.
+
+```text
+TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+   [completed and committed at f34664d]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+-> [separately scoped committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+The temporary bridge must be reassessed before state/controller extraction.
+Its conversion to a normal feature-internal library requires a later explicit
+human decision and may not be combined with this child.
+
+## Completed Workbench Destination Chrome Batch 1 Code Map maintenance queue (historical, non-authorizing)
 
 The accepted implementation is committed at
 `684daa8a8412642ce75922af3bf138e36160c274` with exactly the reserved eight

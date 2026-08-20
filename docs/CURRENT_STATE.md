@@ -1,9 +1,93 @@
 # Current State
 
-Current pass: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
 
-## Live Workbench Destination Chrome Batch 1 Code Map maintenance
+## Live Board Canvas measurement read-model extraction scope
+
+The authoritative worktree was verified at `C:\dev\TraceBench` on `main` with
+`HEAD == origin/main ==
+f34664dfa7db0b4e66c443878f3bfceed04b06a8`, divergence `0 0`, and empty cached
+and unmerged sets. Short status contained only the three known generated-plugin
+Windows EOL/stat entries plus the preserved untracked
+`TraceBench_ALL_CODE.txt`; Windows substantive numstat was empty.
+
+The baseline commit is the completed Workbench Destination Chrome Batch 1 Code
+Map maintenance (`docs: refresh destination chrome batch 1 code maps`). Its
+durable ledger evidence records accepted audit and final staging safety. The
+human route decision replaces its non-executable `NEEDS_USER_DECISION`
+sentinel with this scope and one exact child.
+
+This Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass changes exactly the three
+route owners, `docs/AUDIT_INDEX.md`, and
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS.md`.
+It changes no Dart, test, map, index, runtime, product, or protected byte.
+
+The committed Board Canvas source is 12,414 physical lines and its focused
+test owner is 11,268 physical lines. The source/test Git blob IDs and their
+reproduction commands are recorded in the scope artifact. Both maintained
+maps resolve cleanly. The exact candidate is one contiguous pure helper band
+bounded by `measurementEndpointMatchesComponent` and `_IndexedMeasurement`;
+line numbers are deliberately not used as durable anchors.
+
+The band contains endpoint matching/display parsing, component association and
+counting, scalar-value eligibility, deterministic badge ordering/text,
+validity caution classification, and the private indexed sort holder. It has
+zero provider/ref, `BuildContext`, `setState`, writer, async, filesystem, or
+mutable-state ownership. The three state owners and all 54 state fields remain
+outside it. All four canonical writer invocations remain outside it and stay
+exactly four before and after.
+
+The reserved child is:
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+```
+
+Its exact three-path future allowlist is:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/logic/measurement_projection.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+The child moves the complete band behavior-identically through one temporary
+same-library Dart part bridge. This preserves every private name and existing
+consumer without public API expansion or signature change. The part has no
+imports, providers, writers, state, context, async, or filesystem ownership;
+no direct consumer, second part, or repository convention is created. The
+bridge must be reassessed in a later dedicated pass before any state/controller
+extraction or conversion to a normal feature-internal library.
+
+Before production movement, the child adds focused direct baseline-passing
+characterization in the existing Board Canvas suite for deterministic badge
+ordering/fallback, scalar-value-and-unit eligibility, exact badge formatting,
+and stale/invalid/suspect caution classification. Existing tests are not
+relocated. Endpoint/count/association and every unrelated behavior family stay
+intact.
+
+The current source and test maps remain `MAINTAINED` and unchanged in this
+scope. Both have future disposition `UPDATE_REQUIRED` after an accepted
+committed child: the source for `STRUCTURE_DRIFT`, the test map for material
+new direct measurement evidence and `TEST_DRIFT`. The new part is requalified
+only from accepted committed source. No map/index edit belongs to this scope
+or implementation child.
+
+Scope manual smoke is `NOT_APPLICABLE`; the child is
+`AUTOMATED_ONLY_OK` only while the exact no-widget/no-state/no-writer/no-route/
+no-geometry boundary holds. The route is:
+
+```text
+TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS
+   [completed and committed at f34664d]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+-> [separately scoped committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION
+```
+
+## Completed Workbench Destination Chrome Batch 1 Code Map maintenance (historical, non-authorizing)
 
 Live verification found `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

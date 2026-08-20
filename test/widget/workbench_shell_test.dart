@@ -46,12 +46,47 @@ ProjectState _loadedProject({required String projectDirectory}) {
     ),
     knownFacts: const KnownFacts(
       projectId: 'workbench_shell_test',
-      components: [],
-      pins: [],
-      measurements: [],
+      components: [
+        ComponentFact(
+          componentId: 'cmp-shell',
+          designator: 'Q1',
+          type: 'transistor',
+          package: 'SOT-23',
+          marking: 'A1',
+          status: 'confirmed',
+        ),
+      ],
+      pins: [
+        PinFact(
+          componentId: 'cmp-shell',
+          pinId: 'Q1.1',
+          label: 'gate',
+          status: 'defined',
+        ),
+      ],
+      measurements: [
+        MeasurementFact(
+          measurementId: 'm-shell',
+          mode: 'voltage_dc',
+          from: 'Q1.1',
+          to: 'GND',
+          reading: '1.2 V',
+          validityStatus: 'active',
+          powerState: 'powered',
+          value: 1.2,
+          unit: 'V',
+        ),
+      ],
       nets: [],
-      excludedFromFaultCandidates: [],
-      componentPinIndex: {},
+      excludedFromFaultCandidates: [
+        ExcludedFootprintFact(
+          footprintId: 'R404',
+          designator: 'R404',
+        ),
+      ],
+      componentPinIndex: {
+        'cmp-shell': ['Q1.1'],
+      },
       photos: [],
       damageRegions: [],
       suspectRegions: [],
@@ -337,6 +372,272 @@ void main() {
       expect(session.container.read(beginnerModeProvider), isFalse);
       expect(
           session.container.read(projectStateProvider)!.events, eventsBefore);
+    },
+  );
+
+  testWidgets(
+    'read-only routed destinations render one shell AppBar and one destination surface',
+    (tester) async {
+      final session = await _pumpRouter(tester);
+      final shellElement = tester.element(find.byType(WorkbenchShell));
+      final shellState = tester.state(find.byType(WorkbenchShell));
+      final factsBefore = session.loadedProject.knownFacts;
+      final eventsBefore = session.loadedProject.events;
+      final filesBefore = session.projectDirectory
+          .listSync(recursive: true)
+          .map((entry) => entry.path)
+          .toList(growable: false);
+      const cases = <({
+        String caseName,
+        String location,
+        String destinationId,
+        String activeLabel,
+        String? removedTitle,
+        bool beginnerMode,
+      })>[
+        (
+          caseName: 'components',
+          location: '/project/components',
+          destinationId: 'components',
+          activeLabel: 'Komponendid',
+          removedTitle: 'Komponentide nimekiri',
+          beginnerMode: false,
+        ),
+        (
+          caseName: 'measurements',
+          location: '/project/measurements',
+          destinationId: 'measurements',
+          activeLabel: 'Mõõtmised',
+          removedTitle: null,
+          beginnerMode: false,
+        ),
+        (
+          caseName: 'not-populated',
+          location: '/project/not-populated',
+          destinationId: 'not-populated',
+          activeLabel: 'Täitamata',
+          removedTitle: 'Puudub populeerimine',
+          beginnerMode: false,
+        ),
+        (
+          caseName: 'pins',
+          location: '/project/pins',
+          destinationId: 'pins',
+          activeLabel: 'Pinnid',
+          removedTitle: null,
+          beginnerMode: false,
+        ),
+        (
+          caseName: 'events-advanced',
+          location: '/project/events',
+          destinationId: 'events',
+          activeLabel: 'Sündmused',
+          removedTitle: null,
+          beginnerMode: false,
+        ),
+        (
+          caseName: 'events-beginner',
+          location: '/project/events',
+          destinationId: 'events',
+          activeLabel: 'Sündmused',
+          removedTitle: null,
+          beginnerMode: true,
+        ),
+        (
+          caseName: 'known-facts',
+          location: '/project/known-facts',
+          destinationId: 'known-facts',
+          activeLabel: 'Teadaolevad faktid',
+          removedTitle: 'Known facts',
+          beginnerMode: false,
+        ),
+      ];
+
+      for (final testCase in cases) {
+        session.container.read(beginnerModeProvider.notifier).state =
+            testCase.beginnerMode;
+        await tester.pump();
+        session.router.go(testCase.location);
+        await _pumpUntilRouterPath(
+          tester,
+          session.router,
+          testCase.location,
+        );
+        await tester.pumpAndSettle();
+
+        final shellAppBar = find.byKey(const Key('workbench-shell-app-bar'));
+        final surface = find.byKey(const Key('workbench-destination-surface'));
+        final activeControl = find.byKey(
+          Key('workbench-destination-${testCase.destinationId}'),
+        );
+        final breadcrumb = find.byKey(const Key('workbench-breadcrumb'));
+
+        expect(find.byType(WorkbenchShell), findsOneWidget,
+            reason: testCase.caseName);
+        expect(
+          identical(tester.element(find.byType(WorkbenchShell)), shellElement),
+          isTrue,
+          reason: testCase.caseName,
+        );
+        expect(
+          identical(tester.state(find.byType(WorkbenchShell)), shellState),
+          isTrue,
+          reason: testCase.caseName,
+        );
+        expect(shellAppBar, findsOneWidget, reason: testCase.caseName);
+        expect(find.byType(AppBar), findsOneWidget, reason: testCase.caseName);
+        expect(find.byType(Scaffold), findsOneWidget,
+            reason: testCase.caseName);
+        expect(surface, findsOneWidget, reason: testCase.caseName);
+        expect(
+          (tester.widget<AppBar>(shellAppBar).title! as Text).data,
+          'BenchBeep Workbench',
+          reason: testCase.caseName,
+        );
+        expect(
+          tester.widget<ListTile>(activeControl).selected,
+          isTrue,
+          reason: testCase.caseName,
+        );
+        expect(
+          find.descendant(
+            of: breadcrumb,
+            matching: find.text(testCase.activeLabel),
+          ),
+          findsOneWidget,
+          reason: testCase.caseName,
+        );
+        if (testCase.removedTitle case final removedTitle?) {
+          expect(find.text(removedTitle), findsNothing,
+              reason: testCase.caseName);
+        }
+
+        final surfaceMaterial = tester.widget<Material>(surface);
+        final surfaceTheme = Theme.of(tester.element(surface));
+        expect(surfaceMaterial.color, WorkbenchShellColors.background,
+            reason: testCase.caseName);
+        expect(
+          surfaceTheme.colorScheme.surface,
+          WorkbenchShellColors.background,
+          reason: testCase.caseName,
+        );
+        expect(
+          surfaceTheme.colorScheme.onSurface,
+          WorkbenchShellColors.text,
+          reason: testCase.caseName,
+        );
+        expect(surfaceTheme.dividerColor, WorkbenchShellColors.rule,
+            reason: testCase.caseName);
+
+        switch (testCase.caseName) {
+          case 'components':
+            expect(
+              find.descendant(of: surface, matching: find.text('cmp-shell')),
+              findsOneWidget,
+            );
+          case 'measurements':
+            expect(
+              find.descendant(
+                of: surface,
+                matching: find.text('m-shell: Q1.1 → GND'),
+              ),
+              findsOneWidget,
+            );
+            expect(
+              find.descendant(of: surface, matching: find.text('1.2 V')),
+              findsOneWidget,
+            );
+          case 'not-populated':
+            expect(
+              find.descendant(of: surface, matching: find.text('R404')),
+              findsOneWidget,
+            );
+            expect(
+              find.descendant(of: surface, matching: find.byIcon(Icons.block)),
+              findsOneWidget,
+            );
+          case 'pins':
+            expect(
+              find.descendant(of: surface, matching: find.text('Q1.1')),
+              findsOneWidget,
+            );
+          case 'events-advanced':
+            final eventTile = find.descendant(
+              of: surface,
+              matching: find.byType(ExpansionTile),
+            );
+            expect(eventTile, findsOneWidget);
+            expect(
+              find.descendant(
+                of: surface,
+                matching: find.text(
+                  'event_id: evt-workbench-shell-readonly',
+                ),
+              ),
+              findsOneWidget,
+            );
+            await tester.tap(eventTile);
+            await tester.pumpAndSettle();
+            expect(
+              find.descendant(of: surface, matching: find.text('{}')),
+              findsOneWidget,
+            );
+          case 'events-beginner':
+            expect(
+              find.descendant(
+                of: surface,
+                matching: find.text('Advanced režiim vajalik'),
+              ),
+              findsOneWidget,
+            );
+            expect(
+              find.descendant(
+                of: surface,
+                matching: find.byType(ExpansionTile),
+              ),
+              findsNothing,
+            );
+          case 'known-facts':
+            expect(
+              find.descendant(
+                of: surface,
+                matching: find.textContaining(
+                  '"component_id": "cmp-shell"',
+                ),
+              ),
+              findsOneWidget,
+            );
+        }
+
+        expect(
+          session.container.read(projectStateProvider),
+          same(session.loadedProject),
+          reason: testCase.caseName,
+        );
+        expect(
+          session.container.read(beginnerModeProvider),
+          testCase.beginnerMode,
+          reason: testCase.caseName,
+        );
+        expect(session.loadedProject.knownFacts, same(factsBefore),
+            reason: testCase.caseName);
+        expect(session.loadedProject.events, same(eventsBefore),
+            reason: testCase.caseName);
+        expect(session.loadedProject.projectionFreshness,
+            ProjectionFreshness.fresh,
+            reason: testCase.caseName);
+        expect(session.addWriter.calls, 0, reason: testCase.caseName);
+        expect(session.editWriter.calls, 0, reason: testCase.caseName);
+        expect(session.placementWriter.calls, 0, reason: testCase.caseName);
+        expect(session.measurementWriter.calls, 0, reason: testCase.caseName);
+        expect(
+          session.projectDirectory
+              .listSync(recursive: true)
+              .map((entry) => entry.path),
+          orderedEquals(filesBefore),
+          reason: testCase.caseName,
+        );
+      }
     },
   );
 

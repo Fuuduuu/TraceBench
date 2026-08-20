@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class MeasurementListScreen extends ConsumerWidget {
   const MeasurementListScreen({super.key});
@@ -15,9 +16,8 @@ class MeasurementListScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No project loaded')));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mõõtmised')),
-      body: ListView.builder(
+    return WorkbenchDestinationSurface(
+      child: ListView.builder(
         itemCount: projectState.knownFacts.measurements.length + 1,
         itemBuilder: (_, index) {
           if (index == 0) {

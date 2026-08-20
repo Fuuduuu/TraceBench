@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class PinListScreen extends ConsumerWidget {
   const PinListScreen({super.key});
@@ -14,9 +15,8 @@ class PinListScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No project loaded')));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Pinnid')),
-      body: ListView.builder(
+    return WorkbenchDestinationSurface(
+      child: ListView.builder(
         itemCount: projectState.knownFacts.pins.length + 1,
         itemBuilder: (_, index) {
           if (index == 0) {

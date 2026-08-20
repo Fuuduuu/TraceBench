@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class KnownFactsViewerScreen extends ConsumerWidget {
   const KnownFactsViewerScreen({super.key});
@@ -16,9 +17,8 @@ class KnownFactsViewerScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No project loaded')));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Known facts')),
-      body: SingleChildScrollView(
+    return WorkbenchDestinationSurface(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

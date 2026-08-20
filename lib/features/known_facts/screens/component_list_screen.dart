@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class ComponentListScreen extends ConsumerWidget {
   const ComponentListScreen({super.key});
@@ -14,9 +15,8 @@ class ComponentListScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No project loaded')));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Komponentide nimekiri')),
-      body: ListView.builder(
+    return WorkbenchDestinationSurface(
+      child: ListView.builder(
         itemCount: projectState.knownFacts.components.length + 1,
         itemBuilder: (_, index) {
           if (index == 0) {

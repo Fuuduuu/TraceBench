@@ -25,6 +25,65 @@ class WorkbenchShellColors {
   static const silk = Color(0xFFCDC78A);
 }
 
+class WorkbenchDestinationSurface extends StatelessWidget {
+  const WorkbenchDestinationSurface({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final baseTheme = Theme.of(context);
+    final textTheme = baseTheme.textTheme.apply(
+      bodyColor: WorkbenchShellColors.text,
+      displayColor: WorkbenchShellColors.text,
+    );
+
+    return Theme(
+      data: baseTheme.copyWith(
+        colorScheme: baseTheme.colorScheme.copyWith(
+          primary: WorkbenchShellColors.greenBright,
+          onPrimary: WorkbenchShellColors.background,
+          surface: WorkbenchShellColors.background,
+          onSurface: WorkbenchShellColors.text,
+          outline: WorkbenchShellColors.ruleStrong,
+        ),
+        scaffoldBackgroundColor: WorkbenchShellColors.background,
+        canvasColor: WorkbenchShellColors.background,
+        dividerColor: WorkbenchShellColors.rule,
+        textTheme: textTheme,
+        iconTheme: const IconThemeData(color: WorkbenchShellColors.muted),
+        listTileTheme: const ListTileThemeData(
+          iconColor: WorkbenchShellColors.muted,
+          textColor: WorkbenchShellColors.text,
+          subtitleTextStyle: TextStyle(color: WorkbenchShellColors.muted),
+        ),
+        expansionTileTheme: const ExpansionTileThemeData(
+          backgroundColor: WorkbenchShellColors.background,
+          collapsedBackgroundColor: WorkbenchShellColors.background,
+          textColor: WorkbenchShellColors.text,
+          collapsedTextColor: WorkbenchShellColors.text,
+          iconColor: WorkbenchShellColors.greenBright,
+          collapsedIconColor: WorkbenchShellColors.muted,
+        ),
+      ),
+      child: Material(
+        key: const Key('workbench-destination-surface'),
+        color: WorkbenchShellColors.background,
+        child: DefaultTextStyle.merge(
+          style: const TextStyle(color: WorkbenchShellColors.text),
+          child: IconTheme(
+            data: const IconThemeData(color: WorkbenchShellColors.muted),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class WorkbenchDestination {
   const WorkbenchDestination({
     required this.id,

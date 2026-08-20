@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class EventsViewerScreen extends ConsumerWidget {
   const EventsViewerScreen({super.key});
@@ -16,17 +17,15 @@ class EventsViewerScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No project loaded')));
     }
     if (isBeginnerMode) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Sündmused')),
-        body: const Center(
+      return const WorkbenchDestinationSurface(
+        child: Center(
           child: Text('Advanced režiim vajalik'),
         ),
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sündmused')),
-      body: ListView.builder(
+    return WorkbenchDestinationSurface(
+      child: ListView.builder(
         itemCount: projectState.events.length,
         itemBuilder: (_, index) {
           final event = projectState.events[index];

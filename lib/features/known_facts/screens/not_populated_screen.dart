@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/app.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
+import '../../project/widgets/workbench_shell.dart';
 
 class NotPopulatedScreen extends ConsumerWidget {
   const NotPopulatedScreen({super.key});
@@ -15,9 +16,8 @@ class NotPopulatedScreen extends ConsumerWidget {
     }
 
     final excluded = projectState.knownFacts.excludedFromFaultCandidates;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Puudub populeerimine')),
-      body: ListView(
+    return WorkbenchDestinationSurface(
+      child: ListView(
         children: [
           ProjectionStaleBanner(
             freshness: projectState.projectionFreshness,
@@ -26,7 +26,8 @@ class NotPopulatedScreen extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.block),
               title: Text(item.footprintId),
-              subtitle: const Text('Pole paigaldatud — välistatud rikkeanalüüsist'),
+              subtitle:
+                  const Text('Pole paigaldatud — välistatud rikkeanalüüsist'),
             ),
         ],
       ),

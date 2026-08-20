@@ -2,10 +2,123 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Shared Workbench responsive SCOPE-revision authority
+## Current Shared Workbench committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: 8266e1e178cee885a80f2584712862b4f714842d
+```
+
+The accepted responsive-recovery implementation is committed at the exact
+baseline above. Its supplied final evidence is independent audit
+`ACCEPT_AS_IS`, staging safety `YES`, boundary `PASS`, manual smoke `PASS`, full
+Flutter `637/637 PASS`, Python validators `314/314 PASS`, and analyzer zero
+warnings/errors with the same three infos. This current pass changes no
+executable behavior. It refreshes Code Maps strictly from the eight committed
+Dart/test blobs and routes only to non-executable `NEEDS_USER_DECISION`.
+
+### Exact current Phase-1 write allowlist -- 14
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/router.dart.md`
+7. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+8. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+9. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+10. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+11. `docs/code_maps/test/widget/project_gate_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+14. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
+
+No fifteenth path is authorized. The shell source map, shell-test map, and
+artifact are the only new paths. Dart/tests, every unrelated map/index row,
+AGENTS, prompting/audit governance, charter/Standard, packages, assets,
+schemas, tools, generated/platform content, and Windows substantive bytes are
+frozen.
+
+### Qualification and registry result
+
+Committed `workbench_shell.dart` qualifies automatically through five-plus
+independently testable behaviors. Committed `workbench_shell_test.dart`
+qualifies at `SCORE 7/12`: physical `0`, responsibilities `2`, multiple
+boundaries `2`, regression surface `2`, whole-file tax `0`, and blast-radius
+ambiguity `1`. Both missing-map entry states are
+`BLOCKED_CODE_MAP_REQUIRED`, remedied here by deterministic first maps and
+matching registry rows at `REVIEW_REQUIRED`; `NOT_APPLICABLE` is invalid.
+
+The six existing affected map/index pairs enter from `MAINTAINED` with
+disposition `UPDATE_REQUIRED` and are refreshed from committed source. Every
+changed/new map header and matching index cell is `REVIEW_REQUIRED`. Phase-1
+registry target is exactly 34 maps, 34 rows, 8 review pairs, 26 unchanged
+maintained pairs, zero orphan, zero unindexed, and zero status mismatch.
+
+### Locked descriptive results
+
+The refreshed/new maps record:
+
+- one pathless `ShellRoute` around only `/project`, ordered
+  `ProjectGate -> WorkbenchShell -> destination`;
+- all 15 real destinations, both redirects, unchanged paths/names/nesting, one
+  shared shell identity, and focused nested `push`/`pop` behavior;
+- the sole ordered 12-entry navigation model, separate Home, workflow-parent
+  selection, beginner-mode UI state, and zero-write route controls;
+- compact navigation below `1228`, persistent navigation at/above `1228`, and
+  fixed 244-pixel navigation without destination width knowledge;
+- Overview's donor shell/navigation removal with retained summary, counters,
+  sample identity, freshness, preview/painters, placeholder, Measure/Add/Edit
+  workflows, inert future tools, and local 960 cutover;
+- Board Canvas's competing hub/rail removal with hidden local context default,
+  retained 900 cutover, panels/focus, writers, geometry, painters, Wizard,
+  evidence, and freshness; and
+- real routed Board/Overview coverage at `959`, `960`, `1227`, `1228`, `1229`,
+  and `1500`, plus shell-free null recovery and loaded all-15 one-gate/one-shell
+  project/provider/file/writer/freshness invariants.
+
+### Route, release, and boundaries
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [accepted and committed at 8266e1e]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No product or implementation successor is named or reserved. Manual smoke for
+this descriptive docs/maps pass is `NOT_APPLICABLE`. Product observations,
+including double AppBar, remain outside this pass.
+
+This pass changes no router/source/test behavior, provider meaning/lifetime,
+Home/Wizard/acquisition, destination writers, event/fact/evidence/freshness or
+Project ZIP semantics, responsive geometry, product IA, protected surface, or
+nonallowlisted byte. Known Windows residue remains untouched.
+
+### Bounded Phase-2 recording authority
+
+After a clean independent map/pass audit, at most 18 logical coordinates may
+change: the one designated verdict-block interior; only this PASS_ID's ledger
+Status cell; the eight changed/new map Status headers; and their eight matching
+Code Map index Status cells. A clean promotion is
+`REVIEW_REQUIRED -> MAINTAINED` only. Every map body/other header field,
+registry row exterior, ledger Description, route byte, artifact exterior, and
+other repository byte remains frozen. Exact human staging, commit, and push
+remain outside Phase 1.
+
+Stop if a fifteenth path is required; either shell target does not qualify as
+recorded; a map/source/test or route claim conflicts; registry parity, stable
+anchors, committed-blob closure, empty verdict, neutral ledger, validators, or
+diff/freeze checks fail; an executable/product cleanup enters scope; or a
+nonallowlisted byte must change.
+
+## Accepted Shared Workbench responsive SCOPE-revision authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS

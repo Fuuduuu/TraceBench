@@ -1,9 +1,71 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
-Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Shared Workbench responsive scope revision
+## Live Shared Workbench committed-source Code Map maintenance
+
+```text
+PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
+Baseline: 8266e1e178cee885a80f2584712862b4f714842d
+```
+
+Live verification found `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+8266e1e178cee885a80f2584712862b4f714842d`, parent
+`b9853d1066c3b9705e1e903952081075e0672399`, subject
+`feat: add shared workbench shell`, and divergence `0 0`. Cached and unmerged
+sets are empty. The known three generated-plugin Windows entries remain
+content-identical EOL/stat residue.
+
+The accepted implementation commit changes exactly eight Dart/test paths: the
+router, new Workbench shell, Overview, Board Canvas, new shell suite, and the
+ProjectGate/Overview/Board suites. Supplied final evidence is independent audit
+`ACCEPT_AS_IS`, boundary `PASS`, manual smoke `PASS`, full Flutter `637/637`,
+Python `314/314`, and analyzer zero warnings/errors with the same three infos.
+This pass maps that committed truth and reruns only docs/repository validation.
+
+Committed shell qualification resolves as:
+
+- `lib/features/project/widgets/workbench_shell.dart` —
+  `AUTO — 5+ independently testable behaviors`;
+- `test/widget/workbench_shell_test.dart` — `SCORE 7/12` from physical `0`,
+  responsibilities `2`, boundaries `2`, regression `2`, analysis tax `0`, and
+  blast-radius ambiguity `1`.
+
+Both first maps and rows are required. Together with six refreshed existing
+maps, Phase 1 has exactly 34 maps/34 rows, 8 `REVIEW_REQUIRED` pairs, and 26
+unchanged `MAINTAINED` pairs. The exact material set is 14 paths: the three
+route owners, audit ledger, Code Map index, six existing maps, two new maps,
+and one new artifact. There is no fifteenth path.
+
+The maps record one pathless project-only `ShellRoute`, gate outside shell, 15
+real destinations, two redirects, one 12-entry shell inventory, Home and mode
+controls, same shell/project/provider identity, nested push/pop, zero-write
+navigation, compact below 1228/persistent at or above 1228 with a 244-pixel
+rail, Overview's retained local 960 layout/content, Board's retained local 900
+layout/content/writers, and real routed evidence at exactly 959, 960, 1227,
+1228, 1229, and 1500.
+
+The live route is:
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [accepted and committed at 8266e1e]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor is reserved. Manual smoke for this descriptive pass is
+`NOT_APPLICABLE`. Runtime/tests, unrelated maps/index rows, Code Map Standard,
+AGENTS/prompting/audit governance, packages/assets/schemas/tools, platform
+content, Windows substantive bytes, product observations, and protected
+semantics are frozen. A later accepted Phase 2 may change only the verdict,
+this ledger Status, and the eight map/index status pairs.
+
+## Completed Shared Workbench responsive scope revision (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS

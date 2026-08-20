@@ -2,10 +2,70 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_SCOPE_REVISION_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Shared Workbench responsive scope-revision queue
+## Current Shared Workbench committed-source Code Map maintenance queue
+
+The current queue is one Lane A
+`DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at accepted
+implementation baseline `8266e1e178cee885a80f2584712862b4f714842d`. Its
+exact 14-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/router.dart.md`
+7. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+8. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+9. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+10. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+11. `docs/code_maps/test/widget/project_gate_test.dart.md`
+12. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+13. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+14. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
+
+No fifteenth path is queued. Runtime/tests, unrelated maps/index rows,
+governance owners, packages/assets/schemas/tools, platform content, Windows
+substantive bytes, and product behavior remain frozen. Manual smoke is
+`NOT_APPLICABLE`.
+
+The six existing affected maps have committed-change disposition
+`UPDATE_REQUIRED` and are refreshed here. The new shell source qualifies
+automatically through five-plus independently testable behaviors; its focused
+suite qualifies at `SCORE 7/12`. Their qualifying missing-map entry state is
+`BLOCKED_CODE_MAP_REQUIRED`, resolved by two first maps and matching rows. The
+target registry is 34 maps/34 rows with exactly 8 `REVIEW_REQUIRED` pairs and
+26 unchanged `MAINTAINED` pairs.
+
+The descriptive result covers one pathless project-only shell, gate-outside-
+shell ordering, 15 real destinations, two aliases, nested push/pop, the sole
+12-entry navigation model, Home/mode/provider identity, zero-write navigation,
+the exact 1228/244 shell geometry, retained Overview 960 and Board 900 local
+geometry/content, shell-free null recovery, loaded all-15 shell identity, and
+real routed widths `959`, `960`, `1227`, `1228`, `1229`, and `1500`.
+
+```text
+TRACEBENCH_SHARED_WORKBENCH_SHELL_RESPONSIVE_RECOVERY_IMPL_PASS
+   [accepted and committed at 8266e1e]
+-> TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor, implementation allowlist, product repair, or extra process pass
+is queued. After independent audit, a clean Phase 2 may promote only the eight
+map headers and eight matching index cells, record only the designated verdict
+and matching ledger Status, and freeze all other bytes. Human exact staging,
+commit, and push remain outside this Phase 1.
+
+Stop if a fifteenth material path is needed; qualification, map/source, route,
+registry, anchor, blob, empty-verdict, neutral-ledger, validation, or freeze
+claims fail; a product observation such as double AppBar enters scope; or any
+executable/nonallowlisted change becomes necessary.
+
+## Accepted Shared Workbench responsive scope-revision queue (historical, non-authorizing)
 
 The current queue is one Lane B `SCOPE_REVISION / DOCS_ONLY / PHASE_1` pass at
 committed baseline `862594f3dc72f71783984b935f000fefccec7100`. Its exact

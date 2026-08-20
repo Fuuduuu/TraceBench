@@ -3,155 +3,155 @@
 - Source: `test/widget/project_overview_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 7/12 — 23 tests across freshness, shell, layout, route, and zero-write families`
-- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
+- Qualification: `SCORE 7/12 — 19 tests across freshness, shared-shell, responsive, preview, workflow-route, and zero-write families`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-This widget target verifies the project overview as a routed and directly
-mounted read-only Workbench shell. It covers warning presentation, responsive
-geometry, board-placement preview and placeholder states, localized copy,
-inert future tools, exact destination routes, and preservation of project
-events during navigation.
+Verifies Project Overview as destination content under the production shared
+Workbench shell and, where useful, as a direct mount. The 19-test suite covers
+warning ownership, retained summary/preview/placeholder content, shared-shell
+copy and colors, six-width routed responsive monotonicity, retained
+Measure/Add/Edit workflows, inert future controls, and event preservation. It
+no longer owns top-level Canvas/Graph/Reference Images navigation coverage.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Project fixture | `_inlineProjectState(projectionFreshness:)`, `_normalizedPlacementFacts` | Builds explicit-fresh-by-default counters, stale/unknown variants, optional placements, raw IDs, and seeded events. |
-| 2. Mounting and router harness | `_pumpProjectOverview`, `buildTraceBenchRouter`, `ProviderContainer` | Supports direct and routed mounts with controlled providers and location. |
-| 3. Route identity | `/project/overview opens the retained named overview route` | Verifies canonical path and named route. |
-| 4. Warning state | `shows stale projection banner when projection is stale`, `shows one distinct unknown freshness warning` | Verifies exactly one shared stale banner, distinct unknown copy, and absence of the removed local `PROJECTION STALE` evidence tag. |
-| 5. Shell and copy | `renders workbench-first shell with dominant primary action`, `uses polished Estonian copy` | Covers dark shell, breadcrumb, action hierarchy, localization, and forbidden legacy copy. |
-| 6. Responsive geometry | `wide layout makes the workbench zone visually dominant`, `wide density layout gives board preview room and compacts rail` | Verifies Workbench/rail ratios and preview height. |
-| 7. Preview and empty state | `renders sparse-placement workbench placeholder state`, `renders read-only board canvas` | Distinguishes placeholder from board-normalized read-only preview. |
-| 8. Visibility and inert controls | `hides raw fixture identifiers`, `future tools are collapsed by default and remain inert` | Guards user-facing copy and null future callbacks. |
-| 9. Existing route actions | measurement/add/edit/canvas/graph/reference-image tests | Verifies exact navigation and compatibility redirect behavior. |
-| 10. Zero-write navigation | `Board Canvas action does not mutate project events`, `overview shell does not mutate project events` | Compares provider events before and after route actions. |
+| Project fixture | `_inlineProjectState`, `_normalizedPlacementFacts`, `projectionFreshness` | Builds fresh/stale/unknown states, placements, raw IDs, counters, and seeded events. |
+| Direct/routed harness | `_pumpProjectOverview`, `buildTraceBenchRouter`, `ProviderContainer`, `useRouter` | Mounts the destination directly or through the production router with controlled providers. |
+| Route and warning identity | `/project/overview opens the retained named overview route`, `shows stale projection banner when projection is stale`, `shows one distinct unknown freshness warning` | Verifies canonical route plus exactly one shared stale/unknown warning and no legacy tag. |
+| Shared shell and copy | `renders workbench-first shell with dominant primary action`, `workbench-shell`, `workbench-breadcrumb`, `workbench-home-button` | Verifies shared dark Scaffold/AppBar, breadcrumb/Home ownership, localized destination copy, and action hierarchy. |
+| Six-width monotonic geometry | `routed overview stays monotonic across the shell cutover`, `959`, `960`, `1227`, `1228`, `1229`, `1500` | Proves compact/persistent navigation and stacked/wide Overview geometry without inversion. |
+| Comfortably wide density | `routed 1500 layout gives board preview room and compacts rail`, `overview-workbench-board-preview` | Verifies dominant Workbench zone, bounded action rail, and preview height at the satisfiable wide checkpoint. |
+| Summary, preview, and empty state | `renders compact status strip for board statistics`, `renders sparse-placement workbench placeholder state`, `renders read-only board canvas` | Covers counters, placeholder, and board-normalized read-only preview. |
+| Visibility and future controls | `hides raw fixture identifiers from the visible shell`, `future tools are collapsed by default and remain inert` | Guards visible copy and all four null future callbacks. |
+| Retained workflow routes | `legacy measurement action routes to measure sheet`, `Add Component action navigates to add component screen`, `Edit Component action navigates to edit component screen` | Verifies exact Measure/Add/Edit destination behavior. |
+| Zero-write navigation | `overview shell does not mutate project events on render or measurement navigation` | Compares provider events before/after render and workflow navigation. |
+
+## Anchor inventory and verification
+
+Selection rule: take every backtick-delimited token in the responsibility
+table's Stable symbol anchors column, split comma-separated tokens, trim, and
+de-duplicate in first-appearance order. Every listed literal resolves as an
+exact substring in committed test source. The map uses no line-number anchors.
 
 ## State and data flow
 
 - `[D]` `_inlineProjectState` creates typed projection state with explicit
-  `ProjectionFreshness.fresh` default and optionally supplies stale/unknown
-  state, placements, raw identifiers, or seeded events.
-- `[D]` The stale case scopes its tag assertion beneath the single banner and
-  proves the literal old `PROJECTION STALE` tag is absent; the unknown case
-  proves distinct unknown text and the same legacy-tag absence.
-- `[D]` `_pumpProjectOverview` seeds providers, mounts either router or direct
-  screen, and returns the container for post-action assertions.
-- `[D]` Layout tests alter and restore surface size before measuring keyed
-  regions.
-- `[D]` Route tests tap visible actions, settle navigation, and assert exact
-  destination content/path.
-- `[D]` Zero-write tests snapshot event IDs from the provider and compare them
-  after navigation.
+  `fresh` default and optional stale/unknown state, placements, raw identifiers,
+  or seeded events.
+- `[D]` `_pumpProjectOverview` seeds providers and mounts either the production
+  router at `/project/overview` or the destination directly.
+- `[D]` Shared-shell assertions target shell keys while Overview assertions
+  continue to target `overview-*` content keys.
+- `[D]` The monotonic case resizes one routed composition through exactly 959,
+  960, 1227, 1228, 1229, and 1500 pixels, pairing shell-mode assertions with
+  measured Overview row/stack geometry and provider identity.
+- `[D]` The 1500 case separately proves preview width produces height at least
+  430 and the action rail remains at most 260 wide.
+- `[D]` Workflow tests stop after destination presentation; the zero-write case
+  snapshots and compares event IDs.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `ProjectOverviewScreen` | system under test | Supplies the overview shell and private keyed zones. |
-| `buildTraceBenchRouter`, `GoRouter` | routed harness | Resolves canonical, compatibility, and destination routes. |
-| `projectStateProvider`, `beginnerModeProvider` | fixture/observation | Inject state/mode and inspect event preservation. |
-| `ProjectState`, known-facts/manifest/event models | fixture | Build typed projected inputs. |
-| `ProjectionStaleBanner` | presentation assertion | Supplies current warning constants. |
-| Flutter tester surface/geometry APIs | harness | Drive taps, expansion, routing, and responsive measurements. |
+| `ProjectOverviewScreen` | system under test | Supplies retained destination content and private keyed zones. |
+| `WorkbenchShell`, `WorkbenchShellColors` | shared-shell observation | Supplies shared chrome, navigation mode, and dark vocabulary. |
+| `buildTraceBenchRouter`, `GoRouter` | routed harness | Resolves canonical and retained workflow routes. |
+| `projectStateProvider`, `beginnerModeProvider` | fixture | Injects loaded state/mode; provider identity is observed during resize. |
+| `ProjectState`, manifest/fact/event models | fixture | Build typed projected inputs. |
+| `ProjectionStaleBanner` | warning assertion | Supplies current warning constants. |
+| Flutter tester geometry APIs | harness | Drive taps, expansion, routing, viewport changes, and rectangle measurements. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Provider fixture construction | `UI_LOCAL` test state | `[D]` Creates in-memory typed state only. |
-| Overview rendering and placement preview | `ZERO_WRITE` exercised | `[D]` Tests inspect widgets, colors, geometry, and copy. |
-| Route taps | `ZERO_WRITE` exercised | `[D]` Change location without direct writer calls. |
-| Seeded-event comparisons | absent `CANONICAL_EVENT` | `[D]` Assert event IDs remain identical across navigation. |
-| Surface-size changes | `UI_LOCAL` test binding | `[D]` Restored through teardown. |
+| Provider fixture construction | `UI_LOCAL` | Creates in-memory typed test state only. |
+| Overview/shell rendering | `ZERO_WRITE` | Inspects widgets, colors, geometry, copy, and warnings. |
+| Workflow route taps | `UI_LOCAL` | Change location without invoking a writer in this suite. |
+| Seeded-event comparison | `ZERO_WRITE` | Proves no canonical event append during render/navigation. |
+| Surface-size changes | `UI_LOCAL` | Test binding state is restored through teardown. |
 
-Destination screens may own writers, but reaching them from the overview does
-not exercise or transfer their canonical authority. Placement facts remain
-read-only preview input.
+Destination screens may own writers, but this suite stops before any explicit
+write action. Placement facts remain read-only preview inputs.
 
 ## Zero-write zones
 
-- `[D]` Shell, layout, warning, copy, placeholder, preview, and inert-tool
-  tests perform no writer action.
-- `[D]` Route tests stop after destination presentation appears.
-- `[D]` Event-preservation tests read provider state only.
-- `[D]` Future-tool callbacks are asserted null.
+- Shell/copy, responsive, warning, summary, placeholder, preview, and inert-tool
+  cases perform no writer action.
+- Workflow tests only establish destination reachability.
+- Event-preservation assertions read provider state only.
 
 ## Impact matrix
 
-| Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| Family | Evidence | Coupling | Write class | Escalation |
 | --- | --- | --- | --- | --- |
-| Fixture/harness | `[D]` shared by all tests | providers, router, source map | test setup | full target |
-| Warning | `[D]` explicit tri-state fixture, banner count/constants, negative legacy-tag assertions | banner widget and overview status strip | `ZERO_WRITE` | stale and unknown warning tests |
-| Shell/copy | `[D]` keys, colors, localized text | production visual tokens | `ZERO_WRITE` | shell/copy/raw-ID tests |
-| Responsive layout | `[D]` measured rectangles | Workbench/rail/preview zones | `ZERO_WRITE` | two wide-layout tests |
-| Preview/placeholder | `[D]` optional placement fixture | known-facts placement model | `ZERO_WRITE` | two preview-state tests |
-| Inert tools | `[D]` expansion and null callbacks | future product authority | `ZERO_WRITE` | future-tools test |
-| Routes | `[D]` router harness and action keys | router and destination screens | `ZERO_WRITE` | exact destination tests |
-| No-write guards | `[D]` before/after event IDs | provider and canonical writers | absent write | two event-preservation tests |
+| Fixture/harness | `[D]` shared by all 19 tests | provider, router, screen | setup | full target |
+| Warning | `[D]` explicit tri-state fixtures and one-banner assertions | shared banner and status strip | `ZERO_WRITE` | stale/unknown cases |
+| Shared shell/copy | `[D]` shell keys, colors, localized text | Workbench shell map | `ZERO_WRITE` | shell/copy case plus shell suite |
+| Responsive | `[D]` six routed widths and measured rectangles | shell 1228, Overview 960/framing | `ZERO_WRITE` | monotonic + 1500 cases |
+| Preview/placeholder | `[D]` optional normalized placement fixture | known-facts model/painter | `ZERO_WRITE` | both preview states |
+| Inert controls | `[D]` expansion and null callbacks | future product authority | `ZERO_WRITE` | future-tools case |
+| Workflow routes | `[D]` three destination action keys | router/destination screens | `UI_LOCAL` | Measure/Add/Edit cases |
+| No-write guard | `[D]` before/after event IDs | provider and canonical writers | `ZERO_WRITE` | final event case |
 
 ## Relevant tests and helpers
 
-- The target contains 23 widget tests spanning freshness plus the retained
-  shell/layout/route/zero-write families.
-- `test/integration/projection_stale_banner_end_to_end_test.dart` provides
-  cross-surface warning navigation coverage.
-- `test/widget/measure_sheet_screen_test.dart`,
-  `test/widget/edit_component_screen_test.dart`,
-  `test/widget/board_graph_screen_test.dart`, and the maintained Board Canvas
-  test map own destination details.
+- The target contains exactly 19 `testWidgets` declarations.
+- `_inlineProjectState`, `_normalizedPlacementFacts`, and
+  `_pumpProjectOverview` are shared across freshness, geometry, preview, route,
+  and no-write families.
+- `test/widget/workbench_shell_test.dart` owns top-level destination inventory,
+  Home/mode survival, representative route navigation, aliases, and shell-only
+  responsive evidence.
+- `test/widget/project_gate_test.dart` owns all-15 route composition and nested
+  stack identity.
 - Production-map counterpart:
   `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`.
 
 ## Dangerous combinations
 
-- `[P]` Shared fixture or harness changes can alter every shell, route, and
-  event-preservation expectation.
-- `[P]` Surface-size tests must restore global binding state.
-- `[P]` Router settling can briefly retain outgoing widgets; exact path plus
-  destination assertions should stay paired.
-- `[P]` Finder-only preview checks cannot prove geometry; measured zones and
-  read-only copy protect different aspects.
-- `[P]` A global tag-text assertion without scoping the shared banner could
-  miss a duplicate local evidence tag; the literal legacy-tag exclusion is a
-  separate required assertion.
-- `[H]` Enabling future controls would require product authority, not merely a
-  test expectation update.
+- Harness changes can alter every shared-shell, route, warning, and geometry
+  expectation.
+- Surface-size tests must restore global binding state.
+- Shell cutover and local Overview geometry assertions must remain paired;
+  checking only navigation mode would miss a destination inversion.
+- The 430-pixel preview assertion is satisfiable at 1500, not 1440, under the
+  retained 244/24/252/12/24 geometry.
+- Re-adding removed top-level route tests here would duplicate shell ownership.
+- Enabling future controls requires product authority, not an expectation edit.
 
 ## Safe SNIPER slices
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| One warning assertion | stale/unknown tests and `_inlineProjectState(projectionFreshness:)` | shared banner, count, status strip, duplicate-tag exclusion | both warning tests |
-| One responsive assertion | two wide tests | surface teardown and preview | both layout tests |
-| One preview state | placement fixture and preview tests | known-facts model | placeholder + preview tests |
-| One route action | matching keyed action test | router/destination | exact route plus no-write guard when applicable |
-| One shell-copy rule | shell/copy/raw-ID tests | production visual tokens | matching tests |
+| One warning assertion | warning tests and fixture freshness | shared banner/status strip | both warning cases |
+| Shared-shell copy | shell/copy case | shell source and Overview content | shell case + shell suite |
+| Responsive geometry | monotonic and 1500 cases | surface teardown, shell/Overview thresholds | both responsive cases |
+| One preview state | placement fixture and keyed preview | model/painter | placeholder + preview cases |
+| One workflow route | matching action key/test | router/destination | exact route plus event guard |
 
 ## Future extraction seams
 
-| Observed seam | Evidence | Authorization |
-| --- | --- | --- |
-| Route-action table | `[S]` Several tests repeat ensure-visible/tap/settle. | `NONE` |
-| Shared shell expectations | `[S]` Copy and visual keys recur across tests. | `NONE` |
+- `[S]` Repeated workflow tap/settle assertions could become a small helper if
+  route evidence remains explicit.
+- `[S]` Six-width expectations could become a shared immutable fixture only if
+  Board and Overview continue asserting their own geometry independently.
 
 ## Freshness and review triggers
 
-- Set `REVIEW_REQUIRED` for helper/title `SYMBOL_DRIFT`, router/provider
-  `FLOW_DRIFT`, zero-write `BOUNDARY_DRIFT`, family coverage `TEST_DRIFT`, or
-  organization `STRUCTURE_DRIFT`.
-- Recheck the production map when keyed zones, route actions, placement
-  preview, warning ownership, or provider use changes.
-- Recheck explicit fresh setup, one-banner count, distinct unknown copy, and
-  the `PROJECTION STALE` exclusion together when warning ownership changes.
-- Formatting and line movement alone do not stale this map.
+Set `REVIEW_REQUIRED` for helper/title `SYMBOL_DRIFT`, router/provider or
+resize `FLOW_DRIFT`, no-write `BOUNDARY_DRIFT`, family coverage `TEST_DRIFT`,
+or shell/content `STRUCTURE_DRIFT`. Recheck test count, exact six widths, shell
+keys, Overview keys, and event guard whenever imported contracts change.
 
 ## Known uncertainty
 
-- `[P]` Destination assertions prove navigation reachability, not complete
-  destination behavior.
+- `[P]` Destination assertions prove reachability, not destination internals.
 - `[P]` Color and geometry assertions intentionally couple to accepted visual
-  structure and may need review after a committed redesign.
+  structure and require review after a committed redesign.
 - `[S]` Extraction observations are non-authorizing.

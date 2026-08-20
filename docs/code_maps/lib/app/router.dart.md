@@ -4,18 +4,17 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `HUMAN OVERRIDE — creation handoff crosses router, screen and provider boundaries and requires durable impact analysis.`
-- Audit evidence: `docs/audit/TRACEBENCH_LEGACY_VIEWER_REMOVAL_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Builds the application route graph. It requires every caller to supply the
-canonical root-Home builder, accepts an optional New Project Wizard builder
-with its unchanged default, exposes `/new-project` and canonical `/project`,
-nests the established project tools, wraps all 15 real project targets in one
-shared `ProjectGate`, retains two compatibility redirects outside that gate,
-and renders a generic route-error surface. It owns widget construction and
-navigation only: project-state reads, project-open execution, provider
-assignment, and destination behavior remain outside.
+Builds the single application route graph. It keeps `/` and `/new-project`
+outside one pathless `ShellRoute`, places only the existing `/project` subtree
+inside that shell, and composes its builder as `ProjectGate` outside
+`WorkbenchShell` outside the matched destination. All 15 real project targets,
+their paths and names, and both compatibility redirects remain registered. The
+file owns route construction and navigation topology only; provider reads,
+project recovery, destination behavior, and canonical writes remain outside.
 
 ## Responsibility zones
 
@@ -23,12 +22,13 @@ assignment, and destination behavior remain outside.
 | --- | --- | --- |
 | Route factory contract | `buildTraceBenchRouter`, `initialLocation`, `homeBuilder`, `newProjectBuilder` | Exposes initial-route, required root-Home, and optional Wizard-construction seams. |
 | Root Home route | `path: '/'`, `name: 'home'`, `homeBuilder` | Builds only the caller-supplied canonical root surface. |
-| New Project Wizard route | `path: 'new-project'`, `name: 'new-project'`, `NewProjectWizardScreen` | Builds the injected Wizard when supplied or the unchanged const default Wizard. |
-| Canonical Board Canvas route | `path: 'project'`, `name: 'board-canvas'`, `ProjectGate`, `BoardCanvasScreen` | Makes `/project` the canonical Canvas destination and wraps its child in the shared gate. |
-| Overview and component routes | `project-overview`, `component-list`, `add-component`, `edit-component` | Registers four gated overview/component destinations. |
-| Measurement and pin routes | `measurement-list`, `measure-sheet`, `not-populated`, `pin-list` | Registers four gated measurement/population/pin destinations. |
-| Evidence, media, graph, and report routes | `events`, `known-facts`, `photos`, `reference-images`, `board-graph`, `customer-report` | Registers six gated evidence/media/graph/report destinations. |
-| Redirects and error surface | `measurements/new`, `board-canvas`, `redirect`, `errorBuilder`, `Unknown route` | Retains compatibility URI redirects and renders unresolved-route errors. |
+| New Project Wizard route | `path: 'new-project'`, `name: 'new-project'`, `NewProjectWizardScreen` | Builds the injected Wizard when supplied or the unchanged const default. |
+| Shared project shell and gate | `ShellRoute`, `ProjectGate`, `WorkbenchShell`, `child: WorkbenchShell(child: child)` | Wraps only the project subtree in one gate-outside-shell composition. |
+| Canonical Board Canvas route | `path: 'project'`, `name: 'board-canvas'`, `BoardCanvasScreen` | Keeps `/project` as the canonical Canvas destination and parent of its existing child routes. |
+| Overview and component routes | `project-overview`, `component-list`, `add-component`, `edit-component` | Registers four unchanged project destinations as bare matched children. |
+| Measurement and pin routes | `measurement-list`, `measure-sheet`, `not-populated`, `pin-list` | Registers four unchanged measurement/population/pin destinations. |
+| Evidence, media, graph, and report routes | `events`, `known-facts`, `photos`, `reference-images`, `board-graph`, `customer-report` | Registers six unchanged evidence/media/graph/report destinations. |
+| Redirects and error surface | `measurements/new`, `board-canvas`, `redirect`, `errorBuilder`, `Unknown route` | Retains two compatibility redirects and renders unresolved-route errors. |
 
 ## Anchor inventory and verification
 
@@ -41,25 +41,27 @@ exact substring in committed source. The map uses no line-number anchors.
 
 1. A caller invokes `buildTraceBenchRouter` with an initial URI, a required
    Home builder, and an optional Wizard builder.
-2. `GoRouter` consumes the static tree; this factory retains no mutable
-   project or provider state.
-3. `/` always delegates to the explicitly supplied `homeBuilder`; the router
-   has no implicit legacy fallback.
-4. `/new-project` delegates to `newProjectBuilder` when supplied, otherwise
-   to `const NewProjectWizardScreen()`.
-5. The injected builder may close over app-owned dependencies, but none enter
-   the router's type surface as Riverpod or `ProjectState`.
-6. Each of the 15 real `/project` targets constructs `ProjectGate(child: ...)`;
-   the gate, not this router, watches project state and owns recovery behavior.
-7. A loaded project lets the gate render the requested destination; a null
-   project keeps that same route matched while the gate renders recovery.
+2. `GoRouter` consumes the static tree; this factory retains no mutable project
+   or provider state.
+3. `/` delegates to `homeBuilder`; `/new-project` delegates to the injected
+   builder or `const NewProjectWizardScreen()`.
+4. One pathless `ShellRoute` contains only the `project` route and its existing
+   descendants; it introduces no public path or name.
+5. The shell builder creates `ProjectGate(child: WorkbenchShell(child: child))`.
+   A null project is stopped by the gate before the shell or destination is
+   mounted; loaded state reveals both.
+6. The 15 real destinations are bare destination widgets beneath the shared
+   composition rather than 15 repeated gate wrappers.
+7. Moving among project leaves with `go` retains the shared shell element/state;
+   the nested route navigator also preserves the tested `push` then `pop`
+   return from Overview to canonical Canvas.
 8. `/project/measurements/new` and `/project/board-canvas` remain redirect-only
-   aliases outside the gate and return their unchanged canonical URI strings.
-9. Unresolved routes render error text.
+   aliases and settle on their unchanged canonical URI strings.
+9. Unresolved routes render the existing generic error text.
 
-## Guarded project target inventory
+## Project target inventory
 
-`ProjectGate` wraps exactly these real targets:
+The shared gate and shell cover exactly these real targets:
 
 1. `/project`
 2. `/project/overview`
@@ -77,22 +79,22 @@ exact substring in committed source. The map uses no line-number anchors.
 14. `/project/reference-images`
 15. `/project/report`
 
-The two aliases are not additional guarded targets.
+The two compatibility aliases are not additional real targets.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | Flutter Material | framework UI | Supplies widget-builder types and the error surface. |
-| GoRouter | routing framework | Owns matching, nesting, redirects, route state, and errors. |
-| caller-supplied `homeBuilder` | required inbound construction contract | Makes root-surface ownership explicit and keeps the canonical production launcher in `app.dart`. |
-| `NewProjectWizardScreen` | default outbound destination | Preserves default Wizard construction at `/new-project`. |
-| `ProjectGate` | outbound wrapper dependency | Applies the shared loaded-project gate while retaining each matched URI. |
-| `BoardCanvasScreen` | gated outbound destination | Owns canonical `/project` presentation. |
-| Project tool screens | outbound destinations | Implement behavior behind nested URIs. |
-| `lib/app/app.dart` | inbound caller | Supplies launcher Home and injected Wizard builders. |
-| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves all 15 wrappers, both aliases, URI retention, canonical BenchBeep Home, loader outcomes, and zero-write reveal. |
-| Other widget/integration router harnesses | inbound callers | Supply explicit test roots while exercising Canvas, Overview, edit-screen, and freshness routes. |
+| GoRouter | routing framework | Owns matching, the pathless shell navigator, nesting, redirects, route state, and errors. |
+| caller-supplied `homeBuilder` | required inbound contract | Keeps canonical launcher ownership in `app.dart`. |
+| `NewProjectWizardScreen` | default outbound destination | Preserves default Wizard construction. |
+| `ProjectGate` | outer project wrapper | Applies loaded-project recovery before shared chrome mounts. |
+| `WorkbenchShell` | inner project wrapper | Supplies shared project navigation and chrome around the matched child. |
+| Project destination screens | outbound destinations | Implement behavior behind the unchanged route inventory. |
+| `lib/app/app.dart` | production caller | Supplies Home and Wizard builders and owns router lifetime. |
+| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves null/loaded matrices, all 15 targets, both aliases, shell identity, nested back behavior, provider identity, and zero mutation. |
+| `test/widget/workbench_shell_test.dart` | direct shell evidence | Proves destination selection, navigation, responsive shell state, and Home/provider survival. |
 
 ## Write and protected boundaries
 
@@ -101,21 +103,20 @@ The two aliases are not additional guarded targets.
 | `buildTraceBenchRouter` and route declarations | `ZERO_WRITE` | Construct navigation objects and widget builders only. |
 | `initialLocation` and redirects | `UI_LOCAL` | Select transient URI presentation. |
 | `homeBuilder` and `newProjectBuilder` | `ZERO_WRITE` | Invoke widget factories; downstream widgets own any effects. |
-| Gated destination builders | `ZERO_WRITE` | Instantiate `ProjectGate` and child widgets without reading state or performing downstream operations in this file. |
+| `ShellRoute` builder | `ZERO_WRITE` | Composes gate, shell, and child without reading providers or invoking writers. |
+| Destination builders | `ZERO_WRITE` | Instantiate existing screens only. |
 | `errorBuilder` | `ZERO_WRITE` | Reads routing failure and renders text. |
 
-The file imports neither Riverpod nor `ProjectState` and performs no provider
-read or mutation. Importing `ProjectGate` does not transfer its downstream
-state/open-action ownership into the router. The router contains no event/fact
-append, filesystem write, Project ZIP operation, creator call, materializer
-call, canonical coordinate conversion, or electrical-semantic mutation.
+The file imports neither Riverpod nor `ProjectState`. Importing `ProjectGate`
+and `WorkbenchShell` does not transfer their downstream provider/UI ownership
+into the router. There is no event/fact append, filesystem write, Project ZIP
+operation, creator call, materializer call, coordinate conversion, or
+electrical-semantic mutation here.
 
 ## Zero-write zones
 
-- Factory parameters and route metadata describe navigation.
-- Default and injected builders instantiate widgets only.
-- Real project route builders compose `ProjectGate` with one destination and
-  delegate state, recovery, and domain behavior downstream.
+- Route metadata and builders describe navigation only.
+- The pathless shell composes existing widgets without domain mutation.
 - Redirect callbacks return URI strings only.
 - Error presentation reads route state and renders text.
 
@@ -123,84 +124,69 @@ call, canonical coordinate conversion, or electrical-semantic mutation.
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Factory parameters | [D] Parameters feed `GoRouter` or builders. | `app.dart` and router harnesses | `ZERO_WRITE` / `UI_LOCAL` | Home injection and route tests |
-| Root Home | [D] Required builder is invoked directly with no fallback. | launcher callbacks and every direct factory caller | `ZERO_WRITE` | canonical Home and caller-closure tests |
-| Wizard route | [D] Optional builder has unchanged default. | app dependency injection and Wizard cancellation/success | `ZERO_WRITE` | Home and Wizard route tests |
-| Canonical Canvas | [D] `/project` owns gated Canvas and children. | `ProjectGate`, provider consumer, deep links | `ZERO_WRITE` | gate, Home, Canvas, and edit-screen tests |
-| Project child tree | [D] All 15 builders explicitly compose `ProjectGate` with one destination. | gate behavior and each destination screen | `ZERO_WRITE` | gate route matrix plus destination suites |
-| Redirects | [D] Two exact URI strings are returned outside the gate. | canonical destination names and gate recovery | `UI_LOCAL` | gate, Canvas, and Overview compatibility tests |
-| Error surface | [D] Error text only. | GoRouter failure semantics | `ZERO_WRITE` | no focused error test identified |
+| Factory/root/Wizard | `[D]` parameters invoke exact builders | app lifecycle, launcher, Wizard handoff | `ZERO_WRITE` / `UI_LOCAL` | Home and Wizard route suites |
+| Shared project composition | `[D]` one pathless shell builder wraps one project parent | gate source, shell source, provider scope | `ZERO_WRITE` | gate and shell suites |
+| Project route inventory | `[D]` 15 exact builders remain beneath `project` | every destination screen | `ZERO_WRITE` | loaded/null 15-route matrices |
+| Nested navigation | `[D]` `ShellRoute` adds the shared route navigator | GoRouter stack behavior | `UI_LOCAL` | focused push/pop regression |
+| Redirects | `[D]` two exact target strings remain | canonical Canvas and Measure Sheet | `UI_LOCAL` | alias settlement tests |
+| Error surface | `[D]` error text only | GoRouter failure semantics | `ZERO_WRITE` | no focused error test identified |
 
 ## Relevant tests and helpers
 
-- `test/widget/benchbeep_home_screen_test.dart` constructs the real app/router
-  transition for `/new-project` and `/project`.
-- `test/widget/new_project_wizard_screen_test.dart` uses a router harness to
-  prove explicit success navigation and pre-activation inertness.
-- `test/widget/board_canvas_screen_test.dart` covers canonical Canvas and
-  compatibility routing with loaded-state route fixtures.
-- `test/widget/edit_component_screen_test.dart` is a direct
-  `buildTraceBenchRouter` caller and exercises the edit destination through the
-  real graph.
-- `test/widget/project_gate_test.dart` is the focused owner for null/loaded
-  gate presentation, project-open outcomes, original-URI retention, all 15
-  real project targets, both aliases, canonical BenchBeep Home with legacy
-  copy absent, and representative zero-write child reveal.
-- `test/widget/project_overview_screen_test.dart` and
-  `test/integration/projection_stale_banner_end_to_end_test.dart` also supply
-  explicit inert root builders for their production-router harnesses.
+- `test/widget/project_gate_test.dart` is the focused route-layer owner for
+  shell-free null recovery, loaded all-15 coverage, one gate/shell, same shell
+  identity, both aliases, nested push/pop, Home recovery, provider identity,
+  and byte-level zero-mutation checks.
+- `test/widget/workbench_shell_test.dart` covers the shared destination model,
+  leaf navigation, workflow-parent selection, responsive cutover, Home round
+  trip, and no-write navigation.
+- `test/widget/benchbeep_home_screen_test.dart` retains the real app lifetime,
+  Wizard handoff, canonical Home, and provider-survival contract.
+- Overview, Board Canvas, edit-component, Wizard, and freshness harnesses remain
+  direct callers/consumers of the unchanged route paths.
 
 ## Dangerous combinations
 
-- Changing required `homeBuilder` and caller closure together can strand `/`
-  or reintroduce an implicit parallel root surface.
-- Changing `newProjectBuilder` fallback and app injection together can remove
-  the default Wizard or bypass app-owned handoff.
-- Adding Riverpod or `ProjectState` here would move ownership across the
-  navigation-only boundary.
-- Wrapping only some real project builders would recreate inconsistent direct
-  deep-link behavior; changing gate ownership and route topology together
-  obscures whether navigation or recovery caused a regression.
-- Renaming `/project` while changing compatibility redirects can strand deep
-  links and explicit Wizard success navigation.
-- Changing nested component routes without the direct edit-screen caller can
-  hide route regressions.
+- Moving `ProjectGate` inside `WorkbenchShell` would expose shared chrome during
+  null recovery and contradict the focused null matrix.
+- Replacing the one pathless shell with per-leaf wrappers would lose the proven
+  shared element/state identity.
+- Reparenting routes, adding a parent navigator key, or changing `go`/`push`
+  assumptions can alter nested back-stack behavior without changing public URI
+  text.
+- Changing route inventory and aliases together can strand deep links or hide a
+  missing real target.
+- Adding provider or writer logic here would cross the navigation-only boundary.
 
 ## Safe SNIPER slices
 
-- Required root-builder contract only: `homeBuilder`, production app caller,
-  the five direct test caller files, and canonical Home recovery assertion.
-- Optional Wizard-builder seam only: factory parameter, Wizard builder, app
-  caller, and focused Home/Wizard route tests.
-- One gated leaf route only: its path/name/builder, the shared route inventory,
-  and the focused gate route-matrix test.
-- One compatibility redirect only: returned URI and canonical-destination
-  test.
-- Error presentation only: `errorBuilder` and a focused failure test.
+- Factory/root contract: `buildTraceBenchRouter`, builders, production caller,
+  and Home/Wizard route evidence.
+- Shared composition: `ShellRoute`, its builder, `ProjectGate`,
+  `WorkbenchShell`, and gate/shell identity tests.
+- One project leaf: its path/name/builder plus the exact 15-target matrix.
+- One alias: redirect callback, canonical target, and alias settlement test.
+- Nested stack only: shell structure plus the focused push/pop case.
 
 ## Future extraction seams
 
-- [S] The large project-child route list could move to a pure route-fragment
-  builder if names and redirect ownership stay explicit.
-- [S] Compatibility redirects could be grouped after direct deep-link
-  coverage exists.
+- `[S]` The large project-child route list could move to a pure route-fragment
+  builder if all names, nesting, and redirects remain explicit.
+- `[S]` Compatibility redirects could be grouped only after equivalent direct
+  deep-link evidence exists.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when factory parameters, paths, names, `ProjectGate`,
-or screen constructors change; `FLOW_DRIFT` when required root construction,
-Wizard fallback, gate
-composition, or nesting changes; `BOUNDARY_DRIFT` if state/provider/write
-ownership enters; `TEST_DRIFT` when the gate matrix or other direct callers
-move; and `STRUCTURE_DRIFT` when the route tree or guarded inventory splits.
+Review for `SYMBOL_DRIFT` when factory parameters, route paths/names,
+`ShellRoute`, `ProjectGate`, `WorkbenchShell`, or screen constructors change;
+`FLOW_DRIFT` when wrapper order, null/loaded reveal, redirect, or nested stack
+behavior changes; `BOUNDARY_DRIFT` if provider/write ownership enters;
+`TEST_DRIFT` when route matrices or shell identity evidence move; and
+`STRUCTURE_DRIFT` when the shared subtree or guarded inventory splits.
 
 ## Known uncertainty
 
-- [D] Route builders prove construction, not the downstream screen's read or
-  write behavior.
-- [D] The router proves that the shared gate is mounted, while gate tests and
-  `ProjectGate` source own recovery/open behavior.
-- [D] No focused route-error assertion is identified.
-- [D] Current exact-symbol closure finds one production caller in `app.dart`
-  and five direct caller test files; future route-factory changes still require
-  repository-wide caller search.
+- `[D]` Route builders prove construction, not downstream destination behavior.
+- `[D]` Gate tests prove the current nested `push`/`pop` case; they do not claim
+  every possible GoRouter stack sequence.
+- `[D]` No focused route-error assertion is identified.

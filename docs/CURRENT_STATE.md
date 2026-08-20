@@ -1,16 +1,55 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
+Next recommended pass:
+`TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
 
-## Live Shared Workbench committed-source Code Map maintenance
+## Live Workbench Destination Chrome Consolidation v1 scope
 
 ```text
-PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS
 Lane: A
-Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
-Baseline: 8266e1e178cee885a80f2584712862b4f714842d
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 93e66fbb83876f8d17edfffe25ba0266184360b7
 ```
+
+Pre-write live verification found `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+93e66fbb83876f8d17edfffe25ba0266184360b7`, divergence `0 0`, and empty cached
+and unmerged sets. At that checkpoint the only short-status entries were the
+known three generated-plugin Windows EOL/stat paths; their substantive diff
+remains empty.
+
+The committed 15-destination Shared Workbench route is stable. Overview is
+already shell-native. Six small read-only destination owners have only
+action-free title AppBars over legacy light surfaces and form the exact first
+batch: Components, Measurements, Not Populated, Pins, Events, and Known Facts.
+Events has two loaded presentation branches, beginner and advanced, and each
+mounts its own redundant `Sündmused` AppBar. The first child adds one
+presentation-only dark destination surface inside the existing shell owner and
+removes every redundant title AppBar across all loaded branches.
+
+The sole visible route-title transitions are intentional chrome outcomes:
+`Komponentide nimekiri -> Komponendid`,
+`Puudub populeerimine -> Täitamata`, and
+`Known facts -> Teadaolevad faktid`. Measurements, Pins, and Events remain
+text-identical as `Mõõtmised`, `Pinnid`, and `Sündmused`. Destination body
+content remains frozen.
+
+Board Canvas and the writer-bearing Add/Edit/Measure, Reference Images, and
+Report surfaces remain deferred. Photos is a later read-only dark-surface
+candidate. Graph requires a later focused decision to retire its redundant
+beginner-mode AppBar action because the shared shell already owns that control.
+No deferred destination is authorized by the current route.
+
+The exact Phase-1 material set is the three route owners, this ledger, and
+`docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS.md`. The
+reserved child has the exact eight-path source/test allowlist recorded in the
+active lock. Manual smoke follows implementation; committed-source Code Map
+maintenance follows accepted implementation; later destination batches return
+to `NEEDS_USER_DECISION`.
+
+## Historical Shared Workbench committed-source Code Map maintenance
 
 Live verification found `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

@@ -2,27 +2,102 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
 
-## Current Shared Workbench committed-source Code Map maintenance authority
+## Current Workbench Destination Chrome Consolidation v1 scope authority
 
 ```text
-PASS_ID: TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS
+PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS
 Lane: A
-Mode: DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1
-Baseline: 8266e1e178cee885a80f2584712862b4f714842d
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 93e66fbb83876f8d17edfffe25ba0266184360b7
 ```
 
-The accepted responsive-recovery implementation is committed at the exact
-baseline above. Its supplied final evidence is independent audit
+The committed Shared Workbench shell is the sole project-level navigation and
+header owner, but most destinations still mount a second route AppBar and a
+legacy light surface. This pass changes documentation only. It classifies all
+15 real project destinations, locks a reusable shell-token destination surface,
+and reserves one mechanical, zero-write first batch. It changes no Dart, test,
+map, route, provider, writer, event, evidence, freshness, Project ZIP, asset,
+package, tool, schema, platform, or Windows byte.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS.md`
+
+No sixth path is authorized.
+
+### Reserved implementation child -- exact eight-path allowlist
+
+`TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS` may write
+only:
+
+1. `lib/features/project/widgets/workbench_shell.dart`
+2. `lib/features/known_facts/screens/component_list_screen.dart`
+3. `lib/features/known_facts/screens/measurement_list_screen.dart`
+4. `lib/features/known_facts/screens/not_populated_screen.dart`
+5. `lib/features/known_facts/screens/pin_list_screen.dart`
+6. `lib/features/events/screens/events_viewer_screen.dart`
+7. `lib/features/known_facts/screens/known_facts_viewer_screen.dart`
+8. `test/widget/workbench_shell_test.dart`
+
+The child may add one presentation-only destination-surface wrapper to the
+existing shell owner, remove every redundant title AppBar from every loaded
+presentation branch across the six destination owners, and apply the existing
+`WorkbenchShellColors` vocabulary to those loaded bodies. Events has two such
+branches, beginner and advanced, and both must be consolidated. The child may
+not move or create an action, writer, provider, route, redirect, business rule,
+freshness rule, or navigation owner. The router and all other destination and
+test files are inspect-only.
+
+### Locked product boundary
+
+- `WorkbenchShell` remains the only project-level AppBar, Home control,
+  breadcrumb, route title, beginner-mode control, and 12-entry navigation
+  owner.
+- The six first-batch destinations retain their exact provider reads, null
+  behavior, content, ordering, copy, freshness presentation, event/fact
+  projections, and zero-write behavior.
+- Branch completeness is mandatory: the Events regression covers
+  `beginnerModeProvider == false` and `beginnerModeProvider == true`, with one
+  shell AppBar and the corresponding existing Events body in both states.
+- Removing destination-owned route-title chrome intentionally changes the sole
+  visible title from `Komponentide nimekiri` to `Komponendid`, from
+  `Puudub populeerimine` to `Täitamata`, and from `Known facts` to
+  `Teadaolevad faktid`. `Mõõtmised`, `Pinnid`, and `Sündmused` remain
+  text-identical. Shell labels are frozen.
+- The destination surface owns presentation only: dark Material background,
+  shell-token foreground/theme coherence, and its child slot. It owns no
+  route, provider, navigation, writer, action, or destination title.
+- All 15 real routes, two redirects, pathless `ShellRoute`, `ProjectGate`
+  ordering, deep links, Home/back behavior, active selection, and compact/wide
+  shell thresholds remain frozen.
+- Board Canvas, Overview, Add/Edit/Measure workflows, Photos, Graph, Reference
+  Images, Report, their tests, and every associated writer remain frozen in the
+  first child. Their later dispositions are planning evidence only and are not
+  armed.
+
+Manual smoke is required after the child and before its independent final
+audit. Code Maps are not edited in either this Phase 1 or the child; accepted
+committed source is followed by a separately scoped map-maintenance pass.
+
+## Historical Shared Workbench committed-source Code Map maintenance authority
+
+The accepted responsive-recovery implementation was committed at
+`8266e1e178cee885a80f2584712862b4f714842d`. Its supplied final evidence was
+independent audit
 `ACCEPT_AS_IS`, staging safety `YES`, boundary `PASS`, manual smoke `PASS`, full
 Flutter `637/637 PASS`, Python validators `314/314 PASS`, and analyzer zero
-warnings/errors with the same three infos. This current pass changes no
-executable behavior. It refreshes Code Maps strictly from the eight committed
-Dart/test blobs and routes only to non-executable `NEEDS_USER_DECISION`.
+warnings/errors with the same three infos. That historical pass changed no
+executable behavior. It refreshed Code Maps strictly from the eight committed
+Dart/test blobs and routed to non-executable `NEEDS_USER_DECISION`.
 
-### Exact current Phase-1 write allowlist -- 14
+### Exact historical Phase-1 write allowlist -- 14
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`

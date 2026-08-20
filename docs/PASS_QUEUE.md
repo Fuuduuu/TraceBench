@@ -2,12 +2,54 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS`
 
-## Current Shared Workbench committed-source Code Map maintenance queue
+## Current Workbench Destination Chrome Consolidation v1 queue
 
-The current queue is one Lane A
+The current queue is one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at
+committed baseline `93e66fbb83876f8d17edfffe25ba0266184360b7`. Its exact
+five-path material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_SCOPE_LOCK_PASS.md`
+
+After accepted scope, queue exactly one child:
+
+```text
+PASS_ID: TRACEBENCH_WORKBENCH_DESTINATION_CHROME_READ_ONLY_BATCH_1_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / DESTINATION_CHROME / UI_LOCAL_ZERO_WRITE
+```
+
+Its exact eight-path write set is `workbench_shell.dart`, the six title-only
+read-only destination owners for Components, Measurements, Not Populated,
+Pins, Events, and Known Facts, and `workbench_shell_test.dart`. The child may
+introduce one shell-token presentation wrapper and must remove every redundant
+local title AppBar in every loaded presentation branch. Events is explicitly a
+two-case contract: both `beginnerModeProvider == false` and
+`beginnerModeProvider == true` mount only the shell AppBar while retaining the
+corresponding existing Events body, provider identity, and zero-write behavior.
+Every route/provider/content/freshness/writer and all shell
+navigation/responsive behavior remain frozen. No ninth path is queued.
+
+The child must run focused existing destination regressions, including routed
+shell coverage of both Events modes, the ProjectGate suite, analyzer,
+validators, and the full Flutter suite. Human manual smoke must then cover the
+destination-accurate existing row/list, Not Populated body, Events
+beginner/advanced, and Known Facts monospace JSON content; the sole shell title
+including the three intentional title transitions; compact and wide
+navigation; Home/back/deep links; a representative writer workflow outside the
+changed batch; and screenshots. Accepted committed source then receives a
+separate Code Map maintenance pass. Every additional destination batch remains
+unarmed and routes through `NEEDS_USER_DECISION`.
+
+## Historical Shared Workbench committed-source Code Map maintenance queue
+
+The completed historical queue was one Lane A
 `DOCS_AND_MAPS_ONLY / CODE_MAP_MAINTENANCE / PHASE_1` pass at accepted
 implementation baseline `8266e1e178cee885a80f2584712862b4f714842d`. Its
 exact 14-path material set is:

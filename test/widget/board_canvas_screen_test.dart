@@ -10113,6 +10113,196 @@ void main() {
     },
   );
 
+  test(
+    'measurement value badges sort IDs and preserve equal or empty-ID input order',
+    () {
+      const distinctIds = [
+        MeasurementFact(
+          measurementId: 'M912',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 2.0,
+          unit: 'V',
+        ),
+        MeasurementFact(
+          measurementId: 'M911',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 1.0,
+          unit: 'V',
+        ),
+      ];
+      const equalIds = [
+        MeasurementFact(
+          measurementId: 'M920',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 4.0,
+          unit: 'V',
+        ),
+        MeasurementFact(
+          measurementId: 'M920',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 5.0,
+          unit: 'V',
+        ),
+      ];
+      const emptyIds = [
+        MeasurementFact(
+          measurementId: '',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 6.0,
+          unit: 'V',
+        ),
+        MeasurementFact(
+          measurementId: '',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: 7.0,
+          unit: 'V',
+        ),
+      ];
+
+      List<MeasurementFact> badgesFor(List<MeasurementFact> measurements) {
+        return measurementValueBadgesByComponents(
+          measurements: measurements,
+          componentIds: const {'cmp_r101'},
+        )['cmp_r101']!;
+      }
+
+      expect(
+        badgesFor(distinctIds).map((measurement) => measurement.measurementId),
+        orderedEquals(['M911', 'M912']),
+      );
+      expect(
+        badgesFor(equalIds).map((measurement) => measurement.value),
+        orderedEquals([4.0, 5.0]),
+      );
+      expect(
+        badgesFor(emptyIds).map((measurement) => measurement.value),
+        orderedEquals([6.0, 7.0]),
+      );
+    },
+  );
+
+  test(
+    'scalar measurement badge eligibility accepts valid values and rejects incomplete values',
+    () {
+      const cases = <({Object? value, String? unit, bool expected})>[
+        (value: 3.3, unit: 'V', expected: true),
+        (value: 'OL', unit: 'Ω', expected: true),
+        (value: 3.3, unit: null, expected: false),
+        (value: 3.3, unit: '', expected: false),
+        (value: 3.3, unit: '   ', expected: false),
+        (value: double.infinity, unit: 'V', expected: false),
+        (value: '', unit: 'V', expected: false),
+        (value: '   ', unit: 'V', expected: false),
+      ];
+
+      for (final testCase in cases) {
+        final measurement = MeasurementFact(
+          measurementId: 'M930',
+          mode: 'dc_voltage',
+          from: 'cmp_r101',
+          to: 'GND',
+          reading: 'numeric',
+          validityStatus: 'active',
+          powerState: 'off',
+          value: testCase.value,
+          unit: testCase.unit,
+        );
+
+        expect(
+          measurementHasScalarValueAndUnit(measurement),
+          testCase.expected,
+          reason: 'value=${testCase.value}, unit=${testCase.unit}',
+        );
+      }
+    },
+  );
+
+  test('measurement value badge text keeps exact value-unit spacing', () {
+    const numeric = MeasurementFact(
+      measurementId: 'M940',
+      mode: 'dc_voltage',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'numeric',
+      validityStatus: 'active',
+      powerState: 'off',
+      value: 4.987,
+      unit: 'V',
+    );
+    const text = MeasurementFact(
+      measurementId: 'M941',
+      mode: 'resistance',
+      from: 'cmp_r101',
+      to: 'GND',
+      reading: 'text',
+      validityStatus: 'active',
+      powerState: 'off',
+      value: 'OL',
+      unit: 'Ω',
+    );
+
+    expect(measurementValueBadgeText(numeric), '4.987 V');
+    expect(measurementValueBadgeText(text), 'OL Ω');
+  });
+
+  test('measurement validity caution recognizes stale invalid suspect only',
+      () {
+    const cases = <({String status, bool expected})>[
+      (status: 'stale_after_repair', expected: true),
+      (status: 'invalid', expected: true),
+      (status: 'suspect', expected: true),
+      (status: 'active', expected: false),
+    ];
+
+    for (final testCase in cases) {
+      final measurement = MeasurementFact(
+        measurementId: 'M950',
+        mode: 'dc_voltage',
+        from: 'cmp_r101',
+        to: 'GND',
+        reading: 'numeric',
+        validityStatus: testCase.status,
+        powerState: 'off',
+      );
+
+      expect(
+        measurementValidityNeedsCaution(measurement),
+        testCase.expected,
+        reason: 'status=${testCase.status}',
+      );
+    }
+  });
+
   testWidgets('measurement summary shows safe copy and verbatim value',
       (tester) async {
     const measurement = MeasurementFact(

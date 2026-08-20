@@ -2,10 +2,131 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas measurement read-model extraction scope authority
+## Current Board Canvas measurement read-model committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 43051ce4bb8bc9b1199b6a8ae76c22795766487b
+Predecessor: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted implementation is committed at
+`43051ce4bb8bc9b1199b6a8ae76c22795766487b`, parent
+`d5a511a38c8864270755861fa35a1b6e0908e6c5`, subject
+`refactor: extract board canvas measurement read model`. It changes exactly the
+Board Canvas host, the new same-library measurement-projection part, and the
+focused Board Canvas suite. This Phase 1 describes that accepted committed
+source; it changes no Dart, test, runtime, product, or protected behavior.
+
+### Exact current Phase-1 write allowlist -- 9
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is authorized. Every runtime/test path, unrelated map/index row,
+Code Map Standard, package, asset, schema, tool, generated/platform byte,
+Windows substantive byte, and scratch byte remains outside this pass.
+
+### Accepted committed implementation evidence
+
+The implementation moved exactly one contiguous 13-declaration deterministic
+measurement read-model band from `board_canvas_screen.dart` into
+`measurement_projection.part.dart`. One `part` / `part of` pair preserves the
+same library namespace, private names, signatures, consumers, ordering, and
+behavior. The host retains every state owner, mutable field, widget, painter,
+renderer, geometry path, provider, callback, and all four canonical writer
+invocations. The part is `ZERO_WRITE` and contains no provider, `ref`,
+`BuildContext`, `setState`, async, filesystem, writer, event append, projection
+mutation, or mutable instance state.
+
+The committed focused suite contains `169` declarations: `155` `testWidgets`
+and `14` `test`. The four added direct `test` declarations characterize badge
+ordering with stable fallback, scalar/unit eligibility, exact badge text, and
+validity caution. Human-supplied predecessor evidence records independent
+implementation audit `ACCEPT_AS_IS`, boundary/protected-surface `PASS`, focused
+`169/169`, full Flutter `642/642`, Python `314/314`, analyzer zero warnings or
+errors with the same three infos, four expected optional-photo warnings, four
+writer sites before/after, and behavior-identical payload closure. Those are
+predecessor facts, not an audit verdict for this Phase-1 diff.
+
+### Code Map work and registry target
+
+- The existing host map is refreshed for `STRUCTURE_DRIFT`: it records the
+  `part` directive, physical delegation of deterministic measurement helpers,
+  unchanged host consumers/state/writers/rendering, and the same-library
+  dependency.
+- The existing focused-test map is refreshed for `TEST_DRIFT`: its exact count
+  becomes `169 = 155 testWidgets + 14 test`, and Zone 4 records the four new
+  direct helper contracts while every unrelated family remains intact.
+- The committed 154-line part qualifies automatically because one production
+  owner has five-plus independently testable behaviors. Its first map records
+  endpoint/display normalization, component association/counting, badge
+  association/order, scalar eligibility/formatting, and caution classification
+  as deterministic `ZERO_WRITE` transformations.
+
+Phase-1 target registry is 35 maps and 35 index rows: exactly the three affected
+map/header-index pairs are `REVIEW_REQUIRED`, the other 32 pairs remain
+`MAINTAINED`, and orphan, unindexed, duplicate, source-path, and status-mismatch
+counts are zero. No uncommitted source is used as map truth.
+
+### Frozen boundaries and release route
+
+The implementation commit is read-only evidence. State ownership and lifetime,
+all four writer call paths, event/fact/evidence/freshness and Project ZIP
+semantics, painter/render/widget/geometry behavior, Board 900 responsive
+cutover, routes/providers, Wizard and Workbench behavior, and every nonlisted
+source/test/map remain frozen. The temporary part is not promoted to a normal
+library or public API and no state/controller extraction is authorized.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+   [accepted and committed at 43051ce4]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Wizard overlay extraction, later Board Canvas pass, implementation child,
+cleanup, or product successor is reserved or armed. Manual smoke is
+`NOT_APPLICABLE` because this pass changes documentation and maps only.
+
+### Bounded Phase-2 authority -- exactly 8 logical coordinates
+
+Only after independent pass audit and independent audit of all three changed
+maps may Phase 2 change:
+
+1. the designated verdict-block interior in this pass's audit artifact;
+2. this PASS_ID's existing `docs/AUDIT_INDEX.md` Status cell;
+3. the host map Status header;
+4. the focused-test map Status header;
+5. the new part-map Status header; and
+6. through 8. the three matching `CODE_MAP_INDEX.md` Status cells.
+
+The only clean map/index promotion is `REVIEW_REQUIRED -> MAINTAINED` for an
+auditor-accepted map with `SAFE_FOR_SNIPER_USE: YES`. Map bodies and metadata,
+registry row exteriors, ledger Description, route prose, artifact exterior,
+unrelated cells, and every other byte remain frozen in Phase 2. Human exact
+staging, commit, and push remain outside this Phase 1.
+
+Stop on baseline or route disagreement, a tenth path, committed-source/map or
+anchor conflict, failed qualification/registry/freeze proof, a required
+runtime/test edit, protected-boundary drift, an excluded bridge/API/state
+change, or scope-relevant validation failure.
+
+## Accepted Board Canvas measurement read-model extraction scope authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS

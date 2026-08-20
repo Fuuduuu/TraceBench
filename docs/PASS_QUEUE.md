@@ -2,10 +2,67 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas measurement read-model extraction queue
+## Current Board Canvas measurement read-model committed-source Code Map maintenance queue
+
+The exact three-path extraction child is accepted and committed at
+`43051ce4bb8bc9b1199b6a8ae76c22795766487b`, parent
+`d5a511a38c8864270755861fa35a1b6e0908e6c5`, subject
+`refactor: extract board canvas measurement read model`. Queue one Lane A
+`DOCS_MAPS_ONLY / PHASE_1` maintenance pass with exact nine-path material set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is queued. Runtime/tests and every unrelated map/index row stay
+frozen. Manual smoke is `NOT_APPLICABLE`.
+
+Refresh the host map for the one `part` directive, physical delegation of the
+13 deterministic declarations, unchanged host consumers/state/rendering and
+four writers, and the same-library dependency (`STRUCTURE_DRIFT`). Refresh the
+focused-test map from `165 = 155 testWidgets + 10 test` to
+`169 = 155 testWidgets + 14 test`, adding the four direct helper contracts to
+Zone 4 without changing unrelated test ownership (`TEST_DRIFT`).
+
+The committed 154-line part automatically qualifies under the Standard's
+five-plus independently testable production-behavior rule. Create its first
+map for endpoint/display normalization, component association/counting,
+deterministic badge association/order, scalar eligibility/formatting, and
+validity caution. The part is `ZERO_WRITE`; its model access comes through the
+host library's shared `MeasurementFact` import, and it owns no provider, state,
+context, async, filesystem, writer, event, or projection mutation.
+
+Phase-1 registry target is 35 maps/35 rows with the three affected header/index
+pairs `REVIEW_REQUIRED`, 32 unchanged `MAINTAINED` pairs, and zero duplicate,
+orphan, unindexed, source-path, or status mismatch. Add one neutral
+`REVIEW_REQUIRED` ledger row and one uniquely marked empty verdict block. No
+current-pass acceptance or staging-safety claim is queued.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+   [accepted and committed at 43051ce4]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No state/controller extraction, normal-library/API conversion, Wizard overlay
+extraction, later Board Canvas pass, cleanup, or product successor is queued.
+After clean independent pass and per-map audits, a bounded Phase 2 may change
+only the verdict interior, this pass's ledger Status, three map Status headers,
+and three matching index Status cells. Human exact staging, commit, and push
+remain outside this queue.
+
+## Accepted Board Canvas measurement read-model extraction queue (historical, non-authorizing)
 
 The completed Workbench Destination Chrome Batch 1 Code Map maintenance is
 committed at `f34664dfa7db0b4e66c443878f3bfceed04b06a8`. The human route

@@ -1,9 +1,80 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Board Canvas measurement read-model extraction scope
+## Live Board Canvas measurement read-model committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+43051ce4bb8bc9b1199b6a8ae76c22795766487b`, parent
+`d5a511a38c8864270755861fa35a1b6e0908e6c5`, subject
+`refactor: extract board canvas measurement read model`, with divergence
+`0 0` and empty cached/unmerged sets at pre-write verification. Short status
+contained only the three known generated-plugin Windows EOL/stat entries and
+preserved untracked `TraceBench_ALL_CODE.txt`; substantive Windows numstat was
+empty.
+
+The accepted implementation commit changes exactly three Dart/test paths: the
+Board Canvas host, new `measurement_projection.part.dart`, and the focused
+Board Canvas suite. It moves the complete 13-declaration measurement
+read-model band behavior-identically through one same-library part bridge. The
+host retains every consumer, state owner and field, widget, painter, renderer,
+geometry path, provider, callback, and four canonical writer invocations. The
+part is deterministic `ZERO_WRITE` and owns no state, context, provider, async,
+filesystem, event, projection, or writer behavior.
+
+The focused suite is now `169 = 155 testWidgets + 14 test`. Four new direct
+declarations characterize deterministic badge ID ordering and stable fallback,
+scalar/unit eligibility, exact value-unit text, and validity caution while all
+existing endpoint/count, widget, route, responsive, painter, state, writer,
+freshness, and boundary families remain intact. Supplied accepted predecessor
+evidence records focused `169/169`, full Flutter `642/642`, Python `314/314`,
+analyzer zero warnings/errors with the same three infos, exactly four expected
+optional-photo fixture warnings, four writer sites before/after, and final
+implementation audit `ACCEPT_AS_IS` with boundary/protected-surface `PASS`.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` pass changes exactly the three route
+owners, `docs/AUDIT_INDEX.md`, `docs/code_maps/CODE_MAP_INDEX.md`, the two
+existing Board Canvas maps, one new part map, and one new audit artifact. It
+refreshes the host map for `STRUCTURE_DRIFT`, refreshes the test map for
+`TEST_DRIFT`, and creates the first part map under automatic qualification for
+five-plus independently testable production behaviors. All three map headers
+and matching index cells remain `REVIEW_REQUIRED` until independent map audit.
+
+The registry moves from 34 maps/34 rows, all maintained, to 35 maps/35 rows:
+three review pairs, 32 maintained pairs, and zero orphan, unindexed, duplicate,
+source-path, or status mismatch. The new part map records five compact zones:
+endpoint/display normalization, component association/counting, badge
+association/order, scalar badge eligibility/formatting, and validity caution.
+The entire part remains `ZERO_WRITE`.
+
+Runtime/tests, unrelated maps and index rows, state/provider/writer ownership,
+rendering/painter/geometry/routes, event/fact/evidence/freshness/Project ZIP
+semantics, packages/assets/schemas/tools/generated/platform content, Windows
+substantive bytes, and scratch are frozen. Manual smoke is `NOT_APPLICABLE`.
+The temporary bridge is descriptive committed truth, not authority for normal-
+library conversion, API redesign, state migration, Wizard overlay extraction,
+or another Board Canvas pass.
+
+The current route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_EXTRACTION_IMPL_PASS
+   [accepted and committed at 43051ce4]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor implementation is armed. A clean independent audit may later
+authorize exactly eight mechanical Phase-2 coordinates: the designated
+verdict interior, this pass's ledger Status, three map Status headers, and the
+three matching index Status cells. Every body, qualification/source/type/audit
+evidence field, route byte, ledger Description, artifact exterior, and other
+repository byte remains frozen during that recording.
+
+## Accepted Board Canvas measurement read-model extraction scope (historical, non-authorizing)
 
 The authoritative worktree was verified at `C:\dev\TraceBench` on `main` with
 `HEAD == origin/main ==

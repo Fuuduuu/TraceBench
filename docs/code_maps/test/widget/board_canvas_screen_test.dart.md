@@ -4,21 +4,22 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-This 165-declaration Board Canvas widget-test owner supplies explicit-fresh
+This 169-declaration Board Canvas widget-test owner supplies explicit-fresh
 fixtures, direct/production-router harnesses, writer doubles, interaction and
 painter assertions, read-only Wizard overlay coverage, local panel/focus
-evidence, and a routed six-width responsive contract. Project-wide destination
-inventory/navigation moved to the shared-shell suite; this file now proves the
-Canvas remains rich across that shell cutover and has no competing local
-Project hub or rail control.
+evidence, direct deterministic measurement read-model characterization, and a
+routed six-width responsive contract. Project-wide destination inventory and
+navigation belong to the shared-shell suite; this file proves the Canvas
+remains rich across that shell cutover and has no competing local Project hub
+or rail control.
 
 ## Qualification
 
-`[D]` Committed source contains 165 declarations (`155` `testWidgets` plus `10`
+`[D]` Committed source contains 169 declarations (`155` `testWidgets` plus `14`
 `test`) across more than three behavior families and exceeds 3,000 lines. Its
 flat structure has no single meaningful `group()` ownership, so families are
 derived from stable helpers, doubles, and exact test names.
@@ -30,7 +31,7 @@ derived from stable helpers, doubles, and exact test names.
 | 1. Fixtures and harness lifecycle | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Builds state, overrides providers, mounts direct/routed screens, and observes provider state. |
 | 2. Theme, shell, and route baselines | `buildTheme exposes BenchBeep semantic visual tokens`, `/project is the named canonical board canvas route`, `/project/board-canvas redirects once to canonical /project` | Verifies theme, empty/loaded shell, canonical entry, and compatibility alias. |
 | 3. Navigator, selection, hover, and filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Exercises typed selection, category drill-down, hover, ordering, counts, and hide-unmeasured behavior. |
-| 4. Measurement entry and association | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry` | Covers target/draft/save, Measure Sheet navigation, association, badges, and stale/suspect display. |
+| 4. Measurement entry, association, and pure read-model characterization | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry`, `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Covers target/draft/save, Measure Sheet navigation, endpoint/count association, characterized badge ordering/fallback, scalar/unit eligibility, exact badge text, and stale/invalid/suspect caution classification. |
 | 5. Component create and edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guarded identity creation/edit requests, errors, returned events, and idempotency. |
 | 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey` | Exercises template selection, local drafts, ghost movement, normalized bounds, explicit save, and results. |
 | 7. Canvas interaction, Wizard fit, and geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake` | Verifies pan/zoom, hit selection, aspect mapping, fallback, padding, one initial fit, alignment, and badges. |
@@ -80,6 +81,10 @@ focus hide/restore without events or freshness changes.
   focus hide/restore.
 - `[D]` Wizard/painter helpers inspect accepted presentation input and composite
   output without creating canonical data.
+- `[D]` Direct `test` declarations characterize pure endpoint/count helpers,
+  lexical distinct-nonblank-ID ordering with equal/empty-ID index fallback,
+  scalar/unit eligibility, exact value-unit text, and validity caution without
+  mounting widgets or invoking a writer.
 - `[D]` Successful simulated writer calls are observed separately through
   `_readProjectState` as returned-event mirroring and stale projection state.
 
@@ -129,6 +134,7 @@ owned by their production/canonical owners.
 | Route/shared-shell responsive | `[D]` six routed widths | shell threshold, Board 900/framing | `ZERO_WRITE` | routed case + shell suite |
 | Local panels/focus | `[D]` hidden default and retained modes | local rail/selection | `UI_LOCAL` | panel/focus cases |
 | Navigator/filter | `[D]` helpers/painter observations | targets, geometry, responsive | `UI_LOCAL` | exact family + full target |
+| Measurement read model | `[D]` endpoint/count tests plus four direct helper characterizations | part implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
 | Writers | `[D]` four fakes/results | selection/provider/freshness | exercised `CANONICAL_EVENT` | exact writer family + full target |
 | Canvas/Wizard | `[D]` transforms/pixels/painter state | z-order/hits/semantics | `UI_LOCAL` / `ZERO_WRITE` | exact geometry/render cases |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | exact family + full target |
@@ -143,6 +149,7 @@ owned by their production/canonical owners.
 | State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_readProjectState` | No-project/project shell, provider, and projection assertions. |
 | Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor` | Gate, fit, z-order, photo, rotation, footprints/pins. |
 | Interaction | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels` | Selection, hover, filter, hit alignment, semantics. |
+| Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Existing endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
 | Writer boundaries | Four fake writers and event builders | Explicit saves, guards, errors, idempotency, returned events, stale state. |
 
 ## Dangerous combinations
@@ -156,6 +163,9 @@ owned by their production/canonical owners.
   families.
 - Placement ghost conversion plus requests can cross from UI-local drafts into
   canonical normalized-coordinate behavior.
+- Pure measurement helper expectations must not be combined with writer/event
+  semantic changes; the direct declarations prove `ZERO_WRITE` read-model
+  behavior only.
 
 ## Safe SNIPER slices
 
@@ -165,6 +175,7 @@ owned by their production/canonical owners.
 | One local panel/focus behavior | `_openWideContextMode`, matching test | shared navigation absence | hidden/focus/panel cases |
 | One Wizard render assertion | painter/photo/pixel helpers | fixtures/z-order/hit path | exact overlay cases + full target |
 | One writer assertion | corresponding fake writer | selection/result/freshness | exact writer family |
+| One measurement read-model assertion | exact helper/test title | host consumers and writer family | direct helper declarations |
 | One freshness assertion | explicit freshness fixture | scaffold/provider/integration | exact warning case + full target |
 
 ## Future extraction seams
@@ -178,10 +189,11 @@ owned by their production/canonical owners.
 
 Set `REVIEW_REQUIRED` for helper/title, harness/provider/route,
 writer/filesystem, linked-family, or family-ownership drift. Recheck exact test
-count, all six widths, shell/Board keys, hidden default, five retained local
-tools, focus restoration, and negative Project hub/rail evidence after related
-changes. Formatting, comments, imports, and line movement alone do not stale
-the map.
+count (`169 = 155 testWidgets + 14 test`), the four direct measurement helper
+contracts, all six widths, shell/Board keys, hidden default, five retained
+local tools, focus restoration, and negative Project hub/rail evidence after
+related changes. Formatting, comments, imports, and line movement alone do
+not stale the map.
 
 ## Known uncertainty
 

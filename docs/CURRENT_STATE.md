@@ -1,9 +1,84 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
 
-## Live Board Canvas Wizard intake overlay committed-source Code Map maintenance
+## Live Board Canvas Component Navigator extraction scope
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+e23ad7ccfdf58f72397721a56c935a5d5a078d8e`, subject
+`docs: refresh board canvas wizard intake overlay code maps`, divergence `0 0`,
+with staged/unmerged `0 / 0` at pre-write verification. Only the known three
+Windows generated-plugin EOL/stat entries and preserved untracked
+`TraceBench_ALL_CODE.txt` remain outside the substantive material set.
+
+The human replaces the predecessor's `NEEDS_USER_DECISION` sentinel with one
+Lane A docs-only scope and exactly one child. This Phase 1 changes only the
+three route owners, `docs/AUDIT_INDEX.md`, and the new scope artifact. It
+changes no Dart, test, map/index, runtime, product, protected, Windows
+substantive, or scratch byte.
+
+The artifact's reproducible committed-blob closure identifies exactly one
+654-line `_ComponentNavigatorPanel` declaration between
+host-owned `_AddComponentTemplateListTile` and `_PlacementSelector`. The
+artifact owns the exact normalized-payload hash and reproduction command.
+The reserved physical move preserves the private name, constructor, fields,
+members, seven callbacks, keys, copy, semantics, order, visual tokens, layout,
+and control hierarchy.
+
+The exact future child writes only:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`;
+2. `lib/features/board_canvas/widgets/component_navigator.part.dart` (new).
+
+The host may add one part directive and remove the exact declaration; the new
+part contains one `part of`, one blank line, and that payload. The focused
+Board Canvas suite is inspect-only/validation-only. Its static source-boundary
+test has no panel-host assertion or panel-exclusive literal, so the child is
+`TWO_PATHS_NO_TEST_EDIT`. Current `169 = 155 testWidgets + 14 test` coverage is
+materially sufficient for the structural-only move.
+
+The panel's aggregate write class is `UI_LOCAL`: it is a Stateless presentation
+owner whose callbacks dispatch only into existing host-owned transient state.
+All four Navigator fields remain in `_BoardCanvasScreenState`; no state,
+controller, lifecycle, provider, or callback implementation moves. All four
+canonical writer provider invocations remain host-owned with required result
+`4 -> 4`, delta zero.
+
+The new file is the third and final temporary Board Canvas part. Existing
+measurement and Wizard parts remain byte-identical. No fourth part, normal-
+library conversion, public/private API redesign, or state/controller work is
+authorized. After this chain, another part requires a fresh architectural
+decision addressing all three parts.
+
+Both applicable maps and all 36 registry pairs are currently `MAINTAINED`.
+After accepted committed child source, the host map is `UPDATE_REQUIRED` for
+`STRUCTURE_DRIFT`; the unchanged test map is expected
+`REVIEWED_NO_CHANGE` but must be re-derived; the new part is requalified from
+accepted committed source. Map/index changes belong only to a later separately
+scoped committed-source decision/pass.
+
+Child acceptance requires the focused/full automated contract, exact static
+payload/neighbor/state/writer/part closure, and
+`TARGETED_NAVIGATOR_SMOKE_REQUIRED`. The current scope creates one neutral
+`REVIEW_REQUIRED` ledger row and one empty verdict block and claims no audit,
+acceptance, staging, commit, or push.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at e23ad7cc]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance decision/pass]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No later extraction or successor is armed.
+
+## Accepted Board Canvas Wizard intake overlay committed-source Code Map maintenance (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

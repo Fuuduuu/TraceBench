@@ -2,10 +2,75 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
 
-## Current Board Canvas Wizard intake overlay Code Map maintenance queue
+## Current Board Canvas Component Navigator extraction queue
+
+The human selects one Lane A docs-only scope at committed baseline
+`e23ad7ccfdf58f72397721a56c935a5d5a078d8e`, replacing the completed Wizard
+overlay map-maintenance sentinel. Current scope material is exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth path is queued. Dart, tests, maps/index, runtime, product, Windows
+substantive bytes, and scratch remain frozen in Phase 1.
+
+Reserve exactly one child:
+
+`TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
+
+with exact two-path future allowlist:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`;
+2. `lib/features/board_canvas/widgets/component_navigator.part.dart` (new).
+
+No third path is queued. The focused Board Canvas suite is inspect-only and a
+validation target. Its static source-read test has no assertion bound to the
+panel's physical host ownership, so no test retarget is required.
+
+Move exactly the private 654-line `_ComponentNavigatorPanel` declaration,
+using the artifact's reproducible normalized-payload hash, from between
+unchanged `_AddComponentTemplateListTile` and
+`_PlacementSelector`. The host adds only
+`part '../widgets/component_navigator.part.dart';`; the new file adds only its
+`part of`, one blank line, and the exact payload. No helper, category, callback
+implementation, state, writer, painter, import/export, or other declaration
+moves.
+
+The panel remains private, Stateless, and `UI_LOCAL` presentation/control
+dispatch. `_componentNavigatorCategory`, `_canvasSelection`,
+`_previewPlacementKeys`, and `_hideUnmeasuredComponents` remain host State.
+All seven callback implementations and all four canonical writer provider
+sites remain host-owned; writer result is `4 -> 4`, delta zero.
+
+This is the third and final temporary Board Canvas same-library part. Existing
+measurement/Wizard part blobs remain unchanged, final part count is three, and
+no fourth part or normal-library/API/state/controller work is queued. Any later
+part proposal requires a fresh architecture decision over all three parts.
+
+The child must run the 169-declaration focused suite, analyzer, full Flutter,
+Python validators, exact-path formatter checks, Git checks, and static payload/
+neighbor/state/writer/part closure, then complete
+`TARGETED_NAVIGATOR_SMOKE_REQUIRED`. Stop rather than add a test path if a
+retarget or new characterization becomes necessary.
+
+Current maps/index are 36/36 and all `MAINTAINED`. After accepted committed
+child source, queue only a separately scoped committed-source Code Map
+decision/pass: host `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`, unchanged test map
+expected `REVIEWED_NO_CHANGE` but re-derived, and new part requalified from
+committed source. Then return to `NEEDS_USER_DECISION`; do not arm another
+extraction.
+
+Phase 1 creates one neutral ledger row and one empty verdict block. Conditional
+Phase 2 is exactly its verdict interior plus this PASS_ID's ledger Status. The
+human alone performs exact staging, commit, and push after audit.
+
+## Accepted Board Canvas Wizard intake overlay Code Map maintenance queue (historical, non-authorizing)
 
 The exact three-path extraction child is accepted and committed at
 `796e644d49c51be6dde99e9ef774ea675faca6d2`, parent

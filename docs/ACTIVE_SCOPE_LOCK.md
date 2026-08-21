@@ -2,10 +2,123 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
 
-## Current Board Canvas Wizard intake overlay committed-source Code Map maintenance authority
+## Current Board Canvas Component Navigator extraction scope authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: e23ad7ccfdf58f72397721a56c935a5d5a078d8e
+Reserved child: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child validation: TARGETED_NAVIGATOR_SMOKE_REQUIRED
+```
+
+The human decision replaces the predecessor's non-executable sentinel with
+this exact scope and one child. This Phase 1 writes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth path is authorized. Dart, tests, maps/index, runtime, product,
+platform, Windows substantive bytes, and scratch are frozen.
+
+### Exact physical seam and dependency boundary
+
+The artifact's reproducible committed-blob closure identifies one contiguous
+654-line `_ComponentNavigatorPanel` declaration. Its
+durable start is the class signature; its end is its closing brace immediately
+before `_PlacementSelector`; the artifact owns the exact normalized-payload
+hash and reproduction command.
+`_AddComponentTemplateListTile` precedes it and `_PlacementSelector` follows;
+both remain host-owned and body-identical.
+
+The panel retains private same-library access to `ComponentFact`, the three
+selection types, `_PlacementEntry`, `_ComponentCategory`, category/label/sort
+helpers, `_benchBeepNavigatorControlStyle`, the exact eight Board Canvas visual
+tokens, Flutter presentation APIs, and seven unchanged constructor callbacks.
+No helper, category, callback implementation, State, writer, painter, or
+neighbor moves.
+
+Aggregate write class is `UI_LOCAL`: the Stateless panel renders and dispatches
+callbacks to host-owned transient category, selection, preview, and local
+placement-draft state. It owns no provider, ref, State, project-file write,
+event append, projection mutation, or canonical writer. Existing explicit
+placement save remains the canonical boundary.
+
+### Exact reserved child -- two paths
+
+`TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS` may write:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/widgets/component_navigator.part.dart` (new)
+
+No third path is reserved. The focused Board Canvas suite is
+`INSPECT_ONLY / VALIDATION_TARGET` and may not be edited.
+
+The host may only add
+`part '../widgets/component_navigator.part.dart';` and remove the exact panel
+once. The new part may only contain
+`part of '../screens/board_canvas_screen.dart';`, one blank line, and the exact
+payload once. No imports/exports or other declarations are allowed.
+
+### Third-and-final part, state, writers, and tests
+
+This is the third and final temporarily permitted Board Canvas part, after
+`measurement_projection.part.dart` and `wizard_intake_overlay.part.dart`.
+Those two parts remain byte-identical; the child result has exactly three
+part/part-of pairs. No fourth part or normal-library/API/state/controller work
+is authorized. Any later part proposal stops for a fresh architecture decision
+covering conversion, consolidation, APIs, and lifetime/state ownership.
+
+`_componentNavigatorCategory`, `_canvasSelection`, `_previewPlacementKeys`, and
+`_hideUnmeasuredComponents` remain in `_BoardCanvasScreenState` with identical
+types, initializers, lifetimes, and resets. No State/controller/lifecycle moves.
+The four canonical writer provider sites remain exactly `4 -> 4`, delta zero;
+the new part contains none.
+
+The maintained source/test maps and current tests were verified map-first. The
+focused suite remains `169 = 155 testWidgets + 14 test` and directly covers
+category classification/order/fallback, counts, sections, sorting, hover,
+selection/back paths, filtering/zero-visible recovery, unplaced/local draft,
+single/multiple placement, and zero-write behavior. Its static production-
+source boundary test contains no panel-owner assertion, so the child is
+`TWO_PATHS_NO_TEST_EDIT`.
+
+Stop with `NEEDS_USER_DECISION_TEST_RETARGET_GAP` if any test edit becomes
+necessary, or `NEEDS_USER_DECISION_TEST_CHARACTERIZATION_GAP` if committed
+coverage cannot support the byte-identical move. All other baseline, map,
+payload, neighbor, two-path, part-count, state/writer, protected-boundary, and
+validation stops in the artifact are binding.
+
+### Route, map lifecycle, and Phase 2
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at e23ad7cc]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance decision/pass]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No later extraction is armed. After accepted committed child source, the host
+map is `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`; the unchanged test map is
+expected `REVIEWED_NO_CHANGE` but must be re-derived; the new part is
+requalified from committed source. No map/index edit belongs to scope or child.
+
+Phase 1 creates one neutral `REVIEW_REQUIRED` ledger row and one empty verdict
+block. After a clean independent audit with explicit authorization, Phase 2
+may change exactly the verdict interior and this PASS_ID's ledger Status cell.
+Human staging, commit, and push remain outside this authority.
+
+## Accepted Board Canvas Wizard intake overlay committed-source Code Map maintenance authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS

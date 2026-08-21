@@ -1,9 +1,98 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Board Canvas Component Navigator extraction scope
+## Live Board Canvas Component Navigator committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+885ea7fbf445e90ff666825eee100fd856a10eb9`, parent
+`b71c9bb30f6ce468bb4fe9c986a93d1ae6a55aa0`, subject
+`refactor: extract board canvas component navigator`, divergence `0 0`, with
+staged/unmerged `0 / 0` at pre-write verification. Only the known three
+Windows generated-plugin EOL/stat entries and preserved untracked
+`TraceBench_ALL_CODE.txt` remain outside the substantive material set.
+
+The accepted implementation commit changes exactly the Board Canvas host and
+new `component_navigator.part.dart`. Its committed blobs are host
+`03fd2180dd47467790491c507f6f69f2afb8dc8b` and Navigator part
+`374693ad61c33b36c49914d0aa7818a74c3ca91c`; the focused test remains
+`74e098a7d6333db83ad180f1adc3f2c026b72323`, measurement part remains
+`2bd771c086cf7715c3d60b8119219d31b305a078`, and Wizard part remains
+`b7ac625a07bfd0cdb2939bd384722e51fbe5ac87`.
+
+The implementation moves the behavior-identical 654-line
+`_ComponentNavigatorPanel` payload into the 656-line third same-library part;
+the audit artifact owns the exact committed-blob-derived byte/hash
+reproduction. Exactly three reciprocal Board Canvas part/part-of pairs exist
+and no fourth part exists. Navigator State, seven callback implementations,
+helpers, consumer, and all four canonical writers remain host-owned.
+
+Human-supplied accepted predecessor evidence records focused `169/169`, full
+Flutter `642/642`, doctor `PASS`, validator `314/314`, four expected optional-
+photo fixture warnings, six-point Navigator smoke `PASS`, independent
+implementation audit `PASS`, writers `4 -> 4`, and unchanged State owners.
+These facts are predecessor evidence, not an audit or staging claim for this
+Phase-1 diff.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` pass changes exactly eight paths: the
+three route owners, `docs/AUDIT_INDEX.md`, `docs/code_maps/CODE_MAP_INDEX.md`,
+the refreshed host map, one first Navigator-part map, and one new audit
+artifact. It changes no Dart, test, runtime, product, route, provider, writer,
+rendering, geometry, protected, Windows substantive, or scratch byte.
+
+The host map is `UPDATE_REQUIRED / STRUCTURE_DRIFT` and now distinguishes its
+third-part dependency and host-owned Navigator state/helpers/callbacks/consumer
+from the delegated panel declaration. The committed Navigator part qualifies
+automatically under the Code Map Standard's five-plus independently testable
+production-behavior rule; its first map has five compact zones for mode and
+selection, categories/counts/hover, component filtering/partition/order,
+inspector branches, and placement summaries/choices. Its pure rendering is
+`ZERO_WRITE` and its aggregate callback dispatch is `UI_LOCAL`; it owns no
+State, provider, `ref`, writer, event, project-file, route, or projection
+mutation.
+
+The focused Board Canvas test map is `REVIEWED_NO_CHANGE`: the test source is
+byte-identical, still has `169 = 155 testWidgets + 14 test`, all mapped anchors
+and Navigator families remain accurate, and its static source guard still
+reads only the host and Wizard part. It stays byte-frozen and `MAINTAINED`.
+
+The registry moves from 36 maps/36 rows, all maintained, to 37 maps/37 rows:
+the host and new Navigator map/index pairs are `REVIEW_REQUIRED`, the other 35
+pairs remain `MAINTAINED`, and all duplicate/orphan/unindexed/source/type/status
+mismatch counts remain zero. One neutral ledger row and one unique empty
+verdict block provide the bounded independent-audit handoff coordinates.
+Manual smoke is `NOT_APPLICABLE`.
+
+This is the third and final temporary Board Canvas part. No fourth part or
+further extraction is authorized. A fresh architecture decision must assess
+all three parts for normal-library conversion, consolidation, internal APIs,
+and lifetime/state ownership before any further part-based or state/controller
+work.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+   [accepted and committed at b71c9bb]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+   [accepted and committed at 885ea7f]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No later extraction or product successor is armed. A clean independent audit
+may authorize only the verdict interior, this ledger Status, the two map Status
+headers, and the two matching index Status cells. Human exact staging, commit,
+and push remain outside this pass.
+
+## Accepted Board Canvas Component Navigator extraction scope and implementation (historical, non-authorizing)
+
+The retained scope below is completed at
+`885ea7fbf445e90ff666825eee100fd856a10eb9`. Its prior live-route and child
+reservation wording is historical evidence and does not override the current
+maintenance authority.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

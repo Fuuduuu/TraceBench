@@ -2,10 +2,157 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas Component Navigator extraction scope authority
+## Current Board Canvas Component Navigator committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 885ea7fbf445e90ff666825eee100fd856a10eb9
+Predecessor: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted Component Navigator extraction is committed at the verified
+baseline, parent `b71c9bb30f6ce468bb4fe9c986a93d1ae6a55aa0`, subject
+`refactor: extract board canvas component navigator`. This pass describes only
+accepted committed source and changes no Dart, test, runtime, product, route,
+provider, writer, rendering, geometry, or protected behavior.
+
+### Exact current Phase-1 write allowlist -- 8
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` (new)
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No ninth path is authorized. Every Dart/test/runtime path, the maintained
+Board Canvas test map, unrelated map/index row, Code Map Standard, package,
+asset, schema, tool, generated/platform byte, Windows substantive byte, and
+scratch byte remains outside this pass.
+
+### Accepted committed implementation evidence
+
+Commit `885ea7fbf445e90ff666825eee100fd856a10eb9` changes exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`;
+2. `lib/features/board_canvas/widgets/component_navigator.part.dart` (new).
+
+Committed object closure:
+
+- host: `03fd2180dd47467790491c507f6f69f2afb8dc8b`;
+- Navigator part: `374693ad61c33b36c49914d0aa7818a74c3ca91c`;
+- unchanged focused test: `74e098a7d6333db83ad180f1adc3f2c026b72323`;
+- unchanged measurement part:
+  `2bd771c086cf7715c3d60b8119219d31b305a078`;
+- unchanged Wizard part:
+  `b7ac625a07bfd0cdb2939bd384722e51fbe5ac87`.
+
+The implementation moves one behavior-identical 654-line
+`_ComponentNavigatorPanel` payload into the 656-line same-library part. The
+audit artifact owns its exact committed-blob-derived byte/hash reproduction.
+The host has three matching `part`
+directives and the three part files have reciprocal `part of` directives;
+there is no fourth Board Canvas part.
+
+Human-supplied accepted predecessor evidence records focused `169/169`, full
+Flutter `642/642`, doctor `PASS`, validator `314/314`, exactly four expected
+optional-photo fixture warnings, six-point Navigator smoke `PASS`, independent
+implementation audit `PASS`, four writers unchanged, and State owners
+unchanged. These are attributed predecessor facts, not this Phase-1 pass's
+verdict or staging claim.
+
+### Exact Code Map work
+
+- Host map: `UPDATE_REQUIRED / STRUCTURE_DRIFT`. Refresh its third-part
+  dependency and distinguish host-owned Navigator state, helpers, callbacks,
+  consumer, and four writers from the physically delegated panel declaration.
+  Its Phase-1 header and matching index cell are `REVIEW_REQUIRED`.
+- Navigator part: committed source qualifies automatically because the
+  production file owns five or more independently testable behaviors. Create
+  its first deterministic map at `REVIEW_REQUIRED` for mode/selection
+  resolution, category overview/counts/hover, component filter/partition/order,
+  inspector branching, and placement summaries/choices.
+- Focused Board Canvas test map: `REVIEWED_NO_CHANGE`. Its source blob, 169-test
+  inventory, 46 mapped anchors, behavior families, and host-plus-Wizard-part
+  static source guard remain accurate. It stays byte-identical and
+  `MAINTAINED`.
+
+The Navigator part owns no mutable State. Pure derivation/rendering is
+`ZERO_WRITE`; aggregate callback dispatch is `UI_LOCAL`. Seven callback inputs
+return to host-owned transient state. The part owns no provider, `ref`, writer,
+event append, project-file action, route mutation, or projection mutation;
+canonical placement remains behind the host explicit save writer.
+
+### Registry, temporary-part governance, and Phase 2
+
+Phase 1 produces exactly 37 maps and 37 index rows, with 35 unchanged
+`MAINTAINED` pairs and exactly two `REVIEW_REQUIRED` pairs: the host and new
+Navigator part. Duplicate source/map paths, orphan maps, unindexed maps, and
+source/type/status mismatches remain zero.
+
+This is the third and final temporary Board Canvas part. No map authorizes a
+fourth. Before any further part-based or state/controller extraction, all
+three parts require a fresh architecture decision covering normal-library
+conversion, consolidation, intentional internal APIs, and lifetime/state
+ownership. No successor implementation is armed.
+
+A clean independent Code Map/pass audit may authorize exactly six mechanical
+Phase-2 coordinates:
+
+1. the designated verdict-block interior;
+2. this PASS_ID's `docs/AUDIT_INDEX.md` Status cell;
+3. the host map Status header;
+4. the Navigator-part map Status header;
+5. the host matching `CODE_MAP_INDEX.md` Status cell; and
+6. the Navigator-part matching index Status cell.
+
+Only independently accepted maps marked safe for SNIPER use may be promoted
+from `REVIEW_REQUIRED` to `MAINTAINED`. Phase 2 may not alter map bodies,
+qualification/evidence metadata, route prose, ledger Description, artifact
+exterior, unrelated registry content, or any other byte. Human exact staging,
+commit, and push remain outside this authority.
+
+### Frozen boundaries, validation, and stops
+
+Byte-freeze all Dart/test/runtime source, the Board Canvas test map, all
+unrelated map/index content, State/provider/callback/writer/event/fact/evidence/
+freshness/Project ZIP semantics, rendering/geometry/hit behavior, routes,
+packages, assets, schemas, tools, generated/platform content, Windows
+substantive bytes, and scratch. Manual smoke for this docs/maps-only pass is
+`NOT_APPLICABLE`.
+
+Run doctor, repository validators, both diff checks, registry parity/status and
+stable-anchor closure, name-status, status including untracked files, and
+scoped runtime/test/Windows numstat. Stop on baseline/route drift, a ninth
+path, test-map drift, qualification conflict, registry or anchor mismatch,
+unexpected frozen content, validation failure, Phase-2 execution, or any stage,
+commit, push, reset, stash, clean, or Windows normalization.
+
+### Locked route
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+   [accepted and committed at b71c9bb]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+   [accepted and committed at 885ea7f]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+## Accepted Board Canvas Component Navigator scope and implementation (historical, non-authorizing)
+
+The retained section below preserves the accepted extraction authority and
+implementation contract. Its two-path child is complete at
+`885ea7fbf445e90ff666825eee100fd856a10eb9`; none of its current/next or
+reserved-child wording overrides the live maintenance authority above.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS

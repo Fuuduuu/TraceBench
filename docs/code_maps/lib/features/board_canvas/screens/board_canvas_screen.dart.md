@@ -4,19 +4,21 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibilities`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the Visual First Board Canvas destination: its local responsive rich
 Workbench, selection/navigation, rendering, inspection, UI-local drafts,
 read-only Wizard intake, tri-state freshness presentation, and four existing
-writer call paths. It is the library host for two temporary same-library parts:
-`measurement_projection.part.dart` physically owns deterministic measurement
-read-model declarations, while `wizard_intake_overlay.part.dart` physically
-owns Wizard fit, photo-layer, and painter declarations. Their consumers, all
-mutable state, and all canonical writers remain here; all non-Wizard painters
-also remain host-owned. Project-wide navigation belongs to the outer shared
+writer call paths. It is the library host for three temporary same-library
+parts: `measurement_projection.part.dart` physically owns deterministic
+measurement read-model declarations, `wizard_intake_overlay.part.dart`
+physically owns Wizard fit, photo-layer, and painter declarations, and
+`component_navigator.part.dart` physically owns the private Stateless
+Navigator panel declaration. Their consumers, all mutable state, all callback
+implementations, and all canonical writers remain here; all non-Wizard
+painters also remain host-owned. Project-wide navigation belongs to the outer shared
 Workbench shell; this file starts its local context panel hidden and contains
 no competing Project hub or Project rail action. Source, tests, canonical
 owners, and active locks remain authoritative.
@@ -27,7 +29,7 @@ owners, and active locks remain authoritative.
 | --- | --- | --- |
 | 1. Screen orchestration | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_WorkbenchContextPanelMode`, `_buildScaffold` | Watches project state, defaults the local context mode to `hidden`, derives inputs, and composes the destination. |
 | 2. Typed selection and preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Owns volatile component/placement selection and temporary hover-preview keys. |
-| 3. Component navigator | `_ComponentCategory`, `_componentCategoryFor`, `_naturalComponentIdCompare`, `_ComponentNavigatorPanel` | Categorizes, sorts, groups, drills into, and previews placed/unplaced components. |
+| 3. Component navigator | `_ComponentCategory`, `_componentCategoryFor`, `_naturalComponentIdCompare`, `_ComponentNavigatorPanel` | Owns category helpers, Navigator state/callback implementations, and the panel consumer; the private Stateless panel declaration in `component_navigator.part.dart` categorizes, sorts, groups, drills into, and previews placed/unplaced components. |
 | 4. Visibility filtering and measurement read-model consumption | `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents`, `_CanvasPanel` | Applies hide-unmeasured state to navigator, canvas visibility, targets, hits, previews, and badges; the two pure measurement transforms are physically delegated to `measurement_projection.part.dart`. |
 | 5. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `_appendMeasurementEventAndMarkStale` | Builds drafts/targets, calls the existing measurement writer, and mirrors returned events into stale local projection state. |
 | 6. Component create/edit | `_RightPanelComponentCreationSection`, `_confirmRightPanelComponentCreation`, `_RightPanelMetadataEditSection`, `_confirmRightPanelMetadataEdit` | Validates explicit identity creation and metadata edits before existing writers. |
@@ -43,7 +45,10 @@ owners, and active locks remain authoritative.
 Selection rule: take every backtick-delimited token in the responsibility
 table's Stable symbol anchors column, split comma-separated tokens, trim, and
 de-duplicate in first-appearance order. Every listed literal resolves as an
-exact substring in the committed host. The two Zone 4 measurement transforms
+exact substring in the committed host. `_ComponentNavigatorPanel` resolves as
+the host consumer call while its declaration lives in committed
+`lib/features/board_canvas/widgets/component_navigator.part.dart`. The two
+Zone 4 measurement transforms
 resolve there as host call sites while their declarations live in committed
 `lib/features/board_canvas/logic/measurement_projection.part.dart`. The three
 Zone 9 Wizard type names likewise resolve as host consumer references while
@@ -74,6 +79,10 @@ set to the host.
 - `[D]` Local context mode begins hidden. Explicit rail/selection actions choose
   one retained panel; focus mode hides and restores local chrome without
   changing project-wide navigation.
+- `[D]` Host-owned category, typed-selection, filter, preview-key, and local
+  placement-draft state flow into the delegated Stateless Navigator. Its seven
+  callbacks return only to host-owned transient state implementations; explicit
+  placement save and all canonical writers remain outside the part.
 - `[D]` The rich Board Workbench is selected from its own available width at
   900. Under the outer shell's compact/persistent cutover, routed evidence shows
   the Board remains rich at all locked widths.
@@ -101,6 +110,7 @@ set to the host.
 | `projectStateProvider`, `ProjectState`, `ProjectionFreshness` | input / local projection update | Supplies accepted state/freshness and receives existing post-write result mirroring. |
 | `measurement_projection.part.dart` | same-library deterministic dependency | Owns pure measurement read-model helpers while sharing the host's `MeasurementFact` import; has no separate imports, state, provider, or writer. |
 | `wizard_intake_overlay.part.dart` | same-library rendering dependency | Owns Wizard fit transform, photo layer, and painter while sharing host imports, models, and private visual tokens; has no independent imports, state, provider, or writer. |
+| `component_navigator.part.dart` | same-library presentation/control dependency | Owns the private Stateless panel declaration while sharing host imports, models, helpers, tokens, and seven callback inputs; all mutable state, callback implementations, and writers remain in the host. |
 | `ProjectionStaleBanner` | child presentation | Displays stale/unknown provenance nonblockingly. |
 | BoardFact component, placement, measurement, trace, alignment, and pin models | input | Supplies projected facts for targeting, inspection, badges, and rendering. |
 | `WizardIntake` family | noncanonical input | Supplies optional aspect/photo/contour/candidate presentation without proving canonical facts. |
@@ -125,6 +135,7 @@ set to the host.
 | Wizard gate/photo/fit/painters, inspectors, summaries | `ZERO_WRITE` | `[D]` Read, derive, paint, and label only. |
 | `measurement_projection.part.dart` transforms | `ZERO_WRITE` | `[D]` Pure `MeasurementFact` inputs produce counts, display parts, badge lists/text, and caution booleans without mutation. |
 | `wizard_intake_overlay.part.dart` fit/photo/painter flow | `ZERO_WRITE` | `[D]` Derives geometry and renders local photo/contour/candidate inputs; `Image.file` is read/render input and no mutation path enters the part. |
+| `component_navigator.part.dart` | `UI_LOCAL` | `[D]` Pure grouping/rendering is `ZERO_WRITE`; controls dispatch seven callbacks to host-owned transient category, selection, preview, and local placement-draft state. Canonical placement remains behind the host explicit save writer. |
 
 Canonical event meaning stays writer-owned. This screen does not directly
 mutate `known_facts.json`; visual placement remains separate from identity,
@@ -136,9 +147,12 @@ contacts, pins, measurements, nets, electrical function, and fault truth.
   transient until an explicit existing save path is used.
 - Painters, Wizard intake, inspectors, readiness, safety, and trace summaries
   render accepted inputs only.
-- Both delegated parts are `ZERO_WRITE`. Neither owns provider, callback,
-  mutable state, async action, route mutation, event append, or writer access;
-  the Wizard part's `BuildContext` and `Image.file` uses are presentation-only.
+- The measurement and Wizard parts are `ZERO_WRITE`; the Wizard part's
+  `BuildContext` and `Image.file` uses are presentation-only. The Navigator
+  part's derivation/rendering is `ZERO_WRITE`, while its aggregate classification
+  is `UI_LOCAL` because seven controls dispatch to host-owned transient state.
+  None of the three parts owns a provider, mutable State, event append, project-
+  file mutation, projection mutation, or canonical writer.
 - No top-level project destination metadata or navigation hub remains here.
 
 ## Impact matrix
@@ -146,7 +160,7 @@ contacts, pins, measurements, nets, electrical function, and fault truth.
 | Change zone | Direct evidence | Coupling / risk | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Screen orchestration | `[D]` hidden default and retained local composition | panel/focus reachability | `UI_LOCAL` | hidden-default and focus cases |
-| Navigator/filter/read model | `[D]` host consumers plus delegated pure counts/badges | hits, previews, targets, part helpers | `UI_LOCAL` / `ZERO_WRITE` | navigator/filter families plus direct helper characterizations |
+| Navigator/filter/read model | `[D]` host state/callback consumer plus delegated panel and pure counts/badges | hits, previews, targets, Navigator and measurement part owners | `UI_LOCAL` / `ZERO_WRITE` | navigator/filter families plus direct helper characterizations |
 | Measurement | `[D]` draft/save/result flow | target/filter/freshness | `CANONICAL_EVENT` | integrated Measure family |
 | Component create/edit | `[D]` two guarded writers | selection/local stale mirroring | `CANONICAL_EVENT` | Add/Edit families |
 | Placement | `[D]` draft/ghost/save flow | coordinates/hit/painter geometry | `UI_LOCAL` / `CANONICAL_EVENT` | placement families |
@@ -196,29 +210,27 @@ declarations across these families:
 | --- | --- | --- | --- |
 | One local panel/focus correction | `_WorkbenchToolRail`, focus widgets | shared shell remains external | panel/focus cases |
 | One local responsive correction | `constraints.maxWidth >= 900` | shell 1228/framing | routed six-width Board case |
-| One navigator/filter change | `_ComponentCategory`, `_ComponentNavigatorPanel` | hits, targets, badges | navigator/filter family |
+| One navigator/filter change | `_ComponentCategory`, delegated `_ComponentNavigatorPanel` | host callbacks/state, hits, targets, badges | navigator/filter family |
 | One measurement read-model change | delegated measurement helper anchor | host consumers and measurement writer stay inspect-only | endpoint/count plus direct helper characterizations |
 | One Wizard render correction | delegated fit/photo/painter anchors | host composition, placement hit path, painter-to-EOF structural guard | exact overlay cases + structural source guard |
 | One freshness change | `_buildScaffold` | provider/both branches | warning + integration cases |
 
 ## Future extraction seams
 
-- `[S]` Selection/navigator state, canvas geometry, and each writer-oriented
-  panel remain cohesive but unmeasured extraction candidates. Physical Wizard
-  rendering ownership is already delegated through a temporary part and gains
-  no further extraction authority from this map.
+- `[S]` The three committed same-library parts are temporary structure, not a
+  general extraction convention. Before any fourth part or state/controller
+  extraction, reassess all three together for normal-library conversion,
+  consolidation, intentional APIs, and lifetime/state ownership. This map
+  authorizes none of those changes.
 - `[S]` Local panel/focus chrome could be isolated only without recreating
   project-wide navigation ownership.
-- `[S]` The temporary part may become a normal feature-internal library only
-  through a dedicated pass with intentional API design; this map does not
-  authorize that conversion.
 
 ## Freshness and review triggers
 
 Set `REVIEW_REQUIRED` for symbol, flow, boundary, test, or structure drift.
 Recheck hidden default, retained panel inventory, focus restoration, local 900
 cutover, and absence of Project navigation when local chrome changes. Recheck
-writer/result mirroring, both host/part ownership boundaries,
+writer/result mirroring, all three host/part ownership boundaries,
 selection/filter, geometry, Wizard layers, and freshness scaffold when those
 owners change. Recheck the focused painter-to-EOF source guard whenever the
 Wizard part's declaration order or final declaration changes.

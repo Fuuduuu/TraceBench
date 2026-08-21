@@ -2,10 +2,82 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas Component Navigator extraction queue
+## Current Board Canvas Component Navigator Code Map maintenance queue
+
+The accepted two-path extraction is committed at
+`885ea7fbf445e90ff666825eee100fd856a10eb9`, parent
+`b71c9bb30f6ce468bb4fe9c986a93d1ae6a55aa0`. Queue one Lane A
+`DOCS_MAPS_ONLY / PHASE_1` maintenance pass with exact eight-path material:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` (new)
+8. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No ninth path is queued. Runtime/tests, the Board Canvas test map, every
+unrelated map/index row, Windows substantive bytes, and scratch remain frozen.
+Manual smoke is `NOT_APPLICABLE`; the predecessor's supplied targeted smoke
+`PASS` remains attributed implementation evidence.
+
+Refresh the host map for `STRUCTURE_DRIFT`: it now hosts three temporary parts,
+the private `_ComponentNavigatorPanel` declaration lives physically in the
+Navigator part, and host Navigator State, helpers, callback implementations,
+consumer, and all four canonical writers remain in place. Set only that map
+header and matching index cell to `REVIEW_REQUIRED`.
+
+The committed 656-line Navigator part qualifies automatically because it owns
+five or more independently testable production behaviors. Create its first map
+for mode/selection resolution, category overview/counts/hover, component
+filtering/partition/order, inspector branching, and placement summaries/
+choices. Pure derivation/rendering is `ZERO_WRITE`; aggregate callback dispatch
+is `UI_LOCAL`. The file owns no State, provider, `ref`, writer, event append,
+project-file action, route mutation, or projection mutation. Set its header and
+matching new index row to `REVIEW_REQUIRED`.
+
+The focused test source is byte-identical and its maintained map remains
+materially accurate: `REVIEWED_NO_CHANGE`. It retains 169 declarations, every
+mapped behavior family, and the host-plus-Wizard-part static source guard. Do
+not edit or status-flip it; stop with
+`NEEDS_USER_DECISION_TEST_MAP_UPDATE` if contrary evidence appears.
+
+Phase-1 registry target is 37 maps/37 rows, exactly two `REVIEW_REQUIRED` pairs
+and 35 `MAINTAINED` pairs, with zero duplicate, orphan, unindexed,
+source/type/status mismatch. Add one neutral `REVIEW_REQUIRED` ledger row and
+one uniquely marked empty verdict block; do not claim current acceptance or
+staging safety.
+
+This is the third and final temporary Board Canvas part. No fourth part or
+normal-library/API/state/controller extraction is queued. All three parts need
+a fresh architecture decision before further decomposition.
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_SCOPE_LOCK_PASS
+   [accepted and committed at b71c9bb]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_EXTRACTION_IMPL_PASS
+   [accepted and committed at 885ea7f]
+-> TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor implementation is queued. A clean independent audit may
+authorize exactly six Phase-2 coordinates: verdict interior, this PASS_ID's
+ledger Status, two map Status headers, and two matching index Status cells.
+Map bodies, qualification/evidence metadata, route prose, ledger Description,
+artifact exterior, and every other byte remain frozen. Human exact staging,
+commit, and push remain outside the queue.
+
+## Accepted Board Canvas Component Navigator extraction queue (historical, non-authorizing)
+
+The retained queue below preserves the accepted scope and completed two-path
+child. Its current/next and future-maintenance placeholder wording no longer
+supplies live authority.
 
 The human selects one Lane A docs-only scope at committed baseline
 `e23ad7ccfdf58f72397721a56c935a5d5a078d8e`, replacing the completed Wizard

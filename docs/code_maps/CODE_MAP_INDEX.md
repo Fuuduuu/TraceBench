@@ -11,6 +11,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/app/app.dart` | `docs/code_maps/lib/app/app.dart.md` | production | `MAINTAINED` |
 | `lib/app/router.dart` | `docs/code_maps/lib/app/router.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/logic/measurement_projection.part.dart` | `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md` | production | `MAINTAINED` |
+| `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` | `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/screens/board_canvas_screen.dart` | `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_graph/screens/board_graph_screen.dart` | `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/edit_component_screen.dart` | `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md` | production | `MAINTAINED` |

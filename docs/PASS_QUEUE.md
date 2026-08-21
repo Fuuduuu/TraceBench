@@ -2,10 +2,70 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas Wizard intake overlay extraction scope queue
+## Current Board Canvas Wizard intake overlay Code Map maintenance queue
+
+The exact three-path extraction child is accepted and committed at
+`796e644d49c51be6dde99e9ef774ea675faca6d2`, parent
+`ad6325b383cbcc7bf8307df1ba9a7c72c95daa48`, subject
+`refactor: extract board canvas wizard intake overlay`. Queue one Lane A
+`DOCS_MAPS_ONLY / PHASE_1` maintenance pass with exact nine-path material set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is queued. Runtime/tests, both committed Board Canvas parts, and
+every unrelated map/index row stay frozen. Manual smoke is `NOT_APPLICABLE`;
+the accepted implementation's targeted visual-smoke `PASS` remains attributed
+predecessor evidence.
+
+Refresh the host map for its two part directives, physical delegation of the
+three Wizard fit/photo/painter declarations, unchanged host consumers/state/
+controls/non-Wizard painters and four writers, and the second same-library
+`ZERO_WRITE` dependency (`STRUCTURE_DRIFT`). Refresh the focused-test map for
+the existing boundary test's host-plus-Wizard-part reads and painter-to-EOF
+slice without changing the `169 = 155 testWidgets + 14 test` inventory or any
+unrelated test family (`TEST_DRIFT / STRUCTURAL_SOURCE_OWNER_RETARGET`).
+
+The committed 311-line Wizard part automatically qualifies under the
+Standard's five-plus independently testable production-behavior rule. Create
+its first map for fit/reference geometry, photo overlay rendering, contour
+rendering, candidate geometry/rendering, and repaint/read-only presentation.
+The part is fully `ZERO_WRITE`; its model, import, and private-token access
+comes through the host library, and it owns no mutable state, provider, writer,
+route, async action, filesystem write, event append, or projection mutation.
+
+Phase-1 registry target is 36 maps/36 rows with the three affected/new
+header/index pairs `REVIEW_REQUIRED`, 33 unchanged `MAINTAINED` pairs, and zero
+duplicate, orphan, unindexed, source-path, type, or status mismatch. Add one
+neutral `REVIEW_REQUIRED` ledger row and one uniquely marked empty verdict
+block. No current-pass acceptance or staging-safety claim is queued.
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+   [accepted and committed at 796e644d]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Component Navigator, Inspector/Summary, painter, controller/state, third
+part, normal-library conversion, later Board Canvas pass, cleanup, or product
+successor is queued. After clean independent pass and per-map audits, bounded
+Phase 2 may change only the verdict interior, this pass's ledger Status, three
+map Status headers, and three matching index Status cells. Human exact staging,
+commit, and push remain outside this queue.
+
+## Accepted Board Canvas Wizard intake overlay extraction queue (historical, non-authorizing)
 
 The completed measurement read-model Code Map maintenance is accepted and
 committed at `067420bec56dd9eba00f14ea70a88a4849f1e2ad`. The human decision

@@ -1,9 +1,84 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Board Canvas Wizard intake overlay extraction scope
+## Live Board Canvas Wizard intake overlay committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+796e644d49c51be6dde99e9ef774ea675faca6d2`, parent
+`ad6325b383cbcc7bf8307df1ba9a7c72c95daa48`, subject
+`refactor: extract board canvas wizard intake overlay`, divergence `0 0`, with
+empty cached/unmerged sets at pre-write verification. Short status contains
+only the three known generated-plugin Windows EOL/stat entries and preserved
+untracked `TraceBench_ALL_CODE.txt`; substantive Windows numstat is empty.
+
+The accepted implementation commit changes exactly the Board Canvas host, new
+`wizard_intake_overlay.part.dart`, and focused Board Canvas suite. It moves the
+exact 309-line `_WizardIntakeFitTransform` through `_WizardIntakePainter`
+payload behavior-identically into a 311-line second temporary same-library
+part. The committed blobs are host `7e5bab4d23afd6a7e5afadb68ab72c56b31552a8`,
+Wizard part `b7ac625a07bfd0cdb2939bd384722e51fbe5ac87`, and test
+`74e098a7d6333db83ad180f1adc3f2c026b72323`; the existing measurement part
+remains `2bd771c086cf7715c3d60b8119219d31b305a078`.
+
+Accepted predecessor evidence records implementation audit `PASS`, boundary
+`PASS`, targeted five-point visual smoke `PASS`, focused Board Canvas
+`169/169`, full Flutter `642/642`, Python `314/314`, analyzer zero
+warnings/errors with the same three infos, exactly four expected optional-photo
+warnings, unchanged three state owners, and four canonical writer sites before
+and after. Those are attributed predecessor facts, not a verdict or staging
+claim for this Phase-1 diff.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` pass changes exactly the three route
+owners, `docs/AUDIT_INDEX.md`, `docs/code_maps/CODE_MAP_INDEX.md`, the two
+existing Board Canvas maps, one new Wizard-part map, and one new audit
+artifact. It refreshes the host map for `STRUCTURE_DRIFT`, refreshes the test
+map for `TEST_DRIFT / STRUCTURAL_SOURCE_OWNER_RETARGET`, and creates the first
+map for `wizard_intake_overlay.part.dart`.
+
+The committed Wizard part qualifies automatically under the Code Map
+Standard's five-plus independently testable production-behavior rule. Its five
+mapped zones are fit/reference geometry, photo overlay rendering, contour
+rendering, candidate geometry/rendering, and repaint/read-only presentation.
+The complete part is `ZERO_WRITE`; host state, scheduling, controls, placement
+composition, all non-Wizard painters, providers, and all four writers remain
+outside it.
+
+The registry moves from 35 maps/35 rows, all maintained, to 36 maps/36 rows:
+three `REVIEW_REQUIRED` pairs, 33 unchanged `MAINTAINED` pairs, and zero
+duplicate, orphan, unindexed, source-path, type, or status mismatch. The
+focused-test map retains `169 = 155 testWidgets + 14 test` and records that
+`board canvas source keeps read-only data-path boundaries` now reads the host
+plus Wizard part; its `_WizardIntakePainter` slice intentionally runs through
+EOF because the painter is currently the part's final declaration.
+
+Runtime/tests, both committed parts, state/provider/writer ownership,
+rendering/geometry/interaction/routes, canonical event/fact/evidence/freshness/
+Project ZIP semantics, unrelated maps/index rows, packages/assets/schemas/
+tools/platform content, Windows substantive bytes, and scratch are frozen.
+Manual smoke is `NOT_APPLICABLE`; the predecessor targeted visual-smoke result
+is durable attributed evidence and is not rerun.
+
+The current route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+   [accepted and committed at 796e644d]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor implementation is armed. A clean independent audit may later
+authorize exactly eight mechanical Phase-2 coordinates: the designated
+verdict interior, this pass's ledger Status, three map Status headers, and the
+three matching index Status cells. Every map body and metadata field, route
+byte, ledger Description, artifact exterior, and other repository byte remains
+frozen during that recording.
+
+## Accepted Board Canvas Wizard intake overlay extraction scope (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

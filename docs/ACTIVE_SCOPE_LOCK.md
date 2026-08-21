@@ -2,10 +2,202 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas Wizard intake overlay extraction scope authority
+## Current Board Canvas Wizard intake overlay committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 796e644d49c51be6dde99e9ef774ea675faca6d2
+Predecessor: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted implementation is committed at the verified baseline, parent
+`ad6325b383cbcc7bf8307df1ba9a7c72c95daa48`, subject
+`refactor: extract board canvas wizard intake overlay`. It changes exactly the
+Board Canvas host, one new same-library Wizard rendering part, and the focused
+Board Canvas suite. This Phase 1 describes accepted committed source; it
+changes no Dart, test, runtime, product, or protected behavior.
+
+### Exact current Phase-1 write allowlist -- 9
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is authorized. Every runtime/test path, unrelated map/index row,
+Code Map Standard, package, asset, schema, tool, generated/platform byte,
+Windows substantive byte, and scratch byte remains outside this pass.
+
+### Accepted committed implementation evidence
+
+Commit `796e644d49c51be6dde99e9ef774ea675faca6d2` has exactly:
+
+1. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` (new)
+2. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+3. `test/widget/board_canvas_screen_test.dart`
+
+Committed object closure:
+
+- host: `7e5bab4d23afd6a7e5afadb68ab72c56b31552a8`;
+- Wizard part: `b7ac625a07bfd0cdb2939bd384722e51fbe5ac87`;
+- focused test: `74e098a7d6333db83ad180f1adc3f2c026b72323`;
+- unchanged measurement part:
+  `2bd771c086cf7715c3d60b8119219d31b305a078`.
+
+The host adds only the second part directive and removes the exact 309-line
+three-declaration band. The new part is 311 lines: one `part of` directive, one
+blank line, and the behavior-identical payload with normalized SHA-256
+`d098c0b3491ece054c1e5e97ebfd21d27e79a79ad1ce02e362b5cc7582b2f6e8`.
+The focused suite retains `169 = 155 testWidgets + 14 test`; only the existing
+candidate-rotation structural source guard changes physical owner.
+
+Accepted predecessor evidence records implementation audit `PASS`, boundary
+`PASS`, targeted five-point visual smoke `PASS`, focused `169/169`, full
+Flutter `642/642`, Python `314/314`, analyzer zero warnings/errors with the
+same three infos, and exactly four expected optional-photo warnings. These are
+attributed predecessor facts, not this Phase-1 pass's verdict or staging claim.
+
+### Committed-source qualification and map dispositions
+
+The Code Map Standard's automatic condition 3 applies: the production Wizard
+part owns five or more independently testable behaviors. Committed source owns
+at least these six distinct observable contracts:
+
+1. contour/reference-frame bounds, padding, scale fallback, and centered fit;
+2. point, rendered-contour, and normalized-frame mapping;
+3. local-photo translation, scale, rotation, opacity, clipping, and neutral
+   decode fallback;
+4. eligible closed-contour fill/stroke rendering;
+5. candidate center, shape, size, non-circle rotation, outline, and cross
+   rendering; and
+6. read-only/repaint-decision behavior.
+
+The part is a rendering/read-model owner, not a small cohesive adapter.
+Therefore `MAP_REQUIRED` is reproduced from accepted committed source.
+
+Exact map work:
+
+- host map: `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`; record two part
+  directives, physically delegated Wizard fit/photo/painter declarations,
+  unchanged host consumers, `_CanvasPanelState`, all non-Wizard painters, and
+  all four canonical writer paths;
+- focused-test map: `UPDATE_REQUIRED` for
+  `TEST_DRIFT / STRUCTURAL_SOURCE_OWNER_RETARGET`; retain all 169 declarations
+  and unrelated families while recording the host-plus-Wizard-part static
+  source reads; and
+- Wizard-part map: `MAP_REQUIRED`; create five compact zones for fit/reference
+  geometry, photo overlay, contour rendering, candidate geometry/rendering,
+  and repaint/read-only presentation.
+
+All three changed/new map headers and their matching index cells are
+`REVIEW_REQUIRED` in Phase 1. No other map or index row changes.
+
+### EOF-slice coupling and temporary-part governance
+
+The existing `board canvas source keeps read-only data-path boundaries` test
+reads `wizard_intake_overlay.part.dart`, finds
+`class _WizardIntakePainter`, and slices from that declaration through EOF for
+the unchanged `candidate.rotationRadians` and `canvas.rotate(rotation);`
+assertions. `_WizardIntakePainter` is currently the final declaration. Adding
+a later declaration can broaden the slice; moving or reordering the painter
+requires test/map review. This is structural test sensitivity, not product
+behavior authority or a product bug.
+
+This is the second temporary Board Canvas same-library part beside
+`measurement_projection.part.dart`. Neither part establishes a general
+decomposition convention. This map maintenance authorizes no third part,
+normal-library conversion, public/private API redesign, or state/controller
+movement. Both temporary parts require a later dedicated architectural
+reassessment before any state/controller extraction.
+
+### Registry, frozen boundaries, and Phase-1 state
+
+Committed baseline registry is 35 map files and 35 index rows, all
+`MAINTAINED`. Phase-1 target is:
+
+```text
+maps: 36
+index rows: 36
+MAINTAINED map headers/index cells: 33 / 33
+REVIEW_REQUIRED map headers/index cells: 3 / 3
+duplicate source paths: 0
+duplicate map paths: 0
+orphan maps: 0
+unindexed maps: 0
+source-path mismatch: 0
+type mismatch: 0
+status mismatch: 0
+```
+
+The entire new part is `ZERO_WRITE`. It owns no State, provider, `ref`,
+writer, event append, projection mutation, route mutation, async action,
+callback, or filesystem write. `BuildContext` and `Image.file` are local
+presentation/read inputs. Host Wizard state, visibility controls, initial-fit
+scheduling, layer composition, placement interaction, and every canonical
+writer remain host-owned.
+
+All Dart/test bytes, the accepted implementation, both part payloads, state
+owners/lifetimes, providers, four writers, widgets, non-Wizard painters,
+rendering/geometry/hit-testing, routes, canonical events/facts/evidence/
+freshness/Project ZIP, unrelated maps/index rows, packages/assets/schemas/
+tools/generated/platform bytes, Windows substantive bytes, and
+`TraceBench_ALL_CODE.txt` are frozen. Manual smoke is `NOT_APPLICABLE`; do not
+rerun the accepted predecessor's targeted visual smoke.
+
+Phase 1 creates exactly one neutral `REVIEW_REQUIRED` ledger row and one
+unique empty designated verdict block. It makes no current audit, acceptance,
+staging, commit, or push claim.
+
+### Route, bounded Phase 2, and stops
+
+```text
+TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+   [accepted and committed at 796e644d]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor implementation is armed. No Component Navigator,
+Inspector/Summary, painter, controller/state, third part, normal-library
+conversion, later Board Canvas pass, cleanup, or product route is selected.
+
+After clean independent pass and per-map audits, bounded Phase 2 may change
+exactly eight logical coordinates:
+
+1. the designated verdict-block interior;
+2. this PASS_ID's `docs/AUDIT_INDEX.md` Status cell;
+3. the host map Status header;
+4. the focused-test map Status header;
+5. the Wizard-part map Status header;
+6. the matching host index Status cell;
+7. the matching focused-test index Status cell; and
+8. the matching Wizard-part index Status cell.
+
+The only clean map/index promotion is `REVIEW_REQUIRED -> MAINTAINED`.
+Map bodies and Qualification/Source/Type/Audit-evidence fields, index row
+exteriors, ledger Description, route prose, artifact exterior, and every
+other byte remain frozen. Human staging, commit, and push remain outside this
+authority.
+
+Stop on baseline/route disagreement; a tenth path; committed object or
+three-path closure mismatch; qualification conflict; stale or unresolved
+anchors; registry mismatch; host state/writer/painter ownership drift;
+EOF-slice misstatement; third-part/API/controller/product/protected-boundary
+expansion; required excluded cleanup; or scope-relevant validation failure.
+
+## Accepted Board Canvas Wizard intake overlay extraction scope authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS

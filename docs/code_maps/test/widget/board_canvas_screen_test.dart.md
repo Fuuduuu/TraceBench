@@ -4,7 +4,7 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -12,10 +12,12 @@ This 169-declaration Board Canvas widget-test owner supplies explicit-fresh
 fixtures, direct/production-router harnesses, writer doubles, interaction and
 painter assertions, read-only Wizard overlay coverage, local panel/focus
 evidence, direct deterministic measurement read-model characterization, and a
-routed six-width responsive contract. Project-wide destination inventory and
-navigation belong to the shared-shell suite; this file proves the Canvas
-remains rich across that shell cutover and has no competing local Project hub
-or rail control.
+routed six-width responsive contract. Its existing static boundary test now
+reads both the Board Canvas host and the Wizard overlay part, with only the
+candidate-rotation painter slice physically retargeted. Project-wide
+destination inventory and navigation belong to the shared-shell suite; this
+file proves the Canvas remains rich across that shell cutover and has no
+competing local Project hub or rail control.
 
 ## Qualification
 
@@ -35,7 +37,7 @@ derived from stable helpers, doubles, and exact test names.
 | 5. Component create and edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guarded identity creation/edit requests, errors, returned events, and idempotency. |
 | 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey` | Exercises template selection, local drafts, ghost movement, normalized bounds, explicit save, and results. |
 | 7. Canvas interaction, Wizard fit, and geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake` | Verifies pan/zoom, hit selection, aspect mapping, fallback, padding, one initial fit, alignment, and badges. |
-| 8. Painter, overlay, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels` | Inspects composite order/pixels, read-only Wizard geometry, rotation, footprint/pin rendering, cues, semantics, and fallbacks. |
+| 8. Painter, overlay, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels` | Inspects composite order/pixels, read-only Wizard geometry, rotation, footprint/pin rendering, cues, semantics, fallbacks, and the retargeted Wizard-painter source owner. |
 | 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Verifies projected inspector content, readiness/safety wording, measurements, and visual-trace metadata. |
 | 10. Local panels, focus, and routed responsive layout | `routed Board Canvas stays rich across the shell cutover`, `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `board_canvas_project_navigation_hub` | Proves exact six-width shell modes, continuous rich Canvas, hidden default, retained panels/focus, and absence of local Project navigation. |
 | 11. Volatility and protected-boundary guards | `selection state is volatile in memory only`, `events.jsonl`, `event_writer_service.py` | Asserts volatile-only state, unchanged provider/files, empty unintended writer requests, and static source boundaries. |
@@ -81,6 +83,10 @@ focus hide/restore without events or freshness changes.
   focus hide/restore.
 - `[D]` Wizard/painter helpers inspect accepted presentation input and composite
   output without creating canonical data.
+- `[D]` `board canvas source keeps read-only data-path boundaries` retains its
+  host-source assertions, separately reads `wizard_intake_overlay.part.dart`,
+  and slices from `class _WizardIntakePainter` through EOF for the unchanged
+  candidate-rotation assertions.
 - `[D]` Direct `test` declarations characterize pure endpoint/count helpers,
   lexical distinct-nonblank-ID ordering with equal/empty-ID index fallback,
   scalar/unit eligibility, exact value-unit text, and validity caution without
@@ -93,6 +99,7 @@ focus hide/restore without events or freshness changes.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `BoardCanvasScreen` and production map | system under test / map input | Supplies destination behavior and local responsibilities. |
+| `wizard_intake_overlay.part.dart` and production map | direct source-read / map input | Supplies the physically moved Wizard fit/photo/painter declarations and the painter-to-EOF structural slice. |
 | `WorkbenchShell` | routed outer composition | Supplies compact/persistent project navigation without entering Board source. |
 | `projectStateProvider`, `ProviderScope`, `ProjectState` | fixture / observation | Injects state and proves responsive/provider invariance or post-write mirroring. |
 | `buildTraceBenchRouter`, `GoRouter`, `MaterialApp.router` | routed harness | Verifies canonical entry, alias, Measure Sheet, and shared-shell composition. |
@@ -100,7 +107,7 @@ focus hide/restore without events or freshness changes.
 | BoardFact models and `TraceBenchEvent` | fixture/assertion input | Build projected facts and returned events. |
 | `WizardIntake` family | fixture/assertion input | Builds optional aspect/photo/contour/problem/candidate presentation. |
 | Flutter widget, gesture, semantics, painter APIs | driver/observation | Controls viewports/input/rendering/semantics/private painter state. |
-| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write and static source guards. |
+| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write fixtures plus separate host and Wizard-part static source guards. |
 
 ## Write and protected boundaries
 
@@ -112,7 +119,7 @@ focus hide/restore without events or freshness changes.
 | Shared-shell responsive navigation observation | `ZERO_WRITE` | `[D]` Route/layout changes retain provider identity and rich Canvas state. |
 | Wizard gate/photo/fit/composite/candidate taps | `ZERO_WRITE` | `[D]` Intake/facts/events and four fake lists remain unchanged. |
 | Temp directory setup/teardown | `NONCANONICAL_FILE` | `[D]` Harness-only and outside product persistence. |
-| Production source string read | `ZERO_WRITE` | `[D]` Reads and does not modify source. |
+| Production source string reads | `ZERO_WRITE` | `[D]` Read the host and Wizard part without modifying either; only the painter slice changed physical owner. |
 
 Canonical event meaning, writer implementation, schemas, Project ZIP,
 materialization, coordinates, electrical meaning, and evidence promotion stay
@@ -136,7 +143,7 @@ owned by their production/canonical owners.
 | Navigator/filter | `[D]` helpers/painter observations | targets, geometry, responsive | `UI_LOCAL` | exact family + full target |
 | Measurement read model | `[D]` endpoint/count tests plus four direct helper characterizations | part implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
 | Writers | `[D]` four fakes/results | selection/provider/freshness | exercised `CANONICAL_EVENT` | exact writer family + full target |
-| Canvas/Wizard | `[D]` transforms/pixels/painter state | z-order/hits/semantics | `UI_LOCAL` / `ZERO_WRITE` | exact geometry/render cases |
+| Canvas/Wizard | `[D]` transforms/pixels/painter state plus retargeted source guard | z-order/hits/semantics and final-declaration coupling | `UI_LOCAL` / `ZERO_WRITE` | exact geometry/render cases + structural boundary declaration |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | exact family + full target |
 | Freshness/boundaries | `[D]` explicit states/source guards | cross-cutting | `ZERO_WRITE` / observed projection | full target + integration |
 
@@ -147,7 +154,7 @@ owned by their production/canonical owners.
 | Shared shell / local responsive | `_routerHarness`, routed six-width case | Compact/persistent cutover, rich Canvas continuity, provider identity. |
 | Local panels/focus | `_openWideContextMode`, `_tapWidgetByKey` | Hidden default, five retained tools, panel mode and focus restoration, no local Project hub. |
 | State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_readProjectState` | No-project/project shell, provider, and projection assertions. |
-| Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor` | Gate, fit, z-order, photo, rotation, footprints/pins. |
+| Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor`, `board canvas source keeps read-only data-path boundaries` | Gate, fit, z-order, photo, rotation, footprints/pins, and exact source-owner retarget. |
 | Interaction | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels` | Selection, hover, filter, hit alignment, semantics. |
 | Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Existing endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
 | Writer boundaries | Four fake writers and event builders | Explicit saves, guards, errors, idempotency, returned events, stale state. |
@@ -166,6 +173,9 @@ owned by their production/canonical owners.
 - Pure measurement helper expectations must not be combined with writer/event
   semantic changes; the direct declarations prove `ZERO_WRITE` read-model
   behavior only.
+- The Wizard source guard currently slices from `_WizardIntakePainter` to EOF.
+  Adding any later declaration can broaden that structural assertion surface;
+  moving or reordering the painter requires review of the same test.
 
 ## Safe SNIPER slices
 
@@ -173,7 +183,7 @@ owned by their production/canonical owners.
 | --- | --- | --- | --- |
 | Shell cutover vs Board layout | routed six-width case | shell source/test and Board 900 cutover | exact routed case + both focused suites |
 | One local panel/focus behavior | `_openWideContextMode`, matching test | shared navigation absence | hidden/focus/panel cases |
-| One Wizard render assertion | painter/photo/pixel helpers | fixtures/z-order/hit path | exact overlay cases + full target |
+| One Wizard render assertion | painter/photo/pixel helpers or exact source guard | fixtures/z-order/hit path and part declaration order | exact overlay cases or structural declaration + full target |
 | One writer assertion | corresponding fake writer | selection/result/freshness | exact writer family |
 | One measurement read-model assertion | exact helper/test title | host consumers and writer family | direct helper declarations |
 | One freshness assertion | explicit freshness fixture | scaffold/provider/integration | exact warning case + full target |
@@ -188,17 +198,21 @@ owned by their production/canonical owners.
 ## Freshness and review triggers
 
 Set `REVIEW_REQUIRED` for helper/title, harness/provider/route,
-writer/filesystem, linked-family, or family-ownership drift. Recheck exact test
-count (`169 = 155 testWidgets + 14 test`), the four direct measurement helper
-contracts, all six widths, shell/Board keys, hidden default, five retained
-local tools, focus restoration, and negative Project hub/rail evidence after
-related changes. Formatting, comments, imports, and line movement alone do
-not stale the map.
+writer/filesystem, linked-family, source-read ownership, or family-ownership
+drift. Recheck exact test count (`169 = 155 testWidgets + 14 test`), the four
+direct measurement helper contracts, all six widths, shell/Board keys, hidden
+default, five retained local tools, focus restoration, and negative Project
+hub/rail evidence after related changes. Recheck the painter-to-EOF slice if
+the Wizard part's painter ceases to be its final declaration. Formatting,
+comments, imports, and line movement alone do not stale the map.
 
 ## Known uncertainty
 
 - `[D]` Families are analytical; source has no owning `group()` hierarchy.
 - `[P]` Dynamic private-painter inspection is more structure-sensitive than
   public behavior.
+- `[D]` `_WizardIntakePainter` is currently the final Wizard-part declaration;
+  the EOF slice is deliberate structural coupling, not product behavior
+  authority or a product bug.
 - `[S]` Routed shell coverage does not transfer shell metadata ownership into
   this destination test owner.

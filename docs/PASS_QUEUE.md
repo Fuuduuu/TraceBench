@@ -2,10 +2,105 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
 
-## Current Board Canvas measurement read-model committed-source Code Map maintenance queue
+## Current Board Canvas Wizard intake overlay extraction scope queue
+
+The completed measurement read-model Code Map maintenance is accepted and
+committed at `067420bec56dd9eba00f14ea70a88a4849f1e2ad`. The human decision
+replaces its non-executable sentinel with one Lane A
+`SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass whose exact material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is queued. Add one neutral `REVIEW_REQUIRED` ledger row
+and one uniquely marked empty verdict block. Scope manual smoke is
+`NOT_APPLICABLE`; Dart/tests/maps/index and every other byte remain frozen.
+
+After independent scope acceptance, explicitly authorized Phase-2 recording,
+and human exact commit/push, queue exactly one child:
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+Validation: TARGETED_VISUAL_SMOKE_REQUIRED
+```
+
+Exact future child write allowlist -- 3:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path is queued. The child adds one new host part directive, moves
+once the exact 309-line three-declaration band from
+`_WizardIntakeFitTransform` through `_WizardIntakePainter`, and creates the new
+part with only its `part of` directive plus the behavior-identical payload.
+`_CanvasPanelState` and `_BoardCanvasSafetyEvidenceDisclosure` stay in the
+host. Private names, signatures, declarations, bodies, consumers, geometry,
+and behavior remain unchanged.
+
+The existing test `board canvas source keeps read-only data-path boundaries`
+is the third path only because its direct candidate-rotation source guard must
+follow `_WizardIntakePainter` to the new physical owner. Classify the edit as
+`STRUCTURAL_SOURCE_OWNER_RETARGET`: retain the host read for host evidence,
+read the new part for the painter slice, preserve
+`candidate.rotationRadians` and `canvas.rotate(rotation);`, and change no
+unrelated assertion. Add no test declaration; keep
+`169 = 155 testWidgets + 14 test`.
+
+Before production movement, capture and pass the exact structural test at
+baseline. After movement, run the mechanically retargeted test independently
+and the complete Board Canvas suite. No red-first product-behavior checkpoint
+is queued because no behavior is new. A test failure cannot expand product or
+rendering authority.
+
+This creates the second temporary Board Canvas migration part beside the
+byte-frozen `measurement_projection.part.dart`. No third part is queued. Both
+parts require reassessment before state/controller extraction; normal-library
+conversion and API design require a later dedicated human route.
+
+State owners, fields and lifecycle, four canonical writer sites, providers,
+routes, callbacks, fit/photo/painter calculations, clipping, z-order, pointer
+and semantics behavior, placement interaction, Canvas transforms, Wizard
+scheduling/controls, canonical events/facts/evidence/freshness/Project ZIP,
+and every unrelated source/test remain frozen. No cleanup, optimization,
+polish, or geometry correction is queued.
+
+The child runs the exact structural test, focused suite, both analyzer forms,
+full Flutter tests, Python validators, exact-three-path formatter checks,
+static band/part/neighbor/duplicate/state/writer closure, diff/status checks,
+and empty Windows substantive numstat. Targeted human smoke covers the fitted
+contour/candidates, photo transforms, canonical placement layering and
+interaction, fit/reset and Wizard controls, and zero overlay writes.
+
+The two current maps remain `MAINTAINED` and no map/index path is queued now.
+After accepted committed child source, queue a separate Code Map maintenance
+decision/pass: host `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`, test
+`UPDATE_REQUIRED` for the source-owner retarget, and new-part requalification
+without a predetermined map outcome.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 067420bec]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+-> [accepted committed-source Code Map maintenance decision/pass]
+-> NEEDS_USER_DECISION
+```
+
+No Component Navigator, Inspector/Summary, painter, controller, state, or later
+decomposition pass is queued. After clean independent scope audit, Phase 2 may
+change only the verdict interior and this pass's ledger Status cell. Human
+staging, commit, and push remain outside this queue.
+
+## Accepted Board Canvas measurement read-model committed-source Code Map maintenance queue (historical, non-authorizing)
 
 The exact three-path extraction child is accepted and committed at
 `43051ce4bb8bc9b1199b6a8ae76c22795766487b`, parent

@@ -1,9 +1,95 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
 
-## Live Board Canvas measurement read-model committed-source Code Map maintenance
+## Live Board Canvas Wizard intake overlay extraction scope
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+067420bec56dd9eba00f14ea70a88a4849f1e2ad`, subject
+`docs: refresh board canvas measurement read model code maps`, divergence
+`0 0`, with empty cached/unmerged sets at pre-write verification. Short status
+contains only the three known generated-plugin Windows EOL/stat entries and
+preserved untracked `TraceBench_ALL_CODE.txt`; substantive Windows numstat is
+empty.
+
+The human decision replaces the predecessor's non-executable
+`NEEDS_USER_DECISION` sentinel with one Lane A
+`TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS` and
+exactly one reserved implementation child. This docs-only Phase 1 changes only
+the three route owners, `docs/AUDIT_INDEX.md`, and its new audit artifact. It
+changes no Dart, test, map/index, runtime, product, protected, platform,
+Windows substantive, or scratch byte.
+
+Committed host blob `91590cafe2f8bc83ad2c6b22a855f1ac808dcdd1`
+contains the exact three-declaration Wizard rendering band from
+`_WizardIntakeFitTransform` through `_WizardIntakePainter`, including the
+leading `@immutable` annotation. The band is 309 physical lines under the
+recorded method and has normalized SHA-256
+`d098c0b3491ece054c1e5e97ebfd21d27e79a79ad1ce02e362b5cc7582b2f6e8`.
+`_CanvasPanelState` precedes it and `_BoardCanvasSafetyEvidenceDisclosure`
+follows it; both remain host-owned. The band is rendering-only `ZERO_WRITE`.
+
+The reserved child is:
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+```
+
+Its exact three-path future allowlist is:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+The host adds one second part directive and loses only the exact band; the new
+part contains only its `part of` directive and that band. Existing
+`measurement_projection.part.dart` is byte-frozen. This is the second temporary
+same-library migration part; no third part, public API, normal-library
+conversion, or state/controller extraction is authorized.
+
+The third path is a human-authorized `STRUCTURAL_SOURCE_OWNER_RETARGET` in the
+existing `board canvas source keeps read-only data-path boundaries` test. Its
+candidate-rotation source assertion follows `_WizardIntakePainter` from the
+host into the new part without changing the test name, declaration, semantics,
+or any unrelated expectation. The suite remains exactly
+`169 = 155 testWidgets + 14 test`, delta zero. The child must prove the exact
+test at baseline, retarget only its physical owner, rerun it independently,
+and then run the full focused suite.
+
+All three State owners and every field/lifecycle remain in the host. The four
+canonical writer provider invocations remain exactly four, delta zero. Fit,
+photo, contour/candidate painter behavior, z-order, pointers, semantics,
+placement interaction, Canvas transform, Wizard scheduling/controls, routes,
+providers, writers, facts/events/evidence/freshness, and Project ZIP remain
+frozen. Child acceptance requires `TARGETED_VISUAL_SMOKE_REQUIRED` in addition
+to the complete automated contract.
+
+The current source and test maps and all 35 registry pairs are `MAINTAINED` and
+unchanged now. After accepted committed implementation, the source map is
+`UPDATE_REQUIRED` for `STRUCTURE_DRIFT`, the test map is `UPDATE_REQUIRED` for
+the source-owner retarget, and the new part is requalified from committed
+source. No map/index edit belongs to this scope or implementation child.
+
+The route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 067420bec]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+-> [accepted committed-source Code Map maintenance decision/pass]
+-> NEEDS_USER_DECISION
+```
+
+The scope creates one neutral `REVIEW_REQUIRED` ledger row and one empty
+designated verdict block. It makes no implementation, audit, acceptance,
+staging, commit, or push claim. No later Board Canvas decomposition is armed.
+
+## Accepted Board Canvas measurement read-model committed-source Code Map maintenance (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

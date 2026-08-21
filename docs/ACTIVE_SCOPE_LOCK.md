@@ -2,10 +2,205 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS`
 
-## Current Board Canvas measurement read-model committed-source Code Map maintenance authority
+## Current Board Canvas Wizard intake overlay extraction scope authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 067420bec56dd9eba00f14ea70a88a4849f1e2ad
+Reserved child: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child validation class: TARGETED_VISUAL_SMOKE_REQUIRED
+```
+
+The human decision replaces the completed predecessor's non-executable
+`NEEDS_USER_DECISION` sentinel with this docs-only scope and exactly one
+structural implementation child. The accepted Board Canvas measurement
+read-model Code Map maintenance is committed at the verified baseline. This
+Phase 1 changes no Dart, test, Code Map, index, runtime, product, protected,
+package, asset, schema, tool, platform, Windows substantive, or scratch byte.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth path is authorized. The known Windows generated-plugin EOL/stat
+residue and untracked `TraceBench_ALL_CODE.txt` are preserved outside the
+material set. Phase 1 records one neutral `REVIEW_REQUIRED` ledger row and one
+uniquely marked empty verdict block; it makes no audit, acceptance, staging,
+commit, or push claim.
+
+### Exact committed Wizard rendering seam
+
+Both applicable Board Canvas maps and all 35 registry pairs are `MAINTAINED`.
+Committed source blob `91590cafe2f8bc83ad2c6b22a855f1ac808dcdd1`
+contains one contiguous 309-physical-line declaration band, counting the
+leading `@immutable` annotation through the final painter brace:
+
+1. `_WizardIntakeFitTransform`
+2. `_WizardIntakePhotoLayer`
+3. `_WizardIntakePainter`
+
+The normalized payload is UTF-8 without BOM, LF endings, and exactly one
+terminal LF; its SHA-256 is
+`d098c0b3491ece054c1e5e97ebfd21d27e79a79ad1ce02e362b5cc7582b2f6e8`.
+The immediate preceding owner is `_CanvasPanelState`; the immediate following
+declaration is `_BoardCanvasSafetyEvidenceDisclosure`. Both remain in the
+host. Line numbers are baseline evidence only, never durable closure anchors.
+
+The band depends only on shared host-library `dart:io`, `dart:math`, Flutter
+geometry/widget/painting APIs, read-only Wizard intake models, its own moved
+fit type, and the private Board Canvas visual constants
+`_kBoardCanvasPaper`, `_kBoardCanvasMuted`, `_kBoardCanvasSignal`,
+`_kBoardCanvasNavy`, and `_kBoardCanvasSignalTint`. It contains no provider,
+`ref`, State owner, `setState`, writer, event append, projection mutation,
+route, async action, callback redesign, or filesystem write. `Image.file` is a
+read/render input. Write class is `ZERO_WRITE`.
+
+### Exact reserved implementation -- 3 paths
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+Lane: A
+Mode: FLUTTER_PASS / STRUCTURAL_EXTRACTION / ZERO_WRITE
+```
+
+Exact future implementation write allowlist:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path is reserved. The child activates only after independent scope
+acceptance, explicitly authorized bounded verdict recording, and human exact
+commit/push of the accepted five-path scope material. Any required fourth path
+stops with `BLOCKED_ALLOWLIST_MISMATCH`.
+
+The host diff may add only
+`part '../rendering/wizard_intake_overlay.part.dart';` and remove the exact
+locked band once. The new file may contain only
+`part of '../screens/board_canvas_screen.dart';`, a separating blank line, and
+the exact moved band. No declaration is duplicated, renamed, redesigned, made
+public, or reordered. The existing
+`lib/features/board_canvas/logic/measurement_projection.part.dart` remains
+byte-identical.
+
+### Human-authorized structural test-owner retarget
+
+The existing test `board canvas source keeps read-only data-path boundaries`
+currently reads the host and locates `_WizardIntakePainter` before
+`_BoardCanvasSafetyEvidenceDisclosure`. The ownership move makes only that
+physical assumption stale. The child may minimally make that existing test
+read `wizard_intake_overlay.part.dart`, locate `_WizardIntakePainter` there,
+and inspect its source slice through EOF for the unchanged
+`candidate.rotationRadians` and `canvas.rotate(rotation);` assertions. The
+host read and every unrelated structural assertion remain intact;
+`_BoardCanvasSafetyEvidenceDisclosure` remains host-owned.
+
+This edit class is `STRUCTURAL_SOURCE_OWNER_RETARGET`, not new
+characterization. The test name, declaration, candidate-rotation semantics,
+and all unrelated expectations remain unchanged. The focused owner stays
+exactly `169 = 155 testWidgets + 14 test`, delta zero. No test is deleted,
+disabled, weakened, skipped, added, renamed, or relocated.
+
+Before production movement the child must capture the exact baseline test
+text and prove this exact test passes. After movement it must prove that its
+only semantic adaptation is host owner to Wizard-part owner, run the same test
+independently, and then run the full focused Board Canvas suite. This is one
+mechanically coupled structural child; a failing test does not authorize any
+rendering or product change.
+
+### Second temporary part, privacy, state, and writer lock
+
+This is an explicit exception for the second temporary Board Canvas migration
+part, not a general repository convention. After the child exactly two parts
+exist: `measurement_projection.part.dart` and
+`wizard_intake_overlay.part.dart`. No third part is authorized. Both temporary
+parts must be reassessed before any state/controller extraction. Normal-library
+conversion or API design requires a later dedicated human-routed pass and may
+not be combined here.
+
+The private names, constructors, parameters, return values, getters, callback
+surface, declaration order, and bodies remain behavior-identical. Same-library
+private access is the sole reason for the bridge. All three State owners remain
+fully host-owned: `_BoardCanvasScreenState`, `_CanvasPanelState`, and
+`_IntegratedMeasurePanelState`. No field or lifecycle method moves or changes.
+
+Canonical writer invocation count remains exactly four, delta zero:
+
+1. `_confirmRightPanelComponentCreation` -> `v2AddComponentWriterProvider`
+2. `_confirmRightPanelMetadataEdit` -> `v2EditComponentWriterProvider`
+3. `_confirmAddComponentTemplatePlacement` -> `v2PlacementWriterProvider`
+4. `_IntegratedMeasurePanelState._saveMeasurement` -> `v2SaveMeasurementWriterProvider`
+
+No provider, `ref`, writer, event append, or projection token may enter the new
+Wizard part.
+
+### Rendering, validation, and Code Map lifecycle
+
+The child freezes fit/padding/aspect calculations, contour bounds, normalized
+frame, photo translation/scale/rotation/opacity, clipping, `Image.file`
+fit/filter/fallback, contour fill/stroke, candidate position/shape/rotation,
+marker sizing/cross, `shouldRepaint`, z-order, pointer behavior, semantics,
+selection, placement interaction, Canvas pan/zoom, Wizard fit scheduling and
+controls, and canonical placement painting. No cleanup, optimization, geometry
+correction, or visual polish is authorized.
+
+Child validation is `TARGETED_VISUAL_SMOKE_REQUIRED`. Automated validation
+must include the exact retargeted structural test, the full focused Board
+Canvas suite, both analyzer forms, full Flutter tests, both Python validators,
+exact-three-path formatting/checks, static payload/neighbor/duplicate/part/
+state/writer closure, diff/status checks, and empty Windows substantive
+numstat. Human smoke is limited to fitted contour/candidates, photo alignment
+and transforms, canonical placement layering/interaction, fit/reset and Wizard
+controls, and zero overlay writes.
+
+No map/index edit belongs to this scope or child. After accepted committed
+implementation, the host map is `UPDATE_REQUIRED` for `STRUCTURE_DRIFT`; the
+test map is `UPDATE_REQUIRED` because its production-source-read responsibility
+changes from host-only to host plus Wizard part; the new part is requalified
+from accepted committed source without a predetermined map result. A separate
+committed-source Code Map maintenance decision/pass then returns to
+`NEEDS_USER_DECISION`.
+
+### Route, Phase 2, and stops
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 067420bec]
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_EXTRACTION_IMPL_PASS
+-> [accepted committed-source Code Map maintenance decision/pass]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No Component Navigator, Inspector/Summary, background/placement/footprint
+painter, controller, state, safety/evidence, or later decomposition child is
+reserved.
+
+After a clean independent scope audit, bounded Phase 2 may change exactly two
+logical coordinates: the designated verdict-block interior and this PASS_ID's
+existing `docs/AUDIT_INDEX.md` Status cell. Artifact exterior, ledger
+Description, route prose, all other rows, Dart/tests/maps/index, and every
+other byte remain frozen. Human exact staging, commit, and push remain outside
+this Phase 1.
+
+Stop on baseline or route disagreement; a sixth scope path; a fourth child
+path; stale/conflicting map or failed anchor/neighbor/payload closure; test
+declaration or assertion weakening; a third part; measurement-part drift;
+private/API/signature/state/writer/provider/route/rendering/geometry/product or
+protected-boundary drift; required excluded cleanup; or scope-relevant
+validation failure.
+
+## Accepted Board Canvas measurement read-model committed-source Code Map maintenance authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS

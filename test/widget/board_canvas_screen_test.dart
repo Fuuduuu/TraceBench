@@ -11213,6 +11213,9 @@ void main() {
     final source = File(
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
     ).readAsStringSync();
+    final wizardOverlaySource = File(
+      'lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart',
+    ).readAsStringSync();
 
     expect(source, isNot(contains('template.toMap(')));
     expect(source, isNot(contains('oldDelegate.entries != entries')));
@@ -11296,18 +11299,12 @@ void main() {
         'Rotation visual support is intentionally deferred to a later explicit rotation scope.',
       ),
     );
-    final wizardPainterStart = source.indexOf(
+    final wizardPainterStart = wizardOverlaySource.indexOf(
       'class _WizardIntakePainter',
     );
-    final wizardPainterEnd = source.indexOf(
-      'class _BoardCanvasSafetyEvidenceDisclosure',
-      wizardPainterStart,
-    );
     expect(wizardPainterStart, greaterThanOrEqualTo(0));
-    expect(wizardPainterEnd, greaterThan(wizardPainterStart));
-    final wizardPainterSource = source.substring(
+    final wizardPainterSource = wizardOverlaySource.substring(
       wizardPainterStart,
-      wizardPainterEnd,
     );
     expect(wizardPainterSource, contains('candidate.rotationRadians'));
     expect(wizardPainterSource, contains('canvas.rotate(rotation);'));

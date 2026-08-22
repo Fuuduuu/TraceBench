@@ -1,4 +1,4 @@
-part of '../screens/board_canvas_screen.dart';
+import '../../../shared/models/known_facts.dart';
 
 bool measurementEndpointMatchesComponent(
   String endpoint,
@@ -7,39 +7,20 @@ bool measurementEndpointMatchesComponent(
   return endpoint == componentId || endpoint.startsWith('$componentId.');
 }
 
-String _displayDirectionLabel(String from, String? to) {
-  final trimmedFrom = from.trim();
-  final trimmedTo = to?.trim();
-  if (trimmedTo == null || trimmedTo.isEmpty) {
-    return trimmedFrom;
-  }
-  return '$trimmedFrom -> $trimmedTo';
-}
-
-String? _firstPresentText(Iterable<String?> values) {
-  for (final value in values) {
-    final trimmed = value?.trim();
-    if (trimmed != null && trimmed.isNotEmpty) {
-      return trimmed;
-    }
-  }
-  return null;
-}
-
-_EndpointDisplayParts _endpointDisplayParts(String endpoint) {
+EndpointDisplayParts endpointDisplayParts(String endpoint) {
   final trimmed = endpoint.trim();
   final dotIndex = trimmed.indexOf('.');
   if (dotIndex <= 0 || dotIndex == trimmed.length - 1) {
-    return _EndpointDisplayParts(component: trimmed, pin: null);
+    return EndpointDisplayParts(component: trimmed, pin: null);
   }
-  return _EndpointDisplayParts(
+  return EndpointDisplayParts(
     component: trimmed.substring(0, dotIndex),
     pin: trimmed,
   );
 }
 
-class _EndpointDisplayParts {
-  const _EndpointDisplayParts({required this.component, this.pin});
+class EndpointDisplayParts {
+  const EndpointDisplayParts({required this.component, this.pin});
 
   final String component;
   final String? pin;

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../logic/measurement_projection.dart';
 import '../../components/services/v2_add_component_writer.dart';
 import '../../components/services/v2_edit_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
@@ -21,9 +22,27 @@ import '../../../shared/models/trace_bench_event.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
-part '../logic/measurement_projection.part.dart';
 part '../rendering/wizard_intake_overlay.part.dart';
 part '../widgets/component_navigator.part.dart';
+
+String _displayDirectionLabel(String from, String? to) {
+  final trimmedFrom = from.trim();
+  final trimmedTo = to?.trim();
+  if (trimmedTo == null || trimmedTo.isEmpty) {
+    return trimmedFrom;
+  }
+  return '$trimmedFrom -> $trimmedTo';
+}
+
+String? _firstPresentText(Iterable<String?> values) {
+  for (final value in values) {
+    final trimmed = value?.trim();
+    if (trimmed != null && trimmed.isNotEmpty) {
+      return trimmed;
+    }
+  }
+  return null;
+}
 
 const double _kCompactBoardCanvasAppBarHeight = 36;
 const double _kCompactControlTileHeight = 34;
@@ -9360,8 +9379,8 @@ class _MeasurementSummaryTile extends StatelessWidget {
     final valueText = measurement.value == null
         ? measurement.reading
         : '${measurement.value}${measurement.unit == null ? '' : ' ${measurement.unit}'}';
-    final fromParts = _endpointDisplayParts(measurement.from);
-    final toParts = _endpointDisplayParts(measurement.to);
+    final fromParts = endpointDisplayParts(measurement.from);
+    final toParts = endpointDisplayParts(measurement.to);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),

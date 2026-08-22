@@ -2,10 +2,139 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
 
-## Current Board Canvas Component Navigator committed-source Code Map maintenance authority
+## Current Board Canvas measurement normal-library conversion scope authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 105090156c892ccf69ac401d131a1f90af28c415
+Reserved child: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child validation: AUTOMATED_ONLY_OK
+```
+
+The human replaces the accepted Component Navigator Code Map maintenance
+route's non-executable `NEEDS_USER_DECISION` sentinel with this docs-only
+scope and exactly one child. Phase 1 writes only the three route owners, the
+audit ledger, and one new scope artifact. It changes no Dart, test, Code Map,
+index-map, runtime, product, provider, writer, route, state, rendering,
+geometry, event, fact, evidence, freshness, Project ZIP, package, asset,
+schema, tool, generated/platform, Windows substantive, or scratch byte.
+
+### Exact current Phase-1 write allowlist -- 5
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth path is authorized. The new ledger row is neutral
+`REVIEW_REQUIRED`; the new artifact contains one unique empty designated
+verdict block. Independent audit may authorize only the later mechanical
+verdict recording defined in the artifact. Human exact staging, commit, and
+push remain outside this authority.
+
+### Exact reserved implementation authority -- 4
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/logic/measurement_projection.part.dart`
+   (delete)
+3. `lib/features/board_canvas/logic/measurement_projection.dart` (new)
+4. `test/widget/board_canvas_screen_test.dart`
+
+No fifth implementation path is authorized. The child converts only the
+measurement read-model owner from a temporary same-library part into a normal
+feature-internal Dart library. The host replaces the measurement `part`
+directive with a direct import; the final host retains only the Wizard and
+Component Navigator part pairs, so Board Canvas temporary parts move exactly
+`3 -> 2`, with no new or fourth part.
+
+The normal library owns the seven existing public `measurement*` functions,
+public feature-internal `endpointDisplayParts` and `EndpointDisplayParts`, and
+private `_compareIndexedMeasurements` and `_IndexedMeasurement`. The exact
+bodies of `_displayDirectionLabel` and `_firstPresentText` return physically
+to the host. Endpoint matching and endpoint parsing remain together in the
+normal library; no component-dot-pin grammar is split or normalized.
+
+The host exports none of this API. The focused suite adds a direct package
+import of `measurement_projection.dart`; every existing test declaration and
+assertion remains unchanged. Its large read-only source-string guard reads
+only the host and Wizard part and contains no measurement path, part, or moved
+symbol assertion, so it requires no ownership retarget.
+
+### Behavior, protected surface, state, and writer lock
+
+Freeze exact endpoint matching/parsing, component counts and zero omission,
+badge association, characterized ordering/fallback, scalar/unit eligibility,
+badge text, caution classification, and collection/return behavior. This is
+ownership-only conversion: no cleanup, semantic normalization, feature reuse,
+barrel export, Flutter dependency, provider, writer, route, filesystem, or
+mutable State enters the new library.
+
+`measurementValidityNeedsCaution` remains read-only presentation
+classification only. It is not evidence-lifecycle or `stale_after_repair`
+authority, validity-transition logic, or cross-feature reuse permission. The
+host's exact `validityStatus == 'stale_after_repair'` summary-label check is an
+adjacent and distinct presentation rule. Any semantic unification stops for a
+separate protected-surface review.
+
+No State field, State owner, controller, lifecycle, or Riverpod ownership
+moves. The host's four canonical writer-provider invocations remain file-level
+`4 -> 4`: add/edit/placement in `_BoardCanvasScreenState` and measurement save
+in `_IntegratedMeasurePanelState`. Both existing
+`projectStateProvider.notifier` mirroring sites remain host-owned and
+unchanged.
+
+### Code Map route, validation, and stops
+
+No map or `CODE_MAP_INDEX.md` edit belongs to this scope or child. After an
+accepted committed child, separately scoped map maintenance must refresh the
+host and focused-test maps, retire the deleted-part map under the Code Map
+Standard, qualify the new library from committed source, and refresh the
+unchanged Wizard/Navigator maps because their current ordinal/count prose
+would become stale when three parts become two. That map-only consequence does
+not authorize either remaining part's conversion.
+
+Child validation is independently classified `AUTOMATED_ONLY_OK`: the change
+is pure library ownership with no visual, state, writer, route, or interaction
+behavior. Require format/check on the three final files, the focused Board
+Canvas suite, analyzer, full Flutter suite, doctor, repository validators,
+exact symbol/import/part/state/writer/test closure, both diff checks, exact
+four-path material proof including new/untracked state, status, and frozen
+directory checks. Re-derive all test totals live. Manual smoke is
+`NOT_APPLICABLE` unless evidence shows user-visible behavior changed, which is
+a stop rather than automatic scope expansion.
+
+Stop on baseline/route drift, a sixth scope path, fifth implementation path,
+static-guard ownership conflict, map/source conflict, split endpoint grammar,
+test assertion or behavior rewrite, host export, State/controller/provider/
+writer/notifier movement, protected-surface semantics, user-visible behavior,
+excluded cleanup, or scope-relevant validation failure.
+
+### Locked route
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 1050901]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No palette, geometry, evidence, Wizard, Navigator, controller, writer, or
+painter successor is armed.
+
+## Accepted Board Canvas Component Navigator committed-source Code Map maintenance authority (historical, non-authorizing)
+
+The retained section below preserves the accepted predecessor. Its current/
+next wording is historical evidence and does not override the live conversion
+scope authority above.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS

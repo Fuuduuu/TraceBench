@@ -2,10 +2,90 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
 
-## Current Board Canvas Component Navigator Code Map maintenance queue
+## Current Board Canvas measurement normal-library conversion queue
+
+Queue one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed baseline
+`105090156c892ccf69ac401d131a1f90af28c415`. It replaces only the accepted
+predecessor's non-executable `NEEDS_USER_DECISION` sentinel and writes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth path is queued. Create one neutral `REVIEW_REQUIRED` row and one
+empty designated verdict block; change no Dart, test, map/index, runtime,
+product, protected, Windows substantive, or scratch byte.
+
+Reserve exactly one implementation child,
+`TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`,
+with exactly four write paths:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/logic/measurement_projection.part.dart`
+   (delete)
+3. `lib/features/board_canvas/logic/measurement_projection.dart` (new)
+4. `test/widget/board_canvas_screen_test.dart`
+
+No fifth implementation path is queued. Convert the measurement part to a
+normal feature-internal library; replace its host `part` with a direct import;
+leave exactly the Wizard and Navigator part pairs (`3 -> 2`); and add no part,
+host export, barrel, feature reuse, provider, writer, Flutter dependency,
+route, filesystem, or mutable State to the new owner.
+
+The library API is exactly the seven existing public `measurement*`
+functions plus `endpointDisplayParts` and `EndpointDisplayParts`; its private
+internals are `_compareIndexedMeasurements`, `_IndexedMeasurement`, and only
+measurement-owner-private helpers. Return `_displayDirectionLabel` and
+`_firstPresentText` to the host with identical bodies. Keep endpoint matching
+and parsing in the same library and preserve every current behavior and
+collection shape without cleanup or normalization.
+
+The focused test adds a direct package import of the normal library and no
+other declaration/assertion change. Its static source-string guard reads only
+the host and Wizard part and has no measurement ownership assertion, so no
+retarget is queued. Any contrary static assertion is
+`BLOCKED_ALLOWLIST_MISMATCH`, not permission to broaden.
+
+Freeze all State/controller/Riverpod ownership, four host writer-provider
+invocations (`3 + 1` by State owner), and both host
+`projectStateProvider.notifier` sites. Keep
+`measurementValidityNeedsCaution` presentation-only and the exact host
+`stale_after_repair` summary check distinct; semantic unification requires a
+separate protected-surface review.
+
+Child validation is `AUTOMATED_ONLY_OK`: format/check the three final files;
+run the focused suite, analyzer, full Flutter suite, doctor, validators,
+symbol/API/import/part/state/writer/test/material/frozen-directory proofs, and
+Git diff/status checks; re-derive test totals live. Manual smoke is
+`NOT_APPLICABLE` unless user-visible drift appears, in which case stop.
+
+After accepted committed child source, queue a separately scoped Code Map
+maintenance decision/pass to retire the old map, qualify the new source,
+refresh the host/test maps, and correct the unchanged Wizard/Navigator maps'
+ordinal/count prose. Do not convert either remaining part or arm palette,
+geometry, evidence, controller, writer, or painter work.
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 1050901]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Child activation requires independently accepted scope, authorized mechanical
+Phase 2, exact human staging/commit/push, and matching live preflight.
+
+## Accepted Board Canvas Component Navigator Code Map maintenance queue (historical, non-authorizing)
+
+The retained section below preserves the accepted predecessor. Its prior
+current/next wording cannot override the queue above.
 
 The accepted two-path extraction is committed at
 `885ea7fbf445e90ff666825eee100fd856a10eb9`, parent

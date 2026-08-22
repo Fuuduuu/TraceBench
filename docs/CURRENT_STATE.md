@@ -1,9 +1,95 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
 
-## Live Board Canvas Component Navigator committed-source Code Map maintenance
+## Live Board Canvas measurement normal-library conversion scope
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+105090156c892ccf69ac401d131a1f90af28c415`, parent
+`885ea7fbf445e90ff666825eee100fd856a10eb9`, subject
+`docs: refresh board canvas component navigator code maps`, divergence `0 0`,
+with staged/unmerged `0 / 0` at pre-write verification. Substantive tracked
+content is clean; only the known three generated-plugin Windows EOL/stat
+entries and preserved untracked `TraceBench_ALL_CODE.txt` remain outside the
+material set.
+
+The accepted predecessor ends at non-executable `NEEDS_USER_DECISION`. The
+human selects one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass and reserves
+exactly one child,
+`TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`.
+This Phase 1 changes exactly the three route owners, `docs/AUDIT_INDEX.md`, and
+one new scope artifact; all Dart, tests, maps/index, runtime, product, and
+protected behavior remain unchanged.
+
+The child allowlist is exactly four paths: the Board Canvas host; deletion of
+`measurement_projection.part.dart`; creation of normal feature-internal
+`measurement_projection.dart`; and the focused Board Canvas suite. No fifth
+implementation path is permitted. The host replaces one `part` with a direct
+import and finishes with exactly the unchanged Wizard and Navigator part
+pairs, so temporary parts move `3 -> 2` and no new/fourth part appears.
+
+The new library owns the existing seven public `measurement*` functions,
+feature-internal public `endpointDisplayParts` and `EndpointDisplayParts`, and
+private comparator/index-holder internals. `_displayDirectionLabel` and
+`_firstPresentText` become physical host presentation helpers with exact
+bodies preserved. Endpoint matching and parsing stay together, including the
+current exact-or-dot-prefix matcher and first-dot parser behavior.
+
+No host export or barrel is allowed. The focused suite directly imports the
+new library for its pure-helper tests while retaining all `169 = 155
+testWidgets + 14 test` declarations and every assertion. The large static
+read-only source guard reads the host plus Wizard part only and contains no
+measurement-part/path/moved-symbol assertion, so the predicted test delta is
+one import and no ownership retarget or behavior rewrite.
+
+`measurementValidityNeedsCaution` remains read-only presentation
+classification, not evidence lifecycle, canonical validity transition,
+`stale_after_repair` authority, or cross-feature reuse permission. The host's
+exact stale-after-repair summary check remains adjacent and separate. Any
+unification requires a dedicated protected-surface review.
+
+All State owners, fields, initializers, lifetimes, controllers, and Riverpod
+ownership stay fixed. Four writer-provider invocations remain in the host
+file: three in `_BoardCanvasScreenState`, one in
+`_IntegratedMeasurePanelState`; both `projectStateProvider.notifier` mirroring
+sites stay host-owned. The normal library is pure Dart plus the explicit
+`MeasurementFact` model dependency and has no Flutter, provider, writer,
+route, filesystem, mutable State, or cross-feature claim.
+
+Child validation is `AUTOMATED_ONLY_OK`, with live test-count re-derivation,
+focused/full Flutter tests, analyzer, doctor, validators, formatting, exact
+library/part/API/state/writer/test/material closure, and frozen-directory
+proof. Manual smoke is `NOT_APPLICABLE` unless evidence identifies a
+user-visible change, which stops the child.
+
+After accepted committed implementation, map maintenance must handle the
+deleted part, qualify the new library, refresh host/test dependency ownership,
+and correct the untouched Wizard/Navigator maps' stale ordinal/count prose.
+No map edit is authorized now or in the child, and neither remaining part's
+conversion is armed.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 1050901]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+One neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict block
+provide the bounded independent scope-audit coordinates. Child activation is
+conditional on independent acceptance, mechanical Phase-2 recording, and
+exact human stage/commit/push of the accepted five-file scope set.
+
+## Accepted Board Canvas Component Navigator committed-source Code Map maintenance (historical, non-authorizing)
+
+The retained section below is accepted predecessor evidence. Its prior live
+route/current-pass wording does not override the current conversion authority.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

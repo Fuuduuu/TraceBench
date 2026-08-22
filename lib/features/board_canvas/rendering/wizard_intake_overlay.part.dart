@@ -152,12 +152,12 @@ class _WizardIntakePhotoLayer extends StatelessWidget {
                               key: Key(
                                 'board_canvas_wizard_photo_render_unavailable',
                               ),
-                              color: _kBoardCanvasPaper,
+                              color: BoardCanvasPalette.paper,
                               child: Center(
                                 child: Text(
                                   'Taustafotot ei saanud kuvada',
                                   style: TextStyle(
-                                    color: _kBoardCanvasMuted,
+                                    color: BoardCanvasPalette.muted,
                                   ),
                                 ),
                               ),
@@ -210,13 +210,13 @@ class _WizardIntakePainter extends CustomPainter {
       canvas.drawPath(
         path,
         Paint()
-          ..color = _kBoardCanvasSignal.withValues(alpha: 0.08)
+          ..color = BoardCanvasPalette.signal.withValues(alpha: 0.08)
           ..style = PaintingStyle.fill,
       );
       canvas.drawPath(
         path,
         Paint()
-          ..color = _kBoardCanvasSignal.withValues(alpha: 0.84)
+          ..color = BoardCanvasPalette.signal.withValues(alpha: 0.84)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
           ..strokeJoin = StrokeJoin.round,
@@ -270,20 +270,20 @@ class _WizardIntakePainter extends CustomPainter {
     canvas.drawPath(
       markerPath,
       Paint()
-        ..color = _kBoardCanvasNavy.withValues(alpha: 0.94)
+        ..color = BoardCanvasPalette.navy.withValues(alpha: 0.94)
         ..style = PaintingStyle.fill,
     );
     canvas.drawPath(
       markerPath,
       Paint()
-        ..color = _kBoardCanvasSignal
+        ..color = BoardCanvasPalette.signal
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.6
         ..strokeJoin = StrokeJoin.round,
     );
     final markerArm = math.max(2.0, minorDimension * 0.28);
     final markerPaint = Paint()
-      ..color = _kBoardCanvasSignalTint
+      ..color = BoardCanvasPalette.signalTint
       ..strokeWidth = math.max(1.2, minorDimension * 0.1)
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(

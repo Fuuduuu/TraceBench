@@ -101,7 +101,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         Text(
           'Komponenditüübid',
           style: theme.textTheme.titleMedium?.copyWith(
-            color: _kBoardCanvasNavy,
+            color: BoardCanvasPalette.navy,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -163,7 +163,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                 '${categoryComponents.length} paigutatud, '
                 '$unplacedCount paigutamata',
         child: Material(
-          color: _kBoardCanvasTile,
+          color: BoardCanvasPalette.tile,
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             key: Key('board_canvas_component_category_${category.stableId}'),
@@ -180,7 +180,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                         Text(
                           category.label,
                           style: theme.textTheme.labelLarge?.copyWith(
-                            color: _kBoardCanvasNavy,
+                            color: BoardCanvasPalette.navy,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -192,7 +192,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                               : '$placedCount / ${categoryComponents.length} '
                                   'paigutatud',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: _kBoardCanvasMuted,
+                            color: BoardCanvasPalette.muted,
                           ),
                         ),
                         Text(
@@ -200,7 +200,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                               ? '$hiddenCount peidetud'
                               : '$unplacedCount paigutamata',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: _kBoardCanvasDim,
+                            color: BoardCanvasPalette.dim,
                           ),
                         ),
                       ],
@@ -209,7 +209,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                   const Icon(
                     Icons.chevron_right_rounded,
                     size: 20,
-                    color: _kBoardCanvasSignal,
+                    color: BoardCanvasPalette.signal,
                   ),
                 ],
               ),
@@ -257,7 +257,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         Text(
           category.label,
           style: theme.textTheme.titleMedium?.copyWith(
-            color: _kBoardCanvasNavy,
+            color: BoardCanvasPalette.navy,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -270,7 +270,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                 'Kõik selle grupi komponendid on mõõtmata ja peidetud.',
                 key: const Key('board_canvas_component_category_empty'),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: _kBoardCanvasMuted,
+                  color: BoardCanvasPalette.muted,
                 ),
               ),
             ),
@@ -319,7 +319,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         Text(
           title,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: _kBoardCanvasSignal,
+            color: BoardCanvasPalette.signal,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
           ),
@@ -329,7 +329,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
           Text(
             'Komponente pole.',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: _kBoardCanvasDim,
+              color: BoardCanvasPalette.dim,
             ),
           )
         else
@@ -364,7 +364,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
       child: Semantics(
         button: true,
         child: Material(
-          color: _kBoardCanvasTile,
+          color: BoardCanvasPalette.tile,
           borderRadius: BorderRadius.circular(7),
           child: InkWell(
             key: Key('board_canvas_component_row_${component.componentId}'),
@@ -374,7 +374,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: _kBoardCanvasRule),
+                border: Border.all(color: BoardCanvasPalette.rule),
               ),
               child: Row(
                 children: [
@@ -385,7 +385,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                         Text(
                           _componentPrimaryLabel(component),
                           style: theme.textTheme.labelMedium?.copyWith(
-                            color: _kBoardCanvasNavy,
+                            color: BoardCanvasPalette.navy,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -394,7 +394,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                           '${component.componentId} · '
                           '${_componentKindLabel(component)}',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: _kBoardCanvasMuted,
+                            color: BoardCanvasPalette.muted,
                           ),
                         ),
                       ],
@@ -405,8 +405,8 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                     measurementLabel,
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: measurementCount == 0
-                          ? _kBoardCanvasDim
-                          : _kBoardCanvasReady,
+                          ? BoardCanvasPalette.dim
+                          : BoardCanvasPalette.ready,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -458,7 +458,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         Text(
           _componentPrimaryLabel(component),
           style: theme.textTheme.titleMedium?.copyWith(
-            color: _kBoardCanvasNavy,
+            color: BoardCanvasPalette.navy,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -466,15 +466,16 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         Text(
           '${component.componentId} · ${_componentKindLabel(component)}',
           style: theme.textTheme.bodySmall?.copyWith(
-            color: _kBoardCanvasMuted,
+            color: BoardCanvasPalette.muted,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           measurementCount == 0 ? 'Mõõtmata' : '$measurementCount mõõtmist',
           style: theme.textTheme.labelSmall?.copyWith(
-            color:
-                measurementCount == 0 ? _kBoardCanvasDim : _kBoardCanvasReady,
+            color: measurementCount == 0
+                ? BoardCanvasPalette.dim
+                : BoardCanvasPalette.ready,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -483,7 +484,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
           Text(
             'Pole veel canvasele paigutatud',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: _kBoardCanvasNavy,
+              color: BoardCanvasPalette.navy,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -511,7 +512,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                   Text(
                     'Kinnitatud paigutus ei ole plaadi canvasel nähtav.',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: _kBoardCanvasMuted,
+                      color: BoardCanvasPalette.muted,
                     ),
                   ),
                 ],
@@ -533,7 +534,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
           Text(
             'Vali paigutus',
             style: theme.textTheme.labelLarge?.copyWith(
-              color: _kBoardCanvasNavy,
+              color: BoardCanvasPalette.navy,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -572,15 +573,15 @@ class _ComponentNavigatorPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(9),
       decoration: BoxDecoration(
-        color: _kBoardCanvasTile,
+        color: BoardCanvasPalette.tile,
         borderRadius: BorderRadius.circular(7),
-        border: Border.all(color: _kBoardCanvasRule),
+        border: Border.all(color: BoardCanvasPalette.rule),
       ),
       child: Text(
         '${entry.placement.boardSide} · '
         '${entry.placement.coordinateSpace}',
         style: theme.textTheme.bodySmall?.copyWith(
-          color: _kBoardCanvasMuted,
+          color: BoardCanvasPalette.muted,
         ),
       ),
     );
@@ -600,7 +601,9 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         selected: selected,
         button: true,
         child: Material(
-          color: selected ? _kBoardCanvasSignalTint : _kBoardCanvasTile,
+          color: selected
+              ? BoardCanvasPalette.signalTint
+              : BoardCanvasPalette.tile,
           borderRadius: BorderRadius.circular(7),
           child: InkWell(
             key: Key('board_canvas_component_placement_${entry.key}'),
@@ -611,7 +614,9 @@ class _ComponentNavigatorPanel extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
                 border: Border.all(
-                  color: selected ? _kBoardCanvasSignal : _kBoardCanvasRule,
+                  color: selected
+                      ? BoardCanvasPalette.signal
+                      : BoardCanvasPalette.rule,
                   width: selected ? 2 : 1,
                 ),
               ),
@@ -625,14 +630,14 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                           '${index + 1}. paigutus · '
                           '${entry.placement.boardSide}',
                           style: theme.textTheme.labelMedium?.copyWith(
-                            color: _kBoardCanvasNavy,
+                            color: BoardCanvasPalette.navy,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
                           entry.placement.coordinateSpace,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: _kBoardCanvasMuted,
+                            color: BoardCanvasPalette.muted,
                           ),
                         ),
                       ],
@@ -643,7 +648,9 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                         ? Icons.radio_button_checked
                         : Icons.radio_button_unchecked,
                     size: 18,
-                    color: selected ? _kBoardCanvasSignal : _kBoardCanvasDim,
+                    color: selected
+                        ? BoardCanvasPalette.signal
+                        : BoardCanvasPalette.dim,
                   ),
                 ],
               ),

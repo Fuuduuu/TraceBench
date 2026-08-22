@@ -2,10 +2,79 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas measurement normal-library conversion queue
+## Current Board Canvas measurement normal-library Code Map maintenance queue
+
+Queue one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
+source at `09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`. Its exact material set is:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md` (new)
+8. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+9. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+10. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md`
+12. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No thirteenth path is queued. Dart, tests, runtime, product behavior, providers,
+State, writers, routes, geometry, painters, tokens, protected semantics,
+packages, assets, schemas, tools, Windows substantive content, and scratch are
+frozen. Manual smoke is `NOT_APPLICABLE`.
+
+Retain and index the deleted measurement-part map as historical `RETIRED`
+provenance, not current SNIPER authority. Create the first normal-library map
+as `REVIEW_REQUIRED` after automatic five-plus-behavior qualification. Map its
+endpoint grammar, association/counts, badge association/ordering, scalar/text,
+and presentation-caution zones as whole-file `ZERO_WRITE`; it has one Known
+Facts model import and no Flutter/Riverpod/provider/State/writer/filesystem/
+route/event/projection/part surface.
+
+Refresh host and test dependency ownership to the normal library. Keep host
+State/consumer ownership, `_displayDirectionLabel`, `_firstPresentText`, four
+writer invocations split `3 + 1`, and both notifier-mirroring sites. Keep the
+focused suite at `169 = 155 testWidgets + 14 test`, with the new direct helper
+import and unchanged declarations/assertions; its source guard continues to
+read only the host and Wizard part.
+
+Refresh the unchanged Wizard and Navigator maps only for sibling-count prose:
+they are exactly the two remaining temporary parts. Wizard remains
+`ZERO_WRITE`; Navigator remains aggregate `UI_LOCAL` with `ZERO_WRITE`
+rendering and no State/provider/writer. Measurement is a separate normal
+library, and no additional part or conversion is queued.
+
+Phase-1 registry target is 38 maps/38 rows: 32 `MAINTAINED`, exactly five
+`REVIEW_REQUIRED` pairs (normal measurement, host, test, Wizard, Navigator),
+and exactly one `RETIRED` historical pair, with zero parity/source/type/status
+defects. Create one neutral `REVIEW_REQUIRED` ledger row and one unique empty
+verdict block.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+   [accepted and committed]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+   [accepted and committed at 09ef41b]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No successor is queued. A clean independent audit may authorize exactly 12
+Phase-2 coordinates: five current map Status headers, five matching index
+Status cells, verdict interior, and ledger Status. The retired pair is not
+promoted. Human exact staging, commit, push, and the next product decision
+remain outside this queue.
+
+## Accepted Board Canvas measurement normal-library conversion queue (historical, non-authorizing)
+
+The retained queue below completed with accepted implementation commit
+`09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`. Its prior current/next and
+future-maintenance wording is historical and non-authorizing.
 
 Queue one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed baseline
 `105090156c892ccf69ac401d131a1f90af28c415`. It replaces only the accepted

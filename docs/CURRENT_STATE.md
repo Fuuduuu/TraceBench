@@ -1,9 +1,91 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live Board Canvas measurement normal-library conversion scope
+## Live Board Canvas measurement normal-library committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`, parent
+`e7e6bfa6d2c427afc21d1e1c64b52dbae882caf6`, subject
+`refactor: convert board canvas measurement projection to normal library`, and
+divergence `0 0`. The known three generated-plugin Windows EOL/stat entries
+and preserved untracked `TraceBench_ALL_CODE.txt` remain outside the
+substantive material set.
+
+The accepted implementation deleted
+`measurement_projection.part.dart`, created the normal feature-internal
+`measurement_projection.dart` (blob
+`1239ddc378f593f0c344c15b4e82a1cb84d3eb21`), replaced the host part directive
+with a direct import, returned `_displayDirectionLabel` and
+`_firstPresentText` to the host, and added exactly one direct test import. The
+host now has exactly two reciprocal part pairs: Wizard overlay and Component
+Navigator. State owners are unchanged; four writer invocations remain `3 + 1`
+by State owner; both notifier-mirroring sites remain host-owned.
+
+Human-supplied accepted implementation evidence is `AUDIT_VERDICT:
+ACCEPT_AS_IS`, `SAFE_FOR_STAGING: YES`, `BOUNDARY_RESULT: PASS`, and no
+blockers, with focused Board Canvas `169/169`, full Flutter `642/642`, analyzer
+zero errors/warnings, doctor `PASS`, validator `314/314`, and exactly four
+expected optional-photo fixture warnings. These are predecessor facts, not an
+audit or staging result for the current map diff.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` maintenance pass changes exactly 12
+paths: the three route owners, audit ledger, Code Map index, retained retired
+part map, one new normal-library map, refreshed host/test/Wizard/Navigator
+maps, and one new audit artifact. It changes no Dart, test, runtime, product,
+provider, writer, State, geometry, painter, visual-token, protected-semantic,
+package, asset, schema, tool, or Windows substantive byte. Manual smoke is
+`NOT_APPLICABLE`.
+
+The deleted-part map remains indexed historical provenance with status
+`RETIRED` and is not current SNIPER authority. The new 135-line normal library
+qualifies automatically through five-plus independently testable behaviors;
+its five zones cover endpoint grammar, component counts, badge association/
+order, scalar/text presentation, and validity caution. The complete library is
+`ZERO_WRITE`, imports only the Known Facts model, has no part relationship, and
+owns no Flutter/Riverpod/provider/State/writer/filesystem/route/event/projection
+surface. Its caution helper is `READ_ONLY_PRESENTATION_CLASSIFICATION`, not
+evidence lifecycle, canonical validity, `stale_after_repair` transition, or
+reuse authority; the exact host stale-summary rule remains separate.
+
+The host and test maps retarget measurement ownership to the normal library.
+The focused suite remains `169 = 155 testWidgets + 14 test`; its pure helpers
+use the direct library import while its static source guard still reads only
+the host and Wizard part. The unchanged Wizard and Navigator source maps
+receive prose-only sibling-count correction: they are the two remaining
+temporary parts, and neither authorizes another part or conversion.
+
+Phase-1 registry state is 38 maps/38 rows: 32 `MAINTAINED`, exactly five
+`REVIEW_REQUIRED` current pairs (normal measurement, host, focused test,
+Wizard, Navigator), and one `RETIRED` historical pair, with zero registry
+parity/status defects. One neutral ledger row and one unique empty designated
+verdict block supply the bounded audit coordinates.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+   [accepted and committed]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+   [accepted and committed at 09ef41b]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No palette, geometry, evidence, Wizard/Navigator conversion, controller/State,
+writer, or painter successor is armed. A clean independent audit may authorize
+only the artifact verdict interior, this pass's ledger Status cell, the five
+current map Status headers, and their five matching index Status cells. The
+retired pair remains `RETIRED`; human exact staging/commit/push remain outside
+this Phase-1 authority.
+
+## Accepted Board Canvas measurement normal-library conversion scope and implementation (historical, non-authorizing)
+
+The retained section below is completed at `09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`.
+Its prior current/next and future-maintenance wording is historical evidence
+and does not override the live Code Map maintenance authority above.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

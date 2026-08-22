@@ -2,10 +2,116 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Board Canvas measurement normal-library conversion scope authority
+## Current Board Canvas measurement normal-library Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f
+Predecessor: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+Manual smoke: NOT_APPLICABLE
+Next: NEEDS_USER_DECISION
+```
+
+This pass describes only accepted committed source. It changes no Dart, test,
+runtime, product, provider, writer, State, route topology, geometry, painter,
+visual token, protected semantic, package, asset, schema, tool, generated/
+platform, Windows substantive, or scratch byte.
+
+### Exact current Phase-1 write allowlist -- 12
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md` (new)
+8. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+9. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+10. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md`
+12. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No thirteenth path is authorized. The new ledger row is neutral
+`REVIEW_REQUIRED`; the new artifact contains one unique empty designated
+verdict block.
+
+### Accepted committed implementation and map lifecycle
+
+Commit `09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f` deleted the measurement part,
+created the normal-library blob
+`1239ddc378f593f0c344c15b4e82a1cb84d3eb21`, directly imported it from the
+host and focused suite, and left exactly the Wizard and Navigator part pairs.
+State ownership is unchanged; host writer sites remain `4 -> 4` split `3 + 1`;
+both notifier-mirroring sites remain.
+
+The historical deleted-part map/index pair becomes `RETIRED` and is not
+SNIPER authority. The new normal-library map is `REVIEW_REQUIRED` after
+automatic five-plus-behavior qualification. Host/test/Wizard/Navigator maps and
+matching rows are `REVIEW_REQUIRED`: host/test retarget dependency ownership,
+while Wizard/Navigator source is unchanged and only stale sibling-count prose
+is corrected. All unrelated maps/index rows remain byte-frozen.
+
+The normal library is feature-internal pure Dart with one Known Facts model
+import and no part relationship, Flutter, Riverpod, provider, mutable State,
+writer, filesystem, route, event append, or projection mutation. Its five map
+zones are endpoint grammar, component association/counts, badge association/
+ordering, scalar eligibility/exact text, and validity caution presentation.
+`measurementValidityNeedsCaution` is
+`READ_ONLY_PRESENTATION_CLASSIFICATION`, not evidence-lifecycle, canonical
+validity, `stale_after_repair` transition, or cross-feature reuse authority.
+The exact host stale-summary presentation check remains separate.
+
+The host map retains all State/consumer/writer ownership, the two private
+presentation helpers, four writer sites, and two notifier sites. The test map
+retains `169 = 155 testWidgets + 14 test`, every declaration/assertion, and the
+host-plus-Wizard-only static source guard. The Wizard part remains unchanged
+`ZERO_WRITE`; Navigator remains aggregate `UI_LOCAL` with `ZERO_WRITE`
+rendering and owns no State/provider/writer. Exactly two temporary parts remain
+and no additional part or conversion is authorized.
+
+### Registry, route, Phase 2, and stops
+
+Phase-1 registry target is exactly 38 maps/38 rows: 32 `MAINTAINED`, five
+`REVIEW_REQUIRED`, and one `RETIRED`, with zero duplicate source/map paths,
+orphan/unindexed maps, or source/type/status mismatch. Retired-map live-source
+anchor closure is intentionally not required; all five current maps must close
+against their exact accepted owners.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS
+   [accepted and committed]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_IMPL_PASS
+   [accepted and committed at 09ef41b]
+-> TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+After independent audit accepts all five current maps and expressly authorizes
+recording, Phase 2 may change exactly 12 logical coordinates: five current map
+Status headers, five matching index Status cells, the designated verdict-block
+interior, and this pass's ledger Status cell. The retired map/index pair stays
+`RETIRED`. Map bodies, qualification/source/type/evidence fields, route prose,
+ledger Description, artifact exterior, unrelated content, and all frozen
+surfaces remain fixed. Human exact staging, commit, and push remain outside
+this authority.
+
+Stop on baseline/route drift, a thirteenth path, source/map/anchor or registry
+conflict, any runtime/test/frozen-surface change, protected-boundary drift,
+Phase-2 execution, or scope-relevant validation failure. No palette, geometry,
+evidence, Wizard/Navigator conversion, controller/State, writer, or painter
+successor is armed.
+
+## Accepted Board Canvas measurement normal-library conversion scope authority (historical, non-authorizing)
+
+The retained authority below completed with the accepted implementation at
+`09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`. Its prior live route and
+future-maintenance placeholder do not override the current map authority.
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CONVERSION_SCOPE_LOCK_PASS

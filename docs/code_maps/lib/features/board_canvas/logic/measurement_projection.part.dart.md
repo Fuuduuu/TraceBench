@@ -2,11 +2,16 @@
 
 - Source: `lib/features/board_canvas/logic/measurement_projection.part.dart`
 - Type: `production`
-- Status: `MAINTAINED`
+- Status: `RETIRED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
 - Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_READ_MODEL_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
+
+Retired historical map: the accepted normal-library conversion deleted this
+source at `09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`. The inventory below preserves
+the former part's provenance and is not current source or SNIPER authority;
+use `measurement_projection.dart.md` for the live owner.
 
 Owns deterministic measurement read-model transformations extracted from
 Board Canvas while remaining a temporary same-library Dart part of

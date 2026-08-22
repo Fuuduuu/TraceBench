@@ -4,13 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the deterministic fit geometry, local-photo layer, and custom painting for
-the Board Canvas Wizard intake overlay while remaining a temporary same-library
-Dart part of `board_canvas_screen.dart`. It shares the host's imports, Wizard
+the Board Canvas Wizard intake overlay while remaining one of exactly two
+temporary same-library Dart parts of `board_canvas_screen.dart`; the other is
+the Component Navigator part. It shares the host's imports, Wizard
 models, and private visual tokens, and owns no mutable state, provider, writer,
 route, or canonical semantics. Source, tests, canonical owners, and active
 locks remain authoritative.
@@ -77,6 +78,8 @@ inputs from the host
 
 The part has no imports of its own. No production owner imports it directly;
 its visibility and private access exist only through the host library.
+The host separately imports `measurement_projection.dart` as a normal logic
+library; that source is not a part and transfers no responsibility here.
 
 ## Write and protected boundaries
 
@@ -135,8 +138,8 @@ controls, project state, placement, or writer ownership into this part.
 ## Dangerous combinations
 
 - Do not combine this temporary part with state/controller movement, private
-  name promotion, public API design, normal-library conversion, or a third
-  Board Canvas part.
+  name promotion, public API design, normal-library conversion, or any
+  additional Board Canvas part.
 - Do not combine fit/photo/painter changes with host initial-fit scheduling,
   photo controls, Canvas transforms, placement interaction, z-order, or
   canonical writer semantics without separate authority.
@@ -163,11 +166,11 @@ controls, project state, placement, or writer ownership into this part.
 - `[S]` Fit geometry and painter inputs could be typed independently only after
   a concrete caller need and separate state/control boundary analysis.
 
-This is the second temporary Board Canvas same-library part, beside
-`measurement_projection.part.dart`. Neither establishes a general
-decomposition convention, authorizes a third part, or authorizes conversion or
-further extraction. Both require dedicated architectural reassessment before
-state/controller work.
+This is one of exactly two remaining temporary Board Canvas same-library parts;
+the other is `component_navigator.part.dart`. Measurement logic now lives in
+the separately imported normal `measurement_projection.dart` library. Neither
+remaining part establishes a general decomposition convention or authorizes an
+additional part, conversion, extraction, or state/controller work.
 
 ## Freshness and review triggers
 

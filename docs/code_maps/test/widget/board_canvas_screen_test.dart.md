@@ -4,17 +4,18 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_WIZARD_INTAKE_OVERLAY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 This 169-declaration Board Canvas widget-test owner supplies explicit-fresh
 fixtures, direct/production-router harnesses, writer doubles, interaction and
 painter assertions, read-only Wizard overlay coverage, local panel/focus
-evidence, direct deterministic measurement read-model characterization, and a
-routed six-width responsive contract. Its existing static boundary test now
-reads both the Board Canvas host and the Wizard overlay part, with only the
-candidate-rotation painter slice physically retargeted. Project-wide
+evidence, direct deterministic measurement read-model characterization through
+an explicit `measurement_projection.dart` import, and a routed six-width
+responsive contract. Its static boundary test still reads exactly the Board
+Canvas host and Wizard overlay part—not the measurement library—with the
+candidate-rotation painter slice retained in the Wizard source. Project-wide
 destination inventory and navigation belong to the shared-shell suite; this
 file proves the Canvas remains rich across that shell cutover and has no
 competing local Project hub or rail control.
@@ -87,7 +88,8 @@ focus hide/restore without events or freshness changes.
   host-source assertions, separately reads `wizard_intake_overlay.part.dart`,
   and slices from `class _WizardIntakePainter` through EOF for the unchanged
   candidate-rotation assertions.
-- `[D]` Direct `test` declarations characterize pure endpoint/count helpers,
+- `[D]` Direct `test` declarations import the normal measurement library and
+  characterize pure endpoint/count helpers,
   lexical distinct-nonblank-ID ordering with equal/empty-ID index fallback,
   scalar/unit eligibility, exact value-unit text, and validity caution without
   mounting widgets or invoking a writer.
@@ -99,6 +101,7 @@ focus hide/restore without events or freshness changes.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `BoardCanvasScreen` and production map | system under test / map input | Supplies destination behavior and local responsibilities. |
+| `measurement_projection.dart` and production map | direct pure-helper system under test / map input | Supplies endpoint/count, badge ordering, scalar/text, and presentation-caution behavior without mounting the screen. |
 | `wizard_intake_overlay.part.dart` and production map | direct source-read / map input | Supplies the physically moved Wizard fit/photo/painter declarations and the painter-to-EOF structural slice. |
 | `WorkbenchShell` | routed outer composition | Supplies compact/persistent project navigation without entering Board source. |
 | `projectStateProvider`, `ProviderScope`, `ProjectState` | fixture / observation | Injects state and proves responsive/provider invariance or post-write mirroring. |
@@ -107,7 +110,7 @@ focus hide/restore without events or freshness changes.
 | BoardFact models and `TraceBenchEvent` | fixture/assertion input | Build projected facts and returned events. |
 | `WizardIntake` family | fixture/assertion input | Builds optional aspect/photo/contour/problem/candidate presentation. |
 | Flutter widget, gesture, semantics, painter APIs | driver/observation | Controls viewports/input/rendering/semantics/private painter state. |
-| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write fixtures plus separate host and Wizard-part static source guards. |
+| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write fixtures plus exactly the host and Wizard-part static source reads; the measurement library is not source-read. |
 
 ## Write and protected boundaries
 
@@ -141,7 +144,7 @@ owned by their production/canonical owners.
 | Route/shared-shell responsive | `[D]` six routed widths | shell threshold, Board 900/framing | `ZERO_WRITE` | routed case + shell suite |
 | Local panels/focus | `[D]` hidden default and retained modes | local rail/selection | `UI_LOCAL` | panel/focus cases |
 | Navigator/filter | `[D]` helpers/painter observations | targets, geometry, responsive | `UI_LOCAL` | exact family + full target |
-| Measurement read model | `[D]` endpoint/count tests plus four direct helper characterizations | part implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
+| Measurement read model | `[D]` direct normal-library import, endpoint/count tests, and four helper characterizations | normal-library implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
 | Writers | `[D]` four fakes/results | selection/provider/freshness | exercised `CANONICAL_EVENT` | exact writer family + full target |
 | Canvas/Wizard | `[D]` transforms/pixels/painter state plus retargeted source guard | z-order/hits/semantics and final-declaration coupling | `UI_LOCAL` / `ZERO_WRITE` | exact geometry/render cases + structural boundary declaration |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | exact family + full target |
@@ -156,7 +159,7 @@ owned by their production/canonical owners.
 | State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_readProjectState` | No-project/project shell, provider, and projection assertions. |
 | Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor`, `board canvas source keeps read-only data-path boundaries` | Gate, fit, z-order, photo, rotation, footprints/pins, and exact source-owner retarget. |
 | Interaction | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels` | Selection, hover, filter, hit alignment, semantics. |
-| Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Existing endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
+| Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Directly imported normal-library endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
 | Writer boundaries | Four fake writers and event builders | Explicit saves, guards, errors, idempotency, returned events, stale state. |
 
 ## Dangerous combinations
@@ -199,8 +202,9 @@ owned by their production/canonical owners.
 
 Set `REVIEW_REQUIRED` for helper/title, harness/provider/route,
 writer/filesystem, linked-family, source-read ownership, or family-ownership
-drift. Recheck exact test count (`169 = 155 testWidgets + 14 test`), the four
-direct measurement helper contracts, all six widths, shell/Board keys, hidden
+drift. Recheck exact test count (`169 = 155 testWidgets + 14 test`), the direct
+normal-library import, the four measurement helper contracts, all six widths,
+shell/Board keys, hidden
 default, five retained local tools, focus restoration, and negative Project
 hub/rail evidence after related changes. Recheck the painter-to-EOF slice if
 the Wizard part's painter ceases to be its final declaration. Formatting,

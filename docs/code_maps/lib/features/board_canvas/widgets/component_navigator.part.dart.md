@@ -4,13 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENT_NAVIGATOR_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the private Stateless Component Navigator presentation extracted from
-Board Canvas while remaining the third temporary same-library Dart part of
-`board_canvas_screen.dart`. It derives category, list, count, sorting,
+Board Canvas while remaining one of exactly two temporary same-library Dart
+parts of `board_canvas_screen.dart`; the other is the Wizard overlay part. It
+derives category, list, count, sorting,
 inspector, and placement-choice presentation from host-supplied projected data
 and dispatches only to host-owned transient selection, preview, navigation, and
 local placement-draft callbacks. It owns no mutable state, provider, writer,
@@ -107,6 +108,8 @@ host-owned.
 
 The part has no import or export. No production owner imports it directly;
 private access exists only through the Board Canvas library.
+The host separately imports `measurement_projection.dart` as a normal logic
+library; that source is not a part and transfers no responsibility here.
 
 ## Write and protected boundaries
 
@@ -174,8 +177,8 @@ ownership into it.
   constructor, create DTOs/view models, or convert to a normal library.
 - Callback, key, copy, semantics, layout, or token changes can affect several
   Navigator families even when no state owner moves.
-- This is the third and final temporary Board Canvas part. No fourth part or
-  further extraction is implied by this map.
+- Exactly two temporary Board Canvas parts remain. No new third part or further
+  extraction is implied by this map.
 
 ## Safe SNIPER slices
 
@@ -192,12 +195,12 @@ ownership into it.
 - `[S]` A normal feature-internal library may replace this temporary part only
   through a dedicated architecture pass with intentional privacy and API
   design.
-- `[S]` State/controller ownership can be reconsidered only after all three
-  Board Canvas parts are assessed together for conversion, consolidation,
-  lifetime, and internal boundaries.
+- `[S]` State/controller ownership can be reconsidered only after the two
+  remaining parts and the normal measurement library are assessed together for
+  conversion, consolidation, lifetime, and internal boundaries.
 
 These seams are descriptive and authorize no conversion, visibility change,
-state movement, callback redesign, fourth part, or source/test write.
+state movement, callback redesign, additional part, or source/test write.
 
 ## Freshness and review triggers
 
@@ -206,7 +209,7 @@ counting, ordering, branch, callback, key, copy, semantics, dependency,
 write-class, host/part ownership, same-library, or linked-test drift. Recheck
 the host map when callback implementations, state owners, filter/Canvas
 coupling, part directives, or writers change. Recheck the focused-test map when
-a linked behavior/helper or source-read assumption changes. Any fourth part
+a linked behavior/helper or source-read assumption changes. Any new part
 proposal requires architecture review rather than routine map refresh.
 
 ## Known uncertainty

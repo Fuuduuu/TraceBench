@@ -2,10 +2,109 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`
 
-## Current Board Canvas measurement normal-library Code Map maintenance queue
+## Current Board Canvas palette-boundary scope queue
+
+Queue one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed baseline
+`470a74660ca8bb06ef93fde348e4115beea4e648`. It replaces only the accepted
+predecessor's non-executable `NEEDS_USER_DECISION` sentinel and writes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is queued. Create one neutral `REVIEW_REQUIRED` ledger row
+and one empty designated verdict block; change no Dart, test, map/index,
+runtime, product, visual, State, writer, protected, Windows substantive, or
+scratch byte.
+
+Reserve exactly one implementation child,
+`TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`, with exactly four paths:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart`
+3. `lib/features/board_canvas/widgets/component_navigator.part.dart`
+4. `lib/features/board_canvas/theme/board_canvas_palette.dart` (new)
+
+No fifth production/test path is queued. Create one normal feature-local
+`abstract final class BoardCanvasPalette`; the host imports it and both
+existing parts receive visibility through the host library. Neither part gains
+an import, no part is added or converted, and reciprocal part count stays
+exactly two.
+
+Move exactly 13 `_kBoardCanvas*` Color declarations to the same semantic stems
+without the private prefix: shell, paper, tile, navy, navyDeep, muted, dim,
+signal, signalTint, ready, readyTint, rule, and ruleStrong. Preserve their
+exact values and every opacity calculation, fill, border, text color,
+interaction state, shell/panel surface, Wizard overlay, Navigator, evidence,
+inspector, and Canvas use.
+
+Exact closure is 355 production consumer sites: 314 host, seven Wizard, 34
+Navigator. Replace them one-for-one and leave zero old identifiers. Keep all
+`_kMeasurePanel*` ownership and values, layout/spacing/dimension constants,
+button-style helper ownership, Board-background-painter local colors, and all
+`_kFootprint*` semantics fixed. The sole footprint dependency alias may only
+retarget `_kFootprintSelected`'s RHS to `BoardCanvasPalette.signal`, preserving
+its name/type/constness/value/owner/consumers; no other footprint token edit is
+queued.
+
+Freeze `BenchBeepVisualTokens` and `WizardCompactTokens`. The selected Board
+palette has zero exact values in the global instrument tokens and exactly
+seven exact values in the Wizard compact palette; neither comparison permits
+reuse, convergence, a ThemeExtension, a global palette, or a cross-feature
+dependency.
+
+The focused source guard remains unchanged: it reads only host and Wizard,
+pins no old palette identifier/owner, retains all positive assertions, and has
+no negative collision with the new host import/class reference. A required
+test change stops as `BLOCKED_STATIC_GUARD_CONFLICT` and does not add a fifth
+path.
+
+Freeze all three State owners, fields, controllers, initializers, lifetimes,
+providers, four writer calls (`3 + 1`), and two notifier-mirroring sites. The
+new palette library owns only immutable Color constants and has no provider,
+`ref`, writer, State, filesystem, event, projection mutation, route, callback,
+or mutable configuration.
+
+Child validation is `AUTOMATED_ONLY_OK`: exact 13-value proof, `355 -> 355`
+use-site accounting, zero old identifiers, one host import/no part imports,
+two reciprocal part pairs, unchanged 169 focused declarations/assertions,
+focused/full Flutter, analyzer, doctor, validator, format, exact material
+union, frozen directories, and both diff checks. If exact visual identity is
+not mechanically demonstrable, stop for a new manual-smoke decision.
+
+No map or index edit is queued in scope or implementation. After accepted
+committed child source, separately scope committed-source maintenance for
+host/Wizard/Navigator `UPDATE_REQUIRED`, focused-test and Wizard-token
+`REVIEWED_NO_CHANGE`, and actual-source qualification of the new palette. Do
+not predetermine or fabricate a palette map.
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 470a746]
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No geometry, evidence extraction, Wizard/Navigator conversion, controller/
+State, writer, painter movement, global theme, design-system, or palette
+convergence work is queued. Stop on baseline/route drift, sixth scope path,
+fifth child path, ARGB/use-site drift, frozen-token semantic drift, global or
+Wizard token change, test-guard retarget, State/writer/part-count change,
+cross-feature dependency, user-visible change, excluded cleanup, or failed
+scope-relevant validation.
+
+## Accepted Board Canvas measurement normal-library Code Map maintenance queue (historical, non-authorizing)
+
+The retained queue below completed at
+`470a74660ca8bb06ef93fde348e4115beea4e648`; its Phase-1 counts and route are
+historical and supply no current authority.
 
 Queue one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
 source at `09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`. Its exact material set is:

@@ -1,9 +1,105 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`
 
-## Live Board Canvas measurement normal-library committed-source Code Map maintenance
+## Live Board Canvas palette-boundary scope lock
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+470a74660ca8bb06ef93fde348e4115beea4e648`, parent
+`09ef41bcec5f4a6fdd84866087b6a6d0b02fde5f`, subject
+`docs: refresh board canvas measurement normal library code maps`, and
+divergence `0 0`. The known three generated-plugin Windows EOL/stat entries
+and preserved untracked `TraceBench_ALL_CODE.txt` remain outside the
+substantive material set.
+
+The accepted predecessor closes at non-executable `NEEDS_USER_DECISION`. The
+human selects one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass and reserves
+exactly one child,
+`TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`. Phase 1 changes exactly
+the three route owners, `docs/AUDIT_INDEX.md`, and one new scope artifact. It
+changes no Dart, test, map/index, runtime, product, visual, state, writer, or
+protected behavior.
+
+The child allowlist is exactly four paths: the Board Canvas host; the existing
+Wizard overlay part; the existing Component Navigator part; and new normal
+feature-local `theme/board_canvas_palette.dart`. The host alone imports the
+palette. Both parts retain their current `part of` relationship and use the
+host import, so reciprocal part topology remains exactly two pairs and neither
+part gains an import.
+
+Exactly 13 private `_kBoardCanvas*` Color declarations move to public static
+fields on `abstract final class BoardCanvasPalette`: `shell`, `paper`, `tile`,
+`navy`, `navyDeep`, `muted`, `dim`, `signal`, `signalTint`, `ready`,
+`readyTint`, `rule`, and `ruleStrong`. Their exact ARGB values remain
+`0xFF0C0C0C`, `0xFF1A1916`, `0xFF141310`, `0xFFF3ECDC`, `0xFF0A0A0A`,
+`0xFFA89F8C`, `0xFF7E776A`, `0xFFE7C25A`, `0xFF2A2416`, `0xFF6FCF97`,
+`0xFF0E251B`, `0xFF332E22`, and `0xFF6B5A30` in that order.
+
+Exact identifier-boundary closure is 355 production use sites: 314 host,
+seven Wizard, and 34 Navigator. Each retargets one-for-one to the matching
+`BoardCanvasPalette` field; no old identifier, visual value, opacity
+calculation, fill, border, text color, state treatment, shell/panel, overlay,
+Navigator, inspector/evidence, or Canvas behavior changes.
+
+The selected 13 values have zero exact overlap with
+`BenchBeepVisualTokens.darkInstrument`. Exactly seven values overlap with
+`WizardCompactTokens` (`cream`, `muted`, `faint`, `gold`, `success`, `edge`,
+and `edgeGold`), but cross-feature unification is intentionally excluded.
+Neither existing token owner changes or becomes a dependency; the new palette
+is not a `ThemeExtension`, global palette, design system, or Wizard owner.
+
+All `_kMeasurePanel*` declarations and Board-background-painter local colors
+remain unchanged. `_kFootprintSelected` is the sole footprint declaration
+whose current RHS consumes an old Board token. Its dependency-only RHS
+retargets to `BoardCanvasPalette.signal`; its name, type, constness, exact
+`0xFFE7C25A` value, host ownership, consumers, and behavior remain unchanged,
+and no other footprint token changes.
+
+The focused static source guard pins no old palette identifier or owner and
+has no negative collision with the new import/class references. The focused
+test remains byte-identical at `169 = 155 testWidgets + 14 test`. Three State
+owners and all fields/controllers/lifetimes stay fixed; four writer-provider
+invocations remain `3 + 1`; both notifier-mirroring sites remain in the host.
+The new palette library is immutable `ZERO_WRITE` presentation data with no
+provider, `ref`, writer, State, filesystem, event, projection mutation, or
+route logic.
+
+Child validation is `AUTOMATED_ONLY_OK`: prove exact 13-value equality,
+`355 -> 355` qualified-reference accounting, zero old identifiers, one host
+import/no part imports, exact two-part closure, focused/full Flutter tests,
+analyzer, doctor, validator, formatting, exact four-path material union, diff
+checks, and frozen directories. Any inability to prove exact visual identity
+stops the child and requires a new manual-smoke decision.
+
+After accepted committed implementation, separately scoped committed-source
+map maintenance gives host/Wizard/Navigator `UPDATE_REQUIRED`, reviews the
+byte-identical focused-test and Wizard-token maps as `REVIEWED_NO_CHANGE`, and
+qualifies the new constants owner from actual committed source. No map changes
+now or during the child.
+
+The live route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 470a746]
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS
+-> [separately scoped accepted-committed-source Code Map maintenance]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+One neutral `REVIEW_REQUIRED` ledger row and one unique empty designated
+verdict block supply the bounded audit coordinates. No geometry, evidence,
+Wizard/Navigator conversion, controller/State, writer, painter, global theme,
+or design-system successor is armed.
+
+## Accepted Board Canvas measurement normal-library committed-source Code Map maintenance (historical, non-authorizing)
+
+The retained section below completed at
+`470a74660ca8bb06ef93fde348e4115beea4e648`. Its Phase-1 route and registry
+wording is historical and supplies no current authority.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
 import 'package:trace_bench_viewer/app/router.dart';
+import 'package:trace_bench_viewer/features/board_canvas/geometry/placement_geometry.dart';
 import 'package:trace_bench_viewer/features/board_canvas/logic/measurement_projection.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
@@ -17,6 +18,8 @@ import 'package:trace_bench_viewer/features/components/services/v2_edit_componen
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
 import 'package:trace_bench_viewer/features/measure_sheet/services/v2_save_measurement_writer.dart';
 import 'package:trace_bench_viewer/features/project/widgets/workbench_shell.dart';
+import 'package:trace_bench_viewer/shared/footprints/footprint_models.dart';
+import 'package:trace_bench_viewer/shared/footprints/vector_footprint_library.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
@@ -997,6 +1000,69 @@ void _expectStableComponentPreviewGeometry(WidgetTester tester) {
   expect(centerSlotRect.center.dx, closeTo(stageRect.center.dx, 0.5));
 }
 
+ComponentVisualPlacementFact _geometryPlacement({
+  String componentId = 'cmp_geometry',
+  num centerX = 0.5,
+  num centerY = 0.5,
+  num rotationDeg = 0,
+  num? scale,
+  num? width,
+  num? height,
+  String? templateId,
+}) {
+  return ComponentVisualPlacementFact(
+    componentId: componentId,
+    coordinateSpace: 'board_normalized',
+    boardSide: 'top',
+    centerX: centerX,
+    centerY: centerY,
+    rotationDeg: rotationDeg,
+    scale: scale,
+    width: width,
+    height: height,
+    templateId: templateId,
+    sourceEventId: 'evt_geometry',
+    status: 'user_confirmed_visual',
+  );
+}
+
+FootprintTemplate _geometryTemplate(String templateId) {
+  return kV1FootprintTemplates.firstWhere(
+    (template) => template.templateId == templateId,
+  );
+}
+
+FootprintTemplate _geometryTemplateWithPinCount(
+  String templateId,
+  int pinCount,
+) {
+  final base = _geometryTemplate('soic_16');
+  return FootprintTemplate(
+    templateId: templateId,
+    templateVersion: base.templateVersion,
+    packageFamily: base.packageFamily,
+    displayName: base.displayName,
+    description: base.description,
+    body: base.body,
+    origin: base.origin,
+    boundingBox: base.boundingBox,
+    labelAnchor: base.labelAnchor,
+    orientationMarker: base.orientationMarker,
+    pinAnchors: base.pinAnchors.take(pinCount).toList(growable: false),
+    pinGroups: base.pinGroups,
+    pinCountRules: base.pinCountRules,
+    defaultPinPitch: base.defaultPinPitch,
+    allowedVariants: base.allowedVariants,
+    defaultStyleTokens: base.defaultStyleTokens,
+    lodHints: base.lodHints,
+    hitTestShape: base.hitTestShape,
+    accessibilityLabelTemplate: base.accessibilityLabelTemplate,
+    fallbackPolicy: base.fallbackPolicy,
+    pinAnchorsAreGeometricOnly: base.pinAnchorsAreGeometricOnly,
+    allowsExternalLeadExtents: base.allowsExternalLeadExtents,
+  );
+}
+
 void main() {
   testWidgets('unknown freshness warning keeps Board Canvas usable',
       (tester) async {
@@ -1032,6 +1098,280 @@ void main() {
     expect(tokens.draftUnsavedUnknown, const Color(0xFF7B3FF2));
     expect(tokens.draftUnsavedUnknownStrong, const Color(0xFF5E35B1));
     expect(tokens.draftUnsavedUnknownFill, const Color(0x227B3FF2));
+  });
+
+  group('placement geometry read model', () {
+    test('converts and clamps normalized placement centers', () {
+      expect(
+        renderedPlacementCenter(
+          _geometryPlacement(centerX: 0.25, centerY: 0.75),
+          const Size(200, 80),
+        ),
+        const Offset(50, 60),
+      );
+      expect(
+        renderedPlacementCenter(
+          _geometryPlacement(centerX: -0.25, centerY: 1.25),
+          const Size(200, 80),
+        ),
+        const Offset(0, 80),
+      );
+    });
+
+    test('keeps scale precedence and scale clamps', () {
+      final template = _geometryTemplate('unknown_2pin');
+      final scaled = renderedPlacementBodySize(
+        _geometryPlacement(scale: 2, width: 0.2, height: 3),
+        template,
+      );
+      expect(scaled.width, 56);
+      expect(scaled.height, closeTo(36.96, 0.000001));
+      expect(
+        renderedPlacementBodySize(_geometryPlacement(scale: 0), template),
+        const Size(8, 6),
+      );
+      expect(
+        renderedPlacementBodySize(_geometryPlacement(scale: 100), template),
+        const Size(140, 92.4),
+      );
+    });
+
+    test('keeps explicit, template, and fallback body-size precedence', () {
+      final template = _geometryTemplate('unknown_2pin');
+      expect(
+        renderedPlacementBodySize(
+          _geometryPlacement(width: 0.2, height: 3),
+          template,
+        ),
+        const Size(12, 120),
+      );
+      expect(
+        renderedPlacementBodySize(_geometryPlacement(width: 0.2), template),
+        const Size(40, 20),
+      );
+      expect(
+        renderedPlacementBodySize(_geometryPlacement(), template),
+        const Size(40, 20),
+      );
+      expect(
+        renderedPlacementBodySize(_geometryPlacement(width: 0.2), null),
+        const Size(24, 16),
+      );
+    });
+
+    test('keeps every footprint-kind minimum visual envelope', () {
+      const expected = <FootprintVisualKind, Size>{
+        FootprintVisualKind.testPoint: Size(22, 22),
+        FootprintVisualKind.passive2: Size(44, 18),
+        FootprintVisualKind.capacitor: Size(40, 40),
+        FootprintVisualKind.diode: Size(44, 18),
+        FootprintVisualKind.transistor3: Size(52, 40),
+        FootprintVisualKind.icDualSide: Size(56, 40),
+        FootprintVisualKind.icQuadSide: Size(60, 44),
+        FootprintVisualKind.smallMultiPin: Size(34, 24),
+        FootprintVisualKind.connector: Size(44, 22),
+        FootprintVisualKind.switchPackage: Size(36, 24),
+        FootprintVisualKind.moduleBlock: Size(56, 40),
+        FootprintVisualKind.mechanical: Size(20, 20),
+        FootprintVisualKind.denseGrid: Size(48, 48),
+        FootprintVisualKind.generic: Size(32, 22),
+      };
+
+      expect(FootprintVisualKind.values, hasLength(expected.length));
+      for (final entry in expected.entries) {
+        expect(minimumFootprintVisualEnvelope(entry.key), entry.value);
+      }
+    });
+
+    test('keeps exact template-id classifier mappings', () {
+      const expected = <String, FootprintVisualKind>{
+        'unknown_rect': FootprintVisualKind.generic,
+        'unknown_2pin': FootprintVisualKind.passive2,
+        'unknown_3pin': FootprintVisualKind.transistor3,
+        'unknown_multi_pin': FootprintVisualKind.smallMultiPin,
+        'chip_0402': FootprintVisualKind.passive2,
+        'chip_0603': FootprintVisualKind.passive2,
+        'chip_0805': FootprintVisualKind.passive2,
+        'chip_1206': FootprintVisualKind.passive2,
+        'two_pin_smd': FootprintVisualKind.passive2,
+        'two_pin_axial': FootprintVisualKind.passive2,
+        'sot23_3': FootprintVisualKind.transistor3,
+        'sot23_5': FootprintVisualKind.smallMultiPin,
+        'sot223': FootprintVisualKind.smallMultiPin,
+        'soic_8': FootprintVisualKind.icDualSide,
+        'soic_14': FootprintVisualKind.icDualSide,
+        'soic_16': FootprintVisualKind.icDualSide,
+        'header_1xn': FootprintVisualKind.connector,
+        'header_2xn': FootprintVisualKind.connector,
+      };
+
+      for (final entry in expected.entries) {
+        expect(
+          footprintVisualKind(
+            _geometryPlacement(templateId: entry.key),
+            null,
+            null,
+          ),
+          entry.value,
+          reason: entry.key,
+        );
+      }
+    });
+
+    test('keeps classifier precedence and marker, reference, and pin branches',
+        () {
+      FootprintVisualKind classify({
+        String componentId = 'cmp_geometry',
+        String? designator,
+        String? templateId,
+        FootprintTemplate? template,
+      }) {
+        return footprintVisualKind(
+          _geometryPlacement(
+            componentId: componentId,
+            templateId: templateId,
+          ),
+          designator == null
+              ? null
+              : ComponentFact(
+                  componentId: componentId,
+                  designator: designator,
+                ),
+          template,
+        );
+      }
+
+      expect(
+        classify(designator: 'TP1', templateId: 'unknown_2pin'),
+        FootprintVisualKind.testPoint,
+      );
+      expect(classify(designator: 'GND'), FootprintVisualKind.testPoint);
+      expect(
+        classify(designator: 'J1', templateId: 'unknown_3pin'),
+        FootprintVisualKind.connector,
+      );
+      expect(
+        classify(designator: 'Q1', templateId: 'unknown_2pin'),
+        FootprintVisualKind.passive2,
+      );
+      expect(
+        classify(
+          designator: 'Q1',
+          templateId: 'custom_five',
+          template: _geometryTemplateWithPinCount('custom_five', 5),
+        ),
+        FootprintVisualKind.icDualSide,
+      );
+      expect(classify(designator: 'Q1'), FootprintVisualKind.transistor3);
+      expect(
+        classify(designator: 'U1', componentId: 'cmp_qfn_controller'),
+        FootprintVisualKind.icQuadSide,
+      );
+      expect(
+        classify(designator: 'U1', componentId: 'cmp_soic_controller'),
+        FootprintVisualKind.icDualSide,
+      );
+      expect(
+        classify(
+          designator: 'U1',
+          templateId: 'custom_five',
+          template: _geometryTemplateWithPinCount('custom_five', 5),
+        ),
+        FootprintVisualKind.smallMultiPin,
+      );
+      expect(classify(designator: 'R1'), FootprintVisualKind.passive2);
+      expect(classify(designator: 'C1'), FootprintVisualKind.capacitor);
+      expect(classify(designator: 'D1'), FootprintVisualKind.diode);
+      expect(classify(designator: 'SW1'), FootprintVisualKind.switchPackage);
+      expect(classify(designator: 'MH1'), FootprintVisualKind.mechanical);
+      expect(classify(designator: 'K1'), FootprintVisualKind.moduleBlock);
+      expect(
+        classify(componentId: 'cmp_header_port'),
+        FootprintVisualKind.connector,
+      );
+      expect(
+        classify(componentId: 'cmp_cap_bulk'),
+        FootprintVisualKind.capacitor,
+      );
+      expect(
+        classify(componentId: 'cmp_resistor_bulk'),
+        FootprintVisualKind.passive2,
+      );
+      expect(
+        classify(componentId: 'cmp_diode_bulk'),
+        FootprintVisualKind.diode,
+      );
+      expect(
+        classify(
+          templateId: 'custom_three',
+          template: _geometryTemplateWithPinCount('custom_three', 3),
+        ),
+        FootprintVisualKind.icDualSide,
+      );
+      expect(
+        classify(componentId: 'cmp_qfp_unknown'),
+        FootprintVisualKind.icQuadSide,
+      );
+      expect(classify(), FootprintVisualKind.generic);
+    });
+
+    test('takes the component-wise maximum body and visual envelope', () {
+      expect(
+        renderedFootprintVisualSize(
+          _geometryPlacement(width: 0.2, height: 1),
+          const ComponentFact(componentId: 'R1', designator: 'R1'),
+          null,
+        ),
+        const Size(44, 60),
+      );
+    });
+
+    test('keeps upright hit boundaries and clamped-center behavior', () {
+      final placement = _geometryPlacement();
+      bool containsAt(Offset position) => renderedPlacementContains(
+            placement: placement,
+            component: null,
+            template: null,
+            position: position,
+            size: const Size(100, 100),
+          );
+
+      expect(containsAt(const Offset(50, 50)), isTrue);
+      expect(containsAt(const Offset(34, 39)), isTrue);
+      expect(containsAt(const Offset(66, 50)), isFalse);
+      expect(containsAt(const Offset(50, 61)), isFalse);
+      expect(containsAt(const Offset(33.9, 50)), isFalse);
+      expect(
+        renderedPlacementContains(
+          placement: _geometryPlacement(centerX: -1, centerY: 2),
+          component: null,
+          template: null,
+          position: const Offset(0, 100),
+          size: const Size(100, 100),
+        ),
+        isTrue,
+      );
+    });
+
+    test('ignores nonzero rotation for upright hit testing', () {
+      bool contains(ComponentVisualPlacementFact placement) =>
+          renderedPlacementContains(
+            placement: placement,
+            component: null,
+            template: null,
+            position: const Offset(75, 50),
+            size: const Size(100, 100),
+          );
+
+      expect(
+        contains(_geometryPlacement(rotationDeg: 0, width: 1, height: 0.2)),
+        isTrue,
+      );
+      expect(
+        contains(_geometryPlacement(rotationDeg: 90, width: 1, height: 0.2)),
+        isTrue,
+      );
+    });
   });
 
   const boardPlacement = ComponentVisualPlacementFact(
@@ -11211,91 +11551,123 @@ void main() {
   });
 
   test('board canvas source keeps read-only data-path boundaries', () {
-    final source = File(
+    final hostSource = File(
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
     ).readAsStringSync();
     final wizardOverlaySource = File(
       'lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart',
     ).readAsStringSync();
+    final geometrySource = File(
+      'lib/features/board_canvas/geometry/placement_geometry.dart',
+    ).readAsStringSync();
 
-    expect(source, isNot(contains('template.toMap(')));
-    expect(source, isNot(contains('oldDelegate.entries != entries')));
-    expect(source, contains('_entriesEquivalent('));
-    expect(source, contains('template.pinAnchors'));
-    expect(source, contains('template.orientationMarker'));
-    expect(source, contains('_footprintVisualKind('));
-    expect(source, contains('knownFacts.pins'));
-    expect(source, contains('knownFacts.componentPinIndex'));
-    expect(source, contains('_knownPinVisualRefsByComponentId'));
-    expect(source, contains('_footprintPinRenderPlan'));
-    expect(source, contains('_FootprintPinRenderMode.templateGeometry'));
-    expect(source, contains('_FootprintPinRenderMode.knownPinList'));
-    expect(source, contains('_FootprintPinRenderMode.none'));
-    expect(source, contains('_drawDecorativePackagePads'));
-    expect(source, isNot(contains('_drawLogicalPinTokens')));
-    expect(source, isNot(contains('_drawLogicalPinToken')));
-    expect(source, isNot(contains('_drawLogicalPinCountCue')));
-    expect(source, isNot(contains('_logicalPinTokenLayout')));
-    expect(source, isNot(contains('_logicalPinTokenLabel')));
-    expect(source, contains('_renderedFootprintVisualSize'));
-    expect(source, contains('_minimumFootprintVisualEnvelope'));
-    expect(source, contains('return const Size(56, 40);'));
-    expect(source, contains('return const Size(44, 18);'));
-    expect(source, contains('return const Size(40, 40);'));
-    expect(source, contains('return const Size(52, 40);'));
-    expect(source, contains('return const Size(44, 22);'));
-    expect(source, contains('return const Size(22, 22);'));
-    expect(source, contains('return const Size(32, 22);'));
-    expect(source, contains('_drawFootprintSurfaceDetails'));
-    expect(source, isNot(contains('_drawFallbackPads')));
-    expect(source, contains('_drawSelectionRing'));
-    expect(source, contains('_drawDashedRRect'));
-    expect(source, contains('selectedEntry: widget.selectedEntry'));
-    expect(source, contains('_FootprintPreviewPainter'));
-    expect(source, contains('_reservedPinControlGutterWidth'));
-    expect(source, contains('_kPreviewFootprintVerticalCenterOffset'));
-    expect(source, contains('board_canvas_measure_component_left_gutter'));
-    expect(source, contains('board_canvas_measure_component_center_slot'));
-    expect(source, contains('board_canvas_measure_component_right_gutter'));
-    expect(source, contains('_previewFootprintBodyRect'));
-    expect(source, contains('fixedSlotBodyRect'));
+    expect(hostSource, isNot(contains('template.toMap(')));
+    expect(hostSource, isNot(contains('oldDelegate.entries != entries')));
+    expect(hostSource, contains('_entriesEquivalent('));
+    expect(hostSource, contains('template.pinAnchors'));
+    expect(hostSource, contains('template.orientationMarker'));
+    expect(hostSource, contains('footprintVisualKind('));
+    expect(geometrySource, contains('enum FootprintVisualKind'));
     expect(
-        source, contains('board_canvas_measure_component_footprint_preview'));
-    expect(source, contains('Component preview footprint visual'));
-    expect(source, contains('_footprintVisualKind(entry!)'));
-    expect(source, contains('_BoardPlacementPainter._drawFootprintBody'));
-    expect(source,
+      geometrySource,
+      contains('Offset renderedPlacementCenter('),
+    );
+    expect(
+      geometrySource,
+      contains('Size renderedPlacementBodySize('),
+    );
+    expect(
+      geometrySource,
+      contains('FootprintVisualKind footprintVisualKind('),
+    );
+    expect(
+      geometrySource,
+      contains('FootprintVisualKind? _footprintVisualKindByTemplateId('),
+    );
+    expect(
+      geometrySource,
+      contains('bool renderedPlacementContains({'),
+    );
+    expect(hostSource, isNot(contains('enum FootprintVisualKind')));
+    expect(hostSource, contains('knownFacts.pins'));
+    expect(hostSource, contains('knownFacts.componentPinIndex'));
+    expect(hostSource, contains('_knownPinVisualRefsByComponentId'));
+    expect(hostSource, contains('_footprintPinRenderPlan'));
+    expect(hostSource, contains('_FootprintPinRenderMode.templateGeometry'));
+    expect(hostSource, contains('_FootprintPinRenderMode.knownPinList'));
+    expect(hostSource, contains('_FootprintPinRenderMode.none'));
+    expect(hostSource, contains('_drawDecorativePackagePads'));
+    expect(hostSource, isNot(contains('_drawLogicalPinTokens')));
+    expect(hostSource, isNot(contains('_drawLogicalPinToken')));
+    expect(hostSource, isNot(contains('_drawLogicalPinCountCue')));
+    expect(hostSource, isNot(contains('_logicalPinTokenLayout')));
+    expect(hostSource, isNot(contains('_logicalPinTokenLabel')));
+    expect(
+      geometrySource,
+      contains('Size renderedFootprintVisualSize('),
+    );
+    expect(
+      geometrySource,
+      contains('Size minimumFootprintVisualEnvelope('),
+    );
+    expect(geometrySource, contains('return const Size(56, 40);'));
+    expect(geometrySource, contains('return const Size(44, 18);'));
+    expect(geometrySource, contains('return const Size(40, 40);'));
+    expect(geometrySource, contains('return const Size(52, 40);'));
+    expect(geometrySource, contains('return const Size(44, 22);'));
+    expect(geometrySource, contains('return const Size(22, 22);'));
+    expect(geometrySource, contains('return const Size(32, 22);'));
+    expect(hostSource, contains('_drawFootprintSurfaceDetails'));
+    expect(hostSource, isNot(contains('_drawFallbackPads')));
+    expect(hostSource, contains('_drawSelectionRing'));
+    expect(hostSource, contains('_drawDashedRRect'));
+    expect(hostSource, contains('selectedEntry: widget.selectedEntry'));
+    expect(hostSource, contains('_FootprintPreviewPainter'));
+    expect(hostSource, contains('_reservedPinControlGutterWidth'));
+    expect(hostSource, contains('_kPreviewFootprintVerticalCenterOffset'));
+    expect(hostSource, contains('board_canvas_measure_component_left_gutter'));
+    expect(hostSource, contains('board_canvas_measure_component_center_slot'));
+    expect(hostSource, contains('board_canvas_measure_component_right_gutter'));
+    expect(hostSource, contains('_previewFootprintBodyRect'));
+    expect(hostSource, contains('fixedSlotBodyRect'));
+    expect(hostSource,
+        contains('board_canvas_measure_component_footprint_preview'));
+    expect(hostSource, contains('Component preview footprint visual'));
+    expect(hostSource, contains('FootprintVisualKind.generic'));
+    expect(hostSource, contains('_BoardPlacementPainter._drawFootprintBody'));
+    expect(hostSource,
         contains('_BoardPlacementPainter._drawFootprintSurfaceDetails'));
+    expect(hostSource,
+        contains('_BoardPlacementPainter._drawDecorativePackagePads'));
+    expect(hostSource, contains('_ContactVisibilityState'));
+    expect(hostSource, contains('_ContactVisibilityState.bodyOnly'));
+    expect(hostSource, contains('_contactVisibilityStateForEntry'));
+    expect(hostSource, contains('_shouldDrawFootprintContacts'));
+    expect(hostSource, contains('confirmedVisualContacts'));
+    expect(hostSource, contains('return _ContactVisibilityState.bodyOnly;'));
+    expect(hostSource, contains('FootprintVisualKind.transistor3'));
+    expect(hostSource, contains('FootprintVisualKind.testPoint'));
+    expect(hostSource, contains('transistor 3-terminal footprint'));
+    expect(hostSource, contains('test point / ground footprint'));
+    expect(hostSource, contains('Visual only; contacts not added.'));
+    expect(hostSource, contains('contacts not added'));
+    expect(hostSource, contains('Visual only; no connectivity proof.'));
+    expect(hostSource,
+        isNot(contains('Visual only; pin locations not verified.')));
+    expect(hostSource, isNot(contains('visual package pads are decorative')));
+    expect(hostSource, isNot(contains('logical pin token')));
+    expect(hostSource, contains('_templatePinMatchesTarget'));
     expect(
-        source, contains('_BoardPlacementPainter._drawDecorativePackagePads'));
-    expect(source, contains('_ContactVisibilityState'));
-    expect(source, contains('_ContactVisibilityState.bodyOnly'));
-    expect(source, contains('_contactVisibilityStateForEntry'));
-    expect(source, contains('_shouldDrawFootprintContacts'));
-    expect(source, contains('confirmedVisualContacts'));
-    expect(source, contains('return _ContactVisibilityState.bodyOnly;'));
-    expect(source, contains('_FootprintVisualKind.transistor3'));
-    expect(source, contains('_FootprintVisualKind.testPoint'));
-    expect(source, contains('transistor 3-terminal footprint'));
-    expect(source, contains('test point / ground footprint'));
-    expect(source, contains('Visual only; contacts not added.'));
-    expect(source, contains('contacts not added'));
-    expect(source, contains('Visual only; no connectivity proof.'));
-    expect(source, isNot(contains('Visual only; pin locations not verified.')));
-    expect(source, isNot(contains('visual package pads are decorative')));
-    expect(source, isNot(contains('logical pin token')));
-    expect(source, contains('_templatePinMatchesTarget'));
-    expect(
-      source,
+      hostSource,
       contains(
         'Component visual editing entry is deferred to a later explicit scope.',
       ),
     );
+    expect(hostSource,
+        isNot(contains('board_canvas_component_visual_edit_button')));
+    expect(hostSource, contains('_kFootprintCopper'));
     expect(
-        source, isNot(contains('board_canvas_component_visual_edit_button')));
-    expect(source, contains('_kFootprintCopper'));
-    expect(
-      source,
+      geometrySource,
       contains(
         'Rotation visual support is intentionally deferred to a later explicit rotation scope.',
       ),
@@ -11310,147 +11682,148 @@ void main() {
     expect(wizardPainterSource, contains('candidate.rotationRadians'));
     expect(wizardPainterSource, contains('canvas.rotate(rotation);'));
 
-    final boardPlacementPainterStart = source.indexOf(
+    final boardPlacementPainterStart = hostSource.indexOf(
       'class _BoardPlacementPainter',
     );
     expect(boardPlacementPainterStart, greaterThanOrEqualTo(0));
-    final boardPlacementPainterSource = source.substring(
+    final boardPlacementPainterSource = hostSource.substring(
       boardPlacementPainterStart,
     );
     expect(boardPlacementPainterSource, isNot(contains('canvas.rotate(')));
-    expect(source, isNot(contains('_paintMeasurementPresenceBadge')));
+    expect(hostSource, isNot(contains('_paintMeasurementPresenceBadge')));
     expect(
-      source,
+      hostSource,
       isNot(contains(r"final badgeText = measurementCount == 1 ? 'm'")),
     );
-    expect(source, isNot(contains('badgeCenter')));
-    expect(source, isNot(contains('canvas.drawRRect(badgeRect')));
+    expect(hostSource, isNot(contains('badgeCenter')));
+    expect(hostSource, isNot(contains('canvas.drawRRect(badgeRect')));
     expect(
-      source,
+      hostSource,
       isNot(contains(
           r"final badgeText = measurementCount == 1 ? 'M' : 'M$measurementCount';")),
     );
-    expect(source, contains('CustomPainterSemantics'));
-    expect(source, contains('SemanticsProperties'));
-    expect(source, isNot(contains('width: 260')));
-    expect(source, contains('_BoardCanvasControlBand'));
-    expect(source, contains('_BoardCanvasSafetyEvidenceDisclosure'));
-    expect(source, contains('_InspectorChromeToggle'));
-    expect(source, contains('_CanvasStatusPill'));
-    expect(source, contains('board_canvas_control_band'));
-    expect(source, contains('board_canvas_placement_selector_disclosure'));
-    expect(source, contains('board_canvas_safety_evidence_disclosure'));
-    expect(source, contains('board_canvas_inspector_toggle_button'));
-    expect(source, isNot(contains('MeasurementEventWriter')));
-    expect(source, contains('v2_save_measurement_' 'writer'));
-    expect(source, contains('V2SaveMeasurementRequest'));
-    expect(source, contains('v2SaveMeasurementWriterProvider'));
-    expect(source, isNot(contains('ProjectExporter')));
-    expect(source, isNot(contains('ProjectCreator')));
-    expect(source, isNot(contains('ProjectOverviewScreen')));
-    expect(source, isNot(contains('jsonDecode(')));
-    expect(source, isNot(contains('known_facts.json')));
-    expect(source, isNot(contains('events.jsonl')));
-    expect(source, isNot(contains('board_graph.json')));
-    expect(source, isNot(contains('view_state.json')));
-    expect(source, contains('_PlacementEditorDraftState'));
-    expect(source, contains('board_canvas_placement_editor_shell'));
-    expect(source, contains('unsaved/session-only'));
-    expect(source, contains('Draft changes stay in memory only.'));
-    expect(source, contains('Canonical projection remains unchanged.'));
-    expect(source,
+    expect(hostSource, contains('CustomPainterSemantics'));
+    expect(hostSource, contains('SemanticsProperties'));
+    expect(hostSource, isNot(contains('width: 260')));
+    expect(hostSource, contains('_BoardCanvasControlBand'));
+    expect(hostSource, contains('_BoardCanvasSafetyEvidenceDisclosure'));
+    expect(hostSource, contains('_InspectorChromeToggle'));
+    expect(hostSource, contains('_CanvasStatusPill'));
+    expect(hostSource, contains('board_canvas_control_band'));
+    expect(hostSource, contains('board_canvas_placement_selector_disclosure'));
+    expect(hostSource, contains('board_canvas_safety_evidence_disclosure'));
+    expect(hostSource, contains('board_canvas_inspector_toggle_button'));
+    expect(hostSource, isNot(contains('MeasurementEventWriter')));
+    expect(hostSource, contains('v2_save_measurement_' 'writer'));
+    expect(hostSource, contains('V2SaveMeasurementRequest'));
+    expect(hostSource, contains('v2SaveMeasurementWriterProvider'));
+    expect(hostSource, isNot(contains('ProjectExporter')));
+    expect(hostSource, isNot(contains('ProjectCreator')));
+    expect(hostSource, isNot(contains('ProjectOverviewScreen')));
+    expect(hostSource, isNot(contains('jsonDecode(')));
+    expect(hostSource, isNot(contains('known_facts.json')));
+    expect(hostSource, isNot(contains('events.jsonl')));
+    expect(hostSource, isNot(contains('board_graph.json')));
+    expect(hostSource, isNot(contains('view_state.json')));
+    expect(hostSource, contains('_PlacementEditorDraftState'));
+    expect(hostSource, contains('board_canvas_placement_editor_shell'));
+    expect(hostSource, contains('unsaved/session-only'));
+    expect(hostSource, contains('Draft changes stay in memory only.'));
+    expect(hostSource, contains('Canonical projection remains unchanged.'));
+    expect(hostSource,
         contains('Per-side markers are UI-local; not confirmed contacts.'));
-    expect(source, contains('Pin-asetus'));
-    expect(source, contains('UI-local marker draft'));
-    expect(source, contains('Suurus'));
-    expect(source, contains('Laius'));
-    expect(source, contains('Kõrgus'));
-    expect(source, contains('Lohista nurgast suuruse muutmiseks'));
-    expect(source, contains('Pööramine'));
-    expect(source, contains(r'Pööre: $rotationDeg°'));
-    expect(source, contains('Eelvaade'));
-    expect(source, contains('Draft / unsaved'));
-    expect(source, contains('Mustand on lokaalne kuni salvestamiseni.'));
-    expect(source, contains('Kontaktid ei kinnita elektrilist ühendust.'));
+    expect(hostSource, contains('Pin-asetus'));
+    expect(hostSource, contains('UI-local marker draft'));
+    expect(hostSource, contains('Suurus'));
+    expect(hostSource, contains('Laius'));
+    expect(hostSource, contains('Kõrgus'));
+    expect(hostSource, contains('Lohista nurgast suuruse muutmiseks'));
+    expect(hostSource, contains('Pööramine'));
+    expect(hostSource, contains(r'Pööre: $rotationDeg°'));
+    expect(hostSource, contains('Eelvaade'));
+    expect(hostSource, contains('Draft / unsaved'));
+    expect(hostSource, contains('Mustand on lokaalne kuni salvestamiseni.'));
+    expect(hostSource, contains('Kontaktid ei kinnita elektrilist ühendust.'));
     expect(
-        source,
+        hostSource,
         contains(
             'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.'));
-    expect(source, contains('v2PlacementWriterProvider'));
-    expect(source, contains('V2PlacementWriterRequest'));
+    expect(hostSource, contains('v2PlacementWriterProvider'));
+    expect(hostSource, contains('V2PlacementWriterRequest'));
     expect(
-        source,
+        hostSource,
         contains(
             'Kontaktid on lokaalne mustand; neid ei kinnitata elektriliste kontaktidena.'));
-    expect(source, contains('board_canvas_add_component_builder_save'));
-    expect(source, contains('board_canvas_add_component_builder_local_edit'));
-    expect(source, contains('board_canvas_add_component_builder_delete'));
-    expect(source, contains('board_canvas_add_component_builder_cancel'));
-    expect(source, isNot(contains('maxPanelHeight')));
-    expect(source, isNot(contains('scrollbars: false')));
-    expect(source, isNot(contains('event_writer_service.py')));
-    expect(source, isNot(contains('component_visual_placement_confirmed')));
-    expect(source, contains('knownFacts.visualTraces'));
-    expect(source, contains('knownFacts.photoToBoardAlignments'));
-    expect(source, isNot(contains('knownFacts.damageRegions')));
-    expect(source, isNot(contains('knownFacts.suspectRegions')));
-    expect(source, isNot(contains('knownFacts.nets')));
-    expect(source, isNot(contains('from_point')));
-    expect(source, isNot(contains('to_point')));
-    expect(source, isNot(contains('referencePointsPhoto[')));
-    expect(source, isNot(contains('referencePointsBoard[')));
-    expect(source, isNot(contains('Image(')));
-    expect(source, isNot(contains('DecorationImage(')));
-    expect(source, isNot(contains('RawImage(')));
-    expect(source, isNot(contains('Promote to net')));
-    expect(source, isNot(contains('measurementOverlay')));
-    expect(source, isNot(contains('measurementAnchor')));
-    expect(source, isNot(contains('measurementCoordinate')));
-    expect(source, isNot(contains('drawMeasurementBadge')));
-    expect(source, isNot(contains('visualTracePath')));
-    expect(source, isNot(contains('damagePath')));
-    expect(source, isNot(contains('suspectPath')));
-    expect(source, isNot(contains('measurementPath')));
-    expect(source, isNot(contains('photoLocalPath')));
-    expect(source, isNot(contains('drawVisualTrace')));
-    expect(source, isNot(contains('drawDamage')));
-    expect(source, isNot(contains('drawSuspect')));
-    expect(source, isNot(contains('drawMeasurementPath')));
-    expect(source, isNot(contains('drawMeasurementOverlay')));
-    expect(source, isNot(contains('drawPhotoLocal')));
-    expect(source, isNot(contains('drawPhotoOverlay')));
-    expect(source, isNot(contains('/project/components/add')));
-    expect(source, contains('InteractiveViewer('));
-    expect(source,
-        contains('transformationController: _transformationController'));
-    expect(source, contains('minScale: _kMinZoom'));
-    expect(source, contains('maxScale: _kMaxZoom'));
-    expect(source, contains('GestureDetector('));
-    expect(source, contains('board_canvas_tap_layer'));
-    expect(source, contains('onPlacementSelected'));
-    expect(source, contains('_renderedPlacementContains('));
-    expect(source, contains('abstract class CanvasSelection'));
+    expect(hostSource, contains('board_canvas_add_component_builder_save'));
     expect(
-      source,
+        hostSource, contains('board_canvas_add_component_builder_local_edit'));
+    expect(hostSource, contains('board_canvas_add_component_builder_delete'));
+    expect(hostSource, contains('board_canvas_add_component_builder_cancel'));
+    expect(hostSource, isNot(contains('maxPanelHeight')));
+    expect(hostSource, isNot(contains('scrollbars: false')));
+    expect(hostSource, isNot(contains('event_writer_service.py')));
+    expect(hostSource, isNot(contains('component_visual_placement_confirmed')));
+    expect(hostSource, contains('knownFacts.visualTraces'));
+    expect(hostSource, contains('knownFacts.photoToBoardAlignments'));
+    expect(hostSource, isNot(contains('knownFacts.damageRegions')));
+    expect(hostSource, isNot(contains('knownFacts.suspectRegions')));
+    expect(hostSource, isNot(contains('knownFacts.nets')));
+    expect(hostSource, isNot(contains('from_point')));
+    expect(hostSource, isNot(contains('to_point')));
+    expect(hostSource, isNot(contains('referencePointsPhoto[')));
+    expect(hostSource, isNot(contains('referencePointsBoard[')));
+    expect(hostSource, isNot(contains('Image(')));
+    expect(hostSource, isNot(contains('DecorationImage(')));
+    expect(hostSource, isNot(contains('RawImage(')));
+    expect(hostSource, isNot(contains('Promote to net')));
+    expect(hostSource, isNot(contains('measurementOverlay')));
+    expect(hostSource, isNot(contains('measurementAnchor')));
+    expect(hostSource, isNot(contains('measurementCoordinate')));
+    expect(hostSource, isNot(contains('drawMeasurementBadge')));
+    expect(hostSource, isNot(contains('visualTracePath')));
+    expect(hostSource, isNot(contains('damagePath')));
+    expect(hostSource, isNot(contains('suspectPath')));
+    expect(hostSource, isNot(contains('measurementPath')));
+    expect(hostSource, isNot(contains('photoLocalPath')));
+    expect(hostSource, isNot(contains('drawVisualTrace')));
+    expect(hostSource, isNot(contains('drawDamage')));
+    expect(hostSource, isNot(contains('drawSuspect')));
+    expect(hostSource, isNot(contains('drawMeasurementPath')));
+    expect(hostSource, isNot(contains('drawMeasurementOverlay')));
+    expect(hostSource, isNot(contains('drawPhotoLocal')));
+    expect(hostSource, isNot(contains('drawPhotoOverlay')));
+    expect(hostSource, isNot(contains('/project/components/add')));
+    expect(hostSource, contains('InteractiveViewer('));
+    expect(hostSource,
+        contains('transformationController: _transformationController'));
+    expect(hostSource, contains('minScale: _kMinZoom'));
+    expect(hostSource, contains('maxScale: _kMaxZoom'));
+    expect(hostSource, contains('GestureDetector('));
+    expect(hostSource, contains('board_canvas_tap_layer'));
+    expect(hostSource, contains('onPlacementSelected'));
+    expect(hostSource, contains('renderedPlacementContains('));
+    expect(hostSource, contains('abstract class CanvasSelection'));
+    expect(
+      hostSource,
       contains('class EmptyCanvasSelection extends CanvasSelection'),
     );
     expect(
-      source,
+      hostSource,
       contains('class ComponentPlacementSelection extends CanvasSelection'),
     );
-    expect(source, contains('CanvasSelection _canvasSelection'));
-    expect(source, contains('String? get _selectedPlacementKey'));
-    expect(source, contains('final String placementKey;'));
-    expect(source, contains('final String componentId;'));
-    expect(source, contains('final Offset? canvasAnchor;'));
-    expect(source, isNot(contains('screenAnchor')));
-    expect(source, isNot(contains('PinSelection')));
-    expect(source, isNot(contains('ContactSelection')));
-    expect(source, isNot(contains('TraceSelection')));
-    expect(source, isNot(contains('MeasurementSelection')));
-    expect(source, isNot(contains('Confirm net')));
-    expect(source, isNot(contains('Show photo')));
-    expect(source, isNot(contains('Render overlay')));
-    expect(source, isNot(contains('Compute transform')));
+    expect(hostSource, contains('CanvasSelection _canvasSelection'));
+    expect(hostSource, contains('String? get _selectedPlacementKey'));
+    expect(hostSource, contains('final String placementKey;'));
+    expect(hostSource, contains('final String componentId;'));
+    expect(hostSource, contains('final Offset? canvasAnchor;'));
+    expect(hostSource, isNot(contains('screenAnchor')));
+    expect(hostSource, isNot(contains('PinSelection')));
+    expect(hostSource, isNot(contains('ContactSelection')));
+    expect(hostSource, isNot(contains('TraceSelection')));
+    expect(hostSource, isNot(contains('MeasurementSelection')));
+    expect(hostSource, isNot(contains('Confirm net')));
+    expect(hostSource, isNot(contains('Show photo')));
+    expect(hostSource, isNot(contains('Render overlay')));
+    expect(hostSource, isNot(contains('Compute transform')));
   });
 }

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/app.dart';
+import '../geometry/placement_geometry.dart';
 import '../logic/measurement_projection.dart';
 import '../theme/board_canvas_palette.dart';
 import '../../components/services/v2_add_component_writer.dart';
@@ -5795,8 +5796,10 @@ class _CanvasPanelState extends State<_CanvasPanel> {
       return;
     }
     for (final entry in widget.entries.reversed) {
-      if (_renderedPlacementContains(
-        entry: entry,
+      if (renderedPlacementContains(
+        placement: entry.placement,
+        component: entry.component,
+        template: entry.template,
         position: position,
         size: size,
       )) {
@@ -6844,7 +6847,13 @@ class _PlacementEditorDraftState {
           ? 'top'
           : placement.boardSide.trim(),
       templateLabel: templateId == null || templateId.isEmpty
-          ? _footprintVisualKindLabel(_footprintVisualKind(entry))
+          ? _footprintVisualKindLabel(
+              footprintVisualKind(
+                entry.placement,
+                entry.component,
+                entry.template,
+              ),
+            )
           : templateId,
       rotationDeg: placement.rotationDeg.toDouble(),
       width: width == null || !width.isFinite || width <= 0 ? 1.0 : width,
@@ -8343,7 +8352,11 @@ String _componentPreviewSemanticsLabel(_PlacementEntry? entry) {
   if (entry == null) {
     return 'Component preview footprint visual: generic component footprint, visual only';
   }
-  final kind = _footprintVisualKind(entry);
+  final kind = footprintVisualKind(
+    entry.placement,
+    entry.component,
+    entry.template,
+  );
   final pinRenderPlan = _footprintPinRenderPlan(entry);
   return 'Component preview footprint visual ${_footprintDisplayLabel(entry)}: '
       '${_footprintVisualKindLabel(kind)}, visual only'
@@ -8381,8 +8394,12 @@ class _FootprintPreviewPainter extends CustomPainter {
     canvas.drawRRect(stageRRect, stageStrokePaint);
 
     final visualKind = entry == null
-        ? _FootprintVisualKind.generic
-        : _footprintVisualKind(entry!);
+        ? FootprintVisualKind.generic
+        : footprintVisualKind(
+            entry!.placement,
+            entry!.component,
+            entry!.template,
+          );
     final pinRenderPlan = _footprintPinRenderPlan(entry);
     final contactVisibilityState = _contactVisibilityStateForEntry(entry);
     final fixedSlotBodyRect = _previewFootprintBodyRect(visualKind, size);
@@ -8495,8 +8512,8 @@ class _FootprintPreviewPainter extends CustomPainter {
     }
   }
 
-  Size _previewFootprintBodySize(_FootprintVisualKind kind, Size size) {
-    final minimumSize = _minimumFootprintVisualEnvelope(kind);
+  Size _previewFootprintBodySize(FootprintVisualKind kind, Size size) {
+    final minimumSize = minimumFootprintVisualEnvelope(kind);
     final availableWidth = math.max(28.0, size.width - 44);
     final availableHeight = math.max(18.0, size.height - 30);
     final scale = math
@@ -8508,7 +8525,7 @@ class _FootprintPreviewPainter extends CustomPainter {
     return Size(minimumSize.width * scale, minimumSize.height * scale);
   }
 
-  Rect _previewFootprintBodyRect(_FootprintVisualKind kind, Size size) {
+  Rect _previewFootprintBodyRect(FootprintVisualKind kind, Size size) {
     final bodySize = _previewFootprintBodySize(kind, size);
     return Rect.fromCenter(
       center: Offset(
@@ -9774,8 +9791,11 @@ class _MeasurementValueBadgeLayer extends StatelessWidget {
         continue;
       }
 
-      final center = _renderedPlacementCenter(entry, size);
-      final bodySize = _renderedPlacementBodySize(entry);
+      final center = renderedPlacementCenter(entry.placement, size);
+      final bodySize = renderedPlacementBodySize(
+        entry.placement,
+        entry.template,
+      );
       const badgeWidth = 108.0;
       const badgeHeight = 22.0;
       const badgeGap = 3.0;
@@ -9902,73 +9922,6 @@ class _MeasurementValueBadge extends StatelessWidget {
   }
 }
 
-Offset _renderedPlacementCenter(_PlacementEntry entry, Size size) {
-  final placement = entry.placement;
-  final normalizedX = placement.centerX.toDouble().clamp(0.0, 1.0);
-  final normalizedY = placement.centerY.toDouble().clamp(0.0, 1.0);
-  return Offset(normalizedX * size.width, normalizedY * size.height);
-}
-
-Size _renderedPlacementBodySize(_PlacementEntry entry) {
-  final placement = entry.placement;
-  if (placement.scale != null) {
-    final scale = placement.scale!.toDouble();
-    const base = 28.0;
-    final scaled = (base * scale).clamp(8.0, 140.0);
-    return Size(scaled, (scaled * 0.66).clamp(6.0, 120.0));
-  }
-
-  if (placement.width != null && placement.height != null) {
-    final width = (placement.width!.toDouble() * 60).clamp(8.0, 140.0);
-    final height = (placement.height!.toDouble() * 60).clamp(6.0, 120.0);
-    return Size(width, height);
-  }
-
-  final template = entry.template;
-  if (template != null) {
-    final width = (template.body.width * 40).clamp(8.0, 140.0);
-    final height = (template.body.height * 40).clamp(6.0, 120.0);
-    return Size(width, height);
-  }
-
-  return const Size(24, 16);
-}
-
-bool _renderedPlacementContains({
-  required _PlacementEntry entry,
-  required Offset position,
-  required Size size,
-}) {
-  final center = _renderedPlacementCenter(entry, size);
-  final bodySize = _renderedFootprintVisualSize(entry);
-  final translated = position - center;
-  // Rotation visual support is intentionally deferred to a later explicit rotation scope.
-  // Keep hit testing aligned with the upright footprint rendered in this pass.
-  final localPosition = translated;
-  return Rect.fromCenter(
-    center: Offset.zero,
-    width: bodySize.width,
-    height: bodySize.height,
-  ).contains(localPosition);
-}
-
-enum _FootprintVisualKind {
-  testPoint,
-  passive2,
-  capacitor,
-  diode,
-  transistor3,
-  icDualSide,
-  icQuadSide,
-  smallMultiPin,
-  connector,
-  switchPackage,
-  moduleBlock,
-  mechanical,
-  denseGrid,
-  generic,
-}
-
 const Color _kFootprintSilk = Color(0xFFD3CD9A);
 const Color _kFootprintPad = Color(0xFF74E0A6);
 const Color _kFootprintCopper = Color(0xFFD8A24A);
@@ -10076,236 +10029,35 @@ bool _templatePinMatchesTarget(FootprintPinAnchor pin, String? selectedTarget) {
       trimmed.toLowerCase() == 'pin $pinNumber';
 }
 
-Size _renderedFootprintVisualSize(_PlacementEntry entry) {
-  final bodySize = _renderedPlacementBodySize(entry);
-  final minimumSize =
-      _minimumFootprintVisualEnvelope(_footprintVisualKind(entry));
-  return Size(
-    math.max(bodySize.width, minimumSize.width),
-    math.max(bodySize.height, minimumSize.height),
-  );
-}
-
-Size _minimumFootprintVisualEnvelope(_FootprintVisualKind visualKind) {
-  switch (visualKind) {
-    case _FootprintVisualKind.icDualSide:
-      return const Size(56, 40);
-    case _FootprintVisualKind.icQuadSide:
-      return const Size(60, 44);
-    case _FootprintVisualKind.smallMultiPin:
-      return const Size(34, 24);
-    case _FootprintVisualKind.passive2:
-    case _FootprintVisualKind.diode:
-      return const Size(44, 18);
-    case _FootprintVisualKind.capacitor:
-      return const Size(40, 40);
-    case _FootprintVisualKind.transistor3:
-      return const Size(52, 40);
-    case _FootprintVisualKind.connector:
-      return const Size(44, 22);
-    case _FootprintVisualKind.testPoint:
-      return const Size(22, 22);
-    case _FootprintVisualKind.switchPackage:
-      return const Size(36, 24);
-    case _FootprintVisualKind.moduleBlock:
-      return const Size(56, 40);
-    case _FootprintVisualKind.mechanical:
-      return const Size(20, 20);
-    case _FootprintVisualKind.denseGrid:
-      return const Size(48, 48);
-    case _FootprintVisualKind.generic:
-      return const Size(32, 22);
-  }
-}
-
-_FootprintVisualKind _footprintVisualKind(_PlacementEntry entry) {
-  final designator = (entry.component?.designator ?? '').trim().toUpperCase();
-  final componentId = entry.placement.componentId.trim().toUpperCase();
-  final templateId = (entry.placement.templateId ?? '').trim().toLowerCase();
-  final templateName = (entry.template?.templateId ?? '').trim().toLowerCase();
-  final marker = '$designator $componentId $templateId $templateName';
-  final markerLower = marker.toLowerCase();
-  final componentIdTokens = componentId
-      .split(RegExp(r'[^A-Z0-9]+'))
-      .where((token) => token.isNotEmpty)
-      .toList(growable: false);
-  final componentRef =
-      componentIdTokens.isEmpty ? componentId : componentIdTokens.last;
-
-  bool hasReferencePrefix(String prefix) {
-    final upperPrefix = prefix.toUpperCase();
-    return designator.startsWith(upperPrefix) ||
-        componentRef.startsWith(upperPrefix);
-  }
-
-  final templateVisualKind = _footprintVisualKindByTemplateId(templateId) ??
-      _footprintVisualKindByTemplateId(templateName);
-
-  if (hasReferencePrefix('TP') ||
-      designator == 'GND' ||
-      componentRef == 'GND' ||
-      markerLower.contains('testpoint') ||
-      markerLower.contains('test point') ||
-      markerLower.contains('test-point') ||
-      markerLower.contains('ground') ||
-      markerLower.contains('gnd')) {
-    return _FootprintVisualKind.testPoint;
-  }
-  if (hasReferencePrefix('J') ||
-      hasReferencePrefix('JP') ||
-      hasReferencePrefix('CN')) {
-    return _FootprintVisualKind.connector;
-  }
-  if (templateVisualKind != null) {
-    return templateVisualKind;
-  }
-  if (hasReferencePrefix('Q') ||
-      markerLower.contains('mosfet') ||
-      markerLower.contains('transistor')) {
-    final pinCount = entry.template?.pinAnchors.length ?? 0;
-    if (pinCount > 4) {
-      return _FootprintVisualKind.icDualSide;
-    }
-    return _FootprintVisualKind.transistor3;
-  }
-  if (hasReferencePrefix('U') || hasReferencePrefix('IC')) {
-    final markerHasSoic = markerLower.contains('soic') ||
-        markerLower.contains('dip') ||
-        markerLower.contains('tssop') ||
-        markerLower.contains('so-ic');
-    final markerHasQfn = markerLower.contains('qfp') ||
-        markerLower.contains('qfn') ||
-        markerLower.contains('densegrid') ||
-        markerLower.contains('bga');
-    if (markerHasQfn) {
-      return _FootprintVisualKind.icQuadSide;
-    }
-    if (markerHasSoic) {
-      return _FootprintVisualKind.icDualSide;
-    }
-    final pinCount = entry.template?.pinAnchors.length ?? 0;
-    if (pinCount >= 8) {
-      return _FootprintVisualKind.icDualSide;
-    }
-    if (pinCount == 5 || pinCount == 6) {
-      return _FootprintVisualKind.smallMultiPin;
-    }
-    return _FootprintVisualKind.icDualSide;
-  }
-  if (hasReferencePrefix('R')) {
-    return _FootprintVisualKind.passive2;
-  }
-  if (hasReferencePrefix('C')) {
-    return _FootprintVisualKind.capacitor;
-  }
-  if (hasReferencePrefix('D')) {
-    return _FootprintVisualKind.diode;
-  }
-  if (hasReferencePrefix('SW') || hasReferencePrefix('S')) {
-    return _FootprintVisualKind.switchPackage;
-  }
-  if (hasReferencePrefix('MH') || hasReferencePrefix('FID')) {
-    return _FootprintVisualKind.mechanical;
-  }
-  if (hasReferencePrefix('K')) {
-    return _FootprintVisualKind.moduleBlock;
-  }
-
-  final pinCount = entry.template?.pinAnchors.length ?? 0;
-  if (markerLower.contains('connector') || markerLower.contains('header')) {
-    return _FootprintVisualKind.connector;
-  }
-  if (markerLower.contains('capacitor') ||
-      markerLower.contains('cap_') ||
-      markerLower.contains('cap-')) {
-    return _FootprintVisualKind.capacitor;
-  }
-  if (markerLower.contains('resistor') || markerLower.contains('passive')) {
-    return _FootprintVisualKind.passive2;
-  }
-  if (markerLower.contains('diode')) {
-    return _FootprintVisualKind.diode;
-  }
-  if (pinCount >= 3 ||
-      markerLower.contains('sot') ||
-      markerLower.contains('soic') ||
-      markerLower.contains('qfp') ||
-      markerLower.contains('qfn') ||
-      markerLower.contains('dip')) {
-    return markerLower.contains('qfp') || markerLower.contains('qfn')
-        ? _FootprintVisualKind.icQuadSide
-        : _FootprintVisualKind.icDualSide;
-  }
-
-  return _FootprintVisualKind.generic;
-}
-
-_FootprintVisualKind? _footprintVisualKindByTemplateId(String templateId) {
-  if (templateId.trim().isEmpty) {
-    return null;
-  }
-  switch (templateId) {
-    case 'unknown_rect':
-      return _FootprintVisualKind.generic;
-    case 'unknown_2pin':
-      return _FootprintVisualKind.passive2;
-    case 'unknown_3pin':
-      return _FootprintVisualKind.transistor3;
-    case 'unknown_multi_pin':
-      return _FootprintVisualKind.smallMultiPin;
-    case 'chip_0402':
-    case 'chip_0603':
-    case 'chip_0805':
-    case 'chip_1206':
-    case 'two_pin_smd':
-    case 'two_pin_axial':
-      return _FootprintVisualKind.passive2;
-    case 'sot23_3':
-      return _FootprintVisualKind.transistor3;
-    case 'sot23_5':
-    case 'sot223':
-      return _FootprintVisualKind.smallMultiPin;
-    case 'soic_8':
-    case 'soic_14':
-    case 'soic_16':
-      return _FootprintVisualKind.icDualSide;
-    case 'header_1xn':
-    case 'header_2xn':
-      return _FootprintVisualKind.connector;
-    default:
-      return null;
-  }
-}
-
-String _footprintVisualKindLabel(_FootprintVisualKind kind) {
+String _footprintVisualKindLabel(FootprintVisualKind kind) {
   switch (kind) {
-    case _FootprintVisualKind.testPoint:
+    case FootprintVisualKind.testPoint:
       return 'test point / ground footprint';
-    case _FootprintVisualKind.passive2:
+    case FootprintVisualKind.passive2:
       return 'passive 2-terminal footprint';
-    case _FootprintVisualKind.capacitor:
+    case FootprintVisualKind.capacitor:
       return 'capacitor footprint';
-    case _FootprintVisualKind.diode:
+    case FootprintVisualKind.diode:
       return 'diode footprint';
-    case _FootprintVisualKind.transistor3:
+    case FootprintVisualKind.transistor3:
       return 'transistor 3-terminal footprint';
-    case _FootprintVisualKind.icDualSide:
+    case FootprintVisualKind.icDualSide:
       return 'IC / dual-side package footprint';
-    case _FootprintVisualKind.icQuadSide:
+    case FootprintVisualKind.icQuadSide:
       return 'IC / quad-side package footprint';
-    case _FootprintVisualKind.smallMultiPin:
+    case FootprintVisualKind.smallMultiPin:
       return 'small multi-pin package footprint';
-    case _FootprintVisualKind.connector:
+    case FootprintVisualKind.connector:
       return 'connector / header footprint';
-    case _FootprintVisualKind.switchPackage:
+    case FootprintVisualKind.switchPackage:
       return 'switch package footprint';
-    case _FootprintVisualKind.moduleBlock:
+    case FootprintVisualKind.moduleBlock:
       return 'module / relay / transformer footprint';
-    case _FootprintVisualKind.mechanical:
+    case FootprintVisualKind.mechanical:
       return 'mechanical / mounting footprint';
-    case _FootprintVisualKind.denseGrid:
+    case FootprintVisualKind.denseGrid:
       return 'dense grid footprint';
-    case _FootprintVisualKind.generic:
+    case FootprintVisualKind.generic:
       return 'generic component footprint';
   }
 }
@@ -10320,7 +10072,11 @@ String _footprintDisplayLabel(_PlacementEntry entry) {
 }
 
 String _footprintSemanticsLabel(_PlacementEntry entry) {
-  final kind = _footprintVisualKind(entry);
+  final kind = footprintVisualKind(
+    entry.placement,
+    entry.component,
+    entry.template,
+  );
   final pinRenderPlan = _footprintPinRenderPlan(entry);
   return 'Board Canvas footprint visual ${_footprintDisplayLabel(entry)}: '
       '${_footprintVisualKindLabel(kind)}, visual only'
@@ -10414,8 +10170,12 @@ class _BoardPlacementPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (final entry in entries) {
-      final center = _renderedPlacementCenter(entry, size);
-      final bodySize = _renderedFootprintVisualSize(entry);
+      final center = renderedPlacementCenter(entry.placement, size);
+      final bodySize = renderedFootprintVisualSize(
+        entry.placement,
+        entry.component,
+        entry.template,
+      );
       final selected = entry.key == selectedKey;
       final componentSelected =
           entry.placement.componentId == selectedComponentId;
@@ -10427,7 +10187,11 @@ class _BoardPlacementPainter extends CustomPainter {
           !componentOnlySelected &&
           !siblingDimmed;
       final emphasized = selected || componentOnlySelected;
-      final visualKind = _footprintVisualKind(entry);
+      final visualKind = footprintVisualKind(
+        entry.placement,
+        entry.component,
+        entry.template,
+      );
       final pinRenderPlan = _footprintPinRenderPlan(entry);
       final contactVisibilityState = _contactVisibilityStateForEntry(entry);
 
@@ -10591,12 +10355,12 @@ class _BoardPlacementPainter extends CustomPainter {
   static void _drawFootprintBody(
     Canvas canvas,
     Rect rect,
-    _FootprintVisualKind visualKind,
+    FootprintVisualKind visualKind,
     FootprintTemplate? template,
     Paint fillPaint,
     Paint strokePaint,
   ) {
-    if (visualKind == _FootprintVisualKind.generic) {
+    if (visualKind == FootprintVisualKind.generic) {
       final genericStroke = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.1
@@ -10612,7 +10376,7 @@ class _BoardPlacementPainter extends CustomPainter {
       return;
     }
 
-    if (visualKind == _FootprintVisualKind.testPoint) {
+    if (visualKind == FootprintVisualKind.testPoint) {
       final center = rect.center;
       final radius = math.min(rect.width, rect.height) / 2;
       final ringFillPaint = Paint()
@@ -10628,7 +10392,7 @@ class _BoardPlacementPainter extends CustomPainter {
       return;
     }
 
-    if (visualKind == _FootprintVisualKind.capacitor &&
+    if (visualKind == FootprintVisualKind.capacitor &&
         (rect.width - rect.height).abs() <=
             math.max(rect.width, rect.height) * 0.35) {
       canvas.drawOval(rect, fillPaint);
@@ -10636,7 +10400,7 @@ class _BoardPlacementPainter extends CustomPainter {
       return;
     }
 
-    final bodyShape = visualKind == _FootprintVisualKind.connector
+    final bodyShape = visualKind == FootprintVisualKind.connector
         ? FootprintBodyShape.rect
         : template?.body.shape ?? FootprintBodyShape.roundedRect;
     switch (bodyShape) {
@@ -10806,7 +10570,7 @@ class _BoardPlacementPainter extends CustomPainter {
   static void _drawFootprintSurfaceDetails({
     required Canvas canvas,
     required Rect rect,
-    required _FootprintVisualKind kind,
+    required FootprintVisualKind kind,
     required bool selected,
   }) {
     final detailPaint = Paint()
@@ -10820,8 +10584,8 @@ class _BoardPlacementPainter extends CustomPainter {
       ..strokeWidth = 0.8;
 
     switch (kind) {
-      case _FootprintVisualKind.icDualSide:
-      case _FootprintVisualKind.icQuadSide:
+      case FootprintVisualKind.icDualSide:
+      case FootprintVisualKind.icQuadSide:
         final notchRadius =
             math.min(rect.width, rect.height).clamp(4.0, 12.0) / 2;
         canvas.drawArc(
@@ -10843,12 +10607,12 @@ class _BoardPlacementPainter extends CustomPainter {
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.passive2:
-      case _FootprintVisualKind.smallMultiPin:
-      case _FootprintVisualKind.switchPackage:
-      case _FootprintVisualKind.denseGrid:
-      case _FootprintVisualKind.mechanical:
-      case _FootprintVisualKind.moduleBlock:
+      case FootprintVisualKind.passive2:
+      case FootprintVisualKind.smallMultiPin:
+      case FootprintVisualKind.switchPackage:
+      case FootprintVisualKind.denseGrid:
+      case FootprintVisualKind.mechanical:
+      case FootprintVisualKind.moduleBlock:
         for (final fraction in const [0.36, 0.5, 0.64]) {
           final x = rect.left + rect.width * fraction;
           canvas.drawLine(
@@ -10858,7 +10622,7 @@ class _BoardPlacementPainter extends CustomPainter {
           );
         }
         break;
-      case _FootprintVisualKind.capacitor:
+      case FootprintVisualKind.capacitor:
         final centerX = rect.center.dx;
         canvas.drawLine(
           Offset(centerX - 2, rect.top + rect.height * 0.18),
@@ -10871,7 +10635,7 @@ class _BoardPlacementPainter extends CustomPainter {
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.diode:
+      case FootprintVisualKind.diode:
         final stripeX = rect.right - rect.width * 0.22;
         canvas.drawLine(
           Offset(stripeX, rect.top + rect.height * 0.16),
@@ -10884,7 +10648,7 @@ class _BoardPlacementPainter extends CustomPainter {
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.transistor3:
+      case FootprintVisualKind.transistor3:
         final centerX = rect.center.dx;
         final topY = rect.top + rect.height * 0.2;
         final bottomY = rect.bottom - rect.height * 0.2;
@@ -10909,14 +10673,14 @@ class _BoardPlacementPainter extends CustomPainter {
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.connector:
+      case FootprintVisualKind.connector:
         final slotRect = rect.deflate(math.min(rect.width, rect.height) * 0.22);
         canvas.drawRRect(
           RRect.fromRectAndRadius(slotRect, const Radius.circular(2)),
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.testPoint:
+      case FootprintVisualKind.testPoint:
         canvas.drawLine(
           Offset(rect.center.dx, rect.top + rect.height * 0.22),
           Offset(rect.center.dx, rect.bottom - rect.height * 0.22),
@@ -10928,7 +10692,7 @@ class _BoardPlacementPainter extends CustomPainter {
           mutedDetailPaint,
         );
         break;
-      case _FootprintVisualKind.generic:
+      case FootprintVisualKind.generic:
         canvas.drawLine(rect.topLeft, rect.bottomRight, mutedDetailPaint);
         canvas.drawLine(rect.topRight, rect.bottomLeft, mutedDetailPaint);
         break;
@@ -10937,7 +10701,7 @@ class _BoardPlacementPainter extends CustomPainter {
 
   static void _drawDecorativePackagePads({
     required Canvas canvas,
-    required _FootprintVisualKind kind,
+    required FootprintVisualKind kind,
     required Size bodySize,
     required Paint fillPaint,
     required Paint strokePaint,
@@ -10980,8 +10744,8 @@ class _BoardPlacementPainter extends CustomPainter {
     }
 
     switch (kind) {
-      case _FootprintVisualKind.icDualSide:
-      case _FootprintVisualKind.icQuadSide:
+      case FootprintVisualKind.icDualSide:
+      case FootprintVisualKind.icQuadSide:
         final legCount = math.max(
           3,
           math.min(6, (bodySize.height / 8.5).round()),
@@ -11008,19 +10772,19 @@ class _BoardPlacementPainter extends CustomPainter {
           }
         }
         break;
-      case _FootprintVisualKind.passive2:
-      case _FootprintVisualKind.switchPackage:
-      case _FootprintVisualKind.smallMultiPin:
-      case _FootprintVisualKind.diode:
-      case _FootprintVisualKind.denseGrid:
-      case _FootprintVisualKind.mechanical:
-      case _FootprintVisualKind.moduleBlock:
+      case FootprintVisualKind.passive2:
+      case FootprintVisualKind.switchPackage:
+      case FootprintVisualKind.smallMultiPin:
+      case FootprintVisualKind.diode:
+      case FootprintVisualKind.denseGrid:
+      case FootprintVisualKind.mechanical:
+      case FootprintVisualKind.moduleBlock:
         drawEndPads();
         break;
-      case _FootprintVisualKind.capacitor:
+      case FootprintVisualKind.capacitor:
         drawEndPads(oval: true);
         break;
-      case _FootprintVisualKind.transistor3:
+      case FootprintVisualKind.transistor3:
         final leadWidth = math.min(6.0, math.max(3.8, bodySize.width * 0.1));
         final leadHeight = math.min(7.0, math.max(3.8, bodySize.height * 0.18));
         for (final fraction in const [-0.28, 0.0, 0.28]) {
@@ -11036,7 +10800,7 @@ class _BoardPlacementPainter extends CustomPainter {
           );
         }
         break;
-      case _FootprintVisualKind.connector:
+      case FootprintVisualKind.connector:
         final padCount = math.max(
           3,
           math.min(5, (bodySize.width / 12).round()),
@@ -11055,11 +10819,11 @@ class _BoardPlacementPainter extends CustomPainter {
           );
         }
         break;
-      case _FootprintVisualKind.testPoint:
+      case FootprintVisualKind.testPoint:
         // Testpoint/ground footprints use the body ring as the package cue;
         // extra decorative pads would look like invented pin geometry.
         break;
-      case _FootprintVisualKind.generic:
+      case FootprintVisualKind.generic:
         final tabWidth = math.min(7.0, math.max(4.0, bodySize.width * 0.16));
         final tabHeight = math.min(6.0, math.max(3.5, bodySize.height * 0.22));
         for (final corner in const [
@@ -11191,8 +10955,12 @@ class _BoardPlacementPainter extends CustomPainter {
     return (Size size) {
       final canvasRect = Offset.zero & size;
       return entries.map<CustomPainterSemantics>((entry) {
-        final center = _renderedPlacementCenter(entry, size);
-        final bodySize = _renderedFootprintVisualSize(entry);
+        final center = renderedPlacementCenter(entry.placement, size);
+        final bodySize = renderedFootprintVisualSize(
+          entry.placement,
+          entry.component,
+          entry.template,
+        );
         final rawRect = Rect.fromCenter(
           center: center,
           width: bodySize.width,

@@ -20,7 +20,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/components/screens/edit_component_screen.dart` | `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measure_sheet/screens/measure_sheet_screen.dart` | `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md` | production | `MAINTAINED` |
-| `lib/features/measurements/screens/measurement_record_screen.dart` | `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md` | production | `MAINTAINED` |
+| `lib/features/measurements/screens/measurement_record_screen.dart` | `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md` | production | `RETIRED` |
 | `lib/features/project/actions/project_acquisition_actions.dart` | `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/screens/new_project_wizard_screen.dart` | `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/screens/project_overview_screen.dart` | `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md` | production | `MAINTAINED` |

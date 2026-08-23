@@ -2,10 +2,81 @@
 
 ## Route
 
-Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
+Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current legacy measurement write-path deletion scope authority
+## Current legacy measurement write-path Code Map retirement authority
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 482c21e266c185b1b97d00752c86b0090d15c781
+Predecessor: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS
+Next: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+The human selects the separately reserved committed-source screen-map
+retirement after the deletion implementation landed at the exact baseline.
+This pass authorizes only:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`
+7. `docs/audit/TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS.md` (new)
+
+No eighth path is authorized. All Dart/test/runtime source, unrelated maps and
+index rows, package/asset/schema/tool/platform/Windows substantive content,
+and scratch are frozen.
+
+Committed baseline `482c21e266c185b1b97d00752c86b0090d15c781` removes
+exactly the unreachable legacy measurement screen, its direct legacy writer,
+and their three direct suites, totalling five deleted paths and 1,704 deleted
+lines. No surviving source/test path changed. The live compatibility URL,
+Workbench alias, V2 writer, negative guards, and old-project sequence reads
+remain inspect-only and unchanged.
+
+Retain the existing screen map as historical provenance. Change its map Status
+and matching index Status directly from `MAINTAINED` to `RETIRED`; preserve
+Source, Type, Qualification, Audit evidence, and the historical behavior
+inventory. Add only a compact notice that the deleted source was unreachable
+legacy write UI, its direct legacy writer was deleted with it, the map is
+history rather than live-source/SNIPER authority, and compatibility routing
+plus old-project reads survive separately.
+
+The Code Map Standard forbids commit identifiers in map bodies. Therefore the
+exact committed deletion baseline is recorded in this authority, the other
+route owners, and the audit artifact, while the map notice refers only to
+accepted committed source. No map is deleted, no writer map is created, and no
+`REVIEW_REQUIRED` map interval is introduced.
+
+The exact exit registry is 39 maps/39 rows with 37 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`; the retired pair is the existing
+`measurement_projection.part.dart.md` plus the measurement-record screen map.
+Map/index parity and Source/Type/Status agreement must remain exact.
+
+```text
+TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS
+   [committed at 5682e9c83feb76ac3bcf4c2d3e8d370ce424fd39]
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS
+   [committed at 482c21e266c185b1b97d00752c86b0090d15c781]
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Create one neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict
+block. Phase 2 is forbidden unless independent audit expressly authorizes it;
+if authorized, it may change only the verdict-block interior and this pass's
+ledger Status cell. The map/index pair remains `RETIRED`. Stop on any eighth
+path, runtime/test drift, registry defect, notice/history rewrite, validation
+failure, or attempted staging/commit/push. No ProjectSession successor is
+armed.
+
+## Accepted legacy measurement write-path deletion scope and implementation authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS

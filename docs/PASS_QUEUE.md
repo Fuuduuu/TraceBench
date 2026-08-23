@@ -2,10 +2,55 @@
 
 ## Current route
 
-Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
+Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current legacy measurement write-path deletion scope and child queue
+## Current legacy measurement write-path Code Map retirement queue
+
+Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
+source at `482c21e266c185b1b97d00752c86b0090d15c781`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md`
+7. `docs/audit/TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS.md` (new)
+
+No eighth path is queued. Runtime/tests, unrelated maps/index rows, packages,
+assets, schemas, tools, Windows substantive content, and scratch are frozen.
+
+The committed predecessor deletes exactly the dead screen, its direct legacy
+writer, and three direct suites: five paths and 1,704 lines, with no surviving
+source/test edit. Retain the screen map as history, change its Status and the
+matching index Status directly from `MAINTAINED` to `RETIRED`, and preserve
+Source, Type, Qualification, Audit evidence, and its historical inventory.
+Add only a compact retirement notice identifying unreachable legacy write UI,
+the deleted direct writer, historical-only/non-SNIPER authority, the surviving
+compatibility redirect, and surviving old-project reads.
+
+Keep the exact commit identifier in the route owners and audit artifact rather
+than the map body, as required by the Code Map Standard's prohibited-content
+rule. Do not delete the map, create a writer map, rewrite historical behavior,
+or introduce a `REVIEW_REQUIRED` map interval.
+
+Exit registry must be `39/39`, `37 MAINTAINED`, zero `REVIEW_REQUIRED`, and
+two `RETIRED`, with zero orphan, unindexed, duplicate, type, source, or status
+defects. The other retired map remains
+`measurement_projection.part.dart.md`.
+
+Preserve `/project/measurements/new -> /project/measure-sheet`, the Workbench
+alias, compatibility and negative guards, V2 measurement writing, and legacy
+sequence-bearing reads. Manual smoke is `NOT_APPLICABLE`.
+
+Create one neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict
+block. If independent audit expressly authorizes recording, Phase 2 may change
+only the verdict-block interior and that row's Status cell; the map/index pair
+stays `RETIRED`. After accepted exact human staging, commit, and push, stop at
+`NEEDS_USER_DECISION`. Do not arm ProjectSession or later product/writer work.
+
+## Accepted legacy measurement write-path deletion scope and child queue (historical, non-authorizing)
 
 Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed
 baseline `5bc6d215cdd3d942dba0c26e465efa7085782b0b`. Write exactly:

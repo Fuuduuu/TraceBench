@@ -2,11 +2,18 @@
 
 - Source: `lib/features/measurements/screens/measurement_record_screen.dart`
 - Type: `production`
-- Status: `MAINTAINED`
+- Status: `RETIRED`
 - Qualification: `AUTO — canonical writer paths and UI-local responsibilities coexist`
 - Audit evidence: `none`
 
 ## File purpose
+
+Retired historical map: accepted committed source intentionally deleted this
+unreachable legacy measurement-write UI together with its direct legacy
+writer. The inventory below is provenance/history only, not current live-source
+or SNIPER authority. The `/project/measurements/new ->
+/project/measure-sheet` compatibility redirect and old sequence-bearing
+project reads survive under their separate current owners.
 
 This legacy measurement-entry screen captures one manually entered numeric
 reading, validates and deduplicates the transient form, and invokes

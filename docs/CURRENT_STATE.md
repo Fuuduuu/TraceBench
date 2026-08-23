@@ -1,9 +1,61 @@
 # Current State
 
-Current pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
+Current pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live legacy measurement write-path deletion scope
+## Live legacy measurement write-path Code Map retirement
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+482c21e266c185b1b97d00752c86b0090d15c781`, parent
+`5682e9c83feb76ac3bcf4c2d3e8d370ce424fd39`, subject
+`refactor: remove legacy measurement write path`, and divergence `0 0`.
+Staged and unmerged sets are empty. The known three generated-plugin Windows
+EOL/stat entries and preserved untracked `TraceBench_ALL_CODE.txt` remain
+outside the substantive material set.
+
+The human selects one Lane A `DOCS_MAPS_ONLY / PHASE_1` committed-source map
+retirement pass. It changes exactly the three route owners, this ledger, the
+Code Map index, the retained measurement-record screen map, and one new audit
+artifact. No runtime/test or other map byte is authorized.
+
+Commit `482c21e266c185b1b97d00752c86b0090d15c781` deletes exactly the
+unreachable legacy measurement screen, its direct legacy writer, and their
+three direct suites: five deleted paths and 1,704 deleted lines, with no
+surviving source/test file changed. The compatibility redirect
+`/project/measurements/new -> /project/measure-sheet`, Workbench alias, V2
+measurement writer, and old sequence-bearing project reads remain active.
+
+The retained `measurement_record_screen.dart.md` map and its matching index
+row move directly from `MAINTAINED` to `RETIRED`. The map keeps its historical
+behavior inventory and gains only a compact notice that it is provenance, not
+live-source or SNIPER authority. The exact deletion commit stays in route and
+audit owners because the Code Map Standard forbids commit identifiers inside a
+map. No writer map is created and no map is deleted.
+
+Registry state becomes exactly `39 maps / 39 rows`, `37 MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`, with zero parity or status defects. The
+two retired maps are `measurement_projection.part.dart.md` and
+`measurement_record_screen.dart.md`.
+
+The route is:
+
+```text
+TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS
+   [committed at 5682e9c83feb76ac3bcf4c2d3e8d370ce424fd39]
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS
+   [committed at 482c21e266c185b1b97d00752c86b0090d15c781]
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Manual smoke is `NOT_APPLICABLE`. One neutral `REVIEW_REQUIRED` ledger row
+and one unique empty verdict block bind independent Code Map audit. A later
+Phase 2 may change only that block interior and the matching ledger Status
+cell if expressly authorized. No ProjectSession or later product/writer pass
+is armed.
+
+## Accepted legacy measurement write-path deletion scope and implementation (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

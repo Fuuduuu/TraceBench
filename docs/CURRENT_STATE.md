@@ -1,7 +1,56 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
+
+## Live Board Canvas palette committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+076c306aa616cb40a84e716b79a7c53bacffbc39`, parent
+`da1f2d0cfc4eef0dde210f6a662f24baa410db34`, subject
+`refactor: centralize board canvas palette`, and divergence `0 0`. Staged and
+unmerged sets were empty before Phase 1. The known three generated-plugin
+Windows EOL/stat entries and preserved untracked `TraceBench_ALL_CODE.txt`
+remain outside the substantive material set.
+
+The accepted commit changes exactly the Board Canvas host, Wizard part,
+Navigator part, and new 17-line palette. The palette blob is
+`4e3162c349c2c5facb8fdfa2e89767b2dc384126`; it owns 13 immutable colors.
+Committed closure is 355 qualified references split `314 + 7 + 34`, zero old
+identifiers, one host import, no part imports, and two reciprocal part pairs.
+The unchanged focused test remains 169 declarations.
+
+This Phase-1 maintenance changes exactly nine docs/map paths. The host, Wizard,
+and Navigator maps refresh palette dependency ownership and become
+`REVIEW_REQUIRED` with matching index cells. The test and Wizard compact-token
+maps are `REVIEWED_NO_CHANGE`. The palette is `NOT_QUALIFIED` at `SCORE 0/12`,
+so no palette map or row is created.
+
+Target registry is 38/38 with 34 `MAINTAINED`, exactly three
+`REVIEW_REQUIRED`, and one `RETIRED`. All stable responsibility anchors must
+resolve. Runtime/tests and frozen directories remain substantively unchanged;
+manual smoke is `NOT_APPLICABLE`.
+
+The route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS
+   [accepted and committed at 076c306]
+-> TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+One neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict block
+bound independent audit. Future Phase 2, only if explicitly authorized, may
+change exactly three map Status headers, three matching index cells, the
+verdict-block interior, and this pass's ledger Status. No later work is armed.
+
+## Accepted Board Canvas palette-boundary scope and implementation (historical, non-authorizing)
+
+The retained section below describes the now-completed scope and child. It is
+historical and supplies no current route or write authority.
 
 ## Live Board Canvas palette-boundary scope lock
 

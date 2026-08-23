@@ -2,8 +2,68 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
+
+## Current Board Canvas palette committed-source Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: 076c306aa616cb40a84e716b79a7c53bacffbc39
+Predecessor: TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS
+Next: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted implementation committed one normal feature-local
+`BoardCanvasPalette` owner and retargeted the Board Canvas host plus its Wizard
+and Navigator parts without behavior change. This pass describes that committed
+source only. It authorizes exactly nine docs/map paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md`
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is authorized. Phase 1 marks exactly the host, Wizard, and
+Navigator map/header pairs `REVIEW_REQUIRED` and refreshes only their committed
+palette dependency ownership. The host imports `BoardCanvasPalette`; both parts
+see its immutable fields through the host library import and retain zero
+imports. Measurement normal-library ownership, exactly two temporary parts,
+three State owners, four writer invocations split `3 + 1`, and two notifier
+sites remain unchanged.
+
+The 17-line palette is `NOT_QUALIFIED` at `SCORE 0/12`: it has one constants-
+only responsibility, no protected boundary or behavior family, no analysis
+tax or broad blast-radius ambiguity, and no automatic qualifier. Consumer
+count alone does not require a map. Create neither a palette map nor an index
+row.
+
+The focused Board Canvas test map and Wizard compact-token map are
+`REVIEWED_NO_CHANGE` and remain byte-frozen with their index rows. Registry
+target is exactly 38 maps/38 rows: 34 `MAINTAINED`, three `REVIEW_REQUIRED`,
+one `RETIRED`, and zero parity or status defects. The retired measurement-part
+map remains the sole `RETIRED` entry.
+
+The exact audit artifact is the binding authority for committed proof, map
+dispositions, registry and anchor closure, freezes, validation, the unique
+empty verdict block, and the future eight-coordinate Phase-2 boundary. No
+Dart/test/runtime, geometry, painter, State, provider, writer, theme, package,
+asset, schema, tool, platform, Windows substantive, or scratch write is
+authorized. No successor beyond non-executable `NEEDS_USER_DECISION` is armed.
+
+## Accepted Board Canvas palette-boundary scope and implementation (historical, non-authorizing)
+
+Commit `076c306aa616cb40a84e716b79a7c53bacffbc39` preserves the completed
+palette implementation. The retained scope wording below is historical and
+supplies no current route or write authority.
 
 ## Current Board Canvas palette-boundary scope authority
 

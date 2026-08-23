@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -16,7 +16,9 @@ inspector, and placement-choice presentation from host-supplied projected data
 and dispatches only to host-owned transient selection, preview, navigation, and
 local placement-draft callbacks. It owns no mutable state, provider, writer,
 route, filesystem action, or canonical semantics. Source, tests, canonical
-owners, and active locks remain authoritative.
+owners, and active locks remain authoritative. Its immutable Board Canvas
+colors come from `BoardCanvasPalette` through the host library import; the part
+owns no import or palette lookup.
 
 ## Qualification
 
@@ -101,15 +103,16 @@ host-owned.
 | `_PlacementEntry`, `_ComponentCategory` | private same-library input | Supplies placement association, board/coordinate copy, category order, labels, and stable IDs. |
 | `_componentCategoryFor`, `_componentPrimaryLabel`, `_componentKindLabel`, `_naturalComponentIdCompare` | private host helpers | Supplies membership, labels, and natural-ID comparison without moving ownership. |
 | `_benchBeepNavigatorControlStyle` | private host style helper | Supplies unchanged back and single-placement action styling. |
-| `_kBoardCanvasTile`, `_kBoardCanvasNavy`, `_kBoardCanvasMuted`, `_kBoardCanvasDim`, `_kBoardCanvasSignal`, `_kBoardCanvasSignalTint`, `_kBoardCanvasReady`, `_kBoardCanvasRule` | private same-library visual input | Reuses the host's existing Navigator color vocabulary. |
+| `BoardCanvasPalette.tile`, `BoardCanvasPalette.navy`, `BoardCanvasPalette.muted`, `BoardCanvasPalette.dim`, `BoardCanvasPalette.signal`, `BoardCanvasPalette.signalTint`, `BoardCanvasPalette.ready`, `BoardCanvasPalette.rule` | immutable presentation input through host import | Reuses the exact Navigator color vocabulary without runtime/theme lookup or palette ownership in this part. |
 | Host-derived eligibility, preview, and measurement-count collections | read-only input | Couples Canvas visibility, preview targets, placement branches, counts, and ordering without importing producers. |
 | Flutter widget, layout, Material, interaction, semantics, and styling APIs | presentation output | Builds the Stateless Navigator and dispatches pointer/button interactions. |
 | Dart core collections and scalar operations | local derivation | Supports non-mutating grouping, filtering, counting, set construction, and local-list sorting. |
 
 The part has no import or export. No production owner imports it directly;
 private access exists only through the Board Canvas library.
-The host separately imports `measurement_projection.dart` as a normal logic
-library; that source is not a part and transfers no responsibility here.
+The host separately imports `BoardCanvasPalette` and
+`measurement_projection.dart` as normal libraries; neither source is a part or
+transfers responsibility here.
 
 ## Write and protected boundaries
 
@@ -215,8 +218,8 @@ proposal requires architecture review rather than routine map refresh.
 ## Known uncertainty
 
 - `[D]` The same-library bridge intentionally shares private host models,
-  helpers, callbacks, and tokens; it is temporary committed structure, not a
-  repository-wide decomposition convention.
+  helpers, callbacks, and host-imported palette visibility; it is temporary
+  committed structure, not a repository-wide decomposition convention.
 - `[P]` Placement-choice hover uses the same preview callback and is adjacent
   to direct multiple-placement/hover coverage, but has no separately titled
   placement-choice-hover test.

@@ -4,17 +4,18 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the deterministic fit geometry, local-photo layer, and custom painting for
 the Board Canvas Wizard intake overlay while remaining one of exactly two
 temporary same-library Dart parts of `board_canvas_screen.dart`; the other is
-the Component Navigator part. It shares the host's imports, Wizard
-models, and private visual tokens, and owns no mutable state, provider, writer,
-route, or canonical semantics. Source, tests, canonical owners, and active
-locks remain authoritative.
+the Component Navigator part. It shares the host's imports and Wizard models,
+and consumes exact immutable `BoardCanvasPalette` fields made visible by the
+host library's palette import. It owns no mutable state, provider, writer,
+route, import, or canonical semantics. Source, tests, canonical owners, and
+active locks remain authoritative.
 
 ## Qualification
 
@@ -73,13 +74,14 @@ inputs from the host
 | `dart:io` `File`, `dart:math` as `math` | shared host-library imports | Read a local photo and derive bounds, scale, marker size, and rotation geometry. |
 | Flutter widget, geometry, image, and painting APIs | shared host-library imports / output | Build the clipped photo layer and paint read-only contours/candidates. |
 | `WizardPoint`, `WizardIntake`, `WizardPhotoTransform`, `WizardVisualCandidate`, `WizardVisualCandidateShape` | input models through host import | Supply normalized geometry, photo transform, contour, and candidate presentation data. |
-| `_kBoardCanvasPaper`, `_kBoardCanvasMuted`, `_kBoardCanvasSignal`, `_kBoardCanvasNavy`, `_kBoardCanvasSignalTint` | private same-library input | Reuse the host's existing Board Canvas visual vocabulary, including neutral image-error presentation. |
+| `BoardCanvasPalette.paper`, `BoardCanvasPalette.muted`, `BoardCanvasPalette.signal`, `BoardCanvasPalette.navy`, `BoardCanvasPalette.signalTint` | immutable presentation input through host import | Reuse the exact Board Canvas visual vocabulary, including neutral image-error presentation, without runtime/theme lookup or palette ownership in this part. |
 | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_paintCandidate` | internal part ownership | Keep fit, photo, and Wizard painter implementation physically cohesive. |
 
 The part has no imports of its own. No production owner imports it directly;
 its visibility and private access exist only through the host library.
-The host separately imports `measurement_projection.dart` as a normal logic
-library; that source is not a part and transfers no responsibility here.
+The host separately imports `BoardCanvasPalette` and
+`measurement_projection.dart` as normal libraries; neither source is a part or
+transfers responsibility here.
 
 ## Write and protected boundaries
 
@@ -182,8 +184,10 @@ the painter moves or ceases to be the final declaration.
 
 ## Known uncertainty
 
-- `[D]` The same-library bridge intentionally shares private imports/tokens;
-  this is temporary committed structure, not a repository-wide convention.
+- `[D]` The same-library bridge intentionally shares host imports and private
+  models; palette visibility comes only through the host's normal-library
+  import. This is temporary committed structure, not a repository-wide
+  convention.
 - `[P]` The `Image.file` `errorBuilder` fallback is committed behavior, but the
   focused suite does not directly assert its keyed decode-error branch.
 - `[P]` `shouldRepaint` inputs are source-verifiable and indirectly exercised;

@@ -2,8 +2,49 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PALETTE_BOUNDARY_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
+
+## Current Board Canvas palette committed-source Code Map maintenance queue
+
+Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass at committed baseline
+`076c306aa616cb40a84e716b79a7c53bacffbc39`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md`
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is queued. Refresh only palette dependency ownership in the
+host, Wizard, and Navigator maps; mark their headers and matching index rows
+`REVIEW_REQUIRED`. The focused test and Wizard compact-token maps remain
+`REVIEWED_NO_CHANGE` and byte-frozen.
+
+The 17-line palette scores `0/12` and is `NOT_QUALIFIED`; create no palette map
+or row. Target registry is 38 maps/38 rows with 34 `MAINTAINED`, exactly three
+`REVIEW_REQUIRED`, and one retained `RETIRED` measurement-part map.
+
+Create one neutral ledger row and one unique empty verdict block. Phase 2 is
+not queued unless independent audit authorizes exactly eight coordinates:
+three map headers, three matching index cells, the verdict interior, and this
+pass's ledger Status. Manual smoke is `NOT_APPLICABLE`.
+
+Freeze all Dart/test/runtime source, the test and Wizard-token maps, measurement
+maps, Code Map Standard, unrelated index rows, State/providers/writers,
+geometry/painters/theme behavior, packages/assets/schemas/tools/platform,
+Windows substantive content, and scratch. After this pass the route stops at
+non-executable `NEEDS_USER_DECISION`; no later work is queued.
+
+## Accepted Board Canvas palette-boundary scope and implementation queue (historical, non-authorizing)
+
+The retained queue below completed at
+`076c306aa616cb40a84e716b79a7c53bacffbc39`. It supplies no current route or
+write authority.
 
 ## Current Board Canvas palette-boundary scope queue
 

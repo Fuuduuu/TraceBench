@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibilities`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -13,16 +13,22 @@ Workbench, selection/navigation, rendering, inspection, UI-local drafts,
 read-only Wizard intake, tri-state freshness presentation, and four existing
 writer call paths. It imports `measurement_projection.dart` as the normal
 feature-internal owner of deterministic measurement read-model declarations
-and is the library host for exactly two temporary same-library parts:
+and `board_canvas_palette.dart` as the normal feature-local owner of 13 exact
+immutable Board Canvas colors. It is the library host for exactly two
+temporary same-library parts:
 `wizard_intake_overlay.part.dart` physically owns Wizard fit, photo-layer, and
 painter declarations, and
 `component_navigator.part.dart` physically owns the private Stateless
 Navigator panel declaration. Their consumers, all mutable state, all callback
 implementations, and all canonical writers remain here; all non-Wizard
-painters also remain host-owned. Project-wide navigation belongs to the outer shared
-Workbench shell; this file starts its local context panel hidden and contains
-no competing Project hub or Project rail action. Source, tests, canonical
-owners, and active locks remain authoritative.
+painters also remain host-owned. Palette consumption is direct static-constant
+access with no runtime or theme lookup; `_kMeasurePanel*`, `_kFootprint*`, and
+the Board-background painter's local colors remain host-owned, while
+`BenchBeepVisualTokens` and `WizardCompactTokens` remain separate owners.
+Project-wide navigation belongs to the outer shared Workbench shell; this file
+starts its local context panel hidden and contains no competing Project hub or
+Project rail action. Source, tests, canonical owners, and active locks remain
+authoritative.
 
 ## Responsibility zones
 
@@ -101,6 +107,9 @@ set to the host.
   endpoint/display normalization, component counts, badge association/order,
   badge text, and caution classification; results return to unchanged host
   consumers with no state or write ownership in the library.
+- `[D]` `BoardCanvasPalette` supplies immutable presentation values directly to
+  the host and both same-library parts. No runtime/theme lookup, state, provider,
+  or writer flow enters the palette library.
 - `[D]` All three State owners and their fields/lifetimes remain physically
   unchanged. Four writer invocations remain split `3 + 1` between
   `_BoardCanvasScreenState` and `_IntegratedMeasurePanelState`, and both
@@ -115,8 +124,9 @@ set to the host.
 | --- | --- | --- |
 | `projectStateProvider`, `ProjectState`, `ProjectionFreshness` | input / local projection update | Supplies accepted state/freshness and receives existing post-write result mirroring. |
 | `measurement_projection.dart` | imported normal-library dependency | Owns endpoint grammar, component counts, badge association/order/text, and caution classification through one explicit Known Facts model import; owns no Flutter, State, provider, writer, route, filesystem, event, projection mutation, or part relationship. |
-| `wizard_intake_overlay.part.dart` | same-library rendering dependency | Owns Wizard fit transform, photo layer, and painter while sharing host imports, models, and private visual tokens; has no independent imports, state, provider, or writer. |
-| `component_navigator.part.dart` | same-library presentation/control dependency | Owns the private Stateless panel declaration while sharing host imports, models, helpers, tokens, and seven callback inputs; all mutable state, callback implementations, and writers remain in the host. |
+| `BoardCanvasPalette` | imported normal-library presentation dependency | Supplies 13 exact immutable Board Canvas colors through direct static fields, with no runtime/theme lookup. The former `_kBoardCanvas*` declarations no longer live here. `_kFootprintSelected` remains a host-owned footprint token whose RHS alone references `BoardCanvasPalette.signal`; Measure-panel tokens, other footprint tokens, Board-background painter colors, `BenchBeepVisualTokens`, and `WizardCompactTokens` remain separate owners. |
+| `wizard_intake_overlay.part.dart` | same-library rendering dependency | Owns Wizard fit transform, photo layer, and painter while sharing host imports and models; it sees the exact palette fields through the host's normal-library import and has no independent import, state, provider, or writer. |
+| `component_navigator.part.dart` | same-library presentation/control dependency | Owns the private Stateless panel declaration while sharing host imports, models, helpers, the exact palette fields, and seven callback inputs; all mutable state, callback implementations, and writers remain in the host. |
 | `ProjectionStaleBanner` | child presentation | Displays stale/unknown provenance nonblockingly. |
 | BoardFact component, placement, measurement, trace, alignment, and pin models | input | Supplies projected facts for targeting, inspection, badges, and rendering. |
 | `WizardIntake` family | noncanonical input | Supplies optional aspect/photo/contour/candidate presentation without proving canonical facts. |
@@ -153,6 +163,8 @@ contacts, pins, measurements, nets, electrical function, and fault truth.
   transient until an explicit existing save path is used.
 - Painters, Wizard intake, inspectors, readiness, safety, and trace summaries
   render accepted inputs only.
+- `BoardCanvasPalette` is immutable `ZERO_WRITE` presentation input; palette
+  reads do not transfer theme, State, provider, writer, or behavior ownership.
 - The measurement normal library and Wizard part are `ZERO_WRITE`; the Wizard part's
   `BuildContext` and `Image.file` uses are presentation-only. The Navigator
   part's derivation/rendering is `ZERO_WRITE`, while its aggregate classification
@@ -237,7 +249,7 @@ declarations across these families:
 Set `REVIEW_REQUIRED` for symbol, flow, boundary, test, or structure drift.
 Recheck hidden default, retained panel inventory, focus restoration, local 900
 cutover, and absence of Project navigation when local chrome changes. Recheck
-writer/result mirroring, the normal measurement-library boundary, both
+writer/result mirroring, the normal measurement- and palette-library boundaries, both
 remaining host/part boundaries, selection/filter, geometry, Wizard layers,
 and freshness scaffold when those owners change. Recheck the focused
 painter-to-EOF source guard whenever the

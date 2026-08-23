@@ -2,10 +2,79 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
 
-## Current Board Canvas placement-geometry Code Map maintenance queue
+## Current legacy measurement write-path deletion scope and child queue
+
+Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed
+baseline `5bc6d215cdd3d942dba0c26e465efa7085782b0b`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is queued. Create one neutral `REVIEW_REQUIRED` ledger
+row and one unique empty verdict block. Freeze every Dart, test, Code Map/index,
+runtime, product, protected, package, asset, schema, tool, platform, Windows
+substantive, and scratch byte during Phase 1.
+
+Reserve exactly one child,
+`TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`, which deletes
+exactly:
+
+1. `lib/features/measurements/screens/measurement_record_screen.dart`
+2. `lib/shared/event_write/measurement_event_writer.dart`
+3. `test/widget/measurement_write_screen_test.dart`
+4. `test/unit/measurement_event_writer_test.dart`
+5. `test/integration/measurement_write_end_to_end_test.dart`
+
+No sixth implementation path is queued. This is deletion, not migration.
+Live closure must remain: the screen has zero production callers/routes/
+factories/providers/exports; the legacy writer has only that screen as its
+production consumer; after deletion neither symbol family has a production
+reference. If any surviving production import or caller requires an edit, stop
+with `BLOCKED_DEAD_CLOSURE_INCOMPLETE`.
+
+Freeze the live
+`/project/measurements/new -> /project/measure-sheet` router redirect and
+the Workbench alias-to-Measurements active mapping. Do not edit
+`router.dart`, `workbench_shell.dart`, Project Overview, ProjectGate,
+Workbench, or Measure Sheet compatibility tests. Preserve the Board Canvas and
+Measure Sheet negative `MeasurementEventWriter` guards. The dead screen and
+writer disappear; compatibility deep links do not.
+
+The three deleted suites own only the unreachable screen/writer contract:
+`19 = 6 testWidgets + 12 unit tests + 1 integration test`. Do not relocate
+them merely to preserve totals. Surviving Measure Sheet/Board Canvas V2 suites,
+`v2_save_measurement_writer_test.dart`, writer-service tests, ProjectLoader
+event/ZIP parsing, validator/materializer mixed-version tests, route suites,
+and Events viewer behavior retain the canonical V2 write and old-project read
+coverage. A lower total is expected and is not itself a failure.
+
+Do not edit Code Maps in this scope or child. The maintained
+`measurement_record_screen.dart.md` becomes `UPDATE_REQUIRED` after
+accepted committed source deletion. A separate docs/maps pass must retain it
+as provenance and promote its map header plus matching index row to
+`RETIRED`. Do not create a writer map for a source being removed. Registry
+stays `39/39, 38 MAINTAINED, 1 RETIRED` until that pass and becomes
+`39/39, 37 MAINTAINED, 2 RETIRED` afterward.
+
+The child validation class is `AUTOMATED_ONLY_OK`; manual smoke is
+`NOT_APPLICABLE`. It must run both requested analyzer modes, the full Flutter
+suite, focused redirect/gate/shell/Measure Sheet compatibility and negative
+guard suites, V2 writer and old-project read regressions, doctor,
+`validate_all`, exact deletion/reference/route/map freeze checks, and Git
+diff/status checks.
+
+After accepted exact human scope staging/commit/push, only the reserved child
+is executable. After accepted child commit and separately scoped screen-map
+retirement, stop at `NEEDS_USER_DECISION`. Do not arm ProjectSession,
+provider work, another writer pass, or any later product route.
+
+## Accepted Board Canvas placement-geometry Code Map maintenance queue (historical, non-authorizing)
 
 Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass at accepted committed
 implementation baseline `f33ba88f67886841c3657a1b3346c60790e0ab0e`.

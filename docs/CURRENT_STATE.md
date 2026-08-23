@@ -1,9 +1,79 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
 
-## Live Board Canvas placement-geometry committed-source Code Map maintenance
+## Live legacy measurement write-path deletion scope
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+5bc6d215cdd3d942dba0c26e465efa7085782b0b`, parent
+`f33ba88f67886841c3657a1b3346c60790e0ab0e`, subject
+`docs: refresh board canvas placement geometry code maps`, and divergence
+`0 0`. Staged and unmerged sets were empty before Phase 1. The known three
+generated-plugin Windows EOL/stat entries and preserved untracked
+`TraceBench_ALL_CODE.txt` remain outside the substantive material set.
+
+The human replaces the completed predecessor's non-executable
+`NEEDS_USER_DECISION` sentinel with one Lane B `SCOPE_LOCK / DOCS_ONLY /
+PHASE_1` pass. It changes exactly the three route owners, this ledger, and one
+new scope artifact. No Dart, test, Code Map/index, runtime, product, protected,
+package, asset, schema, tool, platform, Windows substantive, or scratch byte is
+authorized in Phase 1.
+
+Live exact-reference closure proves `MeasurementRecordScreen` has zero
+production callers, router destinations, factories, providers, or exports.
+`MeasurementEventWriter`, `MeasurementWriteRequest`, and
+`MeasurementWriteException` have exactly one production consumer: that dead
+screen. The proposed five-path child therefore deletes the two unreachable
+production owners and their three direct dead-owner suites without a surviving
+production import/caller edit. Those suites contain exactly
+`19 = 6 testWidgets + 12 test + 1 integration test` declarations.
+
+Deletion is architectural cleanup, not migration. The sole supported
+measurement-write architecture remains the V2 Measure Sheet/Board Canvas path
+through `V2SaveMeasurementWriter`: it carries
+`client_operation_id`/idempotent-existing behavior and typed
+validation/append/lock/path/runtime failures. The dead writer instead owns a
+legacy sequence-bearing envelope and direct `events.jsonl` replacement/
+append flow. No V2 writer, writer service, schema, materializer,
+`TraceBenchEvent`, `ProjectLoader`, provider, product UI, or canonical
+event/evidence behavior may change.
+
+The live compatibility contract remains
+`/project/measurements/new -> /project/measure-sheet`. The router redirect,
+Workbench active-destination alias mapping, Project Overview, ProjectGate,
+Workbench, and Measure Sheet compatibility tests, plus Board Canvas and
+Measure Sheet negative source guards, are frozen. Old-project reads remain
+owned by `TraceBenchEvent.fromJson`, `ProjectLoader.parseEvents`, the Events
+viewer, validator/materializer legacy-sequence handling, and their surviving
+tests.
+
+The existing maintained screen map is retained as provenance and becomes
+`UPDATE_REQUIRED` only after accepted committed deletion. A separately
+scoped committed-source Code Map pass must promote that map and its index row
+from `MAINTAINED` to `RETIRED`; no map file is deleted and no writer map is
+created merely for deletion. Registry state stays `39/39` with
+`38 MAINTAINED / 1 RETIRED` in this scope and child, then becomes
+`37 MAINTAINED / 2 RETIRED` after that later map pass.
+
+The route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 5bc6d215cdd3d942dba0c26e465efa7085782b0b]
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS
+-> TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS
+-> separately scoped committed-source screen-map retirement
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The reserved child uses `AUTOMATED_ONLY_OK`; manual smoke is
+`NOT_APPLICABLE`. One neutral `REVIEW_REQUIRED` ledger row and one unique
+empty designated verdict block bind independent scope audit. No ProjectSession
+or later product/writer pass is armed.
+
+## Accepted Board Canvas placement-geometry Code Map maintenance (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

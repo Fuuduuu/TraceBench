@@ -2,10 +2,90 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS`
 
-## Current Board Canvas placement-geometry Code Map maintenance authority
+## Current legacy measurement write-path deletion scope authority
+
+```text
+PASS_ID: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 5bc6d215cdd3d942dba0c26e465efa7085782b0b
+Predecessor: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS
+Reserved child: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child validation: AUTOMATED_ONLY_OK
+```
+
+The accepted predecessor stopped at non-executable `NEEDS_USER_DECISION`.
+The human selects this docs-only scope and exactly one deletion child. Phase 1
+authorizes only:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_DELETION_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is authorized. All implementation, test, Code Map/index,
+runtime, product, protected, package, asset, schema, tool, platform, Windows
+substantive, and scratch bytes are frozen in this scope.
+
+After independent scope acceptance, bounded Phase-2 recording, and exact human
+scope staging/commit/push, the child may delete exactly:
+
+1. `lib/features/measurements/screens/measurement_record_screen.dart`
+2. `lib/shared/event_write/measurement_event_writer.dart`
+3. `test/widget/measurement_write_screen_test.dart`
+4. `test/unit/measurement_event_writer_test.dart`
+5. `test/integration/measurement_write_end_to_end_test.dart`
+
+No sixth child path is authorized. The child is a deletion-only cleanup:
+`MeasurementRecordScreen` has zero production callers, route destinations,
+factories, providers, and exports; `MeasurementEventWriter` and its request/
+exception types have exactly that screen as their sole production consumer.
+Any surviving production import/caller or required sixth path stops with
+`BLOCKED_DEAD_CLOSURE_INCOMPLETE`.
+
+The canonical measurement write path remains the existing V2 Measure Sheet and
+Board Canvas architecture. The child may not move legacy behavior into V2,
+change `V2SaveMeasurementWriter`, add `sequence` to V2 events, weaken
+`client_operation_id`/idempotency or failure/lock behavior, or modify any
+schema, writer service, materializer, `TraceBenchEvent`, `KnownFacts`,
+`ProjectLoader`, project-session/provider architecture, current product UI,
+event/fact/evidence/freshness meaning, or Project ZIP contract.
+
+The live redirect
+`/project/measurements/new -> /project/measure-sheet` and the Workbench
+legacy-alias active-destination mapping remain byte- and behavior-frozen.
+`router.dart`, `workbench_shell.dart`, Project Overview, ProjectGate,
+Workbench, Measure Sheet compatibility suites, and the Board Canvas/Measure
+Sheet negative legacy-writer guards are inspect-only. Old sequence-bearing
+projects remain readable through their current model, loader, Events viewer,
+validator, and materializer owners.
+
+The three deleted tests are exact dead-owner coverage and contain
+`19 = 6 testWidgets + 12 unit tests + 1 integration test`. Their legacy
+screen controls, direct legacy append/sequence rules, and old writer outcomes
+must disappear rather than be transplanted. Surviving V2 UI/writer-service,
+compatibility, ProjectLoader, validator, materializer, and old-project read
+suites must remain green.
+
+No Code Map or index edit is authorized in the child. The maintained screen
+map is retained while source exists and has disposition `UPDATE_REQUIRED`
+after accepted committed deletion. A separately scoped committed-source pass
+must keep the map file as provenance and promote only its header and matching
+index row from `MAINTAINED` to `RETIRED`. No writer map is created merely
+for deletion, and no map file is deleted.
+
+The child must use automated validation only and stop on baseline/route drift,
+closure mismatch, compatibility/negative-guard/read-support change, V2/
+schema/materializer/model/provider/product drift, map deletion, unique
+surviving coverage loss, validation failure, or any nonallowlisted path.
+Nothing beyond the child and separately scoped map retirement is armed.
+
+## Accepted Board Canvas placement-geometry Code Map maintenance authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS

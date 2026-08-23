@@ -1,7 +1,64 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
+
+## Live Board Canvas placement-geometry committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+f33ba88f67886841c3657a1b3346c60790e0ab0e`, parent
+`c8f0a23f8d8e33ac47eb5918346a66775443ebb0`, subject
+`refactor: extract board canvas placement geometry`, and divergence `0 0`.
+Staged and unmerged sets were empty before Phase 1. The known three generated-
+plugin Windows EOL/stat entries and preserved untracked
+`TraceBench_ALL_CODE.txt` remain outside the substantive material set.
+
+The accepted committed implementation changes exactly the Board Canvas host,
+one new normal `geometry/placement_geometry.dart`, and the focused Board Canvas
+test. The 291-line geometry source has blob
+`91265894e7b45c8ac232273137a65d3771a3ae0a`; it owns the existing pure
+center/body/visual sizing, minimum envelopes, visual-kind and template-ID
+classification, and upright hit test as whole-file `ZERO_WRITE`. The focused
+suite is `178 = 155 testWidgets + 23 test`, including nine new pure geometry
+tests and a separate `geometrySource` ownership guard. Three State owners, four
+writer invocations split `3 + 1`, two notifier sites, two temporary parts, and
+Board/Wizard rotation separation remain unchanged.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` pass changes exactly nine docs/map
+paths: the three route owners, `docs/AUDIT_INDEX.md`, the Code Map index, the
+refreshed host and focused-test maps, one first geometry map, and one new audit
+artifact. The new source qualifies automatically through five-plus
+independently testable production behaviors. Exactly the geometry, host, and
+focused-test map/index pairs become `REVIEW_REQUIRED`; Wizard, Navigator, and
+measurement projection maps are `REVIEWED_NO_CHANGE` and byte-frozen.
+
+The Phase-1 registry target is 39 maps/39 rows: 35 `MAINTAINED`, exactly three
+`REVIEW_REQUIRED`, one `RETIRED`, and zero parity, path, type, or status
+defects. Manual smoke is `NOT_APPLICABLE`. Runtime/tests and every unrelated
+map/product/protected/frozen surface remain unchanged.
+
+The route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS
+   [accepted and committed at f33ba88]
+-> TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+One neutral `REVIEW_REQUIRED` ledger row and one unique empty designated
+verdict block bind independent Code Map audit. Conditional Phase 2 may promote
+only the three reviewed map/index pairs plus record the verdict and ledger
+Status, exactly eight logical coordinates, after explicit audit authorization.
+No later product or legacy-deletion pass is armed.
+
+## Accepted Board Canvas placement-geometry scope and implementation (historical, non-authorizing)
+
+Commit `f33ba88f67886841c3657a1b3346c60790e0ab0e` preserves the accepted
+implementation reserved by the scope below. The retained section supplies no
+current route or write authority.
 
 ## Live Board Canvas placement-geometry scope lock
 

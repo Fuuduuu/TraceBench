@@ -2,8 +2,71 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
+
+## Current Board Canvas placement-geometry Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: f33ba88f67886841c3657a1b3346c60790e0ab0e
+Predecessor: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS
+Next: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted implementation commits one normal feature-local placement-
+geometry owner and retargets the Board Canvas host plus focused test without
+changing product behavior. This pass describes that committed source only. It
+authorizes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/geometry/placement_geometry.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is authorized. Phase 1 marks exactly the host, focused test, and
+new geometry map/header pairs `REVIEW_REQUIRED`. The Code Map Standard's
+automatic five-plus independently testable production behavior condition
+qualifies the committed 291-line geometry source; its first map records pure
+center/body/visual sizing, minimum envelopes, visual-kind and template-ID
+classification, and upright hit testing as whole-file `ZERO_WRITE`.
+
+The host map refreshes only accepted geometry dependency/consumer ownership;
+`_PlacementEntry`, `_KnownPinVisualRef`, all painters/drawing, State, four
+writers split `3 + 1`, two notifier sites, palette/measurement ownership, and
+two temporary parts remain host-owned. The focused-test map records
+`178 = 155 testWidgets + 23 test`, nine direct pure geometry tests, the direct
+library import, and separate `hostSource` / `wizardOverlaySource` /
+`geometrySource` static evidence without removing any prior behavior family.
+
+Wizard overlay, Component Navigator, and measurement projection maps are
+`REVIEWED_NO_CHANGE` and byte-frozen. Registry target is exactly 39 maps/39
+rows: 35 `MAINTAINED`, three `REVIEW_REQUIRED`, one `RETIRED`, and zero
+registry defects. Runtime/tests, Code Map Standard, unrelated maps/index rows,
+routes/product behavior, State/providers/writers, facts/events/evidence/
+freshness, packages/assets/schemas/tools/platform, Windows substantive bytes,
+and scratch remain frozen.
+
+The exact audit artifact binds committed proof, map qualification and
+dispositions, anchor closure, registry, route, freezes, validation, the unique
+empty verdict block, and the conditional eight-coordinate Phase-2 boundary.
+Phase 2 is not authorized unless independent audit accepts all three maps and
+expressly permits recording. No successor beyond non-executable
+`NEEDS_USER_DECISION` is armed.
+
+## Accepted Board Canvas placement-geometry scope and implementation (historical, non-authorizing)
+
+Commit `f33ba88f67886841c3657a1b3346c60790e0ab0e` preserves the accepted
+implementation reserved below. The retained authority supplies no current
+route or write authority.
 
 ## Current Board Canvas placement-geometry scope authority
 

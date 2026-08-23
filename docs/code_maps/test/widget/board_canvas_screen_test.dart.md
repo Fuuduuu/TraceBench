@@ -4,25 +4,27 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-This 169-declaration Board Canvas widget-test owner supplies explicit-fresh
+This 178-declaration Board Canvas widget-test owner supplies explicit-fresh
 fixtures, direct/production-router harnesses, writer doubles, interaction and
 painter assertions, read-only Wizard overlay coverage, local panel/focus
 evidence, direct deterministic measurement read-model characterization through
-an explicit `measurement_projection.dart` import, and a routed six-width
-responsive contract. Its static boundary test still reads exactly the Board
-Canvas host and Wizard overlay part—not the measurement library—with the
-candidate-rotation painter slice retained in the Wizard source. Project-wide
+an explicit `measurement_projection.dart` import, nine direct pure placement-
+geometry tests through an explicit `placement_geometry.dart` import, and a
+routed six-width responsive contract. Its static boundary test reads the Board
+Canvas host, Wizard overlay part, and geometry library separately; geometry
+ownership assertions target only `geometrySource`, while the candidate-rotation
+painter slice remains isolated in the Wizard source. Project-wide
 destination inventory and navigation belong to the shared-shell suite; this
 file proves the Canvas remains rich across that shell cutover and has no
 competing local Project hub or rail control.
 
 ## Qualification
 
-`[D]` Committed source contains 169 declarations (`155` `testWidgets` plus `14`
+`[D]` Committed source contains 178 declarations (`155` `testWidgets` plus `23`
 `test`) across more than three behavior families and exceeds 3,000 lines. Its
 flat structure has no single meaningful `group()` ownership, so families are
 derived from stable helpers, doubles, and exact test names.
@@ -37,8 +39,8 @@ derived from stable helpers, doubles, and exact test names.
 | 4. Measurement entry, association, and pure read-model characterization | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry`, `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Covers target/draft/save, Measure Sheet navigation, endpoint/count association, characterized badge ordering/fallback, scalar/unit eligibility, exact badge text, and stale/invalid/suspect caution classification. |
 | 5. Component create and edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guarded identity creation/edit requests, errors, returned events, and idempotency. |
 | 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey` | Exercises template selection, local drafts, ghost movement, normalized bounds, explicit save, and results. |
-| 7. Canvas interaction, Wizard fit, and geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake` | Verifies pan/zoom, hit selection, aspect mapping, fallback, padding, one initial fit, alignment, and badges. |
-| 8. Painter, overlay, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels` | Inspects composite order/pixels, read-only Wizard geometry, rotation, footprint/pin rendering, cues, semantics, fallbacks, and the retargeted Wizard-painter source owner. |
+| 7. Canvas interaction, Wizard fit, and placement geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake`, `placement geometry read model`, `_geometryPlacement`, `_geometryTemplate`, `_geometryTemplateWithPinCount` | Verifies pan/zoom, hit selection, aspect mapping, fallback, padding, one initial fit, alignment, badges, and nine pure center/body/envelope/classifier/maximum/upright-hit contracts. |
+| 8. Painter, overlay, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels`, `geometrySource` | Inspects composite order/pixels, read-only Wizard geometry, Board/Wizard rotation separation, footprint/pin rendering, cues, semantics, fallbacks, and separate host/Wizard/geometry source ownership. |
 | 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Verifies projected inspector content, readiness/safety wording, measurements, and visual-trace metadata. |
 | 10. Local panels, focus, and routed responsive layout | `routed Board Canvas stays rich across the shell cutover`, `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `board_canvas_project_navigation_hub` | Proves exact six-width shell modes, continuous rich Canvas, hidden default, retained panels/focus, and absence of local Project navigation. |
 | 11. Volatility and protected-boundary guards | `selection state is volatile in memory only`, `events.jsonl`, `event_writer_service.py` | Asserts volatile-only state, unchanged provider/files, empty unintended writer requests, and static source boundaries. |
@@ -84,14 +86,21 @@ focus hide/restore without events or freshness changes.
   focus hide/restore.
 - `[D]` Wizard/painter helpers inspect accepted presentation input and composite
   output without creating canonical data.
-- `[D]` `board canvas source keeps read-only data-path boundaries` retains its
-  host-source assertions, separately reads `wizard_intake_overlay.part.dart`,
-  and slices from `class _WizardIntakePainter` through EOF for the unchanged
-  candidate-rotation assertions.
+- `[D]` `board canvas source keeps read-only data-path boundaries` separately
+  reads the host, `wizard_intake_overlay.part.dart`, and
+  `placement_geometry.dart`. Geometry declaration/literal assertions target
+  `geometrySource`, host call-site assertions use public geometry names, and
+  the unchanged Wizard painter slice remains separate from the Board painter
+  rotation-negative slice.
 - `[D]` Direct `test` declarations import the normal measurement library and
   characterize pure endpoint/count helpers,
   lexical distinct-nonblank-ID ordering with equal/empty-ID index fallback,
   scalar/unit eligibility, exact value-unit text, and validity caution without
+  mounting widgets or invoking a writer.
+- `[D]` Nine direct `test` declarations import the normal placement-geometry
+  library and characterize center clamp/conversion, body-size precedence,
+  every visual-kind envelope, exact template mappings, classifier branches,
+  visual maxima, upright hit boundaries, and ignored nonzero rotation without
   mounting widgets or invoking a writer.
 - `[D]` Successful simulated writer calls are observed separately through
   `_readProjectState` as returned-event mirroring and stale projection state.
@@ -102,6 +111,7 @@ focus hide/restore without events or freshness changes.
 | --- | --- | --- |
 | `BoardCanvasScreen` and production map | system under test / map input | Supplies destination behavior and local responsibilities. |
 | `measurement_projection.dart` and production map | direct pure-helper system under test / map input | Supplies endpoint/count, badge ordering, scalar/text, and presentation-caution behavior without mounting the screen. |
+| `placement_geometry.dart` and production map | direct pure-helper system under test plus source-read / map input | Supplies center/body/visual sizing, minimum envelopes, visual-kind/template classification, and upright hit behavior without mounting the screen; its source is read separately for physical-ownership guards. |
 | `wizard_intake_overlay.part.dart` and production map | direct source-read / map input | Supplies the physically moved Wizard fit/photo/painter declarations and the painter-to-EOF structural slice. |
 | `WorkbenchShell` | routed outer composition | Supplies compact/persistent project navigation without entering Board source. |
 | `projectStateProvider`, `ProviderScope`, `ProjectState` | fixture / observation | Injects state and proves responsive/provider invariance or post-write mirroring. |
@@ -110,7 +120,7 @@ focus hide/restore without events or freshness changes.
 | BoardFact models and `TraceBenchEvent` | fixture/assertion input | Build projected facts and returned events. |
 | `WizardIntake` family | fixture/assertion input | Builds optional aspect/photo/contour/problem/candidate presentation. |
 | Flutter widget, gesture, semantics, painter APIs | driver/observation | Controls viewports/input/rendering/semantics/private painter state. |
-| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write fixtures plus exactly the host and Wizard-part static source reads; the measurement library is not source-read. |
+| `dart:io` temporary directories and source reads | harness-only file boundary | Supports zero-write fixtures plus separate host, Wizard-part, and placement-geometry static source reads; the measurement library is not source-read. |
 
 ## Write and protected boundaries
 
@@ -122,7 +132,7 @@ focus hide/restore without events or freshness changes.
 | Shared-shell responsive navigation observation | `ZERO_WRITE` | `[D]` Route/layout changes retain provider identity and rich Canvas state. |
 | Wizard gate/photo/fit/composite/candidate taps | `ZERO_WRITE` | `[D]` Intake/facts/events and four fake lists remain unchanged. |
 | Temp directory setup/teardown | `NONCANONICAL_FILE` | `[D]` Harness-only and outside product persistence. |
-| Production source string reads | `ZERO_WRITE` | `[D]` Read the host and Wizard part without modifying either; only the painter slice changed physical owner. |
+| Production source string reads | `ZERO_WRITE` | `[D]` Read the host, Wizard part, and geometry library separately without modifying them; ownership and Board/Wizard rotation assertions remain source-specific. |
 
 Canonical event meaning, writer implementation, schemas, Project ZIP,
 materialization, coordinates, electrical meaning, and evidence promotion stay
@@ -135,6 +145,8 @@ owned by their production/canonical owners.
 - Negative local Project-hub/rail assertions guard against duplicate navigation
   without owning the shared destination model.
 - Static source and provider observations are read-only.
+- Direct placement-geometry tests and source reads are `ZERO_WRITE`; they mount
+  no widget and invoke no writer.
 
 ## Impact matrix
 
@@ -146,7 +158,7 @@ owned by their production/canonical owners.
 | Navigator/filter | `[D]` helpers/painter observations | targets, geometry, responsive | `UI_LOCAL` | exact family + full target |
 | Measurement read model | `[D]` direct normal-library import, endpoint/count tests, and four helper characterizations | normal-library implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
 | Writers | `[D]` four fakes/results | selection/provider/freshness | exercised `CANONICAL_EVENT` | exact writer family + full target |
-| Canvas/Wizard | `[D]` transforms/pixels/painter state plus retargeted source guard | z-order/hits/semantics and final-declaration coupling | `UI_LOCAL` / `ZERO_WRITE` | exact geometry/render cases + structural boundary declaration |
+| Canvas/geometry/Wizard | `[D]` transforms/pixels/painter state, nine pure geometry tests, and retargeted three-source guard | z-order/hits/semantics, normal geometry API, upright Board painter, and Wizard final-declaration coupling | `UI_LOCAL` / `ZERO_WRITE` | exact pure geometry/render cases + structural boundary declaration |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | exact family + full target |
 | Freshness/boundaries | `[D]` explicit states/source guards | cross-cutting | `ZERO_WRITE` / observed projection | full target + integration |
 
@@ -159,6 +171,7 @@ owned by their production/canonical owners.
 | State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_readProjectState` | No-project/project shell, provider, and projection assertions. |
 | Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor`, `board canvas source keeps read-only data-path boundaries` | Gate, fit, z-order, photo, rotation, footprints/pins, and exact source-owner retarget. |
 | Interaction | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels` | Selection, hover, filter, hit alignment, semantics. |
+| Placement geometry | `placement geometry read model`, `_geometryPlacement`, `_geometryTemplate`, `_geometryTemplateWithPinCount` | Nine direct tests for clamp/conversion, sizing precedence, all envelopes, exact mappings, classifier precedence, visual maxima, upright edges, and ignored rotation. |
 | Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Directly imported normal-library endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
 | Writer boundaries | Four fake writers and event builders | Explicit saves, guards, errors, idempotency, returned events, stale state. |
 
@@ -173,6 +186,9 @@ owned by their production/canonical owners.
   families.
 - Placement ghost conversion plus requests can cross from UI-local drafts into
   canonical normalized-coordinate behavior.
+- Placement-geometry behavior affects hit selection, badges, labels, painter
+  and semantics bounds. Do not combine pure API changes with painter movement,
+  rotated hit testing, State/provider/writer work, or static-guard broadening.
 - Pure measurement helper expectations must not be combined with writer/event
   semantic changes; the direct declarations prove `ZERO_WRITE` read-model
   behavior only.
@@ -189,6 +205,7 @@ owned by their production/canonical owners.
 | One Wizard render assertion | painter/photo/pixel helpers or exact source guard | fixtures/z-order/hit path and part declaration order | exact overlay cases or structural declaration + full target |
 | One writer assertion | corresponding fake writer | selection/result/freshness | exact writer family |
 | One measurement read-model assertion | exact helper/test title | host consumers and writer family | direct helper declarations |
+| One placement-geometry assertion | exact public API/test title | host interaction, badge, label, painter, and semantics consumers | exact pure geometry declaration plus source guard |
 | One freshness assertion | explicit freshness fixture | scaffold/provider/integration | exact warning case + full target |
 
 ## Future extraction seams
@@ -202,9 +219,10 @@ owned by their production/canonical owners.
 
 Set `REVIEW_REQUIRED` for helper/title, harness/provider/route,
 writer/filesystem, linked-family, source-read ownership, or family-ownership
-drift. Recheck exact test count (`169 = 155 testWidgets + 14 test`), the direct
-normal-library import, the four measurement helper contracts, all six widths,
-shell/Board keys, hidden
+drift. Recheck exact test count (`178 = 155 testWidgets + 23 test`), both direct
+normal-library imports, the nine placement-geometry and four measurement
+helper contracts, the separate `hostSource` / `wizardOverlaySource` /
+`geometrySource` ownership guard, all six widths, shell/Board keys, hidden
 default, five retained local tools, focus restoration, and negative Project
 hub/rail evidence after related changes. Recheck the painter-to-EOF slice if
 the Wizard part's painter ceases to be its final declaration. Formatting,

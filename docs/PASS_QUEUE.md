@@ -2,8 +2,56 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
+
+## Current Board Canvas placement-geometry Code Map maintenance queue
+
+Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass at accepted committed
+implementation baseline `f33ba88f67886841c3657a1b3346c60790e0ab0e`.
+Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/geometry/placement_geometry.dart.md` (new)
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No tenth path is queued. Describe only accepted committed source. The 291-line
+geometry library qualifies through `AUTO — 5+ independently testable
+production behaviors` and receives its first production map. Refresh only
+geometry ownership/dependency and accepted test inventory in the host and
+focused-test maps. Mark exactly those three map headers and matching index
+cells `REVIEW_REQUIRED`.
+
+Review the unchanged Wizard overlay, Component Navigator, and measurement
+projection maps as `REVIEWED_NO_CHANGE`; edit none of them. Preserve three
+State owners, four host writer invocations split `3 + 1`, two notifier sites,
+two temporary part pairs, the upright Board hit/painter contract, the Wizard
+rotation transform, all runtime/test source, and every protected/product
+boundary.
+
+Target registry is 39 maps/39 rows with 35 `MAINTAINED`, exactly three
+`REVIEW_REQUIRED`, one `RETIRED`, and zero registry defects. Create one neutral
+ledger row and one unique empty verdict block. If independent audit accepts all
+three current maps, a later bounded Phase 2 may change exactly eight logical
+coordinates: three map Status headers, three matching index Status cells, the
+verdict-block interior, and this pass's ledger Status cell.
+
+Manual smoke is `NOT_APPLICABLE`. After accepted exact human staging, commit,
+and push, stop at non-executable `NEEDS_USER_DECISION`. Do not arm legacy
+deletion, painter/rotation work, evidence extraction, State/controller work,
+Wizard/Navigator conversion, or writer work.
+
+## Accepted Board Canvas placement-geometry scope and child queue (historical, non-authorizing)
+
+The retained queue below completed with the accepted implementation commit
+`f33ba88f67886841c3657a1b3346c60790e0ab0e`. It supplies no current route or
+write authority.
 
 ## Current Board Canvas placement-geometry scope and child queue
 

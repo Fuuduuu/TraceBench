@@ -2,8 +2,68 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+
+## Current Board Canvas placement-geometry scope authority
+
+```text
+PASS_ID: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS
+Lane: A
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: ca5b999817aefd25353a4a734e2f7813cd0bd39f
+Predecessor: TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS
+Reserved child: TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child validation: AUTOMATED_ONLY_OK
+```
+
+The accepted predecessor stopped at non-executable `NEEDS_USER_DECISION`.
+The human selects this docs-only scope and exactly one implementation child.
+Phase 1 authorizes only:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is authorized. The exact artifact is the binding owner of
+the live symbol/caller closure, public API, behavior and rotation invariants,
+static-guard retarget, exact child allowlist, tests, validation, future Code
+Map dispositions, freezes, stop conditions, and empty verdict block.
+
+The reserved child may write exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/geometry/placement_geometry.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth child path is authorized. The child creates one normal, non-part
+geometry library and moves only six pure geometry/classification functions,
+the renamed public `FootprintVisualKind`, and its private template-ID helper.
+It consumes the existing public placement/component/template models directly;
+no aggregate input type is permitted. `_PlacementEntry` and
+`_KnownPinVisualRef` remain private host orchestration/UI types.
+
+All painters, drawing commands, label/semantics/preview helpers, pin/contact
+plans, State/controllers/providers, four writers split `3 + 1`, two notifier
+sites, two reciprocal parts, palette, measurement projection, event/evidence
+semantics, route behavior, and product surface remain frozen. Board placement
+painting retains zero `canvas.rotate(`; Wizard painting retains exactly its
+existing rotation; hit testing stays upright and ignores `rotationDeg`.
+
+Maps remain byte-frozen in scope and child. After accepted committed
+implementation, separately scope host/test map maintenance, review unchanged
+Wizard/Navigator/measurement maps, and requalify the new committed source
+without predetermining the Standard result. No later successor beyond that
+maintenance route to `NEEDS_USER_DECISION` is armed.
+
+## Accepted Board Canvas palette Code Map maintenance (historical, non-authorizing)
+
+Commit `ca5b999817aefd25353a4a734e2f7813cd0bd39f` preserves the completed
+maintenance pass. The retained authority below is historical and supplies no
+current route or write authority.
 
 ## Current Board Canvas palette committed-source Code Map maintenance authority
 

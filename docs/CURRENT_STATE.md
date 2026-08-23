@@ -1,7 +1,61 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+
+## Live Board Canvas placement-geometry scope lock
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+ca5b999817aefd25353a4a734e2f7813cd0bd39f`, parent
+`076c306aa616cb40a84e716b79a7c53bacffbc39`, subject
+`docs: refresh board canvas palette code maps`, and divergence `0 0`. Staged
+and unmerged sets were empty before Phase 1. The known three generated-plugin
+Windows EOL/stat entries and preserved untracked `TraceBench_ALL_CODE.txt`
+remain outside the substantive material set.
+
+The human replaces the accepted predecessor's non-executable
+`NEEDS_USER_DECISION` sentinel with one Lane A `SCOPE_LOCK / DOCS_ONLY /
+PHASE_1` pass. It changes exactly the three route owners, this ledger, and one
+new scope artifact; no Dart, test, Code Map/index, runtime, or frozen content
+is authorized.
+
+The reserved child creates one normal feature-local
+`geometry/placement_geometry.dart`, relocates exactly six deterministic
+placement functions, publicizes `_FootprintVisualKind` as
+`FootprintVisualKind`, and keeps the template-ID classifier private in the new
+library. `_PlacementEntry`, `_KnownPinVisualRef`, all painters, UI labels,
+State, providers, four writers split `3 + 1`, two notifier sites, and two
+temporary parts remain host-owned and behavior-identical. The exact child
+allowlist is the host, the new geometry library, and the existing 169-
+declaration focused test—no fourth path.
+
+The child is `AUTOMATED_ONLY_OK`. It must directly characterize center
+clamping, body-size precedence, every minimum envelope, classification,
+rendered maximum size, upright hit boundaries, and nonzero-rotation upright
+hit behavior while retargeting the static source guard through a separate
+`geometrySource`. Board placement painting remains rotation-free; Wizard
+painter rotation remains unchanged.
+
+The route is:
+
+```text
+TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at ca5b999]
+-> TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS
+-> TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS
+-> separately scoped committed-source Code Map maintenance
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+One neutral `REVIEW_REQUIRED` ledger row and one unique empty designated
+verdict block bind independent scope audit. No implementation or later pass is
+authorized by this Phase 1.
+
+## Accepted Board Canvas palette Code Map maintenance (historical, non-authorizing)
+
+The retained section below completed at `ca5b999817aefd25353a4a734e2f7813cd0bd39f`.
+It supplies no current route or write authority.
 
 ## Live Board Canvas palette committed-source Code Map maintenance
 

@@ -2,8 +2,56 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`
+
+## Current Board Canvas placement-geometry scope and child queue
+
+Execute one Lane A `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed
+baseline `ca5b999817aefd25353a4a734e2f7813cd0bd39f`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is queued. Create one neutral `REVIEW_REQUIRED` ledger row
+and one unique empty verdict block. Freeze every Dart, test, map/index,
+runtime, product, protected, package, asset, schema, tool, platform, Windows
+substantive, and scratch byte during the scope pass.
+
+Reserve exactly one child,
+`TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_IMPL_PASS`, with exactly three
+paths:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/geometry/placement_geometry.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+The child extracts only the six pure placement geometry/classification
+functions, public `FootprintVisualKind`, and its private template-ID helper.
+It keeps `_PlacementEntry`, `_KnownPinVisualRef`, painters, labels, render
+plans, State/controllers/providers/writers/notifiers, palette, measurement
+projection, and both current parts in place. No aggregate input type, painter
+movement, rotation-aware Board hit testing, or behavior change is queued.
+
+The focused test imports the normal library directly, keeps `hostSource` and
+Wizard source handling separate, adds a separate `geometrySource`, retargets
+only stale ownership guards, preserves all 169 existing declarations, and
+adds pure characterization. Validation class is `AUTOMATED_ONLY_OK`; manual
+smoke is `NOT_APPLICABLE` unless mechanical/automated equivalence fails.
+
+After an accepted committed child, separately scope committed-source Code Map
+maintenance. Then stop at non-executable `NEEDS_USER_DECISION`. Do not arm
+read-only evidence extraction, painter extraction, Wizard/Navigator
+conversion, controller/State work, or writer work.
+
+## Accepted Board Canvas palette Code Map maintenance queue (historical, non-authorizing)
+
+The retained queue below completed at
+`ca5b999817aefd25353a4a734e2f7813cd0bd39f`. It supplies no current route or
+write authority.
 
 ## Current Board Canvas palette committed-source Code Map maintenance queue
 

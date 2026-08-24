@@ -2,10 +2,61 @@
 
 ## Current route
 
-Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Current: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Current legacy measurement write-path Code Map retirement queue
+## Current ProjectSession prerequisite Code Map bootstrap queue
+
+Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
+source at `c3af32a65fcf5d5a395a9c47d74587024a9fa98b`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` (new)
+7. `docs/code_maps/test/widget/add_component_screen_test.dart.md` (new)
+8. `docs/code_maps/lib/features/reference_images/screens/reference_images_screen.dart.md` (new)
+9. `docs/code_maps/test/widget/reference_images_screen_test.dart.md` (new)
+10. `docs/audit/TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS.md` (new)
+
+No eleventh path is queued. Create all four maps only from accepted committed
+source. Their Phase-1 map-header and matching index statuses begin
+`REVIEW_REQUIRED`.
+
+The locked qualifications are:
+
+- Add Component production:
+  `AUTO — canonical writer paths and UI-local/read-only responsibilities coexist`;
+- Add Component test: `SCORE 7/12`, vector `0/2/2/2/0/1`;
+- Reference Images production:
+  `AUTO — 5+ independently testable production behaviors`; and
+- Reference Images test: `SCORE 8/12`, vector `1/2/2/2/0/1`.
+
+Map the current provider dependencies, human/canonical and projection-state
+boundaries, noncanonical local-sidecar behavior, hint/not-evidence contract,
+responsive/preview behavior, failure taxonomies, and path containment. Do not
+change or authorize their production/test owners.
+
+Exit registry must be `43/43`: `37 MAINTAINED`, four `REVIEW_REQUIRED`, and
+two `RETIRED`, with zero orphan, unindexed, duplicate, type, source, or status
+defects. Runtime/tests, production source, packages, assets, schemas, tools,
+Windows substantive content, scratch, existing map bodies, and unrelated index
+rows are frozen.
+
+Create one neutral `REVIEW_REQUIRED` audit-ledger row and one unique empty
+verdict block. If independent audit expressly authorizes recording, Phase 2
+may change only ten logical coordinates: four map-header Status fields, four
+matching index Status cells, the verdict-block interior, and the ledger row's
+Status cell. Every map body and qualification, route prose, ledger Description,
+artifact exterior, and other byte remains frozen.
+
+After accepted exact human staging, commit, and push, stop at non-executable
+`NEEDS_USER_DECISION`. ProjectSession, provider migration, writer work, and
+every later product pass remain unarmed.
+
+## Accepted legacy measurement write-path Code Map retirement queue (historical, non-authorizing)
 
 Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
 source at `482c21e266c185b1b97d00752c86b0090d15c781`. Write exactly:

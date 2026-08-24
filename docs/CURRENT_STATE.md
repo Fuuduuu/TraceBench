@@ -1,9 +1,56 @@
 # Current State
 
-Current pass: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Current pass: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
 Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live legacy measurement write-path Code Map retirement
+## Live ProjectSession prerequisite Code Map bootstrap
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+c3af32a65fcf5d5a395a9c47d74587024a9fa98b`, parent
+`482c21e266c185b1b97d00752c86b0090d15c781`, subject
+`docs: retire legacy measurement write path code map`, and divergence `0 0`.
+Staged and unmerged sets are empty. The known three generated-plugin Windows
+EOL/stat entries and preserved untracked `TraceBench_ALL_CODE.txt` remain
+outside the substantive material set.
+
+The human selects one Lane A `DOCS_MAPS_ONLY / PHASE_1` prerequisite
+bootstrap. It changes exactly the three route owners, this ledger, the Code
+Map index, four new committed-source maps, and one new audit artifact: ten
+paths total and no runtime/test source.
+
+Locked qualification yields four maps: Add Component production qualifies
+automatically because its canonical writer path coexists with UI-local and
+read-only responsibilities; its ten-test suite scores `7/12`. Reference
+Images production qualifies automatically through five-plus independently
+testable behaviors; its 892-line, eleven-test suite scores `8/12`. Production
+and tests remain byte-identical while the maps describe their current provider,
+canonical-event, projection-state, noncanonical-sidecar, safety, responsive,
+preview, failure, and path-containment boundaries.
+
+Phase-1 registry state is exactly `43 maps / 43 rows`: `37 MAINTAINED`, four
+`REVIEW_REQUIRED`, and two `RETIRED`, with zero parity or status defects. The
+four review pairs are the Add Component source/test and Reference Images
+source/test. The retired maps remain `measurement_projection.part.dart.md`
+and `measurement_record_screen.dart.md`.
+
+The route is:
+
+```text
+TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+   [accepted and committed at c3af32a65fcf5d5a395a9c47d74587024a9fa98b]
+-> TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Manual smoke is `NOT_APPLICABLE`. One neutral `REVIEW_REQUIRED` ledger row
+and one unique empty verdict block bind independent four-map audit. A
+separately authorized Phase 2 may change only four map Status headers, four
+matching index Status cells, that block interior, and the matching ledger
+Status. ProjectSession, provider migration, writer work, and later product
+passes remain unarmed.
+
+## Accepted legacy measurement write-path Code Map retirement (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

@@ -2,10 +2,92 @@
 
 ## Route
 
-Current: `TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS`
+Current: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
 Next: `NEEDS_USER_DECISION`
 
-## Current legacy measurement write-path Code Map retirement authority
+## Current ProjectSession prerequisite Code Map bootstrap authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: c3af32a65fcf5d5a395a9c47d74587024a9fa98b
+Predecessor: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+Next: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+The human replaces the predecessor's non-executable sentinel with one
+committed-source prerequisite bootstrap. This pass authorizes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` (new)
+7. `docs/code_maps/test/widget/add_component_screen_test.dart.md` (new)
+8. `docs/code_maps/lib/features/reference_images/screens/reference_images_screen.dart.md` (new)
+9. `docs/code_maps/test/widget/reference_images_screen_test.dart.md` (new)
+10. `docs/audit/TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS.md` (new)
+
+No eleventh path is authorized. Every Dart/test/runtime source, existing map
+body, unrelated index row, package, asset, schema, tool, platform/Windows
+substantive byte, and scratch artifact is frozen.
+
+Create the four first maps from the exact committed sources and tests at the
+baseline. Their locked qualifications and Phase-1 statuses are:
+
+| Target | Qualification | Status |
+| --- | --- | --- |
+| Add Component source | `AUTO — canonical writer paths and UI-local/read-only responsibilities coexist` | `REVIEW_REQUIRED` |
+| Add Component test | `SCORE 7/12`, vector `0/2/2/2/0/1` | `REVIEW_REQUIRED` |
+| Reference Images source | `AUTO — 5+ independently testable production behaviors` | `REVIEW_REQUIRED` |
+| Reference Images test | `SCORE 8/12`, vector `1/2/2/2/0/1` | `REVIEW_REQUIRED` |
+
+The Add Component maps describe explicit human-entry gating, accepted V2
+writer invocation, caller-owned returned-event dedup/mirroring, stale
+projection promotion, result/failure UI, and hint/safety/read-only boundaries.
+The source owns no direct filesystem write. Its test fake exercises the
+canonical boundary without persistence and observes projection state.
+
+The Reference Images maps describe file selection, ledger load, noncanonical
+sidecar import/reload, error translation, responsive list/preview composition,
+selection fallback, metadata/safety semantics, and service path containment.
+`projectStateProvider` is read-only input in production. Sidecar file writes
+remain delegated to `ReferenceImageSidecarService`; they are neither canonical
+events/facts/evidence nor Project ZIP content and grant no promotion or AI
+authority.
+
+Registry exit state is exactly 43 maps/43 rows with 37 `MAINTAINED`, four
+`REVIEW_REQUIRED`, and two `RETIRED`. Require exact map/index parity, unique
+Source and map paths, exact Source/Type/Status agreement, and zero orphan or
+unindexed entries. The retired pair remains the measurement-projection part
+and measurement-record screen maps.
+
+```text
+TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS
+   [accepted and committed at c3af32a65fcf5d5a395a9c47d74587024a9fa98b]
+-> TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Create one neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict
+block. Phase 2 is forbidden unless independent audit expressly authorizes it.
+If authorized for all four maps, it may change exactly ten coordinates: four
+map Status headers, four matching index Status cells, the designated verdict
+interior, and this pass's ledger Status cell. Map bodies and all other header
+fields, route prose, ledger Description, artifact exterior, unrelated rows,
+and every other byte remain frozen.
+
+Stop on baseline or qualification drift, an unresolved anchor, map/source
+conflict, an eleventh path, registry defect, runtime/test/protected-surface
+drift, validation failure, Phase-2 execution, or staging/commit/push. This
+bootstrap does not create or authorize `project_session.dart`, a beginner-mode
+provider, provider migration, any ProjectSession scope lock or implementation,
+writer change, or product behavior change.
+
+## Accepted legacy measurement write-path Code Map retirement authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_LEGACY_MEASUREMENT_WRITE_PATH_CODE_MAP_RETIREMENT_PASS

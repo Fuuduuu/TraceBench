@@ -17,6 +17,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/board_canvas/screens/board_canvas_screen.dart` | `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/component_navigator.part.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_graph/screens/board_graph_screen.dart` | `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md` | production | `MAINTAINED` |
+| `lib/features/components/screens/add_component_screen.dart` | `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/edit_component_screen.dart` | `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measure_sheet/screens/measure_sheet_screen.dart` | `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md` | production | `MAINTAINED` |
@@ -29,12 +30,14 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/project/widgets/wizard_compact_tokens.dart` | `docs/code_maps/lib/features/project/widgets/wizard_compact_tokens.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/widgets/wizard_compact_widgets.dart` | `docs/code_maps/lib/features/project/widgets/wizard_compact_widgets.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/widgets/workbench_shell.dart` | `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md` | production | `MAINTAINED` |
+| `lib/features/reference_images/screens/reference_images_screen.dart` | `docs/code_maps/lib/features/reference_images/screens/reference_images_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/report/screens/customer_report_screen.dart` | `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/project_creator.dart` | `docs/code_maps/lib/shared/services/project_creator.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |
 | `test/unit/project_creator_test.dart` | `docs/code_maps/test/unit/project_creator_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_loader_zip_test.dart` | `docs/code_maps/test/unit/project_loader_zip_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/add_component_screen_test.dart` | `docs/code_maps/test/widget/add_component_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/benchbeep_home_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/benchbeep_splash_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_splash_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/board_canvas_screen_test.dart` | `docs/code_maps/test/widget/board_canvas_screen_test.dart.md` | test | `MAINTAINED` |
@@ -46,4 +49,5 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `test/widget/new_project_wizard_screen_test.dart` | `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/project_gate_test.dart` | `docs/code_maps/test/widget/project_gate_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/project_overview_screen_test.dart` | `docs/code_maps/test/widget/project_overview_screen_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/reference_images_screen_test.dart` | `docs/code_maps/test/widget/reference_images_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/workbench_shell_test.dart` | `docs/code_maps/test/widget/workbench_shell_test.dart.md` | test | `MAINTAINED` |

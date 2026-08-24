@@ -1,9 +1,65 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
 
-## Live ProjectSession prerequisite Code Map bootstrap
+## Live ProjectSession owner scope lock
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+4770da8d40cd0f79745788d9cd9ec5fd132fe4c4`, parent
+`c3af32a65fcf5d5a395a9c47d74587024a9fa98b`, subject
+`docs: bootstrap project session prerequisite code maps`, and divergence
+`0 0`. Staged and unmerged sets are empty. The known three generated-plugin
+Windows EOL/stat entries and untracked `TraceBench_ALL_CODE.txt` remain
+outside the substantive material set.
+
+The human selects one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` authority as
+the final dedicated architecture correction before product feature work. It
+changes exactly the three route owners, the audit ledger, and one new binding
+artifact. No implementation, test, Code Map/index, runtime, package, asset,
+schema, tool, platform, Windows substantive, or scratch byte is authorized.
+
+The reserved child is
+`TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`, bounded to exactly 40 paths:
+21 production paths and 19 test/helper paths. Current closure proves all 19
+production provider consumers and all 17 existing provider-dependent tests
+are included; the two new provider owners plus test helper/unit suite complete
+the set. A required path 41 is a stop.
+
+The child replaces the app-owned nullable `StateProvider` with a
+`NotifierProvider<ProjectSession, ProjectState?>`, retaining the public
+`projectStateProvider` name. The separate public `beginnerModeProvider`
+remains a true-initialized `StateProvider<bool>`. Generation guards cover
+bundled load, Wizard creation, both ZIP paths, directory open, and customer-
+report reload. Returned writer events compose against current session state,
+deduplicate at the session boundary, and promote projection stale without
+moving any writer invocation or changing writer/UI failure semantics.
+
+Workbench Home closes the project session before navigating to `/`. The
+Wizard, ProjectCreator, ProjectLoader, router, models, schemas, materializer,
+and four V2 writer services remain frozen. No compatibility provider or app
+re-export is allowed; feature provider dependencies move to the
+`shared/session` leaf.
+
+The route is:
+
+```text
+TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+   [accepted and committed at 4770da8d40cd0f79745788d9cd9ec5fd132fe4c4]
+-> TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS
+-> TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS [reserved; not executable yet]
+```
+
+The current Code Map registry is exactly 43/43 with 41 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`. Scope and child maps remain frozen; a
+separate committed-source maintenance pass follows only after an accepted
+implementation commit. One neutral `REVIEW_REQUIRED` ledger row and one
+unique empty verdict block bind independent scope audit. Phase 2, if
+expressly authorized, is exactly two logical coordinates. No scope staging is
+authorized before that audit and recording complete.
+
+## Accepted ProjectSession prerequisite Code Map bootstrap (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

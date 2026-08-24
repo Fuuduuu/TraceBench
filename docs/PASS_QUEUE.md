@@ -2,10 +2,54 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
 
-## Current ProjectSession prerequisite Code Map bootstrap queue
+## Current ProjectSession owner scope queue
+
+Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed
+baseline `4770da8d40cd0f79745788d9cd9ec5fd132fe4c4`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is queued. Create one neutral `REVIEW_REQUIRED` ledger row
+and one unique empty verdict block. Independent audit and an expressly
+authorized two-coordinate Phase 2 must complete before exact human scope
+staging/commit/push can arm the child.
+
+Reserve exactly one child:
+`TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`. Its exact allowlist is the 40
+paths enumerated in `docs/ACTIVE_SCOPE_LOCK.md` and the binding scope artifact:
+21 production paths, including the two new `shared/session` provider owners,
+and 19 test/helper paths, including the new seeded-session helper and direct
+unit suite. No path 41 is queued.
+
+The child retains public provider names while moving project state to
+`NotifierProvider<ProjectSession, ProjectState?>` and keeping beginner mode in
+its own true-initialized `StateProvider<bool>`. Guard full async replacements
+by captured generation; apply returned canonical events to current state with
+session-lifetime dedup and stale promotion; explicitly close on Workbench Home;
+and remove feature-to-app provider imports. Keep writer invocations, UI result
+semantics, navigation ownership, filesystem/loading/creator/exporter behavior,
+models, schemas, materialization, router, Wizard contract, and writer services
+with their existing owners.
+
+No Code Map/index byte is queued in either scope or child. Baseline registry
+is 43/43 with 41 `MAINTAINED`, zero `REVIEW_REQUIRED`, and two `RETIRED`.
+After accepted implementation commit/push, run separately scoped committed-
+source Code Map maintenance, then return to non-executable
+`NEEDS_USER_DECISION`. Dedicated architecture cleanup stops there.
+
+Stop with `BLOCKED_PROJECT_SESSION_CLOSURE_DRIFT` if live closure requires a
+forty-first child path. Also stop on baseline/route drift, API widening,
+unpreservable provider/Wizard/writer semantics, frozen-owner drift, registry
+conflict, validation failure, or any staging/commit/push.
+
+## Accepted ProjectSession prerequisite Code Map bootstrap queue (historical, non-authorizing)
 
 Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` pass against accepted committed
 source at `c3af32a65fcf5d5a395a9c47d74587024a9fa98b`. Write exactly:

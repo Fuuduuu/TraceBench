@@ -2,10 +2,142 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
 
-## Current ProjectSession prerequisite Code Map bootstrap authority
+## Current ProjectSession owner scope authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 4770da8d40cd0f79745788d9cd9ec5fd132fe4c4
+Predecessor: TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+Reserved child: TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+```
+
+The human replaces the accepted prerequisite pass's non-executable
+`NEEDS_USER_DECISION` sentinel with this final dedicated architecture scope.
+Phase 1 authorizes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS.md` (new)
+
+No sixth scope path is authorized. The exact child is reserved, not yet
+executable, with this 40-path implementation allowlist and no forty-first path:
+
+### Child production paths — 21
+
+1. `lib/app/app.dart`
+2. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+3. `lib/features/board_graph/screens/board_graph_screen.dart`
+4. `lib/features/components/screens/add_component_screen.dart`
+5. `lib/features/components/screens/edit_component_screen.dart`
+6. `lib/features/events/screens/events_viewer_screen.dart`
+7. `lib/features/known_facts/screens/component_list_screen.dart`
+8. `lib/features/known_facts/screens/known_facts_viewer_screen.dart`
+9. `lib/features/known_facts/screens/measurement_list_screen.dart`
+10. `lib/features/known_facts/screens/not_populated_screen.dart`
+11. `lib/features/known_facts/screens/pin_list_screen.dart`
+12. `lib/features/measure_sheet/screens/measure_sheet_screen.dart`
+13. `lib/features/photos/screens/photo_list_screen.dart`
+14. `lib/features/project/actions/project_acquisition_actions.dart`
+15. `lib/features/project/screens/project_overview_screen.dart`
+16. `lib/features/project/widgets/project_gate.dart`
+17. `lib/features/project/widgets/workbench_shell.dart`
+18. `lib/features/reference_images/screens/reference_images_screen.dart`
+19. `lib/features/report/screens/customer_report_screen.dart`
+20. `lib/shared/session/beginner_mode_provider.dart` (new)
+21. `lib/shared/session/project_session.dart` (new)
+
+### Child test paths — 19
+
+22. `test/integration/projection_stale_banner_end_to_end_test.dart`
+23. `test/widget/add_component_screen_test.dart`
+24. `test/widget/benchbeep_home_screen_test.dart`
+25. `test/widget/board_canvas_screen_test.dart`
+26. `test/widget/board_graph_screen_test.dart`
+27. `test/widget/customer_report_screen_test.dart`
+28. `test/widget/edit_component_screen_test.dart`
+29. `test/widget/events_viewer_advanced_screen_test.dart`
+30. `test/widget/events_viewer_beginner_screen_test.dart`
+31. `test/widget/measurement_list_screen_test.dart`
+32. `test/widget/measure_sheet_screen_test.dart`
+33. `test/widget/not_populated_screen_test.dart`
+34. `test/widget/photo_list_screen_test.dart`
+35. `test/widget/project_gate_test.dart`
+36. `test/widget/project_overview_screen_test.dart`
+37. `test/widget/reference_images_screen_test.dart`
+38. `test/widget/workbench_shell_test.dart`
+39. `test/helpers/seeded_project_session.dart` (new)
+40. `test/unit/project_session_test.dart` (new)
+
+The child moves the public `projectStateProvider` name from `app.dart` to a
+feature-internal `NotifierProvider<ProjectSession, ProjectState?>` in
+`shared/session/project_session.dart`. `ProjectSession` owns only active
+project state, a generation counter, guarded open/reload/close transitions,
+raw returned-event dedup/application, and projection-stale promotion. The
+public `beginnerModeProvider` remains a separate `StateProvider<bool>` with
+initial value `true` in `shared/session/beginner_mode_provider.dart`.
+
+Every async full replacement captures the current generation before its
+awaited operation. Matching open/reload replaces state, resets recoverable
+session dedup, and advances generation; close always clears and advances it.
+Returned canonical events re-read current session state, compose at the same
+generation, deduplicate by durable event ID or current-session operation ID,
+mark projection stale, and do not advance generation. Stale generations
+mutate nothing.
+
+Canonical writer invocations, request formation, idempotency, lock/failure
+taxonomy, result copy, UI drafts, navigation, filesystem, loader, creator,
+exporter, schemas, models, materialization, and Board Canvas interaction state
+stay with their current owners. The four V2 writer services are byte-frozen.
+The app wraps the injected/default project creator without editing the Wizard
+or creator contract; only a generation-valid success opens the session. The
+Workbench Home action explicitly closes the active session before `go('/')`.
+No second router or router edit is authorized.
+
+The live symbol closure is exactly 19 production provider consumers and 17
+existing provider-dependent tests, plus two new production owners and two new
+tests/helpers. All are in the 40 paths above. A required path 41 stops with
+`BLOCKED_PROJECT_SESSION_CLOSURE_DRIFT`.
+
+No Code Map/index edit is authorized in this scope or its child. The committed
+registry baseline is 43 maps/43 rows: 41 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`. After an accepted human implementation
+commit/push, a separate committed-source Code Map pass must independently
+recheck dispositions and new-file qualification.
+
+```text
+TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS
+   [accepted and committed at 4770da8d40cd0f79745788d9cd9ec5fd132fe4c4]
+-> TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS
+-> TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS [reserved; not executable yet]
+-> committed-source Code Map maintenance [separately scoped]
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The child becomes executable only after independent scope audit, bounded
+Phase-2 verdict recording, and exact human scope commit/push. Phase 1 creates
+one neutral `REVIEW_REQUIRED` ledger row and one unique empty verdict block.
+An expressly authorized Phase 2 may change only that block interior and this
+pass's ledger Status cell.
+
+After accepted implementation and Code Map commits/pushes, dedicated
+architecture cleanup stops. Later work returns to product feature decisions
+unless a separately evidenced concrete defect justifies new architecture.
+
+Stop on baseline/route drift, a sixth scope path, a forty-first child path,
+API widening, provider/Wizard/writer/model/schema/router semantic drift,
+Code Map registry conflict, validation failure, or any staging/commit/push.
+The complete binding contract is
+`docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS.md`.
+
+## Accepted ProjectSession prerequisite Code Map bootstrap authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_PROJECT_SESSION_PREREQUISITE_CODE_MAP_BOOTSTRAP_PASS

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../actions/project_acquisition_actions.dart';

@@ -10,6 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/home/screens/benchbeep_home_screen.dart';
 import 'package:trace_bench_viewer/features/project/actions/project_acquisition_actions.dart';
@@ -21,10 +25,15 @@ import 'package:trace_bench_viewer/shared/services/project_creator.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
 class _FakeFilePicker extends FilePicker {
-  _FakeFilePicker(this.result, {this.directoryPath});
+  _FakeFilePicker(
+    this.result, {
+    this.directoryPath,
+    this.delayedResult,
+  });
 
   final FilePickerResult? result;
   final String? directoryPath;
+  final Future<FilePickerResult?>? delayedResult;
   var pickCount = 0;
   var directoryPickCount = 0;
   FileType? requestedType;
@@ -55,7 +64,7 @@ class _FakeFilePicker extends FilePicker {
     requestedExtensions = allowedExtensions;
     requestedWithData = withData;
     requestedAllowMultiple = allowMultiple;
-    return result;
+    return await (delayedResult ?? Future<FilePickerResult?>.value(result));
   }
 
   @override
@@ -197,6 +206,60 @@ ProjectState _createdWizardProjectState(ProjectCreationRequest request) {
     projectDirectory: 'C:/projects/prj_deadbeef',
     wizardIntake: request.wizardIntake,
   );
+}
+
+Future<void> _tapWizardKey(WidgetTester tester, String key) async {
+  final finder = find.byKey(ValueKey<String>(key));
+  await tester.ensureVisible(finder);
+  await tester.tap(finder);
+  await tester.pump();
+}
+
+Future<void> _prepareValidWizardCreation(WidgetTester tester) async {
+  final launch = find.byKey(
+    const ValueKey('benchbeep_home_new_project_deferred'),
+  );
+  await tester.ensureVisible(launch);
+  await tester.tap(launch);
+  await tester.pumpAndSettle();
+
+  await tester.enterText(
+    find.byKey(const ValueKey('wizard-project-name')),
+    'Rakenduse mustand',
+  );
+  await tester.enterText(
+    find.byKey(const ValueKey('wizard-device-name')),
+    'Põletikontroller',
+  );
+  await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
+  await tester.pump();
+
+  await _tapWizardKey(tester, 'wizard-next');
+  await _tapWizardKey(tester, 'wizard-next');
+  final contour = find.byKey(const ValueKey('wizard-contour-canvas'));
+  await tester.ensureVisible(contour);
+  await tester.pump();
+  final contourRect = tester.getRect(contour);
+  for (final point in const <Offset>[
+    Offset(0.2, 0.25),
+    Offset(0.8, 0.25),
+    Offset(0.5, 0.78),
+  ]) {
+    await tester.tapAt(
+      contourRect.topLeft +
+          Offset(contourRect.width * point.dx, contourRect.height * point.dy),
+    );
+    await tester.pump();
+  }
+  await _tapWizardKey(tester, 'wizard-contour-close');
+  await _tapWizardKey(tester, 'wizard-next');
+  await _tapWizardKey(tester, 'wizard-next');
+  await tester.enterText(
+    find.byKey(const ValueKey('wizard-problem-description')),
+    'Toide katkeb.',
+  );
+  await tester.pump();
+  await _tapWizardKey(tester, 'wizard-next');
 }
 
 Color _actionBorderColor(WidgetTester tester, Finder action) {
@@ -531,7 +594,8 @@ void main() {
     expect(returnedRouter.routeInformationProvider.value.uri.path, '/');
   });
 
-  testWidgets('injected create callback reaches the Wizard route', (
+  testWidgets('injected create callback is session-guarded on the Wizard route',
+      (
     tester,
   ) async {
     Future<ProjectCreationResult> createProject(
@@ -555,7 +619,7 @@ void main() {
     expect(wizard, findsOneWidget);
     expect(
       tester.widget<NewProjectWizardScreen>(wizard).createProject,
-      same(createProject),
+      isNot(same(createProject)),
     );
   });
 
@@ -612,12 +676,7 @@ void main() {
         find.byKey(const ValueKey('benchbeep_home_launcher'));
     final startupRouter = GoRouter.of(tester.element(startupLauncher));
 
-    final launch = find.byKey(
-      const ValueKey('benchbeep_home_new_project_deferred'),
-    );
-    await tester.ensureVisible(launch);
-    await tester.tap(launch);
-    await tester.pumpAndSettle();
+    await _prepareValidWizardCreation(tester);
     expect(find.byType(NewProjectWizardScreen), findsOneWidget);
     expect(
       GoRouter.of(
@@ -626,53 +685,9 @@ void main() {
       same(startupRouter),
     );
 
-    await tester.enterText(
-      find.byKey(const ValueKey('wizard-project-name')),
-      'Rakenduse mustand',
-    );
-    await tester.enterText(
-      find.byKey(const ValueKey('wizard-device-name')),
-      'Põletikontroller',
-    );
-    await tester.tap(find.byKey(const ValueKey('wizard-pick-folder')));
-    await tester.pump();
     expect(fakePicker.directoryPickCount, 1);
 
-    Future<void> tapWizardKey(String key) async {
-      final finder = find.byKey(ValueKey<String>(key));
-      await tester.ensureVisible(finder);
-      await tester.tap(finder);
-      await tester.pump();
-    }
-
-    await tapWizardKey('wizard-next');
-    await tapWizardKey('wizard-next');
-    final contour = find.byKey(const ValueKey('wizard-contour-canvas'));
-    await tester.ensureVisible(contour);
-    await tester.pump();
-    final contourRect = tester.getRect(contour);
-    for (final point in const <Offset>[
-      Offset(0.2, 0.25),
-      Offset(0.8, 0.25),
-      Offset(0.5, 0.78),
-    ]) {
-      await tester.tapAt(
-        contourRect.topLeft +
-            Offset(contourRect.width * point.dx, contourRect.height * point.dy),
-      );
-      await tester.pump();
-    }
-    await tapWizardKey('wizard-contour-close');
-    await tapWizardKey('wizard-next');
-    await tapWizardKey('wizard-next');
-    await tester.enterText(
-      find.byKey(const ValueKey('wizard-problem-description')),
-      'Toide katkeb.',
-    );
-    await tester.pump();
-    await tapWizardKey('wizard-next');
-
-    await tapWizardKey('wizard-create-project-button');
+    await _tapWizardKey(tester, 'wizard-create-project-button');
     expect(createCalls, 1);
     expect(providerAssignments, 1);
     expect(container.read(projectStateProvider), same(created));
@@ -694,7 +709,7 @@ void main() {
       '/new-project',
     );
 
-    await tapWizardKey('wizard-open-project-button');
+    await _tapWizardKey(tester, 'wizard-open-project-button');
     await tester.pump();
     _expectCanonicalBoardCanvas(tester);
     expect(
@@ -704,6 +719,77 @@ void main() {
     expect(container.read(projectStateProvider), same(created));
     expect(providerAssignments, 1);
     expect(createCalls, 1);
+  });
+
+  testWidgets('stale Wizard success cannot replace a newer session', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final fakePicker = _FakeFilePicker(null, directoryPath: 'C:/projects');
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final creation = Completer<ProjectCreationResult>();
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    ProjectState? delayedProject;
+    var createCalls = 0;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TraceBenchApp(
+          createProject: (request) {
+            createCalls += 1;
+            delayedProject = _createdWizardProjectState(request);
+            return creation.future;
+          },
+        ),
+      ),
+    );
+
+    await _prepareValidWizardCreation(tester);
+    await _tapWizardKey(tester, 'wizard-create-project-button');
+    expect(createCalls, 1);
+    expect(delayedProject, isNotNull);
+
+    final newerProject =
+        _directoryBackedProjectState('C:\\projects\\newer_wizard_session');
+    final projectSession = container.read(projectStateProvider.notifier);
+    expect(
+      projectSession.openProject(
+        newerProject,
+        generation: projectSession.generation,
+      ),
+      isTrue,
+    );
+
+    creation.complete(ProjectCreationSuccess(delayedProject!));
+    await tester.pumpAndSettle();
+
+    expect(container.read(projectStateProvider), same(newerProject));
+    expect(
+      find.text(
+        'Projekt loodi, kuid seda ei avatud, sest aktiivne projekt muutus vahepeal.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('wizard-created-success')),
+      findsNothing,
+    );
   });
 
   testWidgets('launcher has no hidden legacy compatibility anchors', (
@@ -917,6 +1003,32 @@ void main() {
     expect(find.byKey(const ValueKey('benchbeep_workbench_router')),
         findsOneWidget);
     _expectCanonicalBoardCanvas(tester);
+  });
+
+  testWidgets('stale bundled load cannot replace a newer generation', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final sampleProjectButton =
+        find.byKey(const ValueKey('benchbeep_home_sample_project_button'));
+    await tester.ensureVisible(sampleProjectButton);
+    await tester.tap(sampleProjectButton);
+    container.read(projectStateProvider.notifier).closeProject();
+    await tester.pumpAndSettle();
+
+    expect(container.read(projectStateProvider), isNull);
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('launcher open folder cancel leaves project state unchanged', (
@@ -1142,6 +1254,59 @@ void main() {
     expect(loaded!.projectDirectory, projectDirectory);
   });
 
+  testWidgets('stale directory load cannot replace or navigate', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    late BuildContext actionContext;
+    late WidgetRef actionRef;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Consumer(
+            builder: (context, ref, _) {
+              actionContext = context;
+              actionRef = ref;
+              return const Scaffold(body: Text('Stale folder action harness'));
+            },
+          ),
+        ),
+      ),
+    );
+
+    final delayedLoad = Completer<ProjectState>();
+    var opened = false;
+    final pendingOpen = ProjectDirectoryOpenAction.openDirectory(
+      context: actionContext,
+      ref: actionRef,
+      directoryPicker: () async => 'C:/projects/delayed',
+      projectLoader: (_) => delayedLoad.future,
+      onOpened: () => opened = true,
+    );
+    await tester.pump();
+
+    final newerProject =
+        _directoryBackedProjectState('C:\\projects\\newer_directory_session');
+    final projectSession = container.read(projectStateProvider.notifier);
+    expect(
+      projectSession.openProject(
+        newerProject,
+        generation: projectSession.generation,
+      ),
+      isTrue,
+    );
+    delayedLoad.complete(
+      _directoryBackedProjectState('C:\\projects\\delayed_directory'),
+    );
+    await pendingOpen;
+    await tester.pump();
+
+    expect(container.read(projectStateProvider), same(newerProject));
+    expect(opened, isFalse);
+  });
+
   testWidgets('launcher cannot continue without a loaded project', (
     tester,
   ) async {
@@ -1215,12 +1380,17 @@ void main() {
   testWidgets('loaded project keeps direct board canvas handoff', (
     tester,
   ) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
     final loadedProject =
         _directoryBackedProjectState('C:\\projects\\loaded_home');
-    container.read(projectStateProvider.notifier).state = loadedProject;
-    container.read(beginnerModeProvider.notifier).state = false;
+    final container = ProviderContainer(
+      overrides: [
+        projectStateProvider.overrideWith(
+          () => SeededProjectSession(loadedProject),
+        ),
+        beginnerModeProvider.overrideWith((_) => false),
+      ],
+    );
+    addTearDown(container.dispose);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
@@ -1286,6 +1456,52 @@ void main() {
     expect(find.textContaining('Save beep'), findsNothing);
     expect(find.textContaining('Confirm'), findsNothing);
     expect(find.textContaining('Edit Layout'), findsNothing);
+  });
+
+  testWidgets('Workbench Home clears project while beginner mode survives', (
+    tester,
+  ) async {
+    final loadedProject =
+        _directoryBackedProjectState('C:\\projects\\explicit_home_close');
+    final container = ProviderContainer(
+      overrides: [
+        projectStateProvider.overrideWith(
+          () => SeededProjectSession(loadedProject),
+        ),
+        beginnerModeProvider.overrideWith((_) => false),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TraceBenchApp(),
+      ),
+    );
+
+    final boardCanvasButton =
+        find.byKey(const ValueKey('benchbeep_home_open_board_canvas_button'));
+    await tester.ensureVisible(boardCanvasButton);
+    await tester.tap(boardCanvasButton);
+    await tester.pumpAndSettle();
+    _expectCanonicalBoardCanvas(tester);
+
+    await tester.tap(find.byKey(const Key('workbench-home-button')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('benchbeep_home_launcher')),
+      findsOneWidget,
+    );
+    expect(container.read(projectStateProvider), isNull);
+    expect(container.read(beginnerModeProvider), isFalse);
+    expect(find.text('ühtegi projekti pole avatud'), findsOneWidget);
+    final continueButton =
+        find.byKey(const ValueKey('benchbeep_home_open_workbench_button'));
+    final continueAction = tester.widget<InkWell>(
+      find.descendant(of: continueButton, matching: find.byType(InkWell)).first,
+    );
+    expect(continueAction.onTap, isNull);
   });
 
   testWidgets('launcher import project invokes existing ZIP flow directly', (
@@ -1380,6 +1596,77 @@ void main() {
     expect(fakePicker.pickCount, 1);
     expect(container.read(projectStateProvider), isNotNull);
     _expectCanonicalBoardCanvas(tester);
+  });
+
+  testWidgets('stale ZIP import cannot replace or navigate', (tester) async {
+    FilePicker? originalPicker;
+    try {
+      originalPicker = FilePicker.platform;
+    } catch (_) {
+      originalPicker = null;
+    }
+    final delayedPick = Completer<FilePickerResult?>();
+    final fakePicker = _FakeFilePicker(null, delayedResult: delayedPick.future);
+    FilePicker.platform = fakePicker;
+    addTearDown(() {
+      final pickerToRestore = originalPicker;
+      if (pickerToRestore != null) {
+        FilePicker.platform = pickerToRestore;
+      }
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    late BuildContext actionContext;
+    late WidgetRef actionRef;
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Consumer(
+            builder: (context, ref, _) {
+              actionContext = context;
+              actionRef = ref;
+              return const Scaffold(body: Text('Stale ZIP action harness'));
+            },
+          ),
+        ),
+      ),
+    );
+
+    var imported = false;
+    final pendingImport = ProjectZipImportAction.importZip(
+      context: actionContext,
+      ref: actionRef,
+      onImported: () => imported = true,
+    );
+    await tester.pump();
+
+    final newerProject =
+        _directoryBackedProjectState('C:\\projects\\newer_zip_session');
+    final projectSession = container.read(projectStateProvider.notifier);
+    expect(
+      projectSession.openProject(
+        newerProject,
+        generation: projectSession.generation,
+      ),
+      isTrue,
+    );
+    final zipBytes = _bundledSampleZipBytes();
+    delayedPick.complete(
+      FilePickerResult(<PlatformFile>[
+        PlatformFile(
+          name: 'delayed_project.zip',
+          size: zipBytes.length,
+          bytes: zipBytes,
+        ),
+      ]),
+    );
+    await pendingImport;
+    await tester.pump();
+
+    expect(container.read(projectStateProvider), same(newerProject));
+    expect(imported, isFalse);
   });
 
   testWidgets('exit dialog cancels safely and confirms exactly once', (

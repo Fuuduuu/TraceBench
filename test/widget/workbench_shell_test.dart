@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
-import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
@@ -206,7 +208,9 @@ Future<_RouterSession> _pumpRouter(
   final measurementWriter = _UnexpectedSaveMeasurementWriter();
   final container = ProviderContainer(
     overrides: [
-      projectStateProvider.overrideWith((_) => loadedProject),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(loadedProject),
+      ),
       beginnerModeProvider.overrideWith((_) => true),
       v2AddComponentWriterProvider.overrideWithValue(addWriter),
       v2EditComponentWriterProvider.overrideWithValue(editWriter),
@@ -715,7 +719,7 @@ void main() {
     }
   });
 
-  testWidgets('Home round trip preserves project and beginner mode',
+  testWidgets('Home clears project and preserves beginner mode',
       (tester) async {
     final session = await _pumpRouter(tester);
     session.container.read(beginnerModeProvider.notifier).state = false;
@@ -726,21 +730,7 @@ void main() {
 
     expect(session.router.routeInformationProvider.value.uri.path, '/');
     expect(find.byKey(const ValueKey('workbench-test-home')), findsOneWidget);
-    expect(
-      session.container.read(projectStateProvider),
-      same(session.loadedProject),
-    );
-    expect(session.container.read(beginnerModeProvider), isFalse);
-
-    session.router.go('/project');
-    await tester.pumpAndSettle();
-
-    expect(find.byType(BoardCanvasScreen), findsOneWidget);
-    expect(find.byType(WorkbenchShell), findsOneWidget);
-    expect(
-      session.container.read(projectStateProvider),
-      same(session.loadedProject),
-    );
+    expect(session.container.read(projectStateProvider), isNull);
     expect(session.container.read(beginnerModeProvider), isFalse);
   });
 

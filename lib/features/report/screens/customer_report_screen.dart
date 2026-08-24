@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-import '../../../app/app.dart';
 import '../../../shared/models/project_state.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/services/project_exporter.dart';
 import '../../../shared/services/project_loader.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
@@ -68,12 +68,16 @@ class CustomerReportScreen extends ConsumerWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
+                  final projectSession =
+                      ref.read(projectStateProvider.notifier);
+                  final generation = projectSession.generation;
                   final result = await exporter.exportProjectZip(projectState);
                   final message = await _handleExportResult(
-                    ref: ref,
+                    projectSession: projectSession,
                     currentState: projectState,
                     result: result,
                     loader: loader,
+                    generation: generation,
                   );
                   if (!context.mounted) {
                     return;
@@ -93,10 +97,11 @@ class CustomerReportScreen extends ConsumerWidget {
 }
 
 Future<String> _handleExportResult({
-  required WidgetRef ref,
+  required ProjectSession projectSession,
   required ProjectState currentState,
   required ExportResult result,
   required ProjectStateLoader loader,
+  required int generation,
 }) async {
   if (result case ExportSuccess(:final zipPath)) {
     final projectDirectory = currentState.projectDirectory;
@@ -106,7 +111,13 @@ Future<String> _handleExportResult({
 
     try {
       final reloadedState = await loader(projectDirectory);
-      ref.read(projectStateProvider.notifier).state = reloadedState;
+      final replaced = projectSession.replaceWithReloaded(
+        reloadedState,
+        generation: generation,
+      );
+      if (!replaced) {
+        return _reloadFailedMessage(zipPath);
+      }
       return 'ZIP eksporditud: $zipPath.';
     } catch (_) {
       return _reloadFailedMessage(zipPath);

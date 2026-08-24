@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
 import 'package:trace_bench_viewer/features/board_graph/models/board_graph_model.dart';
 import 'package:trace_bench_viewer/features/board_graph/services/board_graph_projector.dart';
 import 'package:trace_bench_viewer/features/board_graph/services/graph_layout.dart';

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/events/screens/events_viewer_screen.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 
@@ -15,7 +18,9 @@ Future<void> _pumpEventsScreen(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        projectStateProvider.overrideWith((_) => projectState),
+        projectStateProvider.overrideWith(
+          () => SeededProjectSession(projectState),
+        ),
         beginnerModeProvider.overrideWith((_) => beginnerMode),
       ],
       child: const MaterialApp(home: EventsViewerScreen()),

@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/project_session.dart';
 import '../services/reference_image_sidecar_service.dart';
 
 class ReferenceImagesScreen extends ConsumerStatefulWidget {
@@ -238,7 +238,8 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                       ? const Center(child: CircularProgressIndicator())
                       : isNarrow
                           ? Column(
-                              key: const ValueKey('reference-image-content-column'),
+                              key: const ValueKey(
+                                  'reference-image-content-column'),
                               children: [
                                 Expanded(
                                   child: _ReferenceImageListPanel(
@@ -263,7 +264,8 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                                     file: selectedFile,
                                     hasLocalProjectDirectory:
                                         hasLocalProjectDirectory,
-                                    imagePreviewBuilder: widget.imagePreviewBuilder,
+                                    imagePreviewBuilder:
+                                        widget.imagePreviewBuilder,
                                   ),
                                 ),
                               ],
@@ -295,9 +297,10 @@ class _ReferenceImagesScreenState extends ConsumerState<ReferenceImagesScreen> {
                                     file: selectedFile,
                                     hasLocalProjectDirectory:
                                         hasLocalProjectDirectory,
-                                    imagePreviewBuilder: widget.imagePreviewBuilder,
+                                    imagePreviewBuilder:
+                                        widget.imagePreviewBuilder,
                                   ),
-                                  ),
+                                ),
                               ],
                             ),
                 ),

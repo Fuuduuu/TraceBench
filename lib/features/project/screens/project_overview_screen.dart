@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';

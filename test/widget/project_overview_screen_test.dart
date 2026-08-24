@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/project/screens/project_overview_screen.dart';
 import 'package:trace_bench_viewer/features/project/widgets/workbench_shell.dart';
@@ -74,9 +77,14 @@ Future<ProviderContainer> _pumpProjectOverview(
   String initialLocation = '/project/overview',
   bool useRouter = true,
 }) async {
-  final container = ProviderContainer();
-  container.read(projectStateProvider.notifier).state = projectState;
-  container.read(beginnerModeProvider.notifier).state = false;
+  final container = ProviderContainer(
+    overrides: [
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(projectState),
+      ),
+      beginnerModeProvider.overrideWith((_) => false),
+    ],
+  );
 
   final Widget app = useRouter
       ? MaterialApp.router(

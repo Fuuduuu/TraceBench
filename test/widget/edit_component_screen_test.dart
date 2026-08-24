@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/components/screens/edit_component_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
@@ -120,8 +122,11 @@ Future<ProviderContainer> _pumpEditComponentScreen(
 }) async {
   final container = ProviderContainer(
     overrides: [
-      projectStateProvider
-          .overrideWith((_) => projectState ?? _inlineProjectState()),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(
+          projectState ?? _inlineProjectState(),
+        ),
+      ),
       v2EditComponentWriterProvider
           .overrideWithValue(writer ?? _FakeEditComponentWriter()),
     ],
@@ -146,8 +151,11 @@ Future<ProviderContainer> _pumpEditComponentScreenRouter(
 }) async {
   final container = ProviderContainer(
     overrides: [
-      projectStateProvider
-          .overrideWith((_) => projectState ?? _inlineProjectState()),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(
+          projectState ?? _inlineProjectState(),
+        ),
+      ),
       v2EditComponentWriterProvider
           .overrideWithValue(writer ?? _FakeEditComponentWriter()),
     ],

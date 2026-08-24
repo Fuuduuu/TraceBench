@@ -8,7 +8,6 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
 import '../geometry/placement_geometry.dart';
 import '../logic/measurement_projection.dart';
 import '../theme/board_canvas_palette.dart';
@@ -20,8 +19,8 @@ import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
-import '../../../shared/models/trace_bench_event.dart';
 import '../../../shared/models/wizard_intake.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
 part '../rendering/wizard_intake_overlay.part.dart';
@@ -906,24 +905,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
   }
 
-  void _markPlacementProjectionStale({
-    required ProjectState projectState,
-    required Map<String, dynamic> event,
-  }) {
-    final returnedEvent = TraceBenchEvent.fromJson(event);
-    final updatedEvents = List<TraceBenchEvent>.from(projectState.events);
-    final eventAlreadyPresent = updatedEvents.any(
-      (localEvent) => localEvent.eventId == returnedEvent.eventId,
-    );
-    if (!eventAlreadyPresent) {
-      updatedEvents.add(returnedEvent);
-    }
-    ref.read(projectStateProvider.notifier).state = projectState.copyWith(
-      events: updatedEvents,
-      isProjectionStale: true,
-    );
-  }
-
   String? _rightPanelCreateComponentBlockReason(ProjectState projectState) {
     if (_rightPanelCreateComponentId.trim().isEmpty) {
       return 'Sisesta komponendi ID enne loomist.';
@@ -974,17 +955,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
 
     try {
+      final projectSession = ref.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
       final result = await ref.read(v2AddComponentWriterProvider).addComponent(
             projectState: projectState,
             request: request,
           );
+      projectSession.applyCanonicalEvent(
+        result.event,
+        generation: generation,
+      );
       if (!mounted) {
         return;
       }
-      _markPlacementProjectionStale(
-        projectState: projectState,
-        event: result.event,
-      );
       setState(() {
         _rightPanelCreateComponentStatusMessage = result.appended
             ? 'Komponent loodud. Projektsioon vajab värskendamist.'
@@ -1211,18 +1194,20 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
 
     try {
+      final projectSession = ref.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
       final result =
           await ref.read(v2EditComponentWriterProvider).editComponent(
                 projectState: projectState,
                 request: request,
               );
+      projectSession.applyCanonicalEvent(
+        result.event,
+        generation: generation,
+      );
       if (!mounted) {
         return;
       }
-      _markPlacementProjectionStale(
-        projectState: projectState,
-        event: result.event,
-      );
       setState(() {
         _rightPanelMetadataEditStatusMessage = result.appended
             ? 'Komponendi andmed salvestatud. Projektsioon vajab värskendamist.'
@@ -1337,17 +1322,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
 
     try {
+      final projectSession = ref.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
       final result = await ref.read(v2PlacementWriterProvider).confirmPlacement(
             projectState: projectState,
             request: request,
           );
+      projectSession.applyCanonicalEvent(
+        result.event,
+        generation: generation,
+      );
       if (!mounted) {
         return;
       }
-      _markPlacementProjectionStale(
-        projectState: projectState,
-        event: result.event,
-      );
       _showAddComponentTemplateSaveStatus(
         result.appended
             ? 'Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.'
@@ -7265,18 +7252,20 @@ class _IntegratedMeasurePanelState
     try {
       final projectState =
           ref.read(projectStateProvider) ?? widget.projectState;
+      final projectSession = ref.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
       final result =
           await ref.read(v2SaveMeasurementWriterProvider).saveMeasurement(
                 projectState: projectState,
                 request: request,
               );
+      projectSession.applyCanonicalEvent(
+        result.event,
+        generation: generation,
+      );
       if (!mounted) {
         return;
       }
-      _appendMeasurementEventAndMarkStale(
-        projectState: projectState,
-        event: result.event,
-      );
       setState(() {
         _lastSuccessfulFormKey = formKey;
         _saveStatusMessage = result.appended
@@ -7307,32 +7296,6 @@ class _IntegratedMeasurePanelState
         });
       }
     }
-  }
-
-  void _appendMeasurementEventAndMarkStale({
-    required ProjectState projectState,
-    required Map<String, dynamic> event,
-  }) {
-    final returnedEvent = TraceBenchEvent.fromJson(event);
-    final updatedEvents = List<TraceBenchEvent>.from(projectState.events);
-    final clientOperationId = event['client_operation_id']?.toString();
-    final eventAlreadyPresent = updatedEvents.any((localEvent) {
-      if (localEvent.eventId == returnedEvent.eventId) {
-        return true;
-      }
-      if (clientOperationId == null || clientOperationId.isEmpty) {
-        return false;
-      }
-      return localEvent.toJson()['client_operation_id'] == clientOperationId ||
-          localEvent.payload['client_operation_id'] == clientOperationId;
-    });
-    if (!eventAlreadyPresent) {
-      updatedEvents.add(returnedEvent);
-    }
-    ref.read(projectStateProvider.notifier).state = projectState.copyWith(
-      events: updatedEvents,
-      isProjectionStale: true,
-    );
   }
 
   String _measurementClientOperationIdFor(String formKey) {

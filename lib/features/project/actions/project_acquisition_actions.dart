@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
 import '../../../shared/models/project_state.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/services/project_loader.dart';
 
 class ProjectZipImportAction {
@@ -17,6 +17,8 @@ class ProjectZipImportAction {
     required WidgetRef ref,
     VoidCallback? onImported,
   }) async {
+    final projectSession = ref.read(projectStateProvider.notifier);
+    final generation = projectSession.generation;
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
@@ -29,8 +31,11 @@ class ProjectZipImportAction {
     try {
       if (picked.bytes != null) {
         final loaded = await ProjectLoader.loadFromZipBytes(picked.bytes!);
-        ref.read(projectStateProvider.notifier).state = loaded;
-        if (context.mounted) {
+        final opened = projectSession.openProject(
+          loaded,
+          generation: generation,
+        );
+        if (opened && context.mounted) {
           if (onImported != null) {
             onImported();
           } else {
@@ -46,8 +51,11 @@ class ProjectZipImportAction {
 
       final bytes = await File(picked.path!).readAsBytes();
       final loaded = await ProjectLoader.loadFromZipBytes(bytes);
-      ref.read(projectStateProvider.notifier).state = loaded;
-      if (context.mounted) {
+      final opened = projectSession.openProject(
+        loaded,
+        generation: generation,
+      );
+      if (opened && context.mounted) {
         if (onImported != null) {
           onImported();
         } else {
@@ -80,6 +88,8 @@ class ProjectDirectoryOpenAction {
     Future<ProjectState> Function(String projectDirectory)? projectLoader,
     VoidCallback? onOpened,
   }) async {
+    final projectSession = ref.read(projectStateProvider.notifier);
+    final generation = projectSession.generation;
     final selectedDirectory = await (directoryPicker ??
         () => FilePicker.platform.getDirectoryPath(
               dialogTitle: 'Ava TraceBenchi projektikaust',
@@ -91,8 +101,11 @@ class ProjectDirectoryOpenAction {
     try {
       final loadProject = projectLoader ?? ProjectLoader.loadFromDirectory;
       final loaded = await loadProject(selectedDirectory);
-      ref.read(projectStateProvider.notifier).state = loaded;
-      if (context.mounted) {
+      final opened = projectSession.openProject(
+        loaded,
+        generation: generation,
+      );
+      if (opened && context.mounted) {
         if (onOpened != null) {
           onOpened();
         } else {

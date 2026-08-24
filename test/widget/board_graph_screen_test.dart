@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/board_graph/screens/board_graph_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -56,10 +59,15 @@ Future<ProviderContainer> _pumpBoardGraph(
   required ProjectState projectState,
   required bool isBeginnerMode,
 }) async {
-  final container = ProviderContainer();
+  final container = ProviderContainer(
+    overrides: [
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(projectState),
+      ),
+      beginnerModeProvider.overrideWith((_) => isBeginnerMode),
+    ],
+  );
   addTearDown(container.dispose);
-  container.read(projectStateProvider.notifier).state = projectState;
-  container.read(beginnerModeProvider.notifier).state = isBeginnerMode;
 
   await tester.pumpWidget(
     UncontrolledProviderScope(
@@ -82,7 +90,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => true),
         ],
         child: const MaterialApp(home: BoardGraphScreen()),
@@ -129,7 +139,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => false),
         ],
         child: const MaterialApp(home: BoardGraphScreen()),

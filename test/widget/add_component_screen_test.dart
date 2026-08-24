@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/components/screens/add_component_screen.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -124,7 +126,7 @@ Future<ProviderContainer> _pumpAddComponentScreen(
   final container = ProviderContainer(
     overrides: [
       projectStateProvider.overrideWith(
-        (_) => projectState ?? _inlineProjectState(),
+        () => SeededProjectSession(projectState ?? _inlineProjectState()),
       ),
       v2AddComponentWriterProvider.overrideWithValue(
         writer ?? _FakeAddComponentWriter(),

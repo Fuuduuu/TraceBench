@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/reference_images/screens/reference_images_screen.dart';
 import 'package:trace_bench_viewer/features/reference_images/services/reference_image_sidecar_service.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
@@ -128,7 +130,9 @@ Future<void> _pumpReferenceImagesScreen(
     ProviderScope(
       overrides: [
         projectStateProvider.overrideWith(
-          (_) => _projectState(projectDirectory: projectDirectory),
+          () => SeededProjectSession(
+            _projectState(projectDirectory: projectDirectory),
+          ),
         ),
       ],
       child: MaterialApp(
@@ -498,9 +502,9 @@ void main() {
       ),
       findsOneWidget,
     );
-      final selectedItemSemantics = tester.getSemantics(
-        find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
-      );
+    final selectedItemSemantics = tester.getSemantics(
+      find.byKey(const ValueKey('reference-image-refimg_local_001-semantics')),
+    );
     expect(
       selectedItemSemantics,
       matchesSemantics(

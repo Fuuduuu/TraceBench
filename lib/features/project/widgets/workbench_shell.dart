@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/beginner_mode_provider.dart';
+import '../../../shared/session/project_session.dart';
 
 class WorkbenchShellColors {
   const WorkbenchShellColors._();
@@ -241,7 +242,10 @@ class _WorkbenchShellState extends ConsumerState<WorkbenchShell> {
               IconButton(
                 key: const Key('workbench-home-button'),
                 tooltip: 'BenchBeep Home',
-                onPressed: () => context.go('/'),
+                onPressed: () {
+                  ref.read(projectStateProvider.notifier).closeProject();
+                  context.go('/');
+                },
                 icon: const Icon(Icons.home_outlined),
               ),
               Semantics(

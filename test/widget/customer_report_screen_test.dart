@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/report/screens/customer_report_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -87,7 +91,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: const MaterialApp(home: CustomerReportScreen()),
       ),
     );
@@ -110,7 +118,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: const MaterialApp(home: CustomerReportScreen()),
       ),
     );
@@ -126,7 +138,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
@@ -146,7 +162,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter:
@@ -174,7 +194,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
@@ -216,7 +240,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
@@ -257,7 +285,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
@@ -285,6 +317,67 @@ void main() {
     expect(markdown.data, 'Reloaded customer report');
   });
 
+  testWidgets('stale export reload cannot overwrite a newer session', (
+    tester,
+  ) async {
+    final projectState = _inlineProjectState(isProjectionStale: true);
+    final delayedReload = Completer<ProjectState>();
+    final loader = _TrackingProjectStateLoader((_) => delayedReload.future);
+    final container = ProviderContainer(
+      overrides: [
+        projectStateProvider.overrideWith(
+          () => SeededProjectSession(projectState),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: CustomerReportScreen(
+            projectExporter: _StaticProjectExporter(
+              const ExportSuccess('C:/tmp/stale_export.zip'),
+            ),
+            projectStateLoader: loader.call,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.text('Export ZIP'));
+    await tester.pump();
+    expect(loader.callCount, 1);
+
+    final newerProject = _inlineProjectState(
+      customerReport: 'Newer active report',
+    );
+    final projectSession = container.read(projectStateProvider.notifier);
+    expect(
+      projectSession.openProject(
+        newerProject,
+        generation: projectSession.generation,
+      ),
+      isTrue,
+    );
+    delayedReload.complete(
+      _inlineProjectState(customerReport: 'Delayed stale report'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(container.read(projectStateProvider), same(newerProject));
+    expect(
+      find.text(
+        'ZIP eksporditud: C:/tmp/stale_export.zip. Projekti uuesti laadimine ebaõnnestus; ava või impordi projekt uuesti, et näha uuendatud projektsiooni.',
+      ),
+      findsOneWidget,
+    );
+    final markdown = tester.widget<Markdown>(find.byType(Markdown));
+    expect(markdown.data, 'Newer active report');
+  });
+
   testWidgets('reload failure after success keeps existing provider state',
       (tester) async {
     final projectState = _inlineProjectState(isProjectionStale: true);
@@ -294,7 +387,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(
@@ -333,7 +430,11 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [projectStateProvider.overrideWith((_) => projectState)],
+          overrides: [
+            projectStateProvider.overrideWith(
+              () => SeededProjectSession(projectState),
+            ),
+          ],
           child: MaterialApp(
             home: CustomerReportScreen(
               projectExporter: _StaticProjectExporter(
@@ -356,7 +457,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [projectStateProvider.overrideWith((_) => projectState)],
+        overrides: [
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
+        ],
         child: MaterialApp(
           home: CustomerReportScreen(
             projectExporter: _StaticProjectExporter(

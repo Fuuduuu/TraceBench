@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/board_graph/screens/board_graph_screen.dart';
@@ -115,7 +117,9 @@ Future<_RouterSession> _pumpRouter(
 }) async {
   final container = ProviderContainer(
     overrides: [
-      projectStateProvider.overrideWith((_) => projectState),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(projectState),
+      ),
       if (directoryPicker != null)
         projectGateDirectoryPickerProvider.overrideWithValue(directoryPicker),
       if (projectLoader != null)

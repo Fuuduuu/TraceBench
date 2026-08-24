@@ -8,7 +8,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/geometry/placement_geometry.dart';
 import 'package:trace_bench_viewer/features/board_canvas/logic/measurement_projection.dart';
@@ -284,7 +286,9 @@ Widget _harness({
 }) {
   return ProviderScope(
     overrides: [
-      projectStateProvider.overrideWith((_) => projectState),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(projectState),
+      ),
       if (addComponentWriter != null)
         v2AddComponentWriterProvider.overrideWith((_) => addComponentWriter),
       if (editComponentWriter != null)
@@ -304,7 +308,9 @@ Widget _routerHarness({
 }) {
   return ProviderScope(
     overrides: [
-      projectStateProvider.overrideWith((_) => projectState),
+      projectStateProvider.overrideWith(
+        () => SeededProjectSession(projectState),
+      ),
     ],
     child: MaterialApp.router(
       routerConfig: buildTraceBenchRouter(
@@ -489,6 +495,20 @@ ProjectState _readProjectState(WidgetTester tester) {
     tester.element(find.byType(BoardCanvasScreen)),
     listen: false,
   ).read(projectStateProvider)!;
+}
+
+void _replaceProjectState(WidgetTester tester, ProjectState projectState) {
+  final projectSession = ProviderScope.containerOf(
+    tester.element(find.byType(BoardCanvasScreen)),
+    listen: false,
+  ).read(projectStateProvider.notifier);
+  expect(
+    projectSession.replaceWithReloaded(
+      projectState,
+      generation: projectSession.generation,
+    ),
+    isTrue,
+  );
 }
 
 Future<Color> _compositedPixelColor(
@@ -1581,13 +1601,13 @@ void main() {
 
       const warning =
           'Projekti visuaalset Wizardi alusinfot ei saanud laadida.';
-      ProviderScope.containerOf(
-        tester.element(find.byType(BoardCanvasScreen)),
-        listen: false,
-      ).read(projectStateProvider.notifier).state = _inlineProjectState(
-        components: const [],
-        placements: const [],
-        wizardIntakeWarning: warning,
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          components: const [],
+          placements: const [],
+          wizardIntakeWarning: warning,
+        ),
       );
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -1610,12 +1630,12 @@ void main() {
       );
       expect(find.byType(AlertDialog), findsNothing);
 
-      ProviderScope.containerOf(
-        tester.element(find.byType(BoardCanvasScreen)),
-        listen: false,
-      ).read(projectStateProvider.notifier).state = _inlineProjectState(
-        components: const [],
-        placements: const [],
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          components: const [],
+          placements: const [],
+        ),
       );
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -2090,13 +2110,13 @@ void main() {
         findsOneWidget,
       );
 
-      ProviderScope.containerOf(
-        tester.element(find.byType(BoardCanvasScreen)),
-        listen: false,
-      ).read(projectStateProvider.notifier).state = _inlineProjectState(
-        components: const [component],
-        placements: const [],
-        wizardIntakeWarning: warning,
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          components: const [component],
+          placements: const [],
+          wizardIntakeWarning: warning,
+        ),
       );
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -2224,10 +2244,7 @@ void main() {
           ],
         ),
       );
-      ProviderScope.containerOf(
-        tester.element(find.byType(BoardCanvasScreen)),
-        listen: false,
-      ).read(projectStateProvider.notifier).state = secondState;
+      _replaceProjectState(tester, secondState);
       await tester.pump(const Duration(milliseconds: 100));
 
       viewer = tester.widget<InteractiveViewer>(
@@ -6948,7 +6965,7 @@ void main() {
   });
 
   testWidgets(
-      'Add Component idempotent Salvesta marks projection stale without duplicating event',
+      'Add Component idempotent Salvesta leaves duplicate state unchanged',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -7007,7 +7024,7 @@ void main() {
     final updatedState = _readProjectState(tester);
     expect(updatedState.events, hasLength(1));
     expect(updatedState.events.single.eventId, 'evt_existing_widget_placement');
-    expect(updatedState.isProjectionStale, isTrue);
+    expect(updatedState.isProjectionStale, isFalse);
     expect(
       find.text(
         'See visuaalne paigutus oli juba salvestatud. Projektsioon vajab värskendamist.',

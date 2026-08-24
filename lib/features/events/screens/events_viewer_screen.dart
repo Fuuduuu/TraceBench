@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/beginner_mode_provider.dart';
+import '../../../shared/session/project_session.dart';
 import '../../project/widgets/workbench_shell.dart';
 
 class EventsViewerScreen extends ConsumerWidget {

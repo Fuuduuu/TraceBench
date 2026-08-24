@@ -7,16 +7,11 @@ import '../features/home/screens/benchbeep_home_screen.dart';
 import '../features/home/screens/benchbeep_splash_screen.dart';
 import '../features/project/actions/project_acquisition_actions.dart';
 import '../features/project/screens/new_project_wizard_screen.dart';
-import '../shared/models/project_state.dart';
+import '../shared/session/project_session.dart';
 import '../shared/services/project_creator.dart';
 import '../shared/services/project_loader.dart';
 import '../shared/theme/app_theme.dart';
 import 'router.dart';
-
-final StateProvider<ProjectState?> projectStateProvider =
-    StateProvider<ProjectState?>((_) => null);
-final StateProvider<bool> beginnerModeProvider =
-    StateProvider<bool>((_) => true);
 
 class TraceBenchApp extends ConsumerStatefulWidget {
   const TraceBenchApp({
@@ -42,11 +37,37 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
   }
 
   Future<void> _loadBundledProject() async {
+    final projectSession = ref.read(projectStateProvider.notifier);
+    final generation = projectSession.generation;
     final loaded = await ProjectLoader.loadFromAssets();
     if (!mounted) {
       return;
     }
-    ref.read(projectStateProvider.notifier).state = loaded;
+    projectSession.openProject(loaded, generation: generation);
+  }
+
+  Future<ProjectCreationResult> _createProject(
+    ProjectCreationRequest request,
+  ) async {
+    final projectSession = ref.read(projectStateProvider.notifier);
+    final generation = projectSession.generation;
+    final createProject =
+        widget.createProject ?? ProjectCreator().createProject;
+    final result = await createProject(request);
+    if (result is! ProjectCreationSuccess) {
+      return result;
+    }
+    if (!mounted ||
+        !projectSession.openProject(
+          result.projectState,
+          generation: generation,
+        )) {
+      return const ProjectCreationFailed(
+        sanitizedMessage:
+            'Projekt loodi, kuid seda ei avatud, sest aktiivne projekt muutus vahepeal.',
+      );
+    }
+    return result;
   }
 
   Future<void> _importProjectZip(BuildContext context) async {
@@ -123,10 +144,7 @@ class _TraceBenchAppState extends ConsumerState<TraceBenchApp> {
       initialLocation: '/',
       homeBuilder: _buildLauncherShell,
       newProjectBuilder: (_) => NewProjectWizardScreen(
-        createProject: widget.createProject,
-        onProjectCreated: (projectState) {
-          ref.read(projectStateProvider.notifier).state = projectState;
-        },
+        createProject: _createProject,
       ),
     );
   }

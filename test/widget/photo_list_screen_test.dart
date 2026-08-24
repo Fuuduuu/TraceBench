@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/beginner_mode_provider.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/photos/screens/photo_list_screen.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -62,7 +65,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => false),
         ],
         child: const MaterialApp(home: PhotoListScreen()),
@@ -87,7 +92,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => true),
         ],
         child: const MaterialApp(home: PhotoListScreen()),
@@ -114,7 +121,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => true),
         ],
         child: const MaterialApp(home: PhotoListScreen()),
@@ -138,7 +147,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => true),
         ],
         child: const MaterialApp(home: PhotoListScreen()),
@@ -189,7 +200,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => true),
         ],
         child: const MaterialApp(home: PhotoListScreen()),
@@ -251,7 +264,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
           beginnerModeProvider.overrideWith((_) => false),
         ],
         child: const MaterialApp(home: PhotoListScreen()),

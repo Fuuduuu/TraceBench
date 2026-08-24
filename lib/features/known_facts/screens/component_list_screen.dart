@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/app.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 import '../../project/widgets/workbench_shell.dart';
 

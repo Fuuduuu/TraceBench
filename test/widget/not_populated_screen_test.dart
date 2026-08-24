@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trace_bench_viewer/app/app.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/features/known_facts/screens/not_populated_screen.dart';
 import 'package:trace_bench_viewer/shared/services/project_loader.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
@@ -15,7 +17,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          projectStateProvider.overrideWith((_) => projectState),
+          projectStateProvider.overrideWith(
+            () => SeededProjectSession(projectState),
+          ),
         ],
         child: const MaterialApp(home: NotPopulatedScreen()),
       ),

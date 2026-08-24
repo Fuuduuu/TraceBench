@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
-import '../../../shared/models/trace_bench_event.dart';
+import '../../../shared/session/project_session.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 import '../services/v2_edit_component_writer.dart';
 
@@ -96,6 +95,8 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
     });
 
     try {
+      final projectSession = ref.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
       final result =
           await ref.read(v2EditComponentWriterProvider).editComponent(
                 projectState: projectState,
@@ -107,15 +108,9 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
                 ),
               );
 
-      final eventAlreadyPresent =
-          _hasLocalEvent(projectState.events, result.event);
-      final updatedEvents = List<TraceBenchEvent>.from(projectState.events);
-      if (!eventAlreadyPresent) {
-        updatedEvents.add(TraceBenchEvent.fromJson(result.event));
-      }
-      ref.read(projectStateProvider.notifier).state = projectState.copyWith(
-        events: updatedEvents,
-        isProjectionStale: true,
+      projectSession.applyCanonicalEvent(
+        result.event,
+        generation: generation,
       );
 
       setState(() {
@@ -178,36 +173,6 @@ class _EditComponentScreenState extends ConsumerState<EditComponentScreen> {
         changeKind: oldValue == 'unknown' ? 'set' : 'replace',
       ),
     );
-  }
-
-  bool _hasLocalEvent(
-    List<TraceBenchEvent> localEvents,
-    Map<String, dynamic> candidate,
-  ) {
-    final eventId = candidate['event_id']?.toString();
-    final clientOperationId = candidate['client_operation_id']?.toString();
-    return localEvents.any((event) {
-      if (eventId != null && eventId.isNotEmpty && event.eventId == eventId) {
-        return true;
-      }
-      if (clientOperationId == null || clientOperationId.isEmpty) {
-        return false;
-      }
-      return _clientOperationIdForEvent(event) == clientOperationId;
-    });
-  }
-
-  String? _clientOperationIdForEvent(TraceBenchEvent event) {
-    final serializedValue = event.toJson()['client_operation_id'];
-    if (serializedValue != null && serializedValue.toString().isNotEmpty) {
-      return serializedValue.toString();
-    }
-
-    final payloadValue = event.payload['client_operation_id'];
-    if (payloadValue != null && payloadValue.toString().isNotEmpty) {
-      return payloadValue.toString();
-    }
-    return null;
   }
 
   String _clientOperationId(String formKey) {

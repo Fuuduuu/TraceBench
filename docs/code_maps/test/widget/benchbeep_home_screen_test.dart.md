@@ -4,29 +4,29 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `SCORE 11/12 — broad launcher, acquisition, routing, projection-handoff, responsive, and protected-boundary regression surface with repeated whole-file analysis`
-- Audit evidence: `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Exercises the BenchBeep launcher and real `TraceBenchApp` shell across new-
-project entry, one-router identity, Wizard cancellation and creation handoff,
-loaded-project Home round trips, provider survival, bundled/folder/ZIP
-acquisition, responsive presentation, and exit behavior. It preserves the
-creation ordering in which app state is ready on Step 7 before the Wizard's
-explicit `/project` action.
+project entry, one-router identity, Wizard cancellation and guarded creation
+handoff, generation-safe bundled/folder/ZIP acquisition, explicit Workbench
+Home close with beginner-mode survival, responsive presentation, and exit
+behavior. It preserves the creation ordering in which session state is ready
+on Step 7 before the Wizard's explicit `/project` action.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Harness and project fixtures | `_FakeFilePicker`, `_homeHarness`, `_directoryBackedProjectState`, `_createdWizardProjectState` | Supplies picker seams, isolated Home construction, and noncanonical in-memory project states. |
+| Harness and project fixtures | `_FakeFilePicker`, `delayedResult`, `_homeHarness`, `_directoryBackedProjectState`, `_createdWizardProjectState`, `SeededProjectSession` | Supplies immediate/delayed picker seams, isolated Home construction, and seeded in-memory sessions. |
 | Launcher identity and create action | `BenchBeep Home is a black/gold board-selection launcher`, `new project action is enabled, unbadged, and invokes only its callback` | Preserves launcher identity and direct action-callback behavior. |
 | Router identity and cancel return | `new project action opens the existing Wizard route`, `benchbeep_workbench_router`, `wizard-cancel` | Proves canonical `/`, one router through `/new-project`, and return to the same launcher/router at `/`. |
-| Creation dependency injection | `injected create callback reaches the Wizard route`, `ProjectCreationRequest` | Proves the app passes the supplied creator into the real Wizard without invoking it early. |
-| Provider-before-route handoff | `successful Wizard creation hands app state off before explicit Canvas open`, `_waitForProjectState` | Proves one creation, one provider assignment, persistent Step 7 at `/new-project`, explicit later Canvas open, and one router identity throughout. |
-| Loaded Home round trip | `loaded project keeps direct board canvas handoff`, `projectStateProvider`, `beginnerModeProvider`, `_expectCanonicalBoardCanvas` | Proves the identical loaded project and beginner-mode value survive `/` -> `/project` -> `/` -> `/project` on one router. |
+| Guarded creation injection | `injected create callback is session-guarded on the Wizard route`, `ProjectCreationRequest` | Proves the mounted Wizard receives the app wrapper rather than the raw creator and does not invoke it early. |
+| Session-before-route handoff | `successful Wizard creation hands app state off before explicit Canvas open`, `stale Wizard success cannot replace a newer session`, `_prepareValidWizardCreation`, `_waitForProjectState` | Proves accepted Step-7 session installation and explicit later Canvas open, while a stale creator completion preserves the newer session and reports sanitized failure. |
+| Loaded entry and explicit Home close | `loaded project keeps direct board canvas handoff`, `Workbench Home clears project while beginner mode survives`, `projectStateProvider`, `beginnerModeProvider`, `_expectCanonicalBoardCanvas` | Seeds a loaded session, enters Canvas, then proves Home clears only project state while the router and beginner mode survive. |
 | Inert continuation behavior | `launcher cannot continue without a loaded project` | Preserves disabled continuation until project state exists. |
-| Bundled, directory, and ZIP acquisition | `launcher preserves bundled sample project handoff`, `launcher open folder success opens canonical board canvas`, `launcher import project invokes existing ZIP flow directly`, `launcher ZIP success opens canonical board canvas`, `_waitForLoadedProject` | Covers existing-reader handoff, failures/cancel, and canonical success routing. |
+| Bundled, directory, and ZIP acquisition | `launcher preserves bundled sample project handoff`, `stale bundled load cannot replace a newer generation`, `launcher open folder success opens canonical board canvas`, `stale directory load cannot replace or navigate`, `launcher import project invokes existing ZIP flow directly`, `launcher ZIP success opens canonical board canvas`, `stale ZIP import cannot replace or navigate`, `_waitForLoadedProject` | Covers success/failure/cancel plus stale-generation suppression of state replacement and navigation. |
 | Responsive, hover, legacy-absence, and exit behavior | `wide layout keeps choices left and stacks detail over hero`, `medium layout stacks the hierarchy with all actions reachable`, `launcher action hover uses subtle gold accent`, `launcher has no hidden legacy compatibility anchors`, `exit dialog cancels safely and confirms exactly once` | Preserves desktop/medium geometry, reachability, hover treatment, removed legacy anchors, and exit confirmation. |
 
 ## Anchor inventory and verification
@@ -46,16 +46,18 @@ line-number anchors.
    obtain the startup `GoRouter` from the canonical launcher at `/`.
 3. New Project entry reaches `/new-project` on that same router. Wizard cancel
    returns to `/` with the identical router instance.
-4. The injection test inspects the mounted `NewProjectWizardScreen` and proves
-   its creator callback is the app-supplied function.
+4. The injection test proves the mounted Wizard receives a session-guarding
+   app adapter rather than the raw injected creator.
 5. The success test completes the real Wizard draft, returns a fixture
-   `ProjectCreationSuccess`, observes exactly one provider assignment while
-   still at `/new-project`, then explicitly opens `/project` on the same router.
-6. The loaded-project round trip seeds one `ProjectState` identity and false
-   beginner mode, enters `/project`, calls `go('/')`, and re-enters `/project`;
-   both provider values and the router identity survive every transition.
-7. Existing-project tests route bundled, directory, and ZIP loader results
-   through the app provider and canonical Canvas destination.
+   `ProjectCreationSuccess`, observes exactly one session assignment while
+   still at `/new-project`, then explicitly opens `/project` on the same router;
+   a delayed stale success cannot replace a newer session.
+6. Loaded-entry tests seed `SeededProjectSession` and false beginner mode,
+   enter `/project`, then activate Workbench Home. Project state clears while
+   beginner mode and the lifetime router survive at `/`.
+7. Existing-project tests route generation-current bundled, directory, and ZIP
+   results to Canvas; delayed stale completions preserve the newer/null session
+   and do not invoke success navigation.
 8. Tear-down restores surface size, file-picker globals, subscriptions,
    provider containers, and temporary fixtures.
 
@@ -64,7 +66,7 @@ line-number anchors.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | Flutter test/Material | harness | Pumps widgets, controls view size, drives gestures, and inspects callbacks/presentation. |
-| Riverpod | state setup/observation | Creates isolated containers and observes `projectStateProvider` and `beginnerModeProvider`. |
+| Riverpod / `SeededProjectSession` | state setup/observation | Creates isolated containers, seeds loaded sessions, and observes project/beginner providers. |
 | GoRouter | lifecycle/route observation | Reads router identity and canonical URI through launcher, Wizard, Home return, and Canvas re-entry. |
 | `TraceBenchApp` and `BenchBeepHomeScreen` | targets | Exercise the real single-router shell and isolated launcher. |
 | `NewProjectWizardScreen` and `BoardCanvasScreen` | route targets | Identify `/new-project` and canonical `/project`. |
@@ -76,7 +78,7 @@ line-number anchors.
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
 | Creation fixture callback | `ZERO_WRITE` | Returns an in-memory `ProjectState` and performs no creator/file operation. |
-| Provider setup and observations | `PROJECTION_STATE` | Seed and verify in-memory identity/value survival only. |
+| Session setup and observations | `PROJECTION_STATE` | Seed and verify guarded in-memory open/close/replacement behavior only. |
 | Router identity and route gestures | `UI_LOCAL` | Navigate mounted presentation without router replacement or canonical mutation. |
 | ZIP/directory temporary fixtures | `NONCANONICAL_FILE` | Test-owned disposable input; production read paths remain the subject. |
 | Launcher callback counters | `UI_LOCAL` | Count invocation in test memory. |
@@ -93,7 +95,8 @@ boundaries.
   assertions are test-local.
 - The created Wizard fixture contains empty canonical arrays and events.
 - The provider-handoff test never invokes production `ProjectCreator`.
-- Home round-trip state is seeded directly in a disposable container.
+- Loaded Home state is seeded through the test-only session helper; production
+  exposes no test-seeding API.
 
 ## Impact matrix
 
@@ -101,18 +104,18 @@ boundaries.
 | --- | --- | --- | --- | --- |
 | Harness/fixtures | [D] Shared setup feeds many families. | file picker, provider, router | test-local | route, handoff, and acquisition tests |
 | Router identity/cancel | [D] `same` compares launcher, Wizard, and returned Home routers. | app initialization/disposal and Wizard cancel | `UI_LOCAL` | New Project route test |
-| Injection | [D] Mounted Wizard callback identity is asserted. | `TraceBenchApp.createProject` | `ZERO_WRITE` | injected callback test |
-| Wizard handoff | [D] subscription, state identity, route, and router identity are explicit. | Wizard success latch and app provider | `PROJECTION_STATE` / `UI_LOCAL` | successful creation test |
-| Home round trip | [D] project identity and beginner value are checked before/after both route legs. | canonical Home and Canvas provider consumers | `PROJECTION_STATE` / `UI_LOCAL` | loaded-project handoff test |
-| Existing acquisition | [D] reader results enter the app provider. | ZIP/directory loaders and neutral actions | observed `PROJECTION_STATE` | bundled/folder/ZIP tests |
+| Injection | [D] Mounted Wizard wrapper identity differs from the raw creator. | `TraceBenchApp._createProject` | `ZERO_WRITE` | guarded callback test |
+| Wizard handoff | [D] accepted/stale state, route, and router assertions are explicit. | Wizard latch, app adapter, ProjectSession | `PROJECTION_STATE` / `UI_LOCAL` | successful and stale creation tests |
+| Home close | [D] project null and beginner false are checked after Workbench Home. | shell close-before-go and launcher availability | `PROJECTION_STATE` / `UI_LOCAL` | loaded-entry and explicit-close tests |
+| Existing acquisition | [D] accepted/stale reader results are distinguished. | ZIP/directory loaders, neutral actions, ProjectSession | observed `PROJECTION_STATE` | bundled/folder/ZIP success and stale tests |
 | Responsive/hover/legacy | [D] controlled surfaces and exact UI anchors are asserted. | Home breakpoints/presentation | `ZERO_WRITE` | wide, medium, hover, legacy-absence tests |
 | Exit | [D] callback count and dialog behavior are asserted. | window-manager callback | `ZERO_WRITE` | exit test |
 
 ## Relevant tests and helpers
 
-The source contains 20 `testWidgets` tests across launcher identity/actions,
-single-router navigation, Wizard injection/handoff, loaded-state Home round
-trip, acquisition, layout, hover, legacy absence, and exit families.
+The source contains 25 `testWidgets` tests across launcher identity/actions,
+single-router navigation, guarded Wizard handoff, loaded-state Home close,
+accepted/stale acquisition, layout, hover, legacy absence, and exit families.
 `_FakeFilePicker` captures picker requests; `_waitForProjectState` and
 `_waitForLoadedProject` bound asynchronous reads;
 `_createdWizardProjectState` provides the successful noncanonical intake
@@ -128,9 +131,10 @@ the full gated route matrix live in `test/widget/project_gate_test.dart`.
 
 - Replacing `same` router checks with URI-only assertions can hide router
   reconstruction.
-- Weakening creation counts while changing provider or route assertions can
-  hide a duplicate handoff or early Canvas transition.
-- Re-seeding providers between route legs would stop proving state survival.
+- Weakening creation counts or generation assertions while changing route
+  checks can hide duplicate/stale handoff or early Canvas transition.
+- Seeding project state without `SeededProjectSession` would bypass the
+  production Notifier contract the suite is meant to exercise.
 - Using production `ProjectCreator` would mix storage behavior into app
   handoff evidence.
 - Failing to restore `FilePicker.platform` or surface size can leak state into
@@ -141,12 +145,13 @@ the full gated route matrix live in `test/widget/project_gate_test.dart`.
 ## Safe SNIPER slices
 
 - Router identity/cancel only: the real-app startup and New Project route test.
-- Creation injection only: mounted callback identity on the Wizard route.
-- Provider-before-route only: the successful Wizard test, retaining one-call,
-  Step 7, URI, and router-identity assertions.
-- Home state survival only: loaded-project handoff with both providers and all
-  four route states.
-- One acquisition route only: its picker/fixture and canonical Canvas helper.
+- Creation injection only: mounted wrapper identity on the Wizard route.
+- Session-before-route only: successful and stale Wizard tests, retaining
+  one-call, Step 7, URI, generation, and router assertions.
+- Home close only: loaded-project entry plus explicit project-null and
+  beginner-mode-survival assertions.
+- One acquisition route only: its picker/fixture, current/stale generation,
+  and navigation/result assertions.
 - One responsive or exit behavior with its exact setup/teardown.
 
 ## Future extraction seams
@@ -160,15 +165,16 @@ the full gated route matrix live in `test/widget/project_gate_test.dart`.
 
 Review for `SYMBOL_DRIFT` when helpers, callback keys, providers, or target
 screens change; `FLOW_DRIFT` when router identity, Home return, creation,
-provider, or navigation order changes; `BOUNDARY_DRIFT` when tests invoke
-persistent creation or weaken canonical emptiness; `TEST_DRIFT` when the 20-
+session generation/open/close, or navigation order changes; `BOUNDARY_DRIFT` when tests invoke
+persistent creation or weaken canonical emptiness; `TEST_DRIFT` when the 25-
 test family changes; and `STRUCTURE_DRIFT` when lifecycle or acquisition tests
 split.
 
 ## Known uncertainty
 
-- [D] App-side exactly-once handoff is observed through one provider
-  subscription plus Wizard callback coverage, not production instrumentation.
+- [D] App-side accepted/stale handoff is observed through provider state,
+  generation-sensitive scenarios, and Wizard callback coverage, not production
+  instrumentation.
 - [D] Router disposal cardinality is source-guarded in the splash suite rather
   than directly counted here.
 - [D] The success fixture proves projection handoff and navigation, not

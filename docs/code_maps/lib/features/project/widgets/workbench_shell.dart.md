@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -13,9 +13,9 @@ destination child and the presentation-only dark surface used by simple
 read-only destinations. It is the sole ordered owner of the 12 top-level
 project destinations, active-parent selection, dark shared visual vocabulary,
 Home and beginner-mode controls, breadcrumb, and compact/persistent navigation.
-It owns transient route and presentation state only; it does not read project
-state or own destination business logic, writers, persistence, freshness, or
-route declarations.
+Its Home action explicitly closes `ProjectSession` before routing to `/`, while
+beginner mode remains separate and survives. It owns no destination business
+logic, writer, persistent file, freshness, or route declaration.
 
 ## Responsibility zones
 
@@ -28,7 +28,7 @@ route declarations.
 | Active workflow parent | `activeWorkbenchDestination`, `/project/components/add`, `/project/components/edit`, `/project/measure-sheet` | Maps Add/Edit to Components and Measure Sheet/legacy alias to Measurements before selecting an entry. |
 | Shell state and inputs | `WorkbenchShell`, `_WorkbenchShellState`, `GoRouterState.of`, `beginnerModeProvider` | Reads current URI and transient beginner mode while retaining the router-supplied child. |
 | Responsive frame | `_wideBreakpoint`, `_navigationWidth`, `workbench-shell`, `workbench-wide-navigation`, `workbench-compact-drawer` | Keeps navigation compact below 1228 and persistent at/above 1228 with a fixed 244-pixel rail. |
-| Home and mode controls | `workbench-home-button`, `workbench-beginner-mode-button`, `context.go('/')` | Returns Home separately and toggles only the existing UI-local beginner mode. |
+| Home and mode controls | `workbench-home-button`, `workbench-beginner-mode-button`, `projectStateProvider.notifier`, `closeProject`, `context.go('/')` | Closes the active project session before returning Home and toggles only the separate UI-local beginner mode. |
 | Breadcrumb | `_WorkbenchBreadcrumb`, `workbench-breadcrumb`, `_BreadcrumbSeparator` | Renders horizontally scrollable BenchBeep/Töölaud/active-destination context. |
 | Navigation renderer | `_WorkbenchNavigation`, `_WorkbenchDestinationTile`, `workbench-destination-`, `context.go(destination.location)` | Renders one scroll-safe model, active semantics, compact drawer close, and exact `go` navigation. |
 
@@ -76,8 +76,9 @@ than becoming additional entries.
 5. A `LayoutBuilder` compares available shell width with exactly `1228.0`.
    Below it, one drawer-backed navigation model is reachable through the menu;
    at/above it, one `244.0`-wide persistent `ListView` is rendered.
-6. Home and destination actions call `go`; compact destination selection first
-   closes the drawer, then navigates.
+6. Home calls `ProjectSession.closeProject` before `go('/')`. Destination
+   actions call `go`; compact destination selection first closes the drawer,
+   then navigates. Beginner mode is not cleared by Home.
 7. The router-provided child remains expanded beside the persistent rail or
    occupies the full body under compact navigation. Destination code receives
    no shell width and owns no shell breakpoint.
@@ -88,7 +89,8 @@ than becoming additional entries.
 | --- | --- | --- |
 | Flutter Material/layout/semantics/theme | framework UI | Supplies the local destination Theme/Material treatment plus Scaffold, AppBar, drawer, responsive layout, scrolling, and selected-state presentation. |
 | GoRouter | inbound state / outbound navigation | Supplies current URI and `go` for Home and destination changes. |
-| `beginnerModeProvider` from `app.dart` | UI-local read/write | Supplies and toggles the existing presentation mode only. |
+| `beginnerModeProvider` from `shared/session` | UI-local read/write | Supplies and toggles the separate existing presentation mode only. |
+| `projectStateProvider` / `ProjectSession` | projection-state command | Clears the active loaded project on explicit Workbench Home. |
 | router-provided `child` | inbound destination | Renders the matched destination without inspecting or changing it. |
 | `lib/app/router.dart` | construction owner | Places one shell inside the loaded-project gate for the project subtree. |
 | Project Overview | visual-token consumer | Reuses the same dark vocabulary without owning shell chrome. |
@@ -101,15 +103,17 @@ than becoming additional entries.
 | `WorkbenchDestinationSurface` theme and child composition | `ZERO_WRITE` | Reads ambient theme, applies existing presentation tokens, and renders an opaque child; it has no title, route, provider, action, freshness, or writer input. |
 | Destination metadata and active selection | `ZERO_WRITE` | Pure immutable values and path normalization. |
 | Responsive shell, breadcrumb, navigation rendering | `ZERO_WRITE` | Reads constraints/state and builds widgets only. |
-| `context.go('/')` and destination `go` | `UI_LOCAL` | Change transient router location without invoking domain writers. |
+| `closeProject` before `context.go('/')` | `PROJECTION_STATE` + `UI_LOCAL` | Clears in-memory session/dedup state and advances generation before Home navigation; invokes no domain writer. |
+| Destination `go` | `UI_LOCAL` | Changes transient router location without invoking domain writers. |
 | beginner-mode assignment | `UI_LOCAL` | Mutates only the existing presentation provider. |
 | compact drawer close | `UI_LOCAL` | Mutates Navigator presentation before the route change. |
 | child composition | `ZERO_WRITE` | Passes through the router-owned destination unchanged. |
 
-The file does not read or assign `projectStateProvider`, call any V2 writer,
-append an event, mutate facts/evidence/freshness, access project files, load or
-materialize a project, or change Project ZIP behavior. Destination labels and
-navigation do not transfer destination write authority into the shell.
+Apart from explicit Home session clearing, the file does not replace a project,
+apply an event, call any V2 writer, mutate facts/evidence/freshness, access
+project files, load/materialize a project, or change Project ZIP behavior.
+Destination labels and navigation do not transfer destination write authority
+into the shell.
 
 ## Zero-write zones
 
@@ -128,15 +132,16 @@ navigation do not transfer destination write authority into the shell.
 | Active selection | `[D]` exact path normalization | Add/Edit/Measure workflows and aliases | `ZERO_WRITE` | workflow/alias selection case |
 | Router/provider shell identity | `[D]` stateful wrapper receives changing child | ShellRoute and provider scope | `ZERO_WRITE` | shell and gate identity tests |
 | Responsive cutover | `[D]` 1228 threshold and 244 rail | Board 900, Overview 960, outer framing | `ZERO_WRITE` | six-width shell/Board/Overview cases |
-| Home navigation | `[D]` separate AppBar `go('/')` | launcher and provider lifetime | `UI_LOCAL` | Home/project round trip |
+| Home navigation | `[D]` `closeProject` precedes AppBar `go('/')` | launcher, session generation/dedup, beginner mode | `PROJECTION_STATE` + `UI_LOCAL` | Home clears project/mode-survives cases |
 | Beginner mode | `[D]` one provider assignment | other mode consumers | `UI_LOCAL` | leaf and Home round-trip survival |
 | Shared colors | `[D]` public constants used by Overview | Overview cards/preview/actions | `ZERO_WRITE` | shell-copy/color assertions |
 
 ## Relevant tests and helpers
 
 - `test/widget/workbench_shell_test.dart` directly covers the ordered model,
-  workflow-parent mapping, same shell identity, provider survival, compact
-  reachability, exact 1228 cutover, Home round trip, representative routes,
+  workflow-parent mapping, same shell identity, provider setup, compact
+  reachability, exact 1228 cutover, Home project clearing with beginner-mode
+  survival, representative routes,
   aliases, and zero writer/event/fact/file/freshness mutation. Its routed
   Batch-1 matrix covers seven loaded cases across six URIs, one shell AppBar,
   one keyed destination surface, active breadcrumb/selection, preserved body
@@ -156,8 +161,9 @@ navigation do not transfer destination write authority into the shell.
   paths, active semantics, or zero-write evidence.
 - Turning Home into a list entry or adding workflow leaves as top-level entries
   changes product navigation ownership.
-- Reading project state here would blur the gate/provider boundary; moving the
-  gate inside the shell would expose chrome during recovery.
+- Expanding the single `closeProject` command into project reads/replacements
+  would blur the gate/session boundary; moving the gate inside the shell would
+  expose chrome during recovery.
 - Adding route, title, provider, freshness, or action ownership to
   `WorkbenchDestinationSurface` would turn a presentation wrapper into a
   competing destination or business owner.
@@ -172,8 +178,8 @@ navigation do not transfer destination write authority into the shell.
   unit/widget alias-selection case.
 - Responsive shell only: `_wideBreakpoint`, `_navigationWidth`, both keyed
   navigation modes, and all three six-width suites.
-- Home/mode control only: AppBar action, provider/route assertions, and Home
-  round trip.
+- Home/mode control only: `closeProject`, AppBar action, provider/route
+  assertions, and mode-survival evidence.
 - Shared visual token only: exact color constant and Overview consumers.
 - Read-only surface only: `WorkbenchDestinationSurface`, the seven loaded
   consumer branches, and the routed Batch-1 chrome/body/zero-write matrix.
@@ -188,8 +194,8 @@ navigation do not transfer destination write authority into the shell.
 ## Freshness and review triggers
 
 Review for `SYMBOL_DRIFT` when shell, destination-surface, breakpoint, key, or
-color anchors change; `FLOW_DRIFT` when active mapping, drawer close, `go`,
-child, or provider flow changes; `BOUNDARY_DRIFT` if project state, freshness,
+color anchors change; `FLOW_DRIFT` when active mapping, drawer close, Home
+close-before-`go`, child, or provider flow changes; `BOUNDARY_DRIFT` if project state beyond explicit close, freshness,
 writers, files, or persistence enter; `TEST_DRIFT` when Batch-1, identity,
 route, responsive, or no-write evidence moves; and `STRUCTURE_DRIFT` when
 navigation or destination-surface ownership splits.

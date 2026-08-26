@@ -2,10 +2,120 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
+Current: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current ProjectSession owner scope authority
+## Current committed-source ProjectSession Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: eed0aa680674049886ac776923c2851a1b41d905
+Parent: 2d3a83fb494022c9248ceade1ded731cdbc6af02
+Predecessor: TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS
+Next: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+The accepted implementation is committed at the baseline above with exactly
+40 source/test paths. This final dedicated architecture-cleanup maintenance
+pass describes that committed source only. It authorizes exactly 24 paths:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+8. `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md`
+9. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+10. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+11. `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md`
+12. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+13. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+14. `docs/code_maps/test/widget/add_component_screen_test.dart.md`
+15. `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+16. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+17. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+18. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+19. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+20. `docs/code_maps/test/widget/project_gate_test.dart.md`
+21. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+22. `docs/code_maps/lib/shared/session/project_session.dart.md` (new)
+23. `docs/code_maps/test/unit/project_session_test.dart.md` (new)
+24. `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No twenty-fifth path is authorized. Exactly 16 existing maps receive committed-
+source flow/boundary/test refreshes and exactly two new qualifying maps are
+created. Their map headers and matching registry cells begin
+`REVIEW_REQUIRED`:
+
+- `lib/app/app.dart`;
+- `lib/features/board_canvas/screens/board_canvas_screen.dart`;
+- `lib/features/components/screens/add_component_screen.dart`;
+- `lib/features/components/screens/edit_component_screen.dart`;
+- `lib/features/measure_sheet/screens/measure_sheet_screen.dart`;
+- `lib/features/project/actions/project_acquisition_actions.dart`;
+- `lib/features/project/widgets/workbench_shell.dart`;
+- `lib/features/report/screens/customer_report_screen.dart`;
+- the paired Add Component, BenchBeep Home, Board Canvas, Customer Report,
+  Edit Component, Measure Sheet, ProjectGate, and Workbench Shell test maps;
+- new `lib/shared/session/project_session.dart`; and
+- new `test/unit/project_session_test.dart`.
+
+`project_session.dart` qualifies automatically because it owns five-plus
+independently testable production behaviors. Its 365-line, 13-test unit suite
+scores `7/12` with vector `0/2/2/2/0/1`. The four-line
+`beginner_mode_provider.dart` and 14-line
+`seeded_project_session.dart` remain cohesive `NOT_QUALIFIED` /
+`NOT_APPLICABLE` owners and receive no map.
+
+Exactly ten existing maps are `REVIEWED_NO_CHANGE` and byte-frozen: Board
+Graph, Project Overview, Reference Images, the Project Overview and Reference
+Images test maps, router, New Project Wizard, ProjectCreator, ProjectLoader,
+and the New Project Wizard test map. Every runtime/test source, unrelated map
+or registry row, Code Map Standard, package, asset, schema, tool, platform,
+Windows substantive byte, and scratch artifact is frozen.
+
+Phase-1 registry target is exactly:
+
+```text
+45 maps / 45 rows
+25 MAINTAINED
+18 REVIEW_REQUIRED
+2 RETIRED
+0 orphan
+0 unindexed
+0 status mismatch
+```
+
+The two retired maps remain measurement projection part history and the
+deleted legacy measurement-record screen history. Stable-anchor closure for
+the 18 changed/new maps is 556/556 against committed source.
+
+```text
+TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS
+   [accepted and committed at eed0aa680674049886ac776923c2851a1b41d905]
+-> TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+This is the final dedicated architecture-cleanup maintenance pass. If an
+independent map audit authorizes the bounded promotions, Phase 2 may change
+only the 18 map Status headers, their 18 matching registry cells, the unique
+verdict-block interior, and this pass's ledger Status cell. After exact human
+commit/push, the route remains `NEEDS_USER_DECISION` and architecture cleanup
+stops; no successor architecture pass is armed.
+
+Stop on baseline/route drift, a twenty-fifth path, a changed
+`REVIEWED_NO_CHANGE` map, runtime/test mutation, unsupported qualification,
+missing anchor, registry defect, map/source conflict, validation failure, or
+any staging/commit/push. The complete binding evidence is
+`docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`.
+
+## Accepted ProjectSession owner scope authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS

@@ -2,10 +2,67 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
+Current: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current ProjectSession owner scope queue
+## Current ProjectSession committed-source Code Map maintenance queue
+
+Execute one final Lane A `DOCS_MAPS_ONLY / PHASE_1` maintenance pass against
+accepted committed source at
+`eed0aa680674049886ac776923c2851a1b41d905`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/app/app.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+8. `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md`
+9. `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md`
+10. `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md`
+11. `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md`
+12. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+13. `docs/code_maps/lib/features/report/screens/customer_report_screen.dart.md`
+14. `docs/code_maps/test/widget/add_component_screen_test.dart.md`
+15. `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md`
+16. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+17. `docs/code_maps/test/widget/customer_report_screen_test.dart.md`
+18. `docs/code_maps/test/widget/edit_component_screen_test.dart.md`
+19. `docs/code_maps/test/widget/measure_sheet_screen_test.dart.md`
+20. `docs/code_maps/test/widget/project_gate_test.dart.md`
+21. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+22. `docs/code_maps/lib/shared/session/project_session.dart.md` (new)
+23. `docs/code_maps/test/unit/project_session_test.dart.md` (new)
+24. `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+No path 25 is queued. Refresh exactly the 16 existing maps classified
+`UPDATE_REQUIRED`; create only the two qualifying new maps. Keep all 18
+map/header-index pairs `REVIEW_REQUIRED` through Phase 1. Do not edit the ten
+`REVIEWED_NO_CHANGE` maps. Do not map the four-line beginner-mode provider or
+14-line seeded-session helper.
+
+Require 45 maps / 45 rows with 25 `MAINTAINED`, 18 `REVIEW_REQUIRED`, two
+`RETIRED`, zero parity defects, and 556/556 stable anchors across the changed/
+new maps. Create one neutral ledger row and one unique empty verdict block.
+Phase 2 is forbidden without independent map verdicts and explicit bounded
+recording authorization.
+
+```text
+TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS
+   [accepted and committed at eed0aa680674049886ac776923c2851a1b41d905]
+-> TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+After accepted Phase 2 and exact human commit/push, keep the route at the
+non-executable sentinel and stop dedicated architecture cleanup. Do not queue
+another architecture pass. Stop on baseline/route/closure drift, a path 25,
+changed reviewed-no-change map, source/test mutation, unsupported
+qualification, registry/anchor defect, validation failure, or any staging,
+commit, or push.
+
+## Accepted ProjectSession owner scope queue (historical, non-authorizing)
 
 Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` pass at committed
 baseline `4770da8d40cd0f79745788d9cd9ec5fd132fe4c4`. Write exactly:

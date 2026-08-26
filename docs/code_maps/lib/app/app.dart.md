@@ -4,29 +4,31 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — production file owns 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_SINGLE_ROUTER_LIFETIME_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Owns the app-wide providers and the single lifetime BenchBeep navigation shell.
-One state object creates one `GoRouter`, supplies the canonical launcher at
-`/`, renders one `MaterialApp.router`, moves launcher actions through that
-existing router, and disposes the router once. The same state object retains
-startup-intro presentation, existing-project acquisition callbacks, and the
-New Project Wizard's successful projection-state handoff.
+Owns the single lifetime BenchBeep navigation shell and the app-level adapters
+that install newly loaded or created projects into `ProjectSession`. One state
+object creates one `GoRouter`, supplies the canonical launcher at `/`, renders
+one `MaterialApp.router`, moves launcher actions through that existing router,
+and disposes the router once. The same state object retains startup-intro
+presentation, existing-project acquisition callbacks, and generation-guarded
+bundled/Wizard project opening; provider declarations live under
+`shared/session`.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Application providers | `projectStateProvider`, `beginnerModeProvider` | Owns app-wide in-memory project state and beginner mode independently of route presentation. |
 | Root injection contract | `TraceBenchApp`, `createProject` | Exposes the optional project-creation seam while retaining the Wizard's default creator path. |
-| Existing-project acquisition | `_loadBundledProject`, `_importProjectZip`, `_openProjectDirectory`, `ProjectLoader.loadFromAssets`, `ProjectZipImportAction.importZip`, `ProjectDirectoryOpenAction.openDirectory` | Loads the bundled sample and delegates ZIP/directory picker, load, provider, feedback, and success behavior to the neutral acquisition owner. |
+| Session dependency and guarded bundled open | `projectStateProvider`, `projectSession`, `_loadBundledProject`, `ProjectLoader.loadFromAssets`, `generation`, `openProject` | Captures the active generation before the bundled read and installs its result only when that generation is still current. |
+| Existing-project acquisition | `_importProjectZip`, `_openProjectDirectory`, `ProjectZipImportAction.importZip`, `ProjectDirectoryOpenAction.openDirectory` | Delegates ZIP/directory picker, load, generation guard, session handoff, feedback, and success behavior to the neutral acquisition owner. |
 | Launcher callback wiring | `_buildLauncherHome`, `BenchBeepHomeScreen`, `onCreateProject`, `onOpenProject`, `onOpenWorkbench` | Projects project availability and connects launcher actions to acquisition or routed workbench entry. |
 | Startup-intro lifecycle | `_showStartupIntro`, `_completeStartupIntro`, `_buildLauncherShell`, `ValueNotifier`, `ValueListenableBuilder`, `Stack`, `IgnorePointer`, `BenchBeepSplashScreen` | Keeps the 3200 ms splash as pointer-transparent launcher state and latches completion without rebuilding the app root. |
 | Lifetime router ownership | `_router`, `initState`, `_buildWorkbenchRouter`, `buildTraceBenchRouter`, `initialLocation`, `homeBuilder` | Creates one router during state initialization at canonical `/` and supplies `_buildLauncherShell` as its root builder. |
 | Existing-router navigation | `_openWorkbench`, `_router.go` | Latches the intro complete and navigates the owned router to `/new-project` or `/project` without replacement, push, or interim disposal. |
-| Wizard injection and handoff | `newProjectBuilder`, `NewProjectWizardScreen`, `onProjectCreated`, `projectStateProvider.notifier` | Injects creation and synchronously assigns the returned hydrated state before the Wizard's explicit project transition. |
+| Wizard creation adapter | `_createProject`, `ProjectCreationSuccess`, `ProjectCreationFailed`, `newProjectBuilder`, `NewProjectWizardScreen` | Wraps the injected/default creator, generation-guards successful session opening, and converts a stale success into sanitized Wizard-visible failure without changing the Wizard contract. |
 | Root rendering and disposal | `build`, `MaterialApp.router`, `routerConfig`, `dispose`, `_router.dispose`, `_showStartupIntro.dispose` | Renders one routed application root for the state lifetime and releases the router and intro notifier once. |
 
 ## Anchor inventory and verification
@@ -49,14 +51,16 @@ map uses no line-number anchors.
    flips only the notifier and reveals the already-built launcher child.
 4. Launcher creation and continuation callbacks call `_openWorkbench`; that
    method latches intro completion and calls `_router.go(initialLocation)`.
-5. Returning to `/` reuses the same router, app state, `ProviderScope`, loaded
-   `ProjectState`, and beginner-mode state; the intro remains completed.
-6. Bundled acquisition assigns the loader result directly. ZIP and directory
-   callbacks delegate to neutral actions that assign projection state before
-   invoking the app's routed success callback.
-7. The Wizard's success latch invokes `onProjectCreated` once; this callback
-   assigns the hydrated state while the route remains `/new-project`. The
-   Wizard's explicit action later navigates to `/project`.
+5. Returning to `/` reuses the same router, app state, and `ProviderScope`; the
+   intro remains completed. Project-session clearing on the Workbench Home
+   action belongs to `WorkbenchShell`, while beginner mode remains separate.
+6. Bundled acquisition captures `ProjectSession.generation` before loading and
+   calls `openProject` only after the await. ZIP and directory callbacks
+   delegate the same guarded handoff to neutral acquisition actions.
+7. `_createProject` captures the generation, awaits the injected/default
+   creator, and opens a successful hydrated state only if mounted and current.
+   A stale success becomes `ProjectCreationFailed`; an accepted success remains
+   visible on Wizard Step 7 until its explicit `/project` action.
 8. State disposal releases `_router` and `_showStartupIntro` once, then calls
    `super.dispose()`.
 
@@ -65,12 +69,13 @@ map uses no line-number anchors.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | Flutter Material | framework/root UI | Supplies application root, lifecycle widgets, overlay layout, notifier listening, and theme presentation. |
-| Riverpod | state owner | Hosts the app-owned project and beginner-mode providers above all launcher/workbench navigation. |
+| Riverpod | dependency access | Reads the shared ProjectSession provider while its declaration and state ownership stay outside this file. |
+| `ProjectSession` / `projectStateProvider` | shared session owner | Supplies generation, guarded open, and current loaded-state reads to app adapters and launcher availability. |
 | GoRouter and `buildTraceBenchRouter` | navigation shell | Own one route graph whose root and workbench destinations share a lifetime. |
 | `BenchBeepHomeScreen` | outbound launcher | Receives current project availability and launcher callbacks. |
 | `BenchBeepSplashScreen` | outbound startup presentation | Reports timed completion while remaining presentation-only. |
-| `NewProjectWizardScreen` | outbound creation UI | Receives creation and successful-state handoff seams. |
-| `ProjectCreator` result/request types | injected contract | Type the optional application-level creation dependency. |
+| `NewProjectWizardScreen` | outbound creation UI | Receives the generation-guarded creation adapter through its unchanged creation seam. |
+| `ProjectCreator` result/request types | injected/default contract | Type and execute the optional/default creation dependency before guarded session installation. |
 | `ProjectLoader` | outbound reader | Loads the bundled sample directly in this file. |
 | `ProjectZipImportAction`, `ProjectDirectoryOpenAction` | outbound acquisition owner | Own picker, ZIP/directory loading, state assignment, feedback, and callback/default navigation behavior. |
 | `windowManager` | outbound lifecycle | Closes the desktop application from the launcher callback. |
@@ -79,10 +84,9 @@ map uses no line-number anchors.
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| Bundled-project provider assignment | `PROJECTION_STATE` | Assigns the asset-loader result in memory; this file writes no project file. |
-| ZIP/directory action delegation | observed `PROJECTION_STATE` | Neutral actions assign loader-returned state before the app success callback navigates. |
-| Wizard `onProjectCreated` callback | `PROJECTION_STATE` | Assigns only an already-created hydrated state; persistent writes belong to `ProjectCreator`. |
-| `createProject` injection | `ZERO_WRITE` | Passes a callable to the Wizard; this shell does not invoke it directly. |
+| Bundled-project guarded open | `PROJECTION_STATE` | Calls `ProjectSession.openProject` with a captured generation after asset loading; stale completion mutates nothing. |
+| ZIP/directory action delegation | observed `PROJECTION_STATE` | Neutral actions own their guarded session installation before callback/default navigation. |
+| `_createProject` | `NONCANONICAL_FILE` boundary invoked + `PROJECTION_STATE` | Invokes the existing creator, then installs only a generation-valid success; persistent creation remains `ProjectCreator`-owned. |
 | Intro notifier and router ownership | `UI_LOCAL` | Mutate transient startup and navigation state without canonical data mutation. |
 | Route transitions | `UI_LOCAL` | `go` selects `/new-project` or `/project` on the existing router. |
 | Root rendering and disposal | `ZERO_WRITE` | Build widgets and release UI/navigation resources only. |
@@ -94,31 +98,33 @@ Wizard and `ProjectCreator`.
 
 ## Zero-write zones
 
-- Provider declarations allocate in-memory containers.
+- Provider reads and generation checks do not persist project data.
 - Router construction, root selection, splash rendering, theme selection,
   navigation, and disposal persist no project data.
 - The app callback does not inspect Wizard drafts or creation-result raw
   diagnostics.
-- Returning to `/` changes presentation only and does not clear providers.
+- App-owned route changes do not themselves clear session state; the explicit
+  Workbench Home control separately owns `closeProject`.
 
 ## Impact matrix
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Providers | [D] Declarations and bundled/Wizard assignments are local. | acquisition results and provider consumers | `PROJECTION_STATE` | acquisition, Wizard handoff, and Home round-trip tests |
+| Session adapters | [D] Bundled and Wizard flows capture generation and use shared session operations. | `ProjectSession`, acquisition actions, Wizard result contract | `PROJECTION_STATE` / invoked `NONCANONICAL_FILE` | stale bundled/Wizard and successful handoff tests |
 | Launcher callbacks | [D] Constructor arguments are explicit. | Home action availability and route entry | `ZERO_WRITE` / `UI_LOCAL` | action, route, acquisition, and exit tests |
 | Startup intro | [D] One notifier drives one overlay builder. | splash timer/presentation and early pointer-through entry | `UI_LOCAL` | normal completion, early transition, and no-replay tests |
 | Router lifetime | [D] One `late final` field is assigned in `initState` and disposed in `dispose`. | router factory, app root, and State lifetime | `UI_LOCAL` | identity plus construction/disposal source guards |
 | Navigation | [D] `_openWorkbench` calls `_router.go`. | Wizard cancel, Home recovery, aliases, and back semantics | `UI_LOCAL` | Wizard/Home/project round trips and ProjectGate suite |
-| Wizard handoff | [D] Builder passes both dependencies and assigns provider state. | Wizard success latch and Canvas readers | `PROJECTION_STATE` | provider-before-explicit-route test |
-| Existing acquisition | [D] Neutral actions retain load, assignment, and callback/default routing ownership. | Project ZIP/directory loaders | observed `PROJECTION_STATE` | bundled, folder, and ZIP regressions |
+| Wizard handoff | [D] Builder passes `_createProject`; the adapter opens only generation-valid successes. | Wizard success latch, creator, and Canvas readers | `NONCANONICAL_FILE` boundary invoked + `PROJECTION_STATE` | successful and stale Wizard tests |
+| Existing acquisition | [D] Neutral actions retain load, guarded open, and callback/default routing ownership. | Project ZIP/directory loaders and session generation | observed `PROJECTION_STATE` | bundled, stale folder, and stale/success ZIP regressions |
 | Root rendering | [D] Every build returns `MaterialApp.router` with `_router`. | theme and all route destinations | `ZERO_WRITE` | launcher, splash, and routed-screen tests |
 
 ## Relevant tests and helpers
 
-- `test/widget/benchbeep_home_screen_test.dart` provides 20 launcher,
-  creation, router-identity, Home-round-trip, provider-survival, acquisition,
-  responsive, hover, legacy-absence, and exit tests.
+- `test/widget/benchbeep_home_screen_test.dart` provides 25 launcher,
+  creation, router-identity, guarded Wizard/bundled/directory/ZIP acquisition,
+  explicit Home close, beginner-mode survival, responsive, hover,
+  legacy-absence, and exit tests.
 - `test/widget/benchbeep_splash_screen_test.dart` provides six focused tests
   for splash identity/timing, normal app completion, early pointer-through
   transition, no replay, one-router source shape, and presentation-only scope.
@@ -136,8 +142,10 @@ Wizard and `ProjectCreator`.
   can obscure `go` versus `push` and provider-before-route ordering.
 - Resetting `_showStartupIntro` while changing Home return can replay the
   startup overlay or detach it from the canonical launcher.
-- Moving providers below the routed root can discard loaded project or
-  beginner-mode state during launcher/workbench navigation.
+- Reintroducing provider declarations or compatibility exports here would
+  reverse the shared-session dependency direction and split ownership.
+- Omitting a captured generation from either awaited open path can let stale
+  bundled or Wizard results overwrite a newer session.
 - Combining acquisition callbacks with creation handoff can blur read/import
   and generated-project ownership.
 
@@ -149,8 +157,8 @@ Wizard and `ProjectCreator`.
   `_buildLauncherShell`, and the splash suite.
 - Existing-router entry only: `_openWorkbench`, one launcher action, and its
   route/identity assertions.
-- Wizard injection only: `newProjectBuilder`, `onProjectCreated`, and focused
-  provider-before-route evidence.
+- Wizard adapter only: `_createProject`, `newProjectBuilder`, and successful/
+  stale provider-before-route evidence.
 - Existing-project acquisition only: one action callback plus its handoff
   tests.
 
@@ -158,15 +166,15 @@ Wizard and `ProjectCreator`.
 
 - [D] Existing-project acquisition behavior remains behind the neutral
   `project_acquisition_actions.dart` owner.
-- [S] The Wizard success callback could become a named method if its projection
-  contract grows.
+- [D] The Wizard success adapter is already the named `_createProject` method;
+  persistent creation and the Wizard latch remain separate owners.
 - [S] Router construction could receive a focused factory seam only if the
   one-instance State ownership remains explicit.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when provider, notifier, router, injection, or
-handoff anchors change; `FLOW_DRIFT` when startup, provider assignment,
+Review for `SYMBOL_DRIFT` when session, generation, router, injection, or
+handoff anchors change; `FLOW_DRIFT` when startup, guarded session opening,
 navigation, or disposal ordering changes; `BOUNDARY_DRIFT` when persistent
 creation or canonical writes enter; `TEST_DRIFT` when lifecycle/round-trip
 assertions move; and `STRUCTURE_DRIFT` when launcher and workbench stop sharing
@@ -174,8 +182,8 @@ one routed root.
 
 ## Known uncertainty
 
-- [D] The Wizard, not this file, owns the exactly-once latch; this map records
-  only the app callback boundary.
+- [D] The Wizard owns the exactly-once latch; this file owns only the guarded
+  creation adapter and its sanitized stale-success result.
 - [D] Construction/disposal cardinality is source-guarded; runtime tests prove
   stable identity and clean unmount rather than instrumenting GoRouter itself.
 - [P] Consumers of `beginnerModeProvider` outside this file are not enumerated

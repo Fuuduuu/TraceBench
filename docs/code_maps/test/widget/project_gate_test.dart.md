@@ -4,16 +4,16 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `SCORE 7/12 — 12 tests spanning recovery, open outcomes, shared-shell identity, route inventory, provider/file boundaries, and nested navigation`
-- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Verifies the shared loaded-project gate and shell composition through the
-production router. The 12-test suite supplies controlled project state,
+production router. The 12-test suite supplies a controlled seeded ProjectSession,
 directory-picker/loader seams, a writer double, exact 15-destination inventory,
 and file snapshots. It proves shell-free null recovery, loaded one-gate/one-
 shell presentation, same shell element/state across all leaves, both aliases,
-nested push/pop, provider/project identity, canonical Home, and byte-level
+nested push/pop, session/project identity, canonical Home, and byte-level
 zero mutation.
 
 ## Qualification
@@ -30,7 +30,7 @@ and repeated-whole-file-analysis dimensions remain zero.
 | Guarded destination inventory | `_projectDestinations` | Defines exact 15 path/destination-type pairs expected beneath one shared gate/shell. |
 | Loaded project fixture | `_loadedProject`, `projectDirectory` | Builds explicit-fresh project state with configurable directory and empty canonical collections. |
 | Canonical root fixture | `_buildCanonicalHome`, `BenchBeepHomeScreen` | Supplies the required canonical launcher surface with inert callbacks. |
-| Router/provider harness | `_RouterSession`, `_pumpRouter`, `homeBuilder` | Builds the production router, overrides providers/seams/writer, mounts theme, and exposes URI/provider observations. |
+| Router/session harness | `_RouterSession`, `_pumpRouter`, `SeededProjectSession`, `homeBuilder` | Builds the production router, seeds null/loaded ProjectSession, overrides seams/writer, mounts theme, and exposes URI/session observations. |
 | Route settling and file snapshot | `_pumpUntilRouterPath`, `_snapshotFiles`, `readAsBytesSync` | Waits for leaf transitions and captures exact recursive file bytes for zero-mutation checks. |
 | Representative writer double | `_RecordingAddComponentWriter`, `requests` | Records component-write requests so recovery/reveal/navigation can prove zero calls. |
 | Null recovery family | `null project keeps requested URI and shows shared recovery`, `all 15 real project destinations keep null recovery shell-free` | Verifies exact URI, one gate, no shell/destination, recovery UI, and all 15 null routes. |
@@ -48,15 +48,16 @@ exact substring in committed test source. The map uses no line-number anchors.
 
 ## State and data flow
 
-1. `_pumpRouter` creates a `ProviderContainer` with explicit project state and
-   optional deterministic picker, loader, and writer overrides.
+1. `_pumpRouter` creates a `ProviderContainer` with
+   `SeededProjectSession(projectState)` plus optional deterministic picker,
+   loader, and writer overrides.
 2. `buildTraceBenchRouter` selects the real route. One route-layer
    `ProjectGate` is outside the shared `WorkbenchShell`.
 3. Null state renders recovery at the requested URI without mounting shell or
    destination. The 15-route null matrix repeats that contract for every real
    target; both redirect aliases settle on their canonical recovery URI.
 4. Cancel and typed/generic failure retain null state and URI; successful load
-   replaces the provider and reveals shell plus requested child without a
+   opens the session and reveals shell plus requested child without a
    default redirect to `/project`.
 5. The loaded 15-route loop records the initial shell element/state and asserts
    both identities remain the same while `go` moves among every leaf.
@@ -75,7 +76,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | `buildTraceBenchRouter`, `GoRouter` | system under test / harness | Supplies production tree, canonical URIs, aliases, `go`, `push`, and `pop`. |
 | `ProjectGate` and seam providers | system under test / overrides | Own null/loaded selection and deterministic project opening. |
 | `WorkbenchShell` | route-layer observation | Supplies shared loaded-project chrome whose absence/identity is asserted. |
-| `projectStateProvider`, `ProviderContainer` | fixture/observation | Injects null/loaded state and proves replacement or identity preservation. |
+| `projectStateProvider`, `SeededProjectSession`, `ProviderContainer` | fixture/observation | Seeds null/loaded state and proves guarded replacement or identity preservation. |
 | `ProjectState`, `ProjectManifest`, `KnownFacts` | fixture models | Build valid minimal loaded state. |
 | `ProjectDirectoryOpenAction` behavior | indirect dependency | Supplies picker/loader/error/state-assignment flow through the gate. |
 | Fifteen destination widget types | route observations | Prove correct child suppression/reveal. |
@@ -90,7 +91,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | Router construction/navigation | `UI_LOCAL` | URI/stack and widget construction only. |
 | Recovery, shell, and child suppression/reveal | `ZERO_WRITE` | No writer or file mutation during route state changes. |
 | Injected picker/loader seams | exercised `NONCANONICAL_FILE` read | Controlled values; no real loader filesystem access. |
-| Successful loader result -> provider | observed `PROJECTION_STATE` | Loaded state replaces null without canonical event append. |
+| Successful loader result -> ProjectSession | observed `PROJECTION_STATE` | Generation-valid open replaces null without canonical event append. |
 | `_RecordingAddComponentWriter.requests` | exercised `CANONICAL_EVENT` boundary | Remains empty during recovery/reveal/navigation. |
 | Temporary fixture and `_snapshotFiles` | `NONCANONICAL_FILE` | Fixture creation/cleanup is test-only; snapshots prove product bytes unchanged. |
 | Home/alias/nested routing | `UI_LOCAL` | Only route stack and rendered destination change. |
@@ -99,8 +100,8 @@ exact substring in committed test source. The map uses no line-number anchors.
 
 - Recovery copy/tokens, shell absence/presence, destination identity, and URI
   observations are render/navigation-only.
-- Cancel/failure preserve null provider state; success observes only the
-  existing provider handoff.
+- Cancel/failure preserve null session state; success observes only the
+  existing generation-guarded session handoff.
 - Loaded route loops and nested push/pop retain event/fact/freshness/file/writer
   state exactly.
 - The writer double proves absence of requests, not writer internals.
@@ -111,7 +112,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | --- | --- | --- | --- | --- |
 | Destination inventory | `[D]` exact 15 tuples in null/loaded loops | router and destination types | `UI_LOCAL` / `ZERO_WRITE` | both 15-route matrices |
 | Recovery presentation | `[D]` exact copy/tokens and shell absence | ProjectGate/source/theme | `ZERO_WRITE` | null case + null matrix |
-| Open lifecycle | `[D]` picker/loader outcomes | open action/provider | observed `PROJECTION_STATE` | cancel, two failures, success |
+| Open lifecycle | `[D]` picker/loader outcomes | open action/ProjectSession | observed `PROJECTION_STATE` | cancel, two failures, success |
 | Shared shell identity | `[D]` same element/state across loaded leaves | ShellRoute/WorkbenchShell | `ZERO_WRITE` | loaded matrix |
 | Nested stack | `[D]` push Overview, pop Canvas | GoRouter shell navigator | `UI_LOCAL` | push/pop case |
 | Aliases/Home | `[D]` exact canonical paths and root | router redirects/launcher | `UI_LOCAL` | alias and Home cases |
@@ -120,7 +121,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 ## Relevant tests and helpers
 
 - `_projectDestinations` is the single exact 15-route/type inventory.
-- `_pumpRouter` owns production-router/provider/theme setup.
+- `_pumpRouter` owns production-router/seeded-session/theme setup.
 - `_pumpUntilRouterPath` avoids confusing URI observation with incomplete
   Navigator transitions.
 - `_snapshotFiles` supplies recursive byte-level fixture evidence.
@@ -147,7 +148,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 ## Safe SNIPER slices
 
 - Null recovery: exact test, gate subtree, shell absence, requested URI.
-- One open outcome: injected seam, provider/URI, shell/destination result.
+- One open outcome: injected seam, session/URI, shell/destination result.
 - Shared loaded composition: one route tuple, gate/shell count, identity, and
   mutation guard; preserve full matrix for inventory changes.
 - One alias: redirect declaration and shell-free recovery settlement.
@@ -165,7 +166,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 
 Review for `SYMBOL_DRIFT` when inventory/harness/test-name/shell anchors change;
 `FLOW_DRIFT` when null/loaded/open/route-settle/nested-stack behavior changes;
-`BOUNDARY_DRIFT` when provider/file/writer ownership changes; `TEST_DRIFT` when
+`BOUNDARY_DRIFT` when session/file/writer ownership changes; `TEST_DRIFT` when
 any of the 12 cases move; and `STRUCTURE_DRIFT` when route/gate/shell ownership
 splits.
 

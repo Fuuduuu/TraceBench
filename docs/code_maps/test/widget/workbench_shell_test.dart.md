@@ -4,7 +4,7 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `SCORE 7/12 — nine tests across inventory, active selection, shell/provider identity, Batch-1 destination chrome, responsive navigation, Home round-trip, alias, and zero-write families`
-- Audit evidence: `docs/audit/TRACEBENCH_WORKBENCH_DESTINATION_CHROME_BATCH_1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -13,7 +13,8 @@ shell. Two unit tests verify its sole ordered destination model and workflow-
 parent selection. Seven widget tests use the production router to verify one
 shell/provider identity across leaves, Batch-1 destination chrome and body
 preservation, compact reachability, the exact 1228 persistent cutover,
-Home/project survival, representative zero-write routes, and alias selection.
+Home project clearing with beginner-mode survival, representative zero-write
+routes, and alias selection.
 Four writer sentinels plus event/fact/freshness/file checks protect the
 navigation-only boundary.
 
@@ -24,13 +25,13 @@ navigation-only boundary.
 | Expected destination contract | `_expectedDestinationPaths`, `owns the exact ordered top-level destination inventory` | Defines the exact ordered 12 paths and excludes Home/Add/Edit/Measure Sheet. |
 | Loaded fixture | `_loadedProject`, `ComponentFact`, `PinFact`, `MeasurementFact`, `ExcludedFootprintFact` | Builds one identifiable loaded project with representative component, pin, measurement, exclusion, event, report, and fresh projection data. |
 | Writer sentinels | `_UnexpectedAddComponentWriter`, `_UnexpectedEditComponentWriter`, `_UnexpectedPlacementWriter`, `_UnexpectedSaveMeasurementWriter` | Count and fail any unexpected canonical writer call. |
-| Router/provider/file harness | `_RouterSession`, `_pumpRouter`, `ProviderContainer`, `fixture.txt` | Creates a temporary fixture, overrides project/mode/writers, mounts the production router/theme, and exposes observations. |
+| Router/session/file harness | `_RouterSession`, `_pumpRouter`, `SeededProjectSession`, `ProviderContainer`, `fixture.txt` | Creates a temporary fixture, seeds project state, overrides mode/writers, mounts the production router/theme, and exposes observations. |
 | Route settling | `_pumpUntilRouterPath`, `routeInformationProvider` | Waits for expected URI plus Navigator transition completion. |
 | Active selection contract | `maps workflow routes to their top-level active destinations`, `activeWorkbenchDestination` | Verifies Add/Edit -> Components and Measure Sheet -> Measurements while canonical Canvas selects itself. |
 | Shell/provider identity | `keeps one shell identity and providers across project leaf navigation`, `WorkbenchShell`, `same(session.loadedProject)` | Proves one on/offstage shell, identical element/state, loaded-project identity, beginner mode, and events across a leaf change. |
 | Batch-1 destination chrome | `read-only routed destinations render one shell AppBar and one destination surface`, `workbench-destination-surface`, `events-advanced`, `events-beginner` | Covers seven loaded cases across six URIs, one shell AppBar/surface, same shell identity, active route chrome, preserved body signatures, both Events modes, and zero mutation. |
 | Compact and persistent responsive modes | `renders one reachable compact navigation model`, `persistent navigation starts at the safe 1228 width`, `workbench-wide-navigation`, `workbench-compact-menu-button` | Proves reachable drawer navigation and exact six-width shell cutover. |
-| Home/provider round trip | `Home round trip preserves project and beginner mode`, `workbench-home-button` | Verifies separate Home control and loaded project/mode survival through re-entry. |
+| Home session close | `Home clears project and preserves beginner mode`, `workbench-home-button` | Verifies Home clears ProjectSession while the separate beginner-mode value survives. |
 | Navigation mutation guards | `shared destination controls navigate exact routes without state writes`, `calls`, `listSync` | Checks representative exact routes with stable project/facts/events/freshness/files and zero writer calls. |
 | Workflow and alias selection | `workflow and aliases select one canonical shell destination`, `/project/measurements/new`, `/project/board-canvas` | Verifies workflow-parent selection and both compatibility redirects settle on canonical shell entries. |
 
@@ -54,7 +55,8 @@ test file qualifies without a human override or automatic trigger.
 
 1. `_pumpRouter` creates a temporary project directory with one unchanged file,
    a loaded project with representative facts and one event, four fail-on-call
-   writers, a provider container, and the production router.
+   writers, `SeededProjectSession`, a provider container, and the production
+   router.
 2. The inventory unit test compares production locations with the exact 12-path
    expectation, proves uniqueness, excludes `/` and workflow leaves, and
    verifies every top-level entry selects itself.
@@ -70,8 +72,8 @@ test file qualifies without a human override or automatic trigger.
    events, freshness, writers, and the recursive file listing.
 6. The compact case opens one drawer, selects Measurements, and retains one
    shell. The responsive case checks 959, 960, 1227, 1228, 1229, and 1500.
-7. Home navigation preserves project and beginner mode, and direct re-entry to
-   `/project` reveals Board Canvas inside one shell.
+7. Home navigation clears the project session before reaching `/` and preserves
+   false beginner mode; the suite does not re-seed or re-enter a project.
 8. Representative destination taps preserve exact project/fact/event/freshness
    values, all four zero call counts, and the recursive file listing.
 9. Workflow and compatibility paths select one canonical parent entry after
@@ -83,8 +85,7 @@ test file qualifies without a human override or automatic trigger.
 | --- | --- | --- |
 | `WorkbenchShell`, `WorkbenchDestinationSurface`, destination model/helpers | system under test | Supplies inventory, active selection, shared chrome/surface keys, responsive chrome, Home/mode controls, and navigation. |
 | `buildTraceBenchRouter`, `GoRouter` | production harness | Supplies real shell composition, routes, aliases, and current URI. |
-| `projectStateProvider`, `beginnerModeProvider` | fixture/observation | Injects loaded state/mode and proves identity/survival. |
-| `BoardCanvasScreen` | destination observation | Proves Home re-entry reaches canonical `/project`. |
+| `projectStateProvider`, `SeededProjectSession`, `beginnerModeProvider` | fixture/observation | Seeds loaded state/mode, proves navigation identity, and observes Home clearing/mode survival. |
 | Four V2 writer interfaces/providers | protected-boundary sentinels | Fail/count any unexpected add/edit/placement/measurement call. |
 | Project/manifest/fact/event models | fixture | Build typed state with event/fact/freshness observations. |
 | Flutter tester/layout/navigation APIs | driver | Control surface size, drawer, taps, scrolling, and element/state identity. |
@@ -98,15 +99,16 @@ test file qualifies without a human override or automatic trigger.
 | Batch-1 routed destination matrix | `ZERO_WRITE` | Observes presentation, body content, object identity, writer counters, freshness, and file listing without invoking a product write. |
 | Router/destination navigation | `UI_LOCAL` | Changes transient route location/drawer state. |
 | Beginner-mode toggle | observed `UI_LOCAL` | Verifies only the existing presentation provider changes. |
-| Project/provider identity assertions | `ZERO_WRITE` | Read and compare existing in-memory objects/values. |
+| Project/session identity assertions | `ZERO_WRITE` | Read and compare existing in-memory objects/values during destination navigation. |
+| Home button session clear | observed `PROJECTION_STATE` | Verifies the explicit shell-owned close while writer/file/fact paths remain untouched. |
 | Four writer sentinels | exercised `CANONICAL_EVENT` boundary | All call counts remain zero during shell navigation. |
 | Temp fixture setup/teardown | `NONCANONICAL_FILE` | Test-only file creation/deletion outside product persistence. |
 | Recursive file listing | `ZERO_WRITE` | Observes unchanged paths only. |
 
 ## Zero-write zones
 
-- Inventory, active-state, shell identity, responsive presentation, Home round
-  trip, and alias assertions contain no explicit product save action.
+- Inventory, active-state, shell identity, responsive presentation, Home close,
+  and alias assertions contain no canonical product save action.
 - Navigation stops at destination presentation.
 - The Batch-1 matrix changes route and beginner presentation state only; all
   project/fact/event/freshness/file observations and writer counts stay stable.
@@ -123,7 +125,7 @@ test file qualifies without a human override or automatic trigger.
 | Batch-1 destination chrome | `[D]` seven routed cases and body signatures | six destination owners and local surface theme | `ZERO_WRITE` | Batch-1 matrix + focused destination suites |
 | Compact navigation | `[D]` drawer/menu/tap | route and scroll reachability | `UI_LOCAL` | compact case |
 | Persistent cutover | `[D]` six exact widths | shell/Board/Overview responsive owners | `ZERO_WRITE` | cutover + destination suites |
-| Home round trip | `[D]` exact route and provider values | launcher/router lifetime | `UI_LOCAL` | Home case + Home suite |
+| Home close | `[D]` exact route, null project, and preserved mode | shell/session/launcher | `PROJECTION_STATE` + `UI_LOCAL` | Home case + Home suite |
 | No-write routes | `[D]` values/calls/file listing | four writers/project state | `ZERO_WRITE` | representative route loop |
 | Workflows/aliases | `[D]` selected ListTiles and canonical URIs | router redirects | `UI_LOCAL` | alias-selection case |
 
@@ -150,7 +152,8 @@ test file qualifies without a human override or automatic trigger.
 - Route URI equality may precede Navigator completion; retain bounded settling
   before destination assertions.
 - Temp fixture changes must remain test-only and cleanup-safe.
-- Removing writer/file/fact/event assertions would weaken the zero-write claim.
+- Removing writer/file/fact/event assertions would weaken the navigation
+  no-write claim; Home's explicit session clear is the one bounded exception.
 - Covering only one Events mode or counting AppBars without retaining body and
   shell identity would weaken the Batch-1 consolidation claim.
 
@@ -163,7 +166,7 @@ test file qualifies without a human override or automatic trigger.
 | Shell identity | identity widget test | ShellRoute/gate/provider scope | identity + loaded gate matrix |
 | Batch-1 destination chrome | seven-case routed matrix | six destination build branches | matrix + focused destination/freshness suites |
 | Responsive cutover | six-width case | Board/Overview geometry | all three responsive cases |
-| Home/mode survival | Home round-trip case | launcher/router lifetime | Home case + Home suite |
+| Home close/mode survival | Home case | ProjectSession, launcher, router lifetime | Home case + Home suite |
 | No-write navigation | representative route loop and sentinels | destination writers | loop + gate mutation matrix |
 
 ## Future extraction seams
@@ -176,7 +179,7 @@ test file qualifies without a human override or automatic trigger.
 ## Freshness and review triggers
 
 Set `REVIEW_REQUIRED` for fixture/helper/test-name `SYMBOL_DRIFT`, route/drawer/
-provider `FLOW_DRIFT`, writer/file/mode `BOUNDARY_DRIFT`, behavior-family
+session/provider `FLOW_DRIFT`, writer/file/mode/Home-close `BOUNDARY_DRIFT`, behavior-family
 `TEST_DRIFT`, or shell/harness `STRUCTURE_DRIFT`. Recheck exact declaration
 count, ordered 12 paths, seven Batch-1 cases, both Events modes, one surface/
 AppBar, six widths, all four writer sentinels, and provider/file guards

@@ -35,8 +35,10 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/shared/services/project_creator.dart` | `docs/code_maps/lib/shared/services/project_creator.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |
+| `lib/shared/session/project_session.dart` | `docs/code_maps/lib/shared/session/project_session.dart.md` | production | `MAINTAINED` |
 | `test/unit/project_creator_test.dart` | `docs/code_maps/test/unit/project_creator_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_loader_zip_test.dart` | `docs/code_maps/test/unit/project_loader_zip_test.dart.md` | test | `MAINTAINED` |
+| `test/unit/project_session_test.dart` | `docs/code_maps/test/unit/project_session_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/add_component_screen_test.dart` | `docs/code_maps/test/widget/add_component_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/benchbeep_home_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_home_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/benchbeep_splash_screen_test.dart` | `docs/code_maps/test/widget/benchbeep_splash_screen_test.dart.md` | test | `MAINTAINED` |

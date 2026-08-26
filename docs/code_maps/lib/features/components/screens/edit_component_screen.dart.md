@@ -4,14 +4,16 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — canonical writer + read-only UI coexist`
-- Audit evidence: `docs/audit/TRACEBENCH_PROJECTION_FRESHNESS_PROVENANCE_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 This screen edits metadata on an existing projected component only after an
 explicit human confirmation. It derives changed fields from UI-local draft
-controllers, invokes the accepted V2 component-edit writer, and mirrors the
-returned event into stale in-memory projection state. Its empty, safety, hint,
+controllers, invokes the accepted V2 component-edit writer, and passes the
+returned event to `ProjectSession` with the generation captured before the
+await. Session-owned current-state composition, dedup, and stale promotion
+replace caller-local mirror helpers. Its empty, safety, hint,
 and technical-detail surfaces remain read-only; it does not create components,
 infer identity, or write project files directly.
 
@@ -23,9 +25,9 @@ infer identity, or write project files directly.
 | 2. Selected component lookup | `_selectedComponent`, `projectStateProvider` | Resolves only an existing projected component by ID. |
 | 3. Change-set construction | `_changesFor`, `_addChangeIfDifferent`, `V2ComponentChange` | Emits non-empty label/designator/package changes with observed old values. |
 | 4. Writer orchestration | `_editComponent`, `v2EditComponentWriterProvider`, `V2EditComponentRequest` | Calls the accepted writer after all UI gates pass. |
-| 5. Returned-event projection update | `_hasLocalEvent`, `_clientOperationIdForEvent`, `projectState.copyWith` | Deduplicates and mirrors the returned event, then marks projection stale. |
+| 5. Session-owned returned-event update | `projectSession`, `generation`, `applyCanonicalEvent` | Captures generation before the writer await and delegates current-state composition, dedup, and stale promotion. |
 | 6. Operation identity and failures | `_clientOperationId`, `_messageForFailure` | Creates deterministic operation identity and maps typed writer failures. |
-| 7. Form and result presentation | `build`, `edit-component-*` keys, `_TechnicalDetailsTile` | Presents component selection, fields, confirmation, save, result, and event-type disclosure. |
+| 7. Form and result presentation | `build`, `edit-component-`, `_TechnicalDetailsTile` | Presents component selection, fields, confirmation, save, result, and event-type disclosure. |
 | 8. Empty state and navigation | `_EmptyComponentStateCard`, `edit-component-add-component-button` | Explains that only existing components can be edited and navigates to the separate create flow. |
 | 9. Human/safety boundary | `_SafetyCard` | States explicit human action and metadata-only behavior. |
 | 10. Hint boundary | `_HintBoundaryCard` | Keeps template, package, photo, candidate, vector, and AI context non-confirming. |
@@ -41,8 +43,9 @@ infer identity, or write project files directly.
   receives `_editComponent`.
 - `[D]` The writer receives component ID, changes, reason, and deterministic
   client operation ID.
-- `[D]` The returned event is added only when event ID or operation ID is not
-  already represented, then provider state is copied with stale projection.
+- `[D]` The current generation is captured before the writer await; the
+  returned event is handed to `ProjectSession.applyCanonicalEvent`, which
+  rejects stale/duplicate results and promotes accepted state stale.
 - `[D]` The body reads authoritative `projectState.projectionFreshness` for the
   shared banner. Fresh is absent; stale and unknown are distinct, nonblocking
   warnings. The former save-local `Projection stale until refresh.` sentence
@@ -53,11 +56,10 @@ infer identity, or write project files directly.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider` | input / projection-state output | Supplies components/events/tri-state freshness and receives mirrored returned event state. |
+| `projectStateProvider` / `ProjectSession` | input / projection-state owner | Supplies components/freshness and owns guarded returned-event composition. |
 | `ProjectionStaleBanner` | child presentation | Renders the authoritative stale/unknown warning independently of save-result copy. |
 | `V2EditComponentWriter` provider | canonical boundary | Validates and appends the confirmed component metadata event outside this screen. |
 | `ComponentFact` | read-only input | Supplies existing ID, designator, and package values. |
-| `TraceBenchEvent` | returned-state model | Types a newly returned writer event for local projection state. |
 | `GoRouter` / `context.go` | outbound navigation | Enters the separate Add Component flow from empty state. |
 | Flutter form controllers/widgets | UI-local state | Capture human edits and confirmation. |
 
@@ -67,7 +69,7 @@ infer identity, or write project files directly.
 | --- | --- | --- |
 | Controllers, selection, confirmation, messages | `UI_LOCAL` | `[D]` Mutate widget state only. |
 | `_editComponent` → writer provider | `CANONICAL_EVENT` boundary invoked | `[D]` Calls the accepted metadata writer after explicit confirmation. |
-| Returned event → provider copy | `PROJECTION_STATE` | `[D]` Mirrors one event and marks known-facts projection stale. |
+| Returned event → `ProjectSession.applyCanonicalEvent` | `PROJECTION_STATE` | `[D]` Delegates generation guard, dedup, append, and freshness promotion. |
 | Empty-state `context.go` | `ZERO_WRITE` | `[D]` Navigates to an existing flow without invoking its writer. |
 | `_SafetyCard`, `_HintBoundaryCard`, `_TechnicalDetailsTile` | `ZERO_WRITE` | `[D]` Render boundary and technical copy only. |
 | `ProjectionStaleBanner` | `ZERO_WRITE` | `[D]` Reads tri-state projection metadata and neither gates controls nor invokes the writer. |
@@ -95,7 +97,7 @@ not confirm component identity here.
 | Selection/gate | `[D]` component lookup, change set, confirmation | form fields and writer call | `UI_LOCAL` | disabled and selection tests |
 | Change mapping | `[D]` three accepted metadata fields | writer request/schema owner | `UI_LOCAL` before save | valid request test plus writer unit tests |
 | Writer call | `[D]` explicit provider invocation | V2 writer and event schema | `CANONICAL_EVENT` boundary invoked | valid-save and failure tests |
-| Returned-event mirror | `[D]` event/operation dedup | provider freshness consumers | `PROJECTION_STATE` | success and existing-result tests |
+| Session event handoff | `[D]` generation plus `applyCanonicalEvent` | ProjectSession and freshness consumers | `PROJECTION_STATE` | success/existing-result tests plus session unit suite |
 | Empty state | `[D]` no-components branch | router and Add Component screen | `ZERO_WRITE` | empty-state/navigation/no-writer tests |
 | Hint/safety copy | `[D]` fixed read-only cards | protected identity/evidence semantics | `ZERO_WRITE` | safety and forbidden-source/copy tests |
 | Freshness warning | `[D]` one shared banner before edit/empty content | provider tri-state, save-result copy | `ZERO_WRITE` | explicit fresh fixture plus unknown/stale widget and routed integration cases |
@@ -106,7 +108,7 @@ not confirm component identity here.
   setup, unknown-warning control availability, provider-backed stale promotion,
   absence of the removed local stale sentence, safety copy, empty
   state, no-writer navigation, confirmation gating, request/change fields,
-  returned projection state, typed failures, idempotency, and selected source
+  session-applied projection state, typed failures, idempotency, and selected source
   boundaries.
 - `test/unit/v2_edit_component_writer_test.dart` owns command, validation,
   append, and result behavior beyond the screen.
@@ -119,8 +121,8 @@ not confirm component identity here.
 
 - `[P]` Changing old-value comparison and `changeKind` together can turn a
   metadata edit into a misleading replacement event.
-- `[P]` Changing form-key normalization and dedup logic together can duplicate
-  a canonical edit.
+- `[P]` Changing form-key normalization and session identity/dedup semantics
+  together can duplicate a canonical edit.
 - `[P]` Adding hint-derived defaults can silently confirm identity or package
   context without the human-entered boundary.
 - `[P]` Empty-state navigation must not invoke the edit writer or merge Add
@@ -136,6 +138,7 @@ not confirm component identity here.
 | One warning/banner change | `build`, `ProjectionStaleBanner`, `projectState.projectionFreshness` | writer, empty route, result copy | fresh/unknown/stale tests plus full focused target |
 | One metadata field rule | `_changesFor`, `_addChangeIfDifferent` | writer request schema | valid request plus writer tests |
 | One confirmation gate | `_canEdit`, `_formKey` | `_editComponent` | disabled/confirmed tests |
+| One session handoff | `generation`, `applyCanonicalEvent` | ProjectSession and writer result | success/existing-result plus session unit tests |
 | One failure message | `_messageForFailure` | writer failure enum | exact failure test |
 | One empty-state copy/route | `_EmptyComponentStateCard` | router and Add Component | empty-state navigation/no-writer test |
 | One hint-boundary copy | `_HintBoundaryCard` | forbidden inference assertions | boundary test |
@@ -145,7 +148,7 @@ not confirm component identity here.
 | Observed seam | Evidence | Authorization |
 | --- | --- | --- |
 | Change-set builder | `[S]` Three fields use one comparison helper. | `NONE` |
-| Returned-event dedup | `[S]` Event/operation logic mirrors another writer screen. | `NONE` |
+| Returned-event dedup | `[D]` Shared `ProjectSession` now owns event/operation reconciliation. | `NONE` |
 | Boundary cards | `[S]` Safety and hint copy are callback-free widgets. | `NONE` |
 
 ## Freshness and review triggers
@@ -153,8 +156,9 @@ not confirm component identity here.
 - Set `REVIEW_REQUIRED` for controller/helper `SYMBOL_DRIFT`, request/provider
   `FLOW_DRIFT`, writer or identity `BOUNDARY_DRIFT`, focused coverage
   `TEST_DRIFT`, or responsibility `STRUCTURE_DRIFT`.
-- Recheck writer/schema/protected owners when editable fields, confirmation,
-  operation identity, or returned-event behavior changes.
+- Recheck writer/session/schema/protected owners when editable fields,
+  confirmation, operation identity, generation capture, or returned-event
+  behavior changes.
 - Recheck banner ownership when tri-state input, body ordering, or local result
   copy changes; the writer path itself remains unchanged.
 - Formatting and line movement alone do not stale this map.

@@ -1,9 +1,54 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECT_SESSION_OWNER_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS`
+Current pass: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live ProjectSession owner scope lock
+## Live committed-source ProjectSession Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+eed0aa680674049886ac776923c2851a1b41d905`, parent
+`2d3a83fb494022c9248ceade1ded731cdbc6af02`, subject
+`refactor: introduce project session owner`, and divergence `0 0`. Staged and
+unmerged sets are empty. The known three generated-plugin Windows EOL/stat
+entries and untracked `TraceBench_ALL_CODE.txt` remain outside the substantive
+material set.
+
+The accepted committed implementation changes exactly 40 source/test paths.
+The binding preflight classifies 16 existing maps `UPDATE_REQUIRED`, ten
+existing maps `REVIEWED_NO_CHANGE`, new `project_session.dart` as automatic
+map-required, new `project_session_test.dart` at `SCORE 7/12`, and the beginner-
+mode provider plus seeded-session helper as `NOT_QUALIFIED` /
+`NOT_APPLICABLE`.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` pass changes exactly 24 paths: the three
+route owners, audit ledger, Code Map index, 16 refreshed maps, two new maps,
+and one new audit artifact. No Dart/test/runtime source changes. The 18 changed
+or new map/header-index pairs are `REVIEW_REQUIRED`; all ten reviewed-no-change
+maps and every other map remain byte-frozen.
+
+The Phase-1 registry is exactly 45 maps / 45 rows with 25 `MAINTAINED`, 18
+`REVIEW_REQUIRED`, and two `RETIRED`; parity, orphan, unindexed, and status-
+mismatch counts are zero. The 18 maps resolve 556/556 stable anchors against
+committed source.
+
+The route is:
+
+```text
+TRACEBENCH_PROJECT_SESSION_OWNER_IMPL_PASS
+   [accepted and committed at eed0aa680674049886ac776923c2851a1b41d905]
+-> TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Manual smoke is `NOT_APPLICABLE`. One neutral `REVIEW_REQUIRED` ledger row and
+one unique empty verdict block bind independent map audit. A separately
+authorized Phase 2 is bounded to the 18 map Status headers, 18 matching index
+cells, verdict-block interior, and ledger Status cell. After accepted exact
+human commit/push, dedicated architecture cleanup stops; no further
+architecture pass is armed.
+
+## Accepted ProjectSession owner scope lock (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

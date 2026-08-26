@@ -4,12 +4,12 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ test families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 This 178-declaration Board Canvas widget-test owner supplies explicit-fresh
-fixtures, direct/production-router harnesses, writer doubles, interaction and
+fixtures, seeded-ProjectSession direct/production-router harnesses, writer doubles, interaction and
 painter assertions, read-only Wizard overlay coverage, local panel/focus
 evidence, direct deterministic measurement read-model characterization through
 an explicit `measurement_projection.dart` import, nine direct pure placement-
@@ -33,18 +33,18 @@ derived from stable helpers, doubles, and exact test names.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Fixtures and harness lifecycle | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `_harness`, `_routerHarness`, `_readProjectState` | Builds state, overrides providers, mounts direct/routed screens, and observes provider state. |
+| 1. Fixtures and harness lifecycle | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Builds state, seeds sessions, mounts direct/routed screens, observes current state, and performs explicit generation-valid test replacements. |
 | 2. Theme, shell, and route baselines | `buildTheme exposes BenchBeep semantic visual tokens`, `/project is the named canonical board canvas route`, `/project/board-canvas redirects once to canonical /project` | Verifies theme, empty/loaded shell, canonical entry, and compatibility alias. |
 | 3. Navigator, selection, hover, and filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Exercises typed selection, category drill-down, hover, ordering, counts, and hide-unmeasured behavior. |
 | 4. Measurement entry, association, and pure read-model characterization | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `_expectStableComponentPreviewGeometry`, `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Covers target/draft/save, Measure Sheet navigation, endpoint/count association, characterized badge ordering/fallback, scalar/unit eligibility, exact badge text, and stale/invalid/suspect caution classification. |
 | 5. Component create and edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guarded identity creation/edit requests, errors, returned events, and idempotency. |
-| 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey` | Exercises template selection, local drafts, ghost movement, normalized bounds, explicit save, and results. |
+| 6. Placement builder, draft, ghost, and save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `_tapWidgetByKey`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Exercises template selection, local drafts, ghost movement, normalized bounds, explicit save, accepted-event stale promotion, and duplicate-result no-op behavior. |
 | 7. Canvas interaction, Wizard fit, and placement geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake`, `placement geometry read model`, `_geometryPlacement`, `_geometryTemplate`, `_geometryTemplateWithPinCount` | Verifies pan/zoom, hit selection, aspect mapping, fallback, padding, one initial fit, alignment, badges, and nine pure center/body/envelope/classifier/maximum/upright-hit contracts. |
 | 8. Painter, overlay, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels`, `geometrySource` | Inspects composite order/pixels, read-only Wizard geometry, Board/Wizard rotation separation, footprint/pin rendering, cues, semantics, fallbacks, and separate host/Wizard/geometry source ownership. |
 | 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Verifies projected inspector content, readiness/safety wording, measurements, and visual-trace metadata. |
 | 10. Local panels, focus, and routed responsive layout | `routed Board Canvas stays rich across the shell cutover`, `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `board_canvas_project_navigation_hub` | Proves exact six-width shell modes, continuous rich Canvas, hidden default, retained panels/focus, and absence of local Project navigation. |
 | 11. Volatility and protected-boundary guards | `selection state is volatile in memory only`, `events.jsonl`, `event_writer_service.py` | Asserts volatile-only state, unchanged provider/files, empty unintended writer requests, and static source boundaries. |
-| 12. Projection freshness | `unknown freshness warning keeps Board Canvas usable`, `ProjectionStaleBanner.unknownPrimaryText` | Proves distinct unknown warning, usable workspace, explicit fresh fixtures, and existing post-write stale behavior. |
+| 12. Projection freshness | `unknown freshness warning keeps Board Canvas usable`, `ProjectionStaleBanner.unknownPrimaryText` | Proves distinct unknown warning, usable workspace, explicit fresh fixtures, accepted-event stale promotion, and duplicate-result state preservation. |
 
 ## Anchor inventory and verification
 
@@ -77,8 +77,12 @@ focus hide/restore without events or freshness changes.
 
 - `[D]` `_inlineProjectState` defaults explicitly to fresh unless a case selects
   stale/unknown behavior.
-- `[D]` `_harness` mounts `BoardCanvasScreen` directly with four replaceable
-  writers; `_routerHarness` exercises canonical route and outer shared shell.
+- `[D]` `_harness` and `_routerHarness` seed `SeededProjectSession`; four
+  replaceable writers remain controlled while routed cases exercise the outer
+  shared shell.
+- `[D]` `_replaceProjectState` uses generation-current
+  `replaceWithReloaded` for tests that intentionally swap fixtures after mount;
+  no external notifier-state assignment remains.
 - `[D]` The six-width case pairs shell-mode assertions with local Canvas rich
   geometry, so navigation cutover alone cannot mask a destination inversion.
 - `[D]` Local panel tests open retained modes through `_openWideContextMode`,
@@ -102,8 +106,9 @@ focus hide/restore without events or freshness changes.
   every visual-kind envelope, exact template mappings, classifier branches,
   visual maxima, upright hit boundaries, and ignored nonzero rotation without
   mounting widgets or invoking a writer.
-- `[D]` Successful simulated writer calls are observed separately through
-  `_readProjectState` as returned-event mirroring and stale projection state.
+- `[D]` Successful simulated writer calls are observed through
+  `_readProjectState` as ProjectSession-applied events and stale projection;
+  the duplicate placement result is rejected without changing freshness.
 
 ## Direct dependencies
 
@@ -114,7 +119,7 @@ focus hide/restore without events or freshness changes.
 | `placement_geometry.dart` and production map | direct pure-helper system under test plus source-read / map input | Supplies center/body/visual sizing, minimum envelopes, visual-kind/template classification, and upright hit behavior without mounting the screen; its source is read separately for physical-ownership guards. |
 | `wizard_intake_overlay.part.dart` and production map | direct source-read / map input | Supplies the physically moved Wizard fit/photo/painter declarations and the painter-to-EOF structural slice. |
 | `WorkbenchShell` | routed outer composition | Supplies compact/persistent project navigation without entering Board source. |
-| `projectStateProvider`, `ProviderScope`, `ProjectState` | fixture / observation | Injects state and proves responsive/provider invariance or post-write mirroring. |
+| `projectStateProvider`, `SeededProjectSession`, `ProviderScope`, `ProjectState` | fixture / observation | Seeds state and proves responsive/session invariance, guarded replacement, or post-write application. |
 | `buildTraceBenchRouter`, `GoRouter`, `MaterialApp.router` | routed harness | Verifies canonical entry, alias, Measure Sheet, and shared-shell composition. |
 | Four V2 writer interfaces/providers | test doubles | Capture add, edit, placement, and measurement requests/results. |
 | BoardFact models and `TraceBenchEvent` | fixture/assertion input | Build projected facts and returned events. |
@@ -127,7 +132,8 @@ focus hide/restore without events or freshness changes.
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
 | Screen action -> four fake request lists | exercised `CANONICAL_EVENT` | `[D]` Fakes observe existing interfaces; they do not prove persistence internals. |
-| Returned fake event -> `_readProjectState` | observed `PROJECTION_STATE` | `[D]` Separates local mirroring/stale promotion from input fixtures. |
+| Returned fake event -> `_readProjectState` | observed `PROJECTION_STATE` | `[D]` Separates ProjectSession application/dedup/stale promotion from input fixtures. |
+| `_replaceProjectState` | observed `PROJECTION_STATE` | `[D]` Uses generation-valid session replacement only for test fixture transitions. |
 | Selection, hover, filter, draft, ghost, local panel, focus, badges | `UI_LOCAL` | `[D]` In-memory effects; no request before explicit save. |
 | Shared-shell responsive navigation observation | `ZERO_WRITE` | `[D]` Route/layout changes retain provider identity and rich Canvas state. |
 | Wizard gate/photo/fit/composite/candidate taps | `ZERO_WRITE` | `[D]` Intake/facts/events and four fake lists remain unchanged. |
@@ -157,7 +163,7 @@ owned by their production/canonical owners.
 | Local panels/focus | `[D]` hidden default and retained modes | local rail/selection | `UI_LOCAL` | panel/focus cases |
 | Navigator/filter | `[D]` helpers/painter observations | targets, geometry, responsive | `UI_LOCAL` | exact family + full target |
 | Measurement read model | `[D]` direct normal-library import, endpoint/count tests, and four helper characterizations | normal-library implementation and unchanged host consumers | `ZERO_WRITE` | exact helper declarations + full target |
-| Writers | `[D]` four fakes/results | selection/provider/freshness | exercised `CANONICAL_EVENT` | exact writer family + full target |
+| Writers/session | `[D]` four fakes/results and seeded session observations | selection/generation/dedup/freshness | exercised `CANONICAL_EVENT` + observed `PROJECTION_STATE` | exact writer family + session unit suite + full target |
 | Canvas/geometry/Wizard | `[D]` transforms/pixels/painter state, nine pure geometry tests, and retargeted three-source guard | z-order/hits/semantics, normal geometry API, upright Board painter, and Wizard final-declaration coupling | `UI_LOCAL` / `ZERO_WRITE` | exact pure geometry/render cases + structural boundary declaration |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | exact family + full target |
 | Freshness/boundaries | `[D]` explicit states/source guards | cross-cutting | `ZERO_WRITE` / observed projection | full target + integration |
@@ -168,12 +174,12 @@ owned by their production/canonical owners.
 | --- | --- | --- |
 | Shared shell / local responsive | `_routerHarness`, routed six-width case | Compact/persistent cutover, rich Canvas continuity, provider identity. |
 | Local panels/focus | `_openWideContextMode`, `_tapWidgetByKey` | Hidden default, five retained tools, panel mode and focus restoration, no local Project hub. |
-| State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `_harness`, `_readProjectState` | No-project/project shell, provider, and projection assertions. |
+| State/mounting | `_inlineProjectState`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_readProjectState`, `_replaceProjectState` | No-project/project shell, session replacement, provider, and projection assertions. |
 | Rendering/Wizard | `_wizardIntake`, `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor`, `board canvas source keeps read-only data-path boundaries` | Gate, fit, z-order, photo, rotation, footprints/pins, and exact source-owner retarget. |
 | Interaction | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels` | Selection, hover, filter, hit alignment, semantics. |
 | Placement geometry | `placement geometry read model`, `_geometryPlacement`, `_geometryTemplate`, `_geometryTemplateWithPinCount` | Nine direct tests for clamp/conversion, sizing precedence, all envelopes, exact mappings, classifier precedence, visual maxima, upright edges, and ignored rotation. |
 | Measurement read model | `measurementValueBadgesByComponents`, `measurementHasScalarValueAndUnit`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Directly imported normal-library endpoint/count association plus characterized ordering/fallback, eligibility, exact formatting, and caution contracts. |
-| Writer boundaries | Four fake writers and event builders | Explicit saves, guards, errors, idempotency, returned events, stale state. |
+| Writer/session boundaries | Four fake writers, event builders, and session observations | Explicit saves, guards, errors, identity dedup, accepted stale promotion, and duplicate no-op state. |
 
 ## Dangerous combinations
 
@@ -182,7 +188,7 @@ owned by their production/canonical owners.
 - Reintroducing local Project-hub helpers/tests would duplicate shared-shell
   inventory and zero-write ownership.
 - Surface-size tests must restore global binding state.
-- Shared harness/provider changes can alter many unrelated painter/writer
+- Shared harness/session changes can alter many unrelated painter/writer
   families.
 - Placement ghost conversion plus requests can cross from UI-local drafts into
   canonical normalized-coordinate behavior.
@@ -207,6 +213,7 @@ owned by their production/canonical owners.
 | One measurement read-model assertion | exact helper/test title | host consumers and writer family | direct helper declarations |
 | One placement-geometry assertion | exact public API/test title | host interaction, badge, label, painter, and semantics consumers | exact pure geometry declaration plus source guard |
 | One freshness assertion | explicit freshness fixture | scaffold/provider/integration | exact warning case + full target |
+| One writer-result application | matching fake/event title | ProjectSession generation/dedup contract | matching writer family + session unit suite |
 
 ## Future extraction seams
 
@@ -217,7 +224,7 @@ owned by their production/canonical owners.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for helper/title, harness/provider/route,
+Set `REVIEW_REQUIRED` for helper/title, harness/session/route,
 writer/filesystem, linked-family, source-read ownership, or family-ownership
 drift. Recheck exact test count (`178 = 155 testWidgets + 23 test`), both direct
 normal-library imports, the nine placement-geometry and four measurement

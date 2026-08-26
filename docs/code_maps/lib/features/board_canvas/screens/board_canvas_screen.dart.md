@@ -4,14 +4,15 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibilities`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the Visual First Board Canvas destination: its local responsive rich
 Workbench, selection/navigation, rendering, inspection, UI-local drafts,
 read-only Wizard intake, tri-state freshness presentation, and four existing
-writer call paths. It imports `measurement_projection.dart` as the normal
+writer call paths whose returned events now flow through shared
+`ProjectSession`. It imports `measurement_projection.dart` as the normal
 feature-internal owner of deterministic measurement read-model declarations
 and `board_canvas_palette.dart` as the normal feature-local owner of 13 exact
 immutable Board Canvas colors. It is the library host for exactly two
@@ -42,9 +43,9 @@ canonical owners, and active locks remain authoritative.
 | 2. Typed selection and preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Owns volatile component/placement selection and temporary hover-preview keys. |
 | 3. Component navigator | `_ComponentCategory`, `_componentCategoryFor`, `_naturalComponentIdCompare`, `_ComponentNavigatorPanel` | Owns category helpers, Navigator state/callback implementations, and the panel consumer; the private Stateless panel declaration in `component_navigator.part.dart` categorizes, sorts, groups, drills into, and previews placed/unplaced components. |
 | 4. Visibility filtering and measurement read-model consumption | `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents`, `_displayDirectionLabel`, `_firstPresentText`, `_CanvasPanel` | Applies hide-unmeasured state to navigator, canvas visibility, targets, hits, previews, and badges; the normal measurement library owns endpoint parsing, association/counting, badge ordering/text, and caution classification, while the two private direction/first-present presentation helpers remain host-owned. |
-| 5. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `_appendMeasurementEventAndMarkStale` | Builds drafts/targets, calls the existing measurement writer, and mirrors returned events into stale local projection state. |
-| 6. Component create/edit | `_RightPanelComponentCreationSection`, `_confirmRightPanelComponentCreation`, `_RightPanelMetadataEditSection`, `_confirmRightPanelMetadataEdit` | Validates explicit identity creation and metadata edits before existing writers. |
-| 7. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_PlacementSaveTarget`, `_confirmAddComponentTemplatePlacement` | Owns template/ghost/editor drafts, normalized guards, and explicit placement save. |
+| 5. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `projectSession`, `generation`, `applyCanonicalEvent` | Builds drafts/targets, calls the existing measurement writer, and delegates returned-event composition to the shared session with a captured generation. |
+| 6. Component create/edit | `_RightPanelComponentCreationSection`, `_confirmRightPanelComponentCreation`, `_RightPanelMetadataEditSection`, `_confirmRightPanelMetadataEdit` | Validates explicit identity creation and metadata edits before existing writers, then uses the same guarded session result handoff. |
+| 7. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_PlacementSaveTarget`, `_confirmAddComponentTemplatePlacement` | Owns template/ghost/editor drafts, normalized guards, explicit placement save, and guarded session result handoff. |
 | 8. Canvas interaction, gate, and Wizard state | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile`, `renderedPlacementContains` | Keeps intake/warnings available with zero components and owns tap/ghost/pan/zoom/photo/fit behavior while consuming the normal geometry library's unchanged upright hit test. |
 | 9. Visual and Wizard rendering | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `_FootprintPreviewPainter`, `_RectangularPerimeterTemplatePreviewPainter`, `FootprintVisualKind`, `footprintVisualKind`, `renderedPlacementCenter`, `renderedPlacementBodySize`, `renderedFootprintVisualSize`, `minimumFootprintVisualEnvelope` | Composes optional Wizard reference content through physically delegated fit/photo/painter owners, retains every non-Wizard painter and drawing method locally, and consumes pure geometry/classification results; all rendering is write-free. |
 | 10. Inspector and evidence | `_InspectorPanel`, `_PhotoAlignmentReadinessPanel`, `_BoardCanvasSafetyEvidenceDisclosure`, `_MeasurementSummaryCard`, `_VisualTraceMetadataCard` | Presents placement, measurement, alignment, safety, and visual-trace context without promotion. |
@@ -123,17 +124,18 @@ sites or enum uses while their declarations live in committed
   `_PlacementEntry` and `_KnownPinVisualRef` never enter the library.
 - `[D]` All three State owners and their fields/lifetimes remain physically
   unchanged. Four writer invocations remain split `3 + 1` between
-  `_BoardCanvasScreenState` and `_IntegratedMeasurePanelState`, and both
-  `projectStateProvider.notifier` mirroring sites remain host-owned.
+  `_BoardCanvasScreenState` and `_IntegratedMeasurePanelState`; each captures
+  the current session generation immediately before its writer await.
 - `[D]` Explicit create, edit, placement, and measurement actions alone call
-  their dedicated providers; returned events are mirrored locally and promote
-  freshness through existing state methods.
+  their dedicated providers; returned events flow to
+  `projectSession.applyCanonicalEvent`, which re-reads current state, rejects
+  stale/duplicate results, and promotes accepted events stale.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider`, `ProjectState`, `ProjectionFreshness` | input / local projection update | Supplies accepted state/freshness and receives existing post-write result mirroring. |
+| `projectStateProvider`, `projectSession`, `ProjectState`, `ProjectionFreshness` | input / shared projection update | Supplies accepted state/freshness and owns generation-guarded post-write composition, dedup, and stale promotion. |
 | `measurement_projection.dart` | imported normal-library dependency | Owns endpoint grammar, component counts, badge association/order/text, and caution classification through one explicit Known Facts model import; owns no Flutter, State, provider, writer, route, filesystem, event, projection mutation, or part relationship. |
 | `placement_geometry.dart` | imported normal-library dependency | Owns public pure center/body/visual sizing, minimum envelopes, visual-kind classification, private template-ID mapping, and upright hit testing through geometry plus placement/component/template model imports; owns no State, provider, writer, painter, drawing, route, filesystem, event, projection mutation, palette, or part relationship. |
 | `BoardCanvasPalette` | imported normal-library presentation dependency | Supplies 13 exact immutable Board Canvas colors through direct static fields, with no runtime/theme lookup. The former `_kBoardCanvas*` declarations no longer live here. `_kFootprintSelected` remains a host-owned footprint token whose RHS alone references `BoardCanvasPalette.signal`; Measure-panel tokens, other footprint tokens, Board-background painter colors, `BenchBeepVisualTokens`, and `WizardCompactTokens` remain separate owners. |
@@ -144,7 +146,6 @@ sites or enum uses while their declarations live in committed
 | `WizardIntake` family | noncanonical input | Supplies optional aspect/photo/contour/candidate presentation without proving canonical facts. |
 | `dart:io` `Directory`, `File` | local read input | Resolves only a validated project-relative optional background photo. |
 | Four V2 writer providers | outbound | Existing component-create, component-edit, placement, and measurement canonical-event boundaries. |
-| `TraceBenchEvent` | writer-result input | Parses returned events before local projection-state mirroring. |
 | `VectorFootprintLibrary`, `FootprintTemplate` | input | Supplies visual/package geometry without proving identity or electrical function. |
 | Flutter gestures, semantics, and `CustomPainter` | UI/rendering | Owns interaction, accessibility, and zero-write drawing. |
 | GoRouter | outbound workflow navigation | Opens Measure Sheet only; project-wide route ownership remains in router/shell. |
@@ -157,7 +158,7 @@ sites or enum uses while their declarations live in committed
 | `_confirmRightPanelMetadataEdit` -> edit-component provider | `CANONICAL_EVENT` | `[D]` Existing selection/change guards precede the writer. |
 | `_confirmAddComponentTemplatePlacement` -> placement provider | `CANONICAL_EVENT` | `[D]` Bounds, target, directory, and explicit save guard the call. |
 | `_IntegratedMeasurePanelState._saveMeasurement` -> measurement provider | `CANONICAL_EVENT` | `[D]` Explicit save builds a human-entered request. |
-| `_markPlacementProjectionStale`, `_appendMeasurementEventAndMarkStale` | `PROJECTION_STATE` | `[D]` Mirror returned events and promote freshness; neither is a writer. |
+| Four captured-generation `applyCanonicalEvent` calls | `PROJECTION_STATE` | `[D]` Delegate stale-generation rejection, identity dedup, current-state append, and freshness promotion to `ProjectSession`; none is a writer. |
 | Selection, drafts, ghost, filter, panels, focus, badges, photo visibility | `UI_LOCAL` | `[D]` Widget/controller state only. |
 | Measure Sheet `push` | `UI_LOCAL` | `[D]` Changes transient route stack and invokes no writer. |
 | Wizard gate/photo/fit/painters, inspectors, summaries | `ZERO_WRITE` | `[D]` Read, derive, paint, and label only. |
@@ -197,9 +198,9 @@ contacts, pins, measurements, nets, electrical function, and fault truth.
 | --- | --- | --- | --- | --- |
 | Screen orchestration | `[D]` hidden default and retained local composition | panel/focus reachability | `UI_LOCAL` | hidden-default and focus cases |
 | Navigator/filter/read model | `[D]` host state/callback consumer plus delegated panel and pure counts/badges | hits, previews, targets, Navigator and measurement part owners | `UI_LOCAL` / `ZERO_WRITE` | navigator/filter families plus direct helper characterizations |
-| Measurement | `[D]` draft/save/result flow | target/filter/freshness | `CANONICAL_EVENT` | integrated Measure family |
-| Component create/edit | `[D]` two guarded writers | selection/local stale mirroring | `CANONICAL_EVENT` | Add/Edit families |
-| Placement | `[D]` draft/ghost/save flow | coordinates/hit/painter geometry | `UI_LOCAL` / `CANONICAL_EVENT` | placement families |
+| Measurement | `[D]` draft/save/result flow | target/filter/session freshness | `CANONICAL_EVENT` + `PROJECTION_STATE` | integrated Measure family + session unit suite |
+| Component create/edit | `[D]` two guarded writers and session result calls | selection/session generation/dedup | `CANONICAL_EVENT` + `PROJECTION_STATE` | Add/Edit families + session unit suite |
+| Placement | `[D]` draft/ghost/save and session result flow | coordinates/hit/painter geometry/session dedup | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | placement families + session unit suite |
 | Canvas/geometry/Wizard | `[D]` host gate/consumers, normal geometry API, and delegated fit/photo/painter declarations | sizing, hit edges, labels, badges, painter/semantics geometry, z-order, fit identity, part boundary | `UI_LOCAL` / `ZERO_WRITE` | nine pure geometry tests, intake/render/pan/zoom families, and structural source guard |
 | Inspector/evidence | `[D]` projected summaries | selection/measurement | `ZERO_WRITE` | readiness/safety/trace families |
 | Local rail/focus/responsive | `[D]` five tools, hidden default, exact 900 cutover | outer shell is inspect-only | `UI_LOCAL` | six-width routed, panel/focus cases |
@@ -216,7 +217,7 @@ declarations across these families:
 | Local responsive/panels | `_openWideContextMode`, `_tapWidgetByKey` | Six routed widths, hidden default, five retained rail controls, panel/focus restoration, no Project hub/rail. |
 | Canvas/Wizard rendering | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor`, `board canvas source keeps read-only data-path boundaries` | Gate, photo, z-order, fit, Board/Wizard rotation separation, non-actionability, and separate host/Wizard/geometry source ownership. |
 | Interaction/painter/read models | `_selectPlacement`, `_tapCanvasAtNormalized`, `_hoverWidgetByKey`, `_canvasSemanticsLabels`, `placement geometry read model` | Selection, hover, filter, footprints, pins, semantics, endpoint/count helpers, four direct measurement characterizations, and nine pure placement-geometry contracts. |
-| Writer boundaries | Four fake writers and event builders | Explicit requests, guards, returned events, stale projection. |
+| Writer/session boundaries | Four fake writers, event builders, and seeded ProjectSession | Explicit requests, captured-generation result application, duplicate rejection, and stale projection. |
 | Freshness | explicit freshness fixture and shared banner constants | Fresh default, unknown/stale rendering, usable workspace. |
 
 ## Dangerous combinations
@@ -242,6 +243,8 @@ declarations across these families:
 - Wizard fit/photo/painter changes can desynchronize layers or overlap
   placement interaction.
 - Restoring per-branch freshness insertion can duplicate the banner.
+- Reintroducing local event parsing/copy helpers would split current-state
+  composition and dedup from the shared ProjectSession boundary.
 
 ## Safe SNIPER slices
 
@@ -254,6 +257,7 @@ declarations across these families:
 | One placement-geometry change | exact public geometry anchor | `_PlacementEntry`, `_KnownPinVisualRef`, interaction, badges, labels, painters, and semantics stay inspect-only | nine direct geometry tests plus structural source guard |
 | One Wizard render correction | delegated fit/photo/painter anchors | host composition, placement hit path, painter-to-EOF structural guard | exact overlay cases + structural source guard |
 | One freshness change | `_buildScaffold` | provider/both branches | warning + integration cases |
+| One writer-result handoff | exact writer method, `generation`, `applyCanonicalEvent` | ProjectSession and writer result contract | matching writer family + session unit suite |
 
 ## Future extraction seams
 
@@ -271,7 +275,7 @@ declarations across these families:
 Set `REVIEW_REQUIRED` for symbol, flow, boundary, test, or structure drift.
 Recheck hidden default, retained panel inventory, focus restoration, local 900
 cutover, and absence of Project navigation when local chrome changes. Recheck
-writer/result mirroring, the normal measurement- and palette-library boundaries, both
+writer/session result application, the normal measurement- and palette-library boundaries, both
 remaining host/part boundaries, selection/filter, the normal placement-
 geometry API and consumers, Wizard layers, and freshness scaffold when those
 owners change. Recheck all nine pure geometry contracts and the separate
@@ -281,8 +285,8 @@ Wizard part's declaration order or final declaration changes.
 
 ## Known uncertainty
 
-- `[P]` Local returned-event mirroring is `PROJECTION_STATE`; canonical append
-  remains inside imported writer ownership.
+- `[D]` Shared-session returned-event application is `PROJECTION_STATE`;
+  canonical append remains inside imported writer ownership.
 - `[P]` Optional photo existence is not preflighted before toggle display;
   decode/read failure stays a neutral render state.
 - `[S]` The outer shared shell is route-layer composition and is intentionally

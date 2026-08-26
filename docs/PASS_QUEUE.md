@@ -2,10 +2,89 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
 
-## Current ProjectSession committed-source Code Map maintenance queue
+## Current photo-import canonical-write V1 scope and child queue
+
+Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` at baseline
+`330f23d37610728cadc2367599df3f2aa6bd6d0a`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS.md`
+   (new)
+
+No sixth scope path is queued. Create one neutral `REVIEW_REQUIRED` ledger row
+and one unique empty verdict block. Independent Claude scope audit and an
+expressly authorized two-coordinate Phase 2 precede exact human scope
+commit/push and child activation.
+
+Reserve exactly one eleven-path child:
+`TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`.
+
+1. `tools/validate_events_jsonl.py`
+2. `tests/test_validate_events_jsonl.py`
+3. `lib/features/photos/logic/photo_event_read_model.dart` (new)
+4. `lib/features/photos/services/photo_event_writer.dart` (new)
+5. `lib/features/photos/services/photo_import_service.dart` (new)
+6. `lib/features/photos/widgets/photo_workbench_panel.dart` (new)
+7. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+8. `test/unit/photo_event_read_model_test.dart` (new)
+9. `test/unit/photo_event_writer_test.dart` (new)
+10. `test/unit/photo_import_service_test.dart` (new)
+11. `test/widget/board_canvas_screen_test.dart`
+
+No path 12 is queued. The child implements existing-project photo import only:
+Board Canvas `Fotod`, one supported desktop file, write-free metadata preview
+and mode/layer draft, explicit `Impordi ja lisa`, safe contained atomic
+collision-free copy, SHA-256, canonical V1 `photo_added`, captured-generation
+`ProjectSession.applyCanonicalEvent`, immediate accepted-event presentation,
+and zero-component Canvas availability after import. Directory-backed projects
+are writable; ZIP/in-memory sessions are read-only.
+
+The source is never modified. Pre-finalization cleanup is limited to the
+invocation-owned temp. A proven no-event writer failure may remove only the
+invocation-owned final copy; uncertain/durable event outcomes preserve it. A
+stale session generation after durable append preserves file/event and cannot
+mutate the newer session. Never delete an unrelated project file.
+
+The Wizard background remains noncanonical intake. Importing
+`photos/wizard_background.*` creates a distinct final copy and event without a
+Wizard, `ProjectCreator`, intake, or overlay edit.
+
+The child excludes every alignment method, solver, reference-point draft,
+aligned/background rendering path, `photo_to_board_alignment_confirmed`
+writer/validator change, homography, camera/EXIF, annotation/electrical/repair
+authoring, ProjectSession/schema/materializer/model/ZIP change, and every
+twelfth path. Child 2 is not armed.
+
+Require focused validator/read-model/writer/import-service/Board Canvas tests,
+`flutter analyze --no-pub`, full `flutter test`, `tools/doctor.py`, and
+`tools/validate_all.py`. Manual Windows smoke is required before child staging
+and covers cancel, success, collision-safe repeat, Wizard source, directory
+versus read-only session, in-flight project switch, and wide/compact Canvas.
+
+No map/index edit is queued in scope or child. Current relevant maps are
+`MAINTAINED`. After accepted committed Child 1, run separately scoped
+committed-source Code Map maintenance before returning to
+`NEEDS_USER_DECISION`:
+
+```text
+TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+-> separately scoped committed-source Code Map maintenance
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Stop on baseline/route drift, a sixth scope path, child path 12, unsafe
+overwrite/rollback ambiguity, required excluded-owner change, map conflict,
+scope-relevant validation/smoke failure, alignment expansion, or any staging,
+commit, or push.
+
+## Accepted ProjectSession committed-source Code Map maintenance queue (historical, non-authorizing)
 
 Execute one final Lane A `DOCS_MAPS_ONLY / PHASE_1` maintenance pass against
 accepted committed source at

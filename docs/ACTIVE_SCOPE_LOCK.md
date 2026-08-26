@@ -2,10 +2,232 @@
 
 ## Route
 
-Current: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
 
-## Current committed-source ProjectSession Code Map maintenance authority
+## Current photo-import canonical-write V1 scope authority
+
+```text
+PASS_ID: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / PHASE_1
+Baseline: 330f23d37610728cadc2367599df3f2aa6bd6d0a
+Parent: eed0aa680674049886ac776923c2851a1b41d905
+Predecessor: TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+Reserved child: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child manual Windows smoke: REQUIRED
+```
+
+The human selects existing-project canonical photo import from the accepted
+non-executable sentinel. Phase 1 authorizes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS.md`
+   (new)
+
+No sixth scope path is authorized. Phase 1 changes no implementation, test,
+tool, schema, materializer, model, Code Map/index, package, asset, platform,
+Windows substantive, `_incoming`, or scratch byte.
+
+### Exact reserved child
+
+`TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS` may write exactly:
+
+1. `tools/validate_events_jsonl.py`
+2. `tests/test_validate_events_jsonl.py`
+3. `lib/features/photos/logic/photo_event_read_model.dart` (new)
+4. `lib/features/photos/services/photo_event_writer.dart` (new)
+5. `lib/features/photos/services/photo_import_service.dart` (new)
+6. `lib/features/photos/widgets/photo_workbench_panel.dart` (new)
+7. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+8. `test/unit/photo_event_read_model_test.dart` (new)
+9. `test/unit/photo_event_writer_test.dart` (new)
+10. `test/unit/photo_import_service_test.dart` (new)
+11. `test/widget/board_canvas_screen_test.dart`
+
+No twelfth child path is authorized. The seven `(new)` paths do not exist at
+the baseline.
+
+### Locked user flow and ownership
+
+Board Canvas remains the primary workflow. The child implements:
+
+```text
+select one jpg/jpeg/png/webp photo
+-> write-free preview of filename/type/size plus mode/layer draft
+-> explicit Impordi ja lisa
+-> contained collision-free project-local copy and SHA-256
+-> canonical schema-1.0 accepted photo_added
+-> captured-generation ProjectSession.applyCanonicalEvent
+-> immediate event-derived Fotod presentation
+```
+
+The wide Workbench uses a `Fotod` rail/context-panel mode. Compact Canvas gets
+an explicit affordance for the same panel without a new route. The current
+zero-component/no-Wizard state includes a photo-import entry for writable
+projects; after an accepted event-derived photo exists, the full Canvas stays
+available even when components remain empty.
+
+Only a nonblank valid `projectDirectory` is writable. ZIP-byte, asset, and
+other in-memory project states remain read-only and may display accepted photo
+metadata without offering an enabled import action. Desktop uses the existing
+picker dependency; mobile/web must not claim a working picker.
+
+`photo_event_read_model.dart` derives only accepted `photo_added` presentation
+items from current `ProjectState.events`. It is deterministic `ZERO_WRITE`,
+does not mutate or synthesize `knownFacts.photos`, and provides immediate
+visibility while the accepted projection is stale.
+
+`photo_event_writer.dart` is the sole new Dart canonical adapter. It builds a
+V1 `schema_version: 1.0`, positive sequence, unique `evt_[0-9]{6}` ID,
+`actor.type: user`, `status: accepted`, and payload containing unique
+`photo_id`, selected mode, final safe relative path, lowercase SHA-256, and
+optional selected layer. It invokes the unchanged generic
+`tools/event_writer_service.py` through the existing `PythonRunner` and
+returns the exact durable/read-back event. It distinguishes proven no-event
+failure from uncertain/durable outcome.
+
+`photo_import_service.dart` alone owns filesystem mutation. It validates a
+regular supported source; establishes resolved project/`photos/` containment;
+creates `photos/` safely when absent; never derives a destination from unsafe
+source segments; allocates an unused photo-ID/final-path pair; streams bytes
+to an invocation-owned same-directory temp while hashing; flushes/closes; and
+atomically finalizes without overwrite before calling the writer.
+
+`photo_workbench_panel.dart` owns picker, preview, mode/layer, in-flight, and
+result UI state plus explicit orchestration. It captures session generation
+before the confirmed async operation and applies only the returned event
+through the existing ProjectSession. Board Canvas owns only the panel/read-
+model integration, gate, and wide/compact entry seams.
+
+### Wizard and evidence boundary
+
+The existing Wizard background is noncanonical. The Wizard retains a local
+draft; `ProjectCreator` copies it to `photos/wizard_background.*` and records
+it only in `notes/wizard_intake.json`; Wizard creation leaves `events.jsonl`
+empty. Selecting that project-local file in the new importer creates a
+distinct final copy and `photo_added`. It never promotes or repoints the
+Wizard artifact. Wizard, creator, intake, and Wizard overlay remain frozen.
+
+Imported photo evidence is visual/geometric context only. It creates no
+component, contact, pin, placement, trace, net, measurement, fault, diagnosis,
+repair, or alignment truth. AI cannot confirm or write it.
+
+### Safe path and rollback lock
+
+The validator child hardens only `_is_valid_image_path` and focused tests.
+Valid paths are forward-slash relative paths contained below `photos/` with
+nonempty safe segments and a supported extension. Absolute/drive/scheme-like
+paths, backslashes, empty/`.`/`..` segments, normalized escapes, and invalid
+extensions are rejected; safe nested paths remain valid. Schema and all other
+validator semantics remain frozen.
+
+File cleanup is exact:
+
+- selection cancel or pre-confirmation dismissal writes nothing;
+- before finalization, only the invocation-owned temp may be deleted;
+- a proven no-event writer failure may delete only that invocation's final
+  copy;
+- uncertain or durable event outcome preserves the final copy;
+- stale ProjectSession generation after durable append preserves file/event
+  and does not mutate the newer session; and
+- no source, pre-existing destination, unrelated project file, parent
+  directory, or complete `photos/` directory may be deleted.
+
+Cleanup failure is surfaced honestly. A source already within the project,
+including `wizard_background.*`, remains immutable and receives a different
+destination.
+
+### Frozen alignment and adjacent surfaces
+
+The child must not add `confirmAlignment`, a transform solver, alignment
+draft/reference points, aligned-photo preview/background rendering,
+`photo_to_board_alignment_confirmed` writing, alignment validator hardening,
+homography, camera/EXIF, damage/suspect/visual-trace authoring, Wizard edits,
+ProjectSession edits, schema/materializer/model changes, or Project ZIP
+redesign. It must not formalize `photo_reference_points_set` or
+`photo_layer_aligned`.
+
+The existing Wizard photo layer, Canvas painters/transforms/hit testing,
+alignment-readiness metadata, component/navigator/measurement/placement
+flows, four existing Board Canvas writers, router, loader, exporter,
+`PhotoListScreen`, generic Python writer, packages/assets/platform files, and
+every nonallowlisted byte remain frozen.
+
+### Test, validation, and manual smoke lock
+
+Focused tests must cover safe/unsafe validator paths; accepted-event read
+derivation; exact V1 writer envelope and conservative durability outcomes;
+source/destination containment, SHA-256, atomic collision-safe repeat, Wizard
+source, and every rollback branch; plus Board Canvas cancel, explicit confirm,
+immediate session event, zero-component access, read-only session, in-flight
+project switch, and wide/compact presentation.
+
+Child validation requires:
+
+```text
+py -3 -m unittest tests.test_validate_events_jsonl
+flutter test test/unit/photo_event_read_model_test.dart test/unit/photo_event_writer_test.dart test/unit/photo_import_service_test.dart test/widget/board_canvas_screen_test.dart
+flutter analyze --no-pub
+flutter test
+py -3 tools/doctor.py
+py -3 tools/validate_all.py
+git diff --check
+git diff --cached --check
+```
+
+Manual Windows smoke is required before child staging and visual-product
+audit. It covers cancel, successful import, collision-safe second import,
+Wizard-background source, directory-backed versus read-only session, project
+switch during an in-flight operation, and wide/compact Board Canvas. Widget
+tests use injected seams and do not decode real `Image.file` bytes.
+
+### Code Map lock
+
+The registry is 45/45 with 43 `MAINTAINED`, zero `REVIEW_REQUIRED`, and two
+`RETIRED`. The maintained Board Canvas production and focused-test maps are
+valid planning inputs. The human expressly authorizes the bounded combination
+of their orchestration/empty-gate, rail/context/compact, fixture/harness,
+writer/session-observation, and protected-guard zones needed for this one
+import outcome. Painter, geometry, Wizard, existing-writer, measurement,
+placement, and unrelated test zones remain inspect-only.
+
+The Board Canvas source/test maps have child disposition `UPDATE_REQUIRED`.
+The seven absent new Dart/test paths have current planning disposition
+`NOT_APPLICABLE` and receive fresh qualification only after accepted committed
+source. Maintained ProjectSession, Wizard, ProjectCreator, and ProjectLoader
+maps are `REVIEWED_NO_CHANGE`. Python remains outside bootstrap-v1 mapping.
+
+No map/index edit is authorized in scope or child. After accepted committed
+Child 1, one separately scoped committed-source maintenance pass updates the
+two drifted maps and qualifies the seven new paths before any alignment scope.
+
+### Route, audit, and stops
+
+```text
+TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS
+   [accepted and committed at 330f23d37610728cadc2367599df3f2aa6bd6d0a]
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+-> separately scoped committed-source Code Map maintenance
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The exact child is conditional on independent scope audit, bounded Phase-2
+verdict recording, and exact human scope commit/push. The map-maintenance
+PASS_ID is intentionally unnamed. Alignment Child 2 is not named or armed.
+
+Stop on baseline/route drift, a sixth scope path, child path 12, unsafe
+overwrite/rollback ambiguity, required excluded-owner change, alignment
+expansion, stale/conflicting map, scope-relevant validation/manual-smoke
+failure, or any staging/commit/push. The complete binding authority is
+`docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS.md`.
+
+## Accepted committed-source ProjectSession Code Map maintenance authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS

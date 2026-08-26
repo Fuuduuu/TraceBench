@@ -1,9 +1,69 @@
 # Current State
 
-Current pass: `TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
 
-## Live committed-source ProjectSession Code Map maintenance
+## Live photo-import canonical-write V1 scope lock
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+330f23d37610728cadc2367599df3f2aa6bd6d0a`, parent
+`eed0aa680674049886ac776923c2851a1b41d905`, subject
+`docs: close project session code maps`, and divergence `0 0`. The staged and
+unmerged sets are empty. The three known generated-plugin Windows EOL/stat
+entries are content-clean and untracked `TraceBench_ALL_CODE.txt` remains
+scratch; all four are outside authority.
+
+The human replaces the accepted `NEEDS_USER_DECISION` sentinel with one Lane B
+`SCOPE_LOCK / DOCS_ONLY / PHASE_1`. It changes exactly the three route owners,
+the audit ledger, and one new binding artifact. No implementation, test, tool,
+schema, model, materializer, Code Map/index, package, asset, platform, Windows
+substantive, or scratch byte is authorized now.
+
+The exact reserved child is
+`TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`, with eleven paths and
+no path 12. It implements directory-backed existing-project photo import from
+Board Canvas: write-free selection/metadata preview, explicit
+`Impordi ja lisa`, safe atomic collision-free project-local copy with SHA-256,
+canonical V1 `photo_added`, generation-guarded ProjectSession application, and
+immediate event-derived `Fotod` presentation. ZIP/in-memory projects remain
+read-only.
+
+The Wizard source path is not canonical photo evidence. `ProjectCreator`
+currently copies it to `photos/wizard_background.*` and records it only in
+noncanonical `notes/wizard_intake.json`; importing that file later must create
+a distinct canonical copy and event. No Wizard or creator change is reserved.
+
+Failure ownership is exact: the source is immutable; only an
+invocation-owned temp may be removed before finalization; only a proven
+no-event writer failure may remove that invocation's final copy; uncertain or
+durable event outcomes preserve the final copy; and a stale ProjectSession
+generation after durable append preserves file/event without mutating the
+newer session.
+
+The existing Board Canvas production/test maps are `MAINTAINED`; the registry
+is 45/45 with 43 `MAINTAINED`, zero `REVIEW_REQUIRED`, and two `RETIRED`.
+Scope and child edit no map/index byte. The two Board Canvas maps become
+`UPDATE_REQUIRED` after the child; the seven new Dart/test paths receive fresh
+qualification only in separately scoped maintenance against accepted committed
+source.
+
+The exact route is:
+
+```text
+TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+-> separately scoped committed-source Code Map maintenance
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The later alignment Child 2 is not named or armed. Scope manual smoke is
+`NOT_APPLICABLE`; child manual Windows smoke is required before its staging
+and visual-product audit. One neutral `REVIEW_REQUIRED` ledger row and one
+unique empty verdict block bind the independent scope audit and conditional
+two-coordinate Phase 2.
+
+## Accepted committed-source ProjectSession Code Map maintenance (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

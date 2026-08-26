@@ -15,6 +15,9 @@ import '../../components/services/v2_add_component_writer.dart';
 import '../../components/services/v2_edit_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
 import '../../measure_sheet/services/v2_save_measurement_writer.dart';
+import '../../photos/logic/photo_event_read_model.dart';
+import '../../photos/services/photo_import_service.dart';
+import '../../photos/widgets/photo_workbench_panel.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
@@ -111,6 +114,7 @@ enum _WorkbenchContextPanelMode {
   measure,
   addComponentTemplates,
   safetyEvidence,
+  photos,
 }
 
 enum _ComponentCategory {
@@ -471,7 +475,16 @@ const _kStarterAddComponentTemplates = <_AddComponentTemplateDefinition>[
 ];
 
 class BoardCanvasScreen extends ConsumerStatefulWidget {
-  const BoardCanvasScreen({super.key});
+  const BoardCanvasScreen({
+    super.key,
+    this.photoSourcePicker,
+    this.photoSourcePreviewLoader,
+    this.photoImportService,
+  });
+
+  final PhotoSourcePicker? photoSourcePicker;
+  final PhotoSourcePreviewLoader? photoSourcePreviewLoader;
+  final PhotoImportService? photoImportService;
 
   @override
   ConsumerState<BoardCanvasScreen> createState() => _BoardCanvasScreenState();
@@ -1395,9 +1408,28 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     }
 
     final knownFacts = projectState.knownFacts;
+    final photoEventItems = photoEventItemsFromEvents(projectState.events);
     final hasWizardIntakePresentation = projectState.wizardIntake != null ||
         projectState.wizardIntakeWarning != null;
-    if (knownFacts.components.isEmpty && !hasWizardIntakePresentation) {
+    final hasDirectoryBacking =
+        projectState.projectDirectory?.trim().isNotEmpty ?? false;
+    if (knownFacts.components.isEmpty &&
+        !hasWizardIntakePresentation &&
+        photoEventItems.isEmpty) {
+      if (hasDirectoryBacking) {
+        return _buildScaffold(
+          context,
+          Padding(
+            key: const Key('board_canvas_zero_component_photo_entry'),
+            padding: const EdgeInsets.all(12),
+            child: _buildPhotoWorkbenchPanel(
+              projectState,
+              photoEventItems,
+            ),
+          ),
+          projectionFreshness: projectState.projectionFreshness,
+        );
+      }
       return _buildScaffold(
         context,
         const _EmptyState(
@@ -1555,7 +1587,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     setState(() {
                       _selectComponentPlacementByKey(value, visibleEntries);
                       if (_contextPanelMode !=
-                          _WorkbenchContextPanelMode.measure) {
+                              _WorkbenchContextPanelMode.measure &&
+                          _contextPanelMode !=
+                              _WorkbenchContextPanelMode.photos) {
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.inspector;
                       }
@@ -1614,7 +1648,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       if (_contextPanelMode !=
                               _WorkbenchContextPanelMode.measure &&
                           _contextPanelMode !=
-                              _WorkbenchContextPanelMode.placements) {
+                              _WorkbenchContextPanelMode.placements &&
+                          _contextPanelMode !=
+                              _WorkbenchContextPanelMode.photos) {
                         _contextPanelMode =
                             _WorkbenchContextPanelMode.inspector;
                       }
@@ -1627,7 +1663,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       if (_contextPanelMode !=
                               _WorkbenchContextPanelMode.measure &&
                           _contextPanelMode !=
-                              _WorkbenchContextPanelMode.placements) {
+                              _WorkbenchContextPanelMode.placements &&
+                          _contextPanelMode !=
+                              _WorkbenchContextPanelMode.photos) {
                         _contextPanelMode = _WorkbenchContextPanelMode.hidden;
                       }
                     });
@@ -1733,6 +1771,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       ? null
                       : () => _resetPlacementEditorDraft(selectedDraftEntry),
                 );
+                final photoPanel = _buildPhotoWorkbenchPanel(
+                  projectState,
+                  photoEventItems,
+                );
                 final controlBand = useWorkbenchShell
                     ? const SizedBox.shrink(
                         key: Key('board_canvas_control_band'))
@@ -1744,6 +1786,16 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           _MeasureSheetNavigationButton(
                             onPressed: () {
                               context.push('/project/measure-sheet');
+                            },
+                          ),
+                          _CompactPhotoPanelButton(
+                            onPressed: () {
+                              setState(() {
+                                _contextPanelMode =
+                                    _WorkbenchContextPanelMode.photos;
+                                _inspectorVisible = true;
+                                _canvasFocusMode = false;
+                              });
                             },
                           ),
                           focusToggle,
@@ -2065,6 +2117,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         initiallyExpanded: true,
                       );
                       break;
+                    case _WorkbenchContextPanelMode.photos:
+                      contextPanel = photoPanel;
+                      break;
                   }
                   final contextPanelWidth = constraints.maxWidth >= 1180
                       ? _kWideContextPanelWidth
@@ -2169,6 +2224,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       });
                     },
                   );
+                  final photosPanelToggle = _WorkbenchPanelModeButton(
+                    buttonKey: const Key('board_canvas_rail_photos_tool'),
+                    icon: Icons.photo_library_outlined,
+                    tooltip: 'Ava Fotod kontekstipaneel',
+                    label: 'Fotod',
+                    modeKey: 'photos',
+                    selected:
+                        _contextPanelMode == _WorkbenchContextPanelMode.photos,
+                    onPressed: () {
+                      setState(() {
+                        _clearCanvasSelection();
+                        _contextPanelMode = _WorkbenchContextPanelMode.photos;
+                        _inspectorVisible = true;
+                        _canvasFocusMode = false;
+                      });
+                    },
+                  );
                   final inspectorPanelToggle = _WorkbenchPanelModeButton(
                     buttonKey: const Key('board_canvas_rail_inspector_tool'),
                     icon: Icons.info_outline,
@@ -2194,6 +2266,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           addComponentTool: addComponentPanelToggle,
                           inspectorTool: inspectorPanelToggle,
                           measureSheetTool: measurePanelToggle,
+                          photoTool: photosPanelToggle,
                           placementTool: focusPanelToggle,
                           safetyEvidenceTool: safetyPanelToggle,
                         ),
@@ -2261,7 +2334,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     ),
                     if (_inspectorVisible && !_canvasFocusMode) ...[
                       const SizedBox(height: 4),
-                      Expanded(flex: 2, child: metadata),
+                      Expanded(
+                        flex: 2,
+                        child: _contextPanelMode ==
+                                _WorkbenchContextPanelMode.photos
+                            ? photoPanel
+                            : metadata,
+                      ),
                     ],
                   ],
                 );
@@ -2271,6 +2350,30 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         ),
       ),
       projectionFreshness: projectState.projectionFreshness,
+    );
+  }
+
+  Widget _buildPhotoWorkbenchPanel(
+    ProjectState projectState,
+    List<PhotoEventItem> photos,
+  ) {
+    return PhotoWorkbenchPanel(
+      projectState: projectState,
+      projectSession: ref.read(projectStateProvider.notifier),
+      photos: photos,
+      sourcePicker: widget.photoSourcePicker,
+      previewLoader: widget.photoSourcePreviewLoader,
+      importService: widget.photoImportService,
+      onCanonicalEventApplied: () {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _contextPanelMode = _WorkbenchContextPanelMode.photos;
+          _inspectorVisible = true;
+          _canvasFocusMode = false;
+        });
+      },
     );
   }
 
@@ -2620,6 +2723,7 @@ class _WorkbenchToolRail extends StatelessWidget {
     required this.addComponentTool,
     required this.inspectorTool,
     required this.measureSheetTool,
+    required this.photoTool,
     required this.placementTool,
     required this.safetyEvidenceTool,
   });
@@ -2627,6 +2731,7 @@ class _WorkbenchToolRail extends StatelessWidget {
   final Widget addComponentTool;
   final Widget inspectorTool;
   final Widget measureSheetTool;
+  final Widget photoTool;
   final Widget placementTool;
   final Widget safetyEvidenceTool;
 
@@ -2658,6 +2763,8 @@ class _WorkbenchToolRail extends StatelessWidget {
               const _WorkbenchSectionHeader(label: 'Paneelid'),
               const SizedBox(height: _kWorkbenchToolTileGap),
               measureSheetTool,
+              const SizedBox(height: _kWorkbenchToolTileGap),
+              photoTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
               addComponentTool,
               const SizedBox(height: _kWorkbenchToolTileGap),
@@ -2778,6 +2885,41 @@ class _MeasureSheetNavigationButton extends StatelessWidget {
             foregroundColor: BoardCanvasPalette.muted,
           ),
           icon: const Icon(Icons.science_outlined),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+  }
+}
+
+class _CompactPhotoPanelButton extends StatelessWidget {
+  const _CompactPhotoPanelButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      color: BoardCanvasPalette.tile,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: BoardCanvasPalette.rule),
+      ),
+      child: SizedBox(
+        width: _kCompactControlTileHeight,
+        height: _kCompactControlTileHeight,
+        child: IconButton(
+          key: const Key('board_canvas_compact_photos_action'),
+          tooltip: 'Ava Fotod paneel',
+          iconSize: _kWorkbenchRailContentIconSize,
+          style: IconButton.styleFrom(
+            minimumSize: const Size.square(_kCompactControlTileHeight),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            foregroundColor: BoardCanvasPalette.muted,
+          ),
+          icon: const Icon(Icons.photo_library_outlined),
           onPressed: onPressed,
         ),
       ),

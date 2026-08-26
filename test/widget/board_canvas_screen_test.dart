@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -19,6 +20,8 @@ import 'package:trace_bench_viewer/features/components/services/v2_add_component
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
 import 'package:trace_bench_viewer/features/measure_sheet/services/v2_save_measurement_writer.dart';
+import 'package:trace_bench_viewer/features/photos/services/photo_import_service.dart';
+import 'package:trace_bench_viewer/features/photos/widgets/photo_workbench_panel.dart';
 import 'package:trace_bench_viewer/features/project/widgets/workbench_shell.dart';
 import 'package:trace_bench_viewer/shared/footprints/footprint_models.dart';
 import 'package:trace_bench_viewer/shared/footprints/vector_footprint_library.dart';
@@ -33,6 +36,7 @@ import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
 ProjectState _inlineProjectState({
   required List<ComponentFact> components,
   required List<ComponentVisualPlacementFact> placements,
+  String projectId = 'proj_001',
   List<PinFact> pins = const [],
   Map<String, List<String>> componentPinIndex = const {},
   List<MeasurementFact> measurements = const [],
@@ -46,8 +50,8 @@ ProjectState _inlineProjectState({
   String? wizardIntakeWarning,
 }) {
   return ProjectState(
-    manifest: const ProjectManifest(
-      projectId: 'proj_001',
+    manifest: ProjectManifest(
+      projectId: projectId,
       schemaVersion: '1.0.0',
       createdAt: '2026-01-01T00:00:00Z',
       deviceType: 'board',
@@ -55,7 +59,7 @@ ProjectState _inlineProjectState({
       symptom: 'test',
     ),
     knownFacts: KnownFacts(
-      projectId: 'proj_001',
+      projectId: projectId,
       components: components,
       pins: pins,
       measurements: measurements,
@@ -276,6 +280,103 @@ ProjectState _componentNavigatorState({String? projectDirectory}) {
   );
 }
 
+class _FakePhotoSourcePicker implements PhotoSourcePicker {
+  _FakePhotoSourcePicker({
+    List<String?> outcomes = const <String?>[],
+    this.isSupported = true,
+  }) : outcomes = List<String?>.of(outcomes);
+
+  final List<String?> outcomes;
+
+  @override
+  final bool isSupported;
+
+  int pickCount = 0;
+
+  @override
+  Future<String?> pickSingleImage() async {
+    pickCount += 1;
+    return outcomes.isEmpty ? null : outcomes.removeAt(0);
+  }
+}
+
+class _FakePhotoSourcePreviewLoader implements PhotoSourcePreviewLoader {
+  const _FakePhotoSourcePreviewLoader();
+
+  @override
+  Future<PhotoSourcePreview> loadPreview(String sourcePath) async {
+    final normalized = sourcePath.replaceAll('\\', '/');
+    final fileName = normalized.split('/').last;
+    final extension = fileName.split('.').last.toLowerCase();
+    return PhotoSourcePreview(
+      sourcePath: sourcePath,
+      fileName: fileName,
+      extension: extension,
+      byteSize: 2048,
+    );
+  }
+}
+
+class _FakePhotoImportService implements PhotoImportService {
+  _FakePhotoImportService(this.handler);
+
+  final Future<PhotoImportResult> Function(
+    ProjectState projectState,
+    PhotoImportRequest request,
+  ) handler;
+  final List<PhotoImportRequest> requests = <PhotoImportRequest>[];
+
+  @override
+  Future<PhotoImportResult> importPhoto({
+    required ProjectState projectState,
+    required PhotoImportRequest request,
+  }) async {
+    requests.add(request);
+    return handler(projectState, request);
+  }
+}
+
+PhotoImportResult _photoImportResult(
+  ProjectState projectState,
+  PhotoImportRequest request, {
+  String eventId = 'evt_000001',
+  String photoId = 'photo_widget_001',
+  String path = 'photos/photo_widget_001.jpg',
+}) {
+  const hash =
+      '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+  final event = <String, dynamic>{
+    'schema_version': '1.0',
+    'event_id': eventId,
+    'project_id': projectState.manifest.projectId,
+    'sequence': projectState.events
+            .where((event) => event.schemaVersion == '1.0')
+            .length +
+        1,
+    'created_at': '2026-08-26T10:00:00Z',
+    'actor': const <String, dynamic>{
+      'type': 'user',
+      'id': 'local_operator',
+    },
+    'event_type': 'photo_added',
+    'status': 'accepted',
+    'payload': <String, dynamic>{
+      'photo_id': photoId,
+      'mode': request.mode,
+      'path': path,
+      'sha256': hash,
+      if (request.layer != null) 'layer': request.layer,
+    },
+  };
+  return PhotoImportResult(
+    photoId: photoId,
+    path: path,
+    absolutePath: 'C:\\project\\$path',
+    sha256: hash,
+    event: event,
+  );
+}
+
 Widget _harness({
   required ProjectState? projectState,
   Key? boardCanvasKey,
@@ -283,6 +384,9 @@ Widget _harness({
   V2EditComponentWriter? editComponentWriter,
   V2PlacementWriter? placementWriter,
   V2SaveMeasurementWriter? measurementWriter,
+  PhotoSourcePicker? photoSourcePicker,
+  PhotoSourcePreviewLoader? photoSourcePreviewLoader,
+  PhotoImportService? photoImportService,
 }) {
   return ProviderScope(
     overrides: [
@@ -298,7 +402,14 @@ Widget _harness({
       if (measurementWriter != null)
         v2SaveMeasurementWriterProvider.overrideWithValue(measurementWriter),
     ],
-    child: MaterialApp(home: BoardCanvasScreen(key: boardCanvasKey)),
+    child: MaterialApp(
+      home: BoardCanvasScreen(
+        key: boardCanvasKey,
+        photoSourcePicker: photoSourcePicker,
+        photoSourcePreviewLoader: photoSourcePreviewLoader,
+        photoImportService: photoImportService,
+      ),
+    ),
   );
 }
 
@@ -1084,6 +1195,378 @@ FootprintTemplate _geometryTemplateWithPinCount(
 }
 
 void main() {
+  group('canonical photo import workbench', () {
+    testWidgets('wide rail and compact Fotod affordance open the same panel',
+        (tester) async {
+      final picker = _FakePhotoSourcePicker();
+      final service = _FakePhotoImportService(
+        (projectState, request) async =>
+            _photoImportResult(projectState, request),
+      );
+      await tester.binding.setSurfaceSize(const Size(1400, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        _harness(
+          projectState: _componentNavigatorState(
+            projectDirectory: r'C:\project',
+          ),
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 32));
+
+      expect(
+        find.byKey(const Key('board_canvas_rail_photos_tool')),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byKey(const Key('board_canvas_rail_photos_tool')),
+      );
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(find.byKey(const Key('photo_workbench_panel')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.binding.setSurfaceSize(const Size(700, 760));
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(
+        find.byKey(const Key('board_canvas_compact_photos_action')),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byKey(const Key('board_canvas_compact_photos_action')),
+      );
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(find.byKey(const Key('photo_workbench_panel')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'zero-component import is explicit, applies the event, and opens Canvas',
+        (tester) async {
+      final picker = _FakePhotoSourcePicker(
+        outcomes: <String?>[
+          null,
+          r'C:\source\first.jpg',
+          r'C:\project\photos\wizard_background.PNG',
+        ],
+      );
+      final service = _FakePhotoImportService(
+        (projectState, request) async => _photoImportResult(
+          projectState,
+          request,
+          path: 'photos/photo_wizard_copy.png',
+          photoId: 'photo_wizard_copy',
+        ),
+      );
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        projectDirectory: r'C:\project',
+      );
+      await tester.binding.setSurfaceSize(const Size(1400, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 32));
+
+      expect(
+        find.byKey(const Key('board_canvas_zero_component_photo_entry')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('photo_workbench_panel')), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_workspace_frame')),
+        findsNothing,
+      );
+
+      await tester.tap(find.byKey(const Key('photo_pick_button')));
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(service.requests, isEmpty);
+      expect(find.byKey(const Key('photo_preview')), findsNothing);
+
+      await tester.tap(find.byKey(const Key('photo_pick_button')));
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(find.byKey(const Key('photo_preview')), findsOneWidget);
+      expect(find.text('first.jpg'), findsOneWidget);
+      expect(service.requests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+
+      await tester.tap(find.byKey(const Key('photo_pick_button')));
+      await tester.pump(const Duration(milliseconds: 32));
+      expect(find.byKey(const Key('photo_preview')), findsOneWidget);
+      expect(find.text('wizard_background.PNG'), findsOneWidget);
+      expect(find.textContaining('png'), findsWidgets);
+      expect(find.textContaining('2.0 KB'), findsOneWidget);
+      expect(service.requests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+
+      await tester.tap(find.byKey(const Key('photo_mode_field')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('macro').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('photo_layer_field')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('detail').last);
+      await tester.pumpAndSettle();
+      expect(service.requests, isEmpty);
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Impordi ja lisa'));
+      await tester.pumpAndSettle();
+
+      expect(service.requests, hasLength(1));
+      expect(
+        service.requests.single.sourcePath,
+        r'C:\project\photos\wizard_background.PNG',
+      );
+      expect(service.requests.single.mode, 'macro');
+      expect(service.requests.single.layer, 'detail');
+      expect(
+        service.requests.single.sourcePath,
+        isNot('C:\\project\\photos\\photo_wizard_copy.png'),
+      );
+      final current = _readProjectState(tester);
+      expect(current.events, hasLength(1));
+      expect(current.knownFacts.photos, isEmpty);
+      expect(current.projectionFreshness, ProjectionFreshness.stale);
+      expect(
+        find.byKey(const Key('board_canvas_workspace_frame')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('photo_event_evt_000001')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsNothing,
+      );
+      expect(find.byKey(const Key('photo_alignment_confirm')), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('in-flight confirmation is single-shot and preserves safe copy',
+        (tester) async {
+      final completer = Completer<PhotoImportResult>();
+      final picker = _FakePhotoSourcePicker(
+        outcomes: <String?>[r'C:\source\board.webp'],
+      );
+      final service = _FakePhotoImportService(
+        (projectState, request) => completer.future,
+      );
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        projectDirectory: r'C:\project',
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('photo_pick_button')));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(FilledButton, 'Impordi ja lisa'));
+      await tester.pump();
+
+      final confirm = tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, 'Impordi ja lisa'),
+      );
+      expect(confirm.onPressed, isNull);
+      expect(service.requests, hasLength(1));
+
+      completer.completeError(
+        const PhotoImportException(
+          PhotoImportFailureKind.writerUncertain,
+          'Writer outcome is uncertain.',
+          copyPreserved: true,
+        ),
+      );
+      await tester.pump();
+      expect(service.requests, hasLength(1));
+      expect(
+        find.text(
+          'Writer outcome is uncertain. The imported copy was preserved.',
+        ),
+        findsOneWidget,
+      );
+      expect(_readProjectState(tester).events, isEmpty);
+    });
+
+    testWidgets('in-memory session lists events but keeps import read-only',
+        (tester) async {
+      final event = TraceBenchEvent.fromJson(
+        _photoImportResult(
+          _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+          ),
+          const PhotoImportRequest(
+            sourcePath: r'C:\source\board.jpg',
+            mode: 'normal',
+          ),
+        ).event,
+      );
+      final picker = _FakePhotoSourcePicker(
+        outcomes: <String?>[r'C:\source\ignored.jpg'],
+        isSupported: false,
+      );
+      final service = _FakePhotoImportService(
+        (projectState, request) async =>
+            _photoImportResult(projectState, request),
+      );
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        events: <TraceBenchEvent>[event],
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump();
+      await tester.tap(
+        find.byKey(const Key('board_canvas_compact_photos_action')),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('photo_event_evt_000001')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Import requires a project opened from a local folder.'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.byKey(const Key('photo_pick_button')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('photo_import_confirm')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(picker.pickCount, 0);
+      expect(service.requests, isEmpty);
+    });
+
+    testWidgets('project switch rejects the old generation without mutation',
+        (tester) async {
+      final completer = Completer<PhotoImportResult>();
+      final picker = _FakePhotoSourcePicker(
+        outcomes: <String?>[r'C:\source\board.jpg'],
+      );
+      final service = _FakePhotoImportService(
+        (projectState, request) => completer.future,
+      );
+      final firstState = _inlineProjectState(
+        projectId: 'project_old',
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        projectDirectory: r'C:\old',
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: firstState,
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('photo_pick_button')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('photo_import_confirm')));
+      await tester.pump();
+      expect(service.requests, hasLength(1));
+
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          projectId: 'project_new',
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          projectDirectory: r'C:\new',
+        ),
+      );
+      await tester.pump();
+      completer.complete(
+        _photoImportResult(firstState, service.requests.single),
+      );
+      await tester.pump();
+
+      final current = _readProjectState(tester);
+      expect(current.manifest.projectId, 'project_new');
+      expect(current.events, isEmpty);
+      expect(
+        find.text(
+          'The photo and event were saved to the previous project, but the current project was not changed.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('unsupported platforms do not claim a working photo picker',
+        (tester) async {
+      final picker = _FakePhotoSourcePicker(isSupported: false);
+      final service = _FakePhotoImportService(
+        (projectState, request) async =>
+            _photoImportResult(projectState, request),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\project',
+          ),
+          photoSourcePicker: picker,
+          photoSourcePreviewLoader: const _FakePhotoSourcePreviewLoader(),
+          photoImportService: service,
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.text('Photo selection is available only in the desktop app.'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.byKey(const Key('photo_pick_button')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(picker.pickCount, 0);
+      expect(service.requests, isEmpty);
+    });
+  });
+
   testWidgets('unknown freshness warning keeps Board Canvas usable',
       (tester) async {
     final state = _inlineProjectState(

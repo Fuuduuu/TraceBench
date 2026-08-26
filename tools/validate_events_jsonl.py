@@ -338,10 +338,26 @@ def _is_iso_datetime(value: str) -> bool:
 
 
 def _is_valid_image_path(path: str) -> bool:
-    if not path.startswith("photos/"):
+    if not isinstance(path, str) or not path.startswith("photos/"):
         return False
-    lower = path.lower()
-    return lower.endswith((".jpg", ".jpeg", ".png", ".webp"))
+    if "\\" in path or path.startswith("/"):
+        return False
+
+    segments = path.split("/")
+    if len(segments) < 2 or segments[0] != "photos":
+        return False
+    for segment in segments:
+        if not segment or segment in {".", ".."}:
+            return False
+        if segment.endswith((" ", ".")):
+            return False
+        if any(
+            ord(character) < 32 or character in '<>:"\\|?*'
+            for character in segment
+        ):
+            return False
+
+    return segments[-1].lower().endswith((".jpg", ".jpeg", ".png", ".webp"))
 
 
 def _is_hex64(value: str) -> bool:
@@ -1372,7 +1388,7 @@ def _validate_photo_added(
         _error(
             errors,
             context,
-            "photo_added path must start with photos/ and use allowed image extension",
+            "photo_added path must be a safe relative path under photos/ with an allowed image extension",
         )
 
     sha256 = payload.get("sha256")

@@ -1126,7 +1126,73 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         path = _events_to_temp_jsonl(events)
         result = _run_validator(path)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("path must start with photos/ and use allowed image extension", result.stdout + result.stderr)
+        self.assertIn(
+            "path must be a safe relative path under photos/ with an allowed image extension",
+            result.stdout + result.stderr,
+        )
+
+    def test_photo_added_path_hardening_rejects_unsafe_paths(self):
+        unsafe_paths = {
+            "absolute": "/photos/board.jpg",
+            "drive": "C:/photos/board.jpg",
+            "scheme": "file://photos/board.jpg",
+            "backslash": r"photos\board.jpg",
+            "empty_segment": "photos//board.jpg",
+            "dot_segment": "photos/./board.jpg",
+            "dotdot_segment": "photos/top/../board.jpg",
+            "normalized_escape": "photos/top/../../board.jpg",
+            "drive_like_segment": "photos/C:/board.jpg",
+            "unsafe_segment": "photos/top/board?.jpg",
+            "unsupported_extension": "photos/top/board.gif",
+        }
+        for name, image_path in unsafe_paths.items():
+            with self.subTest(name=name, image_path=image_path):
+                event = {
+                    "schema_version": "1.0",
+                    "event_id": "evt_000001",
+                    "project_id": "prj_test",
+                    "sequence": 1,
+                    "created_at": "2026-05-01T00:00:00Z",
+                    "actor": {"type": "user", "id": "u1"},
+                    "event_type": "photo_added",
+                    "status": "accepted",
+                    "payload": {
+                        "photo_id": "photo_path_hardening",
+                        "mode": "normal",
+                        "path": image_path,
+                    },
+                }
+                result = _run_validator(_events_to_temp_jsonl([event]))
+                self.assertNotEqual(
+                    result.returncode,
+                    0,
+                    result.stdout + result.stderr,
+                )
+                self.assertIn(
+                    "path must be a safe relative path under photos/ with an allowed image extension",
+                    result.stdout + result.stderr,
+                )
+
+    def test_photo_added_safe_nested_path_passes(self):
+        event = {
+            "schema_version": "1.0",
+            "event_id": "evt_000001",
+            "project_id": "prj_test",
+            "sequence": 1,
+            "created_at": "2026-05-01T00:00:00Z",
+            "actor": {"type": "user", "id": "u1"},
+            "event_type": "photo_added",
+            "status": "accepted",
+            "payload": {
+                "photo_id": "photo_nested_top",
+                "mode": "normal",
+                "path": "photos/top/board.jpg",
+            },
+        }
+
+        result = _run_validator(_events_to_temp_jsonl([event]))
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_net_confirmed_without_measurement_rejected(self):
         events = [

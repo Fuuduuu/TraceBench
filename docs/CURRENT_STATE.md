@@ -1,9 +1,63 @@
 # Current State
 
-Current pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Live photo-import canonical-write V1 scope lock
+## Live Canonical Photo Import V1 committed-source Code Map maintenance
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+c3a44856009141a9956ba483267b8265e05c6950`, parent
+`d2abbf332298b746abe14a95001e867398e7e03a`, subject
+`feat: add canonical photo import v1`, and divergence `0 0`. The accepted
+implementation commit contains exactly eleven paths: Board Canvas source/test,
+three new photo production owners, three new photo unit suites, one pure photo
+event read model and its unit suite, plus the existing Python validator and
+validator test.
+
+This Lane A `DOCS_MAPS_ONLY / PHASE_1` maintenance changes exactly the three
+route owners, audit ledger, Code Map index, three refreshed existing maps, five
+first maps, and one new audit artifact: fourteen paths total and no path 15.
+Runtime, test, tool, schema, materializer, model, ProjectSession, Wizard,
+package, platform, Windows substantive, and scratch bytes remain outside the
+write set.
+
+The exact `UPDATE_REQUIRED` set is Board Canvas source, PythonRunner source,
+and Board Canvas test. The exact first-map set is
+`photo_event_writer.dart`, `photo_import_service.dart`,
+`photo_workbench_panel.dart`, `photo_event_writer_test.dart`, and
+`photo_import_service_test.dart`. All eight map/header-index pairs are
+`REVIEW_REQUIRED` in Phase 1.
+
+The four exact `REVIEWED_NO_CHANGE` maps are ProjectSession,
+New Project Wizard screen, ProjectCreator, and ProjectLoader; their bytes remain
+unchanged. The small pure `photo_event_read_model.dart` and its focused unit
+suite remain `NOT_QUALIFIED` at `SCORE 5/12` and `SCORE 4/12` respectively, so
+neither receives a map. The committed Python validator/test paths are outside
+the Dart Code Map bootstrap.
+
+The Phase-1 registry target is exactly 50 maps / 50 rows: 40 `MAINTAINED`,
+eight `REVIEW_REQUIRED`, two `RETIRED`, zero orphan maps, zero unindexed maps,
+and zero header/index status mismatch. An independently accepted Phase 2 may
+change only the eight map header statuses, their eight matching index status
+cells, the designated verdict-block interior, and this pass's ledger Status
+cell. Its final registry target is 50/50 with 48 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`.
+
+The exact route is:
+
+```text
+TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+[accepted committed implementation]
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Photo Alignment Child 2 remains unnamed, unarmed, and blocked until this
+maintenance is accepted, Phase-2-recorded, committed, and pushed. This pass
+does not reopen the accepted implementation or authorize alignment work.
+
+## Accepted photo-import canonical-write V1 scope lock (historical, non-authorizing)
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

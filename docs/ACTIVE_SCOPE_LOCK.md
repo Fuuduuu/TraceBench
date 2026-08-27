@@ -2,10 +2,108 @@
 
 ## Route
 
-Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
+Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current photo-import canonical-write V1 scope authority
+## Current Canonical Photo Import V1 Code Map maintenance authority
+
+```text
+PASS_ID: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS
+Lane: A
+Mode: DOCS_MAPS_ONLY / PHASE_1
+Baseline: c3a44856009141a9956ba483267b8265e05c6950
+Parent: d2abbf332298b746abe14a95001e867398e7e03a
+Predecessor: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+Next sentinel: NEEDS_USER_DECISION
+Manual smoke: NOT_APPLICABLE
+```
+
+Phase 1 authorizes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/shared/services/python_runner.dart.md`
+8. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+9. `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md`
+10. `docs/code_maps/lib/features/photos/services/photo_import_service.dart.md`
+11. `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md`
+12. `docs/code_maps/test/unit/photo_event_writer_test.dart.md`
+13. `docs/code_maps/test/unit/photo_import_service_test.dart.md`
+14. `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS.md`
+
+No fifteenth path is authorized. The first eight listed documentation/registry
+owners are existing files; paths 9 through 14 are new except that paths 9
+through 13 are new map files and path 14 is the new audit artifact.
+
+### Exact map work
+
+Refresh exactly these existing maps and set their headers/index rows to
+`REVIEW_REQUIRED`:
+
+- Board Canvas source;
+- PythonRunner source; and
+- Board Canvas test.
+
+Create exactly these first maps with `REVIEW_REQUIRED` headers/index rows:
+
+- `photo_event_writer.dart`;
+- `photo_import_service.dart`;
+- `photo_workbench_panel.dart`;
+- `photo_event_writer_test.dart`; and
+- `photo_import_service_test.dart`.
+
+Do not map `photo_event_read_model.dart` or
+`photo_event_read_model_test.dart`; their committed qualifications remain
+`SCORE 5/12` and `SCORE 4/12`, below every automatic trigger. The Python
+validator/test paths remain outside the Dart Code Map bootstrap.
+
+Do not edit the four `REVIEWED_NO_CHANGE` maps for ProjectSession,
+New Project Wizard screen, ProjectCreator, or ProjectLoader. Do not edit any
+other map or index row.
+
+### Registry and Phase-2 boundary
+
+Phase 1 must finish at exactly 50 maps / 50 index rows: 40 `MAINTAINED`, eight
+`REVIEW_REQUIRED`, two `RETIRED`, zero orphan, zero unindexed, and zero status
+mismatch.
+
+Phase 2 is forbidden unless an independent audit expressly authorizes it and
+the human supplies a separate recording instruction. That conditional Phase 2
+contains exactly eighteen logical coordinates:
+
+1. the eight changed/new map header statuses, each
+   `REVIEW_REQUIRED -> MAINTAINED`;
+2. the eight matching `CODE_MAP_INDEX.md` Status cells, each
+   `REVIEW_REQUIRED -> MAINTAINED`;
+3. only the designated verdict-block interior in the new audit artifact; and
+4. only the unique ledger row Status cell, using the accepted repo vocabulary.
+
+Every other byte remains frozen in Phase 2. Its registry target is 50/50 with
+48 `MAINTAINED`, zero `REVIEW_REQUIRED`, and two `RETIRED`.
+
+### Frozen boundaries and route
+
+All runtime, Dart test, Python tool/test, schema, model, materializer,
+ProjectSession, Wizard, package, asset, platform, Windows substantive,
+`_incoming`, scratch, reviewed-no-change-map, unrelated-map, and unrelated-
+index bytes are frozen. This maintenance cannot reopen accepted implementation
+behavior or introduce any alignment writer, math, confirmation, or overlay.
+
+```text
+TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS
+[accepted committed implementation]
+-> TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Photo Alignment Child 2 remains unarmed and blocked until this maintenance is
+accepted, Phase-2-recorded, committed, and pushed.
+
+## Accepted photo-import canonical-write V1 scope authority (historical, non-authorizing)
 
 ```text
 PASS_ID: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS

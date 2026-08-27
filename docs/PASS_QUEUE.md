@@ -2,10 +2,60 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_IMPL_PASS`
+Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current photo-import canonical-write V1 scope and child queue
+## Current Canonical Photo Import V1 Code Map maintenance queue
+
+Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` at committed implementation
+baseline `c3a44856009141a9956ba483267b8265e05c6950`, parent
+`d2abbf332298b746abe14a95001e867398e7e03a`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/shared/services/python_runner.dart.md`
+8. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+9. `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md`
+10. `docs/code_maps/lib/features/photos/services/photo_import_service.dart.md`
+11. `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md`
+12. `docs/code_maps/test/unit/photo_event_writer_test.dart.md`
+13. `docs/code_maps/test/unit/photo_import_service_test.dart.md`
+14. `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS.md`
+
+No path 15 is queued. Refresh exactly Board Canvas source, PythonRunner source,
+and Board Canvas test. Create exactly five first maps for the photo event
+writer, import service, workbench panel, event-writer test, and import-service
+test. Mark all eight map headers and matching registry rows
+`REVIEW_REQUIRED`.
+
+Do not create maps for `photo_event_read_model.dart` or its unit suite. Do not
+edit the exact four `REVIEWED_NO_CHANGE` maps: ProjectSession, New Project
+Wizard screen, ProjectCreator, and ProjectLoader. Do not edit Dart/test/tool/
+schema source or any unrelated map/index row.
+
+Phase 1 targets 50 maps / 50 rows with 40 `MAINTAINED`, eight
+`REVIEW_REQUIRED`, two `RETIRED`, and zero registry defects. Create one neutral
+`REVIEW_REQUIRED` ledger row and one unique empty designated verdict block.
+Independent Claude audit is the only authority for a later explicit
+18-coordinate Phase 2: eight map header promotions, eight matching index
+status promotions, the verdict-block interior, and the unique ledger Status
+cell. Accepted Phase 2 targets 48/0/2.
+
+Validate doctor, full repository validation, both diff checks, exact fourteen-
+path material union, zero runtime/test/tool/schema substantive diff, byte-
+identical reviewed-no-change maps, anchor closure, 50/50 registry parity, and
+zero staged/unmerged paths.
+
+The route is the accepted committed eleven-path implementation through this
+maintenance to non-executable `NEEDS_USER_DECISION`. Photo Alignment Child 2
+remains unarmed and cannot be scoped until this maintenance is accepted,
+Phase-2-recorded, committed, and pushed.
+
+## Accepted photo-import canonical-write V1 scope and child queue (historical, non-authorizing)
 
 Execute one Lane B `SCOPE_LOCK / DOCS_ONLY / PHASE_1` at baseline
 `330f23d37610728cadc2367599df3f2aa6bd6d0a`. Write exactly:

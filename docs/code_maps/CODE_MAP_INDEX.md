@@ -22,6 +22,9 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measure_sheet/screens/measure_sheet_screen.dart` | `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measurements/screens/measurement_record_screen.dart` | `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md` | production | `RETIRED` |
+| `lib/features/photos/services/photo_event_writer.dart` | `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md` | production | `MAINTAINED` |
+| `lib/features/photos/services/photo_import_service.dart` | `docs/code_maps/lib/features/photos/services/photo_import_service.dart.md` | production | `MAINTAINED` |
+| `lib/features/photos/widgets/photo_workbench_panel.dart` | `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/actions/project_acquisition_actions.dart` | `docs/code_maps/lib/features/project/actions/project_acquisition_actions.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/screens/new_project_wizard_screen.dart` | `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/project/screens/project_overview_screen.dart` | `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md` | production | `MAINTAINED` |
@@ -36,6 +39,8 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |
 | `lib/shared/session/project_session.dart` | `docs/code_maps/lib/shared/session/project_session.dart.md` | production | `MAINTAINED` |
+| `test/unit/photo_event_writer_test.dart` | `docs/code_maps/test/unit/photo_event_writer_test.dart.md` | test | `MAINTAINED` |
+| `test/unit/photo_import_service_test.dart` | `docs/code_maps/test/unit/photo_import_service_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_creator_test.dart` | `docs/code_maps/test/unit/project_creator_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_loader_zip_test.dart` | `docs/code_maps/test/unit/project_loader_zip_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_session_test.dart` | `docs/code_maps/test/unit/project_session_test.dart.md` | test | `MAINTAINED` |

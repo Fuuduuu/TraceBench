@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_PYTHON_RUNNER_WINDOWS_UNICODE_OUTPUT_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -93,6 +93,7 @@ Qualified member references, not literal dotted source strings:
 | `lib/shared/services/project_creator.dart` | production caller | Discovers Python, invokes the known-facts materializer, hydrates the result, and owns cleanup/safe result mapping. |
 | `lib/shared/services/project_exporter.dart` | production caller/re-exporter | Invokes projection and Project ZIP tools and re-exports process/platform test seams. |
 | V2 component, placement, and measurement writers | protected production callers | Invoke accepted canonical writer and projection commands through this shared execution boundary. |
+| `lib/features/photos/services/photo_event_writer.dart` | protected V1 production caller | Discovers Python and invokes the accepted `photo_added` writer command; owns its event envelope, readback, and durability classification. |
 
 ## Write and protected boundaries
 
@@ -103,6 +104,7 @@ Qualified member references, not literal dotted source strings:
 | ProjectCreator/ProjectExporter materializer command | `PROJECTION_STATE` | Caller chooses the materializer and projection paths; this adapter must preserve the command unchanged. |
 | ProjectExporter archive command | `NONCANONICAL_FILE` | Caller owns ZIP generation and the Project ZIP contract. |
 | Accepted V2 writer commands | `CANONICAL_EVENT` | Caller owns protected event/fact semantics; the shared environment repair grants no writer authority. |
+| Accepted V1 `photo_added` writer command | `CANONICAL_EVENT` | `PhotoEventWriterService` owns the exact candidate, path guards, readback, and durability; this runner only preserves launch inputs and returns process evidence. |
 | Accepted V2 materializer commands | `PROJECTION_STATE` | Caller owns rebuildable projection behavior and command selection. |
 | `PythonDiscoveryException` mapping | `ZERO_WRITE` | Converts execution detail only; caller-specific cleanup and UI sanitization remain outside this file. |
 
@@ -127,7 +129,7 @@ exact caller-selected command, not by this adapter's size.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Environment overlay or stream codecs | `[D]` One `Process.run` call owns both | discovery plus every Python tool caller and safe error mapper | `ZERO_WRITE` adapter configuration | real PythonRunner Unicode regression; real ProjectCreator Unicode-path regression; fake-runner suites |
-| `ProcessRunner` interface | `[D]` All fakes implement this seam | every injected caller/test fake | `ZERO_WRITE` | PythonRunner, creator, exporter, and writer suites |
+| `ProcessRunner` interface | `[D]` All fakes implement this seam | every injected caller/test fake, including `PhotoEventWriterService` | `ZERO_WRITE` | PythonRunner, creator, exporter, V2 writer, and photo-event-writer suites |
 | Candidate list/order | `[D]` One immutable list drives discovery | probe timeout and fallback handling | `ZERO_WRITE` | focused discovery/fallback tests |
 | Working-directory selection | `[D]` explicit path falls back to repository root | relative `tools/*.py` calls | `ZERO_WRITE` | forwarding test and real Unicode-path creator regression |
 | Timeout selection | `[D]` probe and command defaults are distinct and finite | fallback and caller error routing | `ZERO_WRITE` | no dedicated timeout regression |
@@ -147,6 +149,10 @@ Primary suite: `test/unit/python_runner_test.dart`.
   `real materializer creates a project under a Unicode parent path`.
 - Caller suites for ProjectExporter and accepted component, placement, and
   measurement writers continue to prove their own command/result contracts.
+- `test/unit/photo_event_writer_test.dart` uses `_FakeProcessRunner` to prove
+  Python discovery, exact V1 writer dispatch, missing-interpreter handling,
+  launched-command uncertainty, and readback recovery without transferring
+  event semantics into this adapter.
 
 The focused suite still has no dedicated timeout regression. Most downstream
 caller tests use fakes, so the two real regressions are the direct host codec
@@ -204,7 +210,8 @@ codec, timeout, working-directory, or exception routing changes;
 output exposure changes; `TEST_DRIFT` when real/fake coverage changes; and
 `STRUCTURE_DRIFT` when execution or discovery ownership moves. Formatting,
 imports, comments, and physical line movement alone do not stale these stable
-anchors.
+anchors. Direct caller drift now includes `PhotoEventWriterService` and its
+fake-`ProcessRunner` unit suite.
 
 ## Known uncertainty
 

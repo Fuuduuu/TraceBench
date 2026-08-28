@@ -2,10 +2,214 @@
 
 ## Route
 
-Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
 
-## Current Canonical Photo Import V1 Code Map maintenance authority
+## Current Photo Alignment + Board Canvas V1 fast-lane SCOPE authority
+
+```text
+PASS_ID: TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
+Lane: B
+Mode: SCOPE_LOCK / DOCS_ONLY / HUMAN_SELECTED_FAST_LANE
+Baseline: b742a8e2cbfca7f53c0895365b63328008aa2f02
+Parent: c3a44856009141a9956ba483267b8265e05c6950
+Predecessor: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS
+Reserved child: TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS
+Scope manual smoke: NOT_APPLICABLE
+Child Windows manual smoke: REQUIRED
+Pre-implementation scope audit: NOT_REQUIRED — explicit human fast-lane decision
+Scope Phase 2: NOT_APPLICABLE
+```
+
+The human selects Photo Alignment + Board Canvas V1 from the accepted
+non-executable sentinel. This current docs-only pass writes exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/audit/TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS.md`
+   (new)
+
+No fifth scope path is authorized. `docs/AUDIT_INDEX.md`, every Code Map/index,
+runtime, tests, tools, schemas, materializers, models, ProjectSession, packages,
+assets, platform/generated substantive bytes, `_incoming`, and scratch are
+frozen. This human-selected fast lane creates no ledger row, verdict block, or
+Phase-2 coordinates. It is a pass-specific exception only and does not waive
+child validation, Windows smoke, post-implementation audit, or human-controlled
+exact staging/commit/push.
+
+### Exact reserved child — 12 paths
+
+`TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS` may write exactly:
+
+1. `tools/validate_events_jsonl.py`
+2. `tests/test_validate_events_jsonl.py`
+3. `lib/features/photos/logic/photo_alignment_transform.dart` (new)
+4. `lib/features/photos/logic/photo_event_read_model.dart`
+5. `lib/features/photos/services/photo_event_writer.dart`
+6. `lib/features/photos/widgets/photo_workbench_panel.dart`
+7. `lib/features/board_canvas/rendering/aligned_photo_layer.dart` (new)
+8. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+9. `test/unit/photo_alignment_transform_test.dart` (new)
+10. `test/unit/photo_event_read_model_test.dart`
+11. `test/unit/photo_event_writer_test.dart`
+12. `test/widget/board_canvas_screen_test.dart`
+
+No path 13 is authorized. The child edits no docs or Code Maps.
+
+### Locked product flow
+
+Board Canvas stays the primary normal workflow:
+
+```text
+Fotod -> select accepted canonical photo_added
+-> choose board side and Similarity (default) or Affine (Advanced)
+-> pair photo-local points with board-normalized Canvas points
+-> provisional aligned Canvas preview plus RMS/max residual
+-> explicit Kinnita joondus
+-> one accepted photo_to_board_alignment_confirmed
+-> captured-generation ProjectSession.applyCanonicalEvent
+-> immediate event-derived confirmed reference layer
+```
+
+The source must already be an accepted canonical imported photo. Noncanonical
+Wizard intake, including `wizard_background.*`, is not selectable unless that
+file was separately imported through `photo_added`. Alignment creates, copies,
+deletes, or rewrites no photo file.
+
+The panel owns source selection, explicit `top`/`bottom`/`unknown` side,
+point-pair add/remove/reorder, transform selection, preview feedback, opacity,
+visibility, cancel, and confirm. Photo points use intrinsic pixels and must be
+inside the decoded image bounds. Board points are within inclusive `0..1`.
+Drafts, markers, transform selection, residuals, opacity, visibility, and cancel
+remain UI-local and write nothing.
+
+Similarity requires at least two pairs and solves rotation, one uniform
+strictly positive scale, and translation. Affine requires at least three pairs
+and solves a full 2x3 map; shear is valid. A negative affine determinant is
+allowed only with a visible mirrored-preview warning. Both accept extra pairs,
+use deterministic least squares, report board-normalized RMS and maximum
+residual, use scale-normalized relative epsilon `1e-9`, and reject non-finite,
+duplicate/near-duplicate, zero/near-zero-spread, rank-deficient, or singular/
+near-singular input/output as applicable. Quality is exactly
+`manual_preview_confirmed`. No homography is allowed.
+
+### Writer, validator, event-read, and session boundaries
+
+`photo_event_writer.dart` adds its owner-level public `confirmAlignment`
+operation and exact V1 accepted envelope while retaining photo import
+compatibility. The implementation may use an alignment-specific interface in
+that same file; it must not add a required member that forces a frozen
+`photo_import_service.dart` or its test fake to change. Event ID, V1 sequence,
+and `ALN[0-9]+` ID allocation are independent. The unchanged generic Python
+writer owns locked append; exact readback retains durable/uncertain/proven-none
+classification.
+
+The runtime validator hardens only alignment finite/unique/spread/rank/
+singularity rules and their focused tests under the same normalized epsilon.
+It retains existing actor, prior accepted photo, space, range, pair-count,
+forbidden-field, and transform rules. The frozen JSON Schema stays looser; do
+not patch it. Intrinsic upper bounds are enforced in Dart because dimensions
+are not part of the event and Python must not open image files.
+
+The pure event read model derives accepted photos and later valid accepted
+alignment events directly from current events. It selects the greatest valid V1
+sequence as the default after load and supports both similarity and affine.
+It neither waits for nor mutates Known Facts. Explicit confirm captures session
+generation before await and applies only the exact returned event through the
+current ProjectSession. Stale generation never mutates the newer session; a
+durable old-project event remains available after reopening that project.
+
+### Exact Board Canvas stack
+
+The Canvas bottom-to-top order is:
+
+1. opaque background/grid;
+2. optional legacy Wizard photo;
+3. active canonical aligned photo, confirmed or current valid draft;
+4. Wizard contour/candidates;
+5. alignment edit markers;
+6. canonical placements;
+7. badges, ghosts, warnings, status, and controls.
+
+The aligned-photo layer is clipped, pointer-ignored, and inside the existing
+InteractiveViewer. The newest valid confirmed layer is visible by default at
+UI-local opacity `0.65`. It remains immediately usable with zero components and
+while Known Facts is stale. Missing, unreadable, unsafe, escaping, or
+undecodable photos produce a nonblocking warning and no layer. Existing pan,
+zoom, fit, placement hit testing, focus, Wizard controls, wide/compact Fotod,
+and freshness presentation remain.
+
+### Canonical and frozen product boundaries
+
+Alignment is geometric/visual evidence only. It confirms no photo pixel,
+component, contact, pin, pad, identity, electrical side/function, trace, net,
+measurement, damage, suspect, diagnosis, fault, or repair outcome. AI has no
+confirmation path. Renderer/view code writes nothing.
+
+Freeze schemas, materializer, KnownFacts/ProjectState/TraceBenchEvent,
+ProjectSession, photo import service, Wizard, ProjectCreator/Loader, Project ZIP,
+damage/suspect/visual-trace/component/net/measurement owners, packages, assets,
+routes, and platform files. Do not formalize `photo_reference_points_set` or
+`photo_layer_aligned`; do not add camera, EXIF, automatic point detection,
+automatic component creation, AI confirmation, homography, transform-matrix
+payloads, or persistent Canvas view state.
+
+### Code Map lifecycle
+
+At scope entry, all relevant existing maps are `MAINTAINED`. The planned child
+makes Board Canvas source/test, photo event writer/test, and Photo Workbench
+Panel `UPDATE_REQUIRED`. The PythonRunner map also becomes
+`UPDATE_REQUIRED` because its accepted caller description is currently
+`photo_added`-only. ProjectSession, PhotoImportService and its test,
+ProjectLoader, Wizard, and ProjectCreator maps remain `REVIEWED_NO_CHANGE` if
+their frozen owners and interfaces do not move.
+
+The two new Dart sources, new transform suite, and the materially expanded
+unmapped read model/read-model suite receive qualification only from accepted
+committed child source. No speculative map is created now. The human expressly
+authorizes this coherent multi-zone product slice, so `DECOMPOSE_REQUIRED` does
+not apply. A separately scoped docs/maps pass refreshes actual qualifying maps
+only after accepted committed implementation.
+
+### Test, manual-smoke, route, and stops
+
+The child must cover exact and overdetermined similarity/affine, shear,
+reflection warning, deterministic reorder/residuals, every numeric and geometric
+degeneracy, accepted-event/reopen/latest selection, add/remove/reorder/switch,
+cancel zero-write, exactly-one confirm, writer durability, stale-generation
+protection, projection-stale immediate rendering, UI-local opacity/visibility,
+missing/unsafe photo warning, exact Canvas stack, Wizard coexistence,
+wide/compact/zero-component/read-only behavior, and zero unrelated writer calls.
+
+Fresh child gates are focused Python/Dart/widget suites, import/session
+regressions, `flutter analyze --no-pub`, full `flutter test`, doctor,
+`validate_all`, both diff checks, exact twelve-path material, and empty staged/
+unmerged sets. Flutter commands run sequentially. Human Windows smoke is
+required after implementation for similarity, affine, mirror warning, cancel,
+confirm, reopen, missing file, wide, compact, and project switch during
+in-flight confirm. Do not claim manual smoke from automation.
+
+```text
+TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS
+-> committed-source Code Map refresh if required
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+No second product child is armed. Stop on a fifth scope path, child path 13,
+map drift/conflict, frozen-owner/interface change, non-deterministic solver,
+uncontained photo rendering, stack/hit-test regression, canonical/electrical/
+AI/homography expansion, failed automation or human smoke, or any Codex stage,
+commit, push, reset, restore, stash, clean, install, or delete action.
+
+## Accepted Canonical Photo Import V1 Code Map maintenance authority (historical, non-authorizing)
+
+Commit `b742a8e2cbfca7f53c0895365b63328008aa2f02`, subject
+`docs: close canonical photo import code maps`, completes the maintenance and
+its accepted Phase-2 recording at 50 maps / 50 rows: 48 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`. The retained Phase-1 wording below is
+historical and grants no current route or write authority.
 
 ```text
 PASS_ID: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS

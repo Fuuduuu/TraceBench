@@ -2,10 +2,121 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
 
-## Current Canonical Photo Import V1 Code Map maintenance queue
+## Current Photo Alignment + Board Canvas V1 fast-lane scope queue
+
+Execute one Lane B
+`SCOPE_LOCK / DOCS_ONLY / HUMAN_SELECTED_FAST_LANE` at baseline
+`b742a8e2cbfca7f53c0895365b63328008aa2f02`, parent
+`c3a44856009141a9956ba483267b8265e05c6950`. Write exactly:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/audit/TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS.md`
+   (new)
+
+No fifth scope path is queued. Do not edit `docs/AUDIT_INDEX.md`, Code
+Maps/index, runtime, tests, tools, schemas, materializers, models,
+ProjectSession, packages, assets, platform/generated substantive bytes,
+`_incoming`, or scratch. The human-selected fast lane has no separate
+pre-implementation Claude audit, verdict block, ledger row, or Phase 2. This is
+a pass-specific exception only; it leaves child validation, human Windows
+smoke, post-implementation independent audit, and human staging/commit/push
+mandatory.
+
+Reserve exactly one child:
+`TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`.
+
+1. `tools/validate_events_jsonl.py`
+2. `tests/test_validate_events_jsonl.py`
+3. `lib/features/photos/logic/photo_alignment_transform.dart` (new)
+4. `lib/features/photos/logic/photo_event_read_model.dart`
+5. `lib/features/photos/services/photo_event_writer.dart`
+6. `lib/features/photos/widgets/photo_workbench_panel.dart`
+7. `lib/features/board_canvas/rendering/aligned_photo_layer.dart` (new)
+8. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+9. `test/unit/photo_alignment_transform_test.dart` (new)
+10. `test/unit/photo_event_read_model_test.dart`
+11. `test/unit/photo_event_writer_test.dart`
+12. `test/widget/board_canvas_screen_test.dart`
+
+No path 13 is queued. The child edits no docs or Code Maps.
+
+The product flow is Board Canvas `Fotod` selection of an accepted canonical
+photo, explicit board side, Similarity by default or Affine under Advanced,
+paired photo-pixel and board-normalized points, a provisional aligned preview
+with RMS/max residual, and explicit `Kinnita joondus`. Cancel and every draft
+control write nothing. Confirmation emits exactly one existing canonical
+`photo_to_board_alignment_confirmed`, applies the returned event through a
+captured-generation ProjectSession, and immediately renders the event-derived
+confirmed layer. A noncanonical Wizard background is eligible only after a
+separate canonical photo import.
+
+Similarity requires at least two pairs and a positive uniform scale; Affine
+requires at least three and permits shear. Extra pairs use deterministic least
+squares. Apply finite, inclusive coordinate-bound, near-duplicate, spread,
+rank, and singularity checks with normalized relative epsilon `1e-9`. Permit a
+negative affine determinant only with a persistent visible mirror warning.
+Residuals are board-normalized; quality is exactly
+`manual_preview_confirmed`; homography is forbidden.
+
+The writer preserves the import-service interface boundary and uses the
+unchanged generic Python locked append/readback path. Harden only alignment
+validation and focused Python tests; do not patch the frozen JSON Schema. The
+Dart read model derives accepted photos and valid confirmed alignments from
+events, selects the greatest valid V1 sequence after reopen, and remains
+independent of Known Facts. Stale session generation cannot mutate a newer
+session.
+
+Render a safely resolved, project-contained photo in the existing
+`InteractiveViewer`, clipped and pointer-ignored, at default UI-local opacity
+`0.65`. Exact bottom-to-top order is background/grid, optional Wizard photo,
+active canonical aligned photo, Wizard contour/candidates, alignment markers,
+canonical placements, then badges/ghosts/warnings/status/controls. Missing or
+unsafe files warn without blocking Canvas. Preserve pan/zoom/fit, placement hit
+testing, zero-component use, wide/compact `Fotod`, and Wizard coexistence.
+
+Alignment remains geometric/visual evidence only and never establishes
+component/net/measurement/damage/diagnosis/repair truth. No AI confirmation,
+camera/EXIF, automatic point/component creation, homography, deferred-event
+formalization, schema/model/materializer/ProjectSession/import/Wizard/ZIP
+redesign, or persistent Canvas view state is queued.
+
+Require exact transform, validator, read-model, writer, session, and Board
+Canvas tests; import-service and ProjectSession regressions; sequential
+`flutter analyze --no-pub` and Flutter tests; doctor, full validation, both diff
+checks; exact twelve-path/freeze/staged/unmerged proof; and human Windows smoke
+for similarity, affine, mirror warning, cancel, confirm, reopen, missing file,
+wide/compact Canvas, and an in-flight project switch. No automated run may
+claim the human smoke.
+
+All relevant maps are `MAINTAINED` at entry. After accepted committed child
+source, separately scope only the actual `UPDATE_REQUIRED` and newly qualified
+maps; scope and child edit no map/index byte. The exact route is:
+
+```text
+TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS
+-> committed-source Code Map refresh if required
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+Stop on baseline/route/map drift, a fifth scope path, child path 13, frozen
+owner/interface expansion, non-deterministic geometry, unsafe photo resolution,
+Canvas stack/hit-test regression, canonical/electrical/AI/homography expansion,
+failed validation or human smoke, or any Codex stage, commit, push, reset,
+restore, stash, clean, install, or delete action.
+
+## Accepted Canonical Photo Import V1 Code Map maintenance queue (historical, non-authorizing)
+
+Commit `b742a8e2cbfca7f53c0895365b63328008aa2f02`, subject
+`docs: close canonical photo import code maps`, completes this queue and its
+accepted recording at 50 maps / 50 rows: 48 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`. The retained Phase-1 queue below is
+historical evidence and grants no current route or write authority.
 
 Execute one Lane A `DOCS_MAPS_ONLY / PHASE_1` at committed implementation
 baseline `c3a44856009141a9956ba483267b8265e05c6950`, parent

@@ -1,9 +1,109 @@
 # Current State
 
-Current pass: `TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
 
-## Live Canonical Photo Import V1 committed-source Code Map maintenance
+## Live Photo Alignment + Board Canvas V1 fast-lane scope
+
+The authoritative worktree is `C:\dev\TraceBench` on `main` at
+`HEAD == origin/main ==
+b742a8e2cbfca7f53c0895365b63328008aa2f02`, parent
+`c3a44856009141a9956ba483267b8265e05c6950`, subject
+`docs: close canonical photo import code maps`, and divergence `0 0`. The
+committed Code Map registry is exactly 50 maps / 50 rows: 48 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, two `RETIRED`, with zero registry defects. Staged and
+unmerged sets are empty. The three known generated-plugin Windows EOL/stat
+entries remain content-clean and untracked `TraceBench_ALL_CODE.txt` remains
+scratch; all four are outside authority.
+
+The human selects one Lane B
+`SCOPE_LOCK / DOCS_ONLY / HUMAN_SELECTED_FAST_LANE` from the accepted
+non-executable sentinel. This pass writes exactly the three route owners and
+one new binding scope artifact: four paths total and no fifth path. It creates
+no `AUDIT_INDEX` row, verdict block, or Phase 2. That is a human-authorized,
+pass-specific fast-lane exception; it does not alter general audit policy or
+waive implementation validation, required Windows smoke, post-implementation
+independent audit, or human-controlled exact staging/commit/push.
+
+The one reserved child is
+`TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`, with exactly twelve
+paths and no path 13. It keeps Board Canvas as the normal workflow: choose an
+already accepted canonical `photo_added`, choose side and Similarity or
+Advanced Affine, pair intrinsic-photo and board-normalized points, preview the
+aligned image and residuals, then explicitly confirm exactly one accepted
+`photo_to_board_alignment_confirmed`. The returned event is applied through a
+captured-generation `ProjectSession`; the event-derived confirmed layer is
+available immediately even while Known Facts is stale.
+
+Similarity is the default and requires at least two pairs; it solves rotation,
+strictly positive uniform scale, and translation. Affine requires at least
+three pairs and solves a full 2x3 map; shear is valid and a negative determinant
+requires a persistent visible mirror warning. Extra pairs use deterministic
+least squares. Both report RMS and maximum residual in board-normalized units,
+use scale-normalized relative epsilon `1e-9`, and reject non-finite, duplicate
+or near-duplicate, zero/near-zero-spread, rank-deficient, or singular/
+near-singular geometry as applicable. Photo points are bounded by the decoded
+intrinsic image rectangle and board points by inclusive `0..1`. Quality is
+exactly `manual_preview_confirmed`; homography is excluded.
+
+Only explicit `Kinnita joondus` writes. Draft pairs, transform choice,
+preview, residuals, opacity, visibility, and cancel remain UI-local. The writer
+adds an owner-level alignment operation and the exact existing V1 envelope
+without forcing a frozen import-service interface/test change; the unchanged
+generic Python writer retains locked append plus readback classification. The
+Python validator hardens only alignment numeric/geometric rules and focused
+tests; the known looser frozen JSON Schema is not patched. The pure Dart event
+read model derives valid accepted alignments, resolves the greatest valid V1
+sequence after reopen, and never treats alignment as Known Facts.
+
+The Canvas stack remains, bottom to top: background/grid; optional legacy
+Wizard photo; active canonical aligned photo; Wizard contour/candidates;
+alignment edit markers; canonical placements; then badges, ghosts, warnings,
+status, and controls. The new aligned layer is clipped, pointer-ignored, inside
+the existing `InteractiveViewer`, visible by default at UI-local opacity
+`0.65`, and usable with zero components. Unsafe, escaping, missing, unreadable,
+or undecodable photo files produce a nonblocking warning and no layer. A
+Wizard `wizard_background.*` is not selectable unless separately imported via
+canonical `photo_added`.
+
+Alignment remains geometric/visual evidence only. It confirms no component,
+contact, pin, pad, identity, electrical side/function, trace, net, measurement,
+damage, suspect, diagnosis, fault, or repair fact. AI cannot confirm. Schemas,
+materializer/models, ProjectSession, photo import service, Wizard,
+ProjectCreator/Loader, Project ZIP, packages, assets, platform files, deferred
+photo events, camera/EXIF, automatic points/components, and homography are
+frozen.
+
+All relevant entry maps are currently `MAINTAINED`. Accepted child source will
+make the Board Canvas source/test, photo event writer/test, Photo Workbench
+Panel, and PythonRunner maps `UPDATE_REQUIRED`; named frozen-owner maps remain
+`REVIEWED_NO_CHANGE` if their owners do not move. New and materially expanded
+Dart owners/tests are qualified only from accepted committed child source in a
+later separately scoped map pass. No Code Map/index byte changes now or in the
+child.
+
+The exact route is:
+
+```text
+TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
+-> TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS
+-> committed-source Code Map refresh if required
+-> NEEDS_USER_DECISION [non-executable]
+```
+
+The child requires focused Python/Dart/widget coverage, import/session
+regressions, sequential Flutter analysis/tests, repository validators, exact
+twelve-path and freeze proofs, plus human Windows smoke for similarity, affine,
+mirror warning, cancel, confirm, reopen, missing file, wide/compact Canvas, and
+an in-flight project switch. No second product child is armed.
+
+## Accepted Canonical Photo Import V1 committed-source Code Map maintenance (historical, non-authorizing)
+
+Commit `b742a8e2cbfca7f53c0895365b63328008aa2f02`, subject
+`docs: close canonical photo import code maps`, completes this maintenance and
+its accepted recording at 50 maps / 50 rows: 48 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, and two `RETIRED`. The retained Phase-1 description below is
+historical evidence and grants no current route or write authority.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

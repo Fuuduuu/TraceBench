@@ -10,33 +10,35 @@ Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
 ```text
 PASS_ID: TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
 Lane: B
-Mode: SCOPE_LOCK / DOCS_ONLY / HUMAN_SELECTED_FAST_LANE
-Baseline: b742a8e2cbfca7f53c0895365b63328008aa2f02
-Parent: c3a44856009141a9956ba483267b8265e05c6950
-Predecessor: TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS
+Mode: SCOPE_LOCK / DOCS_ONLY / PRIMARY_PHOTO_AMENDMENT
+Baseline: 56ce35f284dcfc124c8f05be933974c6754b6dfb
+Parent: b742a8e2cbfca7f53c0895365b63328008aa2f02
+Predecessor: committed original Photo Alignment scope at this baseline
 Reserved child: TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS
 Scope manual smoke: NOT_APPLICABLE
 Child Windows manual smoke: REQUIRED
-Pre-implementation scope audit: NOT_REQUIRED — explicit human fast-lane decision
+Original scope audit: NOT_REQUIRED — explicit human fast-lane decision
+Amendment independent audit: REQUIRED
 Scope Phase 2: NOT_APPLICABLE
 ```
 
-The human selects Photo Alignment + Board Canvas V1 from the accepted
-non-executable sentinel. This current docs-only pass writes exactly:
+The human amends the committed Photo Alignment + Board Canvas V1 scope so the
+existing Wizard/project background is the primary project photo and the sole V1
+alignment-authoring source. This docs-only amendment writes exactly:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
 3. `docs/PASS_QUEUE.md`
 4. `docs/audit/TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS.md`
-   (new)
 
 No fifth scope path is authorized. `docs/AUDIT_INDEX.md`, every Code Map/index,
 runtime, tests, tools, schemas, materializers, models, ProjectSession, packages,
 assets, platform/generated substantive bytes, `_incoming`, and scratch are
-frozen. This human-selected fast lane creates no ledger row, verdict block, or
-Phase-2 coordinates. It is a pass-specific exception only and does not waive
-child validation, Windows smoke, post-implementation audit, or human-controlled
-exact staging/commit/push.
+frozen. The existing twelve-path implementation material is inspect-only and
+byte-frozen during this amendment. There is no ledger row, verdict block, or
+Phase-2 coordinate. Independent amendment audit and exact human commit/push
+precede resumed child edits; child validation, Windows smoke, post-implementation
+audit, and human-controlled exact staging/commit/push remain mandatory.
 
 ### Exact reserved child — 12 paths
 
@@ -57,32 +59,54 @@ exact staging/commit/push.
 
 No path 13 is authorized. The child edits no docs or Code Maps.
 
+The primary-photo correction is expected to edit only these already-authorized
+child paths as needed: `photo_event_read_model.dart`, `photo_event_writer.dart`,
+`photo_workbench_panel.dart`, `aligned_photo_layer.dart`,
+`board_canvas_screen.dart`, `photo_event_read_model_test.dart`,
+`photo_event_writer_test.dart`, and `board_canvas_screen_test.dart`. The other
+four existing child paths remain byte-preserved, including the fixed
+Python/Dart similarity singular-scale parity regression. This expectation does
+not remove any path from the preserved twelve-path material union or authorize
+path 13.
+
 ### Locked product flow
 
 Board Canvas stays the primary normal workflow:
 
 ```text
-Fotod -> select accepted canonical photo_added
+project created with Wizard background photo
+-> Board Canvas -> Fotod / Joondamine
+-> Projekti foto is already the alignment source; no picker or re-import
 -> choose board side and Similarity (default) or Affine (Advanced)
 -> pair photo-local points with board-normalized Canvas points
 -> provisional aligned Canvas preview plus RMS/max residual
 -> explicit Kinnita joondus
--> one accepted photo_to_board_alignment_confirmed
--> captured-generation ProjectSession.applyCanonicalEvent
+-> reuse matching photo_added, or append/apply one for the existing file
+-> append/apply one photo_to_board_alignment_confirmed
 -> immediate event-derived confirmed reference layer
 ```
 
-The source must already be an accepted canonical imported photo. Noncanonical
-Wizard intake, including `wizard_background.*`, is not selectable unless that
-file was separately imported through `photo_added`. Alignment creates, copies,
-deletes, or rewrites no photo file.
+The authoritative primary-photo asset is the safe project-local relative path
+in `WizardIntake.backgroundPhoto`. It is the only Photo Alignment V1 authoring
+source. The user selects that file once during project creation and is never
+asked to pick or import it again for alignment. If no Wizard/project background
+exists, alignment authoring is unavailable with clear guidance; additional-photo
+import remains available. Wizard-background visibility stays an independent
+UI-local choice whose initial state is unchanged by this amendment.
 
-The panel owns source selection, explicit `top`/`bottom`/`unknown` side,
+The panel presents the source as `Projekti foto`; it does not expose a canonical
+photo selector for alignment. It owns explicit `top`/`bottom`/`unknown` side,
 point-pair add/remove/reorder, transform selection, preview feedback, opacity,
 visibility, cancel, and confirm. Photo points use intrinsic pixels and must be
 inside the decoded image bounds. Board points are within inclusive `0..1`.
 Drafts, markers, transform selection, residuals, opacity, visibility, and cancel
 remain UI-local and write nothing.
+
+Existing `Impordi ja lisa` stays available as a visually secondary additional-
+photo-evidence flow for detail, alternate-angle, microscope, and other visual
+evidence. Additional photos are not V1 alignment-authoring candidates and do
+not automatically replace, compete with, merge with, multi-align with, fuse
+with, or AI-match against the primary project photo.
 
 Similarity requires at least two pairs and solves rotation, one uniform
 strictly positive scale, and translation. Affine requires at least three pairs
@@ -96,14 +120,42 @@ near-singular input/output as applicable. Quality is exactly
 
 ### Writer, validator, event-read, and session boundaries
 
-`photo_event_writer.dart` adds its owner-level public `confirmAlignment`
-operation and exact V1 accepted envelope while retaining photo import
-compatibility. The implementation may use an alignment-specific interface in
-that same file; it must not add a required member that forces a frozen
+`photo_event_writer.dart` owns both the primary-photo canonical handoff and its
+existing public `confirmAlignment` operation while retaining photo-import
+compatibility. The implementation may add a primary-photo-specific interface in
+that same file; it must not add a required member that forces the frozen
 `photo_import_service.dart` or its test fake to change. Event ID, V1 sequence,
-and `ALN[0-9]+` ID allocation are independent. The unchanged generic Python
-writer owns locked append; exact readback retains durable/uncertain/proven-none
-classification.
+photo ID, and `ALN[0-9]+` allocation remain collision-safe and independent. The
+unchanged generic Python writer owns locked append; exact readback retains
+durable/uncertain/proven-none classification.
+
+Only explicit `Kinnita joondus` may start canonical handoff. It safely
+re-resolves the Wizard relative path, proves real-root containment and a regular
+readable supported image, decodes intrinsic dimensions, and computes lowercase
+SHA-256 from the current bytes. An accepted `photo_added` is a matching primary
+identity only when its safe relative path and SHA-256 both equal those current
+values. When multiple matching historical events exist, the lowest valid V1
+sequence is reused deterministically. A same-path event with a different or
+missing hash is not treated as the current primary identity.
+
+Before allocating a new primary identity, the writer reconciles current durable
+`events.jsonl` history under the existing contained readback rules. This lets a
+retry recover a durable-but-not-applied matching `photo_added` instead of
+creating a duplicate. If no match exists, it appends exactly one existing V1
+`photo_added` for the already project-local file with `mode: normal`, no
+`layer`, the Wizard relative path, and the computed SHA-256. It performs no
+picker action, copy, move, rename, overwrite, deletion, or rollback.
+
+The returned or recovered photo event is applied through
+`ProjectSession.applyCanonicalEvent` with the captured generation when it is
+not already present in the session. Only while the same project and generation
+remain current may the writer append the existing exact
+`photo_to_board_alignment_confirmed`, which is then applied through the same
+session boundary. A first confirm therefore writes two events only when the
+primary identity is absent; a normal later confirm writes one alignment event.
+Cancel writes zero. A durable `photo_added` remains if alignment confirmation
+fails. An uncertain photo-write outcome stops before alignment and never
+creates a local substitute; retry must reconcile and reuse any durable identity.
 
 The runtime validator hardens only alignment finite/unique/spread/rank/
 singularity rules and their focused tests under the same normalized epsilon.
@@ -113,32 +165,41 @@ not patch it. Intrinsic upper bounds are enforced in Dart because dimensions
 are not part of the event and Python must not open image files.
 
 The pure event read model derives accepted photos and later valid accepted
-alignment events directly from current events. It selects the greatest valid V1
-sequence as the default after load and supports both similarity and affine.
-It neither waits for nor mutates Known Facts. Explicit confirm captures session
-generation before await and applies only the exact returned event through the
-current ProjectSession. Stale generation never mutates the newer session; a
-durable old-project event remains available after reopening that project.
+alignment events directly from current events. Given the authoritative Wizard
+relative path and current SHA-256, it distinguishes the canonical primary
+identity from every additional photo and selects only the greatest valid V1
+alignment sequence for that primary identity after load. Both similarity and
+affine remain supported. Non-primary alignments remain canonical history but do
+not become the V1 active/default Canvas layer or an authoring source. The read
+model neither waits for nor mutates Known Facts.
+
+Explicit confirm captures session generation and project identity before the
+first await. Every returned event is applied only through the current
+ProjectSession. Project or generation drift before, between, or after the two
+possible writes stops further mutation; a durable old-project event remains in
+that project's log and is visible after reopen. The newer session is never
+mutated.
 
 ### Exact Board Canvas stack
 
 The Canvas bottom-to-top order is:
 
 1. opaque background/grid;
-2. optional legacy Wizard photo;
-3. active canonical aligned photo, confirmed or current valid draft;
+2. optional Wizard primary-photo background;
+3. active aligned primary photo, confirmed or current valid draft;
 4. Wizard contour/candidates;
 5. alignment edit markers;
 6. canonical placements;
 7. badges, ghosts, warnings, status, and controls.
 
 The aligned-photo layer is clipped, pointer-ignored, and inside the existing
-InteractiveViewer. The newest valid confirmed layer is visible by default at
-UI-local opacity `0.65`. It remains immediately usable with zero components and
-while Known Facts is stale. Missing, unreadable, unsafe, escaping, or
-undecodable photos produce a nonblocking warning and no layer. Existing pan,
-zoom, fit, placement hit testing, focus, Wizard controls, wide/compact Fotod,
-and freshness presentation remain.
+InteractiveViewer. The newest valid confirmed primary layer is visible by
+default at UI-local opacity `0.65`. The separate Wizard-background visibility
+toggle and its initial state remain unchanged. The aligned layer stays usable
+with zero components and while Known Facts is stale. Missing, unreadable,
+unsafe, escaping, or undecodable primary bytes produce a nonblocking warning
+and no layer. Existing pan, zoom, fit, placement hit testing, focus, Wizard
+controls, wide/compact Fotod, and freshness presentation remain.
 
 ### Canonical and frozen product boundaries
 
@@ -154,6 +215,11 @@ routes, and platform files. Do not formalize `photo_reference_points_set` or
 `photo_layer_aligned`; do not add camera, EXIF, automatic point detection,
 automatic component creation, AI confirmation, homography, transform-matrix
 payloads, or persistent Canvas view state.
+
+The accepted Canonical Photo Import V1 implementation remains unchanged. Its
+events are additional visual evidence unless their path and SHA-256 match the
+Wizard primary-photo asset under the rule above. No automatic source switch,
+multi-photo fitting, fusion, or AI matching is authorized.
 
 ### Code Map lifecycle
 
@@ -176,19 +242,25 @@ only after accepted committed implementation.
 
 The child must cover exact and overdetermined similarity/affine, shear,
 reflection warning, deterministic reorder/residuals, every numeric and geometric
-degeneracy, accepted-event/reopen/latest selection, add/remove/reorder/switch,
-cancel zero-write, exactly-one confirm, writer durability, stale-generation
-protection, projection-stale immediate rendering, UI-local opacity/visibility,
-missing/unsafe photo warning, exact Canvas stack, Wizard coexistence,
-wide/compact/zero-component/read-only behavior, and zero unrelated writer calls.
+degeneracy, primary path/hash identity, durable-history reconciliation,
+accepted-event/reopen/latest-primary selection, add/remove/reorder/switch,
+cancel zero-write, first-confirm `+2`, later-confirm `+1`, writer durability,
+stale-generation protection before/between/after writes, projection-stale
+immediate rendering, no second picker, additional-photo noncompetition,
+UI-local opacity/visibility, missing/unsafe primary warning, exact Canvas stack,
+Wizard coexistence, wide/compact/zero-component/read-only behavior, and zero
+unrelated writer calls. The existing Python/Dart similarity singular-scale
+parity regression and selected-photo identity await guard remain green.
 
 Fresh child gates are focused Python/Dart/widget suites, import/session
 regressions, `flutter analyze --no-pub`, full `flutter test`, doctor,
 `validate_all`, both diff checks, exact twelve-path material, and empty staged/
 unmerged sets. Flutter commands run sequentially. Human Windows smoke is
-required after implementation for similarity, affine, mirror warning, cancel,
-confirm, reopen, missing file, wide, compact, and project switch during
-in-flight confirm. Do not claim manual smoke from automation.
+required after implementation for primary-photo no-reimport alignment, first
+confirm `+2`, later confirm `+1`, cancel zero-write, similarity, affine, mirror
+warning, reopen, additional-photo noncompetition, missing primary, wide,
+compact, and project switch during in-flight handoff. Do not claim manual smoke
+from automation.
 
 ```text
 TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
@@ -198,10 +270,12 @@ TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
 ```
 
 No second product child is armed. Stop on a fifth scope path, child path 13,
-map drift/conflict, frozen-owner/interface change, non-deterministic solver,
-uncontained photo rendering, stack/hit-test regression, canonical/electrical/
-AI/homography expansion, failed automation or human smoke, or any Codex stage,
-commit, push, reset, restore, stash, clean, install, or delete action.
+map drift/conflict, frozen-owner/interface change, inability to reconcile and
+reuse a durable primary identity, non-deterministic solver, uncontained photo
+resolution, stack/hit-test regression, additional-photo competition,
+canonical/electrical/AI/homography expansion, failed automation or human smoke,
+or any Codex stage, commit, push, reset, restore, stash, clean, install, or
+delete action.
 
 ## Accepted Canonical Photo Import V1 Code Map maintenance authority (historical, non-authorizing)
 

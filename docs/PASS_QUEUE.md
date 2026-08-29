@@ -5,26 +5,26 @@
 Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
 Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
 
-## Current Photo Alignment + Board Canvas V1 fast-lane scope queue
+## Current Photo Alignment + Board Canvas V1 primary-photo amendment queue
 
 Execute one Lane B
-`SCOPE_LOCK / DOCS_ONLY / HUMAN_SELECTED_FAST_LANE` at baseline
-`b742a8e2cbfca7f53c0895365b63328008aa2f02`, parent
-`c3a44856009141a9956ba483267b8265e05c6950`. Write exactly:
+`SCOPE_LOCK / DOCS_ONLY / PRIMARY_PHOTO_AMENDMENT` at baseline
+`56ce35f284dcfc124c8f05be933974c6754b6dfb`, parent
+`b742a8e2cbfca7f53c0895365b63328008aa2f02`. Write exactly:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
 3. `docs/PASS_QUEUE.md`
 4. `docs/audit/TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS.md`
-   (new)
 
 No fifth scope path is queued. Do not edit `docs/AUDIT_INDEX.md`, Code
 Maps/index, runtime, tests, tools, schemas, materializers, models,
 ProjectSession, packages, assets, platform/generated substantive bytes,
-`_incoming`, or scratch. The human-selected fast lane has no separate
-pre-implementation Claude audit, verdict block, ledger row, or Phase 2. This is
-a pass-specific exception only; it leaves child validation, human Windows
-smoke, post-implementation independent audit, and human staging/commit/push
+`_incoming`, or scratch. Preserve the exact existing twelve-path implementation
+material byte-for-byte. This amendment has no verdict block, ledger row, or
+Phase 2; independent amendment audit and exact human commit/push precede resumed
+implementation edits. Child validation, human Windows smoke,
+post-implementation independent audit, and human staging/commit/push remain
 mandatory.
 
 Reserve exactly one child:
@@ -45,15 +45,33 @@ Reserve exactly one child:
 
 No path 13 is queued. The child edits no docs or Code Maps.
 
-The product flow is Board Canvas `Fotod` selection of an accepted canonical
-photo, explicit board side, Similarity by default or Affine under Advanced,
-paired photo-pixel and board-normalized points, a provisional aligned preview
-with RMS/max residual, and explicit `Kinnita joondus`. Cancel and every draft
-control write nothing. Confirmation emits exactly one existing canonical
-`photo_to_board_alignment_confirmed`, applies the returned event through a
-captured-generation ProjectSession, and immediately renders the event-derived
-confirmed layer. A noncanonical Wizard background is eligible only after a
-separate canonical photo import.
+Within that preserved union, the primary-photo correction is expected to edit
+only `photo_event_read_model.dart`, `photo_event_writer.dart`,
+`photo_workbench_panel.dart`, `aligned_photo_layer.dart`,
+`board_canvas_screen.dart`, `photo_event_read_model_test.dart`,
+`photo_event_writer_test.dart`, and `board_canvas_screen_test.dart` as needed.
+The four validator/transform paths retain their current bytes and regressions;
+no path leaves or joins the twelve-path material set.
+
+The Wizard/project background relative path is the primary project photo and
+the only Photo Alignment V1 authoring source. Board Canvas `Fotod / Joondamine`
+presents it as `Projekti foto` without another picker, import, or canonical-photo
+selector. The human chooses board side, Similarity by default or Affine under
+Advanced, pairs photo-pixel and board-normalized points, previews residuals,
+and explicitly invokes `Kinnita joondus`. With no Wizard background, alignment
+authoring is unavailable with clear guidance. Wizard-background visibility and
+its initial state remain an independent UI-local choice.
+
+On confirm, safely re-resolve/decode/hash the current primary file. Reuse the
+lowest-sequence accepted `photo_added` whose safe relative path and SHA-256 both
+match. Reconcile durable `events.jsonl` before allocation so uncertain prior
+outcomes are reused. If absent, append/apply exactly one `photo_added` for the
+existing file using `mode: normal`, no layer, the Wizard relative path, and
+computed SHA-256; copy no file. Only in the same captured project/session append
+and apply `photo_to_board_alignment_confirmed`. First confirmation is `+2` only
+when identity is absent; later confirmation is `+1`; cancel is zero-write. A
+durable photo identity survives later alignment failure, uncertain handoff
+stops before alignment, and stale generation never mutates a newer session.
 
 Similarity requires at least two pairs and a positive uniform scale; Affine
 requires at least three and permits shear. Extra pairs use deterministic least
@@ -67,17 +85,23 @@ The writer preserves the import-service interface boundary and uses the
 unchanged generic Python locked append/readback path. Harden only alignment
 validation and focused Python tests; do not patch the frozen JSON Schema. The
 Dart read model derives accepted photos and valid confirmed alignments from
-events, selects the greatest valid V1 sequence after reopen, and remains
-independent of Known Facts. Stale session generation cannot mutate a newer
-session.
+events, classifies primary identity by Wizard path plus current SHA-256, and
+selects the greatest valid V1 alignment only for that primary after reopen.
+Non-primary alignments stay in canonical history but are not the V1 authoring
+source or active/default Canvas layer. Known Facts remains independent.
 
-Render a safely resolved, project-contained photo in the existing
+Render the safely resolved, project-contained primary photo in the existing
 `InteractiveViewer`, clipped and pointer-ignored, at default UI-local opacity
-`0.65`. Exact bottom-to-top order is background/grid, optional Wizard photo,
-active canonical aligned photo, Wizard contour/candidates, alignment markers,
+`0.65`. Exact bottom-to-top order is background/grid, optional Wizard primary
+background, active aligned primary photo, Wizard contour/candidates, alignment markers,
 canonical placements, then badges/ghosts/warnings/status/controls. Missing or
 unsafe files warn without blocking Canvas. Preserve pan/zoom/fit, placement hit
 testing, zero-component use, wide/compact `Fotod`, and Wizard coexistence.
+
+Keep `Impordi ja lisa` as a visually secondary additional-photo-evidence flow
+for detail, alternate-angle, microscope, and other visual evidence. Additional
+photos do not automatically compete with, replace, merge with, multi-align
+with, fuse with, or AI-match against the primary project photo.
 
 Alignment remains geometric/visual evidence only and never establishes
 component/net/measurement/damage/diagnosis/repair truth. No AI confirmation,
@@ -86,12 +110,15 @@ formalization, schema/model/materializer/ProjectSession/import/Wizard/ZIP
 redesign, or persistent Canvas view state is queued.
 
 Require exact transform, validator, read-model, writer, session, and Board
-Canvas tests; import-service and ProjectSession regressions; sequential
-`flutter analyze --no-pub` and Flutter tests; doctor, full validation, both diff
-checks; exact twelve-path/freeze/staged/unmerged proof; and human Windows smoke
-for similarity, affine, mirror warning, cancel, confirm, reopen, missing file,
-wide/compact Canvas, and an in-flight project switch. No automated run may
-claim the human smoke.
+Canvas tests; no-reimport/no-picker primary flow; path/hash reuse and durable-
+history reconciliation; first-confirm `+2`, later-confirm `+1`, cancel zero;
+additional-photo noncompetition; import-service and ProjectSession regressions;
+the existing singular-scale parity and selected-photo await-identity fixes;
+sequential `flutter analyze --no-pub` and Flutter tests; doctor, full
+validation, both diff checks; and exact twelve-path/freeze/staged/unmerged
+proof. Human Windows smoke covers those event counts plus similarity, affine,
+mirror warning, reopen, missing primary, wide/compact Canvas, and in-flight
+project switch. No automated run may claim the human smoke.
 
 All relevant maps are `MAINTAINED` at entry. After accepted committed child
 source, separately scope only the actual `UPDATE_REQUIRED` and newly qualified
@@ -105,10 +132,11 @@ TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS
 ```
 
 Stop on baseline/route/map drift, a fifth scope path, child path 13, frozen
-owner/interface expansion, non-deterministic geometry, unsafe photo resolution,
-Canvas stack/hit-test regression, canonical/electrical/AI/homography expansion,
-failed validation or human smoke, or any Codex stage, commit, push, reset,
-restore, stash, clean, install, or delete action.
+owner/interface expansion, inability to reconcile/reuse a durable primary
+identity, non-deterministic geometry, unsafe photo resolution, additional-photo
+competition, Canvas stack/hit-test regression, canonical/electrical/AI/
+homography expansion, failed validation or human smoke, or any Codex stage,
+commit, push, reset, restore, stash, clean, install, or delete action.
 
 ## Accepted Canonical Photo Import V1 Code Map maintenance queue (historical, non-authorizing)
 

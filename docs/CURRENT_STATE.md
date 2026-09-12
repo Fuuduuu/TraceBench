@@ -1,9 +1,39 @@
 # Current State
 
-Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_ROUTE_CLOSEOUT_PASS`
-Next recommended pass: `Board Canvas Single Shell UI`
+Current pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
 
-## Photo Alignment completion and next product handoff
+## Single Shell UI implementation scope
+
+The scope-authoring baseline is `main` at
+`HEAD == origin/main == 6fd9692409fc491c64f26f306f584b531ecae3c1`, subject
+`docs: close photo alignment route`. Photo Alignment remains complete at
+`36cd8d9d4a3751ce9760bb1cc649c497b754760b` and its implementation freeze is spent.
+
+The human-approved **Board Canvas Single Shell UI** direction now has an exact
+five-path implementation reservation: router and Board Canvas production owners
+plus the existing gate, shell, and Canvas widget suites. No implementation is
+performed by this docs-only action. `docs/ACTIVE_SCOPE_LOCK.md` owns the current
+five-document write set and future five-file reservation; the dedicated
+`docs/audit/TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS.md` owns the
+source-verified contract and design exceptions. `docs/PASS_QUEUE.md` owns the
+acceptance-to-implementation sequence.
+
+The shared shell's exported destination inventory is reused unchanged; only
+the primary Canvas bypasses outer chrome. Home and mode semantics, all existing
+destinations, secondary shells, project recovery, and canonical/photo behavior
+remain intact. Scope implementation authority is conditional on independent
+scope acceptance and human push, with no extra sync or design-approval cycle.
+
+The committed map deferment remains explicit and non-blocking: source/tests
+and actual diff are authoritative, stale maps are navigation aids only, and one
+combined refresh follows the committed UI implementation. No maps or registry
+statuses change in this scope or the implementation.
+
+## Completed Photo Alignment handoff (historical, non-authorizing)
+
+All following predecessor sections are historical. Their embedded live route
+and authority wording does not override the current scope above.
 
 `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1` is complete by human confirmation.
 Its implementation is committed and pushed at

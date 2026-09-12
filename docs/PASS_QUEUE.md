@@ -2,10 +2,49 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_ROUTE_CLOSEOUT_PASS`
-Next: `Board Canvas Single Shell UI`
+Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
 
-## Current closeout and approved product sequence
+## Current Single Shell UI scope and implementation sequence
+
+The current Lane A / `DOCS_SYNC` action authors only the five documentation
+paths in `docs/ACTIVE_SCOPE_LOCK.md`. It reserves one Lane A / `FLUTTER_PASS`:
+`TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`, limited to the router,
+Board Canvas host, and three existing widget suites listed exactly in that
+lock. The binding scope artifact records the source/test rationale, approved
+external design, responsive contract, protected exclusions, and validation.
+
+```text
+TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS
+-> independent scope audit and bounded verdict recording
+-> exact human scope commit/push
+-> TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS
+-> automated validation and human Windows smoke
+-> independent implementation audit and exact human commit/push
+-> one combined committed-source Code Map refresh
+```
+
+No active-lock sync, new design cycle, or prerequisite map-maintenance pass is
+queued. The later combined refresh is not named or armed here. Code Maps are
+known stale after completed Photo Alignment; under the committed human
+deferment this is not a blocker for the UI implementation. Use committed
+source/tests and actual diff as authority, verify every stale-map claim used,
+and leave map files, statuses, and registry unchanged until the combined refresh.
+
+Primary `/project` receives one Canvas-owned instrument bar and transient
+project navigation. Preserve all existing destinations, null-project recovery,
+Home close-and-navigate behavior, mode state, secondary shell behavior, Canvas
+tools/context/status, and canonical/photo paths. Stop if the exact five-file
+implementation needs another owner or a protected semantic change.
+
+Photo Alignment stays complete at
+`36cd8d9d4a3751ce9760bb1cc649c497b754760b`; the scope-authoring baseline is its
+route-closeout commit `6fd9692409fc491c64f26f306f584b531ecae3c1`.
+
+## Completed Photo Alignment closeout queue (historical, non-authorizing)
+
+All following predecessor queues retain history only; their active-route and
+allowlist wording is superseded by the current sequence above.
 
 The current Lane A / `DOCS_SYNC` closeout writes only the three route owners
 named in `docs/ACTIVE_SCOPE_LOCK.md`. Photo Alignment is complete; implementation

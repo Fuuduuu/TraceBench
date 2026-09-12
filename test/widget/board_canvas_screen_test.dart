@@ -1473,6 +1473,167 @@ FootprintTemplate _geometryTemplateWithPinCount(
 }
 
 void main() {
+  testWidgets('single shell measures routed canvas area', (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    for (final viewport in [const Size(1440, 860), const Size(1500, 900)]) {
+      await tester.binding.setSurfaceSize(viewport);
+      await tester
+          .pumpWidget(_routerHarness(projectState: _componentNavigatorState()));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('board_canvas_context_panel')), findsNothing);
+      expect(
+          find.byKey(const Key('board_canvas_workbench_rail')), findsOneWidget);
+      final size = tester
+          .getSize(find.byKey(const Key('board_canvas_workbench_canvas_zone')));
+      debugPrint('CANVAS_AREA viewport=${viewport.width}x${viewport.height} '
+          'freshness=fresh focus=false context=hidden '
+          'width=${size.width} height=${size.height} area=${size.width * size.height}');
+      // Recorded with the same routed fixture before the production edit.
+      final baselineArea = viewport.width == 1440 ? 707292 : 792132;
+      expect(size.width * size.height, greaterThan(baselineArea));
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('single shell responsive chrome preserves tools and status',
+      (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester
+        .pumpWidget(_routerHarness(projectState: _componentNavigatorState()));
+    for (final width in <double>[
+      360,
+      390,
+      899,
+      900,
+      935,
+      936,
+      937,
+      959,
+      960,
+      1227,
+      1228,
+      1229,
+      1500
+    ]) {
+      await tester.binding.setSurfaceSize(Size(width, 844));
+      await tester.pumpAndSettle();
+      expect(find.byType(WorkbenchShell), findsNothing, reason: '$width px');
+      expect(find.byKey(const Key('workbench-wide-navigation')), findsNothing);
+      expect(find.byKey(const Key('workbench-breadcrumb')), findsNothing);
+      expect(
+          find.byKey(const Key('board_canvas_instrument_bar')), findsOneWidget);
+      expect(find.byType(AppBar), findsOneWidget);
+      expect(find.byKey(const Key('workbench-home-button')), findsOneWidget);
+      expect(find.text('Algaja'), findsOneWidget);
+      expect(find.text('Edasijõudnu'), findsOneWidget);
+      expect(find.byKey(const Key('board_canvas_read_only_status_pill')),
+          findsOneWidget);
+      expect(find.byKey(const Key('renderer_writes_none')), findsOneWidget);
+      expect(find.byKey(const Key('board_canvas_status_bar')), findsOneWidget);
+      if (width >= 936) {
+        // The existing 900 px Canvas breakpoint follows 36 px of padding.
+        expect(find.byKey(const Key('board_canvas_workbench_rail')),
+            findsOneWidget);
+        expect(find.byKey(const Key('board_canvas_measure_sheet_button')),
+            findsOneWidget);
+        for (final tool in [
+          'photos',
+          'add_component',
+          'inspector',
+          'placements',
+          'safety_evidence'
+        ]) {
+          expect(find.byKey(Key('board_canvas_rail_${tool}_tool')),
+              findsOneWidget);
+        }
+        for (final tool in ['future_trace', 'future_repair_map']) {
+          expect(
+              tester
+                  .widget<IconButton>(
+                      find.byKey(Key('board_canvas_rail_${tool}_tool')))
+                  .onPressed,
+              isNull);
+        }
+        await tester.tap(
+            find.byKey(const Key('board_canvas_rail_safety_evidence_tool')));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('board_canvas_context_panel')),
+            findsOneWidget);
+        expect(tester.takeException(), isNull,
+            reason: 'Open context at $width px');
+        await tester
+            .tap(find.byKey(const Key('board_canvas_focus_toggle_button')));
+        await tester.pumpAndSettle();
+        expect(
+            find.byKey(const Key('board_canvas_context_panel')), findsNothing);
+        expect(
+            find.byKey(const Key('board_canvas_workbench_rail')), findsNothing);
+        expect(find.byKey(const Key('board_canvas_instrument_bar')),
+            findsOneWidget);
+        expect(find.byKey(const Key('renderer_writes_none')), findsOneWidget);
+        await tester
+            .tap(find.byKey(const Key('board_canvas_focus_restore_button')));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('board_canvas_context_panel')),
+            findsOneWidget);
+      } else {
+        expect(
+            find.byKey(const Key('board_canvas_control_band')), findsOneWidget);
+        expect(find.byKey(const Key('board_canvas_measure_sheet_button')),
+            findsOneWidget);
+        expect(
+            find.byKey(const Key('board_canvas_placement_selector_disclosure')),
+            findsOneWidget);
+        expect(find.byKey(const Key('board_canvas_safety_evidence_disclosure')),
+            findsOneWidget);
+      }
+      expect(tester.takeException(), isNull, reason: '$width px');
+    }
+  });
+
+  for (final freshness in [
+    ProjectionFreshness.stale,
+    ProjectionFreshness.unknown
+  ]) {
+    testWidgets(
+        'single shell keeps $freshness banner below the bar with long identity',
+        (tester) async {
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final state = _inlineProjectState(
+        components: _navigatorComponents,
+        placements: _navigatorPlacements,
+        projectId:
+            'A very long project identity that must remain usable in compact navigation',
+        projectionFreshness: freshness,
+        isProjectionStale: freshness == ProjectionFreshness.stale,
+      );
+      await tester.pumpWidget(_routerHarness(projectState: state));
+      for (final width in <double>[390, 1500]) {
+        await tester.binding.setSurfaceSize(Size(width, 844));
+        await tester.pumpAndSettle();
+        final bar = tester
+            .getRect(find.byKey(const Key('board_canvas_instrument_bar')));
+        final banner = tester.getRect(find.byType(ProjectionStaleBanner));
+        expect(banner.top, closeTo(bar.bottom, 0.01));
+        expect(
+            find.text(freshness == ProjectionFreshness.unknown
+                ? ProjectionStaleBanner.unknownPrimaryText
+                : ProjectionStaleBanner.primaryText),
+            findsOneWidget);
+        expect(
+            find.byKey(const Key('board_canvas_status_bar')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
+        await tester.pumpAndSettle();
+        expect(find.byType(CheckedPopupMenuItem<String>), findsNWidgets(12));
+        await tester.tapAt(const Offset(2, 800));
+        await tester.pumpAndSettle();
+        expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+        expect(_readProjectState(tester), same(state));
+        expect(tester.takeException(), isNull, reason: '$width px');
+      }
+    });
+  }
+
   group('canonical photo import workbench', () {
     testWidgets('wide rail and compact Fotod affordance open the same panel',
         (tester) async {
@@ -3894,6 +4055,10 @@ void main() {
     testWidgets(
         'canonical placement selection ring stays above visible Wizard layers',
         (tester) async {
+      // Preserve this fixed-pixel fixture's Canvas size: the instrument bar
+      // grew by 8 px, so the original 800x600 viewport grows by the same amount.
+      await tester.binding.setSurfaceSize(const Size(800, 608));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
       const boundaryKey = Key('board_canvas_placement_composite');
       final tempDirectory = Directory.systemTemp
           .createTempSync('tracebench_placement_composite_');
@@ -6082,8 +6247,10 @@ void main() {
 
     final appBarSize = tester.getSize(find.byType(AppBar));
 
-    expect(appBarSize.height, lessThanOrEqualTo(40));
-    expect(find.text('Board Canvas'), findsOneWidget);
+    expect(appBarSize.height, inInclusiveRange(44, 45));
+    expect(
+        find.byKey(const Key('board_canvas_instrument_bar')), findsOneWidget);
+    expect(find.text('proj_001 · Board Canvas'), findsOneWidget);
     expect(
       find.byKey(const Key('board_canvas_read_only_status_pill')),
       findsOneWidget,
@@ -7082,7 +7249,7 @@ void main() {
     expect(state.events, isEmpty);
   });
 
-  testWidgets('routed Board Canvas stays rich across the shell cutover',
+  testWidgets('routed Board Canvas stays rich across former shell cutovers',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(959, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -7099,47 +7266,32 @@ void main() {
     final container = ProviderScope.containerOf(
       tester.element(find.byType(BoardCanvasScreen)),
     );
-    const widths = <({double width, bool persistent})>[
-      (width: 959, persistent: false),
-      (width: 960, persistent: false),
-      (width: 1227, persistent: false),
-      (width: 1228, persistent: true),
-      (width: 1229, persistent: true),
-      (width: 1500, persistent: true),
-    ];
+    const widths = <double>[959, 960, 1227, 1228, 1229, 1500];
 
-    for (final expectation in widths) {
-      await tester.binding.setSurfaceSize(Size(expectation.width, 800));
+    for (final width in widths) {
+      await tester.binding.setSurfaceSize(Size(width, 800));
       await tester.pumpAndSettle();
 
+      expect(find.byType(WorkbenchShell, skipOffstage: false), findsNothing,
+          reason: '$width px');
+      expect(find.byKey(const Key('workbench-wide-navigation')), findsNothing);
       expect(
-        find.byType(WorkbenchShell, skipOffstage: false),
-        findsOneWidget,
-        reason: '${expectation.width} px',
-      );
+          find.byKey(const Key('workbench-compact-menu-button')), findsNothing);
       expect(
-        find.byKey(const Key('workbench-wide-navigation')),
-        expectation.persistent ? findsOneWidget : findsNothing,
-        reason: '${expectation.width} px',
-      );
-      expect(
-        find.byKey(const Key('workbench-compact-menu-button')),
-        expectation.persistent ? findsNothing : findsOneWidget,
-        reason: '${expectation.width} px',
-      );
+          find.byKey(const Key('board_canvas_project_menu')), findsOneWidget);
       expect(
         find.byKey(const Key('board_canvas_workbench_shell')),
         findsOneWidget,
-        reason: '${expectation.width} px',
+        reason: '$width px',
       );
       expect(
         find.byKey(const Key('board_canvas_control_band')),
         findsNothing,
-        reason: '${expectation.width} px',
+        reason: '$width px',
       );
       expect(container.read(projectStateProvider), same(state),
-          reason: '${expectation.width} px');
-      expect(tester.takeException(), isNull, reason: '${expectation.width} px');
+          reason: '$width px');
+      expect(tester.takeException(), isNull, reason: '$width px');
     }
   });
 

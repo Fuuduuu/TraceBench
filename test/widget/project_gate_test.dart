@@ -424,7 +424,7 @@ void main() {
   });
 
   testWidgets(
-      'all 15 loaded project destinations retain one gate and shell identity',
+      'all 15 loaded project destinations retain one gate and secondary shell identity',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1500, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -447,8 +447,8 @@ void main() {
       projectState: loaded,
       addComponentWriter: writer,
     );
-    final shellElement = tester.element(find.byType(WorkbenchShell));
-    final shellState = tester.state(find.byType(WorkbenchShell));
+    Element? shellElement;
+    State? shellState;
     final eventsIdentityBefore = loaded.events;
     final eventValuesBefore =
         loaded.events.map((event) => event.toJson()).toList(growable: false);
@@ -471,17 +471,21 @@ void main() {
           reason: destination.path);
       expect(
         find.byType(WorkbenchShell, skipOffstage: false),
-        findsOneWidget,
+        destination.path == '/project' ? findsNothing : findsOneWidget,
         reason: destination.path,
       );
       expect(find.text('Projekt pole avatud'), findsNothing,
           reason: destination.path);
       expect(find.byType(destination.childType), findsOneWidget,
           reason: destination.path);
-      expect(tester.element(find.byType(WorkbenchShell)), same(shellElement),
-          reason: destination.path);
-      expect(tester.state(find.byType(WorkbenchShell)), same(shellState),
-          reason: destination.path);
+      if (destination.path != '/project') {
+        shellElement ??= tester.element(find.byType(WorkbenchShell));
+        shellState ??= tester.state(find.byType(WorkbenchShell));
+        expect(tester.element(find.byType(WorkbenchShell)), same(shellElement),
+            reason: destination.path);
+        expect(tester.state(find.byType(WorkbenchShell)), same(shellState),
+            reason: destination.path);
+      }
       expect(session.container.read(projectStateProvider), same(loaded),
           reason: destination.path);
       expect(loaded.events, same(eventsIdentityBefore),
@@ -530,6 +534,37 @@ void main() {
     expect(find.text('Projekt pole avatud'), findsOneWidget);
   });
 
+  testWidgets(
+      'single shell retains Material during an unsettled secondary transition',
+      (tester) async {
+    final loaded = (await ProjectLoader.loadFromAssets())
+        .copyWith(isProjectionStale: true);
+    final router = buildTraceBenchRouter(
+      initialLocation: '/project/overview',
+      homeBuilder: (_) => const SizedBox.shrink(),
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        projectStateProvider.overrideWith(() => SeededProjectSession(loaded)),
+      ],
+      child: MaterialApp.router(routerConfig: router),
+    ));
+
+    // Navigate before the outgoing page's scheduled rebuilds have settled.
+    router.go('/project');
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
+    expect(find.byType(BoardCanvasScreen), findsOneWidget);
+    final container = ProviderScope.containerOf(
+        tester.element(find.byType(BoardCanvasScreen)));
+    expect(container.read(projectStateProvider), same(loaded));
+    expect(loaded.projectionFreshness, ProjectionFreshness.stale);
+  });
+
   testWidgets('project shell preserves nested push and pop behavior',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 800));
@@ -540,9 +575,9 @@ void main() {
       initialLocation: '/project',
       projectState: loaded,
     );
-    final shellElement = tester.element(find.byType(WorkbenchShell));
-    final shellState = tester.state(find.byType(WorkbenchShell));
-
+    expect(find.byType(ProjectGate), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
+    expect(find.byType(BoardCanvasScreen), findsOneWidget);
     session.router.push('/project/overview');
     await tester.pumpAndSettle();
 
@@ -551,8 +586,6 @@ void main() {
     expect(find.byType(ProjectGate), findsOneWidget);
     expect(find.byType(WorkbenchShell), findsOneWidget);
     expect(find.byType(ProjectOverviewScreen), findsOneWidget);
-    expect(tester.element(find.byType(WorkbenchShell)), same(shellElement));
-    expect(tester.state(find.byType(WorkbenchShell)), same(shellState));
     expect(session.container.read(projectStateProvider), same(loaded));
 
     session.router.pop();
@@ -561,10 +594,8 @@ void main() {
     expect(session.router.routerDelegate.state.uri.path, '/project');
     expect(session.router.routeInformationProvider.value.uri.path, '/project');
     expect(find.byType(ProjectGate), findsOneWidget);
-    expect(find.byType(WorkbenchShell), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
     expect(find.byType(BoardCanvasScreen), findsOneWidget);
-    expect(tester.element(find.byType(WorkbenchShell)), same(shellElement));
-    expect(tester.state(find.byType(WorkbenchShell)), same(shellState));
     expect(session.container.read(projectStateProvider), same(loaded));
   });
 

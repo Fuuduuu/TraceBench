@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -272,6 +273,131 @@ Future<void> _pumpUntilRouterPath(
 }
 
 void main() {
+  for (final width in <double>[390, 1500]) {
+    testWidgets('single shell project menu reaches every destination at $width',
+        (tester) async {
+      final session = await _pumpRouter(tester,
+          initialLocation: '/project', surfaceSize: Size(width, 844));
+      final original = session.loadedProject.debugJson;
+      final generation =
+          session.container.read(projectStateProvider.notifier).generation;
+      final files = {
+        for (final file in session.projectDirectory
+            .listSync(recursive: true)
+            .whereType<File>())
+          file.path: file.readAsBytesSync(),
+      };
+      for (final destination in workbenchDestinations) {
+        session.router.go('/project');
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
+        await tester.pumpAndSettle();
+        final entries = tester
+            .widgetList<PopupMenuEntry<String>>(find.byWidgetPredicate(
+                (widget) => widget is PopupMenuEntry<String>))
+            .whereType<CheckedPopupMenuItem<String>>()
+            .toList();
+        expect(entries.map((entry) => entry.value),
+            orderedEquals(workbenchDestinations.map((item) => item.location)));
+        expect(
+            entries.where((entry) => entry.checked).single.value, '/project');
+        final item = find.byKey(Key('workbench-destination-${destination.id}'));
+        await tester.ensureVisible(item);
+        await tester.tap(item);
+        await _pumpUntilRouterPath(
+            tester, session.router, destination.location);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(
+            session.router.routerDelegate.state.uri.path, destination.location);
+        expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+        expect(find.byType(WorkbenchShell),
+            destination.location == '/project' ? findsNothing : findsOneWidget);
+        expect(session.container.read(projectStateProvider),
+            same(session.loadedProject));
+        expect(session.loadedProject.debugJson, original);
+        expect(session.container.read(projectStateProvider.notifier).generation,
+            generation);
+        expect(
+            session.addWriter.calls +
+                session.editWriter.calls +
+                session.placementWriter.calls +
+                session.measurementWriter.calls,
+            0);
+        expect({
+          for (final file in session.projectDirectory
+              .listSync(recursive: true)
+              .whereType<File>())
+            file.path: file.readAsBytesSync()
+        }, files);
+        expect(tester.takeException(), isNull);
+      }
+      session.router.go('/project');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(2, 800));
+      await tester.pumpAndSettle();
+      expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+      await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+      expect(session.router.routerDelegate.state.uri.path, '/project');
+    });
+  }
+
+  testWidgets(
+      'single shell modes survive navigation and Home closes without writes',
+      (tester) async {
+    final session = await _pumpRouter(tester, initialLocation: '/project');
+    final notifier = session.container.read(projectStateProvider.notifier);
+    final generation = notifier.generation;
+    final original = session.loadedProject.debugJson;
+    final files = {
+      for (final file in session.projectDirectory
+          .listSync(recursive: true)
+          .whereType<File>())
+        file.path: file.readAsBytesSync()
+    };
+    final fixture = File(
+        '${session.projectDirectory.path}${Platform.pathSeparator}fixture.txt');
+    await tester.tap(find.text('Edasijõudnu'));
+    await tester.pumpAndSettle();
+    expect(session.container.read(beginnerModeProvider), isFalse);
+    session.router.go('/project/overview');
+    await tester.pumpAndSettle();
+    session.router.go('/project');
+    await tester.pumpAndSettle();
+    expect(session.container.read(beginnerModeProvider), isFalse);
+    await tester.tap(find.text('Algaja'));
+    await tester.pumpAndSettle();
+    expect(session.container.read(beginnerModeProvider), isTrue);
+    expect(notifier.generation, generation);
+    await tester.tap(find.text('Edasijõudnu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('workbench-home-button')));
+    await tester.pumpAndSettle();
+    expect(session.router.routerDelegate.state.uri.path, '/');
+    expect(session.container.read(projectStateProvider), isNull);
+    expect(notifier.generation, generation + 1);
+    expect(session.container.read(beginnerModeProvider), isFalse);
+    expect(session.loadedProject.debugJson, original);
+    expect(fixture.readAsStringSync(), 'unchanged');
+    expect({
+      for (final file in session.projectDirectory
+          .listSync(recursive: true)
+          .whereType<File>())
+        file.path: file.readAsBytesSync()
+    }, files);
+    expect(
+        session.addWriter.calls +
+            session.editWriter.calls +
+            session.placementWriter.calls +
+            session.measurementWriter.calls,
+        0);
+  });
+
   test('owns the exact ordered top-level destination inventory', () {
     final locations = workbenchDestinations
         .map((destination) => destination.location)
@@ -753,6 +879,8 @@ void main() {
     ];
 
     for (final destination in destinations) {
+      session.router.go('/project/overview');
+      await _pumpUntilRouterPath(tester, session.router, '/project/overview');
       final destinationControl = find.byKey(
         Key('workbench-destination-${destination.id}'),
       );
@@ -775,10 +903,11 @@ void main() {
         session.router.routeInformationProvider.value.uri.path,
         destination.location,
       );
-      expect(find.byType(WorkbenchShell), findsOneWidget);
+      expect(find.byType(WorkbenchShell),
+          destination.location == '/project' ? findsNothing : findsOneWidget);
       expect(
         find.byType(WorkbenchShell, skipOffstage: false),
-        findsOneWidget,
+        destination.location == '/project' ? findsNothing : findsOneWidget,
       );
       expect(
         session.container.read(projectStateProvider),
@@ -846,13 +975,15 @@ void main() {
     session.router.go('/project/board-canvas');
     await tester.pumpAndSettle();
     expect(session.router.routeInformationProvider.value.uri.path, '/project');
-    expect(find.byType(WorkbenchShell), findsOneWidget);
+    expect(find.byType(WorkbenchShell), findsNothing);
+    await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
+    await tester.pumpAndSettle();
     expect(
       tester
-          .widget<ListTile>(
+          .widget<CheckedPopupMenuItem<String>>(
             find.byKey(const Key('workbench-destination-board-canvas')),
           )
-          .selected,
+          .checked,
       isTrue,
     );
   });

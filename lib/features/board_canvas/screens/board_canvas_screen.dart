@@ -22,12 +22,14 @@ import '../../photos/logic/photo_alignment_transform.dart';
 import '../../photos/services/photo_event_writer.dart';
 import '../../photos/services/photo_import_service.dart';
 import '../../photos/widgets/photo_workbench_panel.dart';
+import '../../project/widgets/workbench_shell.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/session/beginner_mode_provider.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
 part '../rendering/wizard_intake_overlay.part.dart';
@@ -52,7 +54,7 @@ String? _firstPresentText(Iterable<String?> values) {
   return null;
 }
 
-const double _kCompactBoardCanvasAppBarHeight = 36;
+const double _kCompactBoardCanvasAppBarHeight = 44;
 const double _kCompactControlTileHeight = 34;
 const double _kCompactControlIconSize = 16;
 const double _kWorkbenchRailWidth = 92;
@@ -2694,67 +2696,143 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return Scaffold(
       backgroundColor: BoardCanvasPalette.shell,
       appBar: AppBar(
+        key: const Key('board_canvas_instrument_bar'),
         toolbarHeight: _kCompactBoardCanvasAppBarHeight,
         backgroundColor: BoardCanvasPalette.paper,
         foregroundColor: BoardCanvasPalette.navy,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
+        automaticallyImplyLeading: false,
         leadingWidth: 36,
-        titleSpacing: 0,
-        title: Text(
-          'Board Canvas',
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: BoardCanvasPalette.navy,
-            fontWeight: FontWeight.w700,
-          ),
+        leading: IconButton(
+          key: const Key('workbench-home-button'),
+          tooltip: 'BenchBeep Home',
+          padding: EdgeInsets.zero,
+          iconSize: 20,
+          onPressed: () {
+            ref.read(projectStateProvider.notifier).closeProject();
+            context.go('/');
+          },
+          icon: const Icon(Icons.home_outlined),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Center(
-              child: Container(
-                key: const Key('board_canvas_read_only_status_pill'),
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                decoration: BoxDecoration(
-                  color: BoardCanvasPalette.readyTint,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: BoardCanvasPalette.ready.withValues(alpha: 0.54),
-                  ),
-                ),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 222),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: BoardCanvasPalette.ready,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          'Renderdus loeb · Salvesta võib kirjutada',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: BoardCanvasPalette.navy,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.4,
+        titleSpacing: 0,
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 900;
+            final manifest = ref.watch(projectStateProvider)?.manifest;
+            final projectName = manifest?.projectName?.trim();
+            final identity = projectName != null && projectName.isNotEmpty
+                ? projectName
+                : manifest?.projectId ?? 'Projekt';
+            final beginnerMode = ref.watch(beginnerModeProvider);
+            const safetyText = 'Renderdus loeb · Salvesta võib kirjutada';
+            return Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: PopupMenuButton<String>(
+                      key: const Key('board_canvas_project_menu'),
+                      tooltip: 'Ava projekti navigatsioon: $identity',
+                      position: PopupMenuPosition.under,
+                      onSelected: (location) => context.go(location),
+                      itemBuilder: (_) => [
+                        for (final destination in workbenchDestinations)
+                          CheckedPopupMenuItem<String>(
+                            key: Key('workbench-destination-${destination.id}'),
+                            value: destination.location,
+                            checked: destination.location == '/project',
+                            child: Text(destination.label),
                           ),
+                      ],
+                      child: Container(
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: BoardCanvasPalette.ruleStrong),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                compact ? identity : '$identity · Board Canvas',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: BoardCanvasPalette.navy,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.expand_more, size: 18),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
+                const SizedBox(width: 4),
+                Tooltip(
+                  message: safetyText,
+                  child: Semantics(
+                    label: safetyText,
+                    excludeSemantics: true,
+                    child: Container(
+                      key: const Key('board_canvas_read_only_status_pill'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 3, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: BoardCanvasPalette.readyTint,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                            color: BoardCanvasPalette.ready
+                                .withValues(alpha: 0.54)),
+                      ),
+                      child: Text(
+                        compact ? 'Renderdus\nloeb' : safetyText,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: BoardCanvasPalette.navy,
+                          fontSize: compact ? 9 : 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                ToggleButtons(
+                  key: const Key('workbench-beginner-mode-button'),
+                  isSelected: [beginnerMode, !beginnerMode],
+                  onPressed: (index) {
+                    ref.read(beginnerModeProvider.notifier).state = index == 0;
+                  },
+                  constraints: const BoxConstraints(minHeight: 32),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  borderRadius: BorderRadius.circular(6),
+                  borderColor: BoardCanvasPalette.ruleStrong,
+                  selectedBorderColor: BoardCanvasPalette.ruleStrong,
+                  color: BoardCanvasPalette.muted,
+                  selectedColor: BoardCanvasPalette.navy,
+                  fillColor: BoardCanvasPalette.readyTint,
+                  textStyle: const TextStyle(fontSize: 10),
+                  children: const [
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        child: Text('Algaja')),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        child: Text('Edasijõudnu')),
+                  ],
+                ),
+                const SizedBox(width: 4),
+              ],
+            );
+          },
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(height: 1, color: BoardCanvasPalette.rule),

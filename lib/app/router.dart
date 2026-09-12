@@ -41,8 +41,14 @@ GoRouter buildTraceBenchRouter({
                 const NewProjectWizardScreen(),
           ),
           ShellRoute(
-            builder: (_, __, child) => ProjectGate(
-              child: WorkbenchShell(child: child),
+            builder: (_, state, child) => ProjectGate(
+              child: state.topRoute?.name == 'board-canvas'
+                  ? Material(
+                      // Outgoing secondary pages may still rebuild here.
+                      type: MaterialType.transparency,
+                      child: child,
+                    )
+                  : WorkbenchShell(child: child),
             ),
             routes: [
               GoRoute(

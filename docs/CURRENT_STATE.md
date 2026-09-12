@@ -1,9 +1,42 @@
 # Current State
 
-Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_ROUTE_CLOSEOUT_PASS`
+Next recommended pass: `Board Canvas Single Shell UI`
 
-## Live Photo Alignment + Board Canvas V1 primary-photo scope amendment
+## Photo Alignment completion and next product handoff
+
+`TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1` is complete by human confirmation.
+Its implementation is committed and pushed at
+`36cd8d9d4a3751ce9760bb1cc649c497b754760b`, subject
+`feat: add photo alignment board canvas v1`. At closeout verification,
+`C:\dev\TraceBench` is on `main` with `HEAD == origin/main` at that commit.
+The commit contains the twelve implementation paths reserved by the old scope.
+This records completion and verified Git facts; it does not invent or restate
+manual-smoke results or an independent implementation-audit verdict.
+
+The old Photo Alignment scope, child reservation, and implementation freeze
+have expired. `docs/ACTIVE_SCOPE_LOCK.md` now owns the three-file closeout
+authority and the approved **Board Canvas Single Shell UI** direction from
+the human-identified **Board Canvas Single Shell — Design Review**.
+`docs/PASS_QUEUE.md` owns the next-work sequence. No UI implementation is
+authored in this closeout.
+
+Code Maps are knowingly stale. The explicit human deferment in
+`docs/ACTIVE_SCOPE_LOCK.md` makes this non-blocking for the next UI pass:
+committed source/diff is authority, stale maps are navigation aids only, and
+one refresh follows the committed Single Shell UI implementation. Map files,
+statuses, and registry remain unchanged now.
+
+The existing three generated-plugin Windows EOL/stat entries,
+`TraceBench_ALL_CODE.txt`, and
+`assets/samples/Evidence Engine Analyst UI (standalone).html` are foreign
+residue/scratch outside the closeout and remain untouched.
+
+## Completed Photo Alignment scope amendment (historical, non-authorizing)
+
+All following predecessor sections retain historical evidence only. Their
+embedded live baselines, current/next routes, freezes, and immediate map-refresh
+instructions do not override the current handoff and active lock above.
 
 The authoritative worktree is `C:\dev\TraceBench` on `main` at
 `HEAD == origin/main ==

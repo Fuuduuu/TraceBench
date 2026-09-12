@@ -2,10 +2,70 @@
 
 ## Route
 
-Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_ROUTE_CLOSEOUT_PASS`
+Next: `Board Canvas Single Shell UI`
 
-## Current Photo Alignment + Board Canvas V1 fast-lane SCOPE authority
+## Current route closeout authority
+
+Lane A / `DOCS_SYNC`. The human authorizes this closeout to write only
+`docs/ACTIVE_SCOPE_LOCK.md`, `docs/CURRENT_STATE.md`, and `docs/PASS_QUEUE.md`.
+It closes the completed Photo Alignment route and points to the already
+human-approved next product task; it does not author its implementation.
+No audit artifact or ledger update is required for this route-only transition.
+
+`TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1` is complete. Its implementation
+child `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS` is committed and
+pushed at `36cd8d9d4a3751ce9760bb1cc649c497b754760b`. The former scope amendment,
+reserved child allowlist, and implementation freeze are spent and no longer
+active. Historical scope/audit text does not reactivate them. The existing
+scope artifact remains preserved as evidence of the earlier reservation.
+
+### Approved next product direction
+
+The next task is **Board Canvas Single Shell UI**. Its design authority is the
+completed Claude Design recommendation **Board Canvas Single Shell — Design
+Review**, identified by the human together with these approved decisions:
+
+- `/project` Board Canvas becomes the workbench shell.
+- Remove the duplicated outer Workbench header, sidebar, breadcrumb, and
+  destination header; use one compact approximately 44 px instrument bar.
+- Keep the Canvas tool rail as the only persistent vertical rail.
+- Move global/project destinations into compact project navigation, retaining
+  Home and Beginner/Advanced access.
+- Secondary `/project/*` pages may retain the shared shell for now.
+- Add no product functionality; this is ordinary UI work, with no canonical
+  writer, schema, or session change.
+
+This records the approved direction only. No implementation prompt, exact
+source/test allowlist, runtime edits, or new design-approval cycle is created
+by this closeout. The next product task owns its bounded implementation work.
+
+### Explicit Code Map deferment
+
+Code Maps are known stale after committed Photo Alignment. The human
+intentionally defers their refresh until **after the Board Canvas Single Shell
+UI implementation is committed**, so one maintenance refresh covers both
+committed product changes. This stale-map state is explicitly **not an
+implementation blocker for that next UI pass**.
+
+For that pass, committed source and the actual diff are authoritative. Stale
+maps may be used only as navigation aids; their symbols and claims must be
+checked against source before use. This is a bounded human exception to the
+usual stale-map prerequisite, not a claim that the maps are fresh or a waiver
+of source-based scope, validation, or protected-surface checks. No map status
+or registry row changes now. No map-maintenance pass is created or inserted
+before the UI task; the combined refresh remains unnamed until later.
+
+This closeout edits no production code, tests, schemas, maps, code-map index,
+`AUDIT_INDEX`, tooling, assets, or foreign scratch/residue. It performs no
+staging, commit, or push. Historical compaction is outside this minimum
+route-only change.
+
+## Completed Photo Alignment + Board Canvas V1 scope (historical, non-authorizing)
+
+All following predecessor sections are historical evidence. Their embedded
+current/next routes, allowlists, freezes, activation gates, and immediate map
+refresh instructions are superseded by the current authority above.
 
 ```text
 PASS_ID: TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS

@@ -2,10 +2,43 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_IMPL_PASS`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_BOARD_CANVAS_V1_ROUTE_CLOSEOUT_PASS`
+Next: `Board Canvas Single Shell UI`
 
-## Current Photo Alignment + Board Canvas V1 primary-photo amendment queue
+## Current closeout and approved product sequence
+
+The current Lane A / `DOCS_SYNC` closeout writes only the three route owners
+named in `docs/ACTIVE_SCOPE_LOCK.md`. Photo Alignment is complete; implementation
+commit `36cd8d9d4a3751ce9760bb1cc649c497b754760b` is pushed. Its former scope,
+reserved child, and implementation freeze are no longer active.
+
+The human-approved sequence is:
+
+```text
+Photo Alignment route closeout
+-> Board Canvas Single Shell UI
+-> commit the Single Shell UI implementation
+-> one committed-source Code Map refresh covering both product changes
+```
+
+The next UI task follows the completed **Board Canvas Single Shell — Design
+Review** recommendation and the approved direction recorded in
+`docs/ACTIVE_SCOPE_LOCK.md`. It adds no new product functionality or canonical
+writer/schema/session behavior. This closeout points to that task without
+authoring its implementation or opening another design-approval cycle.
+
+Code Maps are known stale after Photo Alignment. Under the explicit human
+deferment in the active lock, that is intentional and is not an implementation
+blocker for Single Shell UI: use committed source/diff as authority and stale
+maps only as navigation aids. Refresh once after the UI implementation is
+committed. Do not change map statuses or registry now, and do not create or
+insert a map-maintenance pass before the UI work.
+
+## Completed Photo Alignment amendment queue (historical, non-authorizing)
+
+All following predecessor queues are historical evidence. Their embedded
+current/next labels, freezes, activation gates, and immediate map-maintenance
+ordering are superseded by the current sequence above.
 
 Execute one Lane B
 `SCOPE_LOCK / DOCS_ONLY / PRIMARY_PHOTO_AMENDMENT` at baseline

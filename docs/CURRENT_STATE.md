@@ -1,34 +1,41 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Next recommended pass: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
 
-## Single Shell UI implementation scope
+## Completed Single Shell UI implementation and route closeout
 
-The scope-authoring baseline is `main` at
-`HEAD == origin/main == 6fd9692409fc491c64f26f306f584b531ecae3c1`, subject
-`docs: close photo alignment route`. Photo Alignment remains complete at
-`36cd8d9d4a3751ce9760bb1cc649c497b754760b` and its implementation freeze is spent.
+`TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS` is complete. Verified Git
+state is `main` at `HEAD == origin/main ==
+11815afcb2a2905751505e38f992502eb284dc13`, subject
+`feat: add board canvas single shell ui`. The commit contains exactly the two
+production owners and three widget suites from the accepted scope.
 
-The human-approved **Board Canvas Single Shell UI** direction now has an exact
-five-path implementation reservation: router and Board Canvas production owners
-plus the existing gate, shell, and Canvas widget suites. No implementation is
-performed by this docs-only action. `docs/ACTIVE_SCOPE_LOCK.md` owns the current
-five-document write set and future five-file reservation; the dedicated
-`docs/audit/TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS.md` owns the
-source-verified contract and design exceptions. `docs/PASS_QUEUE.md` owns the
-acceptance-to-implementation sequence.
+The human's closeout instruction supplies the completed implementation evidence:
 
-The shared shell's exported destination inventory is reused unchanged; only
-the primary Canvas bypasses outer chrome. Home and mode semantics, all existing
-destinations, secondary shells, project recovery, and canonical/photo behavior
-remain intact. Scope implementation authority is conditional on independent
-scope acceptance and human push, with no extra sync or design-approval cycle.
+- Human Windows smoke: `PASS`.
+- Independent implementation audit: `ACCEPT_AS_IS`.
+- Implementation audit staging-safety result: `SAFE_FOR_STAGING: YES`.
+- Implementation audit blockers: `NONE`.
 
-The committed map deferment remains explicit and non-blocking: source/tests
-and actual diff are authoritative, stale maps are navigation aids only, and one
-combined refresh follows the committed UI implementation. No maps or registry
-statuses change in this scope or the implementation.
+These are attributed human-supplied implementation results. Git verification
+independently confirms the committed five-path material set. The earlier implementation allowlist
+and freeze are spent. The existing Single Shell scope artifact remains unchanged
+as historical evidence; no new implementation evidence artifact is created.
+
+The current action is the minimum three-owner docs-only route/authority
+transition. `docs/ACTIVE_SCOPE_LOCK.md` owns its write boundary and the one armed
+combined refresh; `docs/PASS_QUEUE.md` owns acceptance and execution order.
+Photo Alignment remains complete at
+`36cd8d9d4a3751ce9760bb1cc649c497b754760b`.
+
+Code Maps remain knowingly stale and unchanged in this closeout. The UI commit
+satisfies the deferred refresh condition. The next pass reviews both committed
+implementation diffs, independently requalifies candidates, updates only
+materially stale maps, preserves retired maps, and follows map-audit lifecycle.
+Its completion routes to non-executable `NEEDS_USER_DECISION`. No product task
+or additional maintenance pass is selected. The known foreign scratch and
+Windows generated-file residue remain outside authority.
 
 ## Completed Photo Alignment handoff (historical, non-authorizing)
 

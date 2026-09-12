@@ -2,91 +2,132 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Next: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
 
-## Current Single Shell UI scope-authoring authority
+## Current docs-only route closeout
 
-Lane A / `DOCS_SYNC` / `SCOPE_AUTHORING_ONLY`. The human-approved direction is
-Board Canvas Single Shell UI. The verified scope-authoring baseline is `main`,
-`HEAD == origin/main == 6fd9692409fc491c64f26f306f584b531ecae3c1`, divergence
-`0 0`. Photo Alignment remains complete at
-`36cd8d9d4a3751ce9760bb1cc649c497b754760b`; its old freeze stays expired.
+Lane A / `DOCS_ROUTE_CLOSEOUT_AND_MAP_REFRESH_ARMING_ONLY`. Current identifies
+this exceptional closeout of the completed implementation, with no renewed
+Flutter authority. The verified closeout baseline is `main` at
+`HEAD == origin/main == 11815afcb2a2905751505e38f992502eb284dc13`.
 
-This scope-authoring action may write exactly:
+This action may write exactly:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
 3. `docs/PASS_QUEUE.md`
-4. `docs/AUDIT_INDEX.md` — one new scope row only
-5. `docs/audit/TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS.md`
 
-The dedicated scope artifact records the exact future contract under the
-repo-local scope-lock workflow and `docs/PROMPTING_PROTOCOL.md`. Its one ledger
-row is required by `docs/AUDIT_CONTRACT.md`; this is not a map-maintenance pass.
-No other documentation, runtime, test, schema, map, tool, or asset edit is
-authorized now. Existing foreign Windows residue and scratch remain untouched.
+The Single Shell implementation is complete. Its five-source/test allowlist,
+implementation freeze, and earlier scope-authoring authority are spent.
+`docs/CURRENT_STATE.md` owns the verified commit and human-supplied smoke/audit
+handoff. The accepted scope artifact
+`docs/audit/TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS.md` remains
+historical evidence and cannot reactivate those writes. This route/authority
+transition requires no new audit artifact or `AUDIT_INDEX` row.
 
-### Reserved implementation authority
+No source, test, schema, Code Map, registry/index, tooling, asset, runtime, or
+foreign scratch/Windows-residue edit is authorized in this closeout. No staging,
+commit, push, or historical compaction is authorized.
 
-`TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`, Lane A / `FLUTTER_PASS`,
-is reserved with exactly five existing files:
+## Armed combined Code Map refresh
 
-1. `lib/app/router.dart`
-2. `lib/features/board_canvas/screens/board_canvas_screen.dart`
-3. `test/widget/project_gate_test.dart`
-4. `test/widget/workbench_shell_test.dart`
-5. `test/widget/board_canvas_screen_test.dart`
+The one next pass is
+`TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`, Lane A /
+`DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAP_MAINTENANCE`. It follows independent
+acceptance and exact human commit/push of this route transition, without an
+extra scope-lock or active-lock-sync pass. Do not execute its map writes during
+this closeout.
 
-There is no sixth path and no new Dart file. The explicit human scope decision
-authorizes only the coherent router-composition, Canvas instrument-bar/local
-responsive-layout, and focused-test zones detailed in the binding scope
-artifact. Implementation activates only after independent acceptance and human
-push of this exact scope lock. At implementation start, verify the accepted
-scope commit on aligned `main` and its unchanged source baseline; do not treat
-the older scope-authoring HEAD as the required new HEAD. No extra active-lock
-sync, design cycle, or prerequisite map pass is inserted.
+### Committed authority and bounded candidate set
 
-The router keeps `ProjectGate` outside all loaded project content and bypasses
-only `WorkbenchShell` for the active primary `/project` destination. Secondary
-routes keep the existing shared shell, route names, paths, aliases, and stack
-behavior. Board Canvas owns the approximately 44 px instrument bar, Home,
-project chip/menu, existing write-safety status, and labelled
-`Algaja | Edasijõudnu` control. Global navigation is transient; the existing
-Canvas tools remain distinct. Existing Canvas/photo/rendering/writer behavior
-and contextual/status surfaces are retained.
+Inspect the exact parent-to-commit diffs for both completed implementations:
 
-`workbench_shell.dart` stays inspect-only: reuse its public destination model
-without copying its inventory or changing secondary chrome. ProjectGate, app
-lifecycle, beginner-mode provider, ProjectSession, writers, photo-alignment
-owners, schemas, filesystem contracts, and all other implementation paths are
-frozen. Home may invoke the unchanged existing close-and-navigate action;
-there is no new session state or canonical write behavior.
+- Photo Alignment + Board Canvas V1:
+  `36cd8d9d4a3751ce9760bb1cc649c497b754760b`.
+- Board Canvas Single Shell UI:
+  `11815afcb2a2905751505e38f992502eb284dc13`.
 
-### Binding contract, map deferment, and gates
+Use accepted committed source/tests at maintenance entry as authority. Entry
+HEAD may include this docs-only transition; verify the implementation commits
+are ancestors and product source/tests still match the Single Shell commit.
+Stale maps remain navigation aids until repaired and audited. The deferment's
+waiting condition is satisfied by the committed UI; this pass reconciles both
+product changes together.
 
-The binding implementation scope, source-verified ownership, design exceptions,
-exact map preflight, responsive/test contract, and stops are in
-`docs/audit/TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS.md`.
-The approved external design is
-`C:\dev\Board Canvas Single Shell - Design Review (standalone).html`;
-read it as visual/product input and never copy it into the repository.
+The following ten existing maps are candidates, not mandatory edits. Confirm
+material drift from current source before changing any description, including
+WorkbenchShell caller/ownership and PythonRunner caller wording.
 
-Carry forward the committed bounded Code Map deferment: maps are known stale
-after Photo Alignment and are not an implementation blocker for this UI pass.
-Committed source/tests and the actual diff are authority; stale maps are
-navigation aids only, with every used claim checked against source. Change no
-map, status, or registry now or during implementation. One combined refresh
-follows the committed Single Shell UI result; no maintenance PASS_ID is named
-or armed here.
+| Existing candidate map |
+| --- |
+| `docs/code_maps/lib/app/router.dart.md` |
+| `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` |
+| `docs/code_maps/test/widget/project_gate_test.dart.md` |
+| `docs/code_maps/test/widget/workbench_shell_test.dart.md` |
+| `docs/code_maps/test/widget/board_canvas_screen_test.dart.md` |
+| `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md` |
+| `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md` |
+| `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md` |
+| `docs/code_maps/test/unit/photo_event_writer_test.dart.md` |
+| `docs/code_maps/lib/shared/services/python_runner.dart.md` |
 
-Scope validation requires doctor, full repository validation, exact docs and
-freeze proofs, and both Git diff checks. Scope manual smoke is
-`NOT_APPLICABLE`. The future implementation requires focused/full Flutter
-validation, source-boundary checks, and human wide/compact Windows smoke before
-its independent audit. Neither phase stages, commits, or pushes via Codex.
-Stop for a sixth file, protected-boundary need, failed out-of-scope validation,
-or authority/material mismatch. Historical compaction is outside this task.
+Independently requalify each of the following committed sources/tests under
+`docs/code_maps/CODE_MAP_STANDARD.md`. A map may be created only when its source
+qualifies, at the exact deterministic path below. Otherwise report
+`REQUALIFIED_NO_MAP`; do not create a placeholder map or registry row.
+
+| Conditional map path after qualification |
+| --- |
+| `docs/code_maps/lib/features/photos/logic/photo_alignment_transform.dart.md` |
+| `docs/code_maps/lib/features/board_canvas/rendering/aligned_photo_layer.dart.md` |
+| `docs/code_maps/test/unit/photo_alignment_transform_test.dart.md` |
+| `docs/code_maps/lib/features/photos/logic/photo_event_read_model.dart.md` |
+| `docs/code_maps/test/unit/photo_event_read_model_test.dart.md` |
+
+Only those fifteen candidate map paths, `docs/code_maps/CODE_MAP_INDEX.md`,
+and the same three route owners above are within the next pass's write ceiling
+of nineteen paths. The actual material set must be the smallest justified
+subset. Registry edits are limited to corresponding actual qualification,
+map-existence, or status changes. Route-owner edits close this maintenance and
+end at `NEEDS_USER_DECISION`; they authorize no product work. No audit artifact
+or ledger write is implicit in this maintenance authority.
+
+### Required review, lifecycle, and stops
+
+- Recheck qualification and descriptions against committed source, tests, exact
+  changed zones, and direct caller/dependency closure. Expected dispositions
+  never substitute for that review. Inspect coupled owner maps as needed;
+  additional materially stale maps outside the ceiling require a reported
+  allowlist decision before any such write.
+- Keep each map at no more than twelve responsibility zones. Board Canvas
+  source/test maps already have twelve: consolidate existing zones, never add
+  zone 13. Follow the Standard's format, evidence classes, and concision rules.
+- Preserve all `RETIRED` maps and their registry rows byte-for-byte. Keep every
+  unchanged/unrelated map outside the actual material set frozen.
+- Follow the Standard's `REVIEW_REQUIRED` and independent map-audit lifecycle;
+  restore `MAINTAINED` only after accepted map audit. Report map verdicts outside
+  individual maps, never as self-approval inside a map.
+- Individual maps must contain no commit SHA, PASS_ID, route state, audit
+  verdict, staging instruction, or active allowlist.
+- Python validator/test changes in the Photo Alignment commit remain outside
+  Dart bootstrap map scope. No runtime, source/test, schema, writer/session,
+  tooling, asset, package, platform, or product change is authorized.
+- Validate changed-map format/anchors, qualification decisions, registry/file
+  counts and parity, status consistency, the exact material set, frozen bytes,
+  doctor, repository validation, both diff checks, and empty staged/unmerged
+  sets. Generated validator fixture outputs may use a temporary directory
+  without modifying validator source. Manual smoke for map maintenance is
+  `NOT_APPLICABLE`; the completed product smoke stays recorded in its handoff.
+- Stop on baseline/product drift, unsupported map claims, an extra write path,
+  protected-boundary need, or failed out-of-scope validation. Do not invent
+  another maintenance pass, scope-lock, closeout artifact, or runtime task.
+
+Current closeout validation requires doctor, repository validation, route and
+allowlist checks, both diff checks, unchanged out-of-scope and historical bytes,
+HEAD/origin alignment, and staged/unmerged `0/0`. Check current-state size;
+compaction is outside this human-selected transition. All following predecessor
+sections are historical and cannot override this authority.
 
 ## Completed Photo Alignment route closeout (historical, non-authorizing)
 

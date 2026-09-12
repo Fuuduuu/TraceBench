@@ -2,44 +2,36 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
+Next: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
 
-## Current Single Shell UI scope and implementation sequence
+## Single Shell closeout and one combined maintenance pass
 
-The current Lane A / `DOCS_SYNC` action authors only the five documentation
-paths in `docs/ACTIVE_SCOPE_LOCK.md`. It reserves one Lane A / `FLUTTER_PASS`:
-`TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`, limited to the router,
-Board Canvas host, and three existing widget suites listed exactly in that
-lock. The binding scope artifact records the source/test rationale, approved
-external design, responsive contract, protected exclusions, and validation.
+Current is the exceptional docs-only closeout of the completed Single Shell
+implementation. Its implementation allowlist/freeze is spent; only the three
+route owners in `docs/ACTIVE_SCOPE_LOCK.md` may change now. Verified commit and
+human-supplied Windows-smoke/independent-audit results live in
+`docs/CURRENT_STATE.md`. Preserve the existing scope artifact and ledger.
 
 ```text
-TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_SCOPE_LOCK_PASS
--> independent scope audit and bounded verdict recording
--> exact human scope commit/push
--> TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS
--> automated validation and human Windows smoke
--> independent implementation audit and exact human commit/push
--> one combined committed-source Code Map refresh
+TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS [complete; committed/pushed]
+-> current three-owner route closeout: independent diff audit, human commit/push
+-> TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS
+-> committed-source refresh, independent map audit, exact human commit/push
+-> NEEDS_USER_DECISION [non-executable]
 ```
 
-No active-lock sync, new design cycle, or prerequisite map-maintenance pass is
-queued. The later combined refresh is not named or armed here. Code Maps are
-known stale after completed Photo Alignment; under the committed human
-deferment this is not a blocker for the UI implementation. Use committed
-source/tests and actual diff as authority, verify every stale-map claim used,
-and leave map files, statuses, and registry unchanged until the combined refresh.
+The next pass is armed by the exact conditional map/registry/route-owner
+allowlist in `docs/ACTIVE_SCOPE_LOCK.md`; no further scope or sync pass is
+queued. It combines deferred Photo Alignment and Single Shell map work using
+both exact implementation diffs and committed source/tests. Candidate lists
+are expected review scope, not blind edits or predetermined qualifications.
 
-Primary `/project` receives one Canvas-owned instrument bar and transient
-project navigation. Preserve all existing destinations, null-project recovery,
-Home close-and-navigate behavior, mode state, secondary shell behavior, Canvas
-tools/context/status, and canonical/photo paths. Stop if the exact five-file
-implementation needs another owner or a protected semantic change.
-
-Photo Alignment stays complete at
-`36cd8d9d4a3751ce9760bb1cc649c497b754760b`; the scope-authoring baseline is its
-route-closeout commit `6fd9692409fc491c64f26f306f584b531ecae3c1`.
+Do not refresh maps during this closeout. During maintenance, preserve retired
+maps, consolidate the twelve-zone Canvas maps, change registry rows only when
+justified, and leave every runtime/test/schema/tool/asset surface frozen. No
+second refresh, product implementation, or recursive closeout is queued after
+this one maintenance pass. Subsequent work requires the human's decision.
 
 ## Completed Photo Alignment closeout queue (historical, non-authorizing)
 

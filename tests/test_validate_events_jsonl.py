@@ -4200,6 +4200,230 @@ class ValidateEventsJsonlTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("forbidden alignment field present: pin_id", result.stdout + result.stderr)
 
+    def test_photo_alignment_overdetermined_similarity_and_affine_pass(self):
+        similarity = self._photo_alignment_confirmed_event(
+            payload_overrides={
+                "reference_points_photo": [
+                    {"x": 20.0, "y": 30.0},
+                    {"x": 220.0, "y": 30.0},
+                    {"x": 20.0, "y": 230.0},
+                    {"x": 220.0, "y": 230.0},
+                ],
+                "reference_points_board": [
+                    {"x": 0.725, "y": 0.10},
+                    {"x": 0.725, "y": 0.60},
+                    {"x": 0.225, "y": 0.10},
+                    {"x": 0.225, "y": 0.60},
+                ],
+            }
+        )
+        affine = self._photo_alignment_confirmed_event(
+            event_id="evt_000003",
+            sequence=3,
+            payload_overrides={
+                "alignment_id": "ALN2",
+                "transform_type": "affine",
+                "reference_points_photo": [
+                    {"x": 10.0, "y": 20.0},
+                    {"x": 310.0, "y": 20.0},
+                    {"x": 10.0, "y": 220.0},
+                    {"x": 310.0, "y": 220.0},
+                ],
+                "reference_points_board": [
+                    {"x": 0.099, "y": 0.136},
+                    {"x": 0.459, "y": 0.076},
+                    {"x": 0.169, "y": 0.316},
+                    {"x": 0.529, "y": 0.256},
+                ],
+            },
+        )
+        path = _events_to_temp_jsonl(
+            [self._photo_alignment_photo_added_event(), similarity, affine]
+        )
+        result = _run_validator(path)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_photo_alignment_non_finite_or_boolean_coordinates_rejected(self):
+        for value in (float("nan"), float("inf"), True):
+            with self.subTest(value=value):
+                event = self._photo_alignment_confirmed_event(
+                    payload_overrides={
+                        "reference_points_photo": [
+                            {"x": value, "y": 20.0},
+                            {"x": 110.0, "y": 220.0},
+                        ]
+                    }
+                )
+                path = _events_to_temp_jsonl(
+                    [self._photo_alignment_photo_added_event(), event]
+                )
+                result = _run_validator(path)
+                self.assertNotEqual(
+                    result.returncode, 0, result.stdout + result.stderr
+                )
+                self.assertIn("finite non-boolean number", result.stdout + result.stderr)
+
+    def test_photo_alignment_duplicate_points_rejected_in_each_space(self):
+        cases = {
+            "photo": {
+                "reference_points_photo": [
+                    {"x": 10.0, "y": 20.0},
+                    {"x": 10.0, "y": 20.0},
+                ]
+            },
+            "board": {
+                "reference_points_board": [
+                    {"x": 0.1, "y": 0.2},
+                    {"x": 0.1, "y": 0.2},
+                ]
+            },
+        }
+        for space, overrides in cases.items():
+            with self.subTest(space=space):
+                path = _events_to_temp_jsonl(
+                    [
+                        self._photo_alignment_photo_added_event(),
+                        self._photo_alignment_confirmed_event(
+                            payload_overrides=overrides
+                        ),
+                    ]
+                )
+                result = _run_validator(path)
+                self.assertNotEqual(
+                    result.returncode, 0, result.stdout + result.stderr
+                )
+                self.assertIn("must be unique", result.stdout + result.stderr)
+
+    def test_photo_alignment_similarity_zero_spread_rejected(self):
+        path = _events_to_temp_jsonl(
+            [
+                self._photo_alignment_photo_added_event(),
+                self._photo_alignment_confirmed_event(
+                    payload_overrides={
+                        "reference_points_board": [
+                            {"x": 0.2, "y": 0.2},
+                            {"x": 0.2, "y": 0.2},
+                        ]
+                    }
+                ),
+            ]
+        )
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("sufficient spread", result.stdout + result.stderr)
+
+    def test_photo_alignment_similarity_reflected_square_scale_rejected(self):
+        path = _events_to_temp_jsonl(
+            [
+                self._photo_alignment_photo_added_event(),
+                self._photo_alignment_confirmed_event(
+                    payload_overrides={
+                        "reference_points_photo": [
+                            {"x": 0.0, "y": 0.0},
+                            {"x": 200.0, "y": 0.0},
+                            {"x": 200.0, "y": 200.0},
+                            {"x": 0.0, "y": 200.0},
+                        ],
+                        "reference_points_board": [
+                            {"x": 0.8, "y": 0.1},
+                            {"x": 0.2, "y": 0.1},
+                            {"x": 0.2, "y": 0.7},
+                            {"x": 0.8, "y": 0.7},
+                        ],
+                    }
+                ),
+            ]
+        )
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(
+            "similarity transform scale is singular or near-singular",
+            result.stdout + result.stderr,
+        )
+
+    def test_photo_alignment_similarity_near_singular_scale_rejected(self):
+        path = _events_to_temp_jsonl(
+            [
+                self._photo_alignment_photo_added_event(),
+                self._photo_alignment_confirmed_event(
+                    payload_overrides={
+                        "reference_points_photo": [
+                            {"x": 0.0, "y": 0.0},
+                            {"x": 200.0, "y": 0.0},
+                            {"x": 200.0, "y": 200.0},
+                            {"x": 0.0, "y": 200.0},
+                        ],
+                        "reference_points_board": [
+                            {"x": 0.8, "y": 0.1},
+                            {"x": 0.2, "y": 0.1},
+                            {"x": 0.2, "y": 0.7},
+                            {"x": 0.8000000001, "y": 0.7},
+                        ],
+                    }
+                ),
+            ]
+        )
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(
+            "similarity transform scale is singular or near-singular",
+            result.stdout + result.stderr,
+        )
+
+    def test_photo_alignment_affine_collinear_source_rejected(self):
+        path = _events_to_temp_jsonl(
+            [
+                self._photo_alignment_photo_added_event(),
+                self._photo_alignment_confirmed_event(
+                    payload_overrides={
+                        "transform_type": "affine",
+                        "reference_points_photo": [
+                            {"x": 10.0, "y": 10.0},
+                            {"x": 110.0, "y": 110.0},
+                            {"x": 210.0, "y": 210.0},
+                        ],
+                        "reference_points_board": [
+                            {"x": 0.1, "y": 0.1},
+                            {"x": 0.4, "y": 0.2},
+                            {"x": 0.8, "y": 0.7},
+                        ],
+                    }
+                ),
+            ]
+        )
+        result = _run_validator(path)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("collinear or near-collinear", result.stdout + result.stderr)
+
+    def test_photo_alignment_affine_singular_or_near_singular_rejected(self):
+        for final_y in (0.7, 0.70000000001):
+            with self.subTest(final_y=final_y):
+                path = _events_to_temp_jsonl(
+                    [
+                        self._photo_alignment_photo_added_event(),
+                        self._photo_alignment_confirmed_event(
+                            payload_overrides={
+                                "transform_type": "affine",
+                                "reference_points_photo": [
+                                    {"x": 0.0, "y": 0.0},
+                                    {"x": 200.0, "y": 0.0},
+                                    {"x": 0.0, "y": 200.0},
+                                ],
+                                "reference_points_board": [
+                                    {"x": 0.1, "y": 0.1},
+                                    {"x": 0.4, "y": 0.4},
+                                    {"x": 0.7, "y": final_y},
+                                ],
+                            }
+                        ),
+                    ]
+                )
+                result = _run_validator(path)
+                self.assertNotEqual(
+                    result.returncode, 0, result.stdout + result.stderr
+                )
+                self.assertIn("singular or near-singular", result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

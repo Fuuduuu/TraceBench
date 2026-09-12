@@ -63,6 +63,7 @@ ALLOWED_PLACEMENT_BOARD_SIDES = {"top", "bottom", "unknown"}
 ALLOWED_ALIGNMENT_BOARD_SIDES = {"top", "bottom", "unknown"}
 ALIGNMENT_ALLOWED_TRANSFORM_TYPES = {"similarity", "affine"}
 ALIGNMENT_MINIMUM_PAIRS = {"similarity": 2, "affine": 3}
+ALIGNMENT_GEOMETRY_EPSILON = 1e-9
 ALIGNMENT_FORBIDDEN_FIELDS = {
     "net_id",
     "measurement_id",
@@ -1401,6 +1402,165 @@ def _validate_photo_added(
         _error(errors, context, f"photo_added layer must be one of {sorted(ALLOWED_PHOTO_LAYERS)!r}")
 
 
+def _alignment_point_stats(
+    points: list[tuple[float, float]],
+) -> tuple[float, float, float]:
+    mean_x = sum(point[0] for point in points) / len(points)
+    mean_y = sum(point[1] for point in points) / len(points)
+    width = max(point[0] for point in points) - min(point[0] for point in points)
+    height = max(point[1] for point in points) - min(point[1] for point in points)
+    return mean_x, mean_y, math.hypot(width, height)
+
+
+def _normalized_alignment_points(
+    points: list[tuple[float, float]],
+    mean_x: float,
+    mean_y: float,
+    diagonal: float,
+) -> list[tuple[float, float]]:
+    return [
+        ((point[0] - mean_x) / diagonal, (point[1] - mean_y) / diagonal)
+        for point in points
+    ]
+
+
+def _alignment_points_have_near_duplicate(
+    points: list[tuple[float, float]],
+) -> bool:
+    for left in range(len(points)):
+        for right in range(left + 1, len(points)):
+            if math.hypot(
+                points[left][0] - points[right][0],
+                points[left][1] - points[right][1],
+            ) <= ALIGNMENT_GEOMETRY_EPSILON:
+                return True
+    return False
+
+
+def _validate_alignment_geometry(
+    photo_points: list[tuple[float, float]],
+    board_points: list[tuple[float, float]],
+    transform_type: str,
+    context: str,
+    errors: list[str],
+) -> None:
+    photo_mean_x, photo_mean_y, photo_diagonal = _alignment_point_stats(photo_points)
+    board_mean_x, board_mean_y, board_diagonal = _alignment_point_stats(board_points)
+    exact_photo_duplicate = len(set(photo_points)) != len(photo_points)
+    exact_board_duplicate = len(set(board_points)) != len(board_points)
+    if exact_photo_duplicate:
+        _error(errors, context, "photo reference points must be unique")
+    if exact_board_duplicate:
+        _error(errors, context, "board reference points must be unique")
+    photo_spread_valid = (
+        math.isfinite(photo_diagonal)
+        and photo_diagonal > ALIGNMENT_GEOMETRY_EPSILON
+    )
+    board_spread_valid = (
+        math.isfinite(board_diagonal)
+        and board_diagonal > ALIGNMENT_GEOMETRY_EPSILON
+    )
+    if not photo_spread_valid:
+        _error(errors, context, "photo reference points do not have sufficient spread")
+    if not board_spread_valid:
+        _error(errors, context, "board reference points do not have sufficient spread")
+    if not photo_spread_valid or not board_spread_valid:
+        return
+
+    normalized_photo = _normalized_alignment_points(
+        photo_points, photo_mean_x, photo_mean_y, photo_diagonal
+    )
+    normalized_board = _normalized_alignment_points(
+        board_points, board_mean_x, board_mean_y, board_diagonal
+    )
+    if not exact_photo_duplicate and _alignment_points_have_near_duplicate(normalized_photo):
+        _error(errors, context, "photo reference points must be unique")
+    if not exact_board_duplicate and _alignment_points_have_near_duplicate(normalized_board):
+        _error(errors, context, "board reference points must be unique")
+
+    if transform_type == "similarity":
+        denominator = sum(
+            (source[0] * source[0]) + (source[1] * source[1])
+            for source in normalized_photo
+        )
+        dot = sum(
+            (source[0] * target[0]) + (source[1] * target[1])
+            for source, target in zip(normalized_photo, normalized_board)
+        )
+        cross = sum(
+            (source[0] * target[1]) - (source[1] * target[0])
+            for source, target in zip(normalized_photo, normalized_board)
+        )
+        normalized_scale = (
+            math.hypot(dot / denominator, cross / denominator)
+            if math.isfinite(denominator)
+            and denominator > ALIGNMENT_GEOMETRY_EPSILON
+            else 0.0
+        )
+        if (
+            not math.isfinite(normalized_scale)
+            or normalized_scale <= ALIGNMENT_GEOMETRY_EPSILON
+        ):
+            _error(
+                errors,
+                context,
+                "similarity transform scale is singular or near-singular",
+            )
+        return
+
+    if transform_type != "affine":
+        return
+
+    source_xx = sum(point[0] * point[0] for point in normalized_photo)
+    source_xy = sum(point[0] * point[1] for point in normalized_photo)
+    source_yy = sum(point[1] * point[1] for point in normalized_photo)
+    source_determinant = (source_xx * source_yy) - (source_xy * source_xy)
+    source_trace = source_xx + source_yy
+    rank_measure = (
+        abs(source_determinant) / (source_trace * source_trace)
+        if source_trace > ALIGNMENT_GEOMETRY_EPSILON
+        else 0.0
+    )
+    if not math.isfinite(rank_measure) or rank_measure <= ALIGNMENT_GEOMETRY_EPSILON:
+        _error(errors, context, "affine photo reference points are collinear or near-collinear")
+        return
+
+    target_x_from_x = sum(
+        source[0] * target[0]
+        for source, target in zip(normalized_photo, normalized_board)
+    )
+    target_x_from_y = sum(
+        source[1] * target[0]
+        for source, target in zip(normalized_photo, normalized_board)
+    )
+    target_y_from_x = sum(
+        source[0] * target[1]
+        for source, target in zip(normalized_photo, normalized_board)
+    )
+    target_y_from_y = sum(
+        source[1] * target[1]
+        for source, target in zip(normalized_photo, normalized_board)
+    )
+    affine_xx = (
+        (target_x_from_x * source_yy) - (target_x_from_y * source_xy)
+    ) / source_determinant
+    affine_xy = (
+        (target_x_from_y * source_xx) - (target_x_from_x * source_xy)
+    ) / source_determinant
+    affine_yx = (
+        (target_y_from_x * source_yy) - (target_y_from_y * source_xy)
+    ) / source_determinant
+    affine_yy = (
+        (target_y_from_y * source_xx) - (target_y_from_x * source_xy)
+    ) / source_determinant
+    affine_determinant = (affine_xx * affine_yy) - (affine_xy * affine_yx)
+    if (
+        not math.isfinite(affine_determinant)
+        or abs(affine_determinant) <= ALIGNMENT_GEOMETRY_EPSILON
+    ):
+        _error(errors, context, "affine transform is singular or near-singular")
+
+
 def _validate_photo_to_board_alignment_confirmed(
     payload: dict,
     line: int,
@@ -1469,6 +1629,8 @@ def _validate_photo_to_board_alignment_confirmed(
 
     reference_points_photo = payload.get("reference_points_photo")
     reference_points_board = payload.get("reference_points_board")
+    valid_photo_points: list[tuple[float, float]] = []
+    valid_board_points: list[tuple[float, float]] = []
 
     if not isinstance(reference_points_photo, list):
         _error(errors, context, "reference_points_photo must be array")
@@ -1484,14 +1646,16 @@ def _validate_photo_to_board_alignment_confirmed(
                 continue
             x = point.get("x")
             y = point.get("y")
-            if not isinstance(x, (int, float)):
-                _error(errors, context, f"reference_points_photo[{index}].x must be number")
+            if not _is_finite_number(x):
+                _error(errors, context, f"reference_points_photo[{index}].x must be finite non-boolean number")
             elif x < 0:
                 _error(errors, context, f"reference_points_photo[{index}].x must be >= 0")
-            if not isinstance(y, (int, float)):
-                _error(errors, context, f"reference_points_photo[{index}].y must be number")
+            if not _is_finite_number(y):
+                _error(errors, context, f"reference_points_photo[{index}].y must be finite non-boolean number")
             elif y < 0:
                 _error(errors, context, f"reference_points_photo[{index}].y must be >= 0")
+            if _is_finite_number(x) and _is_finite_number(y) and x >= 0 and y >= 0:
+                valid_photo_points.append((float(x), float(y)))
 
     if isinstance(reference_points_board, list):
         if len(reference_points_board) < 2:
@@ -1502,14 +1666,21 @@ def _validate_photo_to_board_alignment_confirmed(
                 continue
             x = point.get("x")
             y = point.get("y")
-            if not isinstance(x, (int, float)):
-                _error(errors, context, f"reference_points_board[{index}].x must be number")
+            if not _is_finite_number(x):
+                _error(errors, context, f"reference_points_board[{index}].x must be finite non-boolean number")
             elif x < 0 or x > 1:
                 _error(errors, context, f"reference_points_board[{index}].x must be within 0..1")
-            if not isinstance(y, (int, float)):
-                _error(errors, context, f"reference_points_board[{index}].y must be number")
+            if not _is_finite_number(y):
+                _error(errors, context, f"reference_points_board[{index}].y must be finite non-boolean number")
             elif y < 0 or y > 1:
                 _error(errors, context, f"reference_points_board[{index}].y must be within 0..1")
+            if (
+                _is_finite_number(x)
+                and _is_finite_number(y)
+                and 0 <= x <= 1
+                and 0 <= y <= 1
+            ):
+                valid_board_points.append((float(x), float(y)))
 
     if isinstance(reference_points_photo, list) and isinstance(reference_points_board, list):
         if len(reference_points_photo) != len(reference_points_board):
@@ -1517,6 +1688,21 @@ def _validate_photo_to_board_alignment_confirmed(
         required_pairs = ALIGNMENT_MINIMUM_PAIRS.get(transform_type)
         if required_pairs is not None and len(reference_points_photo) < required_pairs:
             _error(errors, context, f"{transform_type} requires at least {required_pairs} reference point pairs")
+        if (
+            transform_type in ALIGNMENT_ALLOWED_TRANSFORM_TYPES
+            and required_pairs is not None
+            and len(reference_points_photo) >= required_pairs
+            and len(reference_points_photo) == len(reference_points_board)
+            and len(valid_photo_points) == len(reference_points_photo)
+            and len(valid_board_points) == len(reference_points_board)
+        ):
+            _validate_alignment_geometry(
+                valid_photo_points,
+                valid_board_points,
+                transform_type,
+                context,
+                errors,
+            )
 
 
 def _validate_damage_region_marked(

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../../shared/models/project_state.dart';
+import '../../../shared/models/trace_bench_event.dart';
 import '../../../shared/services/python_runner.dart';
+import '../logic/photo_alignment_transform.dart';
 import '../logic/photo_event_read_model.dart';
 
 abstract interface class PhotoEventWriter {
@@ -12,9 +14,22 @@ abstract interface class PhotoEventWriter {
   });
 }
 
+abstract interface class PhotoAlignmentEventWriter {
+  Future<PhotoEventWriteResult> ensurePrimaryPhotoAdded({
+    required ProjectState projectState,
+    required PrimaryPhotoEventWriteRequest request,
+  });
+
+  Future<PhotoEventWriteResult> confirmAlignment({
+    required ProjectState projectState,
+    required PhotoAlignmentEventWriteRequest request,
+  });
+}
+
 enum PhotoEventWriteStatus {
   appended,
   recoveredDurable,
+  reusedDurable,
 }
 
 enum PhotoEventDurability {
@@ -65,6 +80,36 @@ class PhotoEventWriteRequest {
   final String? layer;
 }
 
+class PhotoAlignmentEventWriteRequest {
+  const PhotoAlignmentEventWriteRequest({
+    required this.sourcePhotoId,
+    required this.boardSide,
+    required this.transformType,
+    required this.photoPoints,
+    required this.boardPoints,
+    required this.photoWidth,
+    required this.photoHeight,
+  });
+
+  final String sourcePhotoId;
+  final String boardSide;
+  final PhotoAlignmentTransformType transformType;
+  final List<PhotoAlignmentPoint> photoPoints;
+  final List<PhotoAlignmentPoint> boardPoints;
+  final double photoWidth;
+  final double photoHeight;
+}
+
+class PrimaryPhotoEventWriteRequest {
+  const PrimaryPhotoEventWriteRequest({
+    required this.path,
+    required this.sha256,
+  });
+
+  final String path;
+  final String sha256;
+}
+
 class PhotoEventWriteResult {
   const PhotoEventWriteResult({
     required this.status,
@@ -77,7 +122,8 @@ class PhotoEventWriteResult {
   final Map<String, dynamic> event;
 }
 
-class PhotoEventWriterService implements PhotoEventWriter {
+class PhotoEventWriterService
+    implements PhotoEventWriter, PhotoAlignmentEventWriter {
   PhotoEventWriterService({
     PythonRunner? pythonRunner,
     ProcessRunner? processRunner,
@@ -94,6 +140,7 @@ class PhotoEventWriterService implements PhotoEventWriter {
         _now = now ?? DateTime.now;
 
   static final RegExp _eventIdPattern = RegExp(r'^evt_([0-9]{6})$');
+  static final RegExp _alignmentIdPattern = RegExp(r'^ALN([0-9]+)$');
   static final RegExp _photoIdPattern = RegExp(r'^photo_[a-z0-9_]+$');
   static final RegExp _sha256Pattern = RegExp(r'^[0-9a-f]{64}$');
   static const Set<String> _modes = <String>{
@@ -107,6 +154,11 @@ class PhotoEventWriterService implements PhotoEventWriter {
     'bottom',
     'side',
     'detail',
+  };
+  static const Set<String> _alignmentBoardSides = <String>{
+    'top',
+    'bottom',
+    'unknown',
   };
 
   final PythonRunner _pythonRunner;
@@ -142,6 +194,110 @@ class PhotoEventWriterService implements PhotoEventWriter {
       },
     };
 
+    return _appendCanonicalCandidate(eventsPath, candidate);
+  }
+
+  @override
+  Future<PhotoEventWriteResult> ensurePrimaryPhotoAdded({
+    required ProjectState projectState,
+    required PrimaryPhotoEventWriteRequest request,
+  }) async {
+    _validatePrimaryPhotoRequest(request);
+    final eventsPath = _resolvedEventsPath(projectState.projectDirectory);
+    final history = await _readDurableEventHistory(
+      eventsPath,
+      projectId: projectState.manifest.projectId,
+    );
+    final durableState = projectState.copyWith(events: history.events);
+    final existing = primaryPhotoEventItemFromEvents(
+      history.events,
+      relativePath: request.path,
+      sha256: request.sha256,
+    );
+    if (existing != null) {
+      final event = history.rawEvents.singleWhere(
+        (rawEvent) => rawEvent['event_id'] == existing.eventId,
+      );
+      return PhotoEventWriteResult(
+        status: PhotoEventWriteStatus.reusedDurable,
+        durability: PhotoEventDurability.durable,
+        event: event,
+      );
+    }
+
+    final allocation = _allocateEnvelope(durableState);
+    final photoId = _allocatePrimaryPhotoId(durableState);
+    final candidate = <String, dynamic>{
+      'schema_version': '1.0',
+      'event_id': allocation.eventId,
+      'project_id': projectState.manifest.projectId,
+      'sequence': allocation.sequence,
+      'created_at': _now().toUtc().toIso8601String(),
+      'actor': const <String, dynamic>{
+        'type': 'user',
+        'id': 'local_operator',
+      },
+      'event_type': 'photo_added',
+      'status': 'accepted',
+      'payload': <String, dynamic>{
+        'photo_id': photoId,
+        'mode': 'normal',
+        'path': request.path,
+        'sha256': request.sha256.toLowerCase(),
+      },
+    };
+    return _appendCanonicalCandidate(eventsPath, candidate);
+  }
+
+  @override
+  Future<PhotoEventWriteResult> confirmAlignment({
+    required ProjectState projectState,
+    required PhotoAlignmentEventWriteRequest request,
+  }) async {
+    final eventsPath = _resolvedEventsPath(projectState.projectDirectory);
+    final history = await _readDurableEventHistory(
+      eventsPath,
+      projectId: projectState.manifest.projectId,
+    );
+    final durableState = projectState.copyWith(events: history.events);
+    _validateAlignmentRequest(durableState, request);
+    final allocation = _allocateEnvelope(durableState);
+    final alignmentId = _allocateAlignmentId(durableState);
+    final candidate = <String, dynamic>{
+      'schema_version': '1.0',
+      'event_id': allocation.eventId,
+      'project_id': projectState.manifest.projectId,
+      'sequence': allocation.sequence,
+      'created_at': _now().toUtc().toIso8601String(),
+      'actor': const <String, dynamic>{
+        'type': 'user',
+        'id': 'local_operator',
+      },
+      'event_type': 'photo_to_board_alignment_confirmed',
+      'status': 'accepted',
+      'payload': <String, dynamic>{
+        'alignment_id': alignmentId,
+        'source_photo_id': request.sourcePhotoId,
+        'board_side': request.boardSide,
+        'coordinate_space_from': 'photo_local',
+        'coordinate_space_to': 'board_normalized',
+        'reference_points_photo': request.photoPoints
+            .map((point) => point.toJson())
+            .toList(growable: false),
+        'reference_points_board': request.boardPoints
+            .map((point) => point.toJson())
+            .toList(growable: false),
+        'transform_type': request.transformType.canonicalName,
+        'alignment_quality_label': 'manual_preview_confirmed',
+      },
+    };
+    return _appendCanonicalCandidate(eventsPath, candidate);
+  }
+
+  Future<PhotoEventWriteResult> _appendCanonicalCandidate(
+    String eventsPath,
+    Map<String, dynamic> candidate,
+  ) async {
     final python = await _discoverPython();
     if (python == null) {
       throw const PhotoEventWriteException(
@@ -258,6 +414,60 @@ class PhotoEventWriterService implements PhotoEventWriter {
     }
   }
 
+  void _validatePrimaryPhotoRequest(PrimaryPhotoEventWriteRequest request) {
+    if (!isSafePhotoRelativePath(request.path) ||
+        !_sha256Pattern.hasMatch(request.sha256.toLowerCase())) {
+      throw const PhotoEventWriteException(
+        PhotoEventWriteFailureKind.validation,
+        'Primary photo handoff contains an invalid path or SHA-256 digest.',
+        durability: PhotoEventDurability.provenNoEvent,
+      );
+    }
+  }
+
+  void _validateAlignmentRequest(
+    ProjectState projectState,
+    PhotoAlignmentEventWriteRequest request,
+  ) {
+    if (!_photoIdPattern.hasMatch(request.sourcePhotoId) ||
+        !_alignmentBoardSides.contains(request.boardSide)) {
+      throw const PhotoEventWriteException(
+        PhotoEventWriteFailureKind.validation,
+        'Alignment request contains invalid canonical identifiers.',
+        durability: PhotoEventDurability.provenNoEvent,
+      );
+    }
+    final hasAcceptedSourcePhoto = projectState.events.any(
+      (event) =>
+          event.schemaVersion == '1.0' &&
+          event.status == 'accepted' &&
+          event.eventType == 'photo_added' &&
+          event.payload['photo_id'] == request.sourcePhotoId,
+    );
+    if (!hasAcceptedSourcePhoto) {
+      throw const PhotoEventWriteException(
+        PhotoEventWriteFailureKind.validation,
+        'Alignment source must reference a prior accepted photo_added event.',
+        durability: PhotoEventDurability.provenNoEvent,
+      );
+    }
+    try {
+      solvePhotoAlignment(
+        transformType: request.transformType,
+        photoPoints: request.photoPoints,
+        boardPoints: request.boardPoints,
+        photoWidth: request.photoWidth,
+        photoHeight: request.photoHeight,
+      );
+    } on PhotoAlignmentException catch (error) {
+      throw PhotoEventWriteException(
+        PhotoEventWriteFailureKind.validation,
+        error.message,
+        durability: PhotoEventDurability.provenNoEvent,
+      );
+    }
+  }
+
   String _resolvedEventsPath(String? projectDirectory) {
     if (projectDirectory == null || projectDirectory.trim().isEmpty) {
       throw const PhotoEventWriteException(
@@ -309,6 +519,7 @@ class PhotoEventWriterService implements PhotoEventWriter {
   }
 
   _EnvelopeAllocation _allocateEnvelope(ProjectState projectState) {
+    _validateEventHistory(projectState.events);
     final eventIds = <String>{};
     final v1Sequences = <int>{};
     var maxEventNumber = 0;
@@ -353,6 +564,75 @@ class PhotoEventWriterService implements PhotoEventWriter {
     );
   }
 
+  void _validateEventHistory(Iterable<TraceBenchEvent> events) {
+    final eventIds = <String>{};
+    final v1Sequences = <int>{};
+    for (final event in events) {
+      if (!_eventIdPattern.hasMatch(event.eventId) ||
+          !eventIds.add(event.eventId)) {
+        throw const PhotoEventWriteException(
+          PhotoEventWriteFailureKind.invalidEventHistory,
+          'Project event IDs are malformed or duplicated.',
+          durability: PhotoEventDurability.provenNoEvent,
+        );
+      }
+      if (event.schemaVersion == '1.0' &&
+          (event.sequence <= 0 || !v1Sequences.add(event.sequence))) {
+        throw const PhotoEventWriteException(
+          PhotoEventWriteFailureKind.invalidEventHistory,
+          'Project V1 event sequences are non-positive or duplicated.',
+          durability: PhotoEventDurability.provenNoEvent,
+        );
+      }
+    }
+  }
+
+  String _allocateAlignmentId(ProjectState projectState) {
+    final alignmentIds = <String>{};
+    var maxAlignmentNumber = 0;
+    for (final event in projectState.events) {
+      if (event.eventType != 'photo_to_board_alignment_confirmed') {
+        continue;
+      }
+      final alignmentId = event.payload['alignment_id'];
+      final match = alignmentId is String
+          ? _alignmentIdPattern.firstMatch(alignmentId)
+          : null;
+      if (match == null || !alignmentIds.add(alignmentId as String)) {
+        throw const PhotoEventWriteException(
+          PhotoEventWriteFailureKind.invalidEventHistory,
+          'Project alignment IDs are malformed or duplicated.',
+          durability: PhotoEventDurability.provenNoEvent,
+        );
+      }
+      final alignmentNumber = int.parse(match.group(1)!);
+      if (alignmentNumber > maxAlignmentNumber) {
+        maxAlignmentNumber = alignmentNumber;
+      }
+    }
+    return 'ALN${maxAlignmentNumber + 1}';
+  }
+
+  String _allocatePrimaryPhotoId(ProjectState projectState) {
+    final usedPhotoIds = <String>{
+      for (final event in projectState.events)
+        if (event.eventType == 'photo_added' &&
+            event.payload['photo_id'] is String)
+          event.payload['photo_id'] as String,
+    };
+    for (var number = 1; number <= 999999; number += 1) {
+      final candidate = 'photo_primary_${number.toString().padLeft(3, '0')}';
+      if (!usedPhotoIds.contains(candidate)) {
+        return candidate;
+      }
+    }
+    throw const PhotoEventWriteException(
+      PhotoEventWriteFailureKind.invalidEventHistory,
+      'Project primary photo ID space is exhausted.',
+      durability: PhotoEventDurability.provenNoEvent,
+    );
+  }
+
   Future<List<String>?> _discoverPython() async {
     try {
       return await _pythonRunner.discoverPythonCommand();
@@ -392,6 +672,58 @@ class PhotoEventWriterService implements PhotoEventWriter {
       return const _ReadbackResult(readable: false);
     }
   }
+
+  Future<_DurableEventHistory> _readDurableEventHistory(
+    String eventsPath, {
+    required String projectId,
+  }) async {
+    try {
+      final file = File(eventsPath);
+      if (!await file.exists()) {
+        return const _DurableEventHistory(
+          events: <TraceBenchEvent>[],
+          rawEvents: <Map<String, dynamic>>[],
+        );
+      }
+      final events = <TraceBenchEvent>[];
+      final rawEvents = <Map<String, dynamic>>[];
+      await for (final line in file
+          .openRead()
+          .transform(utf8.decoder)
+          .transform(const LineSplitter())) {
+        if (line.trim().isEmpty) {
+          continue;
+        }
+        final decoded = jsonDecode(line);
+        if (decoded is! Map) {
+          throw const FormatException('Event history row is not an object.');
+        }
+        final rawEvent = Map<String, dynamic>.from(decoded);
+        final event = TraceBenchEvent.fromJson(rawEvent);
+        if (event.projectId != projectId) {
+          throw const FormatException(
+            'Event history contains another project identity.',
+          );
+        }
+        rawEvents.add(rawEvent);
+        events.add(event);
+      }
+      final reconciled = _DurableEventHistory(
+        events: List<TraceBenchEvent>.unmodifiable(events),
+        rawEvents: List<Map<String, dynamic>>.unmodifiable(rawEvents),
+      );
+      _validateEventHistory(reconciled.events);
+      return reconciled;
+    } on PhotoEventWriteException {
+      rethrow;
+    } on Exception catch (error) {
+      throw PhotoEventWriteException(
+        PhotoEventWriteFailureKind.invalidEventHistory,
+        'Project event history could not be reconciled safely: $error',
+        durability: PhotoEventDurability.provenNoEvent,
+      );
+    }
+  }
 }
 
 class _EnvelopeAllocation {
@@ -406,6 +738,16 @@ class _ReadbackResult {
 
   final bool readable;
   final Map<String, dynamic>? event;
+}
+
+class _DurableEventHistory {
+  const _DurableEventHistory({
+    required this.events,
+    required this.rawEvents,
+  });
+
+  final List<TraceBenchEvent> events;
+  final List<Map<String, dynamic>> rawEvents;
 }
 
 String _canonicalJson(Object? value) => jsonEncode(_canonicalValue(value));

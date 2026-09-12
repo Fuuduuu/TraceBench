@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trace_bench_viewer/features/photos/logic/photo_alignment_transform.dart';
 import 'package:trace_bench_viewer/features/photos/services/photo_event_writer.dart';
 import 'package:trace_bench_viewer/shared/models/known_facts.dart';
 import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
@@ -99,6 +100,63 @@ PhotoEventWriteRequest _request({
     path: 'photos/$photoId.jpeg',
     sha256: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
     layer: layer,
+  );
+}
+
+TraceBenchEvent _photoAddedEvent({
+  String eventId = 'evt_000001',
+  int sequence = 1,
+  String photoId = 'photo_alignment_source',
+  String? path,
+  String? sha256,
+}) {
+  return _event(
+    eventId: eventId,
+    sequence: sequence,
+    eventType: 'photo_added',
+    payload: <String, dynamic>{
+      'photo_id': photoId,
+      'mode': 'normal',
+      'path': path ?? 'photos/$photoId.jpg',
+      if (sha256 != null) 'sha256': sha256,
+    },
+  );
+}
+
+PrimaryPhotoEventWriteRequest _primaryRequest({
+  String path = 'photos/wizard_background.png',
+  String sha256 =
+      '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+}) {
+  return PrimaryPhotoEventWriteRequest(path: path, sha256: sha256);
+}
+
+PhotoAlignmentEventWriteRequest _alignmentRequest({
+  String sourcePhotoId = 'photo_alignment_source',
+  String boardSide = 'top',
+  PhotoAlignmentTransformType transformType =
+      PhotoAlignmentTransformType.similarity,
+  List<PhotoAlignmentPoint>? photoPoints,
+  List<PhotoAlignmentPoint>? boardPoints,
+  double photoWidth = 400,
+  double photoHeight = 300,
+}) {
+  return PhotoAlignmentEventWriteRequest(
+    sourcePhotoId: sourcePhotoId,
+    boardSide: boardSide,
+    transformType: transformType,
+    photoPoints: photoPoints ??
+        const <PhotoAlignmentPoint>[
+          PhotoAlignmentPoint(x: 10, y: 20),
+          PhotoAlignmentPoint(x: 210, y: 20),
+        ],
+    boardPoints: boardPoints ??
+        const <PhotoAlignmentPoint>[
+          PhotoAlignmentPoint(x: 0.1, y: 0.2),
+          PhotoAlignmentPoint(x: 0.7, y: 0.2),
+        ],
+    photoWidth: photoWidth,
+    photoHeight: photoHeight,
   );
 }
 
@@ -479,6 +537,471 @@ void main() {
                 'durability',
                 PhotoEventDurability.provenNoEvent,
               ),
+        ),
+      );
+      expect(runner.calls, isEmpty);
+    });
+  });
+
+  group('PrimaryPhotoEventWriter', () {
+    test('appends exact existing-file primary photo envelope with no layer',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-primary-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final state = _projectState(directory);
+      await _writeExistingEvents(directory, state.events);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(20, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(20, 0, '[OK] appended: evt_000002', '');
+      });
+
+      final result = await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+        now: () => DateTime.utc(2026, 8, 29, 12),
+      ).ensurePrimaryPhotoAdded(
+        projectState: state,
+        request: _primaryRequest(),
+      );
+
+      expect(result.status, PhotoEventWriteStatus.appended);
+      expect(result.durability, PhotoEventDurability.durable);
+      expect(runner.candidates, hasLength(1));
+      final candidate = runner.candidates.single;
+      expect(candidate['event_id'], 'evt_000002');
+      expect(candidate['sequence'], 2);
+      expect(candidate['event_type'], 'photo_added');
+      expect(candidate['payload'], <String, dynamic>{
+        'photo_id': 'photo_primary_001',
+        'mode': 'normal',
+        'path': 'photos/wizard_background.png',
+        'sha256':
+            '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      });
+      expect(result.event, candidate);
+    });
+
+    test(
+        'allocates primary photo and envelope IDs from reconciled live history',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-primary-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final staleState = _projectState(directory);
+      final durableEvents = <TraceBenchEvent>[
+        _event(eventId: 'evt_000003', sequence: 3),
+        _photoAddedEvent(
+          eventId: 'evt_000010',
+          sequence: 7,
+          photoId: 'photo_primary_001',
+          path: 'photos/older_primary.png',
+          sha256:
+              'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        ),
+      ];
+      await _writeExistingEvents(directory, durableEvents);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(23, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(23, 0, '[OK] appended: evt_000011', '');
+      });
+
+      final result = await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      ).ensurePrimaryPhotoAdded(
+        projectState: staleState,
+        request: _primaryRequest(),
+      );
+
+      expect(result.status, PhotoEventWriteStatus.appended);
+      expect(result.event['event_id'], 'evt_000011');
+      expect(result.event['sequence'], 8);
+      expect(
+        (result.event['payload'] as Map)['photo_id'],
+        'photo_primary_002',
+      );
+    });
+
+    test('reconciles durable history and reuses lowest matching sequence',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-primary-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      const sha =
+          '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+      final staleState = _projectState(directory);
+      final durableEvents = <TraceBenchEvent>[
+        ...staleState.events,
+        _photoAddedEvent(
+          eventId: 'evt_000004',
+          sequence: 4,
+          photoId: 'photo_primary_later',
+          path: 'photos/wizard_background.png',
+          sha256: sha,
+        ),
+        _photoAddedEvent(
+          eventId: 'evt_000002',
+          sequence: 2,
+          photoId: 'photo_primary_first',
+          path: 'photos/wizard_background.png',
+          sha256: sha.toUpperCase(),
+        ),
+        _photoAddedEvent(
+          eventId: 'evt_000003',
+          sequence: 3,
+          photoId: 'photo_primary_stale_bytes',
+          path: 'photos/wizard_background.png',
+          sha256:
+              'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        ),
+      ];
+      await _writeExistingEvents(directory, durableEvents);
+      final runner = _FakeProcessRunner(
+        (command, candidate) => ProcessResult(21, 0, 'Python 3.12.0', ''),
+      );
+
+      final result = await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      ).ensurePrimaryPhotoAdded(
+        projectState: staleState,
+        request: _primaryRequest(),
+      );
+
+      expect(result.status, PhotoEventWriteStatus.reusedDurable);
+      expect(result.durability, PhotoEventDurability.durable);
+      expect(
+          (result.event['payload'] as Map)['photo_id'], 'photo_primary_first');
+      expect(result.event['sequence'], 2);
+      expect(runner.calls, isEmpty);
+    });
+
+    test('retry after uncertain outcome reuses a now-durable primary event',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-primary-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final state = _projectState(directory);
+      await _writeExistingEvents(directory, state.events);
+      final runner = _FakeProcessRunner((command, candidate) {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(22, 0, 'Python 3.12.0', '');
+        }
+        throw ProcessException(
+          'python',
+          command,
+          'writer completion was not observable',
+        );
+      });
+      final writer = PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+
+      await expectLater(
+        writer.ensurePrimaryPhotoAdded(
+          projectState: state,
+          request: _primaryRequest(),
+        ),
+        throwsA(
+          isA<PhotoEventWriteException>()
+              .having(
+                (error) => error.durability,
+                'durability',
+                PhotoEventDurability.uncertain,
+              )
+              .having(
+                (error) => error.kind,
+                'kind',
+                PhotoEventWriteFailureKind.append,
+              ),
+        ),
+      );
+      expect(runner.candidates, hasLength(1));
+      final uncertainCandidate = runner.candidates.single;
+      await File(
+        '${directory.path}${Platform.pathSeparator}events.jsonl',
+      ).writeAsString(
+        '${jsonEncode(uncertainCandidate)}\n',
+        mode: FileMode.append,
+        flush: true,
+      );
+
+      final retry = await writer.ensurePrimaryPhotoAdded(
+        projectState: state,
+        request: _primaryRequest(),
+      );
+
+      expect(retry.status, PhotoEventWriteStatus.reusedDurable);
+      expect(retry.event, uncertainCandidate);
+      expect(runner.candidates, hasLength(1));
+    });
+  });
+
+  group('PhotoAlignmentEventWriter', () {
+    test('writes exact accepted V1 alignment envelope and fixed quality label',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final photo = _photoAddedEvent();
+      final state = _projectState(directory, events: <TraceBenchEvent>[photo]);
+      await _writeExistingEvents(directory, state.events);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(10, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(10, 0, '[OK] appended: evt_000002', '');
+      });
+
+      final result = await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+        now: () => DateTime.utc(2026, 8, 28, 9, 15),
+      ).confirmAlignment(
+        projectState: state,
+        request: _alignmentRequest(),
+      );
+
+      expect(result.status, PhotoEventWriteStatus.appended);
+      expect(result.durability, PhotoEventDurability.durable);
+      final candidate = runner.candidates.single;
+      expect(candidate['event_id'], 'evt_000002');
+      expect(candidate['sequence'], 2);
+      expect(candidate['event_type'], 'photo_to_board_alignment_confirmed');
+      expect(candidate['actor'], <String, dynamic>{
+        'type': 'user',
+        'id': 'local_operator',
+      });
+      expect(candidate['status'], 'accepted');
+      expect(candidate['payload'], <String, dynamic>{
+        'alignment_id': 'ALN1',
+        'source_photo_id': 'photo_alignment_source',
+        'board_side': 'top',
+        'coordinate_space_from': 'photo_local',
+        'coordinate_space_to': 'board_normalized',
+        'reference_points_photo': <Map<String, double>>[
+          <String, double>{'x': 10, 'y': 20},
+          <String, double>{'x': 210, 'y': 20},
+        ],
+        'reference_points_board': <Map<String, double>>[
+          <String, double>{'x': 0.1, 'y': 0.2},
+          <String, double>{'x': 0.7, 'y': 0.2},
+        ],
+        'transform_type': 'similarity',
+        'alignment_quality_label': 'manual_preview_confirmed',
+      });
+      expect(result.event, candidate);
+    });
+
+    test('alignment allocation and source validation use reconciled durability',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final staleState = _projectState(directory);
+      final durableEvents = <TraceBenchEvent>[
+        ...staleState.events,
+        _photoAddedEvent(eventId: 'evt_000004', sequence: 7),
+      ];
+      await _writeExistingEvents(directory, durableEvents);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(23, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(23, 0, '[OK] appended: evt_000005', '');
+      });
+
+      final result = await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      ).confirmAlignment(
+        projectState: staleState,
+        request: _alignmentRequest(),
+      );
+
+      expect(result.status, PhotoEventWriteStatus.appended);
+      expect(runner.candidates.single['event_id'], 'evt_000005');
+      expect(runner.candidates.single['sequence'], 8);
+      expect(
+        (runner.candidates.single['payload'] as Map)['source_photo_id'],
+        'photo_alignment_source',
+      );
+    });
+
+    test('allocates alignment IDs independently from event IDs and sequences',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final events = <TraceBenchEvent>[
+        _photoAddedEvent(eventId: 'evt_000004', sequence: 7),
+        _event(
+          eventId: 'evt_000009',
+          sequence: 8,
+          eventType: 'photo_to_board_alignment_confirmed',
+          payload: const <String, dynamic>{
+            'alignment_id': 'ALN9',
+            'source_photo_id': 'photo_alignment_source',
+          },
+        ),
+      ];
+      final state = _projectState(directory, events: events);
+      await _writeExistingEvents(directory, events);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(11, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(11, 0, '[OK] appended: evt_000010', '');
+      });
+
+      await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      ).confirmAlignment(
+        projectState: state,
+        request: _alignmentRequest(),
+      );
+
+      expect(runner.candidates.single['event_id'], 'evt_000010');
+      expect(runner.candidates.single['sequence'], 9);
+      expect(
+        (runner.candidates.single['payload'] as Map)['alignment_id'],
+        'ALN10',
+      );
+    });
+
+    test('accepts the canonical unknown board side', () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final photo = _photoAddedEvent();
+      final state = _projectState(directory, events: <TraceBenchEvent>[photo]);
+      await _writeExistingEvents(directory, state.events);
+      final runner = _FakeProcessRunner((command, candidate) async {
+        if (!_isWriterCommand(command)) {
+          return ProcessResult(12, 0, 'Python 3.12.0', '');
+        }
+        await _appendCandidate(command, candidate!);
+        return ProcessResult(12, 0, '[OK] appended: evt_000002', '');
+      });
+
+      await PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      ).confirmAlignment(
+        projectState: state,
+        request: _alignmentRequest(boardSide: 'unknown'),
+      );
+
+      expect(
+        (runner.candidates.single['payload'] as Map)['board_side'],
+        'unknown',
+      );
+    });
+
+    test('rejects unknown photos, intrinsic bounds, and degenerate geometry',
+        () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final state = _projectState(
+        directory,
+        events: <TraceBenchEvent>[_photoAddedEvent()],
+      );
+      final runner = _FakeProcessRunner(
+        (command, candidate) => ProcessResult(12, 0, 'Python 3.12.0', ''),
+      );
+      final writer = PhotoEventWriterService(
+        processRunner: runner,
+        repoRootPath: Directory.current.path,
+      );
+      final requests = <PhotoAlignmentEventWriteRequest>[
+        _alignmentRequest(sourcePhotoId: 'photo_unknown'),
+        _alignmentRequest(
+          photoPoints: const <PhotoAlignmentPoint>[
+            PhotoAlignmentPoint(x: 10, y: 20),
+            PhotoAlignmentPoint(x: 401, y: 20),
+          ],
+        ),
+        _alignmentRequest(
+          transformType: PhotoAlignmentTransformType.affine,
+          photoPoints: const <PhotoAlignmentPoint>[
+            PhotoAlignmentPoint(x: 0, y: 0),
+            PhotoAlignmentPoint(x: 100, y: 100),
+            PhotoAlignmentPoint(x: 200, y: 200),
+          ],
+          boardPoints: const <PhotoAlignmentPoint>[
+            PhotoAlignmentPoint(x: 0.1, y: 0.1),
+            PhotoAlignmentPoint(x: 0.4, y: 0.2),
+            PhotoAlignmentPoint(x: 0.8, y: 0.7),
+          ],
+        ),
+      ];
+
+      for (final request in requests) {
+        await expectLater(
+          writer.confirmAlignment(projectState: state, request: request),
+          throwsA(
+            isA<PhotoEventWriteException>()
+                .having(
+                  (error) => error.kind,
+                  'kind',
+                  PhotoEventWriteFailureKind.validation,
+                )
+                .having(
+                  (error) => error.durability,
+                  'durability',
+                  PhotoEventDurability.provenNoEvent,
+                ),
+          ),
+        );
+      }
+      expect(runner.calls, isEmpty);
+    });
+
+    test('rejects duplicate or malformed prior alignment IDs', () async {
+      final directory =
+          await Directory.systemTemp.createTemp('tracebench-alignment-writer-');
+      addTearDown(() => directory.delete(recursive: true));
+      final events = <TraceBenchEvent>[
+        _photoAddedEvent(),
+        _event(
+          eventId: 'evt_000002',
+          sequence: 2,
+          eventType: 'photo_to_board_alignment_confirmed',
+          payload: const <String, dynamic>{'alignment_id': 'alignment_bad'},
+        ),
+      ];
+      await _writeExistingEvents(directory, events);
+      final runner = _FakeProcessRunner(
+        (command, candidate) => ProcessResult(13, 0, 'Python 3.12.0', ''),
+      );
+
+      await expectLater(
+        PhotoEventWriterService(
+          processRunner: runner,
+          repoRootPath: Directory.current.path,
+        ).confirmAlignment(
+          projectState: _projectState(directory, events: events),
+          request: _alignmentRequest(),
+        ),
+        throwsA(
+          isA<PhotoEventWriteException>().having(
+            (error) => error.kind,
+            'kind',
+            PhotoEventWriteFailureKind.invalidEventHistory,
+          ),
         ),
       );
       expect(runner.calls, isEmpty);

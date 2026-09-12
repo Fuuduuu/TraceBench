@@ -15,12 +15,15 @@ import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
 import 'package:trace_bench_viewer/features/board_canvas/geometry/placement_geometry.dart';
 import 'package:trace_bench_viewer/features/board_canvas/logic/measurement_projection.dart';
+import 'package:trace_bench_viewer/features/board_canvas/rendering/aligned_photo_layer.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
+import 'package:trace_bench_viewer/features/board_canvas/theme/board_canvas_palette.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
 import 'package:trace_bench_viewer/features/measure_sheet/services/v2_save_measurement_writer.dart';
 import 'package:trace_bench_viewer/features/photos/services/photo_import_service.dart';
+import 'package:trace_bench_viewer/features/photos/services/photo_event_writer.dart';
 import 'package:trace_bench_viewer/features/photos/widgets/photo_workbench_panel.dart';
 import 'package:trace_bench_viewer/features/project/widgets/workbench_shell.dart';
 import 'package:trace_bench_viewer/shared/footprints/footprint_models.dart';
@@ -127,6 +130,19 @@ WizardIntake _wizardIntake({
     },
   );
 }
+
+const String _primaryPhotoPath = 'photos/wizard_background.png';
+const String _primaryPhotoSha =
+    '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+const WizardBackgroundPhoto _primaryBackgroundPhoto = WizardBackgroundPhoto(
+  relativePath: _primaryPhotoPath,
+  transform: WizardPhotoTransform(
+    translation: WizardPoint(x: 0, y: 0),
+    scale: 1,
+    rotationRadians: 0,
+    opacity: 0.65,
+  ),
+);
 
 const List<ComponentFact> _navigatorComponents = <ComponentFact>[
   ComponentFact(componentId: 'R1', designator: 'R1', type: 'resistor'),
@@ -336,6 +352,260 @@ class _FakePhotoImportService implements PhotoImportService {
   }
 }
 
+class _FakeAlignedPhotoAssetLoader implements AlignedPhotoAssetLoader {
+  _FakeAlignedPhotoAssetLoader({this.error, this.handler});
+
+  final Object? error;
+  final Future<AlignedPhotoAsset> Function(
+    String projectDirectory,
+    String relativePath,
+  )? handler;
+  final List<String> paths = <String>[];
+
+  @override
+  Future<AlignedPhotoAsset> load({
+    required String projectDirectory,
+    required String relativePath,
+  }) async {
+    paths.add(relativePath);
+    if (error case final value?) {
+      throw value;
+    }
+    if (handler case final callback?) {
+      return callback(projectDirectory, relativePath);
+    }
+    return AlignedPhotoAsset(
+      file: File('$projectDirectory\\${relativePath.replaceAll('/', '\\')}'),
+      width: 400,
+      height: 300,
+      sha256: _primaryPhotoSha,
+    );
+  }
+}
+
+Widget _fakeAlignedPhotoImage(
+  BuildContext context,
+  AlignedPhotoAsset asset,
+) {
+  return const ColoredBox(
+    key: Key('fake_aligned_photo_pixels'),
+    color: Color(0xFFAA5522),
+  );
+}
+
+class _FakePhotoAlignmentWriter implements PhotoAlignmentEventWriter {
+  _FakePhotoAlignmentWriter(
+    this.handler, {
+    this.primaryHandler,
+  });
+
+  final Future<PhotoEventWriteResult> Function(
+    ProjectState projectState,
+    PhotoAlignmentEventWriteRequest request,
+  ) handler;
+  final Future<PhotoEventWriteResult> Function(
+    ProjectState projectState,
+    PrimaryPhotoEventWriteRequest request,
+  )? primaryHandler;
+  final List<PhotoAlignmentEventWriteRequest> requests =
+      <PhotoAlignmentEventWriteRequest>[];
+  final List<PrimaryPhotoEventWriteRequest> primaryRequests =
+      <PrimaryPhotoEventWriteRequest>[];
+
+  @override
+  Future<PhotoEventWriteResult> ensurePrimaryPhotoAdded({
+    required ProjectState projectState,
+    required PrimaryPhotoEventWriteRequest request,
+  }) async {
+    primaryRequests.add(request);
+    return await (primaryHandler?.call(projectState, request) ??
+        Future<PhotoEventWriteResult>.value(
+          _primaryPhotoWriteResult(projectState, request),
+        ));
+  }
+
+  @override
+  Future<PhotoEventWriteResult> confirmAlignment({
+    required ProjectState projectState,
+    required PhotoAlignmentEventWriteRequest request,
+  }) async {
+    requests.add(request);
+    return handler(projectState, request);
+  }
+}
+
+TraceBenchEvent _photoEvent({
+  String eventId = 'evt_000001',
+  int sequence = 1,
+  String photoId = 'photo_alignment_source',
+  String path = _primaryPhotoPath,
+  String sha256 = _primaryPhotoSha,
+}) {
+  return TraceBenchEvent(
+    schemaVersion: '1.0',
+    eventId: eventId,
+    projectId: 'proj_001',
+    sequence: sequence,
+    createdAt: '2026-08-28T09:00:00Z',
+    actor: const <String, dynamic>{
+      'type': 'user',
+      'id': 'local_operator',
+    },
+    eventType: 'photo_added',
+    status: 'accepted',
+    payload: <String, dynamic>{
+      'photo_id': photoId,
+      'mode': 'normal',
+      'path': path,
+      'sha256': sha256,
+    },
+  );
+}
+
+PhotoEventWriteResult _primaryPhotoWriteResult(
+  ProjectState state,
+  PrimaryPhotoEventWriteRequest request,
+) {
+  for (final event in state.events) {
+    if (event.schemaVersion == '1.0' &&
+        event.status == 'accepted' &&
+        event.eventType == 'photo_added' &&
+        event.payload['path'] == request.path &&
+        (event.payload['sha256'] as String?)?.toLowerCase() ==
+            request.sha256.toLowerCase()) {
+      return PhotoEventWriteResult(
+        status: PhotoEventWriteStatus.reusedDurable,
+        durability: PhotoEventDurability.durable,
+        event: event.toJson(),
+      );
+    }
+  }
+  final sequence = state.events.fold<int>(
+        0,
+        (value, event) => math.max(value, event.sequence),
+      ) +
+      1;
+  return PhotoEventWriteResult(
+    status: PhotoEventWriteStatus.appended,
+    durability: PhotoEventDurability.durable,
+    event: <String, dynamic>{
+      'schema_version': '1.0',
+      'event_id': 'evt_${sequence.toString().padLeft(6, '0')}',
+      'project_id': state.manifest.projectId,
+      'sequence': sequence,
+      'created_at': '2026-08-29T10:00:00Z',
+      'actor': const <String, dynamic>{
+        'type': 'user',
+        'id': 'local_operator',
+      },
+      'event_type': 'photo_added',
+      'status': 'accepted',
+      'payload': <String, dynamic>{
+        'photo_id': 'photo_primary_001',
+        'mode': 'normal',
+        'path': request.path,
+        'sha256': request.sha256,
+      },
+    },
+  );
+}
+
+TraceBenchEvent _alignmentEvent({
+  String eventId = 'evt_000002',
+  int sequence = 2,
+  String alignmentId = 'ALN1',
+  String transformType = 'similarity',
+  String sourcePhotoId = 'photo_alignment_source',
+  List<Map<String, double>>? photoPoints,
+  List<Map<String, double>>? boardPoints,
+}) {
+  final isAffine = transformType == 'affine';
+  return TraceBenchEvent(
+    schemaVersion: '1.0',
+    eventId: eventId,
+    projectId: 'proj_001',
+    sequence: sequence,
+    createdAt: '2026-08-28T09:05:00Z',
+    actor: const <String, dynamic>{
+      'type': 'user',
+      'id': 'local_operator',
+    },
+    eventType: 'photo_to_board_alignment_confirmed',
+    status: 'accepted',
+    payload: <String, dynamic>{
+      'alignment_id': alignmentId,
+      'source_photo_id': sourcePhotoId,
+      'board_side': 'top',
+      'coordinate_space_from': 'photo_local',
+      'coordinate_space_to': 'board_normalized',
+      'reference_points_photo': photoPoints ??
+          <Map<String, double>>[
+            <String, double>{'x': 0, 'y': 0},
+            <String, double>{'x': 200, 'y': 0},
+            if (isAffine) <String, double>{'x': 0, 'y': 200},
+          ],
+      'reference_points_board': boardPoints ??
+          <Map<String, double>>[
+            <String, double>{'x': 0.1, 'y': 0.1},
+            <String, double>{'x': 0.7, 'y': 0.1},
+            if (isAffine) <String, double>{'x': 0.2, 'y': 0.7},
+          ],
+      'transform_type': transformType,
+      'alignment_quality_label': 'manual_preview_confirmed',
+    },
+  );
+}
+
+PhotoEventWriteResult _alignmentWriteResult(
+  ProjectState state,
+  PhotoAlignmentEventWriteRequest request,
+) {
+  final sequence = state.events.fold<int>(
+        0,
+        (value, event) => math.max(value, event.sequence),
+      ) +
+      1;
+  final alignmentNumber = state.events
+          .where(
+            (event) => event.eventType == 'photo_to_board_alignment_confirmed',
+          )
+          .length +
+      1;
+  final event = <String, dynamic>{
+    'schema_version': '1.0',
+    'event_id': 'evt_${sequence.toString().padLeft(6, '0')}',
+    'project_id': state.manifest.projectId,
+    'sequence': sequence,
+    'created_at': '2026-08-28T10:00:00Z',
+    'actor': const <String, dynamic>{
+      'type': 'user',
+      'id': 'local_operator',
+    },
+    'event_type': 'photo_to_board_alignment_confirmed',
+    'status': 'accepted',
+    'payload': <String, dynamic>{
+      'alignment_id': 'ALN$alignmentNumber',
+      'source_photo_id': request.sourcePhotoId,
+      'board_side': request.boardSide,
+      'coordinate_space_from': 'photo_local',
+      'coordinate_space_to': 'board_normalized',
+      'reference_points_photo': request.photoPoints
+          .map((point) => point.toJson())
+          .toList(growable: false),
+      'reference_points_board': request.boardPoints
+          .map((point) => point.toJson())
+          .toList(growable: false),
+      'transform_type': request.transformType.canonicalName,
+      'alignment_quality_label': 'manual_preview_confirmed',
+    },
+  };
+  return PhotoEventWriteResult(
+    status: PhotoEventWriteStatus.appended,
+    durability: PhotoEventDurability.durable,
+    event: event,
+  );
+}
+
 PhotoImportResult _photoImportResult(
   ProjectState projectState,
   PhotoImportRequest request, {
@@ -387,6 +657,9 @@ Widget _harness({
   PhotoSourcePicker? photoSourcePicker,
   PhotoSourcePreviewLoader? photoSourcePreviewLoader,
   PhotoImportService? photoImportService,
+  PhotoAlignmentEventWriter? photoAlignmentEventWriter,
+  AlignedPhotoAssetLoader? alignedPhotoAssetLoader,
+  AlignedPhotoImageBuilder? alignedPhotoImageBuilder,
 }) {
   return ProviderScope(
     overrides: [
@@ -408,6 +681,11 @@ Widget _harness({
         photoSourcePicker: photoSourcePicker,
         photoSourcePreviewLoader: photoSourcePreviewLoader,
         photoImportService: photoImportService,
+        photoAlignmentEventWriter: photoAlignmentEventWriter,
+        alignedPhotoAssetLoader:
+            alignedPhotoAssetLoader ?? _FakeAlignedPhotoAssetLoader(),
+        alignedPhotoImageBuilder:
+            alignedPhotoImageBuilder ?? _fakeAlignedPhotoImage,
       ),
     ),
   );
@@ -1318,7 +1596,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(service.requests, isEmpty);
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Impordi ja lisa'));
+      await _tapWidgetByKey(tester, const Key('photo_import_confirm'));
       await tester.pumpAndSettle();
 
       expect(service.requests, hasLength(1));
@@ -1347,6 +1625,10 @@ void main() {
       expect(
         find.byKey(const Key('board_canvas_aligned_photo_background')),
         findsNothing,
+      );
+      expect(
+        find.byKey(const Key('photo_alignment_no_primary_guidance')),
+        findsOneWidget,
       );
       expect(find.byKey(const Key('photo_alignment_confirm')), findsNothing);
       expect(tester.takeException(), isNull);
@@ -1377,11 +1659,10 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const Key('photo_pick_button')));
       await tester.pump();
-      await tester.tap(find.widgetWithText(FilledButton, 'Impordi ja lisa'));
-      await tester.pump();
+      await _tapWidgetByKey(tester, const Key('photo_import_confirm'));
 
-      final confirm = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Impordi ja lisa'),
+      final confirm = tester.widget<OutlinedButton>(
+        find.byKey(const Key('photo_import_confirm')),
       );
       expect(confirm.onPressed, isNull);
       expect(service.requests, hasLength(1));
@@ -1463,7 +1744,7 @@ void main() {
       );
       expect(
         tester
-            .widget<FilledButton>(
+            .widget<OutlinedButton>(
               find.byKey(const Key('photo_import_confirm')),
             )
             .onPressed,
@@ -1499,8 +1780,7 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const Key('photo_pick_button')));
       await tester.pump();
-      await tester.tap(find.byKey(const Key('photo_import_confirm')));
-      await tester.pump();
+      await _tapWidgetByKey(tester, const Key('photo_import_confirm'));
       expect(service.requests, hasLength(1));
 
       _replaceProjectState(
@@ -1564,6 +1844,1333 @@ void main() {
       );
       expect(picker.pickCount, 0);
       expect(service.requests, isEmpty);
+    });
+  });
+
+  group('canonical photo alignment workbench', () {
+    Future<void> openPhotos(WidgetTester tester) async {
+      final wide = find.byKey(const Key('board_canvas_rail_photos_tool'));
+      final compact =
+          find.byKey(const Key('board_canvas_compact_photos_action'));
+      await tester.tap(wide.evaluate().isNotEmpty ? wide : compact);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> capturePair(
+      WidgetTester tester, {
+      required Offset photoFraction,
+      required Offset boardFraction,
+    }) async {
+      final preview = find.byKey(const Key('photo_alignment_photo_preview'));
+      await tester.ensureVisible(preview);
+      await tester.pump();
+      final topLeft = tester.getTopLeft(preview);
+      final size = tester.getSize(preview);
+      await tester.tapAt(
+        topLeft +
+            Offset(
+              size.width * photoFraction.dx,
+              size.height * photoFraction.dy,
+            ),
+      );
+      await tester.pump();
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_capture_board_point'),
+      );
+      await _tapCanvasAtNormalized(
+        tester,
+        x: boardFraction.dx,
+        y: boardFraction.dy,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Widget fakeImage(BuildContext context, AlignedPhotoAsset asset) {
+      return const ColoredBox(
+        key: Key('fake_aligned_photo_pixels'),
+        color: Color(0xFFAA5522),
+      );
+    }
+
+    for (final exit in [
+      (
+        name: 'panel switch',
+        width: 1400.0,
+        key: 'board_canvas_rail_inspector_tool'
+      ),
+      (
+        name: 'focus mode',
+        width: 1400.0,
+        key: 'board_canvas_focus_toggle_button'
+      ),
+      (
+        name: 'compact hide',
+        width: 700.0,
+        key: 'board_canvas_inspector_toggle_button'
+      ),
+    ]) {
+      testWidgets(
+          'F1 photo panel exit ${exit.name} restores confirmed alignment',
+          (tester) async {
+        await tester.binding.setSurfaceSize(Size(exit.width, 820));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final state = _inlineProjectState(
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          events: <TraceBenchEvent>[_photoEvent(), _alignmentEvent()],
+          projectDirectory: r'C:\project',
+          wizardIntake: _wizardIntake(backgroundPhoto: _primaryBackgroundPhoto),
+        );
+        final writer = _FakePhotoAlignmentWriter((_, __) async {
+          throw StateError('Panel exit must not write an alignment');
+        });
+        await tester.pumpWidget(_harness(
+          projectState: state,
+          photoAlignmentEventWriter: writer,
+        ));
+        await tester.pumpAndSettle();
+        final confirmed = tester
+            .widget<AlignedPhotoLayer>(
+              find.byType(AlignedPhotoLayer),
+            )
+            .solution
+            .transform;
+        await openPhotos(tester);
+        await capturePair(tester,
+            photoFraction: const Offset(.2, .2),
+            boardFraction: const Offset(.3, .3));
+        await capturePair(tester,
+            photoFraction: const Offset(.8, .2),
+            boardFraction: const Offset(.8, .3));
+        expect(find.byKey(const Key('board_canvas_alignment_provisional')),
+            findsOne);
+        expect(
+            find.byKey(const Key('board_canvas_alignment_reference_markers')),
+            findsOne);
+        expect(
+            tester
+                .widget<AlignedPhotoLayer>(find.byType(AlignedPhotoLayer))
+                .solution
+                .transform,
+            isNot(confirmed));
+
+        await _tapWidgetByKey(tester, Key(exit.key));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(PhotoWorkbenchPanel), findsNothing);
+        expect(find.byKey(const Key('board_canvas_alignment_provisional')),
+            findsNothing);
+        expect(
+            find.byKey(const Key('board_canvas_alignment_reference_markers')),
+            findsNothing);
+        expect(
+            tester
+                .widget<AlignedPhotoLayer>(find.byType(AlignedPhotoLayer))
+                .solution
+                .transform,
+            confirmed);
+        expect(_readProjectState(tester).events, orderedEquals(state.events));
+        expect(writer.requests, isEmpty);
+        expect(writer.primaryRequests, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('F3 photo panel exit ${exit.name} cancels board capture',
+          (tester) async {
+        await tester.binding.setSurfaceSize(Size(exit.width, 820));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final state = _inlineProjectState(
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          projectDirectory: r'C:\project',
+          wizardIntake: _wizardIntake(backgroundPhoto: _primaryBackgroundPhoto),
+        );
+        final writer = _FakePhotoAlignmentWriter((_, __) async {
+          throw StateError('Cancelling board capture must not write');
+        });
+        await tester.pumpWidget(_harness(
+          projectState: state,
+          photoAlignmentEventWriter: writer,
+        ));
+        await tester.pumpAndSettle();
+        await openPhotos(tester);
+        final photo = find.byKey(const Key('photo_alignment_photo_preview'));
+        await tester.ensureVisible(photo);
+        await tester.pump();
+        final photoSize = tester.getSize(photo);
+        await tester.tapAt(tester.getTopLeft(photo) +
+            Offset(photoSize.width * .2, photoSize.height * .2));
+        await tester.pump();
+        await _tapWidgetByKey(
+            tester, const Key('photo_alignment_capture_board_point'));
+        final viewer = find.byKey(const Key('board_canvas_interactive_viewer'));
+        expect(tester.widget<InteractiveViewer>(viewer).panEnabled, isFalse);
+        expect(tester.widget<InteractiveViewer>(viewer).scaleEnabled, isFalse);
+
+        await _tapWidgetByKey(tester, Key(exit.key));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(PhotoWorkbenchPanel), findsNothing);
+        expect(tester.widget<InteractiveViewer>(viewer).panEnabled, isTrue);
+        expect(tester.widget<InteractiveViewer>(viewer).scaleEnabled, isTrue);
+        await _tapCanvasAtNormalized(tester, x: .5, y: .5);
+        await tester.pumpAndSettle();
+        if (exit.name == 'panel switch') {
+          // A normal empty tap dismisses Inspector; a stale capture consumes it.
+          expect(find.byKey(const Key('board_canvas_context_panel')),
+              findsNothing);
+        }
+        expect(
+            find.byKey(const Key('board_canvas_alignment_reference_markers')),
+            findsNothing);
+        // Zoom first: a fitted image has no spare bounds in which to pan.
+        await tester.sendEventToBinding(PointerScrollEvent(
+          position: tester.getCenter(viewer),
+          scrollDelta: const Offset(0, -200),
+        ));
+        await tester.pumpAndSettle();
+        final controller =
+            tester.widget<InteractiveViewer>(viewer).transformationController!;
+        expect(controller.value.getMaxScaleOnAxis(), greaterThan(1));
+        final beforePan = controller.value.clone();
+        await tester.drag(viewer, const Offset(-60, -30));
+        await tester.pumpAndSettle();
+        expect(controller.value, isNot(beforePan));
+        if (exit.name == 'focus mode') {
+          await _tapWidgetByKey(
+              tester, const Key('board_canvas_focus_restore_button'));
+          await tester.pumpAndSettle();
+        }
+        await openPhotos(tester);
+        expect(find.text('Pair 1'), findsNothing);
+        expect(_readProjectState(tester).events, orderedEquals(state.events));
+        expect(writer.requests, isEmpty);
+        expect(writer.primaryRequests, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    for (final fixture in [
+      (
+        name: 'landscape',
+        intrinsic: const Size(1920, 1080),
+        targets: const [
+          Offset(.242, .158),
+          Offset(.818, .158),
+          Offset(.53, .484)
+        ],
+        projected: const [
+          Offset(.2414725274725275, .1584688644688644),
+          Offset(.8185274725274726, .1584688644688644),
+          Offset(.53, .4830622710622711),
+        ],
+        corners: const [
+          Offset(.0491208791208791, .0502710622710623),
+          Offset(1.0108791208791208, .5912600732600732),
+        ],
+      ),
+      (
+        name: 'portrait',
+        intrinsic: const Size(602, 862),
+        targets: const [
+          Offset(.3102, .2862),
+          Offset(.4908, .2862),
+          Offset(.401, .5468)
+        ],
+        projected: const [
+          Offset(.3097333055130478, .286506384115044),
+          Offset(.4913559700132138, .2862507179900025),
+          Offset(.4009107244737384, .5464428978949536),
+        ],
+        corners: const [
+          Offset(.2490703884427899, .199903490542581),
+          Offset(.5523849737940792, .6329179584048957),
+        ],
+      ),
+    ]) {
+      testWidgets(
+          'intrinsic raster basis survives ${fixture.name} Canvas layout',
+          (tester) async {
+        await tester.binding.setSurfaceSize(const Size(1400, 820));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final state = _inlineProjectState(
+          components: const [],
+          placements: const [],
+          projectDirectory: r'C:\project',
+          wizardIntake: _wizardIntake(backgroundPhoto: _primaryBackgroundPhoto),
+        );
+        await tester.pumpWidget(_harness(
+          projectState: state,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(
+            handler: (directory, path) async => AlignedPhotoAsset(
+              file: File('$directory/$path'),
+              width: fixture.intrinsic.width,
+              height: fixture.intrinsic.height,
+              sha256: _primaryPhotoSha,
+            ),
+          ),
+          alignedPhotoImageBuilder: fakeImage,
+        ));
+        await tester.pumpAndSettle();
+        await openPhotos(tester);
+        const fractions = [Offset(.2, .2), Offset(.8, .2), Offset(.5, .8)];
+        for (var i = 0; i < fractions.length; i++) {
+          await capturePair(tester,
+              photoFraction: fractions[i], boardFraction: fixture.targets[i]);
+        }
+
+        final layer = find.byType(AlignedPhotoLayer);
+        final raster = tester.renderObject<RenderBox>(find.descendant(
+          of: layer,
+          matching: find.byKey(const Key('fake_aligned_photo_pixels')),
+        ));
+        final board = tester.renderObject<RenderBox>(find.byKey(
+          const Key('board_canvas_alignment_reference_markers'),
+        ));
+        final transform = tester.widget<Transform>(find.byKey(
+          const Key('board_canvas_aligned_photo_transform'),
+        ));
+        expect(board.size.aspectRatio,
+            isNot(closeTo(fixture.intrinsic.aspectRatio, .01)));
+        expect(
+            tester.getSize(find.byWidget(transform.child!)), fixture.intrinsic,
+            reason:
+                'Transform must receive photo pixels, not tight Canvas pixels');
+        expect(raster.size, fixture.intrinsic);
+        expect(tester.getSize(layer), board.size);
+        expect(
+            tester.getSize(
+                find.descendant(of: layer, matching: find.byType(ClipRect))),
+            board.size);
+        expect(
+            tester
+                .widget<IgnorePointer>(find.byKey(
+                  const Key('board_canvas_aligned_photo_pointer_guard'),
+                ))
+                .ignoring,
+            isTrue);
+        expect(
+            tester
+                .widget<Opacity>(
+                    find.descendant(of: layer, matching: find.byType(Opacity)))
+                .opacity,
+            .65);
+
+        Offset rasterInBoard(Offset photoPixel) {
+          final local = board.globalToLocal(raster.localToGlobal(photoPixel));
+          return Offset(
+              local.dx / board.size.width, local.dy / board.size.height);
+        }
+
+        // Independently solved LS fixtures, not expectations derived from the
+        // production solution. The third target has a small deliberate residual.
+        for (var i = 0; i < fractions.length; i++) {
+          final actual = rasterInBoard(Offset(
+            fractions[i].dx * fixture.intrinsic.width,
+            fractions[i].dy * fixture.intrinsic.height,
+          ));
+          expect((actual - fixture.projected[i]).distance, lessThan(1e-8));
+          expect((actual - fixture.targets[i]).distance, lessThan(.002));
+        }
+        expect((rasterInBoard(Offset.zero) - fixture.corners[0]).distance,
+            lessThan(1e-8));
+        expect(
+            (rasterInBoard(Offset(
+                        fixture.intrinsic.width, fixture.intrinsic.height)) -
+                    fixture.corners[1])
+                .distance,
+            lessThan(1e-8));
+        expect(_readProjectState(tester).events, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('photo panel resolves readable local dark text and controls',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(_harness(
+        projectState: _inlineProjectState(
+          components: const [],
+          placements: const [],
+          projectDirectory: r'C:\project',
+          wizardIntake: _wizardIntake(backgroundPhoto: _primaryBackgroundPhoto),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(tester,
+          photoFraction: const Offset(.2, .2),
+          boardFraction: const Offset(.2, .2));
+      final panel = find.byKey(const Key('photo_workbench_panel'));
+      final theme = Theme.of(tester.element(panel));
+      expect(theme.brightness, Brightness.dark);
+      expect(
+          Theme.of(tester.element(find.byType(BoardCanvasScreen))).brightness,
+          Brightness.light,
+          reason: 'The dark theme must stay local to Fotod');
+
+      Color foreground(Finder widget) => tester
+          .widget<RichText>(find
+              .descendant(of: widget, matching: find.byType(RichText))
+              .first)
+          .text
+          .style!
+          .color!;
+      double contrast(Color color) =>
+          (color.computeLuminance() + .05) /
+          (BoardCanvasPalette.paper.computeLuminance() + .05);
+
+      expect(contrast(foreground(find.text('Projekti foto'))),
+          greaterThanOrEqualTo(4.5));
+      expect(
+          contrast(foreground(find.text('Pair 1'))), greaterThanOrEqualTo(4.5));
+      expect(contrast(foreground(find.textContaining('photo 80.0, 60.0'))),
+          greaterThanOrEqualTo(4.5));
+      expect(contrast(theme.textTheme.bodySmall!.color!),
+          greaterThanOrEqualTo(4.5));
+      expect(contrast(theme.inputDecorationTheme.labelStyle!.color!),
+          greaterThanOrEqualTo(4.5));
+      final enabledIcon = find.descendant(
+          of: find.byKey(const Key('photo_alignment_pair_remove_0')),
+          matching: find.byType(Icon));
+      final disabledIcon = find.descendant(
+          of: find.byKey(const Key('photo_alignment_pair_up_0')),
+          matching: find.byType(Icon));
+      expect(contrast(foreground(enabledIcon)), greaterThanOrEqualTo(4.5));
+      expect(contrast(foreground(disabledIcon)), greaterThanOrEqualTo(3));
+      expect(foreground(disabledIcon), isNot(foreground(enabledIcon)));
+      expect(_readProjectState(tester).events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'pair add remove reorder transform switch mirror preview and cancel are UI-local',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final writer = _FakePhotoAlignmentWriter(
+        (state, request) async => _alignmentWriteResult(state, request),
+      );
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        projectDirectory: r'C:\project',
+        wizardIntake: _wizardIntake(
+          backgroundPhoto: _primaryBackgroundPhoto,
+        ),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+
+      expect(find.text('Projekti foto'), findsOneWidget);
+      expect(
+          find.byKey(const Key('photo_alignment_photo_field')), findsNothing);
+      expect(find.byKey(const Key('photo_alignment_photo_preview')), findsOne);
+      expect(find.text('Similarity'), findsWidgets);
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_board_side_field'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('unknown').last, findsOneWidget);
+      await tester.tap(find.text('unknown').last);
+      await tester.pumpAndSettle();
+
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      expect(find.byKey(const Key('photo_alignment_pair_0')), findsOne);
+      expect(find.byKey(const Key('photo_alignment_pair_1')), findsOne);
+      expect(find.byKey(const Key('photo_alignment_photo_marker_0')), findsOne);
+      expect(find.byKey(const Key('photo_alignment_photo_marker_1')), findsOne);
+      expect(
+        find.byKey(const Key('board_canvas_alignment_reference_markers')),
+        findsOne,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_alignment_provisional')),
+        findsOne,
+      );
+      expect(find.byKey(const Key('photo_alignment_residual')), findsOne);
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsOne,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_pointer_guard')),
+        findsOne,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_transform')),
+        findsOne,
+      );
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_pair_up_1'),
+      );
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_pair_remove_0'),
+      );
+      expect(find.byKey(const Key('photo_alignment_pair_1')), findsNothing);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_transform_field'),
+      );
+      await tester.tap(find.text('Affine (Advanced)').last);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('photo_alignment_confirm')),
+            )
+            .onPressed,
+        isNull,
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.8),
+        boardFraction: const Offset(0.8, 0.8),
+      );
+      expect(find.byKey(const Key('photo_alignment_mirror_warning')), findsOne);
+
+      await _tapWidgetByKey(tester, const Key('photo_alignment_cancel'));
+      expect(find.byKey(const Key('photo_alignment_pair_0')), findsNothing);
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsNothing,
+      );
+      expect(writer.requests, isEmpty);
+      expect(writer.primaryRequests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+    });
+
+    testWidgets(
+        'changed primary bytes refresh the preview and stop before canonical write',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      var loadCount = 0;
+      final loader = _FakeAlignedPhotoAssetLoader(
+        handler: (projectDirectory, relativePath) async {
+          loadCount += 1;
+          return AlignedPhotoAsset(
+            file: File(
+              '$projectDirectory\\${relativePath.replaceAll('/', '\\')}',
+            ),
+            width: 400,
+            height: 300,
+            sha256: loadCount == 1
+                ? _primaryPhotoSha
+                : 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          );
+        },
+      );
+      final writer = _FakePhotoAlignmentWriter(
+        (state, request) async => _alignmentWriteResult(state, request),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\project',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: loader,
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      await tester.pumpAndSettle();
+
+      expect(loadCount, 2);
+      expect(writer.primaryRequests, isEmpty);
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+      expect(find.byKey(const Key('photo_alignment_pair_0')), findsNothing);
+      expect(
+        find.textContaining('Projekti foto fail muutus'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'primary photo change while board capture is pending discards old point',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final writer = _FakePhotoAlignmentWriter(
+        (state, request) async => _alignmentWriteResult(state, request),
+      );
+      final assetLoader = _FakeAlignedPhotoAssetLoader();
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\project',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: assetLoader,
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+
+      final preview = find.byKey(const Key('photo_alignment_photo_preview'));
+      await tester.ensureVisible(preview);
+      await tester.pump();
+      final previewTopLeft = tester.getTopLeft(preview);
+      final previewSize = tester.getSize(preview);
+      await tester.tapAt(
+        previewTopLeft +
+            Offset(previewSize.width * 0.2, previewSize.height * 0.2),
+      );
+      await tester.pump();
+      final captureButton =
+          find.byKey(const Key('photo_alignment_capture_board_point'));
+      expect(tester.widget<OutlinedButton>(captureButton).onPressed, isNotNull);
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_capture_board_point'),
+      );
+      expect(tester.widget<OutlinedButton>(captureButton).onPressed, isNull);
+
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          projectDirectory: r'C:\project',
+          wizardIntake: _wizardIntake(
+            backgroundPhoto: const WizardBackgroundPhoto(
+              relativePath: 'photos/wizard_background_other.jpg',
+              transform: WizardPhotoTransform(
+                translation: WizardPoint(x: 0, y: 0),
+                scale: 1,
+                rotationRadians: 0,
+                opacity: 0.65,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _tapCanvasAtNormalized(tester, x: 0.3, y: 0.4);
+      await tester.pumpAndSettle();
+
+      expect(assetLoader.paths.last, 'photos/wizard_background_other.jpg');
+      expect(find.byKey(const Key('photo_alignment_pair_0')), findsNothing);
+      expect(
+        find.byKey(const Key('photo_alignment_pending_marker')),
+        findsNothing,
+      );
+      expect(writer.requests, isEmpty);
+      expect(writer.primaryRequests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+    });
+
+    testWidgets(
+        'explicit confirm is single-shot and renders returned event while projection is stale',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final completer = Completer<PhotoEventWriteResult>();
+      ProjectState? capturedState;
+      PhotoAlignmentEventWriteRequest? capturedRequest;
+      final writer = _FakePhotoAlignmentWriter((state, request) {
+        capturedState = state;
+        capturedRequest = request;
+        return completer.future;
+      });
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\project',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      await tester.pump();
+      expect(writer.primaryRequests, hasLength(1));
+      expect(writer.primaryRequests.single.path, _primaryPhotoPath);
+      expect(writer.primaryRequests.single.sha256, _primaryPhotoSha);
+      expect(writer.requests, hasLength(1));
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('photo_alignment_confirm')),
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.byKey(const Key('photo_alignment_confirm')));
+      await tester.pump();
+      expect(writer.requests, hasLength(1));
+      expect(writer.primaryRequests, hasLength(1));
+
+      completer.complete(
+        _alignmentWriteResult(capturedState!, capturedRequest!),
+      );
+      await tester.pumpAndSettle();
+
+      final current = _readProjectState(tester);
+      expect(current.projectionFreshness, ProjectionFreshness.stale);
+      expect(
+        current.events.map((event) => event.eventType),
+        <String>[
+          'photo_added',
+          'photo_to_board_alignment_confirmed',
+        ],
+      );
+      expect(current.knownFacts.photoToBoardAlignments, isEmpty);
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsOne,
+      );
+    });
+
+    testWidgets(
+        'alignment failure retains durable primary and retry plus later confirm append only alignments',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      var alignmentAttempt = 0;
+      final writer = _FakePhotoAlignmentWriter((state, request) async {
+        alignmentAttempt += 1;
+        if (alignmentAttempt == 1) {
+          throw const PhotoEventWriteException(
+            PhotoEventWriteFailureKind.append,
+            'Alignment append failed without an event.',
+            durability: PhotoEventDurability.provenNoEvent,
+          );
+        }
+        return _alignmentWriteResult(state, request);
+      });
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\project',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      await tester.pumpAndSettle();
+
+      expect(writer.primaryRequests, hasLength(1));
+      expect(writer.requests, hasLength(1));
+      expect(
+        _readProjectState(tester).events.map((event) => event.eventType),
+        <String>['photo_added'],
+      );
+      expect(find.text('photo_primary_001'), findsNothing);
+      expect(find.text('No accepted additional photo events yet.'), findsOne);
+      expect(find.byKey(const Key('photo_alignment_pair_0')), findsOne);
+      expect(find.byKey(const Key('photo_alignment_pair_1')), findsOne);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const Key('photo_alignment_confirm')),
+            )
+            .onPressed,
+        isNotNull,
+      );
+
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      await tester.pumpAndSettle();
+      expect(writer.primaryRequests, hasLength(2));
+      expect(writer.requests, hasLength(2));
+      expect(
+        _readProjectState(tester).events.map((event) => event.eventType),
+        <String>[
+          'photo_added',
+          'photo_to_board_alignment_confirmed',
+        ],
+      );
+
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+      final beforeLaterConfirm = _readProjectState(tester).events.length;
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      await tester.pumpAndSettle();
+
+      final events = _readProjectState(tester).events;
+      expect(events, hasLength(beforeLaterConfirm + 1));
+      expect(
+        events.where((event) => event.eventType == 'photo_added'),
+        hasLength(1),
+      );
+      expect(
+        events
+            .where(
+              (event) =>
+                  event.eventType == 'photo_to_board_alignment_confirmed',
+            )
+            .map((event) => event.payload['alignment_id']),
+        <String>['ALN1', 'ALN2'],
+      );
+      expect(writer.primaryRequests, hasLength(3));
+      expect(writer.requests, hasLength(3));
+    });
+
+    testWidgets('project switch before the first write makes zero writer calls',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final freshLoadCompleter = Completer<AlignedPhotoAsset>();
+      var oldPathLoads = 0;
+      final loader = _FakeAlignedPhotoAssetLoader(
+        handler: (projectDirectory, relativePath) {
+          if (relativePath == _primaryPhotoPath) {
+            oldPathLoads += 1;
+            if (oldPathLoads == 2) {
+              return freshLoadCompleter.future;
+            }
+          }
+          return Future<AlignedPhotoAsset>.value(
+            AlignedPhotoAsset(
+              file: File(
+                '$projectDirectory\\${relativePath.replaceAll('/', '\\')}',
+              ),
+              width: 400,
+              height: 300,
+              sha256: _primaryPhotoSha,
+            ),
+          );
+        },
+      );
+      final writer = _FakePhotoAlignmentWriter(
+        (state, request) async => _alignmentWriteResult(state, request),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            projectId: 'project_old',
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\old',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: loader,
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      expect(oldPathLoads, 2);
+      expect(writer.primaryRequests, isEmpty);
+
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          projectId: 'project_new',
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          projectDirectory: r'C:\new',
+          wizardIntake: _wizardIntake(
+            backgroundPhoto: const WizardBackgroundPhoto(
+              relativePath: 'photos/new_wizard_background.jpg',
+              transform: WizardPhotoTransform(
+                translation: WizardPoint(x: 0, y: 0),
+                scale: 1,
+                rotationRadians: 0,
+                opacity: 0.65,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      freshLoadCompleter.complete(
+        AlignedPhotoAsset(
+          file: File(r'C:\old\photos\wizard_background.png'),
+          width: 400,
+          height: 300,
+          sha256: _primaryPhotoSha,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(writer.primaryRequests, isEmpty);
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester).manifest.projectId, 'project_new');
+      expect(_readProjectState(tester).events, isEmpty);
+    });
+
+    testWidgets(
+        'project switch during primary handoff prevents apply and alignment write',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final primaryCompleter = Completer<PhotoEventWriteResult>();
+      ProjectState? capturedPrimaryState;
+      PrimaryPhotoEventWriteRequest? capturedPrimaryRequest;
+      final writer = _FakePhotoAlignmentWriter(
+        (state, request) async => _alignmentWriteResult(state, request),
+        primaryHandler: (state, request) {
+          capturedPrimaryState = state;
+          capturedPrimaryRequest = request;
+          return primaryCompleter.future;
+        },
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            projectId: 'project_old',
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\old',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      expect(writer.primaryRequests, hasLength(1));
+      expect(writer.requests, isEmpty);
+
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          projectId: 'project_new',
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          projectDirectory: r'C:\new',
+          wizardIntake: _wizardIntake(
+            backgroundPhoto: const WizardBackgroundPhoto(
+              relativePath: 'photos/new_wizard_background.jpg',
+              transform: WizardPhotoTransform(
+                translation: WizardPoint(x: 0, y: 0),
+                scale: 1,
+                rotationRadians: 0,
+                opacity: 0.65,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      primaryCompleter.complete(
+        _primaryPhotoWriteResult(
+          capturedPrimaryState!,
+          capturedPrimaryRequest!,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester).manifest.projectId, 'project_new');
+      expect(_readProjectState(tester).events, isEmpty);
+    });
+
+    testWidgets('stale alignment writer result never mutates a newer project',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final completer = Completer<PhotoEventWriteResult>();
+      ProjectState? capturedState;
+      PhotoAlignmentEventWriteRequest? capturedRequest;
+      final writer = _FakePhotoAlignmentWriter((state, request) {
+        capturedState = state;
+        capturedRequest = request;
+        return completer.future;
+      });
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            projectId: 'project_old',
+            components: const <ComponentFact>[],
+            placements: const <ComponentVisualPlacementFact>[],
+            projectDirectory: r'C:\old',
+            wizardIntake: _wizardIntake(
+              backgroundPhoto: _primaryBackgroundPhoto,
+            ),
+          ),
+          photoAlignmentEventWriter: writer,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await openPhotos(tester);
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.2, 0.2),
+        boardFraction: const Offset(0.2, 0.2),
+      );
+      await capturePair(
+        tester,
+        photoFraction: const Offset(0.8, 0.2),
+        boardFraction: const Offset(0.8, 0.2),
+      );
+      await _tapWidgetByKey(tester, const Key('photo_alignment_confirm'));
+      expect(writer.primaryRequests, hasLength(1));
+      expect(writer.requests, hasLength(1));
+      expect(
+        _readProjectState(tester).events.map((event) => event.eventType),
+        <String>['photo_added'],
+      );
+
+      _replaceProjectState(
+        tester,
+        _inlineProjectState(
+          projectId: 'project_new',
+          components: const <ComponentFact>[],
+          placements: const <ComponentVisualPlacementFact>[],
+          events: <TraceBenchEvent>[
+            _photoEvent(photoId: 'photo_new', path: 'photos/photo_new.jpg'),
+          ],
+          projectDirectory: r'C:\new',
+          wizardIntake: _wizardIntake(
+            backgroundPhoto: const WizardBackgroundPhoto(
+              relativePath: 'photos/new_wizard_background.jpg',
+              transform: WizardPhotoTransform(
+                translation: WizardPoint(x: 0, y: 0),
+                scale: 1,
+                rotationRadians: 0,
+                opacity: 0.65,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      completer.complete(
+        _alignmentWriteResult(capturedState!, capturedRequest!),
+      );
+      await tester.pumpAndSettle();
+
+      final current = _readProjectState(tester);
+      expect(current.manifest.projectId, 'project_new');
+      expect(
+        current.events.where(
+          (event) => event.eventType == 'photo_to_board_alignment_confirmed',
+        ),
+        isEmpty,
+      );
+    });
+
+    testWidgets(
+        'reopen selects newest alignment and keeps layer controls UI-local with Wizard coexistence',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        events: <TraceBenchEvent>[
+          _photoEvent(),
+          _alignmentEvent(),
+          _alignmentEvent(
+            eventId: 'evt_000003',
+            sequence: 3,
+            alignmentId: 'ALN2',
+            transformType: 'affine',
+          ),
+          _photoEvent(
+            eventId: 'evt_000004',
+            sequence: 4,
+            photoId: 'photo_additional',
+            path: 'photos/detail.jpg',
+          ),
+          _alignmentEvent(
+            eventId: 'evt_000010',
+            sequence: 10,
+            alignmentId: 'ALN10',
+            sourcePhotoId: 'photo_additional',
+          ),
+        ],
+        projectDirectory: r'C:\project',
+        wizardIntake: _wizardIntake(
+          backgroundPhoto: _primaryBackgroundPhoto,
+        ),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsOne,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsOne,
+      );
+      await openPhotos(tester);
+      expect(find.textContaining('ALN2 · affine'), findsOne);
+      expect(find.textContaining('ALN10'), findsNothing);
+      expect(find.text('photo_additional'), findsOneWidget);
+      final before = _readProjectState(tester).events.length;
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_active_layer_field'),
+      );
+      await tester.tap(find.textContaining('ALN1 · similarity').last);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsOne,
+      );
+
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_layer_visibility'),
+      );
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_background')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_wizard_intake_painter')),
+        findsOne,
+      );
+      await _tapWidgetByKey(
+        tester,
+        const Key('photo_alignment_layer_visibility'),
+      );
+      final slider = find.byKey(const Key('photo_alignment_layer_opacity'));
+      await tester.ensureVisible(slider);
+      expect(tester.widget<Slider>(slider).min, 0);
+      expect(tester.widget<Slider>(slider).max, 1);
+      await tester.drag(slider, const Offset(-1000, 0));
+      await tester.pump();
+      expect(tester.widget<Slider>(slider).value, 0);
+      expect(_readProjectState(tester).events, hasLength(before));
+
+      await tester.binding.setSurfaceSize(const Size(700, 760));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_compact_photos_action')),
+        findsOne,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('missing canonical photo shows warning without canonical write',
+        (tester) async {
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        events: <TraceBenchEvent>[_photoEvent(), _alignmentEvent()],
+        projectDirectory: r'C:\project',
+        wizardIntake: _wizardIntake(
+          backgroundPhoto: _primaryBackgroundPhoto,
+        ),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(
+            error: const FileSystemException('missing photo'),
+          ),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_warning')),
+        findsOne,
+      );
+      expect(_readProjectState(tester).events, hasLength(2));
+    });
+
+    testWidgets(
+        'read-only non-directory alignment warns without rendering or writing',
+        (tester) async {
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        events: <TraceBenchEvent>[_photoEvent(), _alignmentEvent()],
+        wizardIntake: _wizardIntake(
+          backgroundPhoto: _primaryBackgroundPhoto,
+        ),
+      );
+      await tester.pumpWidget(_harness(projectState: state));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_warning')),
+        findsOne,
+      );
+      expect(
+        find.byKey(const Key('fake_aligned_photo_pixels')),
+        findsNothing,
+      );
+      expect(_readProjectState(tester).events, hasLength(2));
+    });
+
+    testWidgets(
+        'intrinsic-out-of-bounds reopened alignment is ignored and does not render',
+        (tester) async {
+      final state = _inlineProjectState(
+        components: const <ComponentFact>[],
+        placements: const <ComponentVisualPlacementFact>[],
+        events: <TraceBenchEvent>[
+          _photoEvent(),
+          _alignmentEvent(
+            photoPoints: <Map<String, double>>[
+              <String, double>{'x': 0, 'y': 0},
+              <String, double>{'x': 401, 'y': 0},
+            ],
+          ),
+        ],
+        projectDirectory: r'C:\project',
+        wizardIntake: _wizardIntake(
+          backgroundPhoto: _primaryBackgroundPhoto,
+        ),
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          alignedPhotoAssetLoader: _FakeAlignedPhotoAssetLoader(),
+          alignedPhotoImageBuilder: fakeImage,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('board_canvas_aligned_photo_warning')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('fake_aligned_photo_pixels')),
+        findsNothing,
+      );
+      expect(_readProjectState(tester).events, hasLength(2));
     });
   });
 

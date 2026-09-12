@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -10,12 +11,15 @@ import 'package:go_router/go_router.dart';
 
 import '../geometry/placement_geometry.dart';
 import '../logic/measurement_projection.dart';
+import '../rendering/aligned_photo_layer.dart';
 import '../theme/board_canvas_palette.dart';
 import '../../components/services/v2_add_component_writer.dart';
 import '../../components/services/v2_edit_component_writer.dart';
 import '../../components/services/v2_placement_writer.dart';
 import '../../measure_sheet/services/v2_save_measurement_writer.dart';
 import '../../photos/logic/photo_event_read_model.dart';
+import '../../photos/logic/photo_alignment_transform.dart';
+import '../../photos/services/photo_event_writer.dart';
 import '../../photos/services/photo_import_service.dart';
 import '../../photos/widgets/photo_workbench_panel.dart';
 import '../../../shared/footprints/footprint_models.dart';
@@ -480,11 +484,17 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
     this.photoSourcePicker,
     this.photoSourcePreviewLoader,
     this.photoImportService,
+    this.photoAlignmentEventWriter,
+    this.alignedPhotoAssetLoader,
+    this.alignedPhotoImageBuilder,
   });
 
   final PhotoSourcePicker? photoSourcePicker;
   final PhotoSourcePreviewLoader? photoSourcePreviewLoader;
   final PhotoImportService? photoImportService;
+  final PhotoAlignmentEventWriter? photoAlignmentEventWriter;
+  final AlignedPhotoAssetLoader? alignedPhotoAssetLoader;
+  final AlignedPhotoImageBuilder? alignedPhotoImageBuilder;
 
   @override
   ConsumerState<BoardCanvasScreen> createState() => _BoardCanvasScreenState();
@@ -530,11 +540,160 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       ScrollController();
   _WorkbenchContextPanelMode _contextPanelMode =
       _WorkbenchContextPanelMode.hidden;
+  String? _alignmentProjectIdentity;
+  String? _activeAlignmentId;
+  bool _alignmentLayerVisible = true;
+  double _alignmentLayerOpacity = 0.65;
+  PhotoAlignmentPreview? _alignmentPreview;
+  Completer<PhotoAlignmentPoint?>? _boardPointCompleter;
+  String? _primaryPhotoLoadIdentity;
+  AlignedPhotoAsset? _primaryPhotoAsset;
+  bool _primaryPhotoLoading = false;
+  bool _primaryPhotoUnavailable = false;
 
   @override
   void dispose() {
+    if (_boardPointCompleter case final completer?
+        when !completer.isCompleted) {
+      completer.complete(null);
+    }
     _addComponentContextScrollController.dispose();
     super.dispose();
+  }
+
+  void _reconcileAlignmentState(
+    ProjectState projectState,
+    List<PhotoAlignmentEventItem> alignments,
+  ) {
+    final identity =
+        '${projectState.manifest.projectId}\n${projectState.projectDirectory}';
+    if (_alignmentProjectIdentity != identity) {
+      final completer = _boardPointCompleter;
+      if (completer != null && !completer.isCompleted) {
+        completer.complete(null);
+      }
+      _boardPointCompleter = null;
+      _alignmentProjectIdentity = identity;
+      _activeAlignmentId = null;
+      _alignmentLayerVisible = true;
+      _alignmentLayerOpacity = 0.65;
+      _alignmentPreview = null;
+    }
+    if (alignments.isEmpty) {
+      _activeAlignmentId = null;
+      return;
+    }
+    final selectedStillValid = alignments.any(
+      (alignment) => alignment.alignmentId == _activeAlignmentId,
+    );
+    if (!selectedStillValid) {
+      PhotoAlignmentEventItem latest = alignments.first;
+      for (final alignment in alignments.skip(1)) {
+        if (alignment.sequence > latest.sequence) {
+          latest = alignment;
+        }
+      }
+      _activeAlignmentId = latest.alignmentId;
+    }
+  }
+
+  void _reconcilePrimaryPhotoAsset(ProjectState projectState) {
+    final relativePath =
+        projectState.wizardIntake?.backgroundPhoto?.relativePath;
+    final projectDirectory = projectState.projectDirectory?.trim();
+    final identity = '${projectState.manifest.projectId}\n'
+        '$projectDirectory\n$relativePath\n'
+        '${identityHashCode(widget.alignedPhotoAssetLoader)}';
+    if (_primaryPhotoLoadIdentity == identity) {
+      return;
+    }
+    final pendingBoardPoint = _boardPointCompleter;
+    if (pendingBoardPoint != null && !pendingBoardPoint.isCompleted) {
+      pendingBoardPoint.complete(null);
+    }
+    _boardPointCompleter = null;
+    _primaryPhotoLoadIdentity = identity;
+    _primaryPhotoAsset = null;
+    _primaryPhotoLoading = false;
+    _primaryPhotoUnavailable = relativePath != null &&
+        (projectDirectory == null || projectDirectory.isEmpty);
+    if (relativePath == null ||
+        projectDirectory == null ||
+        projectDirectory.isEmpty) {
+      return;
+    }
+    _primaryPhotoLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _primaryPhotoLoadIdentity == identity) {
+        _loadPrimaryPhotoAsset(
+          identity: identity,
+          projectDirectory: projectDirectory,
+          relativePath: relativePath,
+        );
+      }
+    });
+  }
+
+  Future<void> _loadPrimaryPhotoAsset({
+    required String identity,
+    required String projectDirectory,
+    required String relativePath,
+  }) async {
+    try {
+      final asset = await (widget.alignedPhotoAssetLoader ??
+              const LocalAlignedPhotoAssetLoader())
+          .load(
+        projectDirectory: projectDirectory,
+        relativePath: relativePath,
+      );
+      if (!mounted || _primaryPhotoLoadIdentity != identity) {
+        return;
+      }
+      setState(() {
+        _primaryPhotoAsset = asset;
+        _primaryPhotoLoading = false;
+        _primaryPhotoUnavailable = false;
+      });
+    } on Exception {
+      if (!mounted || _primaryPhotoLoadIdentity != identity) {
+        return;
+      }
+      setState(() {
+        _primaryPhotoAsset = null;
+        _primaryPhotoLoading = false;
+        _primaryPhotoUnavailable = true;
+      });
+    }
+  }
+
+  PhotoAlignmentEventItem? _activeAlignment(
+    List<PhotoAlignmentEventItem> alignments,
+  ) {
+    for (final alignment in alignments) {
+      if (alignment.alignmentId == _activeAlignmentId) {
+        return alignment;
+      }
+    }
+    return null;
+  }
+
+  Future<PhotoAlignmentPoint?> _requestAlignmentBoardPoint() {
+    final previous = _boardPointCompleter;
+    if (previous != null && !previous.isCompleted) {
+      previous.complete(null);
+    }
+    final completer = Completer<PhotoAlignmentPoint?>();
+    setState(() => _boardPointCompleter = completer);
+    return completer.future;
+  }
+
+  void _acceptAlignmentBoardPoint(PhotoAlignmentPoint point) {
+    final completer = _boardPointCompleter;
+    if (completer == null || completer.isCompleted) {
+      return;
+    }
+    completer.complete(point);
+    setState(() => _boardPointCompleter = null);
   }
 
   String? get _selectedPlacementKey {
@@ -1409,6 +1568,22 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
     final knownFacts = projectState.knownFacts;
     final photoEventItems = photoEventItemsFromEvents(projectState.events);
+    _reconcilePrimaryPhotoAsset(projectState);
+    final primaryPhotoPath =
+        projectState.wizardIntake?.backgroundPhoto?.relativePath;
+    final primaryPhotoAsset = _primaryPhotoAsset;
+    final photoAlignmentItems =
+        primaryPhotoPath == null || primaryPhotoAsset == null
+            ? const <PhotoAlignmentEventItem>[]
+            : primaryPhotoAlignmentEventItemsFromEvents(
+                projectState.events,
+                relativePath: primaryPhotoPath,
+                sha256: primaryPhotoAsset.sha256,
+                photoWidth: primaryPhotoAsset.width,
+                photoHeight: primaryPhotoAsset.height,
+              );
+    _reconcileAlignmentState(projectState, photoAlignmentItems);
+    final activePhotoAlignment = _activeAlignment(photoAlignmentItems);
     final hasWizardIntakePresentation = projectState.wizardIntake != null ||
         projectState.wizardIntakeWarning != null;
     final hasDirectoryBacking =
@@ -1425,6 +1600,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             child: _buildPhotoWorkbenchPanel(
               projectState,
               photoEventItems,
+              photoAlignmentItems,
             ),
           ),
           projectionFreshness: projectState.projectionFreshness,
@@ -1579,6 +1755,21 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final useWorkbenchShell = constraints.maxWidth >= 900;
+                final photosShown =
+                    _contextPanelMode == _WorkbenchContextPanelMode.photos &&
+                        _inspectorVisible &&
+                        !_canvasFocusMode;
+                if (!photosShown) {
+                  // Reconcile host-owned transient state before building Canvas,
+                  // not from the departing photo panel's teardown callbacks.
+                  _alignmentPreview = null;
+                  final pendingBoardPoint = _boardPointCompleter;
+                  _boardPointCompleter = null;
+                  if (pendingBoardPoint != null &&
+                      !pendingBoardPoint.isCompleted) {
+                    pendingBoardPoint.complete(null);
+                  }
+                }
                 final selector = _PlacementSelector(
                   entries: visibleEntries,
                   selectedKey: selectedKey,
@@ -1611,6 +1802,16 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   projectDirectory: projectState.projectDirectory,
                   wizardIntake: projectState.wizardIntake,
                   wizardIntakeWarning: projectState.wizardIntakeWarning,
+                  activePhotoAlignment: activePhotoAlignment,
+                  primaryPhotoAsset: primaryPhotoAsset,
+                  primaryPhotoUnavailable: _primaryPhotoUnavailable,
+                  alignmentPreview: _alignmentPreview,
+                  alignmentLayerVisible: _alignmentLayerVisible,
+                  alignmentLayerOpacity: _alignmentLayerOpacity,
+                  alignedPhotoImageBuilder: widget.alignedPhotoImageBuilder,
+                  alignmentBoardPointCaptureActive:
+                      _boardPointCompleter != null,
+                  onAlignmentBoardPointSelected: _acceptAlignmentBoardPoint,
                   entries: visibleEntries,
                   selectedKey: selectedKey,
                   selectedComponentId: _selectedComponentId,
@@ -1774,6 +1975,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 final photoPanel = _buildPhotoWorkbenchPanel(
                   projectState,
                   photoEventItems,
+                  photoAlignmentItems,
                 );
                 final controlBand = useWorkbenchShell
                     ? const SizedBox.shrink(
@@ -2356,14 +2558,62 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   Widget _buildPhotoWorkbenchPanel(
     ProjectState projectState,
     List<PhotoEventItem> photos,
+    List<PhotoAlignmentEventItem> alignments,
   ) {
     return PhotoWorkbenchPanel(
       projectState: projectState,
       projectSession: ref.read(projectStateProvider.notifier),
       photos: photos,
+      alignments: alignments,
+      primaryPhotoRelativePath:
+          projectState.wizardIntake?.backgroundPhoto?.relativePath,
+      primaryPhotoAsset: _primaryPhotoAsset,
+      primaryPhotoLoading: _primaryPhotoLoading,
+      primaryPhotoUnavailable: _primaryPhotoUnavailable,
       sourcePicker: widget.photoSourcePicker,
       previewLoader: widget.photoSourcePreviewLoader,
       importService: widget.photoImportService,
+      alignmentWriter: widget.photoAlignmentEventWriter,
+      alignedPhotoAssetLoader: widget.alignedPhotoAssetLoader,
+      alignedPhotoImageBuilder: widget.alignedPhotoImageBuilder,
+      boardPointPicker: _requestAlignmentBoardPoint,
+      onAlignmentPreviewChanged: (preview) {
+        if (!mounted) {
+          return;
+        }
+        setState(() => _alignmentPreview = preview);
+      },
+      activeAlignmentId: _activeAlignmentId,
+      onActiveAlignmentChanged: (alignmentId) {
+        setState(() {
+          _activeAlignmentId = alignmentId;
+          _alignmentPreview = null;
+        });
+      },
+      alignmentLayerVisible: _alignmentLayerVisible,
+      onAlignmentLayerVisibleChanged: (visible) {
+        setState(() => _alignmentLayerVisible = visible);
+      },
+      alignmentLayerOpacity: _alignmentLayerOpacity,
+      onAlignmentLayerOpacityChanged: (opacity) {
+        setState(() => _alignmentLayerOpacity = opacity);
+      },
+      onPrimaryPhotoAssetChanged: (asset) {
+        final liveState = ref.read(projectStateProvider);
+        if (!mounted ||
+            liveState == null ||
+            liveState.manifest.projectId != projectState.manifest.projectId ||
+            liveState.projectDirectory != projectState.projectDirectory ||
+            liveState.wizardIntake?.backgroundPhoto?.relativePath !=
+                projectState.wizardIntake?.backgroundPhoto?.relativePath) {
+          return;
+        }
+        setState(() {
+          _primaryPhotoAsset = asset;
+          _primaryPhotoLoading = false;
+          _primaryPhotoUnavailable = false;
+        });
+      },
       onCanonicalEventApplied: () {
         if (!mounted) {
           return;
@@ -5774,6 +6024,15 @@ class _CanvasPanel extends StatefulWidget {
     required this.projectDirectory,
     required this.wizardIntake,
     required this.wizardIntakeWarning,
+    required this.activePhotoAlignment,
+    required this.primaryPhotoAsset,
+    required this.primaryPhotoUnavailable,
+    required this.alignmentPreview,
+    required this.alignmentLayerVisible,
+    required this.alignmentLayerOpacity,
+    required this.alignedPhotoImageBuilder,
+    required this.alignmentBoardPointCaptureActive,
+    required this.onAlignmentBoardPointSelected,
     required this.entries,
     required this.selectedKey,
     required this.selectedComponentId,
@@ -5804,6 +6063,15 @@ class _CanvasPanel extends StatefulWidget {
   final String? projectDirectory;
   final WizardIntake? wizardIntake;
   final String? wizardIntakeWarning;
+  final PhotoAlignmentEventItem? activePhotoAlignment;
+  final AlignedPhotoAsset? primaryPhotoAsset;
+  final bool primaryPhotoUnavailable;
+  final PhotoAlignmentPreview? alignmentPreview;
+  final bool alignmentLayerVisible;
+  final double alignmentLayerOpacity;
+  final AlignedPhotoImageBuilder? alignedPhotoImageBuilder;
+  final bool alignmentBoardPointCaptureActive;
+  final ValueChanged<PhotoAlignmentPoint> onAlignmentBoardPointSelected;
   final List<_PlacementEntry> entries;
   final String? selectedKey;
   final String? selectedComponentId;
@@ -5917,6 +6185,15 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   }
 
   void _selectPlacementAt(Offset position, Size size) {
+    if (widget.alignmentBoardPointCaptureActive) {
+      widget.onAlignmentBoardPointSelected(
+        PhotoAlignmentPoint(
+          x: (position.dx / size.width).clamp(0.0, 1.0),
+          y: (position.dy / size.height).clamp(0.0, 1.0),
+        ),
+      );
+      return;
+    }
     if (widget.showAddComponentTemplateGhost &&
         widget.selectedAddComponentTemplate != null) {
       widget.onAddComponentTemplateGhostDraftAnchorChanged(
@@ -5961,13 +6238,18 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                 wizardIntake.referenceFrameAspectRatio ?? 1.0,
           );
     final wizardPhotoFile = _wizardPhotoFile();
+    final alignmentPreviewSolution = widget.alignmentPreview?.solution;
+    final canRenderConfirmedAlignment =
+        widget.activePhotoAlignment != null && widget.primaryPhotoAsset != null;
     return InteractiveViewer(
       key: const Key('board_canvas_interactive_viewer'),
       transformationController: _transformationController,
       minScale: _kMinZoom,
       maxScale: _kMaxZoom,
-      panEnabled: !widget.showAddComponentTemplateGhost,
-      scaleEnabled: !widget.showAddComponentTemplateGhost,
+      panEnabled: !widget.showAddComponentTemplateGhost &&
+          !widget.alignmentBoardPointCaptureActive,
+      scaleEnabled: !widget.showAddComponentTemplateGhost &&
+          !widget.alignmentBoardPointCaptureActive,
       constrained: false,
       child: GestureDetector(
         key: const Key('board_canvas_tap_layer'),
@@ -5997,6 +6279,28 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                     fitTransform: wizardFitTransform,
                   ),
                 ),
+              if (widget.alignmentLayerVisible &&
+                  (alignmentPreviewSolution != null ||
+                      canRenderConfirmedAlignment ||
+                      widget.primaryPhotoUnavailable))
+                Positioned.fill(
+                  key: const Key('board_canvas_aligned_photo_background'),
+                  child: alignmentPreviewSolution != null
+                      ? AlignedPhotoLayer(
+                          asset: widget.alignmentPreview!.asset,
+                          solution: alignmentPreviewSolution,
+                          opacity: widget.alignmentLayerOpacity,
+                          imageBuilder: widget.alignedPhotoImageBuilder,
+                        )
+                      : canRenderConfirmedAlignment
+                          ? AlignedPhotoLayer(
+                              asset: widget.primaryPhotoAsset!,
+                              solution: widget.activePhotoAlignment!.solution,
+                              opacity: widget.alignmentLayerOpacity,
+                              imageBuilder: widget.alignedPhotoImageBuilder,
+                            )
+                          : const AlignedPhotoUnavailableWarning(),
+                ),
               if (wizardIntake != null && wizardFitTransform != null)
                 Positioned.fill(
                   child: IgnorePointer(
@@ -6005,6 +6309,20 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                       painter: _WizardIntakePainter(
                         intake: wizardIntake,
                         fitTransform: wizardFitTransform,
+                      ),
+                    ),
+                  ),
+                ),
+              if (widget.alignmentPreview?.boardPoints.isNotEmpty ?? false)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: CustomPaint(
+                      key: const Key(
+                        'board_canvas_alignment_reference_markers',
+                      ),
+                      painter: _PhotoAlignmentReferencePainter(
+                        points: widget.alignmentPreview!.boardPoints,
+                        color: theme.colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -6061,6 +6379,39 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                           ),
                           child: Text('Kõik komponendid on mõõtmata'),
                         ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (alignmentPreviewSolution != null)
+                const Positioned(
+                  right: 8,
+                  top: 8,
+                  child: IgnorePointer(
+                    child: Card(
+                      key: Key('board_canvas_alignment_provisional'),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        child: Text('Provisional alignment preview'),
+                      ),
+                    ),
+                  ),
+                ),
+              if ((alignmentPreviewSolution?.isReflected ?? false) ||
+                  (alignmentPreviewSolution == null &&
+                      (widget.activePhotoAlignment?.solution.isReflected ??
+                          false)))
+                const Positioned(
+                  left: 8,
+                  top: 52,
+                  child: IgnorePointer(
+                    child: Card(
+                      key: Key('board_canvas_alignment_mirror_warning'),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        child: Text('Mirrored affine photo alignment'),
                       ),
                     ),
                   ),
@@ -10231,6 +10582,53 @@ class _BoardBackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _BoardBackgroundPainter oldDelegate) => false;
+}
+
+class _PhotoAlignmentReferencePainter extends CustomPainter {
+  const _PhotoAlignmentReferencePainter({
+    required this.points,
+    required this.color,
+  });
+
+  final List<PhotoAlignmentPoint> points;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fill = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final outline = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    for (var index = 0; index < points.length; index++) {
+      final point = points[index];
+      final center = Offset(point.x * size.width, point.y * size.height);
+      canvas.drawCircle(center, 8, fill);
+      canvas.drawCircle(center, 8, outline);
+      final label = TextPainter(
+        text: TextSpan(
+          text: '${index + 1}',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 9,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      label.paint(
+        canvas,
+        center - Offset(label.width / 2, label.height / 2),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _PhotoAlignmentReferencePainter oldDelegate) {
+    return oldDelegate.points != points || oldDelegate.color != color;
+  }
 }
 
 class _BoardPlacementPainter extends CustomPainter {
